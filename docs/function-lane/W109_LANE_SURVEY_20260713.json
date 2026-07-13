@@ -1,0 +1,289 @@
+{
+ "surveys": [
+  {
+   "lane": "IRR (G6-06) + worksheet NPV kernel",
+   "functions": [
+    "NPV",
+    "IRR",
+    "RATE (adjacent)"
+   ],
+   "problem_type": "op-graph staging (NPV: last-ULP accumulation order at depth>=3) layered under an iteration schedule (IRR: FD-Newton in v)",
+   "current_best": "reverse-Horner NPV (a+c)/w in plain double: 117/142 (n1 47/47, n2 16/16, n3 36/47, n4 9/16, n6 9/16; max|\u0394|=2 ULP). IRR schedule racer fit_irr_stores best 132/229. Reproduced this session with the Rust racer, numpy, and Python-native IEEE.",
+   "the_gate": "Within plain-double reverse-Horner \u2014 which is PROVEN to be Excel's reduction (uniquely bit-exact on n=1 AND n=2, best on all higher n) and PROVEN not a rounding/precision artifact \u2014 ~25% of the depth>=3 rows still land \u00b11-2 ULP off. The exact deterministic op-graph difference that flips those last bits only at accumulation depth>=3 (while leaving n<=2 perfect) is the single unknown. Rounding mode is dead (SSE == x87-spill RN53(RN64) == per-statement-store, all bit-identical at 117/142) and precision is dead (extended/double-double is WORSE at 78/142), so the residual must be a structural association/order inside the interior accumulation step \u2014 yet no tested form (split a/w+c/w, reciprocal-multiply, forward running-product, forward pow, forward repeated-division, reversed-term-sum) recovers it. It is the same class of last-ULP op-graph wall as GAMMALN.",
+   "closeness": "low",
+   "confidence": "high",
+   "needed_machinery": [
+    "Deterministic residual decoder wired to NPV reverse-Horner op-sites: emit signed IEEE-RN rounding-error sawtooth at every add and divide, regress final signed residual (want - reverse_horner, in ULP) against them + subset-scan to localize the offending op",
+    "Live-Excel NPV harvester for a held-out n=5,7 corpus plus adversarial magnitudes/negative flows (all current fits are on n in {1,2,3,4,6})",
+    "Then plug f = cf0 + identified-NPV into fit_irr_stores.rs and re-race the schedule (h sign/step, tol, cap, check-order) \u2014 IRR ladders + sweeps should close together once f is bit-exact"
+   ],
+   "next_probe": "Deploy the DETERMINISTIC RESIDUAL DECODER on exactly the 79 depth>=3 NPV rows (drop n<=2, which are already 63/63 exact and carry no signal). Instrument reverse-Horner to record, per row, the signed rounding error (as an ULP-fraction sawtooth) injected at each division and each addition site; then regress the signed final residual against those per-site sawtooths and subset-scan to identify the single op-site (or pair) where Excel resolves opposite to IEEE round-nearest. Because the residual is small, signed, deterministic, and depth-structured, the decoder should localize a specific interior statement's tie-break/association rather than requiring another blind form sweep. Run in parallel with harvesting a fresh live-Excel n=5/7 held-out corpus to confirm 117/142 is not a store-mask ceiling before committing.",
+   "reuses_session_tools": "deterministic-residual-decoder is the primary fit; held-out-ceiling test needed for n=5/7; op-tree-harvester marginal; generic-stable-fitter not applicable (high-freq last-bit residual)",
+   "identified": [
+    "Reverse-Horner in v=1/(1+rate), i.e. a=(a+c)/w last-to-first, IS Excel's NPV reduction: uniquely bit-exact on n=1 (47/47) AND n=2 (16/16), and best on all higher n",
+    "Rounding axis is DEAD/transparent for NPV: correctly-rounded SSE, x87 spill RN53(RN64), and per-statement-store are bit-identical at 117/142 (verified row-by-row, 0 differences, across Rust racer + numpy + Python-native)",
+    "Precision axis is DEAD: extended/correctly-rounded double-double scores 78/142 (much worse) \u2014 Excel NPV is genuinely plain double",
+    "Residual is purely accumulation-depth >= 3 (n3 36/47, n4/n6 9/16); n<=2 is 63/63 exact",
+    "Ruled out (worse than reverse-Horner): reciprocal-multiply (a+c)*(1/w) [max|\u0394|=3], forward running-product 95, forward pow 107, forward repeated-division discount factor 97, split-division 94, reversed-term-sum 103",
+    "npvA cluster is a dense rate-sweep around the IRR-A root 0.1634056007, so these NPV witnesses ARE the IRR solver's f-evaluations \u2014 the two lanes are one problem",
+    "IRR schedule: FD-Newton in v=1/(1+r), publish r=1/v-1 (stored reciprocal -> exact subtract -> 8-ULP r-grid), f==0 -> guess passthrough (no mandatory seed perturbation, unlike RATE); one-step error map is linear (case A lambda~7.4e-7) and exactly zero for the linear case B"
+   ],
+   "reusable_ideas": [
+    "Per-n-flow decomposition separates 'reduction identified' from 'last-ULP staging': the smallest n at which a form goes bit-exact pins the reduction, and the residual isolates the depth-dependent interior op \u2014 a fast way to distinguish a wrong algorithm from a right-algorithm-wrong-rounding",
+    "Double-rounding-transparency proof pattern: BEFORE hunting an op-graph, prove SSE == RN53(RN64) bit-identical on the corpus to KILL the whole rounding/precision axis and avoid chasing x87 ghosts (generalizes to every legacy-body lane; here it collapses 3 candidate axes to 0)",
+    "Signed-residual decoder against per-op-site sawtooths for any depth-structured \u00b11-2 ULP residual where mode/precision are already excluded",
+    "Couple a solver's f-eval corpus to its own root (dense input sweep around the root) so the kernel witnesses ARE the solver's evaluations \u2014 lets NPV and IRR close together instead of as separate lanes"
+   ]
+  },
+  {
+   "lane": "G6-05 RATE (annuity-equation root solver)",
+   "functions": [
+    "RATE"
+   ],
+   "problem_type": "iteration schedule (the f-kernel op-graph is already solved; open work is the solver schedule + publication + #NUM! divergence rule). Secondary: plumbing \u2014 current OxFunc impl is a structurally WRONG solver (secant+bracket/bisection, |f|<1e-7 stop, 20-iter) that polishes to the nearest root; Excel returns a raw intermediate iterate, so the impl must be replaced, not tuned.",
+   "current_best": "RATE's f-kernel is CLOSED bit-exact: it is the annuity/FV kernel proven 149/149 over the full held-out+adversarial FV corpus and 48/48 PV \u2014 FV=-(pv*P + pmt*(tf*q)), P=binexp LSB-first(1+rate,n) in PLAIN double (not x87), q=(P-1)/rate, tf=1+rate*type, rate==0 -> linear branch (annuity_family_race.py, Round 5-6). The SCHEDULE is only characterized qualitatively (r-space FD-Newton, probe h=1e-3 ABSOLUTE, two-step near-root composition, stop |dv|<1e-7 apply-last, NO guess-passthrough / mandatory always-step, cap ~20) and has NEVER been simulated for RATE \u2014 zero bit-exact reproductions of either witness. Sibling IRR schedule racer (same skeleton) sits at 132/229 and is still blocked only because IRR's kernel (NPV 106/142) is NOT closed; RATE's kernel IS closed, so RATE is structurally better positioned than IRR to close.",
+   "the_gate": "The exact iteration schedule, NOT the f-kernel. Three unpinned sub-unknowns: (1) the stop predicate \u2014 IRR Round 3 proved a plain |dv|<1e-7 tol does NOT simultaneously explain one-step-near-root termination AND multi-step far-sweep termination; the true rule is unknown (candidates: |dv| vs h comparison, |f|-based with staging-true f, fixed-count-after-bracket); (2) the seed / second-iterate rule and probe-step sign (the root==guess 72-ULP identity witness proves Excel always steps away from an exact-root guess \u2014 mandatory second seed, no passthrough); (3) the divergence->#NUM! cap logic (benign guess 0.5 diverges on Case B despite a well-behaved f). Publication is settled as 'return the raw final iterate' (identity returns 0.1-72ULP, i.e. NOT the exact mathematical root and NOT a polished/bisected root).",
+   "needed_machinery": [
+    "A dedicated RATE solver racer (check_rate_schedule.rs / fit_rate_stores.rs) \u2014 none exists; the bin dir has IRR/NPV/FV/PMT racers but NO rate bin, and annuity_family_race.py only tests the static FV/PV/PMT kernels, never the RATE iteration",
+    "Plug the ALREADY-CLOSED annuity FV kernel in as f (binexp LSB-first P, q=(P-1)/rate, tf, rate==0 branch) so the schedule is raced against a bit-exact f (the exact thing IRR could not do)",
+    "Solver-VM grid: stop-predicate {|dv|<tol, |dv|-vs-h, |f|-with-staging-true-f, fixed-count-after-bracket} x tol {1e-7 ladder} x cap {20,100} x seed/second-seed rule x probe-sign x publication {last, previous}",
+    "x87-spill vs plain-double test on the UPDATE arithmetic (kernel is plain, but legacy financial bodies default to x87 per NPER/XNPV/YIELDMAT \u2014 the FD update/dv/subtract may still be x87 CW=0x133F)",
+    "Held-out ceiling scoring on a fresh disjoint guess/witness corpus before any promotion",
+    "Difference RATE's current f-eval (growth()/annuity_term() helpers, financial_time_value_family.rs:244-246) against the identified binexp kernel at published iterates \u2014 likely an independent source of the 586-ULP mortgage drift"
+   ],
+   "next_probe": "Build the RATE solver racer around the closed FV kernel and attack the n=1 identity 72-ULP witness FIRST (root==guess=0.1 -> Excel 0x3fb9999999999952 = 0.1 minus 72 ULP). For n=1 the annuity f is LINEAR in r, so the FD slope is analytically exact and all kernel/staging ambiguity collapses \u2014 the entire 72-ULP offset is then a pure function of {seed pair, two-step FD update arithmetic, publication}, isolating those three axes almost alone. Sweep the solver-VM grid against this one row to pin the seed/step/publish triple, then confirm it holds jointly on answers-rate-r1.json (bit-ladder around Case-A root), answers-rate-r2.json (45 plateau/stop-boundary probes: plateau +3.48e-5, stop between j=34 err 6.7e-8 and j=36 err 2.7e-7), answers-rate-r0.json (48 guess-sweep incl. the #NUM! divergence set), and the mortgage 586-ULP witness RATE(360,-1073.64,200000).",
+   "reusable_ideas": [
+    "ONE shared FD-solver harness closes all four open solver lanes at once \u2014 YIELD (G6-03), ODDFYIELD (G6-04), RATE (G6-05), IRR (G6-06) all share: iterate in the function's natural argument, probe h=1e-3 ABSOLUTE, two-step near-root composition, |dv|<1e-7 apply-last, no guess-passthrough, cap ~20",
+    "'Publish the raw final iterate, never a polished/bisected/nearest root' \u2014 the 72-ULP identity is the proof; this immediately invalidates OxFunc's current bracket+bisection RATE impl and generalizes to every Excel iterative solver",
+    "Minimal-n degenerate witness isolates the schedule from the kernel (n=1 makes f linear -> zero kernel ambiguity -> seed/step/publish fall out cleanly); reuse for YIELD par-price and NPER-style degenerate rows",
+    "Test x87-spill vs plain-double on the SOLVER body independently of the kernel \u2014 annuity kernel is plain double, but legacy financial function bodies have defaulted to x87 spill-loops (NPER/XNPV/YIELDMAT); do not assume the update loop shares the kernel's plainness"
+   ],
+   "reuses_session_tools": "HELD-OUT CEILING test = essential and non-negotiable here: the stop-tol/cap/mask grid is exactly the overfit surface that burned PMT (train 36/48 champion collapsed to 495/875 = 56.6% held-out) and MINVERSE (51/51 train -> 147/159 held-out); RATE's schedule must be scored on a fresh disjoint guess/witness corpus, not the tuning ladders. DETERMINISTIC-RESIDUAL-DECODER applies to the schedule's per-step rounding: the 72-ULP identity offset is a deterministic sum of the FD-update's rounding sawtooths (den=f1-f0 cancellation + dv association + publish subtract), not noise \u2014 regress it to pin the update association. OP-TREE-HARVESTER + GENERIC-STABLE-FITTER for the update-body op-graph and any tolerance constant. The residual-decoder's KERNEL role is already DONE (FV/PV closed bit-exact), so decoder effort here targets the schedule arithmetic only.",
+   "identified": [
+    "f-kernel = annuity/balance equation, CLOSED bit-exact (FV 149/149 held-out+adversarial, PV 48/48): FV=-(pv*P+pmt*(tf*q)), P=binexp LSB-first(1+rate,n) PLAIN double, q=(P-1)/rate, tf=1+rate*type, rate==0 linear branch",
+    "Schedule skeleton: r-space FD-Newton, probe h=1e-3 ABSOLUTE, two-step near-root composition, stop |dv|<1e-7-class apply-last, cap ~20 (shared with IRR)",
+    "Publication = raw final iterate (identity returns 0.1-72ULP; NO nearest-root polishing, NO bisection)",
+    "No guess-passthrough anywhere: fed-back anchors move 50-160 ULP; root==guess=0.1 still steps to 0.1-72ULP -> mandatory second seed / always-step",
+    "Divergence signature: benign guesses (0.5) -> #NUM! on Case-B despite well-behaved f -> update is NOT plain Newton",
+    "Two catalog witnesses pinned: mortgage RATE(360,-1073.64,200000) OxFunc 0x3f71110b20485999 vs Excel 0x3f71110b2048574f (586 ULP); one-period identity root 0.1 Excel 0x3fb9999999999952 (72 ULP short)"
+   ],
+   "closeness": "low",
+   "confidence": "medium"
+  },
+  {
+   "lane": "YIELD (G6-03) + ODDFYIELD (G6-04)",
+   "functions": [
+    "YIELD",
+    "ODDFYIELD",
+    "PRICE (forward kernel, bit-exact)",
+    "ODDFPRICE (forward kernel, bit-exact)"
+   ],
+   "current_best": "No fitted Excel-schedule model exists yet. OxFunc ships plain BISECTION: YIELD solve() = bracket [-freq,hi], 100 iters, price-tol 1e-15 -> 6 ULP (par) / 19 ULP (catalog); ODDFYIELD solve_yield_bisection() = bracket [0,hi], 100 iters, price-tol 1e-12 -> 307,444 ULP (par) / 311,909 ULP (catalog). Forward PRICE and ODDFPRICE kernels are BOTH already bit-exact vs live Excel (PRICE per BUG-FUNC-031; ODDFPRICE all_bit_exact all 5 bases per BUG-FUNC-032), so the entire residual lives in the inversion schedule.",
+   "the_gate": "The exact double-precision yield-inversion SCHEDULE Excel build 20131 runs on top of the (already bit-exact) forward price kernel: its update rule (false-position / secant / FD-Newton?), seed yields, interval management (doubling), stopping/early-exit rule (exact price-equality vs |dx|/|f| tolerance), iteration cap, and which iterate is published. It is empirical-only: the F# ExcelFinancialFunctions yield solver ALSO diverges from Excel (BUG-FUNC-032), so there is nothing to port. Discriminator already visible in the witnesses: Excel's YIELD-par answer is EXACTLY 0.05 (0x3fa999999999999a) and ODDFYIELD's answer has a full-entropy mantissa, whereas OxFunc's bisection lands on coarse grid values (0x...99a0; 0x...bc4000 trailing zeros) -> Excel terminates via an exact-price-equality early-exit at the economic root, which plain bisection structurally cannot reproduce.",
+   "closeness": "medium",
+   "confidence": "high",
+   "problem_type": "iteration schedule",
+   "identified": [
+    "Forward PRICE kernel bit-exact vs live Excel (BUG-FUNC-031); gap is 100% the inverse solver",
+    "Forward ODDFPRICE bit-exact across all 5 bases, 0 ULP vs Excel AND F# (BUG-FUNC-032)",
+    "Both OxFunc solvers are plain bisection (bond_core_family.rs:411 solve, tol 1e-15; odd_bond_family.rs:607 solve_yield_bisection, tol 1e-12)",
+    "ODDFYIELD's 3e5-ULP gap is a premature-stop artifact of the loose 1e-12 PRICE tolerance -> huge YIELD error via large dprice/dyield; confirmed by trailing-zero mantissa 0x3fa9621e27bc4000 (coarse grid) vs Excel full-entropy 0x3fa9621e27c0f0f4",
+    "YIELD-par witness: Excel = exactly 0.05 (0x3fa999999999999a), OxFunc bisection = 0.05+6ULP -> Excel uses exact-price-equality early-exit at the root",
+    "F# reference yield solver ALSO diverges from Excel -> reverse-engineer empirically, do NOT port (same posture as IRR/RATE)",
+    "No YIELD/ODDFYIELD guess/price-ladder corpus captured yet; lane explicitly deferred behind IRR/RATE (G6-solvers/NOTES.md item 5)"
+   ],
+   "needed_machinery": [
+    "A YIELD/ODDFYIELD solver-VM racer: fork check_irr_schedule.rs's V/Ext80 x87-staged arithmetic (op/store spill masks, CW=0x133F) but swap the update family from FD-Newton to bracketing-secant / false-position, and the stop from |dv|-tolerance to exact-price-equality",
+    "Feed the ALREADY bit-exact in-crate forward evaluation as f: pcomp (bond_core_family.rs) for YIELD, oddfprice_kernel (odd_bond_family.rs) for ODDFYIELD -- no kernel re-derivation needed",
+    "A live-Excel PRICE-LADDER capture harness (YIELD/ODDFYIELD take no user guess, unlike IRR/RATE): sweep target price on a fine double grid around the par point and a few economic points for a fixed bond, capture published yield bits",
+    "gen_yield_space.rs / gen_oddfyield_space.rs generators mirroring gen_xnpv_space.rs / gen_nper_space.rs for held-out ladders"
+   ],
+   "next_probe": "Implement the classic ATP/LibreOffice false-position YIELD schedule in Rust and run it against the FOUR existing witnesses (2 YIELD + 2 ODDFYIELD in DISCREPANCY_RECON_RESULTS_20260710.csv:32-35) executing the already-bit-exact pcomp/oddfprice_kernel with x87 staging -- NO new Excel capture required. Schedule: y1=0, y2=1, p1=price(0), p2=price(1), yN=(y2-y1)*0.5; loop<=100 while pN!=target: pN=price(yN); if target==p1 ret y1 / ==p2 ret y2 / ==pN ret yN; elif target<p2: y2*=2; p2=price(y2); yN=(y2-y1)*0.5; else {if target<pN {y1=yN;p1=pN} else {y2=yN;p2=pN}; yN=y2-(y2-y1)*((target-p2)/(p1-p2))}; publish final yN. The two PAR witnesses are maximally discriminating: they pin the exact-price-equality early-exit (must return YIELD-par EXACTLY 0x3fa999999999999a). If all 4 bits reproduce, capture a held-out price-ladder to confirm before promotion.",
+   "reusable_ideas": [
+    "Forward-kernel-first: once PRICE/ODDFPRICE are bit-exact, the inversion collapses to a ~15-line schedule search -- factor every solver lane this way (kernel then schedule)",
+    "Mantissa-entropy fingerprint: trailing-zero low bits (0x...bc4000) diagnose a premature/coarse iterative stop; full-entropy mantissa signals convergence to the true root -- a cheap converged-vs-not discriminator needing no reference",
+    "Economic-root witnesses (par: yield==coupon, price==redemption) uniquely fingerprint the STOP/early-exit rule because the answer is a clean, exactly-representable double",
+    "F#-reference-diverges test: check whether the ported reference library matches Excel on the INVERSE before attempting a port; if not, the schedule is empirical-only",
+    "The V/Ext80 x87 solver-VM (per-op spill masks, CW=0x133F) generalizes across all four G6 solvers -- one racer, swap the update-family + stop-rule enum"
+   ],
+   "reuses_session_tools": "held-out-ceiling test: fit the schedule on the 4 held-in witnesses (esp. the 2 par cases pinning early-exit), then score bit-exact on a fresh disjoint PRICE-LADDER capture before promotion (the MINVERSE-style overfit guard applies -- a schedule that nails 4 witnesses can still miss the ladder). generic-stable-fitter: fit the small discrete schedule param set {update-family, seeds, interval rule, stop rule, cap, published iterate} against the ladder. deterministic-residual-decoder: partially -- the ODDFYIELD residual is a deterministic sensitivity-weighted signal (price-tol / (dprice/dyield)), which already localized the gate to the stop rule. op-tree-harvester: low relevance (forward op-graph already solved); the harvest target is the SCHEDULE graph, supplied by the solver-VM racer."
+  },
+  {
+   "lane": "Regression: TREND / LINEST / LOGEST / GROWTH (G3-03 / G3-04)",
+   "functions": [
+    "TREND",
+    "LINEST",
+    "LOGEST",
+    "GROWTH",
+    "FORECAST/SLOPE/INTERCEPT (already closed, shared kernel)"
+   ],
+   "current_best": "Centered plain-double SSE2 kernel (= promoted FORECAST forecast_pair_kernel, generalized to the design matrix): TREND 7/12 bit-exact on the live witnesses (smart-fuzzer/work/w109/G3-03-answers-trend.json), incl. BOTH hard datasets \u2014 the 1e11-offset set (bit-exact, == FORECAST answer) and the 12-point noisy set (3/3). Current shipped OxFunc (crates/oxfunc_core/src/functions/regression_forecast_family.rs: trend_kernel->solve_least_squares, UNCENTERED normal equations + Gauss-Jordan inverse) is only 1/12 AND returns 3 spurious #NUM on the offset data (EPS=1e-12 guard trips on near-singular XtX). So a strict 1/12->7/12 reroute onto the centered kernel is available immediately, independent of the bit-exact residual.",
+   "the_gate": "The exact op-graph that produces TREND's centered SLOPE on the 2 residual datasets. TREND's effective slope (backed out from the collinear result bits) is ~5 ULP below the centered-covariance slope on dataset B, yet EVERY natural centered variant I raced \u2014 fwd/rev accumulation order, x87-extended-throughout, centered-QR (Householder), centered normal-equations, FMA-accumulated dot products, symmetric vs asymmetric mean-centering, one- vs two-pass \u2014 reproduces FORECAST's slope bit-for-bit, never TREND's. (Proven distinct: my kernel reproduces FORECAST 0x4006f2ee1992538a exactly but TREND on identical data diverges 16 ULP -> genuinely separate LINEST code path.) So the divergent slope op-graph lies OUTSIDE the natural family and is under-determined by only 4 datasets / 12 single-predictor witnesses. Secondary gate: multivariate (>=2 predictor) is entirely unprobed and is the ONLY regime where QR and normal-equations separate; GROWTH/LOGEST have zero bit-level witnesses.",
+   "closeness": "low",
+   "confidence": "medium",
+   "problem_type": "op-graph staging",
+   "identified": [
+    "TREND/LINEST/LOGEST/GROWTH are CENTERED (mean-subtracted), plain-double SSE2 \u2014 NOT x87 (extended is strictly worse, 4-5/12), NOT uncentered normal-equations (current OxFunc, 1/12 + spurious #NUM), NOT any one-pass computational SS formula (explodes 4e18 ULP on the huge-offset dataset where Excel is bit-exact -> Excel definitively centers)",
+    "Prediction association is the intercept form a + b*xp (point-slope / regrouped variants score <=; matches the FORECAST identification's 'intercept form NOT point-slope')",
+    "For a single predictor, centered-QR (Householder) == centered normal-equations == FMA == plain, bit-identical; so QR-vs-normeq cannot be distinguished with the current single-predictor-only corpus",
+    "The 5 misses are 2 of 4 datasets where TREND's effective slope is a few ULP off centered-covariance (dataset B: ~5 ULP low); invariant to the whole natural op-graph family = hard-residual class (same as GAMMALN(1,2)/PMT)",
+    "FORECAST/SLOPE/INTERCEPT already bit-exact and share the centered kernel; TREND diverging up to 16 ULP on IDENTICAL inputs is direct proof of a distinct LINEST code path",
+    "Current OxFunc is doubly wrong: wrong algorithm (uncentered) AND emits #NUM on well-offset data Excel evaluates finitely",
+    "GROWTH/LOGEST gate = the TREND centered-regression op-graph applied to ln(y) + the ALREADY-identified x87 LN (fyl2x) and x87 EXP transcendentals; naive log-domain SLOPE/INTERCEPT+EXP already ruled out in the ledger (G3-04-growth row)"
+   ],
+   "needed_machinery": [
+    "A dense single-predictor live TREND corpus (dozens of datasets, n in 3..20, >=3 well-separated new_x per dataset) so Excel's exact effective (a,b) can be algebraically backed out per dataset and the problem reduced to a scalar slope residual",
+    "Multivariate live witnesses (2-3 predictors, const TRUE/FALSE) \u2014 the only regime that separates QR (Householder, modern LINEST) from normal equations",
+    "Metamorphic transform battery on identical datasets: row reversal, x-translation by large c, uniform scaling, k<->n-k analog \u2014 the transform under which Excel's bits stay invariant NAMES the accumulator/centering",
+    "The deterministic residual decoder wired to the scalar slope residual b*_Excel - b_centered",
+    "The held-out ceiling harness (FORECAST's 65-row plain-double corpus is a ready disjoint set for the shared-kernel null hypothesis)",
+    "GROWTH/LOGEST live witness corpus on exact-geometric AND noisy data (none exists today); reuse of the already-identified x87 LN/EXP providers for the log-domain composition"
+   ],
+   "next_probe": "Build a dense single-predictor live TREND corpus and, per dataset, algebraically recover Excel's exact effective slope b* and intercept a* from >=3 collinear new_x, stripping the a+b*xp association-rounding noise down to a scalar residual b* - b_centered. Feed that residual into the deterministic residual decoder to localize the divergent sub-op, and run the metamorphic battery (row-reversal, x-translation by large c, uniform scaling) on the SAME datasets \u2014 the invariance pattern fingerprints the centering/accumulator. In parallel (independent, cheap, strict win): reroute OxFunc TREND/LINEST/LOGEST/GROWTH off solve_least_squares onto the centered kernel now (1/12->7/12, eliminates the 3 spurious #NUM), pin the 7 exact witnesses, and add >=2-predictor probes so QR-vs-normeq becomes observable.",
+   "reusable_ideas": [
+    "Back out a function's exact effective (a,b) from >=3 collinear published values to strip final-association rounding and collapse a regression to a scalar-residual problem \u2014 generalizes to any function that publishes value = a + b*input",
+    "Metamorphic invariance battery (row-reversal / translation / scaling) as an accumulator + centering fingerprint: which transform leaves Excel's bits invariant tells you the internal representation, cheaply, with no code access",
+    "Same-inputs cross-function divergence check (FORECAST vs TREND on identical data) to PROVE two distinct code paths exist and to bound the residual",
+    "A single huge-offset dataset as a centering discriminator: one-pass/uncentered formulas explode by ~1e18 ULP while centered forms stay exact \u2014 one witness kills an entire formula class and also exposes correctness bugs (spurious #NUM from singularity guards)"
+   ],
+   "reuses_session_tools": "deterministic-residual-decoder: HIGH \u2014 back out the per-dataset scalar slope residual b*-b_centered and regress it against per-sub-op rounding sensitivities (this is the 'no noise, deterministic signal' framing applied to the slope). held-out-ceiling test: ESSENTIAL \u2014 4 datasets is severe overfit risk; FORECAST's 65-row plain-double corpus is a ready-made disjoint held-out set for the shared-kernel hypothesis, and any op-graph claim must be re-scored on fresh single-predictor AND multivariate live rows before promotion. op-tree-harvester: LOW \u2014 no reference implementation to mine (Excel-internal). generic-stable-fitter: LOW \u2014 no free coefficients; this is a staging/op-graph problem, not a coefficient fit."
+  },
+  {
+   "lane": "MINVERSE (G5-01)",
+   "functions": [
+    "MINVERSE",
+    "MDETERM (adjacent \u2014 already Doolittle LU)",
+    "MMULT (adjacent \u2014 naive row-major dot)"
+   ],
+   "current_best": "Doolittle-LU-PP + per-column unit-vector solve, division-form back-sub, plain float64 = 150/159 on the 3x3 corpus (108-row held-out validated: 103/108) and 448/448 on the 4x4 harvest. BUT this is an EMULATION vs Excel \u2014 the LIVE OxFunc surface kernel is Gauss-Jordan (augmented [A|I]), which scores only 80/159 (held-out 57/108). The identified fix is NOT landed in the shipping code.",
+   "the_gate": "Bit-exact closure is blocked by two distinct things, and the catalog conflates them. (1) LANDING GAP (dominant, ~70 cells): matrix_family.rs::inverse_kernel still runs the RULED-OUT Gauss-Jordan (source-confirmed, git-unchanged since W105). The catalog's claim \"OxFunc already implements the identified [Doolittle] algorithm\" is FALSE \u2014 I reproduced GJ=80/159 vs Doolittle=150/159 from source-faithful float64 emulations, matching the ledger to the cell. This is not an unknown; it's an unimplemented fix. (2) The GENUINE remaining unknown (9 cells, +1 ULP): after the swap, the residual is the accumulation ORDER of near-cancellation dot-products inside the per-column back-substitution \u2014 Excel rounds the tiny correction away (returns exact 1.0 on near-identity diagonals) where float64 Doolittle keeps +1 ULP. Residuals localize to exactly 3 matrices: [[2,-1,0],[-1,2,-1],[0,-1,2]] det 4 (2 cells), [[1,2,3],[4,5,6],[7,8,10]] det -3 (2 cells), near-identity [[1,1e-8,0],[1e-8,1,1e-8],[0,1e-8,1]] (5 cells, mixed-magnitude cancellation).",
+   "closeness": "medium",
+   "confidence": "high",
+   "problem_type": "Primary open work is PLUMBING/landing an already-identified op-graph (the correct algorithm is pinned and held-out validated but not implemented in the shipping kernel). The genuine bit-exact residual is accumulation order (near-cancellation back-substitution ordering).",
+   "identified": [
+    "Algorithm pinned & held-out validated: Doolittle LU + partial pivot + division multiplier + sequential elimination + per-column unit-vector solve + division-form back-sub, plain double = 150/159 (3x3) / 448/448 (4x4). Ruled out: adjugate/cofactor (51/155,85/448), Gauss-Jordan (80/159,~100/448), Crout (36), inner-update FMA (111), reciprocal-multiply back-sub (130, overfit 147/159 held-out).",
+    "LIVE OxFunc surface kernel = Gauss-Jordan augmented [A|I] (matrix_family.rs inverse_kernel L180-240); reproduced 80/159 / 57/108-held-out. Fix never landed; kernel git-unchanged since W105.",
+    "Plain double, NOT x87 \u2014 reciprocal-multiply back-sub is strictly worse (75/108 vs 103/108); division back-sub is correct. Same plain-double character as NPV.",
+    "Residual = 9 cells at exactly +1 ULP across 3 matrices (2 ill-conditioned small-det + 1 near-identity 1e-8 mixed-magnitude). Near-cancellation accumulation fingerprint.",
+    "MDETERM's determinant_kernel (L134-177) ALREADY implements the exact Doolittle forward-elimination MINVERSE needs \u2014 low-risk fix: route MINVERSE through an LU-solve, drop the Gauss-Jordan path."
+   ],
+   "needed_machinery": [
+    "A Doolittle-LU-PP + per-column-solve implementation replacing inverse_kernel in matrix_family.rs (staging exactly as scratchpad minverse_combined.py::dl()); reuse determinant_kernel's existing elimination.",
+    "Re-run of matrix_local_eval over the 159-row 3x3 corpus + 448-cell 4x4 harvest + the W097 R-F resweep (regression gate) to confirm live surface 80->150/159, ->448/448, no per-kind floor regression.",
+    "Deterministic residual decoder pointed at the 9 near-cancellation cells to localize which op (y-update forward-solve vs back-sub dot-product vs final divide) spills the +1 ULP.",
+    "NO x87/extended-precision machinery needed (MINVERSE is plain double, confirmed)."
+   ],
+   "next_probe": "Replace matrix_family.rs::inverse_kernel (Gauss-Jordan) with the identified Doolittle-LU partial-pivot + per-column unit-vector solve / division-form back-substitution (staging is exactly reproduced in scratchpad minverse_combined.py::dl()), rebuild, and re-score the live surface via matrix_local_eval over the 159-row 3x3 corpus, the 448-cell 4x4 harvest, and the W097 R-F resweep. Expected: 80/159 -> 150/159, 4x4 -> 448/448, resweep no worse than its recorded per-kind floor. This banks the ~70-cell dominant discrepancy in one low-risk swap (determinant_kernel already has the LU elimination). Then hand the surviving 9-cell +1-ULP near-cancellation residual to the residual decoder as a separate, deferrable probe \u2014 its highest-signal target is the near-identity [[1,1e-8,0],[1e-8,1,1e-8],[0,1e-8,1]] (5 cells), where Excel returns exact 1.0 on the diagonal vs Doolittle's 1.0+1ULP.",
+   "reusable_ideas": [
+    "Verify the shipping kernel actually implements the 'identified' algorithm before trusting an 'already implemented' catalog/ledger note \u2014 cross-check source + git. Here the catalog recorded a correct identification but the live code still ran the ruled-out algorithm, hiding a ~44% live discrepancy behind a '9 residual +1 ULP' framing.",
+    "Score candidate matrix/reduction algorithms as SOURCE-FAITHFUL float64 emulations against held-out Excel bits, and validate the emulation by reproducing the ledger's own numbers (GJ=80, Doolittle=150) to the cell.",
+    "+1-ULP residuals on mixed-magnitude / small-determinant inverses are an accumulation-ORDER fingerprint (not approximation error) \u2014 same class as NPV/PMT/GAMMALN interior staging; drive with the signed residual's structure, not pass/fail counts.",
+    "When an identified fix scores far better than the live surface, the highest-value 'probe' is landing it + a regression re-score, not more search."
+   ],
+   "reuses_session_tools": "HELD-OUT CEILING TEST: already the decisive tool here (it disconfirmed the reciprocal-multiply back-sub as a 147/159 store/staging overfit vs 150 for division); must be re-run after the kernel swap to confirm 150/159 holds on fresh matrices and after any residual-staging change. DETERMINISTIC RESIDUAL DECODER: directly applies to the 9-cell +1-ULP residual \u2014 decompose each miss into sensitivity-weighted per-op rounding sawtooths to pin whether the spill is in the forward-solve y-update or the back-sub dot-product (near-cancellation cells are the concentration). OP-TREE HARVESTER and GENERIC STABLE FITTER: largely N/A \u2014 Excel's MINVERSE is internal (no implementation binary to mine) and there are no coefficients to fit; this is an op-graph/accumulation-order problem, not coefficient recovery."
+  },
+  {
+   "lane": "G6-02 ACCRINT (triple-edge / constant-basis accumulation order)",
+   "functions": [
+    "ACCRINT"
+   ],
+   "current_best": "Faithful F# accrInt port (bond_core_family.rs::accrint_kernel). 24-case live-Excel sweep bit-exact (all 5 bases, leap-Feb act/act+act/365+act/360 partials, settlement before AND after first_interest, freq 1/2/4, EOM, deep multi-period). SOLE residual: 1 ULP HIGH on one us30360 triple-edge \u2014 issue 43565, first 43647, settlement 43905, rate .05, par 1000, freq 2, basis 0 (harness case accrint.midiss.b0). OxFunc 0x4047438e38e38e39 vs Excel 0x4047438e38e38e38 (46.52777777777777).",
+   "the_gate": "Whether Excel's ACCRINT settlement>first regime accumulates the per-quasi-coupon-period fractions strictly BACKWARD (settlement-tail term added first, issue-stub term added last), rather than the forward issue->settlement order the current bespoke branch uses. Decisive computation: for this witness a = 81/180 + 1 + 74/180. Forward order (stub,+1,tail) = 0x...e39 (current, wrong); backward order (tail,+1,stub) = 0x...e38 (Excel, exact). The prior recon candidate \"sum-day-numerators-then-divide\" ((81+74)/180+1 and (81+180+74)/180) is REFUTED \u2014 both give 0x...e39. It is NOT an x87 question: x87-extended natural order still gives e39; pure-double backward order already gives e38. The gate is purely accumulation DIRECTION, under-determined by this single 1-ULP witness.",
+   "closeness": "medium",
+   "confidence": "medium",
+   "problem_type": "accumulation order",
+   "identified": [
+    "Sole open residual is exactly one witness (accrint.midiss.b0, us30360 triple-edge): issue mid-period AND settlement one full period past first_interest, so the accrual spans two partial periods bracketing one whole period.",
+    "Direct double-precision decode: Excel = tail/180 + 1 + stub/180 (backward, settlement-first); current OxFunc = stub/180 + 1 + tail/180 (forward, issue-first). Exactly 1 ULP apart.",
+    "STRUCTURAL COHERENCE: the already-bit-exact odd-first-coupon branch (settlement<=first) ALREADY accumulates the settlement-side term first then walks backward toward issue (bond_core_family.rs ~lines 800-828). Only the bespoke forward branch (settlement>first, ~lines 831-862, a regime F# rejects) accumulates issue-first. The fix unifies both branches to one accumulation direction.",
+    "Not x87: x87-extended (no-spill) accumulation of the forward order still yields the wrong e39; pure SSE2 double in backward order yields Excel's e38. Extended precision is a dead end for this residual.",
+    "Recon's stated candidate (sum-numerators-then-divide) is refuted by direct computation.",
+    "Artifacts: kernel crates/oxfunc_core/src/functions/bond_core_family.rs; catalog docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md G6-02 line 151; stream docs/bugs/streams/BUG-FUNC-030_accrint_accrued_interest_half_value.md; recon docs/function-lane/DISCREPANCY_RECON_RESULTS_20260710.csv lines 30-31; ledger docs/function-lane/G6_THREEWAY_LEDGER.csv lines 5-6; harness tools/g6-threeway/g6-cases.ps1 (witness accrint.midiss.b0 line 86) + run-g6-threeway.ps1."
+   ],
+   "needed_machinery": [
+    "Held-out live-Excel corpus of ACCRINT settlement>first cases (the discriminating regime), NOT the existing sweep the kernel was tuned on.",
+    "A second implementation of the forward branch that accumulates backward-from-settlement, run side-by-side vs current on that corpus (held-out ceiling test).",
+    "g6-threeway harness already renders OxFunc/F#/live-Excel-COM bit-exactly \u2014 it is the corpus generator; only cases need adding."
+   ],
+   "next_probe": "Extend tools/g6-threeway/g6-cases.ps1 with a held-out settlement>first battery that MAXIMISES the discriminating rounding: (a) 2-3 whole periods between the two partials (so the second-added fraction rounds against a larger accumulator), (b) all 5 bases, (c) freq 1/2/4, (d) calc_method FALSE as well as default, (e) asymmetric stub-vs-tail day-counts. Run run-g6-threeway.ps1 to capture Excel typed bits. Then score TWO forward-branch variants \u2014 current issue-first vs reversed settlement-first \u2014 against that held-out set. Promote the reversed order ONLY if it is bit-exact everywhere the current one is AND fixes midiss.b0; if any held-out case flips the other way, the true rule is finer (e.g. add-smallest-fraction-last) and needs the residual-decoder treatment. Concrete edit: mirror the odd-branch structure into the forward loop (~lines 831-862) so a is seeded from the settlement-tail partial and whole periods + issue stub are folded in backward.",
+   "reusable_ideas": [
+    "For constant-length day-count bases, the ONLY free parameter behind a 1-ULP financial residual is the accumulation DIRECTION/order of a handful of fraction terms \u2014 enumerate the finite orderings in pure double BEFORE reaching for x87 or high precision.",
+    "When two code branches handle mirror-image regimes, bit-exactness of one branch is a strong prior for the correct op-order of the other \u2014 port the passing branch's structure rather than re-deriving.",
+    "A single 1-ULP witness cannot distinguish among orderings that collapse to the same value on that input; confirm any reorder on a purpose-built held-out battery that AMPLIFIES the rounding (multi-period spans, asymmetric numerators).",
+    "Cheaply refute a stated hypothesis (here 'sum-then-divide') by computing all its expression-tree variants in double against the pinned bits before investing in it."
+   ],
+   "reuses_session_tools": "held-out-ceiling test is THE applicable tool and is mandatory before promotion: reversing the forward-loop order fixes one witness but could regress currently-passing settlement>first cases; score the whole model family (forward vs backward accumulation) on a fresh disjoint settlement>first corpus. deterministic-residual-decoder applies in spirit ('the 1 ULP is a deterministic reorder artifact, not noise') but is overkill for this finite discrete search; hold it in reserve if the held-out battery shows plain reversal is insufficient. op-tree-harvester marginally applies: the fix is structural op-tree unification of the two branches. generic-stable-fitter: not applicable (no smooth coefficients)."
+  },
+  {
+   "lane": "CONVERT (G4-05)",
+   "functions": [
+    "CONVERT",
+    "EUROCONVERT (shares text-arg plumbing gate; not yet probed)"
+   ],
+   "current_best": "Extended-precision constant table with op-graph `value*Cfrom/Cto`: reproduces the sole non-trivial live witness CONVERT(1,\"m\",\"ft\")=0x400a3f28fca3f290 bit-exact. Score: 1/1 non-trivial witness (in->m is a degenerate to_factor=1.0 control that matches trivially). NOT yet held-out-validated across the other 91 same-category unit pairs \u2014 real overfit risk.",
+   "the_gate": "Whether Excel's CONVERT stores its unit factors as >53-bit (x87 tbyte / long double) constants rather than f64, and if so whether the single divide executes in x87 (64-bit) or SSE (double) \u2014 i.e. the exact stored-constant PRECISION + op-graph of `value*Cfrom/Cto`. The one non-trivial witness (m->ft) proves the `ft` constant carries MORE than 53 bits (plain-f64 0.3048=0x3fd381d7dbf487fd is ruled out under BOTH x87 and SSE \u2014 both give f28f), but it cannot separate ext-const-x87 from ext-const-SSE (they agree on m->ft) nor 64-bit-extended from full-decimal precision. That specific unknown blocks bit-exact closure.",
+   "closeness": "medium",
+   "confidence": "medium",
+   "problem_type": "op-graph staging (stored-constant precision + single divide ISA); enabling dependency is plumbing (text-arg support), not a hard math wall",
+   "identified": [
+    "Op-graph is `value * Cfrom / Cto` with per-category gating (Length/Mass/Time/Pressure/Volume), affine temperature branch, SI-prefix decomposition \u2014 see convert_kernel at misc_conversion_family.rs:368-390, factor table :179-283, the load-bearing op at :389.",
+    "Excel's `ft` factor carries >53 bits: plain-f64 0.3048 ruled OUT under every ISA (double-const x87 AND double-const SSE both yield f28f, not Excel's f290). The +1 ULP is a stored-constant-precision effect, not an accumulation-order effect.",
+    "Excel's f290 = correctly-rounded 1/exact(0.3048); reproduced by ext-const+x87-div, ext-const+SSE-div, and full-precision ratio (all three collapse on this witness).",
+    "in->m is a degenerate control (to_factor=1.0 => exact regardless of ordering/precision); it discriminates nothing.",
+    "OxFunc-side plumbing is COMPLETE: surface_dispatch already routes FUNC.CONVERT to convert_kernel; the recon local-eval produced results. No OxFunc wiring gap \u2014 only the fix (store/compute higher-precision factor ratios) is pending, downstream of identification."
+   ],
+   "needed_machinery": [
+    "Text-arg support in the BATCHED racer path: CellRefBatch.psm1 `_New-ScalarArgValueArray` (:176-200) coerces every arg to [double]/[bool]; add a [string] branch (formula array already uses cell-refs, so it is arg-type-agnostic). ~5-line change. NOTE: the per-cell recon runner Run-DiscrepancyCatalogRecon.ps1:87-92 ALREADY writes [string] text args, so a moderate sweep is not hard-blocked \u2014 it can reuse that path today; the batched extension is only for throughput on a large 2^k grid.",
+    "Power-of-two input generator: CONVERT(2^k, from, to) rescales by an exact factor so the result mantissa directly encodes the stored constant's low bits and the divide's rounding mode.",
+    "Exact-ratio ISA discriminator: unit pairs whose factor ratio is a clean fraction (ft->yd = 0.3048/0.9144 = exactly 1/3) to separate single-rounded (x87/pure-SSE) from double-rounded staging.",
+    "Extended-constant reconstruction fitter: solve for each factor's 64-bit significand (or confirm full-decimal) from the rounded outputs of the 2^k sweep."
+   ],
+   "next_probe": "One live-Excel batch (reuse the existing per-cell text-arg recon runner Run-DiscrepancyCatalogRecon.ps1) with three blocks: (A) the 9 \"reveal\" pairs where ext-const differs from f64-const at input=1 \u2014 held-out validation that the extended-constant reading generalizes beyond m->ft; concrete predictions include l->gal=0x3fd0e831e5594f01 (f64-const would give ...f02), m->ft=0x400a3f28fca3f290. (B) ft->yd (true value exactly 1/3) as the x87-vs-SSE / single-vs-double-rounding probe: single-rounded => 0x3fd5555555555555, double-rounded intermediate => 0x3fd5555555555556. (C) a 2^k input sweep (k=-60..60) on m->ft and ft->m to reconstruct the `ft` constant's exact significand and pin the divide rounding mode. If all 9 reveal pairs + ft->yd match the extended single-rounded predictions, promote the \"legacy ATP x87 extended-constant body\"; any miss re-opens the constant-precision question with data in hand.",
+   "reusable_ideas": [
+    "Power-of-two exact-rescale probe: multiplying/dividing a stored magic constant by an exact 2^k reveals its sub-double (extended) bits and the op's rounding mode without perturbing the rounding \u2014 generalizes to ANY suspected stored-constant lane (EUROCONVERT triangulation rates, financial day-count/basis constants, other unit tables).",
+    "Reciprocal-direction asymmetry as an extended-constant detector: if the forward (multiply) direction matches Excel bit-exact but the reverse (divide) is +-1 ULP, the constant is stored with >53 bits (division amplifies the hidden low bits). A cheap, general fingerprint.",
+    "Exact-ratio operand pairs (ft/yd=1/3, etc.) as ISA/rounding discriminators \u2014 pick inputs whose true result is a hard-to-round fraction to expose double-rounding.",
+    "The text-arg plumbing extension unblocks every text-parameterized function at once (EUROCONVERT currency codes, and any future ROMAN/unit-string lane)."
+   ],
+   "reuses_session_tools": "HELD-OUT CEILING test is the critical guard here: the current fit is ONE non-trivial witness, so the extended-const model MUST be scored on a fresh disjoint set of all ~92 same-category unit pairs before promotion (exactly the store-mask-overfit failure mode seen in MINVERSE/PMT). DETERMINISTIC RESIDUAL DECODER applies conceptually: across a 2^k input sweep the +-1 ULP residual is a deterministic signal that encodes the stored constant's bits and the rounding mode \u2014 regress the residual vs k to recover them. GENERIC STABLE FITTER: reconstruct each factor's 64-bit extended significand from the sweep's rounded outputs. OP-TREE HARVESTER is marginal (CONVERT has no rich op-tree \u2014 just value*from/to); the analogous harvest is mining the legacy Analysis-ToolPak (analys32.xll) / gnumeric CONVERT constant table for the exact stored factor bits."
+  }
+ ],
+ "synthesis": {
+  "ranking": [
+   "1. YIELD/ODDFYIELD (G6-03/04) \u2014 BEST DIVE. Medium closeness + high confidence, forward PRICE/ODDFPRICE kernels ALREADY bit-exact so 100% of the residual is a ~15-line inversion schedule, and the decisive first experiment needs ZERO new Excel capture (4 existing witnesses, 2 of them maximally-discriminating par cases). Closes 2 functions and builds the solver-VM that also serves RATE+IRR.",
+   "2. MINVERSE (G5-01) \u2014 HIGHEST-CERTAINTY CLOSE. Fix is already identified AND held-out-validated (Doolittle-LU-PP: 150/159, 103/108 held-out, 448/448 on 4x4) but NOT landed; live kernel is still the ruled-out Gauss-Jordan (80/159). One low-risk swap banks ~70 cells; determinant_kernel already contains the LU elimination. More 'land + re-score' than 'dive', which is why it ranks behind YIELD as a *dive* target but leads the quick wins.",
+   "3. ACCRINT (G6-02) \u2014 Medium/medium, genuinely close: sole residual is 1 ULP on ONE witness, direction is decoded (Excel accumulates settlement-first/backward), and the already-bit-exact odd-coupon branch is a structural template for the fix. Held back only because a held-out settlement>first battery (live-Excel COM via g6-threeway) is mandatory to prove no regression; low unlocked value (1 function, 1 ULP).",
+   "4. CONVERT (G4-05) \u2014 Medium/medium, op-graph known (value*Cfrom/Cto, extended >53-bit factors), but fit is 1/1 non-trivial witness = severe overfit risk; close requires a live-Excel batch (2^k sweep + 9 reveal pairs + ft->yd ISA probe) and extended-significand reconstruction. Moderate value (CONVERT+EUROCONVERT) plus unblocks text-arg plumbing.",
+   "5. RATE (G6-05) \u2014 Low/medium. Kernel is CLOSED bit-exact (FV 149/149, PV 48/48), better positioned than IRR, but the schedule is fully unpinned (stop-predicate, seed/second-iterate, #NUM! divergence cap) and NO rate racer exists yet. High strategic value (shares the solver harness) but more build-out than YIELD before any close.",
+   "6. TREND/LINEST/LOGEST/GROWTH (G3-03/04) \u2014 Low/medium. Has a cheap correctness win (reroute to centered kernel, 1/12->7/12) but the bit-exact slope residual is a GAMMALN-class op-graph wall, under-determined by only 4 datasets, and full close needs a fresh dense single- AND multi-predictor corpus. Close is far.",
+   "7. IRR + NPV (G6-06) \u2014 WORST DIVE for a *validated close*. Low closeness, high confidence it is HARD: explicitly a GAMMALN-class last-ULP op-graph wall at accumulation depth>=3 with rounding AND precision axes already proven dead. The IRR schedule is additionally blocked because its NPV kernel is not closed. High potential value but highest risk of burning effort on characterization without closing."
+  ],
+  "recommended_dive": "Attack YIELD/ODDFYIELD (G6-03/04) first. Concrete first move: implement the classic ATP/LibreOffice false-position yield schedule in Rust (y1=0,y2=1, seed prices, interval-doubling, exact-price-equality early-exit, cap 100, publish final yN) executing the ALREADY-bit-exact in-crate forward evaluators \u2014 pcomp (bond_core_family.rs) for YIELD, oddfprice_kernel (odd_bond_family.rs) for ODDFYIELD \u2014 with the V/Ext80 x87 staging. Run it against the 4 existing witnesses in DISCREPANCY_RECON_RESULTS_20260710.csv (2 YIELD + 2 ODDFYIELD), targeting the two par witnesses that pin the early-exit (YIELD-par must return EXACTLY 0x3fa999999999999a). This requires NO new Excel capture and, if the 4 bits reproduce, converts ODDFYIELD from ~3e5 ULP off to bit-exact and YIELD from 6-19 ULP to 0 \u2014 then capture a held-out price-ladder before promotion. IN PARALLEL (zero-risk, do immediately): land the already-validated MINVERSE Doolittle swap as the banked quick win so a sure ~70-cell close is not gated behind the YIELD dive.",
+  "machinery_to_build": [
+   "1. SOLVER-VM RACER (highest cross-lane leverage \u2014 serves YIELD, ODDFYIELD, RATE, IRR = all four open G6 solver lanes): one V/Ext80 x87-staged iteration harness (per-op/store spill masks, CW=0x133F) that feeds an already-bit-exact forward kernel and exposes pluggable axes \u2014 update-family {false-position, bracketing-secant, FD-Newton, bisection}, stop-rule {exact-value-equality, |dv|<tol, |dv|-vs-h, |f|-with-staging-true-f, fixed-count-after-bracket}, seed/second-seed rule, probe-sign, cap {20,100}, published-iterate {last, previous}. Build once, swap update+stop per lane.",
+   "2. HELD-OUT CEILING HARNESS (universal guard \u2014 every lane): score any fitted schedule/op-graph on a FRESH disjoint corpus before promotion. Non-negotiable \u2014 this exact overfit surface burned PMT (36/48 train -> 56.6% held-out) and MINVERSE (51/51 -> 147/159). Must re-run after the MINVERSE swap and gate the YIELD/RATE/CONVERT fits.",
+   "3. DETERMINISTIC RESIDUAL DECODER (serves NPV depth>=3, MINVERSE 9-cell, TREND scalar slope, RATE update arithmetic, CONVERT 2^k sweep): instrument the op-graph to emit the signed IEEE-RN rounding sawtooth at every add/divide site, regress the final signed residual (want - model, in ULP) against them, subset-scan to localize the single offending op. The general weapon for every last-ULP op-graph wall where mode/precision are already excluded.",
+   "4. LIVE-EXCEL CAPTURE/HARVEST HARNESSES (break under-determination in nearly every lane): held-out corpus generators \u2014 YIELD/ODDFYIELD price-ladders, NPV n=5/7 + adversarial magnitudes, RATE guess/witness ladders incl. #NUM! set, ACCRINT settlement>first battery (g6-threeway COM already renders OxFunc/F#/Excel bit-exactly \u2014 only cases to add), CONVERT 2^k sweep + 9 reveal pairs. Most current fits sit on 1-4 witnesses.",
+   "5. TEXT-ARG PLUMBING in the batched racer path (unblocks CONVERT throughput + EUROCONVERT + any future ROMAN/unit-string lane at once): ~5-line [string] branch in CellRefBatch.psm1 _New-ScalarArgValueArray. The per-cell recon runner already writes string args, so a moderate sweep is not hard-blocked today.",
+   "6. METAMORPHIC / POWER-OF-TWO INVARIANCE BATTERY (fingerprints accumulator+centering for TREND, stored-constant precision + divide rounding-mode for CONVERT, with no code access): row-reversal / x-translation / uniform-scaling / 2^k exact-rescale; the transform under which Excel's bits stay invariant NAMES the internal representation.",
+   "7. BACK-OUT-EFFECTIVE-(a,b) EXTRACTOR (TREND primary; generalizes to any value=a+b*input publisher): recover Excel's exact slope/intercept from >=3 collinear published values to strip final-association rounding down to a scalar slope residual for the decoder."
+  ],
+  "consolidated_ideas": [
+   "Forward-kernel-first factoring: once the forward kernel is bit-exact, the inversion collapses to a ~15-line schedule search \u2014 factor every solver lane as (kernel, then schedule). YIELD/ODDFYIELD are the payoff case (both kernels already closed); RATE is next (kernel closed); IRR is blocked precisely because its NPV kernel is NOT closed.",
+   "Kill the rounding/precision axis BEFORE hunting op-graphs: prove SSE == RN53(RN64) bit-identical on the corpus (and test extended precision \u2014 usually strictly worse). This collapsed 3 candidate axes to 0 on NPV and MINVERSE and avoids chasing x87 ghosts.",
+   "Minimal-n degenerate witness isolates the schedule from the kernel: n=1 makes the annuity/bond f LINEAR, zeroing kernel/staging ambiguity so seed/step/publish fall out almost alone (RATE 72-ULP identity, YIELD par). Reuse for any solver's degenerate row.",
+   "Publish the RAW final iterate, never a polished/bisected/nearest root \u2014 proven by RATE's 72-ULP identity and YIELD-par landing exactly on 0.05. This single rule invalidates OxFunc's current bracket+bisection RATE and both bisection YIELD/ODDFYIELD impls outright.",
+   "Mantissa-entropy fingerprint: trailing-zero low bits (0x...bc4000) diagnose a premature/coarse iterative stop; a full-entropy mantissa signals convergence to the true root \u2014 a cheap converged-vs-not discriminator needing no reference. Economic-root witnesses (par: yield==coupon) additionally fingerprint the exact-equality early-exit because the answer is a clean representable double.",
+   "Verify the shipping kernel actually implements the 'identified' algorithm before trusting a catalog 'already implemented' note \u2014 cross-check source + git. MINVERSE hid a ~44% live discrepancy (Gauss-Jordan 80/159) behind a '9 residual +1 ULP' framing; confirmed this session at matrix_family.rs:180.",
+   "+1-ULP residuals on mixed-magnitude / near-cancellation / small-determinant results are an accumulation-ORDER fingerprint, not approximation error \u2014 drive with the SIGNED residual's structure and enumerate the finite orderings in pure double BEFORE reaching for x87 or extended precision (NPV, MINVERSE, ACCRINT all this class).",
+   "When two code branches handle mirror-image regimes, bit-exactness of one is a strong prior for the correct op-order of the other \u2014 port the passing branch's structure rather than re-deriving (ACCRINT: mirror the already-exact odd-coupon settlement-first accumulation into the forward branch).",
+   "Power-of-two exact-rescale reveals a stored magic constant's sub-double (extended) bits and the divide's rounding mode without perturbing the rounding; reciprocal-direction asymmetry (forward multiply exact, reverse divide +-1 ULP) is a cheap >53-bit-constant detector. Generalizes to CONVERT, EUROCONVERT triangulation rates, day-count constants.",
+   "Couple a solver's f-eval corpus to its own root (dense input sweep around the root) so the kernel witnesses ARE the solver's evaluations \u2014 lets the kernel and schedule lanes close together instead of separately (NPV witnesses are the IRR solver's f-evals)."
+  ],
+  "quick_wins": [
+   "MINVERSE landing (BANK THIS FIRST \u2014 validated, ~zero risk): replace matrix_family.rs::inverse_kernel (confirmed still Gauss-Jordan on augmented [A|I], EPS=1e-12 #NUM guard at line 208) with the already-held-out-validated Doolittle-LU-PP + per-column unit-vector solve + division-form back-sub (staging in scratchpad minverse_combined.py::dl(); determinant_kernel at line 134 already has the LU elimination). Expected live surface 80/159 -> 150/159, 4x4 -> 448/448, and it removes the 3 spurious #NUM on the 1e11-offset data. Re-run matrix_local_eval + the W097 R-F resweep as the regression gate. The residual 9-cell +1-ULP near-cancellation stays as a separate deferrable decoder probe.",
+   "TREND/LINEST/LOGEST/GROWTH reroute (strict win, independent of the hard residual): move OxFunc off solve_least_squares (uncentered normal-equations + Gauss-Jordan inverse) onto the promoted centered FORECAST kernel generalized to the design matrix. Expected 1/12 -> 7/12 bit-exact AND elimination of the 3 spurious #NUM on well-offset data Excel evaluates finitely. Pin the 7 exact witnesses and add >=2-predictor probes so QR-vs-normeq becomes observable.",
+   "ODDFYIELD schedule swap (large improvement even before bit-exact): its ~3e5-ULP gap is purely a premature-stop artifact of the loose 1e-12 PRICE tolerance in solve_yield_bisection (odd_bond_family.rs:607). The recommended YIELD dive's first experiment doubles as this fix and needs no new Excel capture \u2014 worst case it is a massive accuracy improvement, best case it is bit-exact on all 4 witnesses."
+  ]
+ }
+}
