@@ -373,12 +373,53 @@ fn period(c: Ctx) -> Result<Period, BondCoreEvalError> {
         n += 1;
     }
 }
+/// Excel's bond discount factor `base^(off+k)` is computed with the C-runtime `pow`
+/// integer special case: **binary exponentiation** (square-and-multiply, plain `f64`
+/// multiply) for non-negative integer exponents — which occur for on-coupon settlement
+/// (`off = dsc/e = 1`, so every `off+k` is an integer) — and `powf` (`exp·ln`) for
+/// fractional exponents (off-coupon). Rust's `f64::powf` uses `exp·ln` even for integers,
+/// so on-coupon PRICE drifts 1–2 ULP without this. Identified + held-out validated 25/25
+/// across 5 live-Excel bonds (build 20131); see `work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md`.
+/// For fractional `exp` this is identical to `base.powf(exp)`, so it only changes on-coupon bonds.
+fn excel_bond_pow(base: f64, exp: f64) -> f64 {
+    if exp >= 0.0 && exp < 1024.0 && exp.fract() == 0.0 {
+        let mut n = exp as u64;
+        let mut r = 1.0_f64;
+        let mut b = base;
+        while n > 0 {
+            if n & 1 == 1 {
+                r *= b;
+            }
+            n >>= 1;
+            if n > 0 {
+                b *= b;
+            }
+        }
+        r
+    } else {
+        base.powf(exp)
+    }
+}
 fn pcomp(
     rate: f64,
     yld: f64,
     red: f64,
     c: Ctx,
     p: Period,
+) -> Result<(f64, f64, f64, f64, f64), BondCoreEvalError> {
+    // `binexp = false` keeps the legacy `powf` discount path. Callers that need Excel's
+    // C-runtime integer-`pow` staging (PRICE) pass `true`; YIELD's solver and DURATION keep
+    // `false` until their own identifications land (the forward fix is coupled to the YIELD
+    // schedule — see the workset notes).
+    pcomp_disc(rate, yld, red, c, p, false)
+}
+fn pcomp_disc(
+    rate: f64,
+    yld: f64,
+    red: f64,
+    c: Ctx,
+    p: Period,
+    binexp: bool,
 ) -> Result<(f64, f64, f64, f64, f64), BondCoreEvalError> {
     let coup = 100.0 * rate / c.frequency as f64;
     let e = dc(p.prev, p.next, c.basis, c.frequency)?;
@@ -387,6 +428,7 @@ fn pcomp(
     if yld <= -(c.frequency as f64) {
         return Err(derr(WorksheetErrorCode::Num));
     }
+    let pw = |b: f64, ex: f64| if binexp { excel_bond_pow(b, ex) } else { b.powf(ex) };
     let dirty = if p.n == 1 {
         let den = 1.0 + (yld / c.frequency as f64) * (dsc / e);
         if den <= 0.0 {
@@ -401,9 +443,9 @@ fn pcomp(
         let off = dsc / e;
         let mut pv = 0.0;
         for k in 0..p.n {
-            pv += coup / base.powf(off + k as f64);
+            pv += coup / pw(base, off + k as f64);
         }
-        pv + red / base.powf(off + (p.n - 1) as f64)
+        pv + red / pw(base, off + (p.n - 1) as f64)
     };
     let accr = coup * a / e;
     Ok((dirty - accr, dirty, coup, a, e))
@@ -565,7 +607,10 @@ pub fn price_kernel(
 ) -> Result<f64, BondCoreEvalError> {
     let c = ctx(settlement, maturity, frequency, basis_)?;
     let p = period(c)?;
-    Ok(pcomp(rate(rate_)?, rate(yld)?, pos(red)?, c, p)?.0)
+    // PRICE uses Excel's C-runtime integer-`pow` discount staging (binexp). YIELD's solver
+    // (below) still calls the legacy `pcomp` because its inversion schedule is not yet
+    // identified and swapping the price kernel under it would regress the current witnesses.
+    Ok(pcomp_disc(rate(rate_)?, rate(yld)?, pos(red)?, c, p, true)?.0)
 }
 pub fn yield_kernel(
     settlement: f64,
@@ -1316,5 +1361,48 @@ mod tests {
             }),
             WorksheetErrorCode::Value
         );
+    }
+
+    // W109: PRICE bit-exact vs live Excel (build 20131) after the C-runtime integer-`pow`
+    // (binexp) discount fix. 25 points over 5 bonds (on-coupon short/long + fractional-off),
+    // the same identification+held-out ladders that validated `excel_bond_pow` (25/25).
+    #[test]
+    fn price_binexp_matches_excel_ladders() {
+        // (settle, mat, rate, red, [(yld, excel_price_bits)])
+        let ladders: &[(f64, f64, f64, f64, &[(f64, u64)])] = &[
+            (44013.0, 44562.0, 0.05, 100.0, &[(0.04, 0x40595c48c592b01e), (0.05, 0x4059000000000000),
+                (0.06, 0x4058a57c040a3442), (0.08, 0x4057f5975cde5332), (0.10, 0x40574c47c2be592c)]),
+            (44058.0, 44562.0, 0.05, 100.0, &[(0.04, 0x405954ad19241473), (0.05, 0x4058ffa2cc4ca8d4),
+                (0.06, 0x4058ac20a4792f7e), (0.08, 0x405809914321b82a), (0.10, 0x40576cba5c994db4)]),
+            (44013.0, 46753.0, 0.05, 100.0, &[(0.04, 0x405a9b2d2aa614e0), (0.05, 0x4059000000000004),
+                (0.06, 0x405781fc6f8e90d4), (0.08, 0x4054d4a282adf7b8), (0.10, 0x4052834134edf821)]),
+            (44013.0, 47119.0, 0.075, 102.0, &[(0.03, 0x4060e30a168e62dc), (0.05, 0x405d9d18c6e14303),
+                (0.07, 0x405a11be4337deae), (0.09, 0x40570a9f1350b950), (0.11, 0x405472ad4fab7123)]),
+            (44094.0, 45658.0, 0.06, 103.0, &[(0.03, 0x405ca695b231486a), (0.05, 0x405a8ebb3948baab),
+                (0.07, 0x4058a4f75d9fc866), (0.09, 0x4056e4e04e91c98c), (0.11, 0x40554a8265f06f2f)]),
+        ];
+        for (s, m, rate, red, pts) in ladders {
+            for (yld, exp) in *pts {
+                let got = price_kernel(*s, *m, *rate, *yld, *red, 2.0, Some(0.0)).unwrap();
+                assert_eq!(
+                    got.to_bits(),
+                    *exp,
+                    "PRICE({s},{m},{rate},{yld},{red},2,0) = {:#018x}, expected {exp:#018x}",
+                    got.to_bits()
+                );
+            }
+        }
+    }
+
+    // W109: YIELD is intentionally NOT changed by the PRICE binexp fix (its solver keeps the
+    // legacy `powf` price until its schedule is identified). Pin the current recon witnesses
+    // so a future accidental coupling is caught. These are the KNOWN-DRIFTING values
+    // (yield-catalog 19 ULP, yield-par 6 ULP vs Excel); the row stays open.
+    #[test]
+    fn yield_unchanged_by_price_fix() {
+        let cat = yield_kernel(44013.0, 44562.0, 0.05, 95.0, 100.0, 2.0, Some(0.0)).unwrap();
+        assert_eq!(cat.to_bits(), 0x3fb61465bd6a9970, "yield-catalog must be unchanged");
+        let par = yield_kernel(44013.0, 44562.0, 0.05, 100.0, 100.0, 2.0, Some(0.0)).unwrap();
+        assert_eq!(par.to_bits(), 0x3fa99999999999a0, "yield-par must be unchanged");
     }
 }
