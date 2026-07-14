@@ -389,6 +389,30 @@ fn validate_positive_inputs(values: &[f64]) -> Result<(), OddBondEvalError> {
     }
 }
 
+/// Excel's bond discount factor uses the C-runtime `pow` integer special case: binary
+/// exponentiation for non-negative integer exponents, `powf` otherwise. Identical to
+/// `bond_core_family::excel_bond_pow` (W109, held-out validated 25/25 on PRICE). For
+/// fractional exponents this equals `base.powf(exp)`, so only integer-exponent (e.g.
+/// on-coupon / whole-quasi-period) odd bonds change.
+fn excel_bond_pow(base: f64, exp: f64) -> f64 {
+    if exp >= 0.0 && exp < 1024.0 && exp.fract() == 0.0 {
+        let mut n = exp as u64;
+        let mut r = 1.0_f64;
+        let mut b = base;
+        while n > 0 {
+            if n & 1 == 1 {
+                r *= b;
+            }
+            n >>= 1;
+            if n > 0 {
+                b *= b;
+            }
+        }
+        r
+    } else {
+        base.powf(exp)
+    }
+}
 pub fn oddfprice_kernel(
     settlement: f64,
     maturity: f64,
@@ -448,11 +472,11 @@ pub fn oddfprice_kernel(
         let dsc = day_count_non_negative(settlement, first_coupon, basis)?;
         let a = day_count_non_negative(issue, settlement, basis)?;
         let y = dsc / e;
-        let term1 = redemption / x.powf(n - 1.0 + y);
-        let term2 = 100.0 * rate / m * dfc / e / x.powf(y);
+        let term1 = redemption / excel_bond_pow(x, n - 1.0 + y);
+        let term2 = 100.0 * rate / m * dfc / e / excel_bond_pow(x, y);
         let mut term3 = 0.0;
         for index in aggr_indices(2, n as i64) {
-            term3 += 100.0 * rate / m / x.powf(index as f64 - 1.0 + y);
+            term3 += 100.0 * rate / m / excel_bond_pow(x, index as f64 - 1.0 + y);
         }
         let term4 = a / e * (rate / m) * 100.0;
         term1 + term2 + term3 - term4
@@ -499,11 +523,11 @@ pub fn oddfprice_kernel(
         let nq = whole_coupon_count(first_coupon, settlement, months_per_coupon)?;
         let n = number_of_coupons(first_coupon, maturity, frequency)?;
         let y = dsc / e;
-        let term1 = redemption / x.powf(y + nq + n);
-        let term2 = 100.0 * rate / m * dcnl / x.powf(nq + y);
+        let term1 = redemption / excel_bond_pow(x, y + nq + n);
+        let term2 = 100.0 * rate / m * dcnl / excel_bond_pow(x, nq + y);
         let mut term3 = 0.0;
         for index in aggr_indices(1, n as i64) {
-            term3 += 100.0 * rate / m / x.powf(index as f64 + nq + y);
+            term3 += 100.0 * rate / m / excel_bond_pow(x, index as f64 + nq + y);
         }
         let term4 = 100.0 * rate / m * anl;
         term1 + term2 + term3 - term4
@@ -1017,6 +1041,29 @@ mod tests {
         assert_eq!(price(1.0).to_bits(), 98.721_102_743_891_15_f64.to_bits());
         assert_eq!(price(2.0).to_bits(), 98.658_251_302_161_82_f64.to_bits());
         assert_eq!(price(3.0).to_bits(), 98.698_153_923_488_63_f64.to_bits());
+    }
+
+    // W109 (2026-07-14): on a US 30/360 long odd-first-coupon bond the quasi-period
+    // exponents are integers, so the discount factor hits the C-runtime `pow` binexp path
+    // (same as PRICE, G6-03b). Before the `excel_bond_pow` fix these drifted 1-2 ULP; now
+    // bit-exact vs live Excel (build 20131). settle 44013, mat 44562, issue 43831,
+    // first_coupon 44197, rate 5%, red 100, freq 2, basis 0.
+    #[test]
+    fn oddfprice_us30360_integer_exponents_bit_exact_vs_excel() {
+        let ladder: [(f64, u64); 5] = [
+            (0.04, 0x40595925a26f8cfb),
+            (0.05, 0x4058fc18f9c18f9c),
+            (0.06, 0x4058a0d3018deeab),
+            (0.08, 0x4057ef6ffa682bcf),
+            (0.10, 0x405744a948d6bab2),
+        ];
+        for (yld, exp) in ladder {
+            let got = oddfprice_kernel(
+                44013.0, 44562.0, 43831.0, 44197.0, 0.05, yld, 100.0, 2.0, Some(0.0),
+            )
+            .expect("oddfprice should succeed");
+            assert_eq!(got.to_bits(), exp, "ODDFPRICE yld={yld}: {:#018x} != {exp:#018x}", got.to_bits());
+        }
     }
 
     #[test]
