@@ -52,7 +52,7 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `20`
+Open Category-2 rows: `21`
 
 | Group | Current rows |
 |-------|--------------|
@@ -61,7 +61,7 @@ Open Category-2 rows: `20`
 | G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 4 |
 | G5 matrix numeric/shape | 1 |
-| G6 financial exactness/solver | 8 |
+| G6 financial exactness/solver | 9 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
 
@@ -151,7 +151,8 @@ They are now explicit `publication_shape` rows `CSC-0024`/`CSC-0025` under
 | G6-02 — ACCRINT | Residual `1` ULP on the now-pinned `us30360` triple-edge witness: issue `43565`, first interest `43647`, settlement `43905`, rate `0.05`, par `1000`, frequency `2`, basis `0`. | NUM-S | M1 | BUG-FUNC-030 / recon G6-02 |
 | G6-03 — YIELD | W109 (2026-07-13): the dive-plan premise "forward kernel already bit-exact, YIELD is 100% schedule" is FALSE. The **forward PRICE kernel is not bit-exact**: `pcomp` computes `base^(off+k)` via `base.powf` (Rust powf = `exp·ln` even for integer exponents), but Excel uses the C-runtime `pow` integer special case = **binary exponentiation**. IDENTIFIED + held-out validated (25 live-Excel PRICE points / 5 bonds: **15/15 ident + 10/10 held-out** for binexp-integer + powf-fractional + coupons-first). Ruled out: naive repeated-multiply (5/10, breaks exp≥4), powf/x87·log integer (6/10), getPrice_ redemption-first order (2/5). Residual after the forward fix = **plateau publication**: corrected PRICE is flat at exactly 95 across a ~20-ULP yield band; Excel publishes a specific point (catalog `0x…9983`, par exactly `0.05`). COUPLED: fixing pcomp alone + current bisection regresses par 6→~40 ULP — land the forward fix AND the schedule together. Writeup: `work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md`. | NUM-L | M2 | BUG-FUNC-031 / recon G6-03 |
 | G6-04 — ODDFYIELD | Solver drift around `3e5` ULP; two fresh witnesses are `307444`-`311909` ULP. The "forward price path aligned" note is suspect — `oddfprice_kernel` shares the same `base.powf` integer-exponent bug as `pcomp` (see G6-03: apply the binexp `excel_bond_pow` fix here too before the schedule). | NUM-L | M1 | BUG-FUNC-032 / recon G6-04 |
-| G6-03b — PRICE | W109 (2026-07-14) **FIX LANDED**: PRICE drifted on **on-coupon** bonds (integer discount exponents) — `base.powf` uses `exp·ln` even for integers, but Excel uses the C-runtime `pow` integer special case = **binary exponentiation**. Added `excel_bond_pow` (binexp integer / powf fractional) and routed `price_kernel` through it via `pcomp_disc(..,binexp=true)`; YIELD's solver + DURATION keep the legacy `powf` path (decoupled — the YIELD forward fix is coupled to its unsolved schedule). Now **bit-exact on all 25 live-Excel points / 5 bonds** (`price_binexp_matches_excel_ladders`), regression `yield_unchanged_by_price_fix` pins YIELD; `1504/1504` lib green. Awaiting a broader live-Excel PRICE sign-off sweep before removal. PRICEMAT/DURATION/MDURATION share the pattern — validate + extend next. | NUM-S | M3 | `bond_core_family.rs:excel_bond_pow` / work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md |
+| G6-03b — PRICE | W109 (2026-07-14) **FIX LANDED**: PRICE drifted on **on-coupon** bonds (integer discount exponents) — `base.powf` uses `exp·ln` even for integers, but Excel uses the C-runtime `pow` integer special case = **binary exponentiation**. Added `excel_bond_pow` (binexp integer / powf fractional) and routed `price_kernel` through it via `pcomp_disc(..,binexp=true)`; YIELD's solver + DURATION keep the legacy `powf` path (decoupled — the YIELD forward fix is coupled to its unsolved schedule). Now **bit-exact on all 25 live-Excel points / 5 bonds** (`price_binexp_matches_excel_ladders`), regression `yield_unchanged_by_price_fix` pins YIELD; `1504/1504` lib green. Awaiting a broader live-Excel PRICE sign-off sweep before removal. PRICEMAT confirmed already bit-exact (interest-at-maturity single division, no discount powers); DURATION/MDURATION need binexp too but carry an additional residual — spun to G6-03c. | NUM-S | M3 | `bond_core_family.rs:excel_bond_pow` / work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md |
+| G6-03c — DURATION, MDURATION | W109 (2026-07-14) NEW: DURATION drifts `1`-`2` ULP vs live Excel on on-coupon bonds — e.g. `DURATION(44013,44562,0.05,0.05,2,0)` OxFunc `…dbe8` vs Excel `…dbe9` (1 ULP), `…@0.08` OxFunc/binexp both `…4488` vs Excel `…448a` (2 ULP). The `excel_bond_pow` (binexp) discount fix is NECESSARY (fixes the 0.05 case) but NOT sufficient — a residual remains in the duration-specific arithmetic (the `Σ t·cash/disc` weighted sum, `t=(off+k)/freq`, or the `w/dirty` division), not the discount powers. Needs its own staging identification, then apply binexp + the residual fix together. `MDURATION = DURATION/(1+yld/freq)` inherits it. | NUM-S | M1 | W109 DURATION capture / work/w109/G6-solvers/dur_capture_out.json |
 | G6-05 — RATE | Solver residual `586` ULP on the mortgage witness and `72` ULP on a one-period identity whose mathematical root is `0.1`. | NUM-L | M1 | BUG-FUNC-009 bit-parity / W103 / recon G6-05 |
 | G6-06 — IRR | Irrational-root solver residuals remain: `80` ULP and `14096` ULP on the bounded witnesses. | NUM-L | M1 | BUG-FUNC-028 out-of-stream / recon G6-06 |
 | G6-07 — CUMPRINC | The full-schedule control is exact; the half-schedule witness is `1` ULP, localizing the current evidence to boundary-sensitive accumulation. | NUM-S | M1 | recon G6-07 |
