@@ -1,0 +1,114 @@
+# W109 G3-01 — Distribution substrate identified as the DCDFLIB/NSWC GRATIO family (2026-07-16)
+
+Status: **major identification, not yet bit-closed.** The incomplete-gamma side of the
+G3-01 distribution substrate is the **TOMS 654 GRATIO branch structure (DiDonato &
+Morris / A. H. Morris, NSWC), compiled in plain SSE2 double** — NOT an x87-extended
+continued fraction as the 2026-07-14 sweep hypothesized. The remaining unknowns are
+reduced to three named sub-identifications (Excel-internal erf/erfc, the internal
+Γ/lgamma normalizer, Taylor-path micro-staging) plus the beta-side sibling (BRATIO,
+TOMS 708, unprobed).
+
+Work dir (gitignored, captures + harness): `smart-fuzzer/work/w109/G3-01-dist/`
+Racer binary (tracked): `smart-fuzzer/tools/calc_graph_racer/src/bin/check_igamma.rs`
+All live-Excel answers are also in the persistent OracleCache.
+
+## The multi-view collapse (battery B1, 829 probes, build 20131)
+
+- Legacy ≡ modern bit-for-bit everywhere probed: CHIDIST≡CHISQ.DIST.RT,
+  FDIST≡F.DIST.RT, TDIST(·,·,1)≡T.DIST.RT, GAMMADIST≡GAMMA.DIST, BETADIST≡BETA.DIST.
+- GAMMA.DIST beta-scaling is transparent for exact transforms (β=1 vs β=2 at doubled
+  x agree 33/33) → one internal P(a, y), y = x/β double-divided first.
+- CHIDIST is NOT RN53(1 − published P) (16 eq / 17 ne) → Q has its own publication.
+- Deviation-from-correctly-rounded propagates IDENTICALLY through views → one kernel.
+
+## Key evidence chain
+
+1. **Excel ~67% CR-exact overall** with |δ| up to 47; δ magnitude scales like
+   |a·ln x|·2⁻⁵³ → double-rounded exp-argument (battery-1/2 deviation map).
+2. **Implied-argument decode** (`arg_fit.py`): at a=3 the argument error equals the
+   exact rounding residue of `R53(R64(3·R53(ln x) − x))` on every row (double log,
+   double argument); at a=2 it is ~2× the ln residue; **at a=1 the argument is clean
+   of ANY double-rounding** — impossible for one code path…
+3. **…because a==1 is a dispatch**: `a=1+2⁻²⁰` is NOT clean (battery-5), and the
+   a=1 slice fits the exponential-CDF closed form (−expm1(−x) family): wrapper race
+   179/205 vs 143/205 without. GAMMA.DIST(x,1,β) IS the exponential CDF.
+4. **Faithful GRATIO transcription** (`cdflib_py.py`, from the scipy v0.14 cdflib
+   Fortran) races at 416/692 overall, with the match rate concentrated exactly where
+   GRATIO's branch map predicts (`gratio_detail.py`):
+   - `closed-int` (integer a, a ≤ x < 31: finite exp(−x)·Σxᵏ/k!): **199/218 = 91%**
+   - `asymp` (x ≥ 31): 4/6; `temme` (a ≥ 20, a=15 via the |a|≥15 gamma branch): 5/5
+   - `taylor` (x ≤ max(a, ln10), the wk[20] backward-tail series): 48% with small
+     per-a biases — normalizer + micro-staging residual
+   - `closed-halfint` (erfc1-based) and `erf(a=1/2)` routes: fail ±1..±24 → Excel
+     uses ITS OWN erf/erfc, not the NSWC rationals.
+5. **Normalizer**: NSWC `gamma()` value error (~8e-15 rel at a=2.75) explains the
+   constant +32..+42 offsets at fractional a; CR-Γ improves (a=1.25: 0→10/20) but is
+   not exact either; a=4/6 (Γ exact) still miss → independent Taylor micro-staging
+   residual. The internal Γ/lgamma is the same unknown as G3-02 — this lane now gives
+   a per-a MEASUREMENT channel for it (each (a, many-x) slice over-determines the
+   internal normalizer value).
+6. **Excel's erf is near-CR** (ERF.PRECISE 158/176 CR-exact, ±1-2 tails): NSWC ruled
+   out (113/176, regime flip at its 0.5 boundary), Cody SPECFUN CALERF ruled out
+   (121/176 erf, 56/176 erfc, both exp models). 352 ladder points captured
+   (`answers-erfp/erfcp.json`). Next candidates: fdlibm s_erf/s_erfc, Boost.
+   ERF.PRECISE/ERFC.PRECISE/GAUSS (G4-04/G3-07) get closed by the same sub-lane.
+
+## Corrections to prior claims
+
+- The 2026-07-14 sweep verdict "x87 80-bit EXTENDED kernel; fix = x87-extended CF"
+  is WRONG. The extended-precision convergence analysis only proved the CF converges;
+  the kernel is plain double with the GRATIO branch structure. (The catastrophic
+  6224-ULP CHIDIST row is OxFunc's plain-double NR complement, not an Excel-side
+  extended CF — Excel's closed-int branch avoids the cancellation entirely.)
+- "Distributions = one incomplete-γ CF kernel" under-described the structure: five
+  branches (closed-int / closed-halfint / Taylor / CF / Temme) + the a==1 and a==0.5
+  dispatches.
+
+## Open sub-identifications (recipes)
+
+1. **erf/erfc op-graph** (also closes ERF.PRECISE, ERFC.PRECISE, GAUSS): race fdlibm
+   s_erf/s_erfc and Boost against `answers-erfp/erfcp.json`; then adjacent-double
+   probes at branch boundaries. Plug into gratio's 220/390 paths and re-race a=0.5 &
+   half-integer slices.
+2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
+   normalizer double that bit-matches each fractional-a slice (interval intersection
+   over ~20 x-points each — the slice over-determines it); compare against published
+   GAMMA bits, CR-Γ, exp(published GAMMALN), and G3-02's custom-rational hypotheses.
+   This is a new measurement window into the G3-02 wall.
+3. **Taylor micro-staging**: enumerate on the a=2 slice (Γ=1 exact, gln=0 exact,
+   47/80): term-recurrence staging, sum/publish orders, exp/log model per-op. Then a=6.
+4. **CF fine detail** (fractional a, x ≥ 1.1 route, and the smalla-series j/rexp
+   staging at a<1) — after 1-3.
+5. **Beta side = BRATIO (TOMS 708)** — same library, same era: capture BETA.DIST
+   discriminating batteries (bpser/bfrac/bgrat branch probes), transcribe bratio.f,
+   race. FDIST/TDIST then need only their argument-transform staging.
+6. **Wrapper details**: a==1 P-form on x>1 (expm1 vs 1−exp Q-primary — 12 residual
+   ±1 rows in (1,3)); CHIDIST df=2/GAMMA.DIST consistency on the Q side.
+
+## Files
+
+- `gen_batteries.py`, `analyze.py` — B1-B4 design + deviation map (829 probes)
+- `batch-b5.json`/`answers-b5.json` — integer-dispatch/fractional-a discriminators (207)
+- `emulator.py` (mpmath staged models), `check_igamma.rs` (true-x87 Ext80 race —
+  ruled the extended family out at stage A)
+- `implied_arg.py`, `arg_fit.py`, `sum_decode.py`, `staging_fit.py` — residual decoders
+- `cdflib_py.py` (faithful GRATIO + gam1/rlog/rexp/erf/erfc1/gamma_nswc transcription,
+  injectable LOG/EXP/GAMMA_FN), `gratio_race.py`, `gratio_detail.py`
+- `erf_map.py`, `erf_cody.py`, `answers-erfp/erfcp.json` — the erf sub-lane
+- `cdflib/*.f` — the fetched TOMS 654 Fortran sources
+
+## Method notes (durable)
+
+- **Multi-view exact-transform probing** (CHIDIST(2x,2a) vs GAMMA.DIST(x,a,1) vs
+  GAMMA.DIST(2x,a,2)) collapses 12 surfaces to one kernel measurement and isolates
+  per-function staging for free.
+- **Implied-argument decode**: for kernels shaped `sum·exp(arg)`, tiny-x rows make
+  `arg_implied = ln(P_excel/sum_true)` measurable to ~2⁻⁵³ absolute; comparing against
+  exact rounding residues of candidate stagings identifies WHERE the double-roundings
+  sit, one op at a time. The ×a amplification of the ln-residue was the smoking gun.
+- **Dispatch discovery by contradiction**: when one op-graph cannot explain two slices
+  of the same code path, suspect an argument-value dispatch (a==1 here; the near-integer
+  probe a=1+2⁻²⁰ is the cheap decisive test).
+- **Branch-differential scoring**: with a multi-branch reference implementation,
+  per-branch match rates (91% / 48% / 25%) localize which subroutines are shared vs
+  Excel-custom far faster than whole-function scores.
