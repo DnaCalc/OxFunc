@@ -367,3 +367,37 @@ Note on the n=7 validation: the main-session high-precision check (E =
 1625.2/1703.7/1606.1) and agent L's double-rounded-coefficient check (1596/
 1654/1582) are BOTH correct — the delta is coefficient double-quantization,
 below the n=7 approximation error. No OCR repairs were needed anywhere.
+
+## Round-3 final pinning (2026-07-18, agent L) — GAMMALN structurally CLOSED except b1/b2 coefficients
+
+- **Low-branch threshold PINNED**: recurrence-exact through 0x3fe6666666666665,
+  first direct row at 0x3fe6666666666666 = double(0.7) — clean single flip at
+  adjacent-double resolution. Predicate: x < 0.7 (literal C double) selects
+  -log(x) + core(x+1); x >= 0.7 direct. The 0.5 "sub-split" is just band
+  dispatch at x+1 (no constant of its own).
+- **THERE IS NO STIRLING SWITCH AT 12 — x >= 8 is ONE formula, IDENTIFIED**:
+    q = (x - 0.5)*log(x) - x + 0.91893853320467274178   (plain double, L-to-R)
+    z = 1/x; y = z*z
+    w = w1 + y*(w2 + y*(w3 + y*(w4 + y*(w5 + y*w6))))   (fdlibm e_lgamma_r
+        w1..w6 VERBATIM)
+    res = q + z*w
+  **5739/5749 = 99.83% bit-exact over x in [8, 1030], worst 2.** Plain double
+  (x87 degrades to ~52%); fdlibm's own (x-0.5)*(t-1)+w0 staging scores 46.8%
+  — Excel reuses fdlibm's coefficient VECTOR in a DIFFERENT staging. The old
+  "Cephes A5 / switch in (10.25,11]" verdict is SUPERSEDED (A5-vs-w agreement
+  artifact). Of 10 residual rows: 7 = internal-CRT-log +-1 (separate lane),
+  3 unresolved (0.05%).
+- **x=8 seam pinned**: rational for x < 8, Stirling for x >= 8 (8-2^-k on the
+  rational for all k to 2^-44; 8.0 itself on Stirling; excel(8)=CR-1 computed
+  not anchored). The [8,12) "wall" is CLOSED — it was this formula all along.
+- **[4,8) IDENTIFIED as published SPECFUN P4/Q4 under x87-continuous
+  evaluation: 76.3% worst 1** (GN adds nothing) — only the exact +-1 spill
+  pattern remains open.
+- **Composite promotion (held2, never fitted): 314/400 = 78.5% exact, worst 4**
+  (composed 81% w1 | b1 28% w4 | b2 55% w3 | [4,8) 79.1% w1 | x>=8 99.3% w2).
+  vs PRODUCTION (Lanczos log-domain): 0/79 exact, errors to 1370 ULP —
+  LANDING JUSTIFIED. b1 [0.7,1.5) flagged provisional per the held-out rule
+  (gn2 degraded 48%->28% held); b1/b2 exact coefficients remain the one open
+  identification (published sets + 1967 verbatim all ruled out; anchors
+  D1=-gamma, D2=1-gamma CR pinned).
+- Landing spec + b1/b2 provisional-coefficient decision requested (in flight).
