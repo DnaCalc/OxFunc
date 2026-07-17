@@ -324,6 +324,25 @@ model-side teeth move or vanish, Excel-side teeth are invariant; this
 partitions the fine comb between Excel's generator and residual model-side
 staging before any further theory.
 
+
+## Config re-dump partition (2026-07-17 session 5c) — the fine comb IS Excel-side
+
+Differential dumps of the same 82k answers under three model configs (base 304,
+w_dbl 432, zz_dbl 305; `dump-b17-{base,wdbl,zzdbl}.txt`):
+- **w_dbl toggle: ZERO effect** in every binade (tooth sets identical) — the
+  w-spill axis is irrelevant to the comb.
+- **zz_dbl toggle: e=-15/-20/-30 tooth sets 100% invariant** => the fine comb
+  there is EXCEL'S GENERATOR, not model staging. At e=-25 ~30% of base teeth
+  were model-side (5713 -> invariant subset ~4006) and at e=-40 the zz_dbl
+  config ADDS ~2000 artifact teeth (base's 1093 all survive => base is clean).
+- Consequence: the base-config fine-period table stands for -15/-20/-30/-40;
+  re-derive e=-25 from the invariant subset. Part of the cross-binade
+  non-monotonicity was model contamination at -25.
+
+The Excel-side fine comb (non-dyadic periods, no bit-grid anchoring, dense at
+0.55+-ULP amplitude) is now the confirmed, isolated target for the erf last-op
+generator hunt.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection

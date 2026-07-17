@@ -99,14 +99,14 @@ fn gam1_half(cfg: &Cfg) -> Ext80 {
     if cfg.gam1_ret_dbl { ef(dbl(&r)) } else { r }
 }
 
-fn erf190(z: f64, cfg: &Cfg) -> f64 {
+fn erf190_ext(z: f64, cfg: &Cfg) -> Ext80 {
     let a = ef(0.5);
     let mut x = ext_mul(&ef(z), &ef(z), CW);
     if cfg.zz_dbl {
         x = ef(dbl(&x));
     }
     if dbl(&x) == 0.0 {
-        return 0.0;
+        return ef(0.0);
     }
     let sp = |v: Ext80| -> Ext80 {
         if cfg.series_dbl { ef(dbl(&v)) } else { v }
@@ -154,12 +154,15 @@ fn erf190(z: f64, cfg: &Cfg) -> f64 {
     if cfg.inner_dbl {
         inner = ef(dbl(&inner));
     }
-    let ans = if cfg.wg_first {
+    if cfg.wg_first {
         ext_mul(&ext_mul(&w, &g, CW), &inner, CW)
     } else {
         ext_mul(&w, &ext_mul(&g, &inner, CW), CW)
-    };
-    dbl(&ans)
+    }
+}
+
+fn erf190(z: f64, cfg: &Cfg) -> f64 {
+    dbl(&erf190_ext(z, cfg))
 }
 
 fn dump_ladder(dir: &str) {
@@ -178,6 +181,19 @@ fn dump_ladder(dir: &str) {
         inner_dbl: false,
     };
     let ans_name = std::env::args().nth(3).unwrap_or_else(|| "answers-b11.json".into());
+    let bits: u32 = std::env::args().nth(4).map(|s| s.parse().unwrap()).unwrap_or(304);
+    let cfg = Cfg {
+        zz_dbl: bits & 1 != 0,
+        series_dbl: bits & 2 != 0,
+        j_dbl: bits & 4 != 0,
+        zl_dbl: bits & 8 != 0,
+        gam1_ext: bits & 16 != 0,
+        gam1_ret_dbl: bits & 32 != 0,
+        g_dbl: bits & 64 != 0,
+        w_dbl: bits & 128 != 0,
+        wg_first: bits & 256 != 0,
+        inner_dbl: bits & 512 != 0,
+    };
     let txt = std::fs::read_to_string(format!("{dir}/{ans_name}")).unwrap();
     let ws: WitnessSet = serde_json::from_str(&txt).unwrap();
     for w in &ws.witnesses {
@@ -189,39 +205,7 @@ fn dump_ladder(dir: &str) {
         let Some(excel) = parse_bits_hex(&w.expected_bits) else {
             continue;
         };
-        // recompute V as Ext80 (mirror erf190 without the final dbl)
-        let a = ef(0.5);
-        let x = ext_mul(&ef(z), &ef(z), CW);
-        let sp = |v: Ext80| -> Ext80 { v };
-        let mut an = ef(3.0);
-        let mut c = x;
-        let mut sum = sp(ext_div(&x, &ext_add(&a, &ef(3.0), CW), CW));
-        let tol = ext_div(&ext_mul(&ef(3.0), &ef(5e-15), CW), &ext_add(&a, &ext_one(), CW), CW);
-        for _ in 0..200 {
-            an = sp(ext_add(&an, &ext_one(), CW));
-            c = sp(ext_chs(&ext_mul(&c, &ext_div(&x, &an, CW), CW), CW));
-            let t = sp(ext_div(&c, &ext_add(&a, &an, CW), CW));
-            sum = sp(ext_add(&sum, &t, CW));
-            if ext_le(&ext_abs(&t, CW), &tol) {
-                break;
-            }
-        }
-        let inner_poly = ext_add(
-            &ext_mul(
-                &ext_sub(&ext_div(&sum, &ef(6.0), CW), &ext_div(&ef(0.5), &ext_add(&a, &ef(2.0), CW), CW), CW),
-                &x,
-                CW,
-            ),
-            &ext_div(&ext_one(), &ext_add(&a, &ext_one(), CW), CW),
-            CW,
-        );
-        let j = ext_mul(&ext_mul(&a, &x, CW), &inner_poly, CW);
-        let zl = ext_mul(&a, &ln_ext(&x), CW);
-        let h = gam1_half(&cfg);
-        let g = ext_add(&ext_one(), &h, CW);
-        let wv = exp_ext(&zl);
-        let inner = ext_add(&ef(0.5), &ext_sub(&ef(0.5), &j, CW), CW);
-        let v_ext = ext_mul(&ext_mul(&wv, &g, CW), &inner, CW);
+        let v_ext = erf190_ext(z, &cfg);
         let v53 = dbl(&v_ext);
         // fractional position: (V - RN53(V)) / ulp(RN53(V))
         let frac_num = ext_sub(&v_ext, &ef(v53), CW);
