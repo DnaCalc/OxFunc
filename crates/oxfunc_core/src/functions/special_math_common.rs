@@ -156,6 +156,37 @@ const GRATIO_BIG: [f64; 3] = [20.0, 14.0, 10.0];
 const GRATIO_E00: [f64; 3] = [0.25e-3, 0.25e-1, 0.14];
 const GRATIO_X00: [f64; 3] = [31.0, 17.0, 9.7];
 
+/// CR-quality normalizer Gamma(a) for the gratio prefactor. Identification
+/// (W109 agent-B normalizer sweep): Excel divides exp(t1) by a value equal to
+/// the correctly-rounded double Gamma(a) to within 1 ULP (= exp of its
+/// internal lgamma), decisively NOT the NSWC gamma routine (+22..+33 ULP).
+/// Integer a: exact factorial. Half-integer a: exact odd double-factorial
+/// times sqrt(pi-double), one rounding. Generic a: exp(ln_gamma) fallback.
+fn gratio_norm_gamma(a: f64) -> f64 {
+    if a >= 1.0 && a <= 22.0 && a == a.floor() {
+        let mut f = 1.0f64;
+        let mut k = 2.0f64;
+        while k < a {
+            f *= k;
+            k += 1.0;
+        }
+        return f;
+    }
+    let n_half = a - 0.5;
+    if a >= 0.5 && a <= 22.0 && n_half == n_half.floor() {
+        let n = n_half as i32;
+        let mut df = 1.0f64; // (2n-1)!! exact below 2^53 for n <= 21
+        let mut m = 1.0f64;
+        for _ in 0..n {
+            df *= m;
+            m += 2.0;
+        }
+        let sqrt_pi = std::f64::consts::PI.sqrt();
+        return df * sqrt_pi / f64::powi(2.0, n);
+    }
+    ln_gamma(a).exp()
+}
+
 /// exparg(l) of exparg.f (specialized to this x86_64 host's double range).
 fn gratio_exparg(l: i32) -> f64 {
     let lnb = 0.69314718055995;
@@ -288,6 +319,7 @@ fn gratio_gam1(a: f64) -> f64 {
 
 /// gamma_fort.f (Morris's GAMMA): the un-normalized gamma used as the gratio
 /// normalizer via r = exp(a*ln x - x) / gamma(a).
+#[allow(dead_code)] // superseded by gratio_norm_gamma (identification: Excel != NSWC gamma)
 fn gratio_gamma_nswc(a: f64) -> f64 {
     const PI: f64 = 3.1415926535898;
     const D: f64 = 0.41893853320467274178;
@@ -464,7 +496,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
         if a > x || x >= x0 {
             // statement 20
             let t1 = a * x.ln() - x;
-            let r = t1.exp() / gratio_gamma_nswc(a);
+            let r = t1.exp() / gratio_norm_gamma(a);
             return gratio_after40(a, x, r, e, acc, x0, &mut wk);
         }
         let twoa = a + a;
@@ -500,7 +532,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
             return (0.5 + (0.5 - qans), qans);
         }
         let t1 = a * x.ln() - x;
-        let r = t1.exp() / gratio_gamma_nswc(a);
+        let r = t1.exp() / gratio_norm_gamma(a);
         return gratio_after40(a, x, r, e, acc, x0, &mut wk);
     }
 
@@ -545,39 +577,20 @@ fn gratio_after40(
         return if x <= a { (0.0, 1.0) } else { (1.0, 0.0) };
     }
     if x <= a.max(GRATIO_ALOG10) {
-        // statement 50: Taylor series with wk backward-tail summation.
+        // Taylor series. Identification (W109 agent-B, a=2 slice): Excel sums
+        // FORWARD (1 + c1 + c2 + ...) with 1/a as an OUTER factor — not the
+        // NSWC wk[] backward-tail staging (28/45 vs 16/45 bit-exact).
         let mut apn = a + 1.0;
-        let mut t = x / apn;
-        wk[1] = t;
-        let mut n = 20usize;
-        let mut broke = false;
-        for n_ in 2..=20 {
-            apn += 1.0;
-            t *= x / apn;
-            if t <= 1e-3 {
-                n = n_;
-                broke = true;
-                break;
-            }
-            wk[n_] = t;
-        }
-        if !broke {
-            n = 20;
-        }
-        let mut summ = t;
+        let mut c = x / apn;
+        let mut summ = c;
         let tol = 0.5 * acc;
         loop {
             apn += 1.0;
-            t *= x / apn;
-            summ += t;
-            if t <= tol {
+            c *= x / apn;
+            summ += c;
+            if c <= tol {
                 break;
             }
-        }
-        let mx = n - 1;
-        for _ in 0..mx {
-            n -= 1;
-            summ += wk[n];
         }
         let ans = (r / a) * (1.0 + summ);
         return (ans, 0.5 + (0.5 - ans));
