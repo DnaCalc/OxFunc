@@ -713,3 +713,59 @@ precisely:
 
 Files: agentM_b25{,b,c,d}.py/_out.txt (per-row curves banked in
 agentM_b25_out.txt A2/B2/C).
+
+## Primitive-recovery campaign results (2026-07-18, agents I/N/J b23/b24/b25) — the primitive map
+
+**INTERNAL LOG = CORRECTLY ROUNDED (RN53), bit-for-bit.** Proven two ways:
+LOGNORM candidate-matched decode (b24: 2,151 RN-exact rows all delta 0; 849
+interval rows all contain 0; zero routing surprises; BINOM residue slope AND
+intercept 0.0000 ULP to n=720; WEIBULL residue 0+-0.003) and the b23A
+cross-view solve (L == cr_log within +-1 ULP ~94.5%, exact 76.5%).
+
+**INTERNAL EXP = ONE near-CR routine; publication varies by site.**
+- Direct read (POISSON k=0, 30k rows): 99.490% == RN(CR), 0.457% CR-1,
+  0.053% CR+1 — BIAS-LOW; off-CR density scales with |arg| (0% below 0.1 ->
+  4.68% at ~100: reduction-step-count signature). pdf-site (EXPON pdf) is
+  BIT-IDENTICAL to it 10,000/10,000 (one routine, nearest-published).
+- Series site: the SAME near-CR value chop-published (unification not
+  contradicted; small-|t1| channels agree ~57-65% within 1 ULP; large-|t1|
+  gamma reads are actually LOG measurements — CR-log's +-1 ULP amplified by
+  |t1|).
+- Breakpoint scan (b23B): clean cells at small |t1|, spacing ~ln2/2^5..2^7
+  (32-128-entry reduction table class).
+- erf-190 path (b25 split, agent J): the residual is EXP-RESULT-RELATIVE
+  (decisive m-transfer diagnostic: widths at b18 values to 0.1-3.4% where
+  ln-attribution predicted +43%): equidistributed spread of width 0.90
+  dbl-ULP + a SMOOTH deterministic per-argument bias, m-independent at
+  e=-25/-30/-40, bias exp-frame (halves with width at the ans crossing).
+  Structure constraints: e=-30 and e=-40 bias profiles IDENTICAL (corr
+  0.9989-1.000, shared amplitude 0.0246 ULP) yet e=-25/-20/-15 mutually
+  decorrelated; all table-cell foldings null at j=4..8 granularities.
+  TENSION: 0.90-ULP width is inconsistent with the tight wrapper profile —
+  either a second exp realization on this path, or a staging effect
+  (e.g. pow-composition); op-graph lane must resolve.
+
+**EXPM1 IS A SEPARATE PRIMITIVE** (EXPON cdf = -expm1(-x) definitively;
++-1-ULP ~symmetric, ~20% off-CR — less accurate than exp, NOT exp-derived).
+GAMMA.DIST a=1 wrapper bit-identical to it (shared rows).
+
+**POW (distribution kernel) = exp(y*ln x) COMPOSITION** (b24: BINOM 100%
+incl. exp+-1 tail; WEIBULL powf 797/800 vs binexp ~411/800; pow(x,1) != x on
+605/800 — no exponent-1 shortcut). DISTINCT from the bond-lane binexp pow.
+
+**INTERNAL LGAMMA = EXTENDED precision, sub-ULP from CR** (b24 GAMMA-window
+reads: means +0.05/+0.007/+0.13 ULP, E_g nearest; double-grid inversion
+fails 78% = extended signal; no separate integer fast path — RN(exp(CR
+lgamma(n))) hits (n-1)! anyway). Distinct from published GAMMALN (the Cody
+re-fit).
+
+**OPEN / FOLLOW-UPS**: (1) series-staging reconciliation — agent I's a=4
+decode prefers backward-wk + gamma_nswc over the landed Cephes-form +
+(a-1)!; production implications to be raced per-a on the b23A corpus;
+(2) poisson pmf staging (direct-product route proven; ~21% unexplained at
+k=1 — a broader-error exp-site candidate); (3) the exp op-graph itself —
+the 153 POISSON off-CR rows + b25 bias profiles are the fingerprint.
+
+Maps banked: agentI_{poisson,expon,exp}_map.jsonl, agentN_{ln,lgamma}_map
+.jsonl, agentJ_b25_residuals.jsonl (+ npz/summaries). Decoder gates all
+passed (synthetic recovery exact).
