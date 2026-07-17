@@ -814,3 +814,29 @@ agentO_chop_validate.py, agentO_expm1.py, agentO_verdict.json (+ support).
 NEXT: hardware-chain verification races (real F2XM1 via inline asm) on all
 channels; then production landing design (exp sites -> x87 chain with per-site
 RN53/RZ53 publication; expm1 -> f2xm1 staging; erf190 with extended delivery).
+
+## PRODUCTION LANDING: the F2XM1 chain everywhere (2026-07-18, commit 223cfa5)
+
+- Hardware verification first: RN53(real chain) = 30,000/30,000 on the
+  POISSON channel; RZ53(real chain) = 38/45 on the chop corpus with the same
+  7 misses as floor(true) — those 7 are series micro-staging (x87-ln53 == CR
+  on all 45 rows; extended-t1 delivery REFUTED for the series site, 16-20/45
+  with +-17 misses).
+- Landed: excel_exp_rz (chain + RC=chop store; dd floor as portable
+  fallback); ALL 49 exp sites in gratio/bratio/erf switched to excel_exp;
+  POISSON pmf exp switched (k=0 rows now carry the proven behavior).
+- Gates: suite 1,606 green; gratio corpus stable (152/195, 159/268); b22
+  stable (285/655); **b14 BETAINV 4 -> 12/30, worst +13 -> +5** (chain exp
+  through the beta forward).
+- bgrat re-race WITH true primitives (agent M): the wall stands — the body
+  op-graph itself (53-bit, per-op-DR, and register-resident families ALL
+  falsified by group-intersection); banked constraints: extended-body > DR >
+  plain-53; GRATIO-sub q > grat1 in all 12 combos; next probes designed
+  (differential z-pairs, flip bracketing, b->1- sweep). Parked.
+- GAMMALN kernel landed same commit (see the G3-02 note): held-out 79.0%
+  worst 5, from 0/79 worst 1,370.
+
+Remaining to bit-closure on this cluster: gamma-series micro-staging (7/45
+class + agentI summ divergence + the a=4 wk-question), expm1 staging, POISSON
+product-route staging, erf staging race (agent J in flight), GAMMALN b1/b2
+coefficients, bgrat body op-graph.
