@@ -151,6 +151,46 @@ The "custom Microsoft rational tables" hypothesis DISSOLVED. Findings, in order:
    (50), `answers-b11.json` (256 ladder), `answers-b11c.json` (511 erfc
    complement view, unanalyzed — pair-decoding reserve), `dump-m30.txt`.
 
+## erf tooth-law measurements (2026-07-17 second hunt session) — bit-precise phenomenology
+
+The last-op sawtooth was measured to bit precision via oracle-driven batched
+bisection (`tooth_bisect.py`, 16-point rounds, ~16× bracket shrink/round;
+`tooth_positions.json`). Facts any candidate mechanism MUST reproduce:
+
+1. **Teeth are steps in Excel-vs-true-chain-model ε**, −0.85 ULP each, ramp
+   +0.145 ULP per 1/128-mantissa step between teeth (z≈2⁻³⁰ binade).
+2. **Linear in z, constant period within a binade, near-zero-anchored**: 11+
+   consecutive teeth at exactly equal Δz; two teeth bisected to ~2⁻⁶⁶-relative:
+   t1 = 1.13327213842e-9, t2 = 1.52563759794e-9 = t1 + EXACTLY 9 periods →
+   **p(e=−30) = 4.35961621689e-11** (= 2.996·2⁻³⁶, NOT exactly 3·2⁻³⁶);
+   t/p ≡ 0.995 (mod 1) — grid anchored ~at zero.
+3. **Regime transitions**: half-quantum grid slip at m = 1.5 exactly; spacing
+   collapse ≈3× after V crosses its binade (m = 2/g ≈ 1.7724).
+4. **Cross-binade nesting**: at e=−40 BOTH a coarse (~6e-14) and a fine
+   (5.949e-17/k, k∈{1,2} unresolved — bad bracket) structure exist; periods are
+   NOT a smooth function of e (apparent log-slope ≈1.95 between −40/−30 but the
+   law breaks at −25/−15). Multi-scale/nested sawtooths.
+5. **Amplitude law: ε_amp·|zl| ≈ 25.7 ULP constant** across binades
+   (0.93@|zl|=27.7, 1.48@17.3) ⟺ constant-absolute perturbation of zl²/2 —
+   no computed quantity matches yet.
+6. **Q-side**: ERFC ≡ RN53(1 − P-internal) at the tooth zone (48/48) — the
+   generator is P-side/pre-complement; the complement is double-staged.
+7. Ruled out structurally: all log-spaced generators (exp/ln tables, F2XM1
+   boundaries, zl-grids — teeth are z-linear), x-quantized generators
+   (1/m-spacing contradicts the exact arithmetic tooth progression), decimal
+   round-trips, w-quantization (amplitude would be enormous), single/double/
+   split-constant forms, and 1024 spill/association configs of the 190-path
+   with true x87 chains (plateau 850/1508).
+
+**Continuation plan**: (a) resolve p(−40) k-ambiguity with a fine scan
+IMMEDIATELY after t4 (the t5 bracket excluded the first ~5e-17); (b) bisect
+neighbor-teeth at e=−15 (t8 = 3.70029939053e-5 done) and e=−25 (t6 bisection
+stalled — teeth shallower there); (c) fit m30's full 128-point ε as
+ramp+sawtooth and examine the residual for the second generator; (d) test
+generators whose PHASE is z-linear but AMPLITUDE is ulp-scale (beat/modulation
+constructions); (e) the b11c erfc complement mid-range pair-decoding remains
+unanalyzed. All captures cached; batched-bisection machinery reusable.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection
