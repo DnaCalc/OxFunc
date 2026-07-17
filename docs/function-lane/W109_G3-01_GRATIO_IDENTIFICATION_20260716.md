@@ -840,3 +840,22 @@ Remaining to bit-closure on this cluster: gamma-series micro-staging (7/45
 class + agentI summ divergence + the a=4 wk-question), expm1 staging, POISSON
 product-route staging, erf staging race (agent J in flight), GAMMALN b1/b2
 coefficients, bgrat body op-graph.
+
+## erf staging race (2026-07-18, agent J) — 64.2% -> 66.3%; blocked on sub-ULP effective-g; refit round in flight
+
+With the chain fixed, 14 single-axis staging variants + PC53 composites raced
+against the b25 bias profiles:
+- j-pipeline RN53 parks (C10-class) capture GENUINE e=-25 coherent structure
+  (35.3% -> 58.6-65.8% there; sawtooth in j*2^53 frozen at e=-30/-40,
+  equidistributed at e=-15/-20 — matching the measured class) but fine-scale
+  phases partly wrong at e=-15/-20. Best composite C10 = 66.28% overall
+  (baseline 64.18%).
+- The universal 1.01-ULP width component is PARK-SHAPED (grid ~ 2^Ez), and
+  C7's park perturbation correlates ~0.5 with the true residual at e=-30/-40
+  — exactly the signature of a correct park with g known only to ~2^-53.
+  V4 (park g*inner) refuted by a sign-flip tie; V12 (park g) refuted (+0.69
+  vs measured +0.08); null axes: V6/V9/V10/V13.
+- Verdict: not closed; b9heldout UNTOUCHED (training not decisive).
+  NEXT (in flight): refit Excel's effective g at sub-2^-53 resolution via
+  park-phase alignment on the clean e=-30/-40 profiles, re-race the
+  composites; held-out only if decisive.
