@@ -129,15 +129,27 @@ The "custom Microsoft rational tables" hypothesis DISSOLVED. Findings, in order:
    512 spill configs): 663/1218 on z<0.5 (misses ±1, one ±2); designed
    max-|δ(z²)| battery (`answers-b10.json`): z̃=z-direct×g wins 37/50 over
    sqrt/explog-of-RN53(z²) and reflection forms. ~92% of rows within ±1.
-6. **Residual**: ONE unidentified staging op producing a mantissa-dependent
-   ±half-ULP wobble in the dominant factor (z̃·g), uncorrelated with the
-   z²-rounding residue on the designed battery. Recipe: extend check_erf190
-   with GRAT1-style caller-supplied-prefactor forms (r computed from z), the
-   40-path exp variants, and per-op spill enumeration of the exact
-   `w*g*(0.5+(0.5-j))` association tree; use the b10 max-residue battery plus
-   adjacent-double triples as the discriminator. Data: `answers-b9train.json`
-   (1190), `answers-b9heldout.json` (256, UNTOUCHED — promotion gate),
-   `answers-b10.json` (50).
+6. **Residual — now QUANTIFIED (2026-07-17 hunt session)**: the last staging op
+   is a deterministic sawtooth measured at full resolution on 128-step mantissa
+   ladders in two binades (`answers-b11.json`, m30: z≈2⁻³⁰; m20: z≈2⁻²⁰) via the
+   true-x87 dump mode (`check_erf190 <dir> dump` → per-row model phase):
+   ε(m) = rising ramp ≈ +0.145 ULP per 1/128-mantissa-step, cut by −0.85-ULP
+   down-teeth whose frequency GROWS with mantissa (period ≈6 steps at m≈1.4,
+   ≈2.4 at m≈1.9 → tooth-phase ∝ m³ᐧᐧ⁴), amplitude ×3 larger at m20 than m30.
+   This is the beat of an x²-magnitude term against a fixed ~2⁻⁶⁴ quantum on a
+   z²-scale accumulation — i.e. the series/j/inner cluster in an arrangement
+   OUTSIDE the tried parametrization (13 axes enumerated and ruled out at the
+   850/1508 plateau: zz/series/j/zl/gam1-eval/gam1-ret/g/w/inner spills,
+   association orders, GRAT1 pass-r, closed z-direct/sqrt/explog forms — b10
+   designed max-residue battery pins z̃ as z-direct 37/50). Next probe: derive
+   the exact tooth-position law from the dump (teeth are bit-precisely located),
+   fit candidate quantized-accumulation generators analytically (sum⊕t at 64-bit,
+   inner-poly x-term phases, alternative j-series arrangements incl. the Excel
+   variant possibly fusing (1−j)), and verify against the m20 tooth set before
+   any spill re-enumeration. Data: `answers-b9train.json` (1190),
+   `answers-b9heldout.json` (256, UNTOUCHED — promotion gate), `answers-b10.json`
+   (50), `answers-b11.json` (256 ladder), `answers-b11c.json` (511 erfc
+   complement view, unanalyzed — pair-decoding reserve), `dump-m30.txt`.
 
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
