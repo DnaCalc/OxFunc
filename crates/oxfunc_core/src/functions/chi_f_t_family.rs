@@ -184,7 +184,15 @@ pub fn chisq_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, Works
 
 pub fn chisq_inv_rt_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let p = validate_probability_open_unit(probability)?;
-    chisq_inv_kernel(1.0 - p, deg_freedom)
+    let k = truncate_positive_integer(deg_freedom)?;
+    // Excel inverts its published right-tail surface (CHIDIST = Q) directly,
+    // not P at 1-p: the complement staging carries a systematic -5..-33-ULP
+    // bias on the b14 CHIINV corpus (W109). Q is decreasing in x, so invert
+    // the negated forward at -p to keep the increasing-forward convention.
+    let hi = search_upper_bound(-p, k, |x| -regularized_gamma_q(k / 2.0, x / 2.0));
+    Ok(bisect_inverse(-p, 0.0, hi, |x| {
+        -regularized_gamma_q(k / 2.0, x / 2.0)
+    }))
 }
 
 pub fn f_pdf_kernel(x: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorCode> {
@@ -250,7 +258,18 @@ pub fn f_inv_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, Works
 
 pub fn f_inv_rt_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorCode> {
     let p = validate_probability_open_unit(probability)?;
-    f_inv_kernel(1.0 - p, deg1, deg2)
+    let d1 = truncate_positive_integer(deg1)?;
+    let d2 = truncate_positive_integer(deg2)?;
+    // Invert the published right-tail surface (f_dist_rt's accurate complement
+    // form) directly at p, not the CDF at 1-p — same principle as CHIINV
+    // (W109 b14+b19: the complement staging carries a systematic small-p bias).
+    // The surface is decreasing in x, so invert the negated forward at -p.
+    let f = move |x: f64| {
+        let z = d2 / (d2 + d1 * x);
+        -regularized_beta(z, d2 / 2.0, d1 / 2.0)
+    };
+    let hi = search_upper_bound(-p, 1.0, f);
+    Ok(bisect_inverse(-p, 0.0, hi, f))
 }
 
 fn t_pdf(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
@@ -310,7 +329,17 @@ pub fn t_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, Worksheet
 
 pub fn t_inv_2t_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let p = validate_probability_open_unit(probability)?;
-    t_inv_kernel(1.0 - p / 2.0, deg_freedom)
+    let v = truncate_positive_integer(deg_freedom)?;
+    // Invert the published two-tail surface (t_dist_2t's staging) directly at
+    // p, not the one-tail CDF at 1-p/2 — same principle as CHIINV/FINV
+    // (W109 b19: residuals collapse from -4..-238 to mostly +-1..7).
+    // The surface is decreasing in x, so invert the negated forward at -p.
+    let f = move |x: f64| {
+        let xx = v / (v + x * x);
+        -regularized_beta(xx, v / 2.0, 0.5)
+    };
+    let hi = search_upper_bound(-p, 1.0, f);
+    Ok(bisect_inverse(-p, 0.0, hi, f))
 }
 
 fn map_domain(value: Result<f64, WorksheetErrorCode>) -> CalcValue {

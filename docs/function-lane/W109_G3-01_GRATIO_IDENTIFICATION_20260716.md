@@ -386,3 +386,142 @@ generator hunt.
 - **Branch-differential scoring**: with a multi-branch reference implementation,
   per-branch match rates (91% / 48% / 25%) localize which subroutines are shared vs
   Excel-custom far faster than whole-function scores.
+
+## b18 matched-resolution scans (2026-07-17 session 5) — the "fine comb" was ALIASING; phase-gradient is the real fingerprint
+
+Battery b18 (242,474 ERF.PRECISE rows, bulk engine): every binade scanned at
+THREE matched relative step scales (2e-8 / 2e-9 / 2e-10), anchored at the b17
+windows. Result, uniform across all five binades:
+
+- **No resolved comb exists at any scale.** The "median gap" is always 2-5 GRID
+  steps at every scale — it rescales x10 whenever the grid does (e.g. s25:
+  8.0e-8 -> 8.0e-9 -> 8.0e-10 rel across the m/f/u scans). Every fine-period
+  previously tabulated from dense scans (6.4e-8 / 4.4e-8 / 5.6e-5 / 3.2e-5 /
+  6.8e-9, and their non-monotonicity) was an ALIASING ARTIFACT of the scan
+  grid. The b17 "config re-dump partition" tooth sets remain valid as
+  point-sets, but their gap statistics carry no period information.
+  METHOD CAUTION (durable): a period estimated from a dense scan is only real
+  if it is reproduced at a 10x finer grid; otherwise it is the grid echoing
+  its own step through the miss density.
+- **The real structure is the phase gradient.** Using the model's extended
+  value position within its ULP (phase), miss probability rises monotonically
+  toward the rounding boundary:
+    e=-25/-30/-40: P(miss) ~ 10% at phase 0 -> ~48% at |phase|=0.5 (identical
+                   profiles across all three binades);
+    e=-15/-20:     ~36% -> ~52% (much flatter = larger perturbations).
+  Misses at phase~0 exist, so the driver reaches >=0.5-1 ULP; the equidistributed,
+  spatially-incoherent pattern is the signature of per-row last-bit differences
+  in an internal transcendental (exp/log op-graph), NOT a staging/association
+  difference (those are spatially coherent). Envelope-scale density variation
+  is real (s20 windows: 29-55% miss density).
+- CONSEQUENCE: the erf last-op lane MERGES with the static-CRT-exp lane. The
+  scoring instruments for candidate exp/log op-graphs are (a) exact-match rate
+  on b18 (242k rows), (b) the per-binade phase-gradient profile, (c) the 45-pt
+  implied-exp corpus. Period-matching is dead.
+
+Files: batch-b18.json / answers-b18.json / dump-b18-base.txt / analyze_b18.py /
+period_rederive.py / excel_side_period_table.json (superseded by this section).
+
+## *INV converged-root landing (2026-07-17 session 5)
+
+Landed in production (validated on the b14 corpora, held-out b19 captured
+separately):
+
+- `bisect_inverse` (special_math_common.rs): early-stop 4*EPS bisection
+  replaced by FLOAT-LATTICE bisection to adjacent doubles, publish hi
+  (f(lo) < p <= f(hi)); order-preserving i64 key + i128 midpoint, sign-safe.
+  b14 effect: GAMMA.INV 8->18/60 exact, worst +880,380 -> -16 ULP;
+  BETAINV 2->4/30, worst +1,910,580 -> +13 ULP (residual = the pre-BRATIO
+  beta forward, a separate lane); publication-rule race: hi 18/60 vs
+  closest 17/60 vs lo 7/60 (gamma side) — hi retained.
+- `chisq_inv_rt_kernel` (chi_f_t_family.rs): CHIINV now inverts the PUBLISHED
+  right-tail surface Q directly (negated-forward convention) instead of P at
+  1-p. The 1-p staging carries a systematic -5..-33 ULP bias (rounding loss in
+  1-p); Q-direct: 10->16/60 exact, residuals collapse to +-1..5 (worst -91 at
+  one deep-tail row).
+- `gamma_inv_kernel`: upper bracket now extends by doubling until
+  f(hi) >= p (lattice invariant).
+- Racer: `check_inv.rs` (calc_graph_racer) — races early-stop vs lattice
+  {hi, lo, closest} x staging spaces on the b14 corpora. GAMMA.INV x-space vs
+  z-space indistinguishable at beta=1 (all b14 gamma rows); b19 includes
+  beta != 1 discriminator rows + FINV/TINV probes of the same
+  invert-published-surface principle.
+
+Full oxfunc_core suite green (16 test binaries) after the change.
+
+## CHOPPED-EXP IDENTIFICATION (2026-07-17 session 5) — the kernel's series exp is TRUNCATED toward zero
+
+The decisive break in the "static legacy CRT exp" wall came in two steps:
+
+1. **Real-binary CRT sweep (agent G) closed the entire Microsoft hypothesis
+   space.** A 32-bit harness called exp() in the genuine DLLs — msvcr90
+   9.0.30729 (the exact Office-2010 CRT generation, loaded via a VC90 SxS
+   activation-context manifest), msvcr100 (2010-03-18 binary), 110, 120,
+   msvcrt — plus the x87 fallback path (_set_SSE2_enable(0)) and bit-faithful
+   transcriptions of the AMD K8 32-entry and x64 64-entry table exps
+   (ReactOS libm_sse2 exp.asm == Open64 libacml_mv, AMD provenance pinned).
+   ALL REFUTED: the 32-bit SSE2 CRT exp is one Intel-lineage __libm_sse2_exp
+   rounding one-sided HIGH (0..+1 vs CR) — the mirror image of Excel; x87 and
+   x64-AMD are CR-identical on the corpus. Best public proxy stays fdlibm
+   28/45. Excel's exp is in {CR, CR-1}, one-sided LOW, CR-1 on 20/45 rows.
+2. **20/45 = 44% ~ half is the truncation signature**: CR-1 exactly when CR
+   rounded up. floor(true exp) scores **38/45** (vs CR 25, fdlibm 28) —
+   rd_exp and RN64-then-RZ53 agree on all 45 args. The one-sided-low
+   "rounds-low CRT exp" story was a truncated PUBLICATION all along; the
+   earlier x87-chain refutation had only raced nearest publication.
+
+**Call-site localization** (full 692-row corpora, emulator + replica races):
+the chop lives ONLY at the gser series r = exp(t1)/G call site.
+- a==1 wrapper rows LOSE under chop (its exp/expm1 are nearest);
+- continued-fraction rows LOSE (cf/P 10 lost, 0 gained);
+- a<1 (190/200-path) rows LOSE;
+- a>=1 series rows GAIN: production-staging replica 148->174/306 training,
+  b20 held-out (fresh a in {1.75,2.25,3.25,4.5,5.5,8,12}, df-truncation
+  corrected) 65->68/111, worst -22 -> -19. Fractional-a margins are capped by
+  the normalizer (exp of internal lgamma, G3-02 lane), not by the exp.
+Per-call-site rounding differences inside one compiled function are now a
+PATTERN in this kernel (cf. the a>=1 double vs a<1 extended log staging).
+
+**LANDED in production** (special_math_common.rs):
+- `exp_rd(x)`: Tang-style 64-entry table exp in double-double (~2^-100),
+  directed truncation before exact 2^m scaling; constants generated
+  programmatically as bit patterns (a hand-converted table entry error was
+  caught by regenerating — never hand-convert constant tables). Validated
+  0 mismatches vs mpmath floor-exp on 25k points incl. the +-708/709 edge
+  bands; |m|>1022 and the subnormal sliver fall back to nearest exp.
+- statement-20/534 call sites now pass r_series = exp_rd(t1)/G to the series
+  arm and r = exp(t1)/G to the CF/asymptotic arms.
+- **a==1 dispatch landed inside gratio**: (P, Q) = (-expm1(-x), exp(-x))
+  nearest (the identification's wrapper dispatch; a pinned CHIDIST(1,2)
+  witness enforces it against the chop).
+Corpus: CHIDIST 148 -> **152**/195, GAMMA.DIST 151 -> **159**/268 (from
+12/195 and 64/268 pre-campaign). Full suite green (1604).
+
+Remaining gamma-side residual: the internal approximation BEHIND the chop
+(7/45 rows where Excel's pre-truncation value crosses a boundary that
+floor(true) doesn't — an approximation with ~2^-56-ish error), the fractional-a
+normalizer identity (G3-02), and the erf/beta sub-kernels. The erf 190-path
+exp is NOT the chopped one (b18 phase evidence both-sided; a<1 rows lose
+under chop) — the erf last-op hunt continues in the phase-gradient frame.
+
+## *INV published-surface principle extended (b19 held-out)
+
+b19 (fresh rows, never raced): CHIINV Q-direct CONFIRMED held-out (15/40 vs
+6/40 for P at 1-p, same systematic negative bias on fresh rows). The same
+invert-the-published-surface staging decisively improves FINV (0/32 -> 3/32,
+small-p bias -60 -> +2) and TINV (residuals -4..-238 -> mostly +-1..7):
+LANDED for f_inv_rt_kernel (roots f_dist_rt's accurate complement form) and
+t_inv_2t_kernel (roots t_dist_2t's surface). GAMMA.INV z-space vs x-space:
++4 rows on 48 discriminators (beta=3) for z-space — a hint, below promotion
+bar; x-space retained. BETAINV/CHISQ.INV inverter-limited no longer; forward
+error dominates.
+
+## Batteries added this session
+
+- b18 (242,474 ERF.PRECISE rows): matched-relative-resolution scans; killed
+  the period-table premise (see b18 section above).
+- b19 (320 rows): held-out *INV + FINV/TINV staging probes.
+- b20 (112 rows): held-out gamma series (fresh a); chopped-exp gate.
+- b21 (127 BETA.DIST rows): beta-tail discriminator battery (agent-H spec:
+  GRATIO-substitution vs Boost small-b-large-a series vs CR) — scoring in
+  flight.

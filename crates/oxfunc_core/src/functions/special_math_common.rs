@@ -317,6 +317,132 @@ fn gratio_gam1(a: f64) -> f64 {
     }
 }
 
+// ---- exp_rd: round-toward-zero exp (W109 chopped-exp identification) -------
+// Excel's gser-path r = exp(t1)/G publishes a TRUNCATED exp, not nearest:
+// floor(true exp) scores 38/45 on the implied-exp corpus vs CR 25/45 and
+// fdlibm 28/45 (every real 2010-era MSVC CRT exp refuted by direct binary
+// probes: 32-bit SSE2 rounds one-sided HIGH, x87 and x64-AMD are CR here).
+// Corpus effect at the series call site: +26/306 training, +3/111 held-out
+// b20 (fractional-a normalizer noise caps the held-out margin).
+// Implementation: Tang-style 64-entry table exp in double-double (~2^-100),
+// then directed truncation. The RD bit can only be wrong if exp(x) sits
+// within ~2^-100 relative of a 53-bit boundary.
+
+const EXP_RD_L1_BITS: u64 = 0x3f862e4200000000; // ln2/64 hi, 32 trailing zero bits
+const EXP_RD_L2A_BITS: u64 = 0x3e3fdf473de6af28;
+const EXP_RD_L2B_BITS: u64 = 0xbadc4c67fc0d0951;
+const EXP_RD_INV_L_BITS: u64 = 0x40571547652b82fe; // 64/ln2
+
+#[rustfmt::skip]
+const EXP_RD_TBL: [(u64, u64); 64] = [
+    (0x3ff0000000000000, 0x0000000000000000), (0x3ff02c9a3e778061, 0xbc719083535b085d),
+    (0x3ff059b0d3158574, 0x3c8d73e2a475b465), (0x3ff0874518759bc8, 0x3c6186be4bb284ff),
+    (0x3ff0b5586cf9890f, 0x3c98a62e4adc610b), (0x3ff0e3ec32d3d1a2, 0x3c403a1727c57b53),
+    (0x3ff11301d0125b51, 0xbc96c51039449b3a), (0x3ff1429aaea92de0, 0xbc932fbf9af1369e),
+    (0x3ff172b83c7d517b, 0xbc819041b9d78a76), (0x3ff1a35beb6fcb75, 0x3c8e5b4c7b4968e4),
+    (0x3ff1d4873168b9aa, 0x3c9e016e00a2643c), (0x3ff2063b88628cd6, 0x3c8dc775814a8495),
+    (0x3ff2387a6e756238, 0x3c99b07eb6c70573), (0x3ff26b4565e27cdd, 0x3c82bd339940e9d9),
+    (0x3ff29e9df51fdee1, 0x3c8612e8afad1255), (0x3ff2d285a6e4030b, 0x3c90024754db41d5),
+    (0x3ff306fe0a31b715, 0x3c86f46ad23182e4), (0x3ff33c08b26416ff, 0x3c932721843659a6),
+    (0x3ff371a7373aa9cb, 0xbc963aeabf42eae2), (0x3ff3a7db34e59ff7, 0xbc75e436d661f5e3),
+    (0x3ff3dea64c123422, 0x3c8ada0911f09ebc), (0x3ff4160a21f72e2a, 0xbc5ef3691c309278),
+    (0x3ff44e086061892d, 0x3c489b7a04ef80d0), (0x3ff486a2b5c13cd0, 0x3c73c1a3b69062f0),
+    (0x3ff4bfdad5362a27, 0x3c7d4397afec42e2), (0x3ff4f9b2769d2ca7, 0xbc94b309d25957e3),
+    (0x3ff5342b569d4f82, 0xbc807abe1db13cad), (0x3ff56f4736b527da, 0x3c99bb2c011d93ad),
+    (0x3ff5ab07dd485429, 0x3c96324c054647ad), (0x3ff5e76f15ad2148, 0x3c9ba6f93080e65e),
+    (0x3ff6247eb03a5585, 0xbc9383c17e40b497), (0x3ff6623882552225, 0xbc9bb60987591c34),
+    (0x3ff6a09e667f3bcd, 0xbc9bdd3413b26456), (0x3ff6dfb23c651a2f, 0xbc6bbe3a683c88ab),
+    (0x3ff71f75e8ec5f74, 0xbc816e4786887a99), (0x3ff75feb564267c9, 0xbc90245957316dd3),
+    (0x3ff7a11473eb0187, 0xbc841577ee04992f), (0x3ff7e2f336cf4e62, 0x3c705d02ba15797e),
+    (0x3ff82589994cce13, 0xbc9d4c1dd41532d8), (0x3ff868d99b4492ed, 0xbc9fc6f89bd4f6ba),
+    (0x3ff8ace5422aa0db, 0x3c96e9f156864b27), (0x3ff8f1ae99157736, 0x3c85cc13a2e3976c),
+    (0x3ff93737b0cdc5e5, 0xbc675fc781b57ebc), (0x3ff97d829fde4e50, 0xbc9d185b7c1b85d1),
+    (0x3ff9c49182a3f090, 0x3c7c7c46b071f2be), (0x3ffa0c667b5de565, 0xbc9359495d1cd533),
+    (0x3ffa5503b23e255d, 0xbc9d2f6edb8d41e1), (0x3ffa9e6b5579fdbf, 0x3c90fac90ef7fd31),
+    (0x3ffae89f995ad3ad, 0x3c97a1cd345dcc81), (0x3ffb33a2b84f15fb, 0xbc62805e3084d708),
+    (0x3ffb7f76f2fb5e47, 0xbc75584f7e54ac3b), (0x3ffbcc1e904bc1d2, 0x3c823dd07a2d9e84),
+    (0x3ffc199bdd85529c, 0x3c811065895048dd), (0x3ffc67f12e57d14b, 0x3c92884dff483cad),
+    (0x3ffcb720dcef9069, 0x3c7503cbd1e949db), (0x3ffd072d4a07897c, 0xbc9cbc3743797a9c),
+    (0x3ffd5818dcfba487, 0x3c82ed02d75b3707), (0x3ffda9e603db3285, 0x3c9c2300696db532),
+    (0x3ffdfc97337b9b5f, 0xbc91a5cd4f184b5c), (0x3ffe502ee78b3ff6, 0x3c839e8980a9cc8f),
+    (0x3ffea4afa2a490da, 0xbc9e9c23179c2893), (0x3ffefa1bee615a27, 0x3c9dc7f486a4b6b0),
+    (0x3fff50765b6e4540, 0x3c99d3e12dd8a18b), (0x3fffa7c1819e90d8, 0x3c874853f3a5931e),
+];
+
+#[rustfmt::skip]
+const EXP_RD_COEF: [(u64, u64); 11] = [ // 1/k!, k = 10..=0, Horner order
+    (0x3e927e4fb7789f5c, 0x3b3cbbc05b4fa99a), (0x3ec71de3a556c734, 0xbb6c154f8ddc6c00),
+    (0x3efa01a01a01a01a, 0x3b3a01a01a01a01a), (0x3f2a01a01a01a01a, 0x3b6a01a01a01a01a),
+    (0x3f56c16c16c16c17, 0xbbef49f49f49f49f), (0x3f81111111111111, 0x3c01111111111111),
+    (0x3fa5555555555555, 0x3c45555555555555), (0x3fc5555555555555, 0x3c65555555555555),
+    (0x3fe0000000000000, 0x0000000000000000), (0x3ff0000000000000, 0x0000000000000000),
+    (0x3ff0000000000000, 0x0000000000000000),
+];
+
+#[inline]
+fn two_sum(a: f64, b: f64) -> (f64, f64) {
+    let s = a + b;
+    let bb = s - a;
+    (s, (a - (s - bb)) + (b - bb))
+}
+
+#[inline]
+fn two_prod(a: f64, b: f64) -> (f64, f64) {
+    let p = a * b;
+    (p, a.mul_add(b, -p))
+}
+
+#[inline]
+fn dd_mul(ah: f64, al: f64, bh: f64, bl: f64) -> (f64, f64) {
+    let (p, e) = two_prod(ah, bh);
+    two_sum(p, e + ah * bl + al * bh)
+}
+
+pub fn exp_rd(x: f64) -> f64 {
+    if x == 0.0 || !x.is_finite() {
+        return x.exp();
+    }
+    let k = (x * f64::from_bits(EXP_RD_INV_L_BITS)).round();
+    let ki = k as i64;
+    let m = ki >> 6;
+    let j = (ki - (m << 6)) as usize;
+    if !(-1022..=1022).contains(&m) {
+        // overflow / deep-subnormal territory: not exercised by the kernel's
+        // series call site; plain exp keeps the guards upstream working.
+        return x.exp();
+    }
+    // r = x - k*ln2/64, double-double
+    let t = x - k * f64::from_bits(EXP_RD_L1_BITS); // exact: 32 trailing zero bits, |k| < 2^17
+    let (p1h, p1l) = two_prod(k, f64::from_bits(EXP_RD_L2A_BITS));
+    let (rh0, rl0) = two_sum(t, -p1h);
+    let (rh, rl) = two_sum(rh0, rl0 - p1l - k * f64::from_bits(EXP_RD_L2B_BITS));
+    // Horner in double-double over 1/k!
+    let (c0h, c0l) = EXP_RD_COEF[0];
+    let (mut ph, mut pl) = (f64::from_bits(c0h), f64::from_bits(c0l));
+    for &(ch, cl) in &EXP_RD_COEF[1..] {
+        let (th, tl) = dd_mul(ph, pl, rh, rl);
+        let (sh, se) = two_sum(th, f64::from_bits(ch));
+        let (h, l) = two_sum(sh, se + tl + f64::from_bits(cl));
+        ph = h;
+        pl = l;
+    }
+    let (tbh, tbl) = EXP_RD_TBL[j];
+    let (vh, vl) = dd_mul(ph, pl, f64::from_bits(tbh), f64::from_bits(tbl));
+    // truncate toward zero BEFORE scaling (vh in [1,2), so vl's sign cannot
+    // be lost to underflow), then scale exactly by 2^m.
+    let d = if vl < 0.0 {
+        f64::from_bits(vh.to_bits() - 1)
+    } else {
+        vh
+    };
+    if m == -1022 && d < 1.0 {
+        // scaled result would be subnormal; directed rounding not preserved.
+        return x.exp();
+    }
+    let scale = f64::from_bits(((1023 + m) as u64) << 52);
+    d * scale
+}
+
 /// gamma_fort.f (Morris's GAMMA): the un-normalized gamma used as the gratio
 /// normalizer via r = exp(a*ln x - x) / gamma(a).
 #[allow(dead_code)] // superseded by gratio_norm_gamma (identification: Excel != NSWC gamma)
@@ -433,6 +559,13 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
     if a * x == 0.0 {
         return if x <= a { (0.0, 1.0) } else { (1.0, 0.0) };
     }
+    if a == 1.0 {
+        // Excel dispatches a == 1 to the exponential CDF (W109: proven by the
+        // a = 1+2^-20 contradiction probe; emulator race a=1 slice 179/205
+        // with this wrapper). Nearest-rounded exp/expm1 — the chopped series
+        // exp does NOT apply on this path.
+        return (-f64::exp_m1(-x), (-x).exp());
+    }
     // Excel uses ind = 0 (unscaled). gratio.f: iop = ind + 1 = 1 (only ind of
     // 1 or 2 would remap to iop = 3), selecting the tight acc = 5e-15, big = 20,
     // x0 = 31, e0 = 0.25e-3 constant set.
@@ -494,10 +627,12 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
     // a >= 1
     if a < GRATIO_BIG[iop - 1] {
         if a > x || x >= x0 {
-            // statement 20
+            // statement 20. Series arm publishes r from the CHOPPED exp
+            // (W109 chopped-exp identification); CF/asymptotic arms keep the
+            // nearest-rounded exp (chop measurably hurts there).
             let t1 = a * x.ln() - x;
-            let r = t1.exp() / gratio_norm_gamma(a);
-            return gratio_after40(a, x, r, e, acc, x0, &mut wk);
+            let g = gratio_norm_gamma(a);
+            return gratio_after40(a, x, exp_rd(t1) / g, t1.exp() / g, e, acc, x0, &mut wk);
         }
         let twoa = a + a;
         let m = twoa as i64;
@@ -532,8 +667,8 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
             return (0.5 + (0.5 - qans), qans);
         }
         let t1 = a * x.ln() - x;
-        let r = t1.exp() / gratio_norm_gamma(a);
-        return gratio_after40(a, x, r, e, acc, x0, &mut wk);
+        let g = gratio_norm_gamma(a);
+        return gratio_after40(a, x, exp_rd(t1) / g, t1.exp() / g, e, acc, x0, &mut wk);
     }
 
     // statement 30: a >= big
@@ -561,12 +696,14 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
     let mut t1 = (((0.75 * t - 1.0) * t + 3.5) * t - 105.0) / (a * 1260.0);
     t1 -= y;
     let r = GRATIO_RT2PIN * rta * t1.exp();
-    gratio_after40(a, x, r, e, acc, x0, &mut wk)
+    // a >= big: no chopped-exp evidence for this r staging; same r both arms.
+    gratio_after40(a, x, r, r, e, acc, x0, &mut wk)
 }
 
 fn gratio_after40(
     a: f64,
     x: f64,
+    r_series: f64,
     r: f64,
     _e: f64,
     acc: f64,
@@ -597,7 +734,7 @@ fn gratio_after40(
                 break;
             }
         }
-        let p = (r / a) * ans;
+        let p = (r_series / a) * ans;
         return (p, 0.5 + (0.5 - p));
     }
     if x < x0 {
@@ -886,23 +1023,37 @@ pub fn regularized_beta(x: f64, a: f64, b: f64) -> f64 {
     }
 }
 
-pub fn bisect_inverse<F>(target: f64, mut lo: f64, mut hi: f64, f: F) -> f64
+pub fn bisect_inverse<F>(target: f64, lo: f64, hi: f64, f: F) -> f64
 where
     F: Fn(f64) -> f64,
 {
-    for _ in 0..200 {
-        let mid = 0.5 * (lo + hi);
-        let value = f(mid);
-        if value >= target {
-            hi = mid;
+    // Excel publishes fully-converged roots of its own forward (W109 agent-C
+    // verdict; the early-stop 4*EPS relative cutoff produced up to +1.9M-ULP
+    // errors at small roots on the b14 corpora). Bisect on the float lattice
+    // until lo and hi are adjacent doubles, maintaining f(lo) < target <= f(hi),
+    // and publish hi.
+    let key = |x: f64| -> i64 {
+        let i = x.to_bits() as i64;
+        if i < 0 { i64::MIN.wrapping_sub(i) } else { i }
+    };
+    let unkey = |k: i64| -> f64 {
+        if k < 0 {
+            f64::from_bits(i64::MIN.wrapping_sub(k) as u64)
         } else {
-            lo = mid;
+            f64::from_bits(k as u64)
         }
-        if (hi - lo).abs() <= 4.0 * f64::EPSILON * (1.0 + mid.abs()) {
-            return hi;
+    };
+    let mut lok = key(lo) as i128;
+    let mut hik = key(hi) as i128;
+    while hik - lok > 1 {
+        let midk = lok + (hik - lok) / 2;
+        if f(unkey(midk as i64)) >= target {
+            hik = midk;
+        } else {
+            lok = midk;
         }
     }
-    hi
+    unkey(hik as i64)
 }
 
 #[cfg(test)]
