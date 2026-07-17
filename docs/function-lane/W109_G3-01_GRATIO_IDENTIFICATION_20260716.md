@@ -229,6 +229,29 @@ unanalyzed. All captures cached; batched-bisection machinery reusable.
    staging/normalizer. Corpus: CHIDIST 12→**144**/195 exact (max overflow-class→52),
    GAMMA.DIST 64→**137**/268 (max 38→21). 1507 lib tests green, no pins changed.
 
+## x87-exp last mile (2026-07-17 session 4) — the kernel exp is a STATIC LEGACY CRT
+
+Racing the corrected staging with real chains (`check_gratio_x87.rs`) and ctypes
+DLLs settled the exp identity question by elimination:
+- **x87 worksheet chain (fFEXP/fFLN) REFUTED for the kernel**: RN53 of the
+  64-bit chain ≈ CR at double granularity — all four exp/log combos score
+  IDENTICALLY on 516 rows; it cannot produce the one-sided ~38% miss rate.
+- **Modern UCRT exp/log ≈ CR** (25/45 = the CR score) — not Excel's.
+- **msvcrt / msvcr100 / 110 / 120 as loadable on this host: all 25/45** (they
+  forward to near-CR code on modern Windows) — not Excel's.
+- **fdlibm e_exp remains the best public proxy (28/45)** — its rounds-low bias
+  partially matches. Agent-B's decode stands: every a=2 miss is exactly a
+  ∓1-ULP exp(t1) deviation, Excel's exp ≤ nearest (one-sided low).
+
+CONCLUSION: the kernel exp is the 2010-era CRT exp STATICALLY LINKED inside
+Excel's binaries (the same pattern as the statically-linked C pow identified in
+the bond lanes) — an Intel-style table-based SSE2 exp with ~0.5-1 ULP one-sided
+error. Recovery paths: (a) transcribe the msvcr100-era x64 exp op-graph from a
+period binary; (b) treat the remaining per-row exp deviations as a measured
+±1-ULP table (they are fully determined by the corpus: implied exp(t1) bits are
+recoverable per row). The Cephes-igam-form series staging (ans from 1.0,
+c/ans <= MACHEP stop, ·ax/a publication) is confirmed as the exact series form.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection

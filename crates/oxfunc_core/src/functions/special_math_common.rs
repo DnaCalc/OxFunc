@@ -580,20 +580,25 @@ fn gratio_after40(
         // Taylor series. Identification (W109 agent-B, a=2 slice): Excel sums
         // FORWARD (1 + c1 + c2 + ...) with 1/a as an OUTER factor — not the
         // NSWC wk[] backward-tail staging (28/45 vs 16/45 bit-exact).
-        let mut apn = a + 1.0;
-        let mut c = x / apn;
-        let mut summ = c;
-        let tol = 0.5 * acc;
+        // Refined (session 4): the exact form is Cephes-igam style — ans
+        // accumulates FROM 1.0, stop at c/ans <= MACHEP (2^-53), publication
+        // (r/a)*ans. 25/45 at a=2 with CR exp (vs 16/45 for 1+summ staging);
+        // the residual is Excel's statically-linked legacy-CRT exp (one-sided
+        // low, fdlibm-proxy 28/45).
+        let _ = acc;
+        let mut rr = a;
+        let mut c = 1.0f64;
+        let mut ans = 1.0f64;
         loop {
-            apn += 1.0;
-            c *= x / apn;
-            summ += c;
-            if c <= tol {
+            rr += 1.0;
+            c *= x / rr;
+            ans += c;
+            if c / ans <= 1.110_223_024_625_156_5e-16 {
                 break;
             }
         }
-        let ans = (r / a) * (1.0 + summ);
-        return (ans, 0.5 + (0.5 - ans));
+        let p = (r / a) * ans;
+        return (p, 0.5 + (0.5 - p));
     }
     if x < x0 {
         return gratio_cf(a, x, r, _e, acc);
