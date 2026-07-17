@@ -41,6 +41,19 @@ Use only:
 
 Do not use proprietary or restricted sources.
 
+**Reverse-Engineering Provenance (standing directive, 2026-07-17):** the
+campaign is STRICTLY black-box. Never disassemble, decompile, dump, or
+otherwise inspect the internals of Excel binaries or any Microsoft-shipped
+binary — and do not propose it. Every identification must be derivable from
+(a) behavioral probing of the live oracle through its public interfaces and
+(b) public-domain/published sources (TOMS, netlib, ReactOS, Cephes, fdlibm,
+Boost, published-era runtime DLLs probed only through their documented C API).
+This keeps all results publishable without provenance concern; the clean-room
+methodology is itself part of the project's published value. When a wall
+looks like it "needs binary archaeology", the answer is better probe design
+(implied-bit decoding, boundary bisection, mass oracle batteries), never the
+binary image.
+
 ## Versioning Reminder
 Function behavior must be tracked across two axes:
 1. Excel application version/channel.
