@@ -191,6 +191,44 @@ generators whose PHASE is z-linear but AMPLITUDE is ulp-scale (beat/modulation
 constructions); (e) the b11c erfc complement mid-range pair-decoding remains
 unanalyzed. All captures cached; batched-bisection machinery reusable.
 
+## Multi-agent closure sweep (2026-07-17 session 3) — five parallel verdicts
+
+1. **BETA SIDE CONFIRMED = BRATIO (TOMS 708)** (`agentA_bratio.py`, full dependency
+   tree transcribed): argument stagings pinned — wrappers pass the ACCURATE
+   complement (`FDIST: x=d2/den, y=d1*F/den`; `TDIST: x=df/den, y=t²/den`, one-tail
+   = 0.5·two-tail bit-exact). Decisive branch-differential: **bpser in plain double
+   BEATS correctly-rounded betainc on FDIST/TDIST** (11/6, 5/3, 8/4) — literal code
+   identity; F.DIST.RT bpser 5/5. **bgrat (a≫b tail) is the Excel-custom/extended
+   sub-kernel** (double 2/12 vs CR 8/12) — the beta-side erf-analog. bpser's ±1-2
+   residual = the x87 EXP/LN signature. Branch battery for bgrat: `answers-b15.json`
+   (126 rows, cached).
+2. **Taylor staging CORRECTED + normalizer MEASURED** (`agentB_*`): Excel sums the
+   series FORWARD with 1/a as an OUTER factor (28/45 vs wk-backward 16/45 at a=2);
+   normalizer = divG with **G = CR-double Γ(a) ±1 ULP ≡ exp(internal GAMMALN)** —
+   NOT NSWC gamma (+22..33, score 0), NOT worksheet GAMMA(a). At a=2, EVERY miss
+   resolves within ±1 ULP of exp(t1) with zero series changes — the residual is
+   Excel's ≤-nearest-rounding exp (x87 CRT, one-sided). Feeds G3-02: the internal
+   lgamma at fractional a is pinned to exp⁻¹(CR-Γ ±1).
+3. ***INV = CONVERGED ROOTS** (`agentC_*`): DCDFLIB gaminv's early-stop schedule
+   RULED OUT (worst of three models); Excel publishes fully-converged near-CR roots
+   of its OWN forward (Excel-vs-CR scatter = conditioning-amplified last-bit forward
+   rounding, κ-correlation 0.968/0.995). The *INV lane needs no schedule archaeology:
+   ported forward + converge-to-last-bit inverter.
+4. **erf sawtooth decomposition** (`agentD_*`): single z-linear sawtooth (NOT two
+   superposed) threads 100% of the m<1.5 publish intervals (A=0.855±0.008,
+   p=3/64 exactly, uniform teeth); past the V-binade the SAME generator's period
+   collapses to ≈P/3.5; second generator = a slow BEAT ENVELOPE (weak at m30,
+   strong at m20, lag-1 autocorr +0.89 sub-publish). Near-1-constant-multiply
+   forms RULED OUT by the noise-free equal-period argument; the generator is a
+   z-linear beat with slope-difference ≈2⁻⁴⁷·⁶ (≈21 ULP of g) or a 2⁻⁶⁴-quantum
+   accumulation at z-scale. Still unidentified; comb structure at e=−40/−15
+   (`answers-b14.json`) consistent with the beat picture.
+5. **GRATIO PORTED TO OXFUNC** (merged c71cde5 + corrections fa275e0):
+   regularized_gamma_p/q now run the identified kernel with the Excel-variant
+   deviations (no a=0.5 erf dispatch; erfc1 via depth-1 recursion) + the agent-B
+   staging/normalizer. Corpus: CHIDIST 12→**144**/195 exact (max overflow-class→52),
+   GAMMA.DIST 64→**137**/268 (max 38→21). 1507 lib tests green, no pins changed.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection
