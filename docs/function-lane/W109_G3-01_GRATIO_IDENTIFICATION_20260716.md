@@ -64,12 +64,52 @@ All live-Excel answers are also in the persistent OracleCache.
   branches (closed-int / closed-halfint / Taylor / CF / Temme) + the a==1 and a==0.5
   dispatches.
 
+## erf sub-lane findings (2026-07-17 session)
+
+**Wiring PROVEN by cross-view**: `GAMMA.DIST(k²/1024, ½, 1, TRUE) ≡ ERF.PRECISE(k/32)`
+and `CHIDIST(k²/512, 1) ≡ ERFC.PRECISE(k/32)` — **160/160 AND 160/160 bit-exact**
+(`answers-xv-gd/xv-chi.json`). The gratio a=0.5 dispatch calls exactly the published
+ERF.PRECISE/ERFC.PRECISE routines; one identification closes all of them + CHIDIST
+odd-df + half-integer paths.
+
+**Architecture PINNED, tables custom.** Ruled out bit-exactly: NSWC (113/176 erf),
+Cody SPECFUN CALERF (121/176), fdlibm s_erf (160/176 — closest but ±2), Boost
+1.35–1.42 erf_imp<53> (155-157/176; tables identical across versions), and the local
+Microsoft UCRT erf (146/176) — all with CR/fdlibm/x87 exp models. Established:
+- **erfc computes exp(−RN53(z·z)) with an UNSPLIT argument** — proven by regression
+  of the messy-grid (full-mantissa z) residual against the exactly-computable
+  RN53(z·z) rounding error: slope +0.95, residual stdev 7.9e-16 → 2.0e-16 (±1 ULP
+  floor). This kills all split-argument families (fdlibm/Cody) structurally.
+  CAUTION (method): the original k/32 ladder had EXACT z² everywhere — dyadic-clean
+  grids can make split-vs-unsplit invisible; always add a full-mantissa grid.
+- **No tiny-z shortcut** (Boost's z<1e-10 form ruled out): tiny-z rows are consistently
+  CR+1, and 12/15 give the SAME ratio double — the small branch's value at 0 is
+  pinned exactly: **R(0⁺) = 0x3ff20dd750429b6e = CR(2/√π)+1 ULP**.
+- **No Boost 5.8f erf→1 cutoff** (CR, not 1.0, just above 5.8f). erf = 1−erfc above
+  the small branch (long CR-exact run for z ≥ 1.375 on the clean grid).
+- **Small-branch/complement boundary at 0.5** (messy crossing scan consistent).
+- The apparent erfc hard-zero in (26.543, 26.544] is NOT a Cody XBIG: the last
+  finite witness sits in the smallest normal binade (0x001…) — it is the known
+  Excel-wide **subnormal publication flush** (same as the PHI lane's pinned flush).
+- Detrended erfc residual is a flat ±1-ULP evaluation floor across [0.5, 6] — a
+  uniform-quality rational (or intervals of equal quality; no sharp boundary signal
+  at Boost's 1.5/2.5/4.5 or fdlibm's 1.25/2.857).
+
+Data: `answers-erfp/erfcp.json` (clean k/32 ladders), `answers-erfm/erfcm.json`
+(full-mantissa), `answers-b7erf/b7erfc.json` (lineage fingerprints),
+`answers-b8erf/b8erfc.json` (flush bisect + 0.5 crossing). Harness: `erf_map.py`,
+`erf_cody.py`, `erf_fdlibm.py`, `erf_boost.py`.
+
 ## Open sub-identifications (recipes)
 
-1. **erf/erfc op-graph** (also closes ERF.PRECISE, ERFC.PRECISE, GAUSS): race fdlibm
-   s_erf/s_erfc and Boost against `answers-erfp/erfcp.json`; then adjacent-double
-   probes at branch boundaries. Plug into gratio's 220/390 paths and re-race a=0.5 &
-   half-integer slices.
+1. **erf/erfc coefficient recovery** (closes ERF.PRECISE, ERFC.PRECISE, GAUSS,
+   CHIDIST odd-df, half-integer gratio): architecture pinned (above); unknowns are
+   the custom-Microsoft rational tables + evaluation staging. Well-conditioned
+   (single-rounded plain-double eval, direct measurements, R(0⁺) exact anchor):
+   run the GAMMALN-lane machinery (stable_gn analytic-Jacobian fit → miss-collapse
+   diagnostic → CVP/LLL coefficient nudges) per interval, starting with the z<0.5
+   erf branch (no exp confound, deg ~4/4 + prefix). Guard with held-out per
+   [[validate-workflow-ids-on-heldout]].
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection
    over ~20 x-points each — the slice over-determines it); compare against published
