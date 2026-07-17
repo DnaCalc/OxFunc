@@ -278,6 +278,29 @@ bgrat 14, bpser_sym 9, bfrac 4, bup_bgrat 3. Findings:
   remaining misses collapsed to ±1 ULP (at a=0.5) — the a<1 path is closed
   to the ±1 level under the extended model.
 
+
+## Bulk oracle engine + mass tooth sweep (2026-07-17 session 5)
+
+**Run-W109BulkBatch.ps1 landed**: recalc-sheet bulk capture, same ProbeBatch CLI
+and shared OracleCache, validated 100.000% bit-identical on 1,831 gate rows
+(ERF.PRECISE/CHIDIST/GAMMA.DIST) and byte-identical cache records. Throughput:
+**8,800 probes/s** Excel-compute (~400x the per-batch-startup baseline); 114,688
+ERF.PRECISE probes captured in 67s wall (`batch/answers-b16.json`). Invariants
+preserved: scalar-cell path, args via Value2 references only (never decimal
+formula text), Formula2R1C1 for dotted names.
+
+**Mass tooth sweep** (16k-step ladders per binade + two zoom windows,
+`dump-b16.txt` via the generalized check_erf190 dump): the erf last-op comb has
+EXACT near-dyadic per-binade periods with wildly non-monotonic density —
+p(2^-20) = 2^-33 exactly, p(2^-15) = 3*2^-29 exactly, e=-25 nearly quiet
+(7 teeth/16k vs 5,960 at e=-20), amplitudes 0.75-1.5 ULP; the bisected
+p(2^-30) = 2.996*2^-36 stays the one non-dyadic reading (continuous
+measurement vs grid-quantized). No smooth or single-table generator law fits;
+the structure suggests dependence on z's leading mantissa bits with
+binade-dependent index width. Next: grid-free continuous period measurement
+per binade (bisection pairs, now cheap), and correlate tooth positions
+against leading-bit tables of z, w, and x simultaneously.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection

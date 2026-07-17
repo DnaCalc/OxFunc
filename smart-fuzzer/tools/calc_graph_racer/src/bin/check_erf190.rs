@@ -177,7 +177,8 @@ fn dump_ladder(dir: &str) {
         wg_first: true,
         inner_dbl: false,
     };
-    let txt = std::fs::read_to_string(format!("{dir}/answers-b11.json")).unwrap();
+    let ans_name = std::env::args().nth(3).unwrap_or_else(|| "answers-b11.json".into());
+    let txt = std::fs::read_to_string(format!("{dir}/{ans_name}")).unwrap();
     let ws: WitnessSet = serde_json::from_str(&txt).unwrap();
     for w in &ws.witnesses {
         let Some(id) = &w.id else { continue };
