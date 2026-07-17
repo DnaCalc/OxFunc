@@ -283,7 +283,15 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
-    ln_gamma_positive(x)
+    // Published GAMMALN / GAMMALN.PRECISE surface: the identified Excel op-graph
+    // kernel (W109 G3-02) for positive arguments. Domain handling is preserved
+    // exactly from the prior `ln_gamma_positive` guard (non-finite / x <= 0 ->
+    // #NUM!); only the positive-x numeric path changes. GAMMA and the shared
+    // internal lgamma are unaffected.
+    if !x.is_finite() || x <= 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    Ok(crate::excel_numeric::gammaln_excel(x))
 }
 
 pub fn gammaln_precise_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {

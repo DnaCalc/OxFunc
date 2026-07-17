@@ -65,6 +65,12 @@ use tables::*;
 #[cfg(target_arch = "x86_64")]
 mod x87;
 
+/// Excel `GAMMALN` / `GAMMALN.PRECISE` positive-argument kernel (W109 G3-02).
+/// Distinct from the shared internal `lgamma`; only the published GAMMALN
+/// surfaces route here.
+mod gammaln;
+pub(crate) use gammaln::gammaln_excel;
+
 /// W109 research surface: raw x87 instruction primitives + `Ext80` extended
 /// temporaries for the calculation-graph search tooling. Feature-gated and
 /// `x86_64`-only; production kernels never go through here.
@@ -172,6 +178,34 @@ pub(crate) fn excel_exp(x: f64) -> f64 {
     {
         exp_portable(x)
     }
+}
+
+/// Round-toward-zero publication of the internal exp chain — the W109 F2XM1
+/// identification's gamma-series-site mode (one fFEXP chain, RN53 at
+/// wrapper/pdf sites, RZ53 at the series `r = exp(t1)/G` site). On `x86_64`
+/// this runs the real chain with an RC=chop final store; elsewhere callers
+/// fall back to their portable directed-rounding core.
+#[cfg(target_arch = "x86_64")]
+pub(crate) fn excel_exp_rz(x: f64) -> f64 {
+    use x87::raw::{
+        CW_PC64_RN, ext_abs, ext_add, ext_div, ext_f2xm1, ext_from_f64, ext_l2e, ext_mul, ext_one,
+        ext_rndint, ext_scale, ext_sub, ext_to_f64,
+    };
+    if !x.is_finite() {
+        return excel_exp(x);
+    }
+    let cw = CW_PC64_RN;
+    let cw_rz: u16 = CW_PC64_RN | 0x0C00; // RC=11: truncate at the final store
+    let t = ext_mul(&ext_from_f64(x), &ext_l2e(), cw);
+    let k = ext_rndint(&t, cw);
+    let f = ext_sub(&t, &k, cw);
+    let neg = ext_to_f64(&f, cw) < 0.0;
+    let w = ext_f2xm1(&ext_abs(&f, cw), cw);
+    let mut m = ext_add(&w, &ext_one(), cw);
+    if neg {
+        m = ext_div(&ext_one(), &m, cw);
+    }
+    ext_to_f64(&ext_scale(&m, &k, cw), cw_rz)
 }
 
 /// Portable faithful (`~0.502` ULP) double-precision `e^x` — the glibc-2.29

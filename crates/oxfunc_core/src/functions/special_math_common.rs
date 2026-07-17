@@ -36,7 +36,7 @@ pub fn gamma(z: f64) -> f64 {
     if z < 0.5 {
         return std::f64::consts::PI / ((std::f64::consts::PI * z).sin() * gamma(1.0 - z));
     }
-    ln_gamma(z).exp()
+    crate::excel_numeric::excel_exp(ln_gamma(z))
 }
 
 // ---------------------------------------------------------------------------
@@ -184,7 +184,7 @@ fn gratio_norm_gamma(a: f64) -> f64 {
         let sqrt_pi = std::f64::consts::PI.sqrt();
         return df * sqrt_pi / f64::powi(2.0, n);
     }
-    ln_gamma(a).exp()
+    crate::excel_numeric::excel_exp(ln_gamma(a))
 }
 
 /// exparg(l) of exparg.f (specialized to this x86_64 host's double range).
@@ -210,7 +210,7 @@ fn gratio_rexp(x: f64) -> f64 {
     if x.abs() <= 0.15 {
         return x * (((P2 * x + P1) * x + 1.0) / ((((Q4 * x + Q3) * x + Q2) * x + Q1) * x + 1.0));
     }
-    let w = x.exp();
+    let w = crate::excel_numeric::excel_exp(x);
     if x <= 0.0 {
         (w - 0.5) - 0.5
     } else {
@@ -328,11 +328,16 @@ fn gratio_gam1(a: f64) -> f64 {
 // then directed truncation. The RD bit can only be wrong if exp(x) sits
 // within ~2^-100 relative of a 53-bit boundary.
 
+#[cfg(not(target_arch = "x86_64"))]
 const EXP_RD_L1_BITS: u64 = 0x3f862e4200000000; // ln2/64 hi, 32 trailing zero bits
+#[cfg(not(target_arch = "x86_64"))]
 const EXP_RD_L2A_BITS: u64 = 0x3e3fdf473de6af28;
+#[cfg(not(target_arch = "x86_64"))]
 const EXP_RD_L2B_BITS: u64 = 0xbadc4c67fc0d0951;
+#[cfg(not(target_arch = "x86_64"))]
 const EXP_RD_INV_L_BITS: u64 = 0x40571547652b82fe; // 64/ln2
 
+#[cfg(not(target_arch = "x86_64"))]
 #[rustfmt::skip]
 const EXP_RD_TBL: [(u64, u64); 64] = [
     (0x3ff0000000000000, 0x0000000000000000), (0x3ff02c9a3e778061, 0xbc719083535b085d),
@@ -369,6 +374,7 @@ const EXP_RD_TBL: [(u64, u64); 64] = [
     (0x3fff50765b6e4540, 0x3c99d3e12dd8a18b), (0x3fffa7c1819e90d8, 0x3c874853f3a5931e),
 ];
 
+#[cfg(not(target_arch = "x86_64"))]
 #[rustfmt::skip]
 const EXP_RD_COEF: [(u64, u64); 11] = [ // 1/k!, k = 10..=0, Horner order
     (0x3e927e4fb7789f5c, 0x3b3cbbc05b4fa99a), (0x3ec71de3a556c734, 0xbb6c154f8ddc6c00),
@@ -379,6 +385,7 @@ const EXP_RD_COEF: [(u64, u64); 11] = [ // 1/k!, k = 10..=0, Horner order
     (0x3ff0000000000000, 0x0000000000000000),
 ];
 
+#[cfg(not(target_arch = "x86_64"))]
 #[inline]
 fn two_sum(a: f64, b: f64) -> (f64, f64) {
     let s = a + b;
@@ -386,12 +393,14 @@ fn two_sum(a: f64, b: f64) -> (f64, f64) {
     (s, (a - (s - bb)) + (b - bb))
 }
 
+#[cfg(not(target_arch = "x86_64"))]
 #[inline]
 fn two_prod(a: f64, b: f64) -> (f64, f64) {
     let p = a * b;
     (p, a.mul_add(b, -p))
 }
 
+#[cfg(not(target_arch = "x86_64"))]
 #[inline]
 fn dd_mul(ah: f64, al: f64, bh: f64, bl: f64) -> (f64, f64) {
     let (p, e) = two_prod(ah, bh);
@@ -399,8 +408,25 @@ fn dd_mul(ah: f64, al: f64, bh: f64, bl: f64) -> (f64, f64) {
 }
 
 pub fn exp_rd(x: f64) -> f64 {
+    // W109 F2XM1 identification: the series-site chop is RZ53 of the x87 fFEXP
+    // chain. On x86_64 run the real chain; elsewhere fall back to the validated
+    // double-double floor-of-true core (they differ only on the rare rows where
+    // the chain's extended value crosses a rounding boundary the true value
+    // does not).
+    #[cfg(target_arch = "x86_64")]
+    {
+        crate::excel_numeric::excel_exp_rz(x)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        exp_rd_portable(x)
+    }
+}
+
+#[cfg(not(target_arch = "x86_64"))]
+fn exp_rd_portable(x: f64) -> f64 {
     if x == 0.0 || !x.is_finite() {
-        return x.exp();
+        return crate::excel_numeric::excel_exp(x);
     }
     let k = (x * f64::from_bits(EXP_RD_INV_L_BITS)).round();
     let ki = k as i64;
@@ -409,7 +435,7 @@ pub fn exp_rd(x: f64) -> f64 {
     if !(-1022..=1022).contains(&m) {
         // overflow / deep-subnormal territory: not exercised by the kernel's
         // series call site; plain exp keeps the guards upstream working.
-        return x.exp();
+        return crate::excel_numeric::excel_exp(x);
     }
     // r = x - k*ln2/64, double-double
     let t = x - k * f64::from_bits(EXP_RD_L1_BITS); // exact: 32 trailing zero bits, |k| < 2^17
@@ -437,7 +463,7 @@ pub fn exp_rd(x: f64) -> f64 {
     };
     if m == -1022 && d < 1.0 {
         // scaled result would be subnormal; directed rounding not preserved.
-        return x.exp();
+        return crate::excel_numeric::excel_exp(x);
     }
     let scale = f64::from_bits(((1023 + m) as u64) << 52);
     d * scale
@@ -542,7 +568,7 @@ fn gratio_gamma_nswc(a: f64) -> f64 {
     if w > 0.99999 * gratio_exparg(0) {
         return 0.0;
     }
-    let mut gam = w.exp() * (1.0 + tail);
+    let mut gam = crate::excel_numeric::excel_exp(w) * (1.0 + tail);
     if a < 0.0 {
         gam = (1.0 / (gam * s)) / x;
     }
@@ -564,7 +590,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
         // a = 1+2^-20 contradiction probe; emulator race a=1 slice 179/205
         // with this wrapper). Nearest-rounded exp/expm1 — the chopped series
         // exp does NOT apply on this path.
-        return (-f64::exp_m1(-x), (-x).exp());
+        return (-f64::exp_m1(-x), crate::excel_numeric::excel_exp(-x));
     }
     // Excel uses ind = 0 (unscaled). gratio.f: iop = ind + 1 = 1 (only ind of
     // 1 or 2 would remap to iop = 3), selecting the tight acc = 5e-15, big = 20,
@@ -610,13 +636,13 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
                 return (0.5 + (0.5 - qans), qans);
             }
             // statement 190
-            let w = z.exp();
+            let w = crate::excel_numeric::excel_exp(z);
             let ans = w * g * (0.5 + (0.5 - j));
             return (ans, 0.5 + (0.5 - ans));
         }
         // a < 1, x >= 1.1
         let t1 = a * x.ln() - x;
-        let u = a * t1.exp();
+        let u = a * crate::excel_numeric::excel_exp(t1);
         if u == 0.0 {
             return (1.0, 0.0);
         }
@@ -632,7 +658,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
             // nearest-rounded exp (chop measurably hurts there).
             let t1 = a * x.ln() - x;
             let g = gratio_norm_gamma(a);
-            return gratio_after40(a, x, exp_rd(t1) / g, t1.exp() / g, e, acc, x0, &mut wk);
+            return gratio_after40(a, x, exp_rd(t1) / g, crate::excel_numeric::excel_exp(t1) / g, e, acc, x0, &mut wk);
         }
         let twoa = a + a;
         let m = twoa as i64;
@@ -644,7 +670,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
             let mut c;
             if a == i as f64 {
                 // statement 210: integer a, finite sum
-                summ = (-x).exp();
+                summ = crate::excel_numeric::excel_exp(-x);
                 t = summ;
                 n = 1i64;
                 c = 0.0;
@@ -653,7 +679,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
                 // DEVIATION 2: erfc1(0, sqrt(x)) == Q(0.5, x) == gratio(0.5, x).1
                 let rtx = x.sqrt();
                 summ = gratio(0.5, x).1;
-                t = (-x).exp() / (GRATIO_RTPI * rtx);
+                t = crate::excel_numeric::excel_exp(-x) / (GRATIO_RTPI * rtx);
                 n = 0i64;
                 c = -0.5;
             }
@@ -668,7 +694,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
         }
         let t1 = a * x.ln() - x;
         let g = gratio_norm_gamma(a);
-        return gratio_after40(a, x, exp_rd(t1) / g, t1.exp() / g, e, acc, x0, &mut wk);
+        return gratio_after40(a, x, exp_rd(t1) / g, crate::excel_numeric::excel_exp(t1) / g, e, acc, x0, &mut wk);
     }
 
     // statement 30: a >= big
@@ -695,7 +721,7 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
     let t = (1.0 / a).powi(2);
     let mut t1 = (((0.75 * t - 1.0) * t + 3.5) * t - 105.0) / (a * 1260.0);
     t1 -= y;
-    let r = GRATIO_RT2PIN * rta * t1.exp();
+    let r = GRATIO_RT2PIN * rta * crate::excel_numeric::excel_exp(t1);
     // a >= big: no chopped-exp evidence for this r staging; same r both arms.
     gratio_after40(a, x, r, r, e, acc, x0, &mut wk)
 }
@@ -805,9 +831,9 @@ fn gratio_temme_270(a: f64, l: f64, y: f64, z: f64, e: f64, s: f64, iop: usize) 
     if s.abs() <= 2.0 * e && a * e * e > 3.28e-3 {
         return (2.0, 2.0);
     }
-    let c = (-y).exp();
+    let c = crate::excel_numeric::excel_exp(-y);
     // DEVIATION 3: w = 0.5*erfc1(1, sqrt(y)) = 0.5*exp(y)*Q(0.5, y).
-    let w = 0.5 * (y.exp() * gratio(0.5, y).1);
+    let w = 0.5 * (crate::excel_numeric::excel_exp(y) * gratio(0.5, y).1);
     let u = 1.0 / a;
     let mut zz = (z + z).sqrt();
     if l < 1.0 {
@@ -1010,7 +1036,7 @@ fn bratio_esum(mu: i32, x: f64) -> f64 {
         if w < 0.0 {
             return bratio_esum20(mu, x);
         }
-        return w.exp();
+        return crate::excel_numeric::excel_exp(w);
     }
     if mu < 0 {
         return bratio_esum20(mu, x);
@@ -1019,12 +1045,12 @@ fn bratio_esum(mu: i32, x: f64) -> f64 {
     if w > 0.0 {
         return bratio_esum20(mu, x);
     }
-    w.exp()
+    crate::excel_numeric::excel_exp(w)
 }
 
 fn bratio_esum20(mu: i32, x: f64) -> f64 {
     let w = mu as f64;
-    w.exp() * x.exp()
+    crate::excel_numeric::excel_exp(w) * crate::excel_numeric::excel_exp(x)
 }
 
 /// alnrel: evaluation of the function ln(1 + a).
@@ -1420,7 +1446,7 @@ fn bratio_erf_nswc(x: f64) -> f64 {
             + Q[6])
             * ax
             + Q[7];
-        let v = 0.5 + (0.5 - (-x * x).exp() * top / bot);
+        let v = 0.5 + (0.5 - crate::excel_numeric::excel_exp(-x * x) * top / bot);
         return if x < 0.0 { -v } else { v };
     }
     if ax < 5.8 {
@@ -1429,7 +1455,7 @@ fn bratio_erf_nswc(x: f64) -> f64 {
         let top = (((R[0] * t + R[1]) * t + R[2]) * t + R[3]) * t + R[4];
         let bot = (((S[0] * t + S[1]) * t + S[2]) * t + S[3]) * t + 1.0;
         let v0 = (C - top / (x2 * bot)) / ax;
-        let v = 0.5 + (0.5 - (-x2).exp() * v0);
+        let v = 0.5 + (0.5 - crate::excel_numeric::excel_exp(-x2) * v0);
         return if x < 0.0 { -v } else { v };
     }
     1.0f64.copysign(x)
@@ -1490,7 +1516,7 @@ fn bratio_erfc1(ind: i32, x: f64) -> f64 {
         let bot = ((B[0] * t + B[1]) * t + B[2]) * t + 1.0;
         let mut v = 0.5 + (0.5 - x * (top / bot));
         if ind != 0 {
-            v = t.exp() * v;
+            v = crate::excel_numeric::excel_exp(t) * v;
         }
         return v;
     }
@@ -1509,7 +1535,7 @@ fn bratio_erfc1(ind: i32, x: f64) -> f64 {
         if x <= -5.6 {
             let mut vv = 2.0;
             if ind != 0 {
-                vv = 2.0 * (x * x).exp();
+                vv = 2.0 * crate::excel_numeric::excel_exp(x * x);
             }
             return vv;
         }
@@ -1523,14 +1549,14 @@ fn bratio_erfc1(ind: i32, x: f64) -> f64 {
     }
     if ind != 0 {
         if x < 0.0 {
-            return 2.0 * (x * x).exp() - v;
+            return 2.0 * crate::excel_numeric::excel_exp(x * x) - v;
         }
         return v;
     }
     let w = x * x;
     let t = w;
     let e_ = w - t;
-    let mut v = ((0.5 + (0.5 - e_)) * (-t).exp()) * v;
+    let mut v = ((0.5 + (0.5 - e_)) * crate::excel_numeric::excel_exp(-t)) * v;
     if x < 0.0 {
         v = 2.0 - v;
     }
@@ -1548,7 +1574,7 @@ fn bratio_rexp(x: f64) -> f64 {
     if x.abs() <= 0.15 {
         return x * (((P2 * x + P1) * x + 1.0) / ((((Q4 * x + Q3) * x + Q2) * x + Q1) * x + 1.0));
     }
-    let w = x.exp();
+    let w = crate::excel_numeric::excel_exp(x);
     if x <= 0.0 {
         (w - 0.5) - 0.5
     } else {
@@ -1671,7 +1697,7 @@ fn bratio_fpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
         if t < bratio_exparg(1) {
             return fp;
         }
-        fp = t.exp();
+        fp = crate::excel_numeric::excel_exp(t);
     }
     fp = (b / a) * fp;
     let tol = eps / a;
@@ -1725,13 +1751,13 @@ fn bratio_bpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
     let a0 = a.min(b);
     if a0 >= 1.0 {
         let z = a * x.ln() - bratio_betaln(a, b);
-        bp = z.exp() / a;
+        bp = crate::excel_numeric::excel_exp(z) / a;
     } else {
         let b0 = a.max(b);
         if b0 >= 8.0 {
             let u = bratio_gamln1(a0) + bratio_algdiv(a0, b0);
             let z = a * x.ln() - u;
-            bp = (a0 / a) * z.exp();
+            bp = (a0 / a) * crate::excel_numeric::excel_exp(z);
         } else if b0 > 1.0 {
             let mut u = bratio_gamln1(a0);
             let m = bratio_ftoi(b0 - 1.0);
@@ -1754,7 +1780,7 @@ fn bratio_bpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
             } else {
                 t = 1.0 + bratio_gam1(apb);
             }
-            bp = z.exp() * (a0 / a) * (1.0 + bratio_gam1(b0m)) / t;
+            bp = crate::excel_numeric::excel_exp(z) * (a0 / a) * (1.0 + bratio_gam1(b0m)) / t;
         } else {
             bp = x.powf(a);
             if bp == 0.0 {
@@ -1805,7 +1831,7 @@ fn bratio_bup(a: f64, b: f64, x: f64, y: f64, n: i32, eps: f64) -> f64 {
                 mu = k;
             }
             let t = mu as f64;
-            d = (-t).exp();
+            d = crate::excel_numeric::excel_exp(-t);
         }
     }
     let bp = bratio_brcmp1(mu, a, b, x, y) / a;
@@ -1879,8 +1905,8 @@ fn bratio_brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
         } else {
             bratio_rlog1(e)
         };
-        let z = (-(a * u + b * v)).exp();
-        return CONST * (b * x0).sqrt() * z * (-bratio_bcorr(a, b)).exp();
+        let z = crate::excel_numeric::excel_exp(-(a * u + b * v));
+        return CONST * (b * x0).sqrt() * z * crate::excel_numeric::excel_exp(-bratio_bcorr(a, b));
     }
 
     let lnx;
@@ -1900,12 +1926,12 @@ fn bratio_brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
     let mut z = a * lnx + b * lny;
     if a0 >= 1.0 {
         z -= bratio_betaln(a, b);
-        return z.exp();
+        return crate::excel_numeric::excel_exp(z);
     }
     let mut b0 = a.max(b);
     if b0 >= 8.0 {
         let u = bratio_gamln1(a0) + bratio_algdiv(a0, b0);
-        return a0 * (z - u).exp();
+        return a0 * crate::excel_numeric::excel_exp(z - u);
     }
     if b0 > 1.0 {
         let mut u = bratio_gamln1(a0);
@@ -1928,9 +1954,9 @@ fn bratio_brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
         } else {
             t = 1.0 + bratio_gam1(apb);
         }
-        return a0 * z.exp() * (1.0 + bratio_gam1(b0)) / t;
+        return a0 * crate::excel_numeric::excel_exp(z) * (1.0 + bratio_gam1(b0)) / t;
     }
-    let br = z.exp();
+    let br = crate::excel_numeric::excel_exp(z);
     if br == 0.0 {
         return br;
     }
@@ -1976,7 +2002,7 @@ fn bratio_brcmp1(mu: i32, a: f64, b: f64, x: f64, y: f64) -> f64 {
             bratio_rlog1(e)
         };
         let z = bratio_esum(mu, -(a * u + b * v));
-        return CONST * (b * x0).sqrt() * z * (-bratio_bcorr(a, b)).exp();
+        return CONST * (b * x0).sqrt() * z * crate::excel_numeric::excel_exp(-bratio_bcorr(a, b));
     }
 
     let lnx;
@@ -2101,10 +2127,10 @@ fn bratio_bgrat(a: f64, b: f64, x: f64, y: f64, w: f64, eps: f64) -> (f64, i32) 
     if b * z == 0.0 {
         return (w, 1);
     }
-    let mut r = b * (1.0 + bratio_gam1(b)) * (b * z.ln()).exp();
-    r = r * (a * lnx).exp() * (0.5 * bm1 * lnx).exp();
+    let mut r = b * (1.0 + bratio_gam1(b)) * crate::excel_numeric::excel_exp(b * z.ln());
+    r = r * crate::excel_numeric::excel_exp(a * lnx) * crate::excel_numeric::excel_exp(0.5 * bm1 * lnx);
     let mut u = bratio_algdiv(b, a) + b * nu.ln();
-    u = r * (-u).exp();
+    u = r * crate::excel_numeric::excel_exp(-u);
     if u == 0.0 {
         return (w, 1);
     }
@@ -2190,7 +2216,7 @@ fn bratio_grat1(a: f64, x: f64, r: f64, eps: f64) -> (f64, f64) {
             }
             return (0.5 + (0.5 - q), q);
         }
-        let w = z.exp();
+        let w = crate::excel_numeric::excel_exp(z);
         let p = w * g * (0.5 + (0.5 - j));
         return (p, 0.5 + (0.5 - p));
     }
@@ -2241,7 +2267,7 @@ fn bratio_basym(a: f64, b: f64, lambda_: f64, eps: f64) -> f64 {
         w0 = 1.0 / (a * (1.0 + h)).sqrt();
     }
     let f = a * bratio_rlog1(-lambda_ / a) + b * bratio_rlog1(lambda_ / b);
-    let t = (-f).exp();
+    let t = crate::excel_numeric::excel_exp(-f);
     if t == 0.0 {
         return ba;
     }
@@ -2302,7 +2328,7 @@ fn bratio_basym(a: f64, b: f64, lambda_: f64, eps: f64) -> f64 {
         }
         n += 2;
     }
-    let u = (-bratio_bcorr(a, b)).exp();
+    let u = crate::excel_numeric::excel_exp(-bratio_bcorr(a, b));
     E0 * t * u * summ
 }
 
@@ -2652,7 +2678,7 @@ mod tests {
                     break;
                 }
             }
-            sum * (-x + a * x.ln() - gln).exp()
+            sum * crate::excel_numeric::excel_exp(-x + a * x.ln() - gln)
         } else {
             1.0 - old_nr_gamma_q(a, x)
         }
@@ -2687,7 +2713,7 @@ mod tests {
                 break;
             }
         }
-        (-x + a * x.ln() - gln).exp() * h
+        crate::excel_numeric::excel_exp(-x + a * x.ln() - gln) * h
     }
 
     // Head-to-head over the full live-Excel witness corpus. Ignored by default

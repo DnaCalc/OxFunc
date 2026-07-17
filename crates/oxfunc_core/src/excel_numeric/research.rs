@@ -27,6 +27,12 @@ pub fn excel_ln(x: f64) -> f64 {
     super::excel_log(x)
 }
 
+/// The internal exp chain published ROUND-TOWARD-ZERO — the gamma-series-site
+/// publication (W109 chopped-exp + F2XM1 identification).
+pub fn excel_exp_rz(x: f64) -> f64 {
+    super::excel_exp_rz(x)
+}
+
 /// Excel `LOG10` — the confirmed `fldlg2` + `fyl2x` chain.
 pub fn excel_log10(x: f64) -> f64 {
     super::excel_log10(x)

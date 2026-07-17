@@ -284,7 +284,12 @@ pub fn poisson_dist_kernel(x: f64, mean: f64, cumulative: bool) -> Result<f64, W
         for i in 2..=x {
             ln_fact += (i as f64).ln();
         }
-        Ok((-(mean) + (x as f64) * mean.ln() - ln_fact).exp())
+        // W109: the internal exp is the x87 fFEXP chain (identified via the
+        // POISSON k=0 window, 30,000/30,000). Route staging (direct product
+        // vs this log composition) is a separate open lane.
+        Ok(crate::excel_numeric::excel_exp(
+            -(mean) + (x as f64) * mean.ln() - ln_fact,
+        ))
     }
 }
 
