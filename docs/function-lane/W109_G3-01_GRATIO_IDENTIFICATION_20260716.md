@@ -100,16 +100,46 @@ Data: `answers-erfp/erfcp.json` (clean k/32 ladders), `answers-erfm/erfcm.json`
 `answers-b8erf/b8erfc.json` (flush bisect + 0.5 crossing). Harness: `erf_map.py`,
 `erf_cody.py`, `erf_fdlibm.py`, `erf_boost.py`.
 
-## Open sub-identifications (recipes)
+## erf coefficient-recovery outcome (2026-07-17 session) — THERE ARE NO COEFFICIENTS
 
-1. **erf/erfc coefficient recovery** (closes ERF.PRECISE, ERFC.PRECISE, GAUSS,
-   CHIDIST odd-df, half-integer gratio): architecture pinned (above); unknowns are
-   the custom-Microsoft rational tables + evaluation staging. Well-conditioned
-   (single-rounded plain-double eval, direct measurements, R(0⁺) exact anchor):
-   run the GAMMALN-lane machinery (stable_gn analytic-Jacobian fit → miss-collapse
-   diagnostic → CVP/LLL coefficient nudges) per interval, starting with the z<0.5
-   erf branch (no exp confound, deg ~4/4 + prefix). Guard with held-out per
-   [[validate-workflow-ids-on-heldout]].
+The "custom Microsoft rational tables" hypothesis DISSOLVED. Findings, in order:
+
+1. **All remaining published candidates ruled out** (agent sweep + direct races):
+   Boost int_<64> tables, Cephes ndtr, Ooura gamerf derf, Hart 5666, SLATEC,
+   renormalized Cody/Cephes variants, plus every constant/rational micro-form
+   (multiply, divide, split-constant, Padé [m/n] m,n≤8, Taylor truncations,
+   two-product sums — all swept over constant neighborhoods).
+2. **The z<0.5 branch is the NSWC gratio a<1 DIRECT path (branch 190)** — the same
+   TOMS-654 source as the gamma side, with a mis-transcription trap: for a=½,
+   x=z²<0.25 always routes 190 (`ans = exp(a·ln x)·g·(0.5+(0.5−j))`), NEVER the
+   complementary 200-path (whose 1−q staging is catastrophic at tiny z in ANY
+   precision — proof by granularity).
+3. **The mystery constant is g = 1 + gam1(½)** — the NSWC gam1 rational itself,
+   evaluated in x87 EXTENDED: h = `0x3fc06eba8214db6c` (cf. fdlibm's efx
+   `…db69` — 3 ulp apart), g ≈ true·(1+8.5e-17), matching the measured effective-
+   constant center (+6.5e-17 ± wobble). The earlier "q0 = sqrt(π_double)/2 anchor"
+   was this same value seen through a division-form lens (1/g quantization
+   coincidence, 11/15 partial fit).
+4. **x87-extended compilation required**: all-double staging gives ±8-ULP tiny-z
+   wobble (ruled out); extended log/exp keeps the exp(0.5·ln x) round-trip
+   sub-ULP as observed. NOTE the tension with the gamma-side a≥1 path 20, which
+   PROVED double-rounded log staging (`sp_both`) — different call sites of the
+   same compiled function can spill differently; treat per-branch.
+5. **Best models**: true-x87 Rust race (`check_erf190.rs`, Ext80 fFEXP/fFLN,
+   512 spill configs): 663/1218 on z<0.5 (misses ±1, one ±2); designed
+   max-|δ(z²)| battery (`answers-b10.json`): z̃=z-direct×g wins 37/50 over
+   sqrt/explog-of-RN53(z²) and reflection forms. ~92% of rows within ±1.
+6. **Residual**: ONE unidentified staging op producing a mantissa-dependent
+   ±half-ULP wobble in the dominant factor (z̃·g), uncorrelated with the
+   z²-rounding residue on the designed battery. Recipe: extend check_erf190
+   with GRAT1-style caller-supplied-prefactor forms (r computed from z), the
+   40-path exp variants, and per-op spill enumeration of the exact
+   `w*g*(0.5+(0.5-j))` association tree; use the b10 max-residue battery plus
+   adjacent-double triples as the discriminator. Data: `answers-b9train.json`
+   (1190), `answers-b9heldout.json` (256, UNTOUCHED — promotion gate),
+   `answers-b10.json` (50).
+
+## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection
    over ~20 x-points each — the slice over-determines it); compare against published
