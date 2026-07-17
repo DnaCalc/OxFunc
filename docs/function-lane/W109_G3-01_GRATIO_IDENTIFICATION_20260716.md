@@ -301,6 +301,29 @@ binade-dependent index width. Next: grid-free continuous period measurement
 per binade (bisection pairs, now cheap), and correlate tooth positions
 against leading-bit tables of z, w, and x simultaneously.
 
+
+## Fine-comb measurement (2026-07-17 session 5b) — envelope aliasing exposed, bit-grids refuted
+
+Dense per-binade scans at ~p/1000 resolution (81,920 probes in 20s via the bulk
+engine, `answers-b17.json`/`dump-b17.txt`) show the ladder-scale "periods" were
+ALIASED ENVELOPES: the true primary comb is ~1000x finer (e=-30: p = 4.30e-14
+not 4.36e-11; e=-20: 5.42e-14; e=-15: 3.14e-12; e=-25: 1.67e-12; e=-40:
+1.04e-20), with tooth amplitudes still 0.55+ ULP. The fine periods are
+NON-dyadic (0.757-0.954 x 2^k) and the anchor-integrality test against z-bit,
+3z-bit, w-bit and x-bit grids returns mean|frac| = 0.25 = the uniform-random
+baseline over 16k+ teeth: **ALL leading-mantissa-bit-table generators are
+REFUTED**. The earlier bisected p(2^-30) = 4.36e-11 and the m30 3/64-grid
+teeth were beat-envelope structure of this fine comb (explaining their exact
+9-period consistency: bisection tracked the envelope, which is real but
+secondary). Relative fine-periods are wildly non-monotonic across binades
+(7.9e-8, 4.5e-8, 4.6e-5, 3.6e-5, 9.4e-9 at e=-15..-40).
+
+IMMEDIATE next step (cheap, no captures): re-dump the same answers under a
+DIFFERENT model config (toggle w_dbl / zz_dbl) and compare tooth positions -
+model-side teeth move or vanish, Excel-side teeth are invariant; this
+partitions the fine comb between Excel's generator and residual model-side
+staging before any further theory.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection
