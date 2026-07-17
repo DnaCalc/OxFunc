@@ -328,3 +328,42 @@ EXTERNAL-SOURCE NEED (manual access; automated fetch bot-blocked): Cody &
 Hillstrom 1967, Math. Comp. 21(98):198-203 — per-interval coefficient tables
 at MULTIPLE precision levels; Excel may use a different table entry or a
 FUNPACK-era set. Control: netlib SPECFUN algama.
+
+## Round-2 recovery (2026-07-18, agent L) — skeleton nearly pinned; [8,12) is the one unidentified segment
+
+- **Stirling switch**: the (10.25,11] bracket was an artifact (rational and
+  Stirling CONVERGE below the switch — the match ramps 0% at 10.0 -> 84% at
+  11.0 -> 100% by 11.44 with no flip). Real bracket (11.43, 12.75); at 12.75
+  the rational family is dead (-186 ULP) while Cephes-Stirling is +1. Prime
+  candidate: Cody's TWELVE = 12.0. Round-3 sw12 block pins it.
+- **Low-branch threshold is a literal 0.7 compare, NOT PNT68**: recurrence
+  identity exact through 0.6953125, first direct row at double(0.7); rpair
+  census 367/367 exact on (0.02,0.5). **No -log(x) EPS early-out** (identity
+  runs bit-exactly to 2^-57). Gap (0.6953125,0.7) pinned in round 3.
+- **Band-4 = TWO regimes, seam at 8.0**: [4,8) near-closure (GN 75.6% exact,
+  worst 1, x87c); [8,10.25) walls at rms 0.89 for EVERY rational of the
+  family (recentering-invariant; upward recurrence ruled out; a
+  Stirling-refit-tail blend improves [8,11.5) to 70.6% but degrades >=11.5)
+  — a two-regime blend signature. SUPERSEDES the [4,11]-Remez hypothesis.
+  [8,~12) is now the single unidentified segment (best ~38-51%, worst 3).
+- **Cody & Hillstrom 1967 verbatim RULED OUT** (n=7 race plateaus at
+  38.8-44.7% like SPECFUN; n=6 accuracy class excluded, worst 27-668).
+  Excel = the 1967 FORM SET (incl. -ln x + R1(x+1), the proven identity)
+  with retuned thresholds (0.7; seam 8; switch ~12) and a THIRD,
+  Microsoft-refit coefficient set at n=7 accuracy. GN real-curve residual
+  differs from BOTH published sets by more than op-rounding (amp 2.7-5.9
+  ULP, 10-12 sign changes) — no re-staging of published coefficients can
+  close.
+- **Banked coefficient fingerprint**: b4 r0 = N4(0)/D4(0) sits rel -3.34e-15
+  below Cody's published ratio (20x stability margin).
+- Peel-read method correction: deg-3 anchor reads were truncation-biased;
+  deg-8 double-window reads land at the 5e-14/9e-13 rel read floor.
+- **Held-out promotion (golden-ratio sweep, never fitted): composite best
+  model 644/1199 = 53.7% exact, worst 4** ([4,8) 70.7% worst 1; [8,10.25)
+  38.5%; b1 52.1%; b2 46.1%; x>=11.44 Cephes-Stirling).
+- Round-3 battery captured: 2,795 probes (gap/sw12/seam8/slope/expo/held2).
+
+Note on the n=7 validation: the main-session high-precision check (E =
+1625.2/1703.7/1606.1) and agent L's double-rounded-coefficient check (1596/
+1654/1582) are BOTH correct — the delta is coefficient double-quantization,
+below the n=7 approximation error. No OCR repairs were needed anywhere.
