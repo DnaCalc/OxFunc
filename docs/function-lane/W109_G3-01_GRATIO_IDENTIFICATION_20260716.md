@@ -609,3 +609,107 @@ for BETA.DIST ((B-x)/(B-A) accurate-complement hypothesis, unmeasured).
 Baseline racer for old-kernel comparisons lived in a temp worktree
 (OxFunc-preport, removed after gating); scorers: score_b22.py,
 race_bratio_identity.py in the work dir.
+
+## erf transfer-function verdict (2026-07-17 session 6, agent J) — the erf-path residual is DOUBLE-arithmetic scale
+
+The b18 corpus is now a calibrated mass-verifier (agentJ_transfer.py: build/
+gate/hyp/invert; 242k rows, 87s; linearized sensitivities validated 2004/2004
+vs full-chain evaluation). Findings:
+
+- ALL extended-precision primitive hypotheses REJECTED by ~2 orders of
+  magnitude: CR-64/x87-64 exp or log differences predict 0.04-1.2% miss
+  densities vs observed 25.6-43.7%.
+- CHOP REFUTED on the a<1/erf path outright: both +1 and -1 flips in every
+  binade (e.g. e=-40: 7,920 vs 4,684), positive shifts to +0.57 ULP.
+- What the data demands: shift(z) = smooth per-binade bias B(z) (+0.065/
+  +0.073/-0.099 ULP at e=-40/-30/-25; wandering +-0.5 ULP with ~1e-5
+  coherence at e=-20) + a DETERMINISTIC per-argument residual delta(z) whose
+  DISTRIBUTION over the sampled grids is uniform, total width 1.01
+  published-ULP ~ 0.90 dbl-ULP of w, identical across binades to 0.3%.
+  Forward-validated: densities AND gradients reproduced bin-by-bin.
+  TERMINOLOGY (standing rule): this is NOT noise — delta(z) is reproducible
+  signal (equidistributed high-frequency rounding residual of
+  double-precision internal arithmetic). The distribution is a CLASS
+  constraint that killed the extended-precision families; the per-row signed
+  values are banked in agentJ_constraints.jsonl (79,510 rows) and remain the
+  signal the exact op-graph must reproduce row-by-row.
+- Structural point: w = exp(ln z) ~ z sits pinned to the double grid (mean
+  |position| 0.002 dbl-ULP), so no publication-mode change of an ACCURATE exp
+  can produce the misses — the internal routine itself carries double-scale
+  error on this path.
+- TENSION to resolve: the POISSON k=0 channel shows a much tighter profile
+  (~99.4% exactly CR) — inconsistent with a +-0.45-ULP exp residual. b18
+  cannot separate an exp-result-relative residual from an lnx-absolute one
+  (S-ratio frozen in every b18 window). If the residual actually lives in
+  the internal LN (a double-precision routine with ~+-0.5-0.7 ULP rounding
+  residual), the internal EXP can be ONE tight near-CR routine at every site
+  (chop-published at the series site, nearest elsewhere) — the clean
+  unification.
+- DISAMBIGUATION CAPTURED: battery b25 (163,840 ERF.PRECISE rows) scans the
+  z-mantissa ~ 1.7724 crossing where ans crosses its binade (S_exp halves,
+  S_log unchanged). If miss width in published ULPs halves across the
+  crossing -> exp-relative; if not -> lnx-absolute.
+
+Files: agentJ_transfer.py, agentJ_rows.npz, agentJ_constraints.jsonl (79,510
+miss-row constraints), agentJ_summary.json, agentJ_{cfgtest,fit,fit2,blocks,
+shape15}.py; batch/answers-b25-erfx.json.
+
+## bgrat implied-prefix decode (2026-07-17 session 6, agent M) — normalizer is algdiv-class; b21 under-determined; b25 designed
+
+Decoder gates passed (synthetic recovery 121/121; leakage control quantified
+the prefix/series entanglement). On the 121 sharp direct-bgrat rows
+(single-final-rounding: excel = RN(u*S), w=0, eps=1.5e-14, l=0):
+
+- **"Normalize via own lgamma" RULED OUT HARD**: lgamma-difference prefix
+  stagings deviate +-100..900 ULP at a=118-200 (exp-of-large-arg cancellation
+  amplification); Excel's implied prefix stays within +-60 (mostly +-25) at
+  all a. Excel's bgrat normalizer is CANCELLATION-FREE, algdiv-class. (One of
+  the two open axes from the b21 verdict is closed.)
+- x87 vs SSE2 on the prefix chain: bitwise-indistinguishable on b21 rows.
+- Stop-position/eps variants: ruled out (flat race; implied S matches a
+  ladder partial sum on only ~5/121 rows).
+- Implied-q (inner kernel) decode is 0-1-ULP sharp but NO tested q-kernel
+  matches (CRQ 2/102, GRATIO 4/102, grat1 7/102, wobble +-30; 19/121 rows
+  admit no q at all under NSWC u) -> the remaining freedom is JOINTLY in the
+  ladder per-term arithmetic and a (u,q) staging pair outside the tested
+  families. b21 is provably under-determined for this split.
+- **b25-bgrat battery designed** (batch-b25-bgrat.json, 822 rows,
+  agentM_b25_meta.json): shared-z a-sweeps (a bit-walked so z lands on the
+  SAME double per group) make the inner Q(b,z0) common-mode and read the
+  normalizer staging as a dense-a curve; predicted separation >=3 ULP for
+  lgd/1exp on ~800/822 rows and q-kernel variants on 558/822.
+
+Files: agentM_decode.py/out, agentM_series.py/out, agentM_gen_b25.py.
+
+## bgrat b25 analysis (2026-07-18, agent M) — op-graph wall confirmed; lane parked pending exp/ln identities
+
+The 822-row shared-z discriminator settled what b21 could not, negatively and
+precisely:
+
+- **Group-intersection falsification**: all 120 (10 shared-z groups x 12
+  op-graphs) common-q intersections are EMPTY, with per-group "no admissible
+  q" rows — every tested realization (lnx {alnrel, CR, x87, log1p} x r
+  {nswc, gamma-lane, exp/Gcr, pow-staged} x u {algdiv-exp, chop, x87,
+  pow(nu,b)} x q {GRATIO, grat1, CR} x accumulation x 6 eps) is falsified AS
+  A FAMILY, not mis-tuned. Forward race caps at ~8-9% everywhere.
+- Stop-rule/eps artifacts excluded (required eps windows are empty).
+- **Measured residual structure (per-row, banked)**: within groups the
+  implied-q offsets are +-3 q-ULP base wobble PLUS bimodal ~10-ULP cluster
+  flips, a-interleaved (not monotone — not a series-depth threshold);
+  deep-series k=2,3 rows carry +-30..103-ULP shared+differential series
+  components. Normalizer: algdiv-CLASS stands (cancellation-free proven);
+  exact member open. q*: GRATIO-neighborhood (-3..+15) but never
+  consistently in-interval.
+- VERDICT: the realization is outside the entire parametrized family — the
+  wall is the INTERACTION of u-chain and per-term arithmetic. Same class as
+  the GAMMALN-core/PMT precedents.
+- PARKED with next-probe design banked (agent M): (i) differential z-pairs
+  (same (a,b), z +-1-2 ULP) to read Excel's dQ/dz transfer and de-entangle
+  q from u; (ii) bracketing rows at the observed cluster-flip a-positions to
+  localize the discrete mechanism; (iii) b->1- sweep collapsing r-staging
+  differences. RESUME CONDITION: revisit when the internal exp/ln op-graphs
+  land (the u-chain is composed of them; their identities may collapse the
+  +-2-3-ULP wobble and leave only the flip mechanism).
+
+Files: agentM_b25{,b,c,d}.py/_out.txt (per-row curves banked in
+agentM_b25_out.txt A2/B2/C).

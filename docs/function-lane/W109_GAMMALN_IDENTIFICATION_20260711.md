@@ -287,3 +287,44 @@ plus finer staging enumeration. Artifacts in `smart-fuzzer/work/w109/G3-02-gamma
 Working artifacts: `check_gammaln_split.rs`, `check_gammaln_recur.rs`,
 `check_gammaln_fdlibm.rs`, `check_gamma_cephes.rs` (racer bins);
 `band_matrix.py`, `boost_small.py` (work dir).
+
+## Session-6 breakthrough (2026-07-18, agent L): the (0,11) core is Cody & Hillstrom DLGAMA with RE-FIT coefficients
+
+Sanity gate reproduced (136/139 Stirling, same 3 documented misses). New
+zero-capture structural identification of the core from existing corpora:
+
+- **Downward recurrence identity** excel(x) == double(excel(x+1) - log(x))
+  is bit-exact 32/32 for all pairs x <= 0.62 and fails from 0.70 up
+  (catastrophic +55,418 ULP at 0.99999 proves direct evaluation there). This
+  is EXACTLY Cody's DLGAMA control flow below PNT68 = 0.6796875 (reuses the
+  direct-band rationals with CORR = -log(x)). Threshold bracketed (0.62,
+  0.70], PNT68 the strong prior.
+- **GAMMALN(4) = CR(ln 6) EXACTLY** (while GAMMALN(3) = CR(ln 2)+1): the
+  fingerprint of Cody band-4 RES = D4 + (x-4)*(XNUM/XDEN) publishing the
+  stored anchor verbatim. D1 = -gamma was already peel-recovered.
+- Full skeleton consistent with all data: [eps?,0.5] P1(XM=x, -log) |
+  (0.5,PNT68) P2(XM=x-1, -log) | [PNT68,1.5) P1(XM=x-1) | [1.5,4) P2(XM=x-2)
+  | [4,~11) D4-form | >=11 Cephes Stirling. Edge detector: no other jumps.
+- **Coefficients are a Microsoft RE-FIT, not any published set**: published
+  Cody scores b4 231/385 (worst 3, x87-continuous objective); +-1..3-ULP
+  per-coefficient hill-climb stalls (+4 rows) — the decimal-conversion-error
+  hypothesis is FALSIFIED; Gauss-Newton reaches b2 450/1247 / b4 238/385
+  worst 2 on a FLAT equivalent-fit manifold (genuine re-fit).
+- b4 miss profile grows toward x=10: consistent with a re-fit on [4,11]
+  (Stirling switch moved from Cody's 12 to ~11). Remez-on-[4,11] test
+  designed as follow-up.
+- PSLQ negative on fitted doubles (expected for minimax output).
+- Best composite forward model now: published-Cody core (x87-continuous) +
+  Cephes Stirling >= 11: 1096/2850 = 38.5% exact, worst 6 ULP.
+
+Batteries designed (capture queued): batch-L-boundary.json (1,793: Stirling
+switch pinning incl. >=-vs-> and derived-quantity discrimination),
+batch-L-core.json (9,642: threshold ladders with recurrence partners,
+EPS-branch ladder, multi-scale peel ladders at anchors 1/2/4, adjacent-double
+clusters to break the GN manifold, dense miss-zone fills, golden-ratio
+held-out sweep).
+
+EXTERNAL-SOURCE NEED (manual access; automated fetch bot-blocked): Cody &
+Hillstrom 1967, Math. Comp. 21(98):198-203 — per-interval coefficient tables
+at MULTIPLE precision levels; Excel may use a different table entry or a
+FUNPACK-era set. Control: netlib SPECFUN algama.
