@@ -769,3 +769,48 @@ the 153 POISSON off-CR rows + b25 bias profiles are the fingerprint.
 Maps banked: agentI_{poisson,expon,exp}_map.jsonl, agentN_{ln,lgamma}_map
 .jsonl, agentJ_b25_residuals.jsonl (+ npz/summaries). Decoder gates all
 passed (synthetic recovery exact).
+
+## INTERNAL EXP IDENTIFIED (2026-07-18, agent O) — the x87 F2XM1 chain, dual-published
+
+**Identity: x87 80-bit extended exp = 2^(x*log2e) with the NAIVE y - round(y)
+reduction feeding F2XM1 (PC=64, RC=nearest), published RN53 at wrapper/pdf
+sites and RZ53 (chop) at the gamma-series site. expm1 = the SAME F2XM1
+primitive staged -expm1(-x).**
+
+Evidence chain:
+- POISSON fingerprint (30k rows): x87-f2xm1-naive reproduces the off-CR set
+  **153/153 EXACTLY** (29,997/30,000 overall, 3 false-positives). Decisive
+  structure-vs-precision control: RN64(true)->RN53 — the same 64-bit
+  precision WITHOUT the f2xm1 op-graph — reproduces only 1/153. Removing the
+  y-round(y) cancellation (ln2-reduction variant) drops to 13/153: **the
+  reduction cancellation IS the growth-with-|arg| mechanism.** LOG2E_64
+  bit-exact with the fldl2e constant 0xB8AA3B295C17F0BC. AMD K8/64 tables,
+  fdlibm, cephes: refuted (6-13/153, noisy).
+- Chop channel (45-row corpus): x87-f2xm1 RZ53 = 38/45, bit-identical to
+  floor(true) incl. the same 7 misses; RN53 scores 17/45 — the dual
+  RN53/RZ53 publication model validated.
+- expm1 (10k): -expm1(-x) staging confirmed (80.3% vs 30.5% for 1-exp); the
+  ~20% symmetric +-1 residual is the raw hardware F2XM1 error curve.
+- erf-path resolution: ONE op-graph, TWO argument deliveries — wrapper sites
+  get a rounded-double argument (tight profile); the erf 190-path delivers an
+  80-BIT EXTENDED zl to the same routine (the 0.90-ULP width + smooth
+  bias(m)). No second realization needed.
+- Residual (3/30,000 + the expm1 off-CR rows): the idealized RN64(2^f - 1)
+  model double-rounds where the ACTUAL F2XM1 microcode rounds correctly —
+  proprietary microcode, NOT clean-room derivable from published sources,
+  BUT this host already renders bit-exact F2XM1 via inline x87 asm
+  (crate::excel_numeric::x87) — hardware-chain verification is the closure
+  test and is behaviorally clean (executing the instruction = black-box).
+
+RECONCILIATION: the "stats rewrite is plain SSE2 double" verdict stands for
+the KERNEL ARITHMETIC; its transcendental PRIMITIVES are the x87 hardware
+chain — rejoining the project-wide "Excel transcendentals are x87" prior.
+The session-4 "x87 chain == CR at double granularity, refuted" verdict was an
+RN53-on-516-rows artifact: near-CR indeed, distinguishable only on the rare
+fingerprint rows this campaign isolated.
+
+Files: agentO_x87exp.py, agentO_race_x87.py, agentO_race_dr.py,
+agentO_chop_validate.py, agentO_expm1.py, agentO_verdict.json (+ support).
+NEXT: hardware-chain verification races (real F2XM1 via inline asm) on all
+channels; then production landing design (exp sites -> x87 chain with per-site
+RN53/RZ53 publication; expm1 -> f2xm1 staging; erf190 with extended delivery).
