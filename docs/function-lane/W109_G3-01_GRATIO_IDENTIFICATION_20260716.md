@@ -568,3 +568,44 @@ drop-in; it should be its own task with its own held-out gate.
 Files: agentH_b21.py, agentH_b21_analysis.py, agentH_b21_out.txt,
 answers-b21-beta.json; earlier agentH_{routing,routing2,cephes,boost,
 gratio_tail,as63,report}.py + agentH_src_* sources.
+
+## BRATIO PORTED TO PRODUCTION (2026-07-17 session 6)
+
+The identified BRATIO kernel is now the production incomplete beta. Port =
+op-for-op Rust transcription of agentA_bratio.py (the identification-bearing
+spec): full subroutine tree (~1,530 lines, bratio_-prefixed: esum/alnrel/
+rlog1/gam1/gamln1/gamln/algdiv/bcorr/gsumln/betaln/erf_nswc/erfc1/rexp/psi/
+fpser/apser/bpser/bup/brcomp/brcmp1/bfrac/bgrat/grat1/basym + 200-line
+driver), `pub fn bratio(a,b,x,y) -> (w, w1)`; `regularized_beta` rewired onto
+it (y = 1-x); the Numerical-Recipes continued fraction DELETED.
+
+Verification chain:
+- Bit-identity race vs the Python spec (LOG/EXP = C runtime): 22/22 branch
+  spot-checks (agent) + **20,008/20,008 random+targeted points, 0 mismatches**
+  (independent). The port IS the spec.
+- Full suite green (1,604), no pins touched.
+- Held-out gate b22 (671 fresh live rows, disjoint values): old NR kernel
+  167/655 exact (worst +-145) -> BRATIO **285/655** (worst 126, one
+  bgrat-wall row; FDIST worst +37 -> -15, TDIST worst +-88 -> +17).
+  Per-row: 422 improved / 60 regressed, ALL regressions in the bgrat-wall
+  region (where no raced realization matches Excel; the old kernel was
+  accidentally close there).
+- b21 deep-tail corpus: old **0/127, worst 8,848 ULP** -> new 4/127, worst
+  56. The catastrophic tail class is eliminated.
+
+ACCURATE-COMPLEMENT STAGINGS LANDED at the wrappers (the identified
+argument passing): FDIST/F.DIST x=d2/den y=d1F/den (and cumulative mirror),
+TDIST/T.DIST.RT/2T + t_cdf + TTEST x=df/den y=t^2/den; all F/T inverter
+closures root the same staged forwards. b22 effect: TDIST 6->14/60 exact.
+BETAINV/FINV/TINV inherit the better forward through the lattice inverter
+automatically.
+
+Open after the port: the bgrat-tail realization (family proven = Eq-9, exact
+arithmetic unmatched — the +126 b22 worst-row lives here), the BETA.DIST
+integer-shape fast path (binomial sum, bypasses BRATIO for integer a,b;
+neither it nor BRATIO dominates vs Excel on the a=b=27 rows — probe later
+whether Excel routes integers through bratio), and the A/B-bounds staging
+for BETA.DIST ((B-x)/(B-A) accurate-complement hypothesis, unmeasured).
+Baseline racer for old-kernel comparisons lived in a temp worktree
+(OxFunc-preport, removed after gating); scorers: score_b22.py,
+race_bratio_identity.py in the work dir.

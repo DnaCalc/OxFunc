@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::chi_f_t_family::{chisq_dist_rt_kernel, f_dist_rt_kernel};
-use crate::functions::special_math_common::regularized_beta;
+use crate::functions::special_math_common::bratio;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::CalcValue;
 use crate::value::{CalcArray, CoreValue, WorksheetErrorCode};
@@ -272,8 +272,11 @@ fn t_probability(abs_t: f64, df: f64, tails: i32) -> Result<f64, WorksheetErrorC
     if !abs_t.is_finite() || abs_t < 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    let z = validate_positive_df(df)? / (validate_positive_df(df)? + abs_t * abs_t);
-    let two_tail = regularized_beta(z, df / 2.0, 0.5);
+    let v = validate_positive_df(df)?;
+    // W109 identified staging: x = df/den, y = t^2/den (accurate complement).
+    let t2 = abs_t * abs_t;
+    let den = v + t2;
+    let two_tail = bratio(df / 2.0, 0.5, v / den, t2 / den).0;
     match tails {
         1 => Ok(two_tail / 2.0),
         2 => Ok(two_tail),

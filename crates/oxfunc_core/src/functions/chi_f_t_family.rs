@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::functions::special_math_common::{
-    bisect_inverse, gamma, regularized_beta, regularized_gamma_p, regularized_gamma_q,
+    bisect_inverse, bratio, gamma, regularized_gamma_p, regularized_gamma_q,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -227,8 +227,11 @@ pub fn f_dist_kernel(
     let d1 = truncate_positive_integer(deg1)?;
     let d2 = truncate_positive_integer(deg2)?;
     if cumulative {
-        let z = d1 * x / (d1 * x + d2);
-        Ok(regularized_beta(z, d1 / 2.0, d2 / 2.0))
+        // W109: Excel's beta wrappers pass the ACCURATE complement pair, not
+        // 1-z (identified stagings; b22 gate).
+        let num = d1 * x;
+        let den = num + d2;
+        Ok(bratio(d1 / 2.0, d2 / 2.0, num / den, d2 / den).0)
     } else {
         f_pdf_kernel(x, d1, d2)
     }
@@ -238,22 +241,23 @@ pub fn f_dist_rt_kernel(x: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetEr
     let x = validate_nonnegative_x(x)?;
     let d1 = truncate_positive_integer(deg1)?;
     let d2 = truncate_positive_integer(deg2)?;
-    let z = d2 / (d2 + d1 * x);
-    Ok(regularized_beta(z, d2 / 2.0, d1 / 2.0))
+    // W109 identified staging: x = d2/den, y = d1*F/den (accurate complement).
+    let num = d1 * x;
+    let den = d2 + num;
+    Ok(bratio(d2 / 2.0, d1 / 2.0, d2 / den, num / den).0)
 }
 
 pub fn f_inv_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorCode> {
     let p = validate_probability_open_unit(probability)?;
     let d1 = truncate_positive_integer(deg1)?;
     let d2 = truncate_positive_integer(deg2)?;
-    let hi = search_upper_bound(p, 1.0, |x| {
-        let z = d1 * x / (d1 * x + d2);
-        regularized_beta(z, d1 / 2.0, d2 / 2.0)
-    });
-    Ok(bisect_inverse(p, 0.0, hi, |x| {
-        let z = d1 * x / (d1 * x + d2);
-        regularized_beta(z, d1 / 2.0, d2 / 2.0)
-    }))
+    let fwd = move |x: f64| {
+        let num = d1 * x;
+        let den = num + d2;
+        bratio(d1 / 2.0, d2 / 2.0, num / den, d2 / den).0
+    };
+    let hi = search_upper_bound(p, 1.0, fwd);
+    Ok(bisect_inverse(p, 0.0, hi, fwd))
 }
 
 pub fn f_inv_rt_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorCode> {
@@ -265,8 +269,9 @@ pub fn f_inv_rt_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, Wo
     // (W109 b14+b19: the complement staging carries a systematic small-p bias).
     // The surface is decreasing in x, so invert the negated forward at -p.
     let f = move |x: f64| {
-        let z = d2 / (d2 + d1 * x);
-        -regularized_beta(z, d2 / 2.0, d1 / 2.0)
+        let num = d1 * x;
+        let den = d2 + num;
+        -bratio(d2 / 2.0, d1 / 2.0, d2 / den, num / den).0
     };
     let hi = search_upper_bound(-p, 1.0, f);
     Ok(bisect_inverse(-p, 0.0, hi, f))
@@ -283,8 +288,10 @@ fn t_pdf(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
 
 fn t_cdf(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let v = truncate_positive_integer(deg_freedom)?;
-    let xx = v / (v + x * x);
-    let ib = regularized_beta(xx, v / 2.0, 0.5);
+    // W109 identified staging: x = df/den, y = t^2/den (accurate complement).
+    let t2 = x * x;
+    let den = v + t2;
+    let ib = bratio(v / 2.0, 0.5, v / den, t2 / den).0;
     Ok(if x >= 0.0 { 1.0 - 0.5 * ib } else { 0.5 * ib })
 }
 
@@ -303,15 +310,17 @@ pub fn t_dist_kernel(
 pub fn t_dist_rt_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let x = validate_nonnegative_x(x)?;
     let v = truncate_positive_integer(deg_freedom)?;
-    let xx = v / (v + x * x);
-    Ok(0.5 * regularized_beta(xx, v / 2.0, 0.5))
+    let t2 = x * x;
+    let den = v + t2;
+    Ok(0.5 * bratio(v / 2.0, 0.5, v / den, t2 / den).0)
 }
 
 pub fn t_dist_2t_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let x = validate_nonnegative_x(x)?;
     let v = truncate_positive_integer(deg_freedom)?;
-    let xx = v / (v + x * x);
-    Ok(regularized_beta(xx, v / 2.0, 0.5))
+    let t2 = x * x;
+    let den = v + t2;
+    Ok(bratio(v / 2.0, 0.5, v / den, t2 / den).0)
 }
 
 pub fn t_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
@@ -335,8 +344,9 @@ pub fn t_inv_2t_kernel(probability: f64, deg_freedom: f64) -> Result<f64, Worksh
     // (W109 b19: residuals collapse from -4..-238 to mostly +-1..7).
     // The surface is decreasing in x, so invert the negated forward at -p.
     let f = move |x: f64| {
-        let xx = v / (v + x * x);
-        -regularized_beta(xx, v / 2.0, 0.5)
+        let t2 = x * x;
+        let den = v + t2;
+        -bratio(v / 2.0, 0.5, v / den, t2 / den).0
     };
     let hi = search_upper_bound(-p, 1.0, f);
     Ok(bisect_inverse(-p, 0.0, hi, f))
