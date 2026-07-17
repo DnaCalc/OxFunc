@@ -252,6 +252,32 @@ period binary; (b) treat the remaining per-row exp deviations as a measured
 recoverable per row). The Cephes-igam-form series staging (ans from 1.0,
 c/ans <= MACHEP stop, ·ax/a publication) is confirmed as the exact series form.
 
+
+## bgrat verdict (2026-07-17 session 4, agent F) — tail region is an op-graph wall
+
+Branch census on the fresh b15 battery (126 rows): bpser 59, bup_bpser 37,
+bgrat 14, bpser_sym 9, bfrac 4, bup_bgrat 3. Findings:
+- **Excel's beta TAIL region (bgrat + bup composites) tracks correctly-rounded
+  betainc far better than NSWC-double** (CRc complement-form 12/20 vs 6/20 on
+  pure-bgrat rows; bup_bpser CR 36/61 vs double 28/61) while PRESERVING the
+  NSWC `0.5+(0.5-w1)` reconstruction — but it is NOT vanilla NSWC bgrat at any
+  precision (every precision/eps/term-cap axis inert at 11/31), NOT the
+  Excel-variant grat1 wiring, NOT NR-betacf (3/27), and not exactly CR either:
+  structured ±4..±7 residuals persist at large-a/small-b and deep tails
+  (bfrac rows to −35 vs CR — Excel's own tail carries real relative error).
+  Extended precision DEGRADES the large-a rows: the residual is asymptotic
+  truncation/formulation error, so Excel's tail is a DIFFERENT expansion —
+  the same op-graph-wall class as GAMMALN-core; closure needs the binary's
+  routine, not more fitting.
+- **Honest held-out caveat**: the bpser beats-CR signature reproduces on the
+  F-surfaces (11/12-vs-6/12, 5/5-vs-3/5) but NOT on the deliberately
+  boundary-straddling b15 stress battery (30/59 vs 32/59 tied). bpser ==
+  NSWC-in-double stands on well-conditioned surfaces; deep-tail rows drift.
+- **Gamma-side a<1 wiring VALIDATED**: Excel-variant grat1 (no a==0.5
+  dispatch) at prec-64/x87 scores 26/37 on the GAMMA.DIST a<1 rows with ALL
+  remaining misses collapsed to ±1 ULP (at a=0.5) — the a<1 path is closed
+  to the ±1 level under the extended model.
+
 ## Open sub-identifications (recipes)
 2. **Internal Γ normalizer**: with the gratio structure pinned, solve per-a for the
    normalizer double that bit-matches each fractional-a slice (interval intersection
