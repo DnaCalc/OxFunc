@@ -859,3 +859,20 @@ against the b25 bias profiles:
   NEXT (in flight): refit Excel's effective g at sub-2^-53 resolution via
   park-phase alignment on the clean e=-30/-40 profiles, re-race the
   composites; held-out only if decisive.
+
+## erf lane PARKED (2026-07-18, g-refit round) — resting state banked
+
+The effective-g refit refuted the wg-park hypothesis AT ALL g (interval
+stabbing over 162k clean rows: coverage flat at ~80/74%, never the ~95% a
+true park would give; the earlier rho~0.5 was a shared-centering artifact).
+The peak is bias absorption: refined g_x = g_ext*(1+0.0481*2^-52), 64-bit
+mantissa 0x906eba8214db6c6f (+-0.02*2^-52) — a bias correction. Best
+composite C10r (j-pipeline RN53 parks + g_x): 67.65% (e=-25 35.3->64.2%).
+Not decisive (closed op-graph ~90%+); b9heldout PRESERVED unraced.
+
+Resting state: agentJ_resting_state.json — sharpened constraints (the
+1.01/0.505-pub-ULP equidistributed component with grid ~ 2^Ez has ALL raced
+sources refuted; per-binade coherent components largely explained except
+e=-15/-20 fine phases) + three designed probes: (1) identify the 2^Ez-grid
+source, (2) repair j-pipeline park phases at e=-15/-20 vs the banked per-row
+residuals, (3) test parked-intermediate vs register-continuous chain floor.
