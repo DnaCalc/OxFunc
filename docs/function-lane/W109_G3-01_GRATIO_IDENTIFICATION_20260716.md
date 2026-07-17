@@ -525,3 +525,46 @@ error dominates.
 - b21 (127 BETA.DIST rows): beta-tail discriminator battery (agent-H spec:
   GRATIO-substitution vs Boost small-b-large-a series vs CR) — scoring in
   flight.
+
+## Beta tail: family PROVEN, realization OPEN (b21, 2026-07-17 session 5)
+
+The b21 discriminator battery (127 live BETA.DIST rows: deep tail a in
+{16..200} x b in {0.05..0.95} x y=2^-k, plus fractional-a composites) settled
+the beta-tail family question and left the exact realization open.
+
+- **FAMILY PROVEN = DiDonato-Morris TOMS-708 Eq-9 bgrat expansion.** Decisive
+  signature: at k=2, a=118/200, Excel sits +41..+63 ULP from the TRUE value
+  yet within +-7 ULP of every Eq-9-family realization across 25 rows. A
+  63-ULP co-deviation from truth tracked to +-7 across the family is intrinsic
+  truncated-asymptotic method error, not rounding coincidence. NSWC driver +
+  0.5+(0.5-w1) reconstruction retained; composites are NSWC bup-shaped (not
+  Boost's ibeta_a_step: Boost off +6/+14/+22 there).
+- **NO exact realization** among: NSWC-double grat1 (4/127, max 56),
+  GRATIO-sub nearest/chopped-r/chopped-all (8-10/127, max 37), Boost 1.35-1.42
+  (6/127 but best <=4-ULP where the asymptotic error dominates: k=2/3 median 3
+  max 8), Cephes 2.8, AS 63, NR betacf, or any routing/cap/eps forcing.
+- **Chopped-exp is INERT on the beta tail** (+1/+2 exact over nearest): the
+  gamma-side truncation does NOT transfer to the beta r=a*exp(t1) site. The
+  transcendental-model axis (cr vs x87) is also inert here.
+- Term-cap unidentifiable: the j-series eps-converges in <20 terms; caps
+  20..60 are bit-identical.
+- Residual bounded/structured (+-30). Next-cycle axes (agent-H): the r/u/h
+  PREFIX op-graph (Excel may normalize via its own gamma, not NSWC
+  algdiv/gam1) and the inner Q(b,u) kernel's exact arithmetic.
+
+**CRITICAL STATE FACT**: OxFunc production `regularized_beta`
+(special_math_common.rs) is a **Numerical-Recipes Lentz continued fraction**,
+NOT a BRATIO port. The entire BRATIO identification (bpser plain-double =
+literal code identity beating CR on FDIST/TDIST; bup/bgrat/bfrac/basym
+routing; accurate-complement stagings) lives only in the Python emulator
+(agentA_bratio.py). So the beta side has had NO production landing analogous
+to the gamma GRATIO port. **The clear next material win is porting BRATIO to
+replace the NR continued fraction** — the bpser bulk (non-tail) region would
+gain the same way CHIDIST/GAMMA.DIST did, while the bgrat tail stays the
+identified-family-unresolved wall documented here. This is a kernel-scale
+lane (bpser, bup, bgrat, bfrac, basym, algdiv, gam1, gamln, brcmp1), not a
+drop-in; it should be its own task with its own held-out gate.
+
+Files: agentH_b21.py, agentH_b21_analysis.py, agentH_b21_out.txt,
+answers-b21-beta.json; earlier agentH_{routing,routing2,cephes,boost,
+gratio_tail,as63,report}.py + agentH_src_* sources.
