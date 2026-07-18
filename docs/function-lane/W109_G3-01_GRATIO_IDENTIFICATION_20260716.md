@@ -1075,3 +1075,37 @@ associations, lf = M_LN_2PI + log(x) + log1p(-x/n) with the log1p
 realization, lc sum order, 0.5*lf staging, arg subtract order). The
 internal-lgamma hypothesis is DEMOTED to secondary (the ±2 bell no longer
 needs it) but the b29 decode-window instrument stands either way.
+
+## Lane 3 (2026-07-18) — production re-score; two divergent OxFunc-side fast paths REMOVED
+
+The lane-1/2 landings were verified regression-free (b22 baseline unchanged;
+POISSON k=0 window 4,000/4,000). The re-score surfaced that BOTH pre-W109
+integer-shape fast paths were silently overriding the identified kernels in
+REAL production routing (all standing scores had been measured against the
+substrate directly):
+
+- **GAMMA.DIST cdf integer-shape fast path REMOVED** (`1 − e^{-x}·Σx^k/k!`):
+  it scored 8.1% on b26 with ±4,400-ULP catastrophics (cancellation at tiny
+  x: the b2-gser small-x rows showed 2^62-class deltas) vs 39.4% (worst −10)
+  through the identified GRATIO path. Production ≡ gratio path verified
+  bit-for-bit post-removal.
+- **BETA.DIST cdf integer-shape fast path REMOVED** (binomial sum): b30
+  capture (768 integer-shape rows): bratio 344/768 vs the shortcut 254/768,
+  disagreement rows 177:87 for bratio; integer shapes behave at the SAME
+  wall rate as fractional ⇒ **Excel has NO integer-shape beta special path**
+  (resume item 8 first half MEASURED and closed).
+- b30 Z-block (600 rows, A/B bounds): `z=(x−A)/(B−A)` staging broadly
+  confirmed (wall-class rate 230/600, no structural misses) — bounds
+  staging is not a separate wall; sub-ULP div/sub staging deferred.
+
+**Post-lane-3 standing numbers** (production routing, bit-verified equal to
+the identified substrate paths): CHIDIST 152/195; GAMMA.DIST modern corpus
+293→**337/446**; b26 integer-a 331→**1,615/4,100** (worst −10); b22
+**293/671** (integer rows now scored; BETA.DIST 136/288); b26 POISSON
+4,000/4,000; WEIBULL b28 5,999/6,000; EXPON b28c 4,000/4,000.
+
+Clue banked: GAMMA.DIST **pdf** (cumulative=FALSE) remains unmeasured and
+production's log-composed pdf is now the prime suspect for the next
+catastrophic class — by analogy with lane 2 (POISSON pmf = Loader/rcomp
+class) and lane 1 (WEIBULL pdf = legacy direct), Excel's gamma pdf is
+predicted to be an rcomp-class direct evaluation, NOT exp(log-pdf).

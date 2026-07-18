@@ -101,6 +101,16 @@ will want; date every entry.
 - BINOM cdf(0) ≡ pmf(0) bit-identical 1000/1000 (b24BT) — k=0 shares the
   pmf fast path, no bratio at k=0.
 - Loader's dbinom x==0 branch is `(p < 0.1) ? -bd0(n,nq) - np : n·log(q)` —
-  the b24 k=0 grid only had p > 0.5, so the p < 0.1 sub-branch is UNPROBED
-  (designed-gap note; a 200-row capture settles whether BINOM k=0 flips
-  formula below p=0.1).
+  **SETTLED (b29b): Excel DOES flip below p=0.1** (bd0-form 383/400) — the
+  Loader-control-flow smoking gun. 16 neither-rows = bd0-series/compose
+  sub-staging, part of the bounded general-k enumeration.
+- **2026-07-18 (lane 3): wall 8 first half CLOSED** — Excel has no
+  integer-shape BETA.DIST special path (b30); A/B bounds staging broadly
+  confirmed. Both OxFunc-side integer fast paths (gamma cdf, beta cdf)
+  REMOVED from production.
+- **New suspect class: the log-composed pdfs.** GAMMA.DIST pdf (FALSE) is
+  unmeasured; production computes exp(log-pdf). Lane-1/2 precedent
+  (WEIBULL pdf = legacy direct x87; POISSON pmf = Loader/direct hybrid)
+  predicts Excel's gamma pdf is an rcomp-class direct evaluation. Same
+  suspicion applies to BETA.DIST pdf and CHISQ.DIST pdf. One capture
+  battery (pdf grids per function) would triage all three.

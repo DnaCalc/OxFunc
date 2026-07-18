@@ -99,55 +99,6 @@ fn beta_log_norm(alpha: f64, beta: f64) -> f64 {
     ln_gamma(alpha) + ln_gamma(beta) - ln_gamma(alpha + beta)
 }
 
-fn positive_integer(value: f64) -> Option<u32> {
-    if value.is_finite() && value >= 1.0 && value <= 200.0 && value.fract() == 0.0 {
-        Some(value as u32)
-    } else {
-        None
-    }
-}
-
-fn binomial_coefficient(n: u32, k: u32) -> f64 {
-    let k = k.min(n - k);
-    let mut acc = 1.0;
-    for i in 1..=k {
-        acc *= (n - k + i) as f64;
-        acc /= i as f64;
-    }
-    acc
-}
-
-fn regularized_beta_integer_shape(z: f64, alpha: f64, beta: f64) -> Option<f64> {
-    let a = positive_integer(alpha)?;
-    let b = positive_integer(beta)?;
-    if z == 0.0 {
-        return Some(0.0);
-    }
-    if z == 1.0 {
-        return Some(1.0);
-    }
-    let n = a + b - 1;
-    let mut sum = 0.0;
-    for j in a..=n {
-        sum += binomial_coefficient(n, j) * z.powi(j as i32) * (1.0 - z).powi((n - j) as i32);
-    }
-    Some(sum)
-}
-
-fn regularized_gamma_p_integer_shape(alpha: f64, x: f64) -> Option<f64> {
-    let a = positive_integer(alpha)?;
-    if x == 0.0 {
-        return Some(0.0);
-    }
-    let mut term = 1.0;
-    let mut sum = 1.0;
-    for k in 1..a {
-        term *= x / k as f64;
-        sum += term;
-    }
-    Some(1.0 - (-x).exp() * sum)
-}
-
 fn validate_beta_shape(
     alpha: f64,
     beta: f64,
@@ -180,8 +131,12 @@ fn beta_dist_kernel(
     }
     let z = (x - lower) / (upper - lower);
     if cumulative {
-        return Ok(regularized_beta_integer_shape(z, alpha, beta)
-            .unwrap_or_else(|| regularized_beta(z, alpha, beta)));
+        // W109 lane-3 (2026-07-18, b30): Excel has NO integer-shape beta
+        // fast path — bratio scores integer shapes at the same wall rate as
+        // fractional (344/768 vs the binomial-sum shortcut's 254/768, and
+        // the shortcut loses the disagreement rows 177:87). Route all
+        // shapes through the identified BRATIO.
+        return Ok(regularized_beta(z, alpha, beta));
     }
     let log_pdf = (alpha - 1.0) * z.ln() + (beta - 1.0) * (1.0 - z).ln()
         - beta_log_norm(alpha, beta)
@@ -222,7 +177,7 @@ fn validate_gamma_shape(alpha: f64, beta: f64) -> Result<(), BetaGammaStatsError
     Ok(())
 }
 
-fn gamma_dist_kernel(
+pub fn gamma_dist_kernel(
     x: f64,
     alpha: f64,
     beta: f64,
@@ -236,9 +191,12 @@ fn gamma_dist_kernel(
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num));
     }
     if cumulative {
-        let scaled = x / beta;
-        return Ok(regularized_gamma_p_integer_shape(alpha, scaled)
-            .unwrap_or_else(|| regularized_gamma_p(alpha, scaled)));
+        // W109 lane-3 (2026-07-18): the pre-W109 integer-shape fast path
+        // (1 − e^{-x}·Σ x^k/k!) is an OxFunc-side shortcut Excel does NOT
+        // take — on the b26 integer-a corpora it scored 8.1% with ±4,400-ULP
+        // catastrophics vs 39.4% (worst −10) through the identified GRATIO
+        // path. All shapes route through regularized_gamma_p.
+        return Ok(regularized_gamma_p(alpha, x / beta));
     }
     let log_pdf = (alpha - 1.0) * x.ln() - x / beta - ln_gamma(alpha) - alpha * beta.ln();
     let pdf = log_pdf.exp();

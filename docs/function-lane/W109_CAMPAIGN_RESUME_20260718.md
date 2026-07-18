@@ -26,9 +26,14 @@ no binary inspection, ever; oracle behavior + published sources only.
 | EXPON.DIST | same x87 per-op-DR body class: λ·x and pdf λ·e both DR (b28b 14/14+24/24) | expon_dist_kernel | **b28c held-out 4,000/4,000 = 100.000%** |
 | Internal lgamma | EXTENDED precision, sub-ULP from CR, E_g nearest; distinct from published GAMMALN | (normalizer via exact factorial at integer a) | b24 GAMMA-window reads |
 
-Corpus scores after all landings: CHIDIST 152/195, GAMMA.DIST 159/268,
-beta b22 285/655, GAMMALN held-out 79.0%, BETAINV 12/30 worst +5,
-POISSON k=0 exact. Suite 1,606 green.
+Corpus scores after all landings (lane-3 re-verified 2026-07-18, production
+routing ≡ identified substrate bit-for-bit; both OxFunc-side integer-shape
+fast paths REMOVED — they were silently overriding the identified kernels,
+gamma one catastrophically at ±4,400 ULP): CHIDIST 152/195, GAMMA.DIST
+modern 337/446, b26 integer-a 1,615/4,100 (worst −10), beta b22 293/671,
+GAMMALN held-out 79.0%, BETAINV 12/30 worst +5, POISSON k=0 34,000+
+consecutive exact, WEIBULL b28 5,999/6,000, EXPON b28c 4,000/4,000.
+Suite 1,509 green.
 
 ## OPEN WALLS (each with banked per-row residuals + designed next probe)
 
