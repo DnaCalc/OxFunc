@@ -275,6 +275,61 @@ fn main() {
                 let r = exp_chain_from_ext(&a);
                 ext_to_f64(&r, CW_PC64_RN)
             }
+            ("cexpext2p53r", Some(x), Some(y)) | ("cexpext2p53s", Some(x), Some(y)) => {
+                // Mixed-PC chains: p53r = reduction (mul/rndint/sub) at PC53,
+                // finals PC64; p53s = the converse.
+                use rx::{
+                    CW_PC53_RN, CW_PC64_RN, ext_abs, ext_add, ext_div, ext_f2xm1, ext_from_f64,
+                    ext_l2e, ext_mul, ext_one, ext_rndint, ext_scale, ext_sub, ext_to_f64,
+                };
+                let red53 = op == "cexpext2p53r";
+                let cwr = if red53 { CW_PC53_RN } else { CW_PC64_RN };
+                let cwf = if red53 { CW_PC64_RN } else { CW_PC53_RN };
+                let a = ext_add(&ext_from_f64(x), &ext_from_f64(y), cwr);
+                let t = ext_mul(&a, &ext_l2e(), cwr);
+                let k = ext_rndint(&t, cwr);
+                let f = ext_sub(&t, &k, cwr);
+                let neg = ext_to_f64(&f, CW_PC64_RN) < 0.0;
+                let w = ext_f2xm1(&ext_abs(&f, cwf), cwf);
+                let mut m = ext_add(&w, &ext_one(), cwf);
+                if neg {
+                    m = ext_div(&ext_one(), &m, cwf);
+                }
+                let r = ext_scale(&m, &k, cwf);
+                ext_to_f64(&r, CW_PC64_RN)
+            }
+            ("cexpext2mem", Some(x), Some(y)) => {
+                // Entry value round-tripped through a tbyte park (expected
+                // TRANSPARENT per the campaign's parking proof — included as
+                // the explicit control).
+                use rx::{CW_PC64_RN, ext_add, ext_from_f64, ext_to_f64};
+                let a = ext_add(&ext_from_f64(x), &ext_from_f64(y), CW_PC64_RN);
+                let parked = rx::Ext80(a.0); // byte-exact tbyte store/reload
+                let r = exp_chain_from_ext(&parked);
+                ext_to_f64(&r, CW_PC64_RN)
+            }
+            ("cexpext2rz", Some(x), Some(y)) => {
+                // Chop (RC=RZ) on the reduction subtract f = t - k only
+                // (site-dependent-chop precedent).
+                use rx::{
+                    CW_PC64_RN, ext_abs, ext_add, ext_div, ext_f2xm1, ext_from_f64, ext_l2e,
+                    ext_mul, ext_one, ext_rndint, ext_scale, ext_sub, ext_to_f64,
+                };
+                let cw = CW_PC64_RN;
+                let cwz = CW_PC64_RN | 0x0C00;
+                let a = ext_add(&ext_from_f64(x), &ext_from_f64(y), cw);
+                let t = ext_mul(&a, &ext_l2e(), cw);
+                let k = ext_rndint(&t, cw);
+                let f = ext_sub(&t, &k, cwz);
+                let neg = ext_to_f64(&f, cw) < 0.0;
+                let w = ext_f2xm1(&ext_abs(&f, cw), cw);
+                let mut m = ext_add(&w, &ext_one(), cw);
+                if neg {
+                    m = ext_div(&ext_one(), &m, cw);
+                }
+                let r = ext_scale(&m, &k, cw);
+                ext_to_f64(&r, cw)
+            }
             ("cexpext2p53", Some(x), Some(y)) => {
                 // The INLINED-intrinsic hypothesis: chain arithmetic under the
                 // application default CW (PC=53) — reduction mul/rndint/sub and

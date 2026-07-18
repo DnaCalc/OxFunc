@@ -1394,3 +1394,24 @@ agentT_{intervals,deltaw,system,delivery,classes}.json.
   PC; the legacy CRT sets 0x133F but an inlined chain runs under the app
   CW). New server op cexpext2p53; smoke test: exp(10) differs from the
   PC64 chain by 2 output-ULPs. Plus the free δ_w-vs-reduction-state map.
+
+## Lane 8 round 3 (2026-07-18, agent-T) — PC53 refuted; the wall decomposes into TWO exact layers
+
+- **PC53 inlined-chain hypothesis REFUTED end-to-end** (b34 17–19%, b29
+  collapses to ~10%; the B4/B6 discriminator windows stay dead). The true
+  chain is the full-PC64 CRT class.
+- **Reduction-state map banked** (agentT_redmap.json, all 60 windows):
+  the per-window body constants follow NO law in the reduction fraction f
+  or parity — any future chain hypothesis tests against this table free.
+- **POSITIVE: exact two-layer decomposition** — δ_w = body_w + m_w·ulp53(arg),
+  m ∈ {−1,0,+1}: the wild windows are the anchor body ± exactly one
+  ulp53(arg) (B1-w08 −8·2⁻⁵³ at |arg|∈[8,16); B3-w09 +64·2⁻⁵³ at
+  [64,128); B4-w06 −32·2⁻⁵³ at [32,64); residuals ≤0.06·2⁻⁵³), and the
+  bimodal windows flip m row-by-row. Since lc and arg share a binade,
+  **layer 1 = ±1 ulp of the final lc subtraction** — lanes 6/7's entire
+  "±1-term / no-window" class, now exactly identified. Layer 2 = the
+  smooth ±2·2⁻⁵³ body with 0.1–0.2·2⁻⁵³ drift, outside every raced
+  realization.
+- Round 4 (running): mixed-PC chains (p53r/p53s), tbyte-park control
+  (cexpext2mem), reduction-subtract chop (cexpext2rz) — racing against
+  the intervals with the body isolated (layer-1 subtracted).
