@@ -901,3 +901,31 @@ LANDED (suite 1,606 green): excel_expm1_internal (excel_numeric);
 EXPON.DIST cdf -> -expm1_internal(-lambda*x) (was the refuted 1-exp form),
 pdf -> chain exp; WEIBULL.DIST cdf/pdf likewise (pow route still powf —
 open lane); gratio a==1 P-side -> the identified expm1.
+
+## Gamma-series staging: family EXHAUSTED, landed staging CONFIRMED (2026-07-18, agent Q)
+
+- **The landed production staging IS the family winner**: forward Cephes-form
+  gser (rr=a; c=1; ans=1; c*=y/rr; stop c/ans<=2^-53) + (r/a)*ans + exact
+  (a-1)! normalizer + CHOP exp at the r-site. 38/45 at a=2 (vs RN/CR exp
+  25/45 with ALL-NEGATIVE misses — the directed-rounding signature); chop
+  dominates RN at EVERY b23A integer-a moderate-y slice.
+- **wk-backward summation REFUTED** (18/45; worse everywhere) — the agent-I
+  a=4 "reachability" preference was an artifact of the old staging
+  assumption. The naive label-210 finite-sum P-view also refuted
+  (catastrophic 1-Q at tiny y — but note tiny-y routes to path 20 anyway;
+  production routing untouched).
+- **Site-dependent publication RE-CONFIRMED on both sides** (the agent's
+  "premise overturned" headline was a strawman of its brief): POISSON direct
+  store = RN53 (chain RN 29,997/30,000 vs chop 49.9% — chop was never
+  claimed there); series r-site = chop (validated above). The landed model
+  is exactly this.
+- **Exhaustion**: publication order, eps, stop rule, distributed-1/a, t1
+  formation, x87 body modes, r-staging variants — ALL inert. The 7/45
+  residual requires INCONSISTENT r+-1 (some rows near tiny F2XM1 fractions)
+  = a chain-microdetail wall, same class as the 3/30k POISSON idealization
+  rows. Method caveat banked: tiny-y/high-a rows are ln-amplification tests
+  (+-30 ULP at y~1e-8), NOT series tests — series signal lives in low-a
+  moderate-y.
+- b26 batteries designed for the clean held-out gate (captured; scoring
+  next): b26A integer-a moderate-y series gate, b26X cross-view, b26P
+  POISSON re-confirm.
