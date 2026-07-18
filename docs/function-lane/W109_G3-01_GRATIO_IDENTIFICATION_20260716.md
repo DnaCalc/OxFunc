@@ -1265,3 +1265,41 @@ extended args agree to <1 ulp64 — their published values must then agree
 via ANY deterministic chain (a chain-side litmus with no model
 assumptions); (iii) widen the BINOM narrow-interval solve to ±300 with
 joint term-ULP nudges (the ±1-term rows currently pollute every map).
+
+## Lane 6d (2026-07-18) — exact-constraint reframing; pair search retired by arithmetic; the crossing-sweep is the right instrument
+
+Methodological reset (user directive: deterministic noise-free inverse
+problem — every bit counts; stop steering by match rates):
+
+**Information-budget statement of the wall.** Each row is one exact
+equation `published = RN53(CHAIN(arg))`. The implied-argument decode floor
+(±0.06 ulp53) EQUALS the publication granularity in argument space
+(~2^-52.5) — a single (model-arg, published) read therefore carries no
+independent information about which side of the output boundary the true
+internal value sits. The ±1 "scatter" lives entirely below the
+single-read resolution; percentage scores there measure model phase, not
+truth. Progress requires multi-read constraints.
+
+**Pair search (run, null, retired):** zero within-BINOM pairs at every
+threshold up to 64 ulp64 — b29's 1,062 args are ~10^17 ulp64 apart.
+Collisions cannot be designed either: the p-dial's finest step moves the
+argument ~256 ulp64 (2^8 too coarse). Exact-argument pairs are
+structurally unreachable at this site. (Cross-corpus pairs are further
+model-polluted by erf's post-multiplier.)
+
+**The correct instrument — boundary-crossing sweeps (b33 design):**
+sweep p in 1-ulp steps for fixed (k, n): the argument walks in ~256-ulp64
+steps, the published value steps a staircase, and each TRANSITION pins
+`CHAIN(arg)` against a known rounding boundary to one p-step — an exact
+inequality per crossing, ~8x tighter than a single read, hundreds of
+crossings per sweep. Compare observed crossing positions with our
+composed chain's predictions: agreements/disagreements map the chain (or
+residual-argument) deviation bit by bit. This is the erf tooth-law
+bisection method (oracle-batched boundary localization to ~2^-66) applied
+with a KNOWN argument model — the first time both sides of the equation
+are available. Design: 4 anchors (k,n) ∈ {(1,12),(2,24),(3,48),(5,64)},
+p-windows chosen so |arg| spans 10–600 (the ulp64/output-granularity
+ratio varies 4..256 across that range — the low-|arg| end reads the
+argument, the high-|arg| end reads the chain); predict crossings offline
+with cexpext2, capture ±8-ulp p-brackets around ~200 predicted crossings
+per anchor (~7k probes), score crossing-position deltas exactly.

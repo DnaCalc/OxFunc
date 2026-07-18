@@ -41,6 +41,20 @@ will want; date every entry.
 
 ## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
 
+- **2026-07-18 (lane 6d): EXACT-CONSTRAINT REFRAME (user directive) — the
+  wall's information budget stated precisely.** Single reads carry no
+  information below publication granularity (decode floor ≡ output
+  granularity in argument space); match-rate deltas in the 32–36% band
+  were phase, not signal. Pair search RUN AND RETIRED BY ARITHMETIC
+  (zero pairs ≤64 ulp64 in b29; the p-dial is 2^8 too coarse to design
+  collisions). **The right instrument is the b33 boundary-crossing sweep**
+  (erf tooth-law bisection with a KNOWN argument model — first time both
+  sides of the equation are available): p-ulp sweeps for fixed (k,n),
+  each published-staircase transition = one exact inequality pinning
+  CHAIN(arg) to a known boundary within one p-step; anchors spanning
+  |arg| 10–600 separate argument-side (low |arg|) from chain-side
+  (high |arg|) deviations. Full design in the lane-6d note section —
+  execute as the next session's opening move.
 - **2026-07-18 (lane 6c): joint solve — flagship hypotheses refuted;
   status sharpened.** x²-spill (erf), M-as-tbyte and every lf composition
   (BINOM), and the c-vs-reduction-fraction chain-error map (all-rows) are
