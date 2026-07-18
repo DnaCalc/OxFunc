@@ -1366,3 +1366,31 @@ agentT_{intervals,deltaw,system,delivery,classes}.json.
 - Round-2 (running): hardware FYL2XP1 log1p (new server ops lp1/lp1ext)
   — the x87 instruction BUILT for log1p — and the 16-mask bd0dir
   op-graph family, raced offline against the banked intervals.
+
+## Lane 8 round 2 (2026-07-18, agent-T) — term-correction model REFUTED by infeasibility proof; deviation relocated to chain entry
+
+- **Hardware FYL2XP1 ≡ CR-log1p at RN53 on every argument in play** (all 6
+  b34 anchors + all 59 b29 (k,n) pairs bit-identical) — the round-1 log1p
+  identification IS the hardware result; b29's residual is not a
+  log1p-rounding artifact. Global best realization: lp1 — b34 7,749/24,000,
+  b29 366/1,062. lp1ext refuted globally (helps only B5-w06..08); the
+  M+1ulp coupling is B2-anchor-local (a surrogate for a −2·2⁻⁵³ constant,
+  NOT an M identification).
+- **bd0dir op-graph family EXHAUSTED**: all 96 (16 masks × 3 lp × 2 M)
+  candidates raced offline against the 24k intervals; every nonzero mask
+  equal-or-worse; B4/B6 direct/direct clean windows score 0/400 under ALL
+  candidates.
+- **THE TERM-CORRECTION SYSTEM IS INFEASIBLE — exact proof**: same-anchor
+  same-class clean windows pin δ_w to mutually incompatible sub-ulp
+  constants (B6-w06/07/08 = −1.8591/−2.0466/−2.0312·2⁻⁵³, spread
+  0.2·2⁻⁵³ ≪ ulp53(b1) = 16–128·2⁻⁵³). No double-valued term correction
+  can produce that. All stirlerr realizations excluded exactly (≤0.03·2⁻⁵³
+  bounds, 60× below the bodies).
+- Residual shape (per-window constants ±2·2⁻⁵³, sub-ulp grid,
+  non-monotone 0.1–0.2·2⁻⁵³ drift) points at the CHAIN-ENTRY side —
+  re-opening lane 6c's caveat with clean per-window constant reads.
+- **Round 3 (running): the INLINED-INTRINSIC hypothesis** — the chain
+  arithmetic under the application-default CW PC=53 (F2XM1 unaffected by
+  PC; the legacy CRT sets 0x133F but an inlined chain runs under the app
+  CW). New server op cexpext2p53; smoke test: exp(10) differs from the
+  PC64 chain by 2 output-ULPs. Plus the free δ_w-vs-reduction-state map.
