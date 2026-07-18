@@ -33,6 +33,11 @@ pub fn excel_exp_rz(x: f64) -> f64 {
     super::excel_exp_rz(x)
 }
 
+/// Excel's internal expm1 (W109 Kahan-correction identification).
+pub fn excel_expm1_internal(t: f64) -> f64 {
+    super::excel_expm1_internal(t)
+}
+
 /// Excel `LOG10` — the confirmed `fldlg2` + `fyl2x` chain.
 pub fn excel_log10(x: f64) -> f64 {
     super::excel_log10(x)

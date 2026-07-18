@@ -180,6 +180,25 @@ pub(crate) fn excel_exp(x: f64) -> f64 {
     }
 }
 
+/// Excel's internal expm1 (W109 identification, 17,992/18,000 on the
+/// EXPON/GAMMA.DIST-a=1 windows): msvcr100 exports no C99 `expm1`, so Excel
+/// builds it from its own primitives via Kahan's cancellation-free correction
+/// in DOUBLE arithmetic — `u = exp(t)` (the x87 chain, RN53); `t` when
+/// `u == 1`; `(u-1)*t/ln(u)` for `|t| < 1` (ln = the fyl2x chain, == CR on
+/// everything probed); plain `u - 1` otherwise. The numerator is one double
+/// product, then the divide (alternate orderings refuted at 82.9%/84.9%).
+pub(crate) fn excel_expm1_internal(t: f64) -> f64 {
+    let u = excel_exp(t);
+    if u == 1.0 {
+        return t;
+    }
+    if t.abs() < 1.0 {
+        (u - 1.0) * t / excel_log(u)
+    } else {
+        u - 1.0
+    }
+}
+
 /// Round-toward-zero publication of the internal exp chain — the W109 F2XM1
 /// identification's gamma-series-site mode (one fFEXP chain, RN53 at
 /// wrapper/pdf sites, RZ53 at the series `r = exp(t1)/G` site). On `x86_64`

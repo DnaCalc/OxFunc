@@ -40,7 +40,7 @@ fn main() {
         let v = exp_chain_ext(x);
         let rn = ext_to_f64(&v, CW_RN);
         let rz = ext_to_f64(&v, CW_RZ);
-        let em1 = -rx::excel_expm1(-x);
+        let em1 = -rx::excel_expm1_internal(-x);
         println!(
             "{:016x} {:016x} {:016x} {:016x}",
             x.to_bits(),

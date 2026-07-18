@@ -876,3 +876,28 @@ sources refuted; per-binade coherent components largely explained except
 e=-15/-20 fine phases) + three designed probes: (1) identify the 2^Ez-grid
 source, (2) repair j-pipeline park phases at e=-15/-20 vs the banked per-row
 residuals, (3) test parked-intermediate vs register-continuous chain floor.
+
+## EXPM1 STAGING IDENTIFIED + LANDED (2026-07-18, agent R)
+
+msvcr100 exports NO C99 expm1 (ctypes-confirmed; only msvcr120+ do) — Excel
+builds its own from its primitives via **Kahan's cancellation-free correction
+in DOUBLE arithmetic**:
+    u = exp(t)                        (the x87 chain, RN53)
+    if u == 1: return t
+    if |t| < ~1: return (u - 1)*t / ln(u)    (ln = fyl2x RN53 == CR;
+                                              numerator ONE product then the
+                                              divide — orderings refuted)
+    else: return u - 1
+Python-model score 17,992/18,000 (fingerprint 99.88%); **PRODUCTION landing
+with the real hardware chain: 17,996/18,000 = 99.978%** (9,997/10k EXPON +
+7,999/8k a=1 rows — the real microcode closes half the idealized-model
+residuals). Discriminators: all-extended collapses to ~CR (80.3%) — the
+~0.5-ULP profile IS the double-rounding of the correction; pure-Kahan fails
+x>=1; threshold ~1.0 (ln2 worse); DCDFLIB rexp / fdlibm / UCRT expm1 refuted.
+The prior "extended F2XM1 -expm1 staging" claim was a =CR coincidence
+(2/1971 fingerprint rows) — corrected.
+
+LANDED (suite 1,606 green): excel_expm1_internal (excel_numeric);
+EXPON.DIST cdf -> -expm1_internal(-lambda*x) (was the refuted 1-exp form),
+pdf -> chain exp; WEIBULL.DIST cdf/pdf likewise (pow route still powf —
+open lane); gratio a==1 P-side -> the identified expm1.

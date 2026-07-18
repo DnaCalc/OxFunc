@@ -323,11 +323,13 @@ pub fn weibull_dist_kernel(
 
     let ratio = x / beta;
     let power = ratio.powf(alpha);
-    let exp_term = (-power).exp();
+    // W109: cdf via the identified Kahan expm1; exp sites via the chain.
+    // (The pow route is exp(y*ln x) class per b24 — exact staging is a
+    // separate open lane; powf retained meanwhile.)
     let value = if cumulative {
-        1.0 - exp_term
+        -crate::excel_numeric::excel_expm1_internal(-power)
     } else {
-        (alpha / beta) * ratio.powf(alpha - 1.0) * exp_term
+        (alpha / beta) * ratio.powf(alpha - 1.0) * crate::excel_numeric::excel_exp(-power)
     };
 
     if !value.is_finite() {

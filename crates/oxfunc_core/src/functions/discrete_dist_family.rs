@@ -386,9 +386,13 @@ pub fn expon_dist_kernel(x: f64, lambda: f64, cumulative: bool) -> Result<f64, W
         return Err(WorksheetErrorCode::Num);
     }
     if cumulative {
-        Ok(1.0 - (-lambda * x).exp())
+        // W109: Excel's cdf is -expm1(-lambda*x) via its Kahan-correction
+        // internal expm1 (identified 17,992/18,000), NOT 1 - exp(...).
+        Ok(-crate::excel_numeric::excel_expm1_internal(-lambda * x))
     } else {
-        Ok(lambda * (-lambda * x).exp())
+        // pdf site = the chain exp, nearest-published (bit-identical to the
+        // POISSON k=0 window).
+        Ok(lambda * crate::excel_numeric::excel_exp(-lambda * x))
     }
 }
 

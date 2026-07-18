@@ -590,7 +590,10 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
         // a = 1+2^-20 contradiction probe; emulator race a=1 slice 179/205
         // with this wrapper). Nearest-rounded exp/expm1 — the chopped series
         // exp does NOT apply on this path.
-        return (-f64::exp_m1(-x), crate::excel_numeric::excel_exp(-x));
+        return (
+            -crate::excel_numeric::excel_expm1_internal(-x),
+            crate::excel_numeric::excel_exp(-x),
+        );
     }
     // Excel uses ind = 0 (unscaled). gratio.f: iop = ind + 1 = 1 (only ind of
     // 1 or 2 would remap to iop = 3), selecting the tight acc = 5e-15, big = 20,
