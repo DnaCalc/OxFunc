@@ -1152,3 +1152,39 @@ shared primitive; NEGBINOM presumably identical (+ its `size/(size+x)`
 prefactor). Files: lane5_binom_enum/diag/threshold/attrib/extmodel/mixed/
 final_model/v3/v2_polish/lclf_mask/e2e_final/pubvariants/k0_confirm.py;
 new server op `cexpext2 hi lo` (extended-argument chain entry).
+
+## Lane 6 (2026-07-18) — the extended-entry chain is EXONERATED; the wall moves to sub-double argument content
+
+Attack on the b29 oracle pairs (`lane6_*.py`; new server ops `lnext` —
+hardware fyl2x extended result as hi+lo — and the `cexpext2` entry).
+
+**Headline: the composed extended-entry fFEXP chain IS Excel's exp for
+extended arguments.** The j-interval scan (chain output vs published bits
+as the argument steps in ulp64 units around the model value) finds a
+consistent argument for **76% of rows within ±70 ulp64**; the 24%
+no-window rows are the known ±1-term class (arg off by ~2048 ulp64 —
+outside the scan, not chain-refuting). The chain realization question that
+defined wall 3 is ANSWERED at this site: given the right 64-bit argument,
+`exp_chain_from_ext` reproduces Excel bit-for-bit. **Wall 3's erf C10r
+plateau should be re-read as ARGUMENT-side (sub-double delivery details),
+not chain-side.**
+
+What remains: the argument's low ~11 bits (below the implied-decode floor
+of ~0.06 ulp53). Since lc's RN53 spill is proven, the sub-double content
+comes through `0.5·lf` — but the narrow-interval solver (rows pinned to
+±8 ulp64) rejects every single-source hypothesis tried: lf-as-double
+(H0: 35/137), lf ext-sum-of-ln53s (H1: 41/137), lf with hardware-extended
+lns (H2: 33/137), 77 rows OTHER. Unexplained narrow rows CLUSTER AT
+EXTREME p (0.9999+, 1e-5) with deviations reaching the ±70 scan boundary
+(~0.05 ulp53) — a second, p-extremity-correlated source. End-to-end
+plateau this round: 36.4% (lf-extended variant best; last-bit combos
+t×c×f all within 34.2–36.4%).
+
+Next probes (designed): (i) run the narrow-interval solver with the scan
+widened to ±300 ulp64 and the ±1-term rows' terms nudged (joint solve of
+term-ULP corrections + sub-double content); (ii) regress narrow-row
+deltas against per-row candidate tails (0.5·lf variants, b-term extended
+returns, np/nq product tails) — the delta is a LINEAR read of whichever
+tail is real; (iii) transfer to erf: run the same j-scan on the b9heldout
+erf rows using C10r's argument model — if intervals exist there too, the
+plateau is argument-side and the two walls merge completely.

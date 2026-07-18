@@ -41,6 +41,18 @@ will want; date every entry.
 
 ## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
 
+- **2026-07-18 (lane 6): THE CHAIN IS EXONERATED — the wall is
+  ARGUMENT-SIDE.** The j-interval scan on the b29 oracle pairs proves the
+  composed extended-entry fFEXP chain reproduces Excel bit-for-bit given
+  the right 64-bit argument (consistent interval for 76% of rows; the rest
+  are known ±1-term rows). What is unknown is the argument's sub-double
+  content (below the decode floor): single-source lf hypotheses all
+  rejected by the narrow-interval solver; a second source correlates with
+  EXTREME p. **Re-read the erf C10r plateau as argument-delivery detail,
+  not chain realization — run the same j-scan on b9heldout with C10r's
+  argument model to confirm the merge.** Method: `lane6_jscan/solver.py`
+  (the narrow-interval solver is the reusable instrument); server ops
+  `lnext` (hardware extended fyl2x as hi+lo) + `cexpext2`.
 - **2026-07-18 (lane 5): THE WALL GAINED A DIRECT ORACLE.** BINOM's
   dbinom_raw argument staging is now identified to publication-noise level
   (82.5% of decodable b29 rows at d≈0.00), and the end-to-end blocker is

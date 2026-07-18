@@ -11,6 +11,8 @@
 //!   recip x    — x87 double-rounded reciprocal
 //!   cexpext a b — chain-exp of the EXTENDED product a*b (PC=64, no spill
 //!                 between the multiply and the fFEXP chain entry)
+//!   lnext x     — the EXTENDED fyl2x ln result, printed as "hi lo" (two
+//!                 hex doubles whose exact sum is the 64-bit value)
 //!   cexpext2 hi lo — chain-exp of the EXTENDED argument hi+lo (two doubles
 //!                 reconstructing a 64-bit-mantissa value exactly via one
 //!                 RN64 add; chain entered extended, RN53 publish)
@@ -190,6 +192,17 @@ fn main() {
                 // third token = mask (decimal)
                 let mask: u32 = it.next().and_then(|s| s.parse().ok()).unwrap_or(0);
                 pmfk_candidate(x as u32, y, mask)
+            }
+            ("lnext", Some(x), _) => {
+                use rx::{
+                    CW_PC64_RN, ext_from_f64, ext_fyl2x, ext_ln2, ext_sub, ext_to_f64,
+                };
+                let cw = CW_PC64_RN;
+                let v = ext_fyl2x(&ext_ln2(), &ext_from_f64(x), cw);
+                let hi = ext_to_f64(&v, cw);
+                let lo = ext_to_f64(&ext_sub(&v, &ext_from_f64(hi), cw), cw);
+                writeln!(out, "{:016x} {:016x}", hi.to_bits(), lo.to_bits()).unwrap();
+                continue;
             }
             ("cexpext2", Some(x), Some(y)) => {
                 use rx::{CW_PC64_RN, ext_add, ext_from_f64, ext_to_f64};
