@@ -346,9 +346,24 @@ pub(crate) fn excel_pow_positive(base: f64, exp: f64) -> f64 {
     // POWER(2, 0.5) = √2 exactly). `exp` here is `|y|`, so this also covers the
     // `y = -0.5` case, whose positive power is then reciprocated by the caller.
     // (Live-Excel confirmed 400/400; corrects the reciprocal-staging reference.)
+    //
+    // The 0.5 shortcut belongs to the POWER wrapper, NOT the underlying pow:
+    // the distribution substrate's pow sites hit the raw chain even at
+    // exponent 0.5 (W109 b24 s0p5: CR sqrt 412/800 vs chain 800/800).
     if exp == 0.5 {
         return base.sqrt();
     }
+    excel_pow_chain(base, exp)
+}
+
+/// The raw CRT `pow` chain `exp(RN53(RN64(y · ln x)))` with NO special cases —
+/// the distribution-substrate pow (W109 lane 1). Site-proven: BINOM `q^n`
+/// (b24 11,045/11,045), WEIBULL cdf/pdf pow sites (b24+b27 all blocks 100%,
+/// b27D product-staging discriminator 113/113 for the double-rounded product,
+/// no `y == 0.5 → sqrt` and no integer-exponent shortcut at these sites).
+/// `y` may be negative or zero (`exp(0·ln x) = 1` exactly, as Excel's chain).
+/// `base` must be finite and `> 0`.
+pub(crate) fn excel_pow_chain(base: f64, exp: f64) -> f64 {
     #[cfg(target_arch = "x86_64")]
     {
         let ln_base = x87::ln(base);
@@ -360,6 +375,7 @@ pub(crate) fn excel_pow_positive(base: f64, exp: f64) -> f64 {
         base.powf(exp)
     }
 }
+
 
 /// Excel `SIN` — bit-exact to 64-bit Excel on `x86_64` (W109 G4-01, validated
 /// 1020/1020 live rows incl. held-out, build 20131): the legacy CRT `fFSIN`

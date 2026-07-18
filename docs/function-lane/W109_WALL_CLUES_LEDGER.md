@@ -1,0 +1,86 @@
+# W109 wall-clues ledger
+
+A running trail of clues and instruments for the parked op-graph walls,
+collected en route through other lanes (started 2026-07-18, four-lane sweep).
+Read together with W109_CAMPAIGN_RESUME_20260718.md (wall definitions and
+designed probes). Add to this file whenever a lane surfaces something a wall
+will want; date every entry.
+
+## Wall 1 — chain-microdetail ±1 (series r / exp idealization class)
+
+- **2026-07-18 (lane 1):** two fresh banked class members, both on the plain
+  exp path (no series involvement):
+  - `b24W-b2-0340`: WEIBULL cdf, x bits `4018222d34979553` (x≈6.03338,
+    α=2, β=2, t≈9.10041): Excel's internal `exp(−9.10040519235115…)` is
+    **+1 ULP above our chain** (published cdf 1 below all staging
+    candidates). Args and expected bits in `answers-b24-weibull.json`.
+  - `b28-3838`: WEIBULL cdf, args x=`3fc3d9d7eab87363` α=`401dd48b49e40d40`
+    β=`3fd1feab7fc34ab8` (t≈0.0117): production −2 ULP. Only miss in 6,000.
+  - Class rate stays ~0.01–0.02% across every corpus (1/17,300 b24-weibull;
+    1/6,000 b28; 3/30k POISSON; 4/18k expm1). The rows are argument-stable
+    (deterministic), scattered, and NOT correlated with the F2XM1 fraction
+    bins we binned earlier — worth re-binning against the reduction
+    residue `f = t·log2e − round(t·log2e)` with the new rows added.
+- **Instrument:** `x87_serve` op server + `x87client.py` (lane 1) makes
+  op-by-op chain dissection scriptable from Python — apply to agentQ_diag7's
+  seven rows without hand-built Rust harnesses.
+
+## Wall 2 — ln-amplification at a≥3 (GAMMA.DIST series)
+
+- **2026-07-18 (lane 1):** WEIBULL/EXPON proved the closed-form bodies form
+  their products as **x87 double-rounded ops** (RN64 then RN53 spill). The
+  b26 a·L staging race assumed a plain product; a DR product `RN53(RN64(a·L))`
+  is a one-line re-race on the banked b26 rows (x87client makes this
+  minutes). If the gamma series body is (even partially) the legacy x87
+  class, the a-growth of the worst-case (4→7→10) could be DR-accumulation,
+  not L-delivery.
+- Caveat the other way: GRATIO itself was proven plain-SSE2 by structure
+  racing — the two body classes COEXIST in the 2010 rewrite (lane-1 big
+  picture). Which class owns the `t1 = a·L − y` site is now a live question
+  rather than settled background.
+
+## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
+
+- **2026-07-18 (lane 1):** no direct new probe, but two transferable facts:
+  (i) association ORDER is recoverable and matters — the WEIBULL pdf race
+  was stuck at 805/1200 until the tree enumeration found division-first;
+  the erf polynomial-evaluation candidates were enumerated over staging
+  variants but (check the agentJ ledger) possibly not over association
+  orders of the rational's numerator/denominator combine.
+  (ii) mixed spill masks (some intermediates extended, some spilled) are
+  REAL in this codebase — round-6 style tree×mask enumeration via mpmath
+  is cheap and exhaustive; the erf chain-floor question ("parked vs
+  register-continuous") is exactly a mask question.
+- b9heldout (256 rows) remains the reserved unraced promotion gate.
+
+## Wall 4 — bgrat body op-graph
+
+- **2026-07-18 (lane 1):** the falsified bgrat families were "53-bit per-op
+  DR" and "register-resident" — but the WEIBULL pdf shows the actual bodies
+  use **specific C-source association orders** (division first) under
+  per-op DR, and that getting the ORDER wrong while the op class is right
+  still costs ~25% of rows at ±1. Recommend: re-enumerate the bgrat body
+  candidates as expression TREES (round-6 method, `lane1_pdf_round6.py` as
+  the template) over the shared-z group-intersection corpus before
+  declaring the family dead.
+- If bgrat forms powers `x^a`/`(1−x)^b` anywhere via pow, the site is now
+  known: `excel_pow_chain` (DR product, no shortcuts) — earlier races used
+  idealized pow models at some stages.
+
+## Wall 5 — GAMMALN b1/b2 coefficients
+
+- (lane 4 target — clues to accumulate there.)
+
+## Wall 6/7/8 — POISSON k≥1, distribution pow, BETA.DIST probes
+
+- **2026-07-18 (lane 1): wall 7 (distribution pow staging) is CLOSED** —
+  `excel_pow_chain` landed, b27D 113/113, WEIBULL/EXPON signed off at
+  99.983%/100.000% held-out. The POWER wrapper owns the 0.5→sqrt shortcut;
+  the CRT pow underneath is the pure chain (story-grade: the shortcut is
+  Excel's, not the C runtime's).
+- For wall 6 (POISSON k≥1 product staging): the product ops in the pmf are
+  now PREDICTED x87-DR (body-class prior from WEIBULL/EXPON). The ~21%
+  unexplained at k=1 was measured with plain products — re-race first with
+  `excel_x87_mul`/`excel_x87_div` compositions before inventing structure.
+- BINOM cdf(0) ≡ pmf(0) bit-identical 1000/1000 (b24BT) — k=0 shares the
+  pmf fast path, no bratio at k=0.

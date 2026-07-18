@@ -385,14 +385,21 @@ pub fn expon_dist_kernel(x: f64, lambda: f64, cumulative: bool) -> Result<f64, W
     if !x.is_finite() || !lambda.is_finite() || x < 0.0 || lambda <= 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
+    // W109 lane-1 (b28b): the EXPON body is legacy x87 per-op double-rounded —
+    // both the inner `λ·x` product (14/14) and the pdf's outer `λ·e` product
+    // (24/24) are RN53(RN64(·)) spills, like WEIBULL's body.
+    let lx = crate::excel_numeric::excel_x87_mul(lambda, x);
     if cumulative {
         // W109: Excel's cdf is -expm1(-lambda*x) via its Kahan-correction
         // internal expm1 (identified 17,992/18,000), NOT 1 - exp(...).
-        Ok(-crate::excel_numeric::excel_expm1_internal(-lambda * x))
+        Ok(-crate::excel_numeric::excel_expm1_internal(-lx))
     } else {
         // pdf site = the chain exp, nearest-published (bit-identical to the
         // POISSON k=0 window).
-        Ok(lambda * crate::excel_numeric::excel_exp(-lambda * x))
+        Ok(crate::excel_numeric::excel_x87_mul(
+            lambda,
+            crate::excel_numeric::excel_exp(-lx),
+        ))
     }
 }
 

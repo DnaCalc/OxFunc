@@ -321,15 +321,27 @@ pub fn weibull_dist_kernel(
         return Ok(0.0);
     }
 
-    let ratio = x / beta;
-    let power = ratio.powf(alpha);
-    // W109: cdf via the identified Kahan expm1; exp sites via the chain.
-    // (The pow route is exp(y*ln x) class per b24 — exact staging is a
-    // separate open lane; powf retained meanwhile.)
+    // W109 lane-1 identification (b24 + b27/b27b, all blocks bit-exact): the
+    // WEIBULL body is a legacy x87 compilation unit — every op double-rounded
+    // through a spilled double local, every pow the raw chain (no shortcuts).
+    //   r   = RN53(RN64(x/β))                                   (b27b D2)
+    //   t   = exp(RN53(RN64(α·ln r)))                           (b27D 113/113)
+    //   cdf = −expm1(−t)                                        (Kahan expm1)
+    //   pdf = DR(DR(DR(α/β^α)·x^(α−1))·exp(−t))                 (b27 T3|SS,
+    //         division-first association: `alpha / pow(beta, alpha) *
+    //         pow(x, alpha-1) * exp(-pow(x/beta, alpha))` left-to-right)
+    use crate::excel_numeric::{
+        excel_exp, excel_expm1_internal, excel_pow_chain, excel_x87_div, excel_x87_mul,
+    };
+    let ratio = excel_x87_div(x, beta);
+    let power = excel_pow_chain(ratio, alpha);
     let value = if cumulative {
-        -crate::excel_numeric::excel_expm1_internal(-power)
+        -excel_expm1_internal(-power)
     } else {
-        (alpha / beta) * ratio.powf(alpha - 1.0) * crate::excel_numeric::excel_exp(-power)
+        let pba = excel_pow_chain(beta, alpha);
+        let px = excel_pow_chain(x, alpha - 1.0);
+        let e = excel_exp(-power);
+        excel_x87_mul(excel_x87_mul(excel_x87_div(alpha, pba), px), e)
     };
 
     if !value.is_finite() {

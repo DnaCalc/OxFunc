@@ -21,7 +21,9 @@ no binary inspection, ever; oracle behavior + published sources only.
 | Beta substrate | BRATIO (TOMS 708); accurate-complement wrapper stagings (FDIST x=d2/den y=d1F/den; T-family x=df/den y=t²/den) | bratio + wrappers + TTEST | bit-identity to spec 20,008/20,008; b22 held-out 285/655 |
 | *INV inverters | fully-converged float-lattice bisection publish-hi, rooting the PUBLISHED surface (CHIINV→Q, FINV→complement form, TINV→2t) | bisect_inverse + kernels | b14+b19 held-out validated |
 | Published GAMMALN | Cody-1967 FORM SET, thresholds retuned: x<0.7(exact double) composed −log(x)+core(x+1); B1 [0.7,1.5); B2 [1.5,4) x87-spill; B4=[4,8) published SPECFUN P4/Q4 x87-continuous (worst 1); x≥8 ONE Stirling formula (q=(x−0.5)log x−x+LS2PI; fdlibm w1..w6 vector, plain double) 99.83% worst 2 | excel_numeric/gammaln.rs → GAMMALN/GAMMALN.PRECISE | port bit-identical to ref on 17,003 rows; held-out 79.0% worst 5 |
-| Distribution pow | exp(y·ln x) composition (NOT bond-lane binexp) | (not yet landed — powf retained) | b24 route proven |
+| Distribution pow | exp(RN53(RN64(y·ln x))) — POWER's chain WITHOUT the 0.5→sqrt shortcut (shortcut is the POWER wrapper's, not the CRT pow's) | excel_pow_chain (excel_numeric); excel_pow_positive delegates | b24 re-race 33,145/33,145 (real chain); b27D product staging 113/113 |
+| WEIBULL.DIST | legacy x87 per-op-DR body: r=DRdiv(x,β); t=pow_chain(r,α); cdf=−expm1(−t); pdf=`α/pow(β,α)*pow(x,α−1)*exp(−t)` LEFT-TO-RIGHT, every op DR-spilled (T3\|SS 1,600/1,600) | weibull_dist_kernel | **b28 held-out 5,999/6,000 = 99.983%** (sole miss = wall-1 class) |
+| EXPON.DIST | same x87 per-op-DR body class: λ·x and pdf λ·e both DR (b28b 14/14+24/24) | expon_dist_kernel | **b28c held-out 4,000/4,000 = 100.000%** |
 | Internal lgamma | EXTENDED precision, sub-ULP from CR, E_g nearest; distinct from published GAMMALN | (normalizer via exact factorial at integer a) | b24 GAMMA-window reads |
 
 Corpus scores after all landings: CHIDIST 152/195, GAMMA.DIST 159/268,
@@ -55,8 +57,8 @@ POISSON k=0 exact. Suite 1,606 green.
 6. **POISSON k≥1 product staging** (direct-product route proven; ~21%
    unexplained at k=1). Also BINOM/NEGBINOM route rewrites (log-composed in
    production; Excel = exp(n·ln q) class at k=0 — general k unproven).
-7. **Distribution pow staging** (exp(y·ln x) — race excel_pow_positive vs
-   powf vs chain compositions on the b24 weibull/binom corpora; then land).
+7. ~~Distribution pow staging~~ **CLOSED 2026-07-18 (lane 1)** — see the
+   IDENTIFIED table; clue trail in W109_WALL_CLUES_LEDGER.md.
 8. **BETA.DIST integer-shape fast path + A/B-bounds staging** (small probes,
    unmeasured).
 
@@ -77,7 +79,14 @@ POISSON k=0 exact. Suite 1,606 green.
 ## KEY TOOLING
 
 - Racers (calc_graph_racer bins): check_x87exp(_ext), check_gratio_prod,
-  check_bratio, check_inv, check_exp_rd, check_gammaln_port, check_erf190.
+  check_bratio, check_inv, check_exp_rd, check_gammaln_port, check_erf190,
+  check_pow_dist, check_weibull_pdf, check_weibull_prod, check_expon_prod.
+- **x87_serve + x87client.py (G3-01 work dir)**: line-oriented op server
+  (exp/expz/ln/expm1/mul/div/recip/cexpext on real hardware) + Python batch
+  client — arbitrary candidate op-graph exploration without new Rust bins.
+  The tree×spill-mask enumeration template is lane1_pdf_round6.py.
+- **W109_WALL_CLUES_LEDGER.md**: running clue trail for the walls, updated
+  every lane.
 - Scorers in work dirs: score_b22.py, agentQ_lib.py, agentL_composite3.py,
   agentJ_transfer.py (build/gate/hyp/invert), rdexp_race.py.
 - Oracle cache shared; b9heldout + b26X reserved unraced.

@@ -943,3 +943,62 @@ open lane); gratio a==1 P-side -> the identified expm1.
   a*L (worst 4->7->10). These are the two remaining named walls on the
   series path; both are primitive-microdetail class, below every staging
   axis (family exhausted).
+
+## Lane 1 (2026-07-18) — distribution pow pinned; WEIBULL + EXPON bodies fully identified and signed off
+
+Post-compaction sweep, lane 1 of the four-lane plan (land proven routes ->
+clean residuals -> coefficient hunt). Work: `lane1_*.py` + `batch/answers-b27*`,
+`b28*` in the G3-01 work dir; new tooling `check_pow_dist`, `check_weibull_pdf`,
+`check_weibull_prod`, `check_expon_prod`, and the general **`x87_serve` op
+server + `x87client.py`** (per-op hardware chain calls from Python — the tool
+that cracked the pdf op-graph; use it for any future graph enumeration).
+
+**Distribution pow staging (b24 re-race + b27 targeted capture):**
+- Re-raced agentN's b24 verdicts with the REAL hardware chain (agentN had an
+  idealized exp model): the exp-ln route is **33,145/33,145 across every b24
+  block** (binom q^n 11,045 + p^n 4,400; weibull all 17 blocks) except one
+  row (below). powf/chain-ext lose thousands; `powf` wins ZERO disagreements.
+- b24 could NOT discriminate the product staging (plain `RN53(y·lnx)` vs
+  POWER's double-rounded `RN53(RN64(y·lnx))`): every b24 exponent is
+  low-entropy (integers <=720, dyadic fractions), so the RN64 step is EXACT
+  and the stagings collapse. Designed-gap lesson banked: full-mantissa
+  exponents are required to see the product rounding.
+- **b27D targeted capture** (500k offline candidates -> 113 disagreement rows
+  + 80 twins): **113/113 for the double-rounded product**, 0 plain, twins
+  80/80. Distribution pow == `exp(RN53(RN64(y·ln x)))` — POWER's chain —
+  but **WITHOUT the `0.5 -> sqrt` shortcut** (b24 s0p5: CR-sqrt 412/800 vs
+  chain 800/800). The sqrt special case lives in the POWER *wrapper*, not
+  the shared CRT pow. Landed as `excel_pow_chain` (excel_numeric);
+  `excel_pow_positive` now delegates to it after the 0.5 check.
+
+**WEIBULL.DIST identification (b27 pdf corpus 5,400 rows + b27b + b28):**
+- cdf: `r = RN53(RN64(x/beta))` (x87 DR divide, b27b D2 2/2);
+  `t = excel_pow_chain(r, alpha)`; publish `-expm1_internal(-t)`.
+- pdf: **`alpha / pow(beta,alpha) * pow(x,alpha-1) * exp(-pow(x/beta,alpha))`
+  evaluated LEFT-TO-RIGHT (division first!), every op double-rounded through
+  a spilled double local** — the round-6 exhaustive tree×spill-mask race put
+  `T3|SS` at 1,600/1,600 (Pb2+Pbf) where every other association order or
+  spill pattern loses 300+ rows. All three pows are spilled-product chains
+  (extended-argument delivery REFUTED per factor, round 5); the POWER-style
+  reciprocal staging for alpha<1 REFUTED (direct signed-exponent chain).
+- The identification path is a method exemplar: beta=1 blocks solved at 100%
+  by the naive form, beta=2 (all beta-ops EXACT) still failed 157/400 —
+  which forced the separate-powers hypothesis, since `pow(1,·)=exp(0)=1`
+  makes the beta=1 world collapse to BOTH forms bit-identically. The C
+  source line is readable off the bits.
+- b27b D1 48/48: outer ops are x87-DR, plain SSE2 refuted directly.
+- **b28 held-out (fresh 6,000 rows, production kernel): 5,999/6,000 =
+  99.983%**, sole miss -2 ULP (chain-microdetail class, see clue ledger).
+  LANDED in `weibull_dist_kernel`.
+
+**EXPON.DIST (b28b + b28c):** body is the same legacy x87 per-op-DR class:
+inner `lambda*x` 14/14 DR, pdf outer `lambda*e` 24/24 DR, twins 40/40.
+Landed (`excel_x87_mul` at both sites). **b28c held-out (fresh 4,000 rows,
+production): 4,000/4,000 = 100.000%.**
+
+Big picture shift: the 2010 stats rewrite is NOT uniformly the plain-SSE2
+world of GRATIO/BRATIO — the closed-form distribution bodies (WEIBULL,
+EXPON) are legacy x87 compilation units with per-op double-rounded spills,
+division-first C association, calling the same x87 transcendental CRT. Both
+body classes coexist behind the same function surface. Wall implications
+recorded in W109_WALL_CLUES_LEDGER.md.
