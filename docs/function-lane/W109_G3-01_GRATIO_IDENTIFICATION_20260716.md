@@ -929,3 +929,17 @@ open lane); gratio a==1 P-side -> the identified expm1.
 - b26 batteries designed for the clean held-out gate (captured; scoring
   next): b26A integer-a moderate-y series gate, b26X cross-view, b26P
   POISSON re-confirm.
+
+## b26 held-out gate (2026-07-18) — POISSON signed off; series staging held-out-confirmed with known ceiling
+
+- **b26P POISSON: 4,000/4,000 through the production RN-chain path** — with
+  b23's 30,000 that is 34,000 consecutive fresh rows, zero misses. The exp
+  primitive + POISSON.DIST(0, lambda) are sign-off grade.
+- b26A GAMMA.DIST (production path, integer-a moderate-y uniform grids):
+  a=2 795/1600 (worst 4), a=3 544/1600 (worst 7), a=4 276/900 (worst 10).
+  The staging holds held-out (the confirmed family winner); the ceiling is
+  set by (i) the chain-microdetail +-1 class on r (the 7/45-type rows) and
+  (ii) an error growing with a consistent with ln-amplification through
+  a*L (worst 4->7->10). These are the two remaining named walls on the
+  series path; both are primitive-microdetail class, below every staging
+  axis (family exhausted).
