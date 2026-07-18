@@ -401,3 +401,39 @@ below the n=7 approximation error. No OCR repairs were needed anywhere.
   identification (published sets + 1967 verbatim all ruled out; anchors
   D1=-gamma, D2=1-gamma CR pinned).
 - Landing spec + b1/b2 provisional-coefficient decision requested (in flight).
+
+## Lane 4 (2026-07-18, agent-S + fresh gate) — B2 re-identified CONTINUOUS and re-landed; B1 confirmed at its wall
+
+Agent-S ran the staging×coefficient co-search on the round-3-pinned forms
+(clean fit split — it also found agentL's gn2 fit had been mildly
+held2-CONTAMINATED: `fit_sets()` excluded only `held-`). Deliverables:
+`agentS_results.md` + `agentS_*.py/json` in the G3-02 work dir.
+
+**B2 [1.5,4.0): the op-graph is FULLY-CONTINUOUS x87 (`e/e/e`, one final
+round) — the same class as B4 — not the spill model previously landed.**
+Held-blind noise floor 1.077 (continuous) vs 1.113 (spill), robust under
+each staging's own refit coefficients. The selection drama is a method
+exemplar: a spill-staged polish EXISTED that passed the formal held2 gate
+(317>316) but its seed/staging choice had touched held-out; the fresh
+never-probed b32 corpus (1,600 rows) ruled: that candidate 505/1,200 —
+WORSE than the landing 518 (selection leakage, exactly the MINVERSE
+lesson) — while the held-blind pick (LM refit under continuous) won at
+**549/1,200 (45.8% vs 43.2%)**. LANDED: gammaln.rs B2 now continuous with
+the LM coefficients (suite green; port bit-matches the reference on b32).
+Aggregate across all 1,554 banked+fresh b2 rows: 711 vs 686.
+
+**B1 [0.7,1.5): confirmed at its form-family wall.** Every refit overfits
+(held-out drops); the published 1967 n=7 plain-double stands. Fresh b32:
+123/400 (30.8%), consistent. Structure: only ~36% of misses are within 1
+ULP pre-round; real distances reach −3.4 ULP — outside ANY coefficient
+choice in the enumerated staging family. CVP method caveat banked: the
+pre-round distance MUST be computed at mp.prec≈200 (dps-15 cancels
+catastrophically and fakes integer-clustering).
+
+**Open (wall 5 refined):** B1 op-graph (and B2's residual ~54%) are outside
+the (num,den,div,outer,assoc,fma,recip)×(d,s,e) family. Agent-S's designed
+next probes: (i) two-step argument reductions ((x−1)−1, (x−0.5)−0.5);
+(ii) non-minimax coefficient family (Remez under a different weight — the
+~1-ULP irreducible coefficient error hints Excel's table isn't a plain
+minimax); (iii) independent outer 2-op spill mask re-run AFTER an e/e/e
+refit. See W109_WALL_CLUES_LEDGER.md.

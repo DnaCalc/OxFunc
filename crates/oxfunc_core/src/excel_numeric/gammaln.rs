@@ -15,7 +15,7 @@
 //! boundary double):
 //!   * `x < 0.7`         COMPOSED : `core(x+1) - ln(x)`, one double subtract.
 //!   * `0.7 <= x < 1.5`  B1       : Cody-Hillstrom 1967 n=7 `(x-1)*N/D`, plain double.
-//!   * `1.5 <= x < 4.0`  B2       : anchored rational, x87 **spill** (RN53 per store).
+//!   * `1.5 <= x < 4.0`  B2       : anchored rational, x87 **continuous** (one final round).
 //!   * `4.0 <= x < 8.0`  B4       : SPECFUN P4/Q4, x87 **continuous** (one final round).
 //!   * `x >= 8.0`        STIRLING : fdlibm w-tail, plain double.
 //!
@@ -53,23 +53,26 @@ const Q1: [f64; 8] = [
     f64::from_bits(0x3FF0_0000_0000_0000), // 1.0 (monic)
 ];
 
-// ---- B2 [1.5,4.0): gn2 refit, anchored (ascending Horner order) -----------
+// ---- B2 [1.5,4.0): agent-S LM refit under the CONTINUOUS staging (W109
+// lane 4, 2026-07-18) — held-blind selection (noise floor 1.077 vs the old
+// spill model's 1.113), validated on the FRESH b32 corpus: 549/1,200 vs the
+// gn2/spill landing's 518/1,200. (Ascending Horner order.)
 const P2: [f64; 8] = [
-    f64::from_bits(0x4013_E5FF_9A8E_C233),
-    f64::from_bits(0x4080_F34F_95D4_690A),
-    f64::from_bits(0x40CE_4978_25AD_2705),
-    f64::from_bits(0x4106_8ECA_52D4_9406),
+    f64::from_bits(0x4013_E5FF_9A8E_0235),
+    f64::from_bits(0x4080_F34F_95D4_686C),
+    f64::from_bits(0x40CE_4978_25AD_2725),
+    f64::from_bits(0x4106_8ECA_52D4_9415),
     f64::from_bits(0x4130_9ACC_C4FB_E930),
     f64::from_bits(0x4149_77D4_7BE6_FFCE),
     f64::from_bits(0x4153_7AF9_6B73_8BB2),
     f64::from_bits(0x4147_741E_8705_57A8),
 ];
 const Q2: [f64; 8] = [
-    f64::from_bits(0x4066_E10D_06A2_1D3B),
-    f64::from_bits(0x40BE_550C_A051_7E3E),
-    f64::from_bits(0x4100_4233_0FF7_BEE7),
-    f64::from_bits(0x4131_5841_D242_2865),
-    f64::from_bits(0x4154_187F_0784_1A49),
+    f64::from_bits(0x4066_E10D_06A2_326E),
+    f64::from_bits(0x40BE_550C_A051_7E45),
+    f64::from_bits(0x4100_4233_0FF7_BEDC),
+    f64::from_bits(0x4131_5841_D242_285C),
+    f64::from_bits(0x4154_187F_0784_1A4C),
     f64::from_bits(0x4169_AFB0_D161_2A49),
     f64::from_bits(0x4171_0062_54DB_452A),
     f64::from_bits(0x4162_2ED4_F2F0_6395),
@@ -139,23 +142,21 @@ fn stirl8(x: f64) -> f64 {
 // B2 / B4 extended-precision bands.
 // -------------------------------------------------------------------------
 
-/// B2 band `[1.5, 4.0)`: `t*(D2 + t*(XNUM/XDEN))`, `t = x-2`. The Horner loop
-/// runs in x87 80-bit extended with each store spilled to binary64 (RN53);
-/// `XNUM/XDEN` stays extended; the tail is a single final round.
+/// B2 band `[1.5, 4.0)`: `t*(D2 + t*(XNUM/XDEN))`, `t = x-2`. Everything
+/// extended (x87 CONTINUOUS, one final round) — the same class as B4. The
+/// earlier "spill each Horner store" tag is superseded (W109 lane 4: the
+/// held-blind noise floor picks continuous, 1.077 vs 1.113, and the fresh
+/// b32 gate confirms 549 vs 518 / 1,200).
 #[cfg(target_arch = "x86_64")]
 fn b2(x: f64) -> f64 {
-    use super::x87::raw::{
-        CW_PC64_RN as CW, Ext80, ext_add, ext_div, ext_from_f64, ext_mul, ext_to_f64,
-    };
-    // "spill to double" = store barrier then exact widen.
-    let spill = |v: Ext80| -> Ext80 { ext_from_f64(ext_to_f64(&v, CW)) };
+    use super::x87::raw::{CW_PC64_RN as CW, ext_add, ext_div, ext_from_f64, ext_mul, ext_to_f64};
 
     let t = ext_from_f64(x - 2.0);
     let mut xnum = ext_from_f64(0.0);
     let mut xden = ext_from_f64(1.0);
     for i in 0..8 {
-        xnum = spill(ext_add(&ext_mul(&xnum, &t, CW), &ext_from_f64(P2[i]), CW));
-        xden = spill(ext_add(&ext_mul(&xden, &t, CW), &ext_from_f64(Q2[i]), CW));
+        xnum = ext_add(&ext_mul(&xnum, &t, CW), &ext_from_f64(P2[i]), CW);
+        xden = ext_add(&ext_mul(&xden, &t, CW), &ext_from_f64(Q2[i]), CW);
     }
     let r = ext_div(&xnum, &xden, CW);
     let t1 = ext_mul(&t, &r, CW); // t * r

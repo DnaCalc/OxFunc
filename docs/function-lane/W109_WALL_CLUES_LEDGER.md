@@ -69,7 +69,22 @@ will want; date every entry.
 
 ## Wall 5 — GAMMALN b1/b2 coefficients
 
-- (lane 4 target — clues to accumulate there.)
+- **2026-07-18 (lane 4, agent-S + b32 fresh gate): B2 RE-LANDED as
+  fully-continuous x87 with LM-refit coefficients** (fresh b32: 549 vs
+  518 / 1,200; noise floor 1.077 vs 1.113; B2 and B4 are now the SAME
+  op-graph class — architecturally coherent). B1 confirmed AT ITS WALL:
+  published-1967 plain double is the held-out optimum of the entire
+  (d,s,e,fma,recip)×association staging family; misses reach −3.4 ULP
+  pre-round (not coefficient-fixable). What remains is outside the family:
+  next probes = two-step argument reductions, non-minimax (re-weighted
+  Remez) coefficient family, outer 2-op mask after e/e/e refit
+  (agentS_results.md §7).
+- Method clues banked: (i) CVP pre-round distances need mp.prec≈200 —
+  dps-15 catastrophically cancels and fakes integer clustering; (ii) the
+  gn2 fit was held2-contaminated (agentL fit_sets excluded only `held-`) —
+  always exclude EVERY held set by prefix; (iii) the fresh-corpus rule
+  worked exactly as designed: a formally-gate-passing candidate whose
+  selection touched held-out LOST on never-probed rows (505 < 518).
 
 ## Wall — internal extended lgamma (G3-02)
 

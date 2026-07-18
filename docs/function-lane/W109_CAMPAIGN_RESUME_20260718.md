@@ -31,8 +31,9 @@ routing ≡ identified substrate bit-for-bit; both OxFunc-side integer-shape
 fast paths REMOVED — they were silently overriding the identified kernels,
 gamma one catastrophically at ±4,400 ULP): CHIDIST 152/195, GAMMA.DIST
 modern 337/446, b26 integer-a 1,615/4,100 (worst −10), beta b22 293/671,
-GAMMALN held-out 79.0%, BETAINV 12/30 worst +5, POISSON k=0 34,000+
-consecutive exact, WEIBULL b28 5,999/6,000, EXPON b28c 4,000/4,000.
+GAMMALN held2 314/400 + fresh-b32 b2 549/1,200 (B2 continuous re-landing:
++25 aggregate over all 1,554 b2 rows), BETAINV 12/30 worst +5, POISSON k=0
+34,000+ consecutive exact, WEIBULL b28 5,999/6,000, EXPON b28c 4,000/4,000.
 Suite 1,509 green.
 
 ## OPEN WALLS (each with banked per-row residuals + designed next probe)
@@ -55,10 +56,13 @@ Suite 1,509 green.
    normalizer algdiv-class proven; GRATIO-sub q > grat1 in all combos).
    Probes: differential z-pairs (±1-2 ULP), flip-bracketing at bimodal
    a-positions, b→1⁻ sweep.
-5. **GAMMALN b1/b2 coefficients** (Microsoft third refit; provisional:
-   1967-n7/d for b1 ~31%, gn2/x87-spill for b2 ~47.5%; GN flat manifold;
-   anchors D1=−γ, D2=1−γ CR pinned; b4 r0 fingerprint −3.34e-15 vs Cody).
-   Probe: exact-arithmetic peel probes + lattice with the round-3 corpora.
+5. **GAMMALN b1/b2** — lane-4 outcome (2026-07-18, agent-S + fresh b32
+   gate): **B2 re-landed CONTINUOUS x87 + LM coefficients** (fresh 549 vs
+   518/1,200; same op-graph class as B4). **B1 = confirmed op-graph wall**:
+   published-1967/plain-double is the held-out optimum of the whole
+   enumerated staging family; misses to −3.4 ULP pre-round. Remaining
+   probes (agentS_results.md §7): two-step argument reductions,
+   re-weighted-Remez coefficient family, outer 2-op mask post-e/e/e-refit.
 6. **POISSON k≥1 + BINOM/NEGBINOM routes** — REFRAMED by lane 2
    (2026-07-18; old "direct product proven / 21%" verdict WITHDRAWN —
    route-blind k=0 window):
