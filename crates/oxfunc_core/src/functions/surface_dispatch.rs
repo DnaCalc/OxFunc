@@ -3207,8 +3207,8 @@ mod tests {
             binomdist,
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
-                    CalcValue::number(f64::from_bits(0x3fcb000000000001)),
-                    CalcValue::number(f64::from_bits(0x3fcb000000000001)),
+                    CalcValue::number(f64::from_bits(0x3fcb000000000002)),
+                    CalcValue::number(f64::from_bits(0x3fcb000000000002)),
                 ]])
                 .unwrap()
             )

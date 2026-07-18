@@ -227,6 +227,52 @@ pub(crate) fn excel_exp_rz(x: f64) -> f64 {
     ext_to_f64(&ext_scale(&m, &k, cw), cw_rz)
 }
 
+/// BINOM.DIST pmf chain-entry exp (W109 lane 8): publishes
+/// `exp(lc - 0.5*lf)` where the argument is delivered **EXTENDED** into the
+/// `fFEXP` chain — the b34 exact-interval instrument proved delivery carries
+/// sub-double content (0/400 rows admit any representable double in their arg
+/// interval), so `lc - 0.5*lf` must NOT be spilled to `binary64` before the
+/// chain. `lc` and `lf` are the per-op RN53 double locals the caller composes
+/// (agent-T rounds 5/6: `lf` = the 2lnA realization, `lc` = the O3 grouping).
+///
+/// `0.5*lf` is exact in `binary64` (mantissa unchanged, exponent −1), so
+/// forming it as a plain `f64` and widening is bit-identical to an extended
+/// halving; the only extended-domain op is the final subtraction, done at
+/// PC=64 and fed register-resident into the chain (the `cexpext2` handler the
+/// racer validated: 52.17% b34 / 75.51% b35 / 49.81% b29 end-to-end).
+///
+/// Off `x86_64` this falls back to the portable `(lc - 0.5*lf).exp()`, which is
+/// NOT bit-exact to Excel (the parity is an x87-hardware property, as elsewhere
+/// in this module).
+#[cfg(target_arch = "x86_64")]
+pub(crate) fn excel_binom_pmf_exp(lc: f64, lf: f64) -> f64 {
+    use x87::raw::{
+        CW_PC64_RN, ext_abs, ext_add, ext_div, ext_f2xm1, ext_from_f64, ext_l2e, ext_mul, ext_one,
+        ext_rndint, ext_scale, ext_sub, ext_to_f64,
+    };
+    let cw = CW_PC64_RN;
+    // arg = RN64(lc - 0.5*lf), extended, unspilled. 0.5*lf exact in double.
+    let arg = ext_sub(&ext_from_f64(lc), &ext_from_f64(0.5 * lf), cw);
+    // fFEXP chain on the extended argument (identical op order to `x87::exp`
+    // and the racer's `exp_chain_from_ext`), RN53 final store.
+    let t = ext_mul(&arg, &ext_l2e(), cw);
+    let k = ext_rndint(&t, cw);
+    let f = ext_sub(&t, &k, cw);
+    let neg = ext_to_f64(&f, cw) < 0.0;
+    let w = ext_f2xm1(&ext_abs(&f, cw), cw);
+    let mut m = ext_add(&w, &ext_one(), cw);
+    if neg {
+        m = ext_div(&ext_one(), &m, cw);
+    }
+    ext_to_f64(&ext_scale(&m, &k, cw), cw)
+}
+
+/// Portable fallback for non-`x86_64` hosts (not bit-exact to Excel).
+#[cfg(not(target_arch = "x86_64"))]
+pub(crate) fn excel_binom_pmf_exp(lc: f64, lf: f64) -> f64 {
+    (lc - 0.5 * lf).exp()
+}
+
 /// Portable faithful (`~0.502` ULP) double-precision `e^x` — the glibc-2.29
 /// no-FMA `__exp` port. The non-`x86_64` fallback for [`excel_exp`], a
 /// correctly-rounded reference in tests, and the deterministic substrate the

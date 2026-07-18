@@ -186,6 +186,140 @@ fn binom_pmf_direct(number_s: u64, trials: u64, probability_s: f64) -> f64 {
         * pow_u64(1.0 - probability_s, trials - number_s)
 }
 
+// ===========================================================================
+// W109 lane-8 BINOM.DIST(k, n, p, FALSE) pmf — the identified R `dbinom_raw`
+// op-graph (agent-T rounds 1-6; landing agent-U). Excel evaluates BINOM.DIST's
+// probability mass through R's `dbinom_raw`/`bd0`/`stirlerr` machinery, its
+// transcendentals routed to the legacy x87 CRT chains. The chain-entry exp is
+// fed the argument EXTENDED (see `excel_binom_pmf_exp`). End-to-end scores
+// through this exact composition: b34 52.17%, b35 75.51%, b29 49.81% (the rest
+// is a second, rarer lc-flip source + small-operand bd0-direct rounding, both
+// sub-ULP residuals banked in agentT_results.md / agentU_results.md).
+//
+// Every constant below is the CR double emitted by `agentU_gen_consts.py`
+// (bit-verified against agentT_model.py's SFE/S/M_LN_2PI). NEVER hand-edit —
+// regenerate.
+
+// ---- stirlerr CR-double table s(m), m = 1..=15 (index 0 unused) ----
+// s(m) = ln(m!) - m*ln(m) + m - 0.5*ln(2*pi*m)  (mpmath prec 200)
+const STIRLERR: [f64; 16] = [
+    0.0, // m = 0 (unused; kept for 1-based indexing)
+    f64::from_bits(0x3FB4C071BCDA0A5B), // s( 1)
+    f64::from_bits(0x3FA52A9B923EA649), // s( 2)
+    f64::from_bits(0x3F9C579A268D80B3), // s( 3)
+    f64::from_bits(0x3F954A2662FD78A9), // s( 4)
+    f64::from_bits(0x3F910B4E513FCBED), // s( 5)
+    f64::from_bits(0x3F8C6B167BEBDF36), // s( 6)
+    f64::from_bits(0x3F885D4D612E4A86), // s( 7)
+    f64::from_bits(0x3F8552805E7B3076), // s( 8)
+    f64::from_bits(0x3F82F4871B12AB64), // s( 9)
+    f64::from_bits(0x3F810F9D4C0743A7), // s(10)
+    f64::from_bits(0x3F7F0593088014F8), // s(11)
+    f64::from_bits(0x3F7C7018733AA9C6), // s(12)
+    f64::from_bits(0x3F7A40514700F36C), // s(13)
+    f64::from_bits(0x3F786076C002D4A7), // s(14)
+    f64::from_bits(0x3F76C08F6F194A10), // s(15)
+];
+
+// ---- R stirlerr large-n series coefficients (CR doubles) ----
+const STIRL_S0: f64 = f64::from_bits(0x3FB5555555555555); // 1/12
+const STIRL_S1: f64 = f64::from_bits(0x3F66C16C16C16C17); // 1/360
+const STIRL_S2: f64 = f64::from_bits(0x3F4A01A01A01A01A); // 1/1260
+const STIRL_S3: f64 = f64::from_bits(0x3F43813813813814); // 1/1680
+const STIRL_S4: f64 = f64::from_bits(0x3F4B951E2B18FF23); // 1/1188
+
+// ---- ln(2*pi) CR double ----
+const M_LN_2PI: f64 = f64::from_bits(0x3FFD67F1C864BEB5); // ln(2*pi)
+
+/// R `stirlerr(n)` — n an integer-valued f64. Table for n <= 15, else the R
+/// asymptotic-series tiers (all arithmetic plain double, nn = n*n). Lane 7
+/// proved this term is inert at sub-ULP scale, but faithfulness to R (= Excel)
+/// requires the exact tier boundaries and coefficients above.
+fn binom_stirlerr(n: f64) -> f64 {
+    if n <= 15.0 {
+        STIRLERR[n as usize]
+    } else {
+        let nn = n * n;
+        if n > 500.0 {
+            (STIRL_S0 - STIRL_S1 / nn) / n
+        } else if n > 80.0 {
+            (STIRL_S0 - (STIRL_S1 - STIRL_S2 / nn) / nn) / n
+        } else if n > 35.0 {
+            (STIRL_S0 - (STIRL_S1 - (STIRL_S2 - STIRL_S3 / nn) / nn) / nn) / n
+        } else {
+            (STIRL_S0 - (STIRL_S1 - (STIRL_S2 - (STIRL_S3 - STIRL_S4 / nn) / nn) / nn) / nn) / n
+        }
+    }
+}
+
+/// R `bd0(x, np)` — the deviance term. Near-equal operands take R's series loop
+/// (all plain double); otherwise the DIRECT form `x*ln(x/np) + (np - x)` with a
+/// SINGLE hardware ln of the plain-double quotient (agent-T round 6: bd0 keeps
+/// the quotient-ln — the log-split that fixed `lf` does NOT extend to bd0).
+fn binom_bd0(x: f64, np: f64) -> f64 {
+    if (x - np).abs() < 0.1 * (x + np) {
+        // R's convergent series in v = (x-np)/(x+np), plain double throughout.
+        let v = (x - np) / (x + np);
+        let mut s = (x - np) * v;
+        let mut ej = 2.0 * x * v;
+        let vv = v * v;
+        let mut j = 1.0_f64;
+        loop {
+            ej *= vv;
+            let s1 = s + ej / (2.0 * j + 1.0);
+            if s1 == s {
+                return s1;
+            }
+            s = s1;
+            j += 1.0;
+        }
+    } else {
+        x * crate::excel_numeric::excel_log(x / np) + (np - x)
+    }
+}
+
+/// The non-degenerate BINOM.DIST pmf (0 < p < 1). Dispatches the k=0 / k=n
+/// closed forms and the general `dbinom_raw` body.
+fn binom_pmf(number_s: u64, trials: u64, probability_s: f64) -> f64 {
+    let n = trials as f64;
+    let q = 1.0 - probability_s;
+    if number_s == 0 {
+        if trials == 0 {
+            return 1.0; // dbinom_raw n==0 empty product
+        }
+        // k == 0 (b29b: 383+/400). p < 0.1: bd0 form fed to the regular RN53
+        // chain exp with a plain-double argument; else the raw pow chain q^n.
+        return if probability_s < 0.1 {
+            crate::excel_numeric::excel_exp(-binom_bd0(n, n * q) - n * probability_s)
+        } else {
+            crate::excel_numeric::excel_pow_chain(q, n)
+        };
+    }
+    if number_s == trials {
+        // k == n mirror.
+        return if q < 0.1 {
+            crate::excel_numeric::excel_exp(-binom_bd0(n, n * probability_s) - n * q)
+        } else {
+            crate::excel_numeric::excel_pow_chain(probability_s, n)
+        };
+    }
+    // General 1 <= k <= n-1: dbinom_raw = exp(lc - 0.5*lf), argument extended.
+    let k = number_s as f64;
+    let nk = n - k;
+    let np = n * probability_s;
+    let nq = n * q;
+    // lc: O3 grouping (agent-T round 6, 403/475 flips predicted, 0 false pos):
+    //   ((s(n) - s(k)) - (s(n-k) + bd0(k,np))) - bd0(n-k,nq)
+    let lc = ((binom_stirlerr(n) - binom_stirlerr(k))
+        - (binom_stirlerr(nk) + binom_bd0(k, np)))
+        - binom_bd0(nk, nq);
+    // lf: 2lnA (agent-T round 5) — log1p(-k/n) realized as a DIFFERENCE OF TWO
+    //   SEPARATE hardware lns, left-to-right: (M_LN_2PI + ln k) + (ln(n-k) - ln n).
+    let ln = crate::excel_numeric::excel_log;
+    let lf = (M_LN_2PI + ln(k)) + (ln(nk) - ln(n));
+    crate::excel_numeric::excel_binom_pmf_exp(lc, lf)
+}
+
 pub fn binom_dist_kernel(
     number_s: f64,
     trials: f64,
@@ -211,10 +345,9 @@ pub fn binom_dist_kernel(
     } else if probability_s == 1.0 {
         Ok(if number_s == trials { 1.0 } else { 0.0 })
     } else {
-        let log_pmf = ln_choose(trials, number_s)?
-            + (number_s as f64) * probability_s.ln()
-            + ((trials - number_s) as f64) * (1.0 - probability_s).ln();
-        Ok(log_pmf.exp())
+        // W109 lane 8: the identified R dbinom_raw op-graph (replaces the old
+        // ln_choose log-composed pmf). cdf keeps the summation loop above.
+        Ok(binom_pmf(number_s, trials, probability_s))
     }
 }
 
