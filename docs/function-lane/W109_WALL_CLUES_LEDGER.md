@@ -41,6 +41,20 @@ will want; date every entry.
 
 ## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
 
+- **2026-07-18 (lane 5): THE WALL GAINED A DIRECT ORACLE.** BINOM's
+  dbinom_raw argument staging is now identified to publication-noise level
+  (82.5% of decodable b29 rows at d≈0.00), and the end-to-end blocker is
+  the SAME primitive as this wall: the fFEXP chain entered with an
+  EXTENDED argument. The ~500 correct-argument b29 rows are
+  (arg_ext64, published_bits) pairs — attack the extended-entry chain
+  realization on THESE (argument exactly known!) instead of erf's
+  never-recovered arguments. Tooling: `cexpext2 hi lo` server op runs the
+  current composed chain from an exact 64-bit argument; it agrees with
+  Excel only ~45% on correct-arg rows — enumerate reduction/publication
+  micro-variants (f2xm1 argument handling, rndint mode, store order)
+  against these pairs. A win here closes BOTH the erf plateau AND BINOM
+  (and presumably NEGBINOM + the POISSON small-λ side).
+
 - **2026-07-18 (lane 1):** no direct new probe, but two transferable facts:
   (i) association ORDER is recoverable and matters — the WEIBULL pdf race
   was stuck at 805/1200 until the tree enumeration found division-first;

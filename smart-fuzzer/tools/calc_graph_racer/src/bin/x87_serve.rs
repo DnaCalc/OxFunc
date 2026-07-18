@@ -11,6 +11,9 @@
 //!   recip x    — x87 double-rounded reciprocal
 //!   cexpext a b — chain-exp of the EXTENDED product a*b (PC=64, no spill
 //!                 between the multiply and the fFEXP chain entry)
+//!   cexpext2 hi lo — chain-exp of the EXTENDED argument hi+lo (two doubles
+//!                 reconstructing a 64-bit-mantissa value exactly via one
+//!                 RN64 add; chain entered extended, RN53 publish)
 //!   mulex a b   — RN53( chainexp_ext(a) * b ): the fFEXP chain run on double
 //!                 argument a with its EXTENDED result multiplied by double b
 //!                 (unspilled return composing on the stack), single store
@@ -187,6 +190,12 @@ fn main() {
                 // third token = mask (decimal)
                 let mask: u32 = it.next().and_then(|s| s.parse().ok()).unwrap_or(0);
                 pmfk_candidate(x as u32, y, mask)
+            }
+            ("cexpext2", Some(x), Some(y)) => {
+                use rx::{CW_PC64_RN, ext_add, ext_from_f64, ext_to_f64};
+                let a = ext_add(&ext_from_f64(x), &ext_from_f64(y), CW_PC64_RN);
+                let r = exp_chain_from_ext(&a);
+                ext_to_f64(&r, CW_PC64_RN)
             }
             ("mulex", Some(x), Some(y)) => {
                 use rx::{CW_PC64_RN, ext_from_f64, ext_mul, ext_to_f64};

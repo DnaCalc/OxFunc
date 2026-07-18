@@ -1109,3 +1109,46 @@ production's log-composed pdf is now the prime suspect for the next
 catastrophic class — by analogy with lane 2 (POISSON pmf = Loader/rcomp
 class) and lane 1 (WEIBULL pdf = legacy direct), Excel's gamma pdf is
 predicted to be an rcomp-class direct evaluation, NOT exp(log-pdf).
+
+## Lane 5 (2026-07-18) — BINOM dbinom_raw sub-staging IDENTIFIED to the argument level; blocker consolidated onto the extended-entry-exp wall
+
+Continuation of lane 2's bounded enumeration (`lane5_*.py`, b29 corpora).
+The implied-argument decode (reads Excel's exp argument to ~0.06 ULP(arg)
+at |t|>8) drove a four-round staging collapse:
+
+1. **Round 1 (432 all-plain candidates): 56% → 87.5%** within ±0.7.
+   Winners: bd0 direct association **B** (`x·L + (np−x)`), lc in R's exact
+   source order (left-to-right), log1p realized as `ln((n−k)/n)`; series
+   threshold 0.1 confirmed (0.125–0.15 statistically tied); np/nq product
+   staging and quotient DR-ness indistinguishable.
+2. **The fractional bell** (±0.25/±0.5 columns, non-integer — impossible
+   for a double-vs-double comparison) forced the delivery question; the
+   all-extended and per-return-extended (v3) models REFUTED (25%, 61%).
+3. **The winning model (v2): Loader's literal C locals.** `lc` and `lf`
+   are per-op DOUBLE locals (lc spill PROVEN — extended-lc collapses to
+   19%); the final `lc − 0.5·lf` runs EXTENDED (RN64, unspilled) into the
+   exp — the x87-side argument expression at the transcendental boundary.
+   439/600 decodable rows at d≈0.00 exactly; 82.5% within the
+   publication-noise criterion. This refines the campaign's central
+   picture: SSE2 body, x87 transcendentals, and the LAST expression
+   fragment before an exp call rides extended.
+4. **End-to-end**: extended entry is the only surviving publication class
+   (34.2% overall; call-boundary-spill variants collapse to 7% at t≥8) —
+   but on correct-argument rows the composed extended-entry chain
+   (`exp_chain_from_ext`) agrees with Excel's published bits only ~45%.
+   **The blocker is the extended-entry fFEXP realization — THE SAME
+   unknown as the erf 190-path C10r plateau (wall 3).** k=0 control: the
+   p<0.1 branch closes at 383/400 (95.8%) where the argument is a plain
+   double — the contrast isolates the wall to the extended-argument entry.
+
+**Major new instrument for wall 3:** the ~500 correct-argument b29 rows
+are (extended-argument, published-value) PAIRS — a direct oracle for the
+extended-entry exp that the erf lane never had (erf's arguments were never
+exactly recoverable). Attack the chain realization there, not on erf.
+
+No landing (never accept a divergence: end-to-end is chain-blocked), but
+the BINOM route + argument staging is now identified end-to-end modulo one
+shared primitive; NEGBINOM presumably identical (+ its `size/(size+x)`
+prefactor). Files: lane5_binom_enum/diag/threshold/attrib/extmodel/mixed/
+final_model/v3/v2_polish/lclf_mask/e2e_final/pubvariants/k0_confirm.py;
+new server op `cexpext2 hi lo` (extended-argument chain entry).

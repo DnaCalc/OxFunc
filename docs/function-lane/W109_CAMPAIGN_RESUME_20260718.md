@@ -69,13 +69,16 @@ Suite 1,509 green.
    - POISSON pmf: k=1 = extended-composed direct product (exact at large
      λ); k≥2 = **Loader saddle-point dpois bit-exact at λ≳14**; small-λ
      staging + branch structure open.
-   - BINOM: **Loader dbinom control flow PROVEN** (b29b: the p<0.1 k=0
-     sub-branch `exp(−bd0−np)` 383/400 — a Loader-specific fingerprint);
-     general-k realization of stirlerr/bd0/lf sub-stagings open (my
-     transcription 12% exact; implied-argument decode instrument built,
-     ±0.02 ULP(arg) reads, b29 banked). NEGBINOM presumed same family.
-   - Next: enumerate bd0-series/lf/log1p realizations against the implied
-     arguments; extreme-|t| b30 battery sharpens the decode.
+   - BINOM: **argument staging FULLY IDENTIFIED (lane 5, 2026-07-18)**:
+     Loader dbinom_raw, bd0-B direct assoc, R source-order lc, log1p =
+     ln((n−k)/n), thr 0.1; lc/lf per-op DOUBLE locals; final `lc − 0.5·lf`
+     EXTENDED (RN64 unspilled) into the exp — 82.5% of decodable rows at
+     publication noise, d≈0.00 on 439/600. k=0 p<0.1 branch closes 383/400.
+     **End-to-end blocked ONLY by the extended-entry fFEXP realization —
+     the SAME primitive as wall 3 (erf C10r)**; b29's correct-arg rows are
+     now a direct (arg_ext, published) oracle for that chain (see ledger
+     wall 3). No landing until the chain closes (never accept divergence).
+     NEGBINOM presumed identical + prefactor.
 7. ~~Distribution pow staging~~ **CLOSED 2026-07-18 (lane 1)** — see the
    IDENTIFIED table; clue trail in W109_WALL_CLUES_LEDGER.md.
 8. **BETA.DIST integer-shape fast path + A/B-bounds staging** (small probes,
