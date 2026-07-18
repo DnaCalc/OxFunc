@@ -1442,3 +1442,30 @@ agentT_{intervals,deltaw,system,delivery,classes}.json.
   (then one dense sweep reads δ(arg) completely); differ ⇒ argument-side,
   k=1 anchors isolate lf. Either branch converts the wall into a
   determined read.
+
+## Lane 8 round 5 (2026-07-18, agent-T + b35) — FORK DECIDED ARGUMENT-SIDE; lf IDENTIFIED: log1p ported as TWO SEPARATE LNS; the plateau breaks
+
+- **Fork verdict: ARGUMENT-SIDE.** At every matched-argument target the
+  bodies DIFFER across anchors by up to 4·2⁻⁵³ (chain exonerated with
+  positive cross-anchor evidence — same argument, different bodies, per
+  anchor family).
+- **IDENTIFICATION: `lf = (M_LN_2PI + ln k) + (ln(n−k) − ln n)`** — R's
+  `log1p(−x/n)` realized as a DIFFERENCE OF TWO SEPARATE HARDWARE LNS.
+  msvcr100 exports no C99 log1p (exactly as it exports no expm1 — the
+  same porting hole, patched the plain way this time). Betrayed by the
+  demanded per-anchor δlf parity vector (0,0,0,−1,0,+1) = ∓1 ulp of lf,
+  which exactly one raced staging produces. bd0's quotient-ln stays a
+  single ln (2-ln bd0 raced: worse everywhere); left-to-right grouping
+  confirmed; stirlerr tiers re-refuted numerically.
+- **Verified end-to-end (real chain):** b29 34.46% → **45.10%** (the
+  lane-5/6/7 plateau broken, +11 points); b34 32.29 → 48.06%; b35
+  45.43 → 68.58%. The dead windows land: B6-w05..09 = 400/355/382/386/400
+  from 0/400.
+- **Remaining (exact residuals banked in agentT_results.md):** B6
+  essentially closed (≤0.14·2⁻⁵³); residual concentrates on small-n/small-
+  operand anchors (B1 +1.98, B2 −1.1..−1.7 ·2⁻⁵³ — bd0-direct staging at
+  small np), the series-branch staging, and the layer-1 ±1·ulp53(lc)
+  class. Designed next probes named. Production landing still gated on
+  those (never accept a divergence), but the argument model now has TWO
+  recovered source lines (log1p form; its 2-ln realization) and one
+  named porting hole.
