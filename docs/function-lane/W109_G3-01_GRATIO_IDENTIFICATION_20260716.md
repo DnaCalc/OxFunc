@@ -1415,3 +1415,30 @@ agentT_{intervals,deltaw,system,delivery,classes}.json.
 - Round 4 (running): mixed-PC chains (p53r/p53s), tbyte-park control
   (cexpext2mem), reduction-subtract chop (cexpext2rz) — racing against
   the intervals with the body isolated (layer-1 subtracted).
+
+## Lane 8 round 4 (2026-07-18, agent-T) — all chain variants refuted with structure; the magnitude theorem; b35 approved
+
+- mem tbyte-park control ≡ baseline BIT-EXACT (harness transparency
+  proven). cexpext2rz ≡ baseline everywhere: **the reduction subtract is
+  always Sterbenz-exact at 64 bits — its RC is unobservable; chop
+  hypotheses at that site are vacuous** (durable fact).
+- p53r/p53s refuted; p53r additionally shows re-bracketing depth
+  collapse: a PC53 reduction jitters per-row, and the observed depth-400
+  per-window constancy **structurally excludes any jittery reduction —
+  the true chain's reduction is exact**.
+- Bonus refutations (offline vs the intervals): lf as single
+  ln(2π·k·(n−k)/n) — predicted bodies (0,+1,0,+2,0,0) vs measured
+  (+2,−2.2,+0.5,+2.5,−0.55,−2); fdlibm-class polynomial exp at PC64 on
+  the extended arg TIES the F2XM1 chain (34.46% b29 — the chain algorithm
+  is not what the body discriminates); pure-double fdlibm 14% —
+  extended-content consumption reconfirmed CHAIN-INDEPENDENTLY.
+- **Magnitude theorem (banked)**: the body is ±0.2–2.7 output-ULPs ≈
+  400–5,500 ulp64 — no extended-op micro-detail can produce it. Remaining
+  possibilities: algorithm-level approximation error (tied), an unmodeled
+  double-rounding between core and publication, or unraced argument
+  staging. The wall needs DATA: **b35 approved** — 6 anchors × 3 matched
+  model-argument targets (−20/−50/−100) × 400 p-ULPs; decision rule:
+  matched-arg bodies equal across anchors ⇒ chain-side deterministic map
+  (then one dense sweep reads δ(arg) completely); differ ⇒ argument-side,
+  k=1 anchors isolate lf. Either branch converts the wall into a
+  determined read.
