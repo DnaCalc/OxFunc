@@ -108,9 +108,18 @@ will want; date every entry.
   integer-shape BETA.DIST special path (b30); A/B bounds staging broadly
   confirmed. Both OxFunc-side integer fast paths (gamma cdf, beta cdf)
   REMOVED from production.
-- **New suspect class: the log-composed pdfs.** GAMMA.DIST pdf (FALSE) is
-  unmeasured; production computes exp(log-pdf). Lane-1/2 precedent
-  (WEIBULL pdf = legacy direct x87; POISSON pmf = Loader/direct hybrid)
-  predicts Excel's gamma pdf is an rcomp-class direct evaluation. Same
-  suspicion applies to BETA.DIST pdf and CHISQ.DIST pdf. One capture
-  battery (pdf grids per function) would triage all three.
+- **GAMMA.DIST pdf MEASURED (b31, 4,750 rows banked) — new named wall:
+  the closed-form-pdf extended-composition body class.** Triage REFUTED at
+  the exact-bit level: production log-composed (16.1%), direct separate-pows
+  (18%), ratio forms (22%), and R's dgamma-via-dpois structure (20% — NOT
+  R's dgamma, unlike POISSON which IS Loader at k≥2). The sharpest read:
+  a=1 (pdf = e^{−x/β}/β) fits the **reciprocal-based EXPON-style staging**
+  (λ=1/β then λ·exp(−λx)) at 42.3% with a TIGHT ±1–2 residual — the same
+  signature as POISSON k=1's extended-composed product (C4 class, ~70%).
+  Hypothesis: POISSON small-λ, POISSON k=1, GAMMA.DIST pdf (and predictably
+  CHISQ.DIST/BETA.DIST pdfs) share ONE legacy x87 body class whose
+  extended-vs-spilled composition pattern is the single remaining unknown —
+  crack it once, land it four times. Instruments ready: x87_serve
+  mulex/mulee/pmfk ops + the b24/b31 banked corpora. Fractional-a b31F rows
+  (1,000) additionally read the internal lgamma through stirlerr's
+  non-integer branch if the dgamma road ever reopens.
