@@ -41,6 +41,19 @@ will want; date every entry.
 
 ## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
 
+- **2026-07-18 (lane 6c): joint solve — flagship hypotheses refuted;
+  status sharpened.** x²-spill (erf), M-as-tbyte and every lf composition
+  (BINOM), and the c-vs-reduction-fraction chain-error map (all-rows) are
+  ALL refuted. With the argument families CLOSED (lc/lf doubles + exact
+  subtract), the residual ±1 publication scatter is chain/publication-side
+  — but note the epistemic correction: windowed-76% was weak evidence
+  (any monotone chain windows); the true discriminators are the no-window
+  classes (confirmed = visible-level term classes) and correction-map
+  structure on ARGUMENT-CERTAIN rows. Next: (i) c(f) map on
+  argument-certain subsets of BOTH corpora (same map ⇒ chain-side);
+  (ii) cross-corpus exact-argument pairs (<1 ulp64 apart) — their
+  published values must agree under ANY deterministic chain, the cleanest
+  litmus; (iii) ±300 narrow-interval solve with joint term nudges.
 - **2026-07-18 (lane 6b): MERGE CONFIRMED — walls 3 and the BINOM blocker
   are ONE.** The erf j-scan (`check_erf190 <dir> jscan`, dev corpus only,
   b9heldout untouched) reproduces the BINOM signature number-for-number:

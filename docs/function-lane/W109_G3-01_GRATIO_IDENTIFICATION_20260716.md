@@ -1221,3 +1221,47 @@ site, (i) the chain itself is our composed hardware chain — exonerated;
 unknown, two corpora now, with the narrow-interval solver as the shared
 instrument. Closing it closes: erf 190-path (and its CHIDIST/GAMMA.DIST
 inheritance), BINOM, NEGBINOM, and likely the POISSON small-λ side.
+
+## Lane 6c (2026-07-18) — joint sub-double solve: both flagship hypotheses refuted; epistemic sharpening of the unified wall
+
+Joint solve across both corpora (`lane6c_*.py`, `check_erf190 hyp` mode).
+
+**Refuted this round (all end-to-end, both sites where applicable):**
+- erf: x²-spill-into-ln variants (V0..V3 mixed spill/extended for ln vs
+  series) — all 51.9–52.4%, indistinguishable. The x-delivery sub-double
+  difference almost never moves the published bits.
+- BINOM: M_LN_2PI-as-tbyte (extended constant) — WORSE (32.5% vs 36.4%)
+  with a +1 bias; hardware-extended lns in lf — worse; every lf
+  composition variant remains in 32–36%.
+- The chain-error-map hypothesis: needed correction c vs the F2XM1
+  reduction fraction f = t − rint(t) is FLAT across all f-bins (weak
+  uptick only at the |f|≈0.5 reduction boundary) — the ±1 scatter is not
+  a simple deterministic function of f. CAVEAT: run on ALL rows; the
+  term-class rows (~24-35%) dilute — the designed re-run filters to the
+  argument-certain subset (d≈0 rows) and compares the c(f) map ACROSS
+  BOTH corpora.
+
+**Epistemic sharpening (important, banked):**
+1. With lc/lf proven doubles and the final subtract exact-at-64-bit, the
+   BINOM argument family is CLOSED — the argument is fully determined.
+   Since no composition variant reaches the windowed ceiling, the ±1
+   residual must live in the chain/publication realization for extended
+   arguments — BUT:
+2. The windowed-76% result is WEAKER than lane 6 claimed: any monotone
+   chain with the same output granularity windows almost every reachable
+   published value. Window existence ≠ chain exoneration. The real
+   discriminators are (i) the no-window class (published values needing
+   args > 240 ulp64 away — the visible-level term classes, confirmed) and
+   (ii) structure in the needed-correction map on argument-certain rows.
+3. Current best factual summary of the unified wall: argument families
+   closed at both sites; composed-chain publication ±1-scatter on ~half
+   the argument-certain rows; scatter not explained by f-fraction,
+   lf/x composition tails, or constant precision.
+
+**Designed next probes:** (i) c(f)-map on argument-certain subsets of BOTH
+corpora simultaneously (same map ⇒ chain-side, different ⇒ residual
+argument leak); (ii) exact-pair search: rows across corpora whose model
+extended args agree to <1 ulp64 — their published values must then agree
+via ANY deterministic chain (a chain-side litmus with no model
+assumptions); (iii) widen the BINOM narrow-interval solve to ±300 with
+joint term-ULP nudges (the ±1-term rows currently pollute every map).

@@ -389,6 +389,114 @@ fn jscan(dir: &str) {
     }
 }
 
+/// Lane-6c joint solve, erf side: end-to-end C10r variants differing ONLY in
+/// sub-double composition of the chain argument:
+///   V0  x extended into ln (C10r baseline)
+///   V1  x SPILLED (RN53) into ln, extended x kept for the series
+///   V2  x spilled into ln AND series (uniform, = zz_dbl visible axis)
+///   V3  x extended into ln, spilled into series
+fn hyp_race(dir: &str) {
+    let g_x = {
+        let m: u64 = 0x906e_ba82_14db_6c6f;
+        let mut b = [0u8; 10];
+        b[..8].copy_from_slice(&m.to_le_bytes());
+        b[8] = 0xFF;
+        b[9] = 0x3F;
+        Ext80(b)
+    };
+    let mut rows: BTreeMap<u64, u64> = BTreeMap::new();
+    for name in [
+        "answers-b9train.json",
+        "answers-erfp.json",
+        "answers-erfm.json",
+        "answers-b8erf.json",
+        "answers-b7erf.json",
+        "answers-b11.json",
+        "answers-b10.json",
+    ] {
+        let Ok(txt) = std::fs::read_to_string(format!("{dir}/{name}")) else {
+            continue;
+        };
+        let ws: WitnessSet = serde_json::from_str(&txt).unwrap();
+        for w in &ws.witnesses {
+            let z = match &w.args[0] {
+                WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
+                _ => continue,
+            };
+            let Some(expected) = parse_bits_hex(&w.expected_bits) else {
+                continue;
+            };
+            if z > 0.0 && z < 0.5 {
+                rows.insert(z.to_bits(), expected.to_bits());
+            }
+        }
+    }
+    for (vname, ln_spill, ser_spill) in [
+        ("V0_ext/ext", false, false),
+        ("V1_ln53/serE", true, false),
+        ("V2_ln53/ser53", true, true),
+        ("V3_lnE/ser53", false, true),
+    ] {
+        let mut exact = 0u32;
+        let mut n = 0u32;
+        for (&zb, &eb) in &rows {
+            let z = f64::from_bits(zb);
+            let a = ef(0.5);
+            let x_ext = ext_mul(&ef(z), &ef(z), CW);
+            if dbl(&x_ext) == 0.0 {
+                continue;
+            }
+            n += 1;
+            let x_ln = if ln_spill { ef(dbl(&x_ext)) } else { x_ext };
+            let x_sr = if ser_spill { ef(dbl(&x_ext)) } else { x_ext };
+            let sp = |v: Ext80| -> Ext80 { ef(dbl(&v)) };
+            let mut an = ef(3.0);
+            let mut c = x_sr;
+            let mut sum = sp(ext_div(&x_sr, &ext_add(&a, &ef(3.0), CW), CW));
+            let tol = ext_div(
+                &ext_mul(&ef(3.0), &ef(5e-15), CW),
+                &ext_add(&a, &ext_one(), CW),
+                CW,
+            );
+            for _ in 0..200 {
+                an = sp(ext_add(&an, &ext_one(), CW));
+                c = sp(ext_chs(&ext_mul(&c, &ext_div(&x_sr, &an, CW), CW), CW));
+                let t = sp(ext_div(&c, &ext_add(&a, &an, CW), CW));
+                sum = sp(ext_add(&sum, &t, CW));
+                if ext_le(&ext_abs(&t, CW), &tol) {
+                    break;
+                }
+            }
+            let inner_poly = ext_add(
+                &ext_mul(
+                    &ext_sub(
+                        &ext_div(&sum, &ef(6.0), CW),
+                        &ext_div(&ef(0.5), &ext_add(&a, &ef(2.0), CW), CW),
+                        CW,
+                    ),
+                    &x_sr,
+                    CW,
+                ),
+                &ext_div(&ext_one(), &ext_add(&a, &ext_one(), CW), CW),
+                CW,
+            );
+            let j_d = dbl(&ext_mul(&ext_mul(&a, &x_sr, CW), &inner_poly, CW));
+            let inner53 = 0.5 + (0.5 - j_d);
+            let gi = ext_mul(&g_x, &ef(inner53), CW);
+            let zl = ext_mul(&a, &ln_ext(&x_ln), CW);
+            let w = exp_ext(&zl);
+            let ans = dbl(&ext_mul(&w, &gi, CW));
+            if ans.to_bits() == eb {
+                exact += 1;
+            }
+        }
+        println!(
+            "{vname:14} {exact:4}/{n} ({:.1}%)",
+            100.0 * exact as f64 / n as f64
+        );
+    }
+}
+
 fn main() {
     let dir = std::env::args().nth(1).expect("work dir");
     if std::env::args().nth(2).as_deref() == Some("dump") {
@@ -397,6 +505,10 @@ fn main() {
     }
     if std::env::args().nth(2).as_deref() == Some("jscan") {
         jscan(&dir);
+        return;
+    }
+    if std::env::args().nth(2).as_deref() == Some("hyp") {
+        hyp_race(&dir);
         return;
     }
     let mut rows: BTreeMap<u64, f64> = BTreeMap::new();
