@@ -54,9 +54,19 @@ POISSON k=0 exact. Suite 1,606 green.
    1967-n7/d for b1 ~31%, gn2/x87-spill for b2 ~47.5%; GN flat manifold;
    anchors D1=−γ, D2=1−γ CR pinned; b4 r0 fingerprint −3.34e-15 vs Cody).
    Probe: exact-arithmetic peel probes + lattice with the round-3 corpora.
-6. **POISSON k≥1 product staging** (direct-product route proven; ~21%
-   unexplained at k=1). Also BINOM/NEGBINOM route rewrites (log-composed in
-   production; Excel = exp(n·ln q) class at k=0 — general k unproven).
+6. **POISSON k≥1 + BINOM/NEGBINOM routes** — REFRAMED by lane 2
+   (2026-07-18; old "direct product proven / 21%" verdict WITHDRAWN —
+   route-blind k=0 window):
+   - POISSON pmf: k=1 = extended-composed direct product (exact at large
+     λ); k≥2 = **Loader saddle-point dpois bit-exact at λ≳14**; small-λ
+     staging + branch structure open.
+   - BINOM: **Loader dbinom control flow PROVEN** (b29b: the p<0.1 k=0
+     sub-branch `exp(−bd0−np)` 383/400 — a Loader-specific fingerprint);
+     general-k realization of stirlerr/bd0/lf sub-stagings open (my
+     transcription 12% exact; implied-argument decode instrument built,
+     ±0.02 ULP(arg) reads, b29 banked). NEGBINOM presumed same family.
+   - Next: enumerate bd0-series/lf/log1p realizations against the implied
+     arguments; extreme-|t| b30 battery sharpens the decode.
 7. ~~Distribution pow staging~~ **CLOSED 2026-07-18 (lane 1)** — see the
    IDENTIFIED table; clue trail in W109_WALL_CLUES_LEDGER.md.
 8. **BETA.DIST integer-shape fast path + A/B-bounds staging** (small probes,

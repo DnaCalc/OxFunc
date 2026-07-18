@@ -71,6 +71,19 @@ will want; date every entry.
 
 - (lane 4 target — clues to accumulate there.)
 
+## Wall — internal extended lgamma (G3-02)
+
+- **2026-07-18 (lane 2): NEW MEASUREMENT WINDOW.** BINOM.DIST general-k is
+  (leading hypothesis) `exp-chain(lnΓ_int(n+1) − lnΓ_int(k+1) −
+  lnΓ_int(n−k+1) + k·lnp + (n−k)·lnq)` — the implied-argument decode of a
+  BINOM pmf row reads a THREE-LGAMMA linear combination to ~0.02
+  ULP-of-argument. Same integers recur across rows ⇒ overdetermined
+  systems solve for per-integer internal-lgamma values bit-for-bit.
+  Banked: b29 corpora + `lane2_binom_implied*.py` (the decode machinery).
+  Every simpler lnC realization is REFUTED at the exact-bit level
+  (see the lane-2 note section) — the ±2-ULP(arg) bell with uniform
+  fractional part is the wall's own fingerprint.
+
 ## Wall 6/7/8 — POISSON k≥1, distribution pow, BETA.DIST probes
 
 - **2026-07-18 (lane 1): wall 7 (distribution pow staging) is CLOSED** —
@@ -78,9 +91,16 @@ will want; date every entry.
   99.983%/100.000% held-out. The POWER wrapper owns the 0.5→sqrt shortcut;
   the CRT pow underneath is the pure chain (story-grade: the shortcut is
   Excel's, not the C runtime's).
-- For wall 6 (POISSON k≥1 product staging): the product ops in the pmf are
-  now PREDICTED x87-DR (body-class prior from WEIBULL/EXPON). The ~21%
-  unexplained at k=1 was measured with plain products — re-race first with
-  `excel_x87_mul`/`excel_x87_div` compositions before inventing structure.
+- ~~For wall 6 (POISSON k≥1 product staging): predicted x87-DR~~ —
+  **superseded by lane 2 (2026-07-18)**: POISSON pmf is TWO routes (k=1 =
+  extended-composed direct product, exact at large λ; k≥2 = Loader
+  saddle-point dpois, bit-exact at λ ≳ 14; small-λ staging + branch
+  structure open). The old "direct product proven / 21% unexplained"
+  verdict was a route-blind-window artifact — withdrawn. See the lane-2
+  note section for the full refutation ledger.
 - BINOM cdf(0) ≡ pmf(0) bit-identical 1000/1000 (b24BT) — k=0 shares the
   pmf fast path, no bratio at k=0.
+- Loader's dbinom x==0 branch is `(p < 0.1) ? -bd0(n,nq) - np : n·log(q)` —
+  the b24 k=0 grid only had p > 0.5, so the p < 0.1 sub-branch is UNPROBED
+  (designed-gap note; a 200-row capture settles whether BINOM k=0 flips
+  formula below p=0.1).

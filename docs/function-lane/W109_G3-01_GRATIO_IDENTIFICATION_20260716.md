@@ -1002,3 +1002,76 @@ EXPON) are legacy x87 compilation units with per-op double-rounded spills,
 division-first C association, calling the same x87 transcendental CRT. Both
 body classes coexist behind the same function surface. Wall implications
 recorded in W109_WALL_CLUES_LEDGER.md.
+
+## Lane 2 (2026-07-18) — POISSON pmf two-route structure; BINOM route localized to the internal-lgamma wall
+
+Timeboxed per the cycle-back rule; no landings (no route reached sign-off).
+Work: `lane2_*.py`, batteries b29 (BINOM 1,062 + NEGBINOM 1,800, banked).
+
+**Corrections to prior verdicts (important):**
+- The "POISSON direct-product route proven, ~21% unexplained at k=1" claim
+  is WRONG and is hereby withdrawn: the k=0 window is ROUTE-BLIND
+  (`0·lnλ − ln0! = 0` exactly, so `exp(−λ)` is common to product and
+  log-composed routes). Direct product at k=1 scores 25.7% with ±10-ULP
+  tails. Method lesson: a window that publishes a common subexpression
+  proves the subexpression, never the route.
+
+**POISSON pmf (k≥1) — two-route structure established:**
+- k=2,3 at λ ≳ 14: **Loader's saddle-point dpois CONFIRMED bit-for-bit**
+  (`exp(−stirlerr(k) − bd0(k,λ))/sqrt(2π k)`; dissect rows match Excel's
+  ±50-ULP deviations from CR EXACTLY — route-confirmation of the strongest
+  kind). stirlerr constants = CR doubles (mpmath-validated); bd0 direct
+  branch, A-association `((x·L + np) − x)`, plain double.
+- k=1 at large λ: NOT Loader (deltas −78 vs Excel's ±3). Excel ≡ the
+  **extended-composed direct product** (`RN53(ext(powext(λ,1)·expext(−λ)))`,
+  C4 class) exactly on all dissect rows. k=1 never matches Loader anywhere.
+- Small-λ (all k): neither model as staged; mask families (per-intermediate
+  spill × RZ × repeated-multiply pow, 128 masks) cap at 70/43/41%.
+- Route-branch structure (why k=1 differs; where the small-λ staging
+  changes) is the open question. All banked in the branch map
+  (`lane2_poisson_branchmap.py` output).
+
+**BINOM.DIST general k — route localized, not identified:**
+- REFUTED at the exact-bit level: Loader dbinom (12%), direct
+  `C·p^k·q^(n−k)` (all stagings ~8%), term recurrences from the proven k=0
+  seed (~7%), log-composed with 9 argument stagings (8.8%), the 256-mask
+  extended-graph family (~10%), published-GAMMALN-composed lnC (3%).
+- **Implied-argument decode** (t = ln(pmf) at 200 digits, readable to
+  ~0.02 ULP-of-argument): Excel's exp argument is log-composed-class,
+  within ±2 ULP(arg) of `lnC + k·lnp + (n−k)·lnq`, residual bell ±1.5
+  ULP already at k=1 (NOT k-accumulating), fractional part uniform
+  (no double-lattice candidate inside ±0.6).
+- Error calculus pins the source: published-GAMMALN-composed lnC is TOO
+  WIDE (±6 observed for that candidate), plain-double compositions are TOO
+  NARROW to explain ±2 — but three RN53-published large lgammas differenced
+  give exactly the observed bell IF the lgamma is the sub-ULP **internal
+  extended lgamma** (G3-02). **Leading hypothesis: BINOM pmf = exp-chain of
+  an internal-lgamma-composed argument — the route is BLOCKED BY the
+  internal-lgamma wall, and b29 + the implied-argument decode is a new
+  MEASUREMENT WINDOW on that wall** (390+ decodable rows, each reading a
+  3-lgamma combination to ~0.02 ULP).
+- NEGBINOM: Loader dnbinom refuted (8.4%); presumably shares BINOM's route
+  family (same lgamma composition with different integer arguments).
+
+Next probes (designed, not run): (i) extreme-|t| b30 battery (p→0/1 edges,
+bigger n) where the decode sharpens to <0.01 ULP(arg) and each row becomes a
+linear constraint on the three internal-lgamma values; (ii) solve the
+per-integer lgamma values from overdetermined row systems (same integers
+recur across rows) — recovering internal lgamma AT INTEGER ARGUMENTS
+bit-for-bit would crack G3-02's integer slice as a by-product.
+
+**Lane-2 addendum (same day): the Loader control-flow smoking gun.** b29b
+(BINOM.DIST(0, n, p<0.1), 400 fresh rows): Excel's k=0 switches formula
+below p=0.1 EXACTLY as Loader's dbinom does — `exp(-bd0(n,nq) - np)`
+matches 383/400 (the `n·ln q` form only 58, almost all where the two
+coincide); 16 rows match neither (sub-staging of the bd0 series / compose).
+The p<0.1 x==0 branch is a Loader-SPECIFIC fingerprint, so **BINOM
+general-k IS dbinom_raw-shaped** — reconciling the implied-argument bell:
+the Loader argument is algebraically `lnC + k·lnp + (n-k)·lnq` but computed
+through stirlerr/bd0/lf ops whose roundings give exactly the observed ±2
+ULP(arg) spread. The remaining unknown is the REALIZATION of stirlerr/bd0/
+lf (my transcription: 12% exact; sub-stagings to enumerate: bd0 series loop
+associations, lf = M_LN_2PI + log(x) + log1p(-x/n) with the log1p
+realization, lc sum order, 0.5*lf staging, arg subtract order). The
+internal-lgamma hypothesis is DEMOTED to secondary (the ±2 bell no longer
+needs it) but the b29 decode-window instrument stands either way.
