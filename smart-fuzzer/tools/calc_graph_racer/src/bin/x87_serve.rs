@@ -13,6 +13,15 @@
 //!                 between the multiply and the fFEXP chain entry)
 //!   lnext x     — the EXTENDED fyl2x ln result, printed as "hi lo" (two
 //!                 hex doubles whose exact sum is the 64-bit value)
+//!   lp1 x       — hardware log1p via FYL2XP1: RN53( fyl2xp1(ln2, x) )
+//!   lp1ext x    — same, EXTENDED result printed as "hi lo"
+//!   bd0dir x np mask — direct-branch bd0 = x*L + (np - x) variants:
+//!                 bit0 quotient q=x/np extended (RN64, unspilled; else
+//!                      plain RN53 double)
+//!                 bit1 L = fyl2x(q) consumed EXTENDED (else spilled RN53)
+//!                 bit2 whole return compound extended with ONE final RN53
+//!                      (else per-op RN53 as the pinned model)
+//!                 bit3 association A: (x*L + np) - x (else B: x*L+(np-x))
 //!   cexpext2 hi lo — chain-exp of the EXTENDED argument hi+lo (two doubles
 //!                 reconstructing a 64-bit-mantissa value exactly via one
 //!                 RN64 add; chain entered extended, RN53 publish)
@@ -192,6 +201,62 @@ fn main() {
                 // third token = mask (decimal)
                 let mask: u32 = it.next().and_then(|s| s.parse().ok()).unwrap_or(0);
                 pmfk_candidate(x as u32, y, mask)
+            }
+            ("lp1", Some(x), _) => {
+                use rx::{CW_PC64_RN, ext_from_f64, ext_fyl2xp1, ext_ln2, ext_to_f64};
+                ext_to_f64(
+                    &ext_fyl2xp1(&ext_ln2(), &ext_from_f64(x), CW_PC64_RN),
+                    CW_PC64_RN,
+                )
+            }
+            ("lp1ext", Some(x), _) => {
+                use rx::{CW_PC64_RN, ext_from_f64, ext_fyl2xp1, ext_ln2, ext_sub, ext_to_f64};
+                let cw = CW_PC64_RN;
+                let v = ext_fyl2xp1(&ext_ln2(), &ext_from_f64(x), cw);
+                let hi = ext_to_f64(&v, cw);
+                let lo = ext_to_f64(&ext_sub(&v, &ext_from_f64(hi), cw), cw);
+                writeln!(out, "{:016x} {:016x}", hi.to_bits(), lo.to_bits()).unwrap();
+                continue;
+            }
+            ("bd0dir", Some(x), Some(np)) => {
+                use rx::{
+                    CW_PC64_RN, ext_add, ext_div, ext_from_f64, ext_fyl2x, ext_ln2, ext_mul,
+                    ext_sub, ext_to_f64,
+                };
+                let cw = CW_PC64_RN;
+                let mask: u32 = it.next().and_then(|s| s.parse().ok()).unwrap_or(0);
+                let q = if mask & 1 != 0 {
+                    ext_div(&ext_from_f64(x), &ext_from_f64(np), cw)
+                } else {
+                    ext_from_f64(x / np)
+                };
+                let l_raw = ext_fyl2x(&ext_ln2(), &q, cw);
+                let l = if mask & 2 != 0 {
+                    l_raw
+                } else {
+                    ext_from_f64(ext_to_f64(&l_raw, cw))
+                };
+                let xl = ext_mul(&ext_from_f64(x), &l, cw);
+                let r = if mask & 8 != 0 {
+                    // A: (x*L + np) - x
+                    let t = ext_add(&xl, &ext_from_f64(np), cw);
+                    let t = if mask & 4 != 0 {
+                        t
+                    } else {
+                        ext_from_f64(ext_to_f64(&t, cw))
+                    };
+                    ext_sub(&t, &ext_from_f64(x), cw)
+                } else {
+                    // B: x*L + (np - x)
+                    let d = ext_sub(&ext_from_f64(np), &ext_from_f64(x), cw);
+                    let xl2 = if mask & 4 != 0 {
+                        xl
+                    } else {
+                        ext_from_f64(ext_to_f64(&xl, cw))
+                    };
+                    ext_add(&xl2, &d, cw)
+                };
+                ext_to_f64(&r, cw)
             }
             ("lnext", Some(x), _) => {
                 use rx::{

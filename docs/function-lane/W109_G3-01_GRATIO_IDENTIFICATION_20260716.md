@@ -1341,3 +1341,28 @@ class. Solve, then identify WHICH published realization (bd0 variant,
 lf composition, constant provenance) produces exactly those values.
 The b33 answers + scripts are the template; ~10 more windows per anchor
 (15k probes) should overdetermine every class.
+
+## Lane 8 round 1 (2026-07-18, agent-T) — b34 interval solve: log1p RECOVERED; exact instrument built
+
+b34 captured (24,000 probes: 6 anchors × 10 windows × 400 p-ULPs; two k=1
+anchors isolate the M+lp side). Agent-T deliverables: agentT_results.md +
+agentT_{intervals,deltaw,system,delivery,classes}.json.
+
+- **Exact interval instrument:** all 24,000 rows converted to hardware-
+  chain preimage intervals of the published double (~ulp64 resolution,
+  0 clamps) — candidate realizations now test OFFLINE with zero chain
+  calls. Verified faithful against the end-to-end path.
+- **IDENTIFIED: `lp = log1p(−k/n)`** — R's literal dbinom_raw source line;
+  the pinned `ln((n−k)/n)` was wrong. With M_LN_2PI at +1 ulp, B2's clean
+  windows go 0 → 363/400. bd0-direct does NOT use log1p (keeps plain
+  log(x/np) — the log1p swap there scores worse).
+- Structure proven from the intervals: delivery EXTENDED (extreme-p
+  windows admit 0/400 representable doubles under RN53 delivery);
+  windows class-homogeneous (no in-window branch/binade splits); lc
+  re-confirmed a spilled double; stirlerr re-confirmed inert (2⁻⁵⁸).
+- Clean-window offsets are OPERAND-CONTINUOUS fractions of ulp53(b1)
+  (−0.92, +0.99, …) — the bd0-direct product consumes something extended
+  (predicts the L-unspilled variant).
+- Round-2 (running): hardware FYL2XP1 log1p (new server ops lp1/lp1ext)
+  — the x87 instruction BUILT for log1p — and the 16-mask bd0dir
+  op-graph family, raced offline against the banked intervals.
