@@ -41,6 +41,15 @@ will want; date every entry.
 
 ## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
 
+- **2026-07-18 (lane 6b): MERGE CONFIRMED — walls 3 and the BINOM blocker
+  are ONE.** The erf j-scan (`check_erf190 <dir> jscan`, dev corpus only,
+  b9heldout untouched) reproduces the BINOM signature number-for-number:
+  windowed 76.5% (BINOM 76%), no-window 23.5% (= the j-pipeline park-phase
+  visible class), centers median-0 with ±240-ulp64 sub-double scatter.
+  The unified wall: **sub-double argument composition at extended-entry
+  exp sites** (how 32-bit codegen forms `a·ln_ext(x)` / `lc − 0.5·lf` at
+  64-bit before the chain) + a per-site ~24% visible-level term class.
+  One unknown, two corpora, one instrument (the narrow-interval solver).
 - **2026-07-18 (lane 6): THE CHAIN IS EXONERATED — the wall is
   ARGUMENT-SIDE.** The j-interval scan on the b29 oracle pairs proves the
   composed extended-entry fFEXP chain reproduces Excel bit-for-bit given

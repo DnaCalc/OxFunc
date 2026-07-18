@@ -224,10 +224,179 @@ fn dump_ladder(dir: &str) {
     }
 }
 
+/// Lane-6 merge test: slide the chain argument zl in ulp64 steps through the
+/// C10r pipeline; does SOME argument reproduce Excel's published bits?
+/// C10r (agentJ resting state): x = ext(z*z); series/j at RN53;
+/// inner = RN53(0.5 + RN53(0.5 - j)); g = g_x (pinned 64-bit mantissa
+/// 0x906eba8214db6c6f, exp 0x3FFF); w = chain(zl_j) extended;
+/// ans = RN53( ext( w * ext(g_x * inner) ) ).
+fn jscan(dir: &str) {
+    const J: i64 = 240;
+    let g_x = {
+        let m: u64 = 0x906e_ba82_14db_6c6f;
+        let mut b = [0u8; 10];
+        b[..8].copy_from_slice(&m.to_le_bytes());
+        b[8] = 0xFF;
+        b[9] = 0x3F; // sign 0, biased exp 0x3FFF (value in [1,2))
+        Ext80(b)
+    };
+    let mut rows: BTreeMap<u64, u64> = BTreeMap::new();
+    for name in [
+        "answers-b9train.json",
+        "answers-erfp.json",
+        "answers-erfm.json",
+        "answers-b8erf.json",
+        "answers-b7erf.json",
+        "answers-b11.json",
+        "answers-b10.json",
+    ] {
+        let Ok(txt) = std::fs::read_to_string(format!("{dir}/{name}")) else {
+            continue;
+        };
+        let ws: WitnessSet = serde_json::from_str(&txt).unwrap();
+        for w in &ws.witnesses {
+            let z = match &w.args[0] {
+                WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
+                _ => continue,
+            };
+            let Some(expected) = parse_bits_hex(&w.expected_bits) else {
+                continue;
+            };
+            if z > 0.0 && z < 0.5 {
+                rows.insert(z.to_bits(), expected.to_bits());
+            }
+        }
+    }
+    println!("{} distinct z<0.5 dev rows (b9heldout untouched)", rows.len());
+
+    let cfg = Cfg {
+        zz_dbl: false,
+        series_dbl: true,
+        j_dbl: true,
+        zl_dbl: false,
+        gam1_ext: true,
+        gam1_ret_dbl: false,
+        g_dbl: false,
+        w_dbl: false,
+        wg_first: false,
+        inner_dbl: false,
+    };
+    let (mut no_window, mut hit0, mut windowed) = (0u32, 0u32, 0u32);
+    let mut centers: Vec<f64> = Vec::new();
+    let mut widths: Vec<i64> = Vec::new();
+    for (&zb, &eb) in &rows {
+        let z = f64::from_bits(zb);
+        // pipeline up to zl (C10r): x extended, series RN53, j RN53
+        let a = ef(0.5);
+        let x = ext_mul(&ef(z), &ef(z), CW);
+        if dbl(&x) == 0.0 {
+            continue;
+        }
+        let sp = |v: Ext80| -> Ext80 { ef(dbl(&v)) };
+        let mut an = ef(3.0);
+        let mut c = x;
+        let mut sum = sp(ext_div(&x, &ext_add(&a, &ef(3.0), CW), CW));
+        let tol = ext_div(
+            &ext_mul(&ef(3.0), &ef(5e-15), CW),
+            &ext_add(&a, &ext_one(), CW),
+            CW,
+        );
+        for _ in 0..200 {
+            an = sp(ext_add(&an, &ext_one(), CW));
+            c = sp(ext_chs(&ext_mul(&c, &ext_div(&x, &an, CW), CW), CW));
+            let t = sp(ext_div(&c, &ext_add(&a, &an, CW), CW));
+            sum = sp(ext_add(&sum, &t, CW));
+            if ext_le(&ext_abs(&t, CW), &tol) {
+                break;
+            }
+        }
+        let inner_poly = ext_add(
+            &ext_mul(
+                &ext_sub(
+                    &ext_div(&sum, &ef(6.0), CW),
+                    &ext_div(&ef(0.5), &ext_add(&a, &ef(2.0), CW), CW),
+                    CW,
+                ),
+                &x,
+                CW,
+            ),
+            &ext_div(&ext_one(), &ext_add(&a, &ext_one(), CW), CW),
+            CW,
+        );
+        let j_d = dbl(&ext_mul(&ext_mul(&a, &x, CW), &inner_poly, CW));
+        let inner53 = 0.5 + (0.5 - j_d); // RN53(0.5 + RN53(0.5 - j))
+        let gi = ext_mul(&g_x, &ef(inner53), CW); // RN64
+        let zl0 = ext_mul(&a, &ln_ext(&x), CW); // extended argument
+        // ulp64 of zl: 2^(exp-63)
+        let zl_d = dbl(&zl0);
+        let u64_step = {
+            let e = zl_d.abs().log2().floor() as i32;
+            (2.0_f64).powi(e - 63)
+        };
+        let mut js: Vec<i64> = Vec::new();
+        for j in -J..=J {
+            let zj = ext_add(&zl0, &ef(j as f64 * u64_step), CW);
+            let w = exp_ext(&zj);
+            let ans = dbl(&ext_mul(&w, &gi, CW));
+            if ans.to_bits() == eb {
+                js.push(j);
+            }
+        }
+        if js.is_empty() {
+            no_window += 1;
+        } else {
+            windowed += 1;
+            if js.contains(&0) {
+                hit0 += 1;
+            }
+            centers.push(0.5 * (js[0] + js[js.len() - 1]) as f64);
+            widths.push(js[js.len() - 1] - js[0]);
+        }
+    }
+    let n = no_window + windowed;
+    println!(
+        "windowed {windowed}/{n} ({:.1}%)  no-window {no_window} ({:.1}%)  j=0 exact {hit0} ({:.1}%)",
+        100.0 * windowed as f64 / n as f64,
+        100.0 * no_window as f64 / n as f64,
+        100.0 * hit0 as f64 / n as f64
+    );
+    centers.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    widths.sort();
+    if !centers.is_empty() {
+        let m = centers.len();
+        println!(
+            "centers: min {:.0} q1 {:.0} med {:.0} q3 {:.0} max {:.0}",
+            centers[0],
+            centers[m / 4],
+            centers[m / 2],
+            centers[3 * m / 4],
+            centers[m - 1]
+        );
+        println!(
+            "widths:  min {} q1 {} med {} q3 {} max {}",
+            widths[0],
+            widths[m / 4],
+            widths[m / 2],
+            widths[3 * m / 4],
+            widths[m - 1]
+        );
+        // center histogram, 24-ulp64 bins
+        let mut hist: BTreeMap<i64, u32> = BTreeMap::new();
+        for c in &centers {
+            *hist.entry((c / 24.0).floor() as i64 * 24).or_default() += 1;
+        }
+        println!("center histogram (24-ulp64 bins): {:?}", hist);
+    }
+}
+
 fn main() {
     let dir = std::env::args().nth(1).expect("work dir");
     if std::env::args().nth(2).as_deref() == Some("dump") {
         dump_ladder(&dir);
+        return;
+    }
+    if std::env::args().nth(2).as_deref() == Some("jscan") {
+        jscan(&dir);
         return;
     }
     let mut rows: BTreeMap<u64, f64> = BTreeMap::new();

@@ -1188,3 +1188,36 @@ returns, np/nq product tails) — the delta is a LINEAR read of whichever
 tail is real; (iii) transfer to erf: run the same j-scan on the b9heldout
 erf rows using C10r's argument model — if intervals exist there too, the
 plateau is argument-side and the two walls merge completely.
+
+## Lane 6b (2026-07-18) — erf j-scan merge test: CONFIRMED, walls 3 and the BINOM blocker are one
+
+Ran the j-interval scan on the erf 190-path development corpus (1,508
+distinct z<0.5 rows from b9train/erfp/erfm/b7/b8/b10/b11 — **b9heldout
+untouched**), sliding the chain argument `zl = a·ln_ext(x)` in ulp64 steps
+(±240 ≈ ±3 pub-ULP) through the faithful C10r pipeline (series/j RN53,
+two-step RN53 inner, pinned 64-bit g_x mantissa 0x906eba8214db6c6f,
+w extended into `RN53(ext(w · ext(g_x·inner)))`). New racer mode:
+`check_erf190 <dir> jscan`.
+
+**Result — the BINOM signature, almost number-for-number:**
+- windowed **1,154/1,508 = 76.5%** (BINOM: 76%) — a consistent argument
+  EXISTS; the composed extended-entry chain + C10r publication reproduces
+  Excel bit-for-bit given the right 80-bit argument.
+- j=0 exact 52.4% — the model argument already lands in its window half
+  the time.
+- centers: median 0, dominant 0-bin (380 rows), symmetric spread to ±240
+  ulp64 — the same sub-double argument scatter as BINOM's.
+- no-window **23.5%** (BINOM: 24%) — rows unreachable by ANY argument
+  shift: the DOWNSTREAM visible-level class (j-pipeline park phases at
+  e=−15/−20, the g_x last-bit business) — erf's analogue of BINOM's
+  ±1-term rows.
+
+**The two walls are formally ONE:** at every identified extended-entry exp
+site, (i) the chain itself is our composed hardware chain — exonerated;
+(ii) a per-site visible-level term class (~24%) needs its own repair; and
+(iii) the remaining unknown is the argument's SUB-DOUBLE content — how the
+32-bit codegen composes the last expression fragment (`a·ln_ext(x)` here,
+`lc − 0.5·lf` in BINOM) at 64-bit before the chain consumes it. One
+unknown, two corpora now, with the narrow-interval solver as the shared
+instrument. Closing it closes: erf 190-path (and its CHIDIST/GAMMA.DIST
+inheritance), BINOM, NEGBINOM, and likely the POISSON small-λ side.
