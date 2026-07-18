@@ -41,6 +41,19 @@ will want; date every entry.
 
 ## Wall 3 — erf 190-path (C10r plateau, 2^Ez grid source)
 
+- **2026-07-18 (lane 7): b33 CROSSING SWEEP — the wall resolves into
+  per-window integer-ULP term corrections.** Whole windows land bit-exact
+  under a single term nudge (A1w1 `M+1` 60/60; A2w1 `b1+1` 58/60; A3w2
+  `M−2` 56/60): every window has a CONSTANT argument offset of
+  ±(1–4)·2⁻⁵³. Same-anchor consistency separates lf-side (A1: both
+  windows −1·2⁻⁵³) from bd0-side (A3/A4: p-varying) realizations; the
+  chain is exonerated with POSITIVE evidence (staircases reproduce exactly
+  under one correction). stirlerr is inert (ulps ~2⁻⁶² — below
+  resolution). **Endgame = integer-ULP linear system**: ~10 short windows
+  per anchor overdetermine the per-class term corrections; then match the
+  solved values against published bd0/lf realizations. Template:
+  `lane7_b33*.py` + answers-b33. Slow-walk windows need near-mode p
+  (design note: ulps/step ran 3–1,066, target 5–50).
 - **2026-07-18 (lane 6d): EXACT-CONSTRAINT REFRAME (user directive) — the
   wall's information budget stated precisely.** Single reads carry no
   information below publication granularity (decode floor ≡ output

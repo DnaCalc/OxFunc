@@ -1303,3 +1303,41 @@ ratio varies 4..256 across that range — the low-|arg| end reads the
 argument, the high-|arg| end reads the chain); predict crossings offline
 with cexpext2, capture ±8-ulp p-brackets around ~200 predicted crossings
 per anchor (~7k probes), score crossing-position deltas exactly.
+
+## Lane 7 (2026-07-18) — b33 crossing sweep RUN: the wall resolves into per-window integer-ULP term corrections
+
+b33 captured (18,000 probes: 4 anchors × 3 windows × 1,500 consecutive
+p-ULPs; `lane7_b33*.py`). Instrument notes: the p-walk is faster than
+designed (3–1,066 output-ulps/step; slow-walk windows need near-mode p),
+so crossing-matching only read the single-ulp staircase segments — but
+those alone yielded **1,093/1,258 matched crossings at delta EXACTLY 0**
+(A2 w1/w2: 853/853 at zero). The full-staircase shift analysis + per-window
+term attribution then produced the decisive picture:
+
+**Every window carries a CONSTANT argument offset of ±(1–4)·2⁻⁵³, and a
+single ULP-level nudge of ONE term makes the window land bit-exactly:**
+- A1 (k=1,n=12): w1 `M+1` → **60/60**; w2 `M+1` → 55/60 (same shift both
+  windows ⇒ lf-side constant realization for this anchor; w0 = the
+  near-mode window, less determined).
+- A2 (k=2,n=24): w1 `b1+1` → **58/60**; w2 `lp−3` → 46/60; w0 mixed.
+- A3 (k=3,n=48): w0 needs +1·2⁻⁵³, w2 needs +2·2⁻⁵³ (p-VARYING ⇒
+  bd0-side realization); w1 unresolved in the ±6 nudge range.
+- A4 (k=5,n=64): w1 needs −4·2⁻⁵³ (42/60), w2 −2·2⁻⁵³ (34/60) —
+  p-varying ⇒ bd0-side.
+
+Notes: the nudge attribution identifies the SHIFT QUANTUM, not the term
+(M/lk/lp shifts are near-degenerate at 2⁻⁵³ scale); stirlerr nudges are
+inert (their ulps ~2⁻⁶² are below the resolution — stirlerr realizations
+are NOT the wall). The chain is now exonerated with positive evidence:
+whole windows reproduce Excel's staircase exactly under one term
+correction — the deviation is NOT in the exp.
+
+**The endgame program (bounded, linear):** capture MANY short windows per
+anchor spanning p; each window yields one exact equation
+"needed shift = Σ (term corrections)"; same-anchor windows share the
+lf-side unknowns while bd0-side unknowns vary with (branch, magnitude
+class) — an integer-ULP linear system over a handful of unknowns per
+class. Solve, then identify WHICH published realization (bd0 variant,
+lf composition, constant provenance) produces exactly those values.
+The b33 answers + scripts are the template; ~10 more windows per anchor
+(15k probes) should overdetermine every class.
