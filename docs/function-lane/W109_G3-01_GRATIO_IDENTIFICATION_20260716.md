@@ -1469,3 +1469,27 @@ agentT_{intervals,deltaw,system,delivery,classes}.json.
   those (never accept a divergence), but the argument model now has TWO
   recovered source lines (log1p form; its 2-ln realization) and one
   named porting hole.
+
+## Lane 8 round 6 (2026-07-18, agent-T) — layer-1 IDENTIFIED: the lc grouping; bd0/series families exhausted
+
+- **Layer-1 = the lc GROUPING: `lc = ((s1−s2)−(s3+b1))−b2` (O3).** On the
+  clean domain it predicts 403/475 measured ±1-ulp53(lc) flips with ZERO
+  false positives (97.8% all-row agreement); all 11 alternative groupings
+  predict nothing or break hundreds of zero-rows; adjacent groupings lose
+  6–21 end-to-end points. Third recovered source line of the lane (after
+  the log1p form and its 2-ln realization): the C expression associates
+  (stirlerr(n−k) + bd0(k,np)) before subtracting.
+- **Cumulative model end-to-end: b29 49.81%** (34.46 at lane-6 close →
+  45.10 after 2lnA → 49.81 with O3), b34 52.17%, b35 75.51% — three-corpus
+  consistent.
+- bd0-direct staging family EXHAUSTED at small operands (9 more candidates
+  incl. the split-log analogue — the log1p lesson does NOT extend to bd0;
+  recip-mul, distributed, deep-split, ext-ST0-return all refuted with
+  margins). Series staging INERT (all variants tie within 3 rows).
+- New instrument: absolute-interval bank (agentT_intervals_abs.json,
+  31,200 rows) — all future racing zero-chain-call.
+- Remaining, exactly characterized: (a) 72/475 flips from a second rarer
+  source (DR-quotient rows the first suspect); (b) the small-operand
+  smooth bodies (B1/B2/B3/B5, ±0.2–2·2⁻⁵³, arg-varying) — outside every
+  raced staging family; next battery designs live with the banked
+  intervals.
