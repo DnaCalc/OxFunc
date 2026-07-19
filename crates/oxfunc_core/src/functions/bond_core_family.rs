@@ -373,14 +373,25 @@ fn period(c: Ctx) -> Result<Period, BondCoreEvalError> {
         n += 1;
     }
 }
-/// Excel's bond discount factor `base^(off+k)` is computed with the C-runtime `pow`
-/// integer special case: **binary exponentiation** (square-and-multiply, plain `f64`
-/// multiply) for non-negative integer exponents — which occur for on-coupon settlement
-/// (`off = dsc/e = 1`, so every `off+k` is an integer) — and `powf` (`exp·ln`) for
-/// fractional exponents (off-coupon). Rust's `f64::powf` uses `exp·ln` even for integers,
-/// so on-coupon PRICE drifts 1–2 ULP without this. Identified + held-out validated 25/25
-/// across 5 live-Excel bonds (build 20131); see `work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md`.
-/// For fractional `exp` this is identical to `base.powf(exp)`, so it only changes on-coupon bonds.
+/// Excel's bond discount factor `base^(off+k)` is computed with the C-runtime `pow`.
+///
+/// Two staged cases, both live-Excel identified:
+/// * **Non-negative integer exponent** (on-coupon settlement, where `off = dsc/e = 1`,
+///   so every `off+k` is an integer) → the C-runtime `pow` integer special case =
+///   **binary exponentiation** (square-and-multiply, plain `f64` multiply). Rust's
+///   `f64::powf` uses `exp·ln` even for integers, so on-coupon PRICE drifts 1–2 ULP
+///   without this. Held-out validated 25/25 across 5 live-Excel bonds (build 20131).
+/// * **Fractional exponent** (off-coupon) → the legacy CRT `pow` chain
+///   `exp(RN53(RN64(exp·ln base)))` via the x87 `ln`/`mul`/`exp`, i.e.
+///   [`crate::excel_numeric::excel_pow_chain`] — NOT the platform `f64::powf`. The two
+///   agree on the vast majority of inputs but diverge ±1 ULP on the Actual/360 (basis 2)
+///   and Actual/365 (basis 3) fractional discount ladders at higher yields; the x87
+///   chain reproduces live Excel where `powf` does not (W109 G6-03d, b37 3474→3656 / 3446→3658
+///   on bases 2/3, b38 held-out 315/315 + 315/315). This is the SAME distribution-substrate
+///   pow identified independently in the G3 lane-1 work — a cross-lane confirmation.
+///
+/// See `work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md` and
+/// `work/w109/G6-b2b3/agentV_results.md`.
 fn excel_bond_pow(base: f64, exp: f64) -> f64 {
     if exp >= 0.0 && exp < 1024.0 && exp.fract() == 0.0 {
         let mut n = exp as u64;
@@ -397,7 +408,7 @@ fn excel_bond_pow(base: f64, exp: f64) -> f64 {
         }
         r
     } else {
-        base.powf(exp)
+        crate::excel_numeric::excel_pow_chain(base, exp)
     }
 }
 fn pcomp(
@@ -424,7 +435,15 @@ fn pcomp_disc(
     let coup = 100.0 * rate / c.frequency as f64;
     let e = dc(p.prev, p.next, c.basis, c.frequency)?;
     let a = dd(p.prev, c.settlement, c.basis)?;
-    let dsc = dd(c.settlement, p.next, c.basis)?;
+    // Excel's internal discount/settlement fraction is the DERIVED complement
+    // `dsc = E - A` (universal across bases), NOT the direct day-count span
+    // settlement→next-coupon. For bases 0/1/4 the two coincide except on
+    // settlement-on-31st 30/360 rows (which `E - A` also fixes); for Actual/360
+    // (basis 2) and Actual/365 (basis 3) they differ materially (the ~cents
+    // PRICE error, G6-03d). Excel's own COUPDAYSNC still PUBLISHES the actual
+    // days at bases 2/3 — PRICE's internal DSC deliberately diverges from the
+    // published COUP* function. (W109 G6-03d; b37/b38 live-Excel, build 20131.)
+    let dsc = e - a;
     if yld <= -(c.frequency as f64) {
         return Err(derr(WorksheetErrorCode::Num));
     }
@@ -1391,6 +1410,36 @@ mod tests {
                     got.to_bits()
                 );
             }
+        }
+    }
+
+    // W109 G6-03d: PRICE bit-exact vs live Excel (build 20131) after the universal
+    // `dsc = E - A` discount-fraction rule + the fractional x87 `pow` chain
+    // (`excel_pow_chain`). Held-out gated: b37 bases 2/3 3656+3658 (14 open ±1-ULP
+    // extreme-yield residuals), b38 fresh 945/945 all bases. Bits from answers-b37-price.json.
+    #[test]
+    fn price_dsc_e_minus_a_and_x87_pow_chain_pins() {
+        // (settle, mat, rate, yld, red, freq, basis, excel_bits)
+        let rows: &[(f64, f64, f64, f64, f64, f64, f64, u64)] = &[
+            // Catalog witness G6-03d (basis 2, Actual/360): was ~cents wrong pre-fix.
+            (44094.0, 45658.0, 0.06, 0.03, 103.0, 2.0, 2.0, 0x405ca5adc69c74fb),
+            // Basis-3 (Actual/365) sibling of the catalog witness.
+            (44094.0, 45658.0, 0.06, 0.03, 103.0, 2.0, 3.0, 0x405ca62e6ffeec41),
+            // Settlement-on-31st (2020-07-31) US 30/360 (basis 0): the `E - A` rule
+            // also corrects the 30/360 last-day-of-month accrual/discount split.
+            (44043.0, 45658.0, 0.06, 0.03, 103.0, 2.0, 0.0, 0x405cbcd7f4f1f43d),
+            // Pow-chain discriminator (basis 3, yld 0.2): platform `powf` is 1 ULP off
+            // here; the x87 `exp(RN53(RN64(exp·ln base)))` chain reproduces Excel.
+            (44094.0, 45658.0, 0.06, 0.2, 103.0, 2.0, 3.0, 0x404f217d3fb8f25d),
+        ];
+        for &(s, m, r, y, red, f, b, excel) in rows {
+            let got = price_kernel(s, m, r, y, red, f, Some(b)).unwrap();
+            assert_eq!(
+                got.to_bits(),
+                excel,
+                "PRICE({s},{m},{r},{y},{red},{f},{b}) = {:#018x}, want {excel:#018x}",
+                got.to_bits()
+            );
         }
     }
 
