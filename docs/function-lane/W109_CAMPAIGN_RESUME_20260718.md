@@ -69,16 +69,30 @@ Suite 1,509 green.
    - POISSON pmf: k=1 = extended-composed direct product (exact at large
      λ); k≥2 = **Loader saddle-point dpois bit-exact at λ≳14**; small-λ
      staging + branch structure open.
-   - BINOM: **argument staging FULLY IDENTIFIED (lane 5, 2026-07-18)**:
-     Loader dbinom_raw, bd0-B direct assoc, R source-order lc, log1p =
-     ln((n−k)/n), thr 0.1; lc/lf per-op DOUBLE locals; final `lc − 0.5·lf`
-     EXTENDED (RN64 unspilled) into the exp — 82.5% of decodable rows at
-     publication noise, d≈0.00 on 439/600. k=0 p<0.1 branch closes 383/400.
-     **End-to-end blocked ONLY by the extended-entry fFEXP realization —
-     the SAME primitive as wall 3 (erf C10r)**; b29's correct-arg rows are
-     now a direct (arg_ext, published) oracle for that chain (see ledger
-     wall 3). No landing until the chain closes (never accept divergence).
-     NEGBINOM presumed identical + prefactor.
+   - **BINOM: IDENTIFIED AND LANDED (lanes 5–8b, 2026-07-18, commit
+     85e91e4).** Production pmf = R dbinom_raw with THREE recovered source
+     details: lc grouping `((s(n)−s(k))−(s(n−k)+bd0(k,np)))−bd0(n−k,nq)`
+     (O3, 403/475 flips zero-false-positive); lf = `(M + ln k) +
+     (ln(n−k) − ln n)` (log1p ported as TWO SEPARATE LNS — msvcr100 has no
+     log1p, the expm1 hole again); arg = lc − 0.5·lf at RN64 EXTENDED into
+     the fFEXP chain (`excel_binom_pmf_exp`); R bd0 (series thr 0.1;
+     direct = single-ln x·L + (np−x)); stirlerr CR table + R tiers
+     (constants machine-generated, agentU_gen_consts.py); Loader k=0/k=n
+     branches (p<0.1 → exp(−bd0(n,nq)−np) else excel_pow_chain).
+     Scores: b29 8.76→49.81%, b34 52.17%, b35 75.51%, FRESH b36 gate
+     49.59% overall (k=n 96.4%, k=0 81.6%, general-k 37.9% with QUANTIFIED
+     n-dependence — perfect ≤15, degrades >35). Row OPEN: (i) the 72/475
+     second lc-flip source (DR-quotient rows suspect); (ii) small-operand
+     bd0-direct smooth bodies (±0.2–2·2⁻⁵³, n-scaling measured by b36);
+     (iii) NEGBINOM does NOT inherit (10.4% raced) — own route hunt.
+     Chain EXONERATED (matched-argument b35 proof); reduction subtract
+     always Sterbenz-exact; tbyte park transparent; PC53 refuted;
+     fdlibm-poly-exp ties the chain on this data.
+     Instruments: absolute-interval bank agentT_intervals_abs.json (31,200
+     rows, zero-chain-call racing), matched-argument battery design
+     (agentT_b35_gen.py), x87_serve op family (cexpext2*, lp1/FYL2XP1,
+     lnext, bd0dir), check_binom_prod racer. Full ledgers:
+     agentT_results.md (rounds 1–6) + agentU_results.md.
 7. ~~Distribution pow staging~~ **CLOSED 2026-07-18 (lane 1)** — see the
    IDENTIFIED table; clue trail in W109_WALL_CLUES_LEDGER.md.
 8. **BETA.DIST integer-shape fast path + A/B-bounds staging** (small probes,
