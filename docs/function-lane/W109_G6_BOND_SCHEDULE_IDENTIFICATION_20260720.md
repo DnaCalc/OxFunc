@@ -161,3 +161,32 @@ calc_methods, and regimes. The flip therefore lives in the
 `par·rate/f`/publication last-bit staging, not the day-count layer.
 Next probe: b43 rate ladder 0.0615 ± k·ulp on the flagged bonds.
 Canonical agent record: `smart-fuzzer/work/w109/G6-b2b3/agentW_results.md`.
+
+## Lane C — G6-03c DURATION/MDURATION: LANDED + GATED (2026-07-20, agent-X)
+
+Identity: `off = (E−A)/E` (shares PRICE's derived schedule — the docs-era
+kernel weighted with the DIRECT settlement→next span while dividing by the
+E−A dirty, a mixed state that put bases 2/3 at 0/1272); discount =
+`excel_bond_pow` (the PRICE substrate); Macaulay body = plain-f64 SSE2 with
+redemption separate, weights grouped `(diff·cash)/disc`, publication
+`num/den/f` over its OWN sums. Accrued span A = CoupDaysBS
+`diff360_us(prev, settle, ModifyStartDate)`, NOT plain `us_30_360`: the two
+differ only on 31st/month-end settlements by adjustment ORDER (a 1-integer A
+difference ≈ 2.5e13 ULP of duration).
+
+The gates earned their keep AGAIN: the b45 pre-registered gate (456/540)
+exposed the month-end A-convention break that b44 could not see; the fix is
+one line; the fresh month-end-majority b46 then gated clean — DURATION
+641/720 exact / all misses ±2 / zero material, MDURATION 644/720 mirroring
+exactly (the `/(1+yld/f)` staging is validated). b44 final 6217/6360.
+Suite 1,609 green, 8 pins added (both former catalog witnesses now exact).
+
+Open residual (NOT accepted): the off-coupon ±1-2 ULP class
+(`agentX_b44_residual143.json`, symmetric {−2:14, −1:59, +1:56, +2:14}) —
+the SAME shared fractional pow-chain wall PRICE left open; one cross-lane
+probe (b41/b43 family) covers both.
+
+Three same-day landings from one cluster: PRICE (b38 945/945), ACCRINT
+(b40+b42 145,607/145,620), DURATION/MDURATION (b46 641+644/720 ±2). Every
+lane followed hypothesis-first → lattice → pre-registered held-out gate,
+and TWO of the three had a wrong sub-rule caught only by the gate.

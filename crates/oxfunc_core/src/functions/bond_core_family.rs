@@ -670,21 +670,51 @@ pub fn duration_kernel(
 ) -> Result<f64, BondCoreEvalError> {
     let c = ctx(settlement, maturity, frequency, basis_)?;
     let p = period(c)?;
-    let (_, dirty, coup, _, e) = pcomp(rate(coupon)?, rate(yld)?, 100.0, c, p)?;
-    let dsc = dd(c.settlement, p.next, c.basis)?;
-    let off = dsc / e;
+    let coupon = rate(coupon)?;
+    let yld = rate(yld)?;
+    let f = c.frequency as f64;
+    // W109 G6-03c identification (live Excel build 20131, b44 6,360 witnesses).
+    // The weighting exponent shares PRICE's schedule quantities: the internal
+    // settlement fraction is the DERIVED complement `dsc = E - A`, so `off =
+    // (E - A)/E` (NOT the direct settlement->next day-count span the docs-era
+    // kernel used — that made bases 2/3 off by cents, 0/1272 exact). The
+    // discount factor is Excel's C-runtime `pow` staging (`excel_bond_pow`:
+    // binary exponentiation on the on-coupon integer exponents, the legacy x87
+    // `exp(RN53(RN64(exp*ln)))` chain off-coupon) — the SAME substrate PRICE
+    // uses. The Macaulay body op-graph is a plain-`f64` (SSE2) accrual with the
+    // redemption as a SEPARATE term and the numerator weight grouped
+    // `(diff*cash)/disc` (left-assoc), NOT `diff*(cash/disc)`; the final
+    // `num/den/f` association. This is the one internally-consistent kernel:
+    // numerator and denominator discount the SAME cashflows with the SAME `off`.
+    let coup = 100.0 * coupon / f;
+    let e = dc(p.prev, p.next, c.basis, c.frequency)?;
+    // The accrued span A is `CoupDaysBS` (F# `IDayCount.DaysBetween`, numerator
+    // position): for US 30/360 this is `dateDiff360US ... ModifyStartDate`
+    // (`diff360_us(_, _, false)`), NOT the plain `us_30_360` (`dd`). The two
+    // diverge only on 31st/month-end settlements — e.g. a Feb-end previous coupon
+    // with a 31st settlement: plain `us_30_360` collapses the end 31->30 AFTER
+    // the Feb-end start adjustment (giving 30), while `ModifyStartDate` checks
+    // `end==31` BEFORE adjusting the start (giving 31, matching Excel). This is
+    // the W109 G6-03c b45 month-end break (the ~2.5e13-ULP FC-45747-b0 explosion).
+    let a = days_between_num(p.prev, c.settlement, c.basis)?;
+    let off = (e - a) / e;
     if p.n == 1 {
-        return Ok((off / c.frequency as f64).max(0.0));
+        return Ok((off / f).max(0.0));
     }
-    let base = 1.0 + yld / c.frequency as f64;
-    let mut w = 0.0;
+    let base = 1.0 + yld / f;
+    let mut num = 0.0;
+    let mut den = 0.0;
     for k in 0..p.n {
-        let t = (off + k as f64) / c.frequency as f64;
-        let disc = base.powf(off + k as f64);
-        let cash = if k + 1 == p.n { coup + 100.0 } else { coup };
-        w += t * cash / disc;
+        let diff = off + k as f64;
+        let disc = excel_bond_pow(base, diff);
+        num += diff * coup / disc;
+        den += coup / disc;
+        if k + 1 == p.n {
+            num += diff * 100.0 / disc;
+            den += 100.0 / disc;
+        }
     }
-    Ok(w / dirty)
+    Ok(num / den / f)
 }
 pub fn mduration_kernel(
     settlement: f64,
@@ -1555,6 +1585,62 @@ mod tests {
     // legacy `powf` price until its schedule is identified). Pin the current recon witnesses
     // so a future accidental coupling is caught. These are the KNOWN-DRIFTING values
     // (yield-catalog 19 ULP, yield-par 6 ULP vs Excel); the row stays open.
+    // W109 G6-03c: DURATION bit-exact vs live Excel (build 20131) after the
+    // `off = (E - A)/E` schedule + `excel_bond_pow` discount + `(diff*cash)/disc`
+    // Macaulay body op-graph. b44 6,360 live witnesses: 2247 -> 6217 exact
+    // (bases 2/3 0/1272 -> 1239/1242; on-coupon 100%). Remaining 143 are the
+    // shared fractional x87 pow-chain ±1-2 ULP wall (same as PRICE b37 bases 2/3).
+    #[test]
+    fn duration_matches_live_excel_pinned_witnesses() {
+        // settlement, maturity, coupon, yld bits; freq; basis; excel bits
+        let rows: &[(u64, u64, u64, u64, f64, f64, u64)] = &[
+            // Catalog witnesses (on-coupon DA 44013/44562, basis 0) — the two
+            // former G6-03c rows, now exact.
+            (0x40e57da000000000, 0x40e5c24000000000, 0x3fa999999999999a,
+             0x3fa999999999999a, 2.0, 0.0, 0x3ff76b5d5a9cdbe9), // yld 0.05
+            (0x40e57da000000000, 0x40e5c24000000000, 0x3fa999999999999a,
+             0x3fb47ae147ae147b, 2.0, 0.0, 0x3ff767de5627448a), // yld 0.08
+            // Actual/360 (basis 2) off-coupon — was material 0/1272 pre-fix.
+            (0x40e57e0000000000, 0x40e64b4000000000, 0x3faeb851eb851eb8,
+             0x3fa999999999999a, 2.0, 2.0, 0x40100d23fbb83359),
+            // Actual/365 (basis 3) off-coupon — was material 0/1272 pre-fix.
+            (0x40e57e0000000000, 0x40e64b4000000000, 0x3faeb851eb851eb8,
+             0x3fb47ae147ae147b, 2.0, 3.0, 0x400fd3bce9b1ada9),
+            // Quarterly (freq 4), basis 2 off-coupon.
+            (0x40e57e0000000000, 0x40e64b4000000000, 0x3fb47ae147ae147b,
+             0x3fa999999999999a, 4.0, 2.0, 0x400ee0804a1d1c7c),
+            // Leap-February bond (basis 1 act/act) off-coupon.
+            (0x40e60ea000000000, 0x40e652a000000000, 0x3fa70a3d70a3d70a,
+             0x3fa999999999999a, 2.0, 1.0, 0x3ff7578208e817ad),
+            // W109 G6-03c b45 month-end break regression guards (the CoupDaysBS
+            // `diff360_us` accrued span). Feb-month-end settlement 2025-02-28,
+            // quarterly, basis 0 — same bond family whose 31st-settlement sibling
+            // (2025-03-31) exploded ~2.5e13 ULP with the plain `us_30_360` accrued.
+            (0x40e6528000000000, 0x40e6802000000000, 0x3fa0a3d70a3d70a4,
+             0x3f1a36e2eb1c432d, 4.0, 0.0, 0x3fef9f4c11283edc),
+            // 31st-of-month settlement 2023-12-31, semiannual, basis 0.
+            (0x40e61d6000000000, 0x40e6a66000000000, 0x3fac28f5c28f5c29,
+             0x3f1a36e2eb1c432d, 2.0, 0.0, 0x4006955d65e34aa5),
+        ];
+        for (i, &(s, m, cp, y, f, b, excel)) in rows.iter().enumerate() {
+            let got = duration_kernel(
+                f64::from_bits(s),
+                f64::from_bits(m),
+                f64::from_bits(cp),
+                f64::from_bits(y),
+                f,
+                Some(b),
+            )
+            .unwrap_or_else(|e| panic!("pin {i}: unexpected error {e:?}"));
+            assert_eq!(
+                got.to_bits(),
+                excel,
+                "pin {i}: got 0x{:016x} want 0x{excel:016x}",
+                got.to_bits()
+            );
+        }
+    }
+
     #[test]
     fn yield_unchanged_by_price_fix() {
         let cat = yield_kernel(44013.0, 44562.0, 0.05, 95.0, 100.0, 2.0, Some(0.0)).unwrap();
