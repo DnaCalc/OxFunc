@@ -190,3 +190,23 @@ Three same-day landings from one cluster: PRICE (b38 945/945), ACCRINT
 (b40+b42 145,607/145,620), DURATION/MDURATION (b46 641+644/720 ±2). Every
 lane followed hypothesis-first → lattice → pre-registered held-out gate,
 and TWO of the three had a wrong sub-rule caught only by the gate.
+
+## b43 probe — the 0.0615 bistables SHARPENED (2026-07-20, coordinator)
+
+Rate-ULP ladders (0.0615 ± 32 ulps × the 12 unique bistable rows, 780 live
+rows): **the flip is ISOLATED at exactly the double nearest 0.0615 — all 64
+neighbors bit-exact on all 12 ladders.** A staging difference would flip in
+bands or scattered points; an isolated single-input flip recurring across
+different bonds/dates/calc-paths is a TIE/publication phenomenon. Second
+selector: all 13 rows are basis 3 (canonical 182.5) or basis 1 (actual) —
+never 0/2/4 — so the fractional/irregular divisor is a co-condition.
+Refuted on-row: 15-significant-digit publication snap (4/12, and the
+failures go the WRONG WAY — ours is the short decimal, Excel's the
+neighbor); naive DR-final-multiply and DR-coup-chain (0/12, but the probe
+reconstructed `a` circularly from our own result — REDO with the model's
+exact day-count quantities before trusting this refutation).
+NEXT PROBE (banked, offline-ready): recompute each row's exact `a` from
+agentW_model2.py quantities, race {SSE2, DR-final, DR-all, extended-a}
+variants at 250-bit reference to find which op hits a 53-bit tie at exactly
+the 0.0615 double; then a par-ladder (997.5 ± k·ulp) to separate
+rate-tie from product-tie. Corpus: batch/answers-b43-accrint.json.
