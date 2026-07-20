@@ -123,3 +123,41 @@ inherits the `E−A` dirty on bases 2/3 (its own open lane G6-03c); YIELD
 unchanged on its pinned witnesses.
 
 Canonical agent record: `smart-fuzzer/work/w109/G6-b2b3/agentV_results.md`.
+
+## Lane B — LANDED + TWICE-HELD-OUT GATED (2026-07-20, agent-W)
+
+Final model (all plain SSE2 double — x87 emulation strictly worse on both
+paths; ACCRINT sits in the 2010-rewrite SSE2 body class with GRATIO/BRATIO,
+NOT the x87 legacy-financial class):
+
+1. **calc_method=FALSE = flat fraction + WHOLE-PERIOD SKIP.** For issue
+   inside the canonical period: `days(issue→settle)/canonical`. For issue in
+   an EARLIER coupon period: stub `[issue, B1]/L_issue` + `[pcd, settle]/
+   canonical` as two divisions summed — every whole grid period between B1
+   and pcd contributes NOTHING. Consequence Excel faithfully publishes:
+   accrual is NEGATIVE when settlement < pcd (pinned in the regression
+   test). The b40 gate falsified the first version of this rule (remainder
+   measured from B1, not pcd) — exactly the under-determined corner the
+   battery was designed to expose; the skip-rule revision then passed the
+   fresh b42.
+2. **calc_method=TRUE = period walk summed BACKWARD** (settlement side
+   first; forward accumulation is 1 ULP off on ~9% of rows). Interior whole
+   periods = 1.0; act/act issue stub by its own actual length; the
+   settlement-side period is ALWAYS days/canonical, even when settlement
+   lands exactly on a coupon date.
+
+Gates (coordinator-verified on the production kernel via check_accrint):
+b39 ident 25,407/25,410; **b40 fresh 51,417/51,420; b42 fresh
+68,783/68,790** — combined 145,607/145,620 (99.991%). Suite 1,511 green,
+zero pin movement (the historic BUG-FUNC-030 leap-Feb pin was a true Excel
+witness and survived unchanged). Landed: `accrint_kernel` rewrite +
+`issue_period_grid` helper + `accrint_staging_bit_exact_vs_excel_w109`
+(8 live pins incl. the negative-accrual skip witness and a c0/c1 1-ULP
+pair).
+
+Open residual (NOT accepted): 13 bistable rows across the three corpora,
+ALL at rate 0.0615 — perfectly rate-selective across bonds, bases,
+calc_methods, and regimes. The flip therefore lives in the
+`par·rate/f`/publication last-bit staging, not the day-count layer.
+Next probe: b43 rate ladder 0.0615 ± k·ulp on the flagged bonds.
+Canonical agent record: `smart-fuzzer/work/w109/G6-b2b3/agentW_results.md`.

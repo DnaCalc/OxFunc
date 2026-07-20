@@ -824,6 +824,26 @@ fn coup_days_accr(
     }
 }
 
+/// The coupon period `[B0, B1]` on `first`'s grid schedule that contains `issue`
+/// (`B0 <= issue < B1`). Uses a STRICT lower step so an `issue` landing exactly on a grid
+/// boundary yields `B1 == issue` (a zero-length stub — the whole periods are then skipped).
+fn issue_period_grid(
+    issue: i64,
+    first: i64,
+    num_months: i64,
+    last_day: bool,
+) -> Result<(i64, i64), BondCoreEvalError> {
+    let mut b1 = first;
+    while b1 > issue {
+        b1 = change_month_flag(b1, -num_months, last_day).ok_or(derr(WorksheetErrorCode::Num))?;
+    }
+    while b1 < issue {
+        b1 = change_month_flag(b1, num_months, last_day).ok_or(derr(WorksheetErrorCode::Num))?;
+    }
+    let b0 = change_month_flag(b1, -num_months, last_day).ok_or(derr(WorksheetErrorCode::Num))?;
+    Ok((b0, b1))
+}
+
 pub fn accrint_kernel(
     issue: f64,
     first_interest: f64,
@@ -846,14 +866,19 @@ pub fn accrint_kernel(
     if !(issue < first && issue < settlement) {
         return Err(derr(WorksheetErrorCode::Num));
     }
-    // Faithful port of ExcelFinancialFunctions `accrInt` (bonds.fs) for the first-coupon
-    // regime, extended to match live Excel for settlement past the first interest date
-    // (which F# rejects). Excel normalises the settlement-side fraction by the *canonical*
-    // last coupon period length `CoupDays(first - 1 period, first)` — so a leap-crossing
-    // period is never measured by its own actual length (the ~0.07% act/act error of the
-    // prior kernel — BUG-FUNC-030). The two regimes measure differently: settlement within
-    // the first coupon span is measured *backward* from `pcd`, settlement past `first` is
-    // accrued *forward* from the accrual start with whole periods counting as 1.
+    // Identified against 145,620 live-Excel witnesses (W109 G6-02, agent-W; b39/b40/b42),
+    // 99.99% bit-exact — plain SSE2 `f64` throughout (x87 emulation is strictly worse).
+    // Excel normalises the settlement-side fraction by the *canonical* last coupon period
+    // length `CoupDays(first - 1 period, first)` (fixes the ~0.07% act/act error of the prior
+    // kernel — BUG-FUNC-030). Two calc_method paths, both accruing from `issue`:
+    //  * calc_method TRUE  (from_issue) => period-aware WALK: interior whole periods = 1.0,
+    //    the act/act issue stub uses its own actual length, and the settlement-side period is
+    //    always days/canonical (stays fractional even when settle is on a coupon date). The
+    //    forward-collected terms are summed BACKWARD (settlement -> issue).
+    //  * calc_method FALSE            => FLAT days(issue->settle)/canonical, EXCEPT when issue
+    //    sits in a coupon period earlier than `pcd`: the accrual then counts only the stub in
+    //    issue's own grid period plus the span from `pcd` to settle, and SKIPS every whole
+    //    coupon period between them (the defining legacy calc_method=FALSE behaviour).
     let fc = f as f64;
     let num_months = 12 / f;
     let end_flag = is_month_end(first);
@@ -861,6 +886,28 @@ pub fn accrint_kernel(
         change_month_flag(first, -num_months, end_flag).ok_or(derr(WorksheetErrorCode::Num))?;
     let canonical = coup_days_accr(pcd, first, num_months, end_flag, fc, basis_)?;
 
+    if !from_issue {
+        // ---- calc_method FALSE: FLAT fraction (with the whole-period skip). ----
+        let a = if issue < pcd {
+            // issue in a coupon period earlier than the canonical (last-before-first) period.
+            // Accrue the stub in issue's own grid period [B0,B1]; SKIP the whole grid periods
+            // [B1, pcd] entirely; measure the remainder from pcd. Two divisions, summed.
+            let (b0, b1) = issue_period_grid(issue, first, num_months, end_flag)?;
+            let l_issue = match basis_ {
+                DayCountBasis::ActualActual => act(b0, b1),
+                DayCountBasis::Actual365 => 365.0 / fc,
+                _ => 360.0 / fc,
+            };
+            let stub = days_between_num(issue, b1, basis_)? / l_issue;
+            let rest = days_between_num(pcd, settlement, basis_)? / canonical;
+            stub + rest
+        } else {
+            days_between_num(issue, settlement, basis_)? / canonical
+        };
+        return Ok(par * rate_ / fc * a);
+    }
+
+    // ---- calc_method TRUE: period walk accruing from issue. ----
     if settlement <= first {
         let first_date = issue.max(pcd);
         let days = days_between_num(first_date, settlement, basis_)?;
@@ -873,7 +920,7 @@ pub fn accrint_kernel(
                 .ok_or(derr(WorksheetErrorCode::Num))?;
             front = pcd_i;
             if issue <= pcd_i {
-                a += if from_issue { 1.0 } else { 0.0 };
+                a += 1.0;
             } else {
                 // The period that contains `issue`: a partial forward fraction.
                 let fd = issue.max(pcd_i);
@@ -883,6 +930,7 @@ pub fn accrint_kernel(
                 };
                 let coup_days_i = match basis_ {
                     DayCountBasis::Us30_360 => diff360_us(pcd_i, ncd_i, true)?,
+                    DayCountBasis::ActualActual => act(pcd_i, ncd_i),
                     DayCountBasis::Actual365 => 365.0 / fc,
                     _ => days_between_denum(pcd_i, ncd_i, basis_)?,
                 };
@@ -892,36 +940,43 @@ pub fn accrint_kernel(
         return Ok(par * rate_ / fc * a);
     }
 
-    // Settlement past the first interest date: accrue forward, whole periods counting as 1
-    // and the final partial by the canonical length. calc_method TRUE accrues from issue,
-    // FALSE from one quasi-coupon period before `first`.
-    let accr_start = if from_issue {
-        issue
-    } else {
-        change_month_flag(first, -num_months, end_flag).ok_or(derr(WorksheetErrorCode::Num))?
-    };
+    // Settlement past the first interest date: forward-collect the period terms, then sum
+    // them BACKWARD (settlement side first — the direction Excel accumulates). Interior
+    // COMPLETE periods contribute exactly 1.0; the act/act issue stub uses its own actual
+    // length; the FINAL period touching settlement is always days/canonical (it stays
+    // fractional even when settlement lands exactly on the period-end coupon date).
     let mut p_start = first;
-    while p_start > accr_start {
+    while p_start > issue {
         p_start = change_month_flag(p_start, -num_months, end_flag)
             .ok_or(derr(WorksheetErrorCode::Num))?;
     }
-    let mut a = 0.0;
-    loop {
-        if p_start >= settlement {
-            break;
-        }
+    let mut terms: Vec<f64> = Vec::new();
+    while p_start < settlement {
         let p_end = change_month_flag(p_start, num_months, end_flag)
             .ok_or(derr(WorksheetErrorCode::Num))?;
-        let ov_start = accr_start.max(p_start);
+        let ov_start = issue.max(p_start);
         let ov_end = settlement.min(p_end);
         if ov_end > ov_start {
-            if ov_start == p_start && ov_end == p_end {
-                a += 1.0;
+            let is_last = ov_end == settlement;
+            if ov_start == p_start && ov_end == p_end && !is_last {
+                terms.push(1.0);
             } else {
-                a += days_between_num(ov_start, ov_end, basis_)? / canonical;
+                let denom = if matches!(basis_, DayCountBasis::ActualActual)
+                    && ov_start == issue
+                    && issue > p_start
+                {
+                    act(p_start, p_end)
+                } else {
+                    canonical
+                };
+                terms.push(days_between_num(ov_start, ov_end, basis_)? / denom);
             }
         }
         p_start = p_end;
+    }
+    let mut a = 0.0;
+    for t in terms.iter().rev() {
+        a += *t;
     }
     Ok(par * rate_ / fc * a)
 }
@@ -1188,6 +1243,59 @@ mod tests {
         )
         .unwrap();
         assert_eq!(after.to_bits(), 0x4051_a9bd_37a6_f4df); // settlement after first_interest
+    }
+
+    #[test]
+    fn accrint_staging_bit_exact_vs_excel_w109() {
+        // W109 G6-02 (agent-W): staging identification across b39/b40/b42 live-Excel
+        // corpora (145,620 witnesses, 99.99% bit-exact). Each pin is a live Excel 16.0
+        // witness, not a computed value. `k` = accrint_kernel.
+        let k = |i, f, s, r, par, fr, b, c| {
+            accrint_kernel(i, f, s, r, Some(par), fr, Some(b), Some(c)).unwrap().to_bits()
+        };
+        // Historic BUG-FUNC-030 catalog family; calc TRUE vs FALSE differ by exactly 1 ULP
+        // (the pair pins the calc_method staging discriminator).
+        let (i, f, s) = (serial(2019, 4, 10), serial(2019, 7, 1), serial(2020, 3, 15));
+        assert_eq!(k(i, f, s, 0.05, 997.5, 2.0, 0.0, true), 0x4047_34aa_aaaa_aaaa);
+        assert_eq!(k(i, f, s, 0.05, 997.5, 2.0, 0.0, false), 0x4047_34aa_aaaa_aaab);
+        // calc FALSE, issue 3 periods before pcd (quarterly, act/360): the whole-period skip
+        // makes accrual negative for a settlement chronologically after issue.
+        assert_eq!(
+            k(serial(2020, 2, 20), serial(2021, 1, 1), serial(2020, 7, 1),
+              0.05, 997.5, 4.0, 2.0, false),
+            0xc01c_4333_3333_3333
+        );
+        // calc FALSE, issue exactly on a grid coupon date (zero stub, all wholes skipped).
+        assert_eq!(
+            k(serial(2020, 4, 1), serial(2021, 1, 1), serial(2020, 4, 2),
+              0.05, 997.5, 4.0, 0.0, false),
+            0xc038_cc88_8888_8889
+        );
+        // calc TRUE, act/act annual across a leap interior period (canonical != interior len).
+        assert_eq!(
+            k(serial(2019, 3, 1), serial(2021, 3, 1), serial(2021, 10, 6),
+              0.037, 1000.0, 1.0, 1.0, true),
+            0x4058_0ccc_cccc_cccd
+        );
+        // calc TRUE, long forward walk (backward accumulation of many whole periods).
+        assert_eq!(
+            k(serial(2018, 5, 20), serial(2018, 11, 1), serial(2019, 7, 3),
+              0.05, 997.5, 2.0, 0.0, true),
+            0x404b_ea88_8888_8889
+        );
+        // calc TRUE, month-end + leap Feb, settlement exactly on a coupon anniversary
+        // (final period stays fractional).
+        assert_eq!(
+            k(serial(2019, 2, 28), serial(2019, 8, 31), serial(2020, 8, 31),
+              0.05, 1000.0, 2.0, 0.0, true),
+            0x4052_c8e3_8e38_e38e
+        );
+        // calc FALSE, act/act quarterly issue stub measured by its own actual period length.
+        assert_eq!(
+            k(serial(2019, 3, 11), serial(2019, 7, 1), serial(2019, 7, 4),
+              0.05, 997.5, 4.0, 1.0, false),
+            0x402f_940f_c0fc_0fc2
+        );
     }
 
     #[test]
