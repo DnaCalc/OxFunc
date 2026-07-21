@@ -405,3 +405,24 @@ for PRODUCT-first RN(NUM/em) — H-DF is QUOTIENT-first (two roundings), which i
   (b) the fv num=pv+fv·v op-order (agent-Q, fv=±1 non-degenerate sweep captured).
 So PMT is at NEAR-TOTAL closure: combine + expm1 solved bit-exact; only a non-CR
 log1p imprecision and the fv-num assembly remain.
+
+### PMT COMBINE OP-GRAPH — FULLY PINNED (agent-Q, 2026-07-21, over-fit-safe)
+From the non-degenerate fv=±1 consecutive-pv sweeps, the complete final combine
+(all SSE2 double, quotient-first):
+```
+  num = RN(pv + fv·v)        # v = (1+r)^-n discount factor; fv·v then +pv
+  q1  = RN(num / em)         # em = (1+r)^-n − 1
+  q2  = RN(q1 / tf)          # tf = RN(1 + r·type); type=0 → tf=1 → q2=q1
+  pmt = RN(q2 · r)           # ×rate LAST
+```
+Discriminated 256/256: num=pv+fv·v (not two-term, not x87-extended — inverting gives
+num−pv = v = constant across pv); tf is a SEPARATE MIDDLE DIVIDE (den=em·tf → 0/256,
+tf-last → 0/256, /tf-middle → 256/256); fv=−1 v-insensitive 256/256; fv=0 → H-DF
+99.7%/0%-control. The whole-skeleton residual (49.9%, bounded ±3, +biased) is ENTIRELY
+the coupled {em, v} precision — em and v cannot be separated (no single double-v closes
+fv=+1), because both flow from the SAME internal tau=−n·(non-CR log1p).
+
+**PMT is therefore reduced to a SINGLE open primitive: Excel's non-CR log1p.** Combine
+(agent-Q) + expm1/exp arithmetic (agent-P, 87/87) are both solved bit-exact. Full PMT
+= the op-graph above + {em=expm1(tau), v=exp(tau)} once Excel's exact log1p is IDed
+(agent-P's final lane; n=1 oracle answers-pmt-log1p.json captured).
