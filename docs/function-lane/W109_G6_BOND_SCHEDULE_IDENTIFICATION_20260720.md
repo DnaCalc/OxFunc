@@ -275,3 +275,39 @@ routines, and micro-stage search {raw-F2XM1-no-Kahan, RZ vs RN final store,
 alt reduction, MSVC/Cephes expm1 forms} at 250-bit reference. CUMPRINC/PPMT/IPMT
 (G6-07) inherit PMT's residual and close with it. Corpora ready:
 `answers-pmt-heldout.json`, `answers-pmt-meta-fv.json`.
+
+## Lane D continued — em-isolation capture (2026-07-21, Fable-designed probe)
+
+Fable consult reframe: the PMT residual has TWO sources — (a) the small-rate
+one-signed lower branch = the em primitive (a fixed-sign absolute error amplified
+by 1/|em|), (b) the +branch = body/arrangement. Decisive probe (`gen_pmt_em_probe.py`
+→ 13,752 live rows `answers-pmt-em.json`): **fv=0, type=0, pv∈{1,1.5}** collapses
+the arrangement to `pmt = RN(pv·r/em)`, so `fl(pv·r/em_candidate)==pmt_excel`
+directly scores each em routine. r log-spaced [1e-6,0.05] sign-mirrored ×
+n∈{1..480 mixed-popcount}. **This grid IS Excel's em oracle** (recover em = r/pmt).
+
+Racer `race_pmt_em.rs` (REAL x87 F2XM1/FYL2XP1, mpmath can't emulate the
+instruction chain). Scores on the pv=1 collapsed grid (6876 rows):
+- **internal-Kahan expm1 (on log1p-CR): 4050/6876 = 59% — BEST**, and UNIFORM
+  across every |t|=|n·log1p r| regime (59% at |t|<0.25, 0.25-1, 1-4, 4+).
+- CR expm1 48%; raw F2XM1-fold RN 48%, RZ/chop 37%; exp(t)-1 12%; no-fold 12%.
+- Pure x87 SPILL (em EXTENDED, single final store, no double-store of em): 45% —
+  WORSE than storing em to double first. So em IS materialized to double before
+  the divide; the body is not a single-store extended spill.
+- `v = pow_chain(1+r,-n)` (forming 1+r, Excel's POWER pow): **refuted, <1%
+  everywhere** — the annuity does NOT form 1+r; it uses a genuine log1p.
+- Regime-split (expfold small-|t| / powchain large-|t|): max 792/6876 — worse
+  than uniform internal. NOT regime-split.
+
+**Localization (final for this cycle):** PMT = stable discount form, x87
+substrate, em = internal-Kahan-style F2XM1 expm1 on a natural log1p; the residual
+is a UNIFORM ~1 ULP difference between `excel_expm1_internal` and Excel's exact
+annuity expm1 on ~41% of the isolated grid — a sub-op rounding in the shared chain,
+not a wrong family/regime/form. RULED OUT this cycle: forward decomposition,
+Gnumeric forward-stable, body precision (SSE2≈x87-DR), store-mask, extended-fold
+spill, chop store, exp-1, pow_chain(1+r,-n), ln(1+r), regime-split. **NEXT** (clean
+handoff): micro-stage which sub-op of the internal-Kahan chain (the fFEXP final
+store RN vs the Kahan `(u-1)·t/ln u` correction ops, or the log1p delivery) rounds
+differently, scored against the 13,752-row em oracle; recover em=r/pmt to bits via
+the exact-interval instrument and fit the per-op rounding. CUMPRINC/PPMT/IPMT
+inherit + close with it.
