@@ -385,3 +385,23 @@ op-graph matching all 46 (agent-P), and (b) the fv≠0/ty=1 H-DF num/tf details
 (agent-Q; fv=0/ty=0 skeleton solved). agent-Q's earlier "single-divide empty" was
 for PRODUCT-first RN(NUM/em) — H-DF is QUOTIENT-first (two roundings), which its
 "multi-rounding" instinct correctly anticipated.
+
+### PMT closure state (2026-07-21, agent-P + agent-Q on H-DF)
+- **expm1 SOLVED (agent-P, 87/87 bit-exact)**: em = internal double-rounded Kahan
+  `(u−1)·t/ln(u)` for |tau|<1, `exp(tau)−1` for |tau|≥1; u=exp(tau), reproduces ALL
+  46 HDF + 41 pox oracle points PROVIDED log1p is Excel's actual value. The exp/ln
+  primitives are proven exact (worksheet EXP(t)==u, LN(u)==CR, all 12 probe args).
+- **tf placement PINNED (agent-Q, 256/256)**: pmt = RN(RN(RN(num/em)/tf)·r),
+  tf=RN(1+r·type) SSE2 — tf is a SEPARATE middle divide between /em and ·r (den=em·tf
+  and tf-last both 0/256). num=pv+fv·v. type=0 → tf=1 → reduces to H-DF.
+- **RESIDUAL = Excel's non-CR log1p** (the sole fv=0 unknown): a genuine Excel
+  imprecision (per "Excel imprecision is still a bug", reproduce not fix). Standard
+  log1p (fyl2xp1/portable/ln(1+r)/fdlibm) are ALL bit-identical to CR at these rates.
+  Coordinator n=1 map (answers-pmt-log1p.json, 113 r × 256 pv, tau=−log1p r isolates
+  it): deviation is a STRUCTURED ±1-2 ulp non-CR pattern concentrated near 2⁻⁴/2⁻⁵
+  (agent-P's pox map: uniform +1 at 2⁻⁵,2⁻⁴; n=1 map shows ±1-2 across their
+  neighbors, 2⁻⁶→−1, 2⁻²→−1). Same log1p feeds agent-Q's v=(1+r)^−n, so IDing it
+  closes both. Open: (a) the exact log1p op-graph (agent-P, n=1 oracle captured);
+  (b) the fv num=pv+fv·v op-order (agent-Q, fv=±1 non-degenerate sweep captured).
+So PMT is at NEAR-TOTAL closure: combine + expm1 solved bit-exact; only a non-CR
+log1p imprecision and the fv-num assembly remain.
