@@ -426,3 +426,23 @@ fv=+1), because both flow from the SAME internal tau=−n·(non-CR log1p).
 (agent-Q) + expm1/exp arithmetic (agent-P, 87/87) are both solved bit-exact. Full PMT
 = the op-graph above + {em=expm1(tau), v=exp(tau)} once Excel's exact log1p is IDed
 (agent-P's final lane; n=1 oracle answers-pmt-log1p.json captured).
+
+### log1p — the final open primitive (2026-07-21; 3rd Fable consult REFUTED end-to-end)
+Fable proposed Excel's log1p = the **Kahan companion trick** `u=fl(1+r); ln(u)·r/(u−1)`
+(the algebraic dual of the solved expm1), with a compelling period-law argument: ε=u−(1+r)
+is a sawtooth of period 2⁻ᵉ per binade, matching the dense-sweep ramp-at-2⁻⁸ (period 256)
+and ripple-at-2⁻³ (period 8). BUT end-to-end race (race_pmt_hdf, all op-orders + extended
++ x87-ln) REFUTES it: every variant makes combsweep 2304→1724 and helps nothing. Diagnosis:
+the po2 rates are all **ε=0** (1+2⁻ᵏ exact → Kahan correction r/(u−1)=1 → degenerates to plain
+ln(u)), so they can't discriminate; the ε≠0 combsweep rates DO, and there **Excel matches CR
+log1p, not the Kahan form**. So Excel's PMT log1p is CR on well-conditioned (ε≠0) rows and
+non-CR only on a specific subset — NOT the Kahan companion, NOT any standard routine. RULED
+OUT now: CR/portable, fyl2xp1 (all deliveries), fdlibm, Cephes, ln(1+r)/fyl2x, Kahan
+companion. STATUS: the sole open PMT primitive; a genuine Excel imprecision, characterized
+(faithful ~0.6 ulp, non-CR, dev-sign follows sub-ulp position, smooth per-binade error curve
+of period 2⁻ᵉ), fingerprint data captured (answers-pmt-log1p + answers-pmt-denselog1p, 3
+binades × 256 consecutive r). NEXT-SESSION: fit the routine from the dense curve (Fable probe
+A: dev-vs-low-bits phase-lock + ε=0 sublattice; probe C: negative-r/binade-2⁻¹ period tests).
+**PMT is otherwise fully solved: combine (H-DF, quotient-first, tf middle divide) + expm1
+(internal Kahan) are bit-exact; only this one non-CR log1p imprecision blocks a bit-exact
+landing.**

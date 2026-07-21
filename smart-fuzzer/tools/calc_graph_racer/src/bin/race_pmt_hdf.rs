@@ -10,9 +10,26 @@ use oxfunc_core::excel_numeric::research as rx;
 
 #[derive(Clone,Copy)] struct Var{ ext_q:bool, x87_ops:bool }
 
-fn pmt_hdf(r:f64,n:f64,pv:f64,fv:f64,ty:f64,v:Var)->f64{
+fn kahan_log1p(r:f64, mode:u8)->f64{
+    let u = 1.0 + r;
+    if u == 1.0 { return r; }
+    let um1 = u - 1.0;             // exact (Sterbenz) for |r|<1
+    let ln = rx::excel_ln(u);      // x87 87tran ln
+    match mode {
+        0 => rx::excel_log1p(r),                       // baseline CR log1p
+        1 => (ln * r) / um1,                           // (ln*r)/(u-1)  left-assoc
+        2 => ln * (r / um1),                           // ln*(r/(u-1))
+        3 => (ln / um1) * r,                           // (ln/(u-1))*r
+        4 => { use rx::{ext_from_f64,ext_mul,ext_div,ext_to_f64,CW_PC64_RN as CW}; // all extended, 1 store
+               let q = ext_div(&ext_mul(&ext_from_f64(ln),&ext_from_f64(r),CW),&ext_from_f64(um1),CW);
+               ext_to_f64(&q,CW) }
+        5 => { let cr = r/um1; ln*cr }                 // corr first (SSE2), = mode2
+        _ => rx::excel_log1p(r),
+    }
+}
+fn pmt_hdf_m(r:f64,n:f64,pv:f64,fv:f64,ty:f64,v:Var,l1p:u8)->f64{
     if r==0.0 { return -(pv+fv)/n; }
-    let l = rx::excel_log1p(r);
+    let l = kahan_log1p(r, l1p);
     let tau = -n*l;
     let em = rx::excel_expm1_internal(tau);   // (1+r)^-n - 1, x87 internal-Kahan
     let vv = 1.0 + em;                          // (1+r)^-n  (num uses v=1+em)
@@ -50,26 +67,24 @@ fn load(path:&str)->Vec<(Vec<f64>,u64)>{
 fn sord(u:u64)->i128{if u<1<<63{u as i128}else{((1u128<<63)as i128)-(u as i128-(1i128<<63))}}
 
 fn main(){
-    let corpora=[("heldout","answers-pmt-heldout.json"),("r0","answers-pmt-r0.json"),
-                 ("pvladder","answers-pmt-pvladder.json"),("fvty","answers-pmt-fvty.json"),
-                 ("em","answers-pmt-em.json"),("combsweep","answers-pmt-combsweep.json"),
-                 ("r25","answers-pmt-r25.json"),("po2","answers-pmt-po2.json")];
-    let vars=[("sse",Var{ext_q:false,x87_ops:false}),
-              ("x87 q->f64",Var{ext_q:false,x87_ops:true}),
-              ("x87 q-ext",Var{ext_q:true,x87_ops:true})];
-    for (cn,cf) in corpora{
+    let corpora=[("heldout","answers-pmt-heldout.json"),("po2","answers-pmt-po2.json"),
+                 ("combsweep","answers-pmt-combsweep.json"),("em","answers-pmt-em.json"),
+                 ("pvladder","answers-pmt-pvladder.json"),("fvty","answers-pmt-fvty.json")];
+    let modes=[(0u8,"CRlog1p"),(1,"(ln*r)/um1"),(2,"ln*(r/um1)"),(3,"(ln/um1)*r"),(4,"ext-1store")];
+    let v=Var{ext_q:false,x87_ops:false}; // SSE2 body (combine solved as SSE2)
+    let loaded:Vec<_>=corpora.iter().filter_map(|(cn,cf)|{
         let p=format!("../../work/w109/G6-solvers/{}",cf);
-        if !std::path::Path::new(&p).exists(){continue}
-        let rows=load(&p);
-        print!("{:10} ({:5}):",cn,rows.len());
-        for (vn,v) in vars{
-            let mut ex=0u32; let mut w1=0u32;
-            for (a,want) in &rows{
-                let g=pmt_hdf(a[0],a[1],a[2],a[3],a[4],v).to_bits();
-                let d=(sord(g)-sord(*want)).abs();
-                if d==0{ex+=1;} if d<=1{w1+=1;}
+        if std::path::Path::new(&p).exists(){Some((*cn,load(&p)))}else{None}
+    }).collect();
+    for (m,mn) in modes{
+        print!("log1p={:12}",mn);
+        for (cn,rows) in &loaded{
+            let mut ex=0u32;
+            for (a,want) in rows{
+                let g=pmt_hdf_m(a[0],a[1],a[2],a[3],a[4],v,m).to_bits();
+                if (sord(g)-sord(*want)).abs()==0{ex+=1;}
             }
-            print!("  {}: {}/{} (±1 {}%)",vn,ex,rows.len(),100*w1/rows.len() as u32);
+            print!("  {}:{}/{}",cn,ex,rows.len());
         }
         println!();
     }
