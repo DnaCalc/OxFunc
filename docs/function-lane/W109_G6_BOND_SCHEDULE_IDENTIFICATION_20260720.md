@@ -210,3 +210,68 @@ agentW_model2.py quantities, race {SSE2, DR-final, DR-all, extended-a}
 variants at 250-bit reference to find which op hits a 53-bit tie at exactly
 the 0.0615 double; then a par-ladder (997.5 ± k·ulp) to separate
 rate-tie from product-tie. Corpus: batch/answers-b43-accrint.json.
+
+---
+
+# Lane D — PMT / annuity ring (G6-01), 2026-07-21 (coordinator, Opus)
+
+The financial-time-value ring (PMT/PV/FV/IPMT/PPMT/CUMPRINC) attacked with the
+**metamorphic-sibling method** on the disjoint 875-row held-out corpus
+(`answers-pmt-heldout.json`) + the 48-row r0. New tooling:
+`tools/calc_graph_racer/src/bin/race_pmt_substrate.rs`, `race_pmt_x87stable.rs`;
+`work/w109/G6-solvers/pmt_combine_search.py`, `gen_pmt_meta.py`, `pmt_meta_test.py`.
+
+## Finding 1 — FV/PV and PMT use DIFFERENT algorithms (metamorphic proof)
+
+`annuity_family_race.py` (re-run): **FV var0 = 149/149 and PV var0/var2 = 48/48
+bit-exact** with the *naive FORWARD* binexp kernel in **plain SSE2 double**:
+`P = binexp(1+r, n)` (LSB-first square-and-multiply), `q = (P-1)/r`,
+`tf = 1 + r·type`, `fv = -(pv·P + pmt·(tf·q))`, `pv = -(fv + pmt·(tf·q))/P`.
+So Excel's forward annuity factor is PINNED bit-exact.
+
+PMT reuses none of it. Metamorphic harvest (`gen_pmt_meta.py` → 621 FV probes,
+`answers-pmt-meta-fv.json`): `P = -FV(r,n,0,1,0)` and `tf·q = -FV(r,n,1,0,ty)`
+give Excel's OWN internal factors. Feeding them into `-(pv·P+fv)/(tf·q)`
+(`pmt_meta_test.py`) scores **242/923 and is 0/109 on every small/tiny/negative
+rate**. If PMT shared FV's forward factor this would close. It does not →
+**PMT is a numerically-STABLE (discount) form; FV/PV are the naive forward form.
+The siblings do not share the annuity factor.** (Human-written code reused the
+helper for FV/PV but PMT's author chose a cancellation-safe path.)
+
+## Finding 2 — the residual is the transcendental primitive, nothing else
+
+Discount identity: `em = expm1(-n·log1p r)`, `v = 1+em = (1+r)^-n`,
+`pmt = (pv + fv·v)·r / (tf·em)`.
+
+Held-out ceilings (ranked by held-out, overfit-guarded):
+- `race_pmt_substrate` (SSE2 body, x87/CRT transcendentals): champion
+  **482/875** at `L=log1pCR E=expm1_internal arr=num/den·r`. Prior forward-pow
+  zoo (`fit_pmt_stores`) ceiling was ~57% — same ballpark, different family.
+- `race_pmt_x87stable` (WHOLE body per-op x87 double-rounded + x87 log1p/expm1):
+  **460/875**, and **completely invariant to the 8-bit store-mask** (every mask
+  ties). So body precision (SSE2 ≈ x87-DR) and spill-staging are NOT the gap.
+- `pmt_combine_search` (plain-double forward final-combine, 23 arrangements):
+  ≤262/875, small-rate-catastrophic — forward is wrong for PMT (confirms F1).
+
+**n=1 isolation lane** (125 rows, pure `expm1(-log1p r)` test): hard ceiling
+**62-65/125** identical across the plain closed form `-(pv·(1+r)+fv)/tf`, every
+discount provider, forward and x87-DR. The misses **sign-flip with rate
+magnitude** (Excel more-negative than the naive form at small rate, less-negative
+above ~0.8%). That sawtooth = the exact rounding point of Excel's `log1p`/`expm1`,
+which is **none of**: portable-CR `log1p`/`expm1`, the identified internal
+Kahan-corrected F2XM1 `expm1_internal`, the raw base-2 hardware `fyl2xp1`/`f2xm1`,
+or `ln(1+r)` (forming 1+r first). Ruled out by elimination: form, body precision,
+store-mask, and all four known primitives.
+
+## Status + NEXT PROBE (banked)
+
+PMT = stable discount form; residual localized to Excel's **exact annuity
+`log1p`/`expm1`** (a bespoke or CRT routine we have not reproduced). This is a
+primitive-ID problem of the same class as the G3 internal-exp/expm1 lanes
+(task #16, agent-solved). NEXT: isolate Excel's `em` bit-exactly via the
+fv=0/ty=0 rows (single division `pmt = pv·r/(tf·em)` → em recoverable to ~1 ULP
+by the exact-interval instrument, cf. b34), tabulate em(r,n) vs candidate
+routines, and micro-stage search {raw-F2XM1-no-Kahan, RZ vs RN final store,
+alt reduction, MSVC/Cephes expm1 forms} at 250-bit reference. CUMPRINC/PPMT/IPMT
+(G6-07) inherit PMT's residual and close with it. Corpora ready:
+`answers-pmt-heldout.json`, `answers-pmt-meta-fv.json`.
