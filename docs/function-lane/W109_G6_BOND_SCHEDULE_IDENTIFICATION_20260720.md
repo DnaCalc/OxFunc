@@ -344,3 +344,30 @@ accumulator / truncation biasing high; pv·r is NOT pre-rounded (exact-num divid
 intermediate. Path: pin the 2nd quantity (v) model-free from the fv≠0 rows
 (answers-pmt-fvty.json) + gold em, over-fit-controlled; validate the final op-graph
 on the 256-consecutive-pv sweep. Fable consult running on the exact x87 spill.
+
+## Lane D — PMT COMBINE SOLVED (2026-07-21, Fable consult): quotient-first H-DF
+
+BREAKTHROUGH. Every combine form the coordinator + agent-Q raced multiplied
+`pv·r` FIRST and capped ~55-80% on the over-fit-proof 256-consecutive-pv sweep.
+Fable's insight: the VB/BASIC financial lineage does **quotient FIRST, `·rate`
+LAST**. The combine is:
+  **pmt = RN( RN( num / den ) · r )**,  num = pv + fv·(1+em),  den = em·tf,
+  tf = 1 + r·type.   (fv=0,type=0 → RN(RN(pv/em)·r).)
+Fable PROVED product-first impossible via an anchored-phase argument: pv=1.0 is
+exact so RN(pv·r)=r forces the product stage to phase 0 → a slope-1.6 staircase
+{0,2,3,5,6,8,10}, which no divisor (any precision) can reshape into the observed
+{0,1,3,4,6,9,11}; the 3-step jump alone requires TWO coarse pv-dependent stages,
+which a single product/divide cannot produce. (This impossibility argument is
+Last Bit material.)
+
+VALIDATION (`race_pmt_hdf.rs`, real x87 internal-Kahan em):
+- Consecutive-pv sweep: H-DF **256/256 on ALL 9 sweeps** (product-first 134-214);
+  combsweep corpus **2304/2304 = 100% EXACT** with the COMPUTED (not searched) em.
+- Full held-out 482/875 exact / 88% ±1; em corpus 10801/13752 (78%/92% ±1);
+  pvladder 43026/55008 (78%/92% ±1). fvty 42%/74% (fv≠0 wants a v-source check:
+  v=1+em vs v=exp(tau)).
+So the COMBINE ARRANGEMENT IS SOLVED; the entire remaining ±1 ULP residual is `em`
+bit-exact (agent-P's x87 expm1 lane) — NOT a combine gap. The prior gold em oracle
+was product-first-contaminated; re-extract em under H-DF (256-pv sweep → unique em
+per (r,n)) for a clean agent-P oracle. Next: Fable's r=2⁻⁵ probe (exact ·r) to pin
+em to ~2⁻⁶⁰ and settle the divide spill (em f64 vs extended).
