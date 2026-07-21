@@ -311,3 +311,36 @@ store RN vs the Kahan `(u-1)·t/ln u` correction ops, or the log1p delivery) rou
 differently, scored against the 13,752-row em oracle; recover em=r/pmt to bits via
 the exact-interval instrument and fit the per-op rounding. CUMPRINC/PPMT/IPMT
 inherit + close with it.
+
+---
+
+# Lane E — RATE (G6-05), 2026-07-21 (agent-R)
+
+RATE solver identified via the metamorphic lever (RATE finds r where FV(r,…)=fv;
+FV is the closed forward-binexp balance). SETTLED: **forward-difference Newton in
+r-space** (IRR's v-space sibling), FD step h=1e-6·x, stop |f|<1e-7 publishing the
+stepped iterate, cap ~100, #NUM! on cap/domain/non-finite. Balance = pv·(1+r)^nper
++ pmt·(1/r+type)·((1+r)^nper−1) + fv. **POWER = x87 87tran exp·ln** (confirmed by
+#NUM! basin: x87chain 15/15 vs binexp/powf 10/15). **Basin 116/116** all corpora.
+Secant refuted (false-converges on #NUM! rows). OPEN: exact bits 0-2/101 — the
+balance catastrophic-cancellation op-graph (~1 ULP-of-f amplified 5-60× near root),
+not closed by {dbl, Ext80, per-op-DR}×{5 pow}×{4 deriv}×{2 arr}. Racer race_rate.rs.
+Next lever: r1/r2 near-root one-step ladder (single Newton step, no trajectory
+chaos) to pin the balance spill + FD-h form.
+
+# Lane D — PMT combine (G6-01), 2026-07-21 update (coordinator + agent-Q)
+
+The combine (given em) is NOT a single-shared-quantity form: control-clean tests
+(agent-Q) show single-em all-8-pv REAL 7.1% vs mismatched-CONTROL 0.0% (genuine but
+only 7%); forward-(P,q) "82%" was pure over-fit (control 80%). Coordinator's 256-
+CONSECUTIVE-pv sweep (answers-pmt-combsweep.json, over-fit-proof) independently
+refutes every 1-/2-constant form (shared-em ≤214/256, forward-(P,q) no fit even
+P±500ulp, fused/recip/x87-div all ≤205/256). ROBUST facts: pmt(pv)/pmt(1) within ≤1
+ulp of pv (pv scales a base); the residual vs RN(pv·base) is ONE-SIDED (Excel
+systematically MORE negative: {0:112,+1:126,+2:13} at (0.05,12)) → an extended
+accumulator / truncation biasing high; pv·r is NOT pre-rounded (exact-num divide 62%
+> pre-rounded 55.6%). CONCLUSION: the combine carries a SECOND independently-rounded
+(r,n)-quantity (the forward P,q pair or v alongside em), with an x87 extended
+intermediate. Path: pin the 2nd quantity (v) model-free from the fv≠0 rows
+(answers-pmt-fvty.json) + gold em, over-fit-controlled; validate the final op-graph
+on the 256-consecutive-pv sweep. Fable consult running on the exact x87 spill.
