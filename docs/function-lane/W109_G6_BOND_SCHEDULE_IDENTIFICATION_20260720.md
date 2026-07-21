@@ -371,3 +371,17 @@ bit-exact (agent-P's x87 expm1 lane) — NOT a combine gap. The prior gold em or
 was product-first-contaminated; re-extract em under H-DF (256-pv sweep → unique em
 per (r,n)) for a clean agent-P oracle. Next: Fable's r=2⁻⁵ probe (exact ·r) to pin
 em to ~2⁻⁶⁰ and settle the divide spill (em f64 vs extended).
+
+### H-DF em oracle (r=2⁻ᵏ trick, 2026-07-21)
+Fable's power-of-2-rate probe generalized: at r=2⁻ᵏ, `·r` is exact → H-DF collapses
+to a pure divide → em pinned to <0.01 ulp by 256 consecutive pv. Captured a broad
+grid (6 r × 9 n, batch-pmt-po2.json) → **Excel's EXACT em at 46 (r,n)**
+(pmt_em_hdf_oracle.json). Result: **35/46 match correctly-rounded expm1, 11/46 are
+±1 ulp off** (8 at +1, 3 at −1). That is the ENTIRE remaining fv=0 residual, pinned
+to the bit and decoupled from the combine. race_pmt_hdf (internal-Kahan em):
+combsweep 2304/2304 (100%), po2 11990/13824 (87%), r25 1539/2304 (67%) — internal-
+Kahan ≈ CR, so it misses exactly the 11 off-CR (r,n). CLOSURE = (a) the exact expm1
+op-graph matching all 46 (agent-P), and (b) the fv≠0/ty=1 H-DF num/tf details
+(agent-Q; fv=0/ty=0 skeleton solved). agent-Q's earlier "single-divide empty" was
+for PRODUCT-first RN(NUM/em) — H-DF is QUOTIENT-first (two roundings), which its
+"multi-rounding" instinct correctly anticipated.

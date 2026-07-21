@@ -52,7 +52,8 @@ fn sord(u:u64)->i128{if u<1<<63{u as i128}else{((1u128<<63)as i128)-(u as i128-(
 fn main(){
     let corpora=[("heldout","answers-pmt-heldout.json"),("r0","answers-pmt-r0.json"),
                  ("pvladder","answers-pmt-pvladder.json"),("fvty","answers-pmt-fvty.json"),
-                 ("em","answers-pmt-em.json"),("combsweep","answers-pmt-combsweep.json")];
+                 ("em","answers-pmt-em.json"),("combsweep","answers-pmt-combsweep.json"),
+                 ("r25","answers-pmt-r25.json"),("po2","answers-pmt-po2.json")];
     let vars=[("sse",Var{ext_q:false,x87_ops:false}),
               ("x87 q->f64",Var{ext_q:false,x87_ops:true}),
               ("x87 q-ext",Var{ext_q:true,x87_ops:true})];
