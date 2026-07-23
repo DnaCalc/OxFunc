@@ -11,12 +11,18 @@ use std::collections::BTreeMap;
 
 // combine models: given pv, em, r -> pmt
 fn c_sse(pv:f64,em:f64,r:f64)->f64{ (pv/em)*r }                       // RN(RN(pv/em)*r)
+fn c_numr(pv:f64,em:f64,r:f64)->f64{ (pv*r)/em }                      // RN(RN(pv*r)/em)
+fn c_afac(pv:f64,em:f64,r:f64)->f64{ pv/(em/r) }                      // annuity factor a=em/r first: RN(pv/RN(em/r))
+fn c_rem(pv:f64,em:f64,r:f64)->f64{ pv*(r/em) }                       // RN(pv*RN(r/em))
 fn c_x87(pv:f64,em:f64,r:f64)->f64{                                    // quotient & product at PC64, store 53
     ext_to_f64(&ext_mul(&ext_div(&ef(pv),&ef(em),CW),&ef(r),CW),CW)
 }
 fn c_qext(pv:f64,em:f64,r:f64)->f64{                                   // quotient extended, *r then store
     let q=ext_div(&ef(pv),&ef(em),CW);
     ext_to_f64(&ext_mul(&q,&ef(r),CW),CW)
+}
+fn c_afac_x87(pv:f64,em:f64,r:f64)->f64{                               // a=RN64(em/r) ext, pv/a store 53
+    ext_to_f64(&ext_div(&ef(pv),&ext_div(&ef(em),&ef(r),CW),CW),CW)
 }
 
 fn main(){
@@ -42,7 +48,8 @@ fn main(){
         let tau=-(c.n*rx::excel_log1p(c.r));
         groups.entry(tau.to_bits()).or_default().push(i);
     }
-    let combines:[(&str,fn(f64,f64,f64)->f64);3]=[("SSE2",c_sse),("x87-dr",c_x87),("q-ext",c_qext)];
+    let combines:[(&str,fn(f64,f64,f64)->f64);7]=[("SSE2",c_sse),("num*r",c_numr),("afac a=em/r",c_afac),
+        ("pv*(r/em)",c_rem),("x87-dr",c_x87),("q-ext",c_qext),("afac-x87",c_afac_x87)];
     for (cn,cf) in combines{
         // per group: does a SINGLE em reproduce ALL configs' all-128 pv under this combine?
         let mut single_ok=0u32; let mut ngroups=0u32; let mut per_config_pin_distinct=0u32; let mut tot_cfg=0u32;

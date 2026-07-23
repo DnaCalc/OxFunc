@@ -574,3 +574,26 @@ reason every double op-graph caps at 163: **the argument carries sub-double-ULP 
   discriminating oracle (the collision set: 7/8 groups need the exact extended op-graph, not just the plurality).
   Tooling: race_spill_exhaustive (spill×PC×RC×ln-delivery×assoc, single-instruction transcendentals),
   race_collide_search, doubt_combine. Oracle: answers-pmt-collide.json + collide-meta.json.
+
+### CORRECTION — the collision variation is DOUBLE-level faithful-not-CR log1p, NOT extended argument (2026-07-23)
+The "extended argument" interpretation above is RETRACTED (a doubt-probe caught it; combine is still confirmed SSE2).
+Decisive checks: (1) The collision-inversion agent found `CR-expm1(exact_tau)` scores 72/116 — WORSE than
+`CR-expm1(tau_double)` at 82 — so em does NOT track the extended (exact) tau; and all accurate 64-bit log1p routines
+(CR/FYL2XP1/fdlibm) are indistinguishable at this oracle (within 2 ext-ULP vs a ~1000-ULP acceptance band). (2) The
+collision design shares `tau_double` ONLY under mpmath-CR log1p (1 distinct/group); under **C-library `math.log1p` the
+configs have 3–4 distinct `tau_double`/group** — matching em's 2–4 distinct values. So **Excel's internal log1p,
+spilled to a double, is a FAITHFUL ~1-ULP routine, NOT correctly-rounded** (close to C-lib `log1p`), and my configs that
+"share tau0" under CR log1p actually have DIFFERENT Excel-`tau_double`. em IS `g(tau_double)` after all — I'd computed
+`tau0` with a too-perfect (CR) log1p. Grouping em by C-lib-`tau_double` cuts the conflicts (7/7 CR-groups → 12/20
+C-lib-groups multi-em) but isn't clean, so the exact faithful log1p isn't C-lib either — it's a specific ~1-ULP routine
+(FYL2XP1-class) to be pinned. **"log1p is CR" holds ONLY at exact-1+r (po2, worksheet LN 148/148); at general r the
+financial-body log1p is faithful-not-CR, and that is a large chunk of the general-rate PMT residual (heldout).**
+
+**Corrected two-component picture of the PMT residual:**
+1. **General-rate log1p-not-CR** (the collision variation, and most of the heldout ±1 ULP): tau_double = RN(−n·log1p_EXCEL(r))
+   where log1p_EXCEL is a faithful ~1-ULP routine (FYL2XP1/C-lib-class), not CR. IDing it fixes the general-rate residual.
+   Invisible at po2 (exact-1+r, where all faithful log1p = CR).
+2. **po2 expm1 op-graph wall** (71/234, confound-free — log1p=CR there): the all-double Kahan `(u−1)·t/ln(u)` ceilings at
+   163/234 over {tau,u,ln u}; a separate, smaller residual (the genuine expm1 combine rounding).
+NEXT: pin log1p_EXCEL by the "em is a clean function of tau_candidate" test across {FYL2XP1-hw→double, C-lib, fdlibm,
+MS-CRT} on the collision + genrate oracles; then re-attack the po2 expm1 wall separately.
