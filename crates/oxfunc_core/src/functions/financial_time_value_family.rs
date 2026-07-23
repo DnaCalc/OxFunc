@@ -799,7 +799,11 @@ pub fn ipmt(
     if period_index < 1.0 || period_index > periods {
         return Err(FinancialError::Num);
     }
-    if periodic_rate.abs() < EPSILON {
+    // W109 G6-01 (2026-07-23): EXACT zero-rate special case (mirrors PMT's W108 Bead C),
+    // NOT an `abs() < EPSILON` band. Live-Excel: IPMT(0,per,..)=+0.0, but a merely-tiny rate
+    // (e.g. ±1e-13) flows through the MAIN path (IPMT(1e-13,1,360,2e5)=−2e-8, IPMT(−1e-13,..)=
+    // +2e-8) — the old band wrongly collapsed tiny/negative rates to 0.0 and dropped the sign.
+    if periodic_rate == 0.0 {
         return Ok(0.0);
     }
     if 1.0 + periodic_rate <= 0.0 {
@@ -2017,6 +2021,28 @@ mod tests {
         assert_eq!(
             ipmt(0.1, 1.0, 3.0, 1000.0, 0.0, PaymentTiming::BeginningOfPeriod),
             Ok(0.0)
+        );
+    }
+
+    // W109 G6-01: the EPSILON-band bug fix. Live-Excel (captured 2026-07-23): a merely-tiny
+    // rate flows through the MAIN path (NOT collapsed to 0.0), and only EXACT r==0 -> +0.0.
+    // Values match Excel to ≤1 ULP (the tracked PMT/balance residual); the point of the fix is
+    // that the band no longer zeroes tiny/negative rates.
+    #[test]
+    fn ipmt_tiny_rate_flows_through_main_path() {
+        let t = PaymentTiming::EndOfPeriod;
+        // Was 0.0 (buggy band); now ~ -pv*r = -2e-8 (Excel -1.999999...e-8), NOT collapsed.
+        let a = ipmt(1e-13, 1.0, 360.0, 200_000.0, 0.0, t).unwrap();
+        assert!(a < 0.0 && (a - (-2e-8)).abs() < 1e-22, "tiny +rate flows through: {a:e}");
+        let b = ipmt(1e-13, 2.0, 360.0, 200_000.0, 0.0, t).unwrap();
+        assert!(b < 0.0 && (b - f64::from_bits(0xbe556a498245c036)).abs() <= 2.0 * f64::EPSILON * b.abs());
+        // Negative tiny rate flows through too (old band's abs() wrongly caught it) -> +interest.
+        let c = ipmt(-1e-13, 1.0, 360.0, 200_000.0, 0.0, t).unwrap();
+        assert!(c > 0.0 && (c - 2e-8).abs() < 1e-22, "tiny -rate flows through: {c:e}");
+        // EXACT zero rate -> +0.0 (sign preserved), bit-exact.
+        assert_eq!(
+            ipmt(0.0, 1.0, 360.0, 200_000.0, 0.0, t).unwrap().to_bits(),
+            0x0000000000000000
         );
     }
 
