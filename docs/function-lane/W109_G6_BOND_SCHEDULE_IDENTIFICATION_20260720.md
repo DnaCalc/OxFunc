@@ -446,3 +446,39 @@ A: dev-vs-low-bits phase-lock + ε=0 sublattice; probe C: negative-r/binade-2⁻
 **PMT is otherwise fully solved: combine (H-DF, quotient-first, tf middle divide) + expm1
 (internal Kahan) are bit-exact; only this one non-CR log1p imprecision blocks a bit-exact
 landing.**
+
+### log1p — the "non-CR log1p" is a MISDIAGNOSIS; the wall is expm1 double-rounding (2026-07-23)
+The prior section's premise is WRONG and is retracted here. Excel's PMT log1p is
+**CORRECTLY ROUNDED**, and the residual attributed to it is actually the expm1/tau
+double-rounding. Decisive evidence, all model-free:
+
+1. **LN at exactly-representable 1+r = CR, 148/148.** At r=2⁻ᵏ (and r=j·2⁻⁸,j·2⁻⁹) the
+   argument 1+r is EXACT, so log1p(r)=ln(1+r) with no argument rounding. Direct live
+   `LN(1+r)` oracle (batch-ln-exact, 148 pts spanning the dense-sweep region): **0 non-CR**.
+   The x87 `FYL2XP1`/`FYL2X`-on-exact-ext hardware (real inline asm on this AMD host) also
+   equals CR there — so log1p is not the deviation source.
+2. **Internal exp is bit-exact.** For all 234 |tau|<1 po2×n points, live `EXP(tau_d)` == the
+   x87 `excel_exp` emulation, **234/234** (batch-em-exp). `LN(u)` likewise matches.
+3. **The residual is the expm1 |tau|<1 branch.** Model-free em oracle (r=2⁻ᵏ trick × n∈
+   {1..64}, answers-pmt-po2n, 258 pinned (r,n)): the all-double Kahan `(u−1)·t/ln(u)`
+   reproduces **163/234 (70%)** on |tau|<1; the |tau|≥1 (`u−1`) branch is **100%** (all
+   3840 pts). With tau, u=exp(tau), and ln(u) ALL proven-identical doubles to Excel's, no
+   double-op SEQUENCE tested closes the gap: 12 forms raced (prod-first / Kahan-canonical /
+   div-first associations; additive corrections `b+b·(t−lnu)/lnu` and relatives; `t·b/lnu`
+   numerator; denominators `fyl2x(u)`/`fyl2xp1(u−1)`/`log1pCR(u−1)`) — ceiling **163**,
+   second cluster 145. Extended stagings (ext tau, ext correction, full-ext, ext-divide)
+   and the base-2 `F2XM1(−n·log2(1+r))` path are all WORSE (99–152). So Excel's em on the
+   71 miss points ≠ any Kahan/expm1 op-graph over the observable {tau,u,ln u}.
+
+**Reconciliation with the "expm1 SOLVED 87/87":** the 87 HDF+pox points did not stress the
+|tau|<1 double-rounding (mostly |tau|≥1 or a favorable subset). The po2×n oracle is the
+held-out that exposes the true 70% ceiling — a textbook [[validate-workflow-ids-on-heldout]]
+correction. **PMT residual is therefore an expm1 |tau|<1 double-rounding OP-GRAPH WALL**
+(class of [[remaining-lanes-are-opgraph-walls]]), NOT a log1p imprecision. The large-|fv|
+assembly failures (fvsweep 0/1024 under discount `(num/em)/tf·r`; product-order denom
+`(num·r)/(tf·em)` 512/1024) are the SAME wall amplified: v=(1+r)⁻ⁿ=1+em cancels for large n
+(v tiny) and, even with v=exp(tau), the em denominator carries the ±1. Discount combine
+`[0] (num/em)/tf·r` remains Excel's form for fv=0 (combsweep 2304/2304, pvladder best);
+forward-exp `−(pv·P+fv)/((P−1)/r)/tf` with x87 P=exp(n·log1p r) is worse on every corpus.
+Tooling: race_log1p{,_e2e,_off}, race_em_staging{,2}, race_expm1_{small,denom,mixed,addcorr},
+diag_fv{,2}, diag_fwd; oracles answers-{ln-exact,pmt-po2n,em-exp,em-ln}.json.
