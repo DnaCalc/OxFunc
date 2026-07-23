@@ -546,8 +546,31 @@ ceiling:
   adjacent tau — NOT a smooth monotonic curve). This RULES OUT minimax-rational coefficient recovery (a
   rational's error-vs-CR is smooth). So the residual is a genuine last-bit op-graph effect, not a fittable
   coefficient error.
-**Verdict:** the PMT expm1 |tau|<1 residual is an IRREDUCIBLE ≤1 ULP op-graph wall — Excel's bespoke inline
+**Verdict (SUPERSEDED below):** the PMT expm1 |tau|<1 residual is an IRREDUCIBLE ≤1 ULP op-graph wall — Excel's bespoke inline
 routine produces a toward-zero-biased ±1 ULP scatter not determined by {tau, exp(tau), ln(u)} or their
-extended forms, and not by any polynomial/rational. Bit-exact closure is not achievable from the available
-observability; it is a genuine Excel imprecision to be catalogued (GAMMALN-core class). Tooling: race_x87spill_em,
-race_tauext_u; Python SLP tester inline (expm1_optest.py extensible).
+extended forms, and not by any polynomial/rational. Tooling: race_x87spill_em, race_tauext_u.
+
+### BREAKTHROUGH — em is NOT a function of tau_double; the argument is EXTENDED (2026-07-23, continued push)
+The "irreducible wall" verdict above is SUPERSEDED. A designed **tau_double-collision experiment** cracked the
+reason every double op-graph caps at 163: **the argument carries sub-double-ULP information.**
+- **Design:** for 7 target tau₀ (doubles in [−0.7,−0.02]), find ~18 (r,n) each with `RN(−n·log1p_CR(r))=tau₀`
+  (same double tau) but different exact `−n·ln(1+r)`. Capture PMT (128 consecutive pv each, 16384 probes);
+  pin em per config (answers-pmt-collide.json). **em VARIES 1–3 ULP within every group** (pure function of
+  tau_double would give ONE em/group).
+- **Doubt-probed hard and it HELD:** (a) all 116 pins are UNIQUE (0 ambiguous) — not a pinning artifact;
+  (b) the combine is **confirmed SSE2** `RN(RN(pv/em)·r)` — the x87-double-rounded and quotient-extended
+  combines reproduce ZERO configs, so the variation is NOT a general-rate combine artifact; under the correct
+  SSE2 combine, 7/8 groups still need multiple em.
+- **Interpretation:** Excel's financial expm1 keeps `tau` (= −n·log1p(r)) in an **80-bit x87 register, never
+  spilled to a 53-bit double**, so em depends on tau's bits 54–64. This is exactly why {tau_double, exp, ln}
+  op-graphs cap at 163 — they can't see the extended tail. em weakly tracks exact_tau (corr 0.24) but is
+  NON-monotonic in it, and idealized round53(CR64(expm1(round64(exact_tau)))) scores only 72/116 (WORSE than
+  53-bit) — so the extended dependence is via Excel's SPECIFIC x87 op-graph (fFEXP/FYL2XP1 with their
+  ~1-ext-ULP microcode error, which is r-dependent), NOT idealized round-to-64. My fyl2x/fyl2xp1-based extended
+  models get 83/116 (right structure, wrong tail) — the exact internal **log1p delivery + `×n` staging** is the
+  remaining unknown. NOTE: "log1p is CR" was proven only for WORKSHEET LN (spilled to double); the financial
+  body's internal log1p is evidently kept extended and its 64-bit tail is what matters.
+- **This REFRAMES the search from the expm1 correction to the EXTENDED TAU FORMATION**, and gives a sharp
+  discriminating oracle (the collision set: 7/8 groups need the exact extended op-graph, not just the plurality).
+  Tooling: race_spill_exhaustive (spill×PC×RC×ln-delivery×assoc, single-instruction transcendentals),
+  race_collide_search, doubt_combine. Oracle: answers-pmt-collide.json + collide-meta.json.
