@@ -527,3 +527,27 @@ Tooling added: race_ext_em, race_genrate, export_em, diag_fwd; direct-expm1 orac
 generic-rate em answers-pmt-genrate.json; POWER=binexp confirmation answers-pow-{po2neg,po2pos,genneg}.json;
 consolidated em_consolidated.csv; fast Python op-graph tester work/.../expm1_optest.py; full agent digest
 work/.../WORKFLOW_RESULTS.md + COORDINATOR_NOTES.md.
+
+### SLP/DAG enumeration EXECUTED — confirms the wall, does not break it (2026-07-23)
+Per user direction, mounted the systematic straight-line-program search on the |tau|<1 em. Since u=exp(tau)
+and lnu=ln(u) are captured EXACT doubles, ran the enumeration in pure Python (float=RN53) for instant
+iteration, plus x87 stagings in Rust. Exhaustive result — NOTHING exceeds the 163 (165 w/ x87-spill num)
+ceiling:
+- **Op-graph enumeration over {tau,u,lnu,b=u-1,consts}** (Kahan associations, Newton subtractive
+  corrections `b−u·(lnu−t)` / `b−b·(lnu−t)/lnu` = 144-145, div-first/mult-first, reciprocal): champion is
+  `(u−1)·t/lnu` = **163/234**; independently corroborates agent-M's 128-mask enumeration.
+- **Truncated-Taylor / series fast-path** (T2..T5, Horner): all WORSE than Kahan in every |tau| regime
+  (best T5=65 on tiny-tau vs Kahan 77). Not a polynomial fast path.
+- **x87 per-op double-rounding (spill)** (num/div/tau each RN64→RN53, matching the XNPV spill-loop
+  precedent): num-double-rounded = **165/234** (+2), no help on generic (61/90). Not the mechanism.
+- **Extended tau → double u** (u=RN53(exp(tau_ext)) from extended log1p, testing 1-ULP boundary shifts of
+  u): fixes 0-1, breaks 1-8 — u is robust to the argument's extended tail. Refuted.
+- **delta(tau)=em_pinned−CR_expm1 is a NOISY ±1-2 ULP lattice** (roughness ~0.6, sign flips between
+  adjacent tau — NOT a smooth monotonic curve). This RULES OUT minimax-rational coefficient recovery (a
+  rational's error-vs-CR is smooth). So the residual is a genuine last-bit op-graph effect, not a fittable
+  coefficient error.
+**Verdict:** the PMT expm1 |tau|<1 residual is an IRREDUCIBLE ≤1 ULP op-graph wall — Excel's bespoke inline
+routine produces a toward-zero-biased ±1 ULP scatter not determined by {tau, exp(tau), ln(u)} or their
+extended forms, and not by any polynomial/rational. Bit-exact closure is not achievable from the available
+observability; it is a genuine Excel imprecision to be catalogued (GAMMALN-core class). Tooling: race_x87spill_em,
+race_tauext_u; Python SLP tester inline (expm1_optest.py extensible).
