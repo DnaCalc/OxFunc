@@ -4,7 +4,9 @@ use crate::coercion::CoercionError;
 // NOT use the x87 `excel_exp`/`excel_log` worksheet backends yet; migrating the
 // financial substrate to the x87 primitives (`fyl2xp1`/`f2xm1`) is tracked as
 // W108 Phase C and requires its own live-Excel re-validation.
-use crate::excel_numeric::{excel_expm1, excel_log1p, exp_portable};
+use crate::excel_numeric::{
+    excel_expm1, excel_expm1_internal, excel_log1p, exp_portable,
+};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -333,16 +335,24 @@ pub fn pmt(
     if 1.0 + periodic_rate <= 0.0 {
         return Err(FinancialError::Num);
     }
+    // W109 G6-01 (2026-07-23, multi-agent workflow): the transcendental substrate is
+    // the x87 chain (Excel's PMT `exp` is fFEXP, proven 234/234; `expm1` is the internal
+    // x87 double-rounded Kahan), and the combine is the live-Excel-pinned **quotient-first,
+    // ·rate LAST** SSE2 op-graph `pmt = RN(RN(RN(num/em)/tf)·r)` — NOT the former
+    // reciprocal-multiply product order. `log1p` stays correctly-rounded (proven CR via the
+    // confound-free |tau|≥1 oracle: FYL2XP1 == CR bit-for-bit on the PMT domain). These
+    // three corrections lift heldout 46%→56%, combsweep 62%→100%, po2 61%→87%, genrate
+    // 47%→73%. Residual = the expm1 |tau|<1 non-CR Kahan double-rounding (≤165/234 ceiling,
+    // a tracked Excel imprecision — see docs/function-lane/W109_G6...20260720.md).
     let neg_log = -(periods * excel_log1p(periodic_rate));
-    let inv_factor = exp_portable(neg_log); // (1+r)^-n
-    let denom = -excel_expm1(neg_log); // 1 - (1+r)^-n
-    if denom == 0.0 {
+    let em = excel_expm1_internal(neg_log); // (1+r)^-n − 1  (x87 Kahan; negative for r>0)
+    if em == 0.0 {
         return Err(FinancialError::Num);
     }
+    let inv_factor = 1.0 + em; // v = (1+r)^-n
     let tf = timing.factor(periodic_rate); // 1 + r·type
     let numerator = present_value + future_value * inv_factor;
-    let recip = 1.0 / (tf * denom);
-    let result = -numerator * periodic_rate * recip;
+    let result = ((numerator / em) / tf) * periodic_rate;
     if result.is_finite() {
         Ok(result)
     } else {

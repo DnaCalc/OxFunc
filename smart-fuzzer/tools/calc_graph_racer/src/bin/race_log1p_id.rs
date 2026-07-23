@@ -10,6 +10,9 @@ use std::collections::BTreeMap;
 
 fn l1p_cr(r:f64)->f64{ rx::excel_log1p(r) }
 fn l1p_std(r:f64)->f64{ r.ln_1p() }
+fn l1p_kahan(r:f64)->f64{ let u=1.0+r; if u==1.0 { r } else { rx::excel_ln(u)*r/(u-1.0) } }  // Kahan companion, ln=x87 fyl2x
+fn l1p_kahan2(r:f64)->f64{ let u=1.0+r; if u==1.0 { r } else { rx::excel_ln(u)*(r/(u-1.0)) } } // corr-first assoc
+fn l1p_lnfl(r:f64)->f64{ rx::excel_ln(1.0+r) }  // ln(fl(1+r)) - negative control
 fn l1p_fyl(r:f64)->f64{
     if r.abs()<0.292893218813452 { ext_to_f64(&ext_fyl2xp1(&ext_ln2(),&ef(r),CW),CW) }
     else { ext_to_f64(&ext_fyl2x(&ext_ln2(),&ext_add(&ext_one(),&ef(r),CW),CW),CW) }
@@ -41,7 +44,7 @@ fn pmt_full(r:f64,n:f64,pv:f64,fv:f64,ty:f64,l1p:fn(f64)->f64)->f64{
 }
 
 fn main(){
-    let cands:[(&str,fn(f64)->f64);3]=[("CR",l1p_cr),("FYL2XP1",l1p_fyl),("std_ln1p",l1p_std)];
+    let cands:[(&str,fn(f64)->f64);6]=[("CR",l1p_cr),("FYL2XP1",l1p_fyl),("std_ln1p",l1p_std),("kahan",l1p_kahan),("kahan2",l1p_kahan2),("lnfl",l1p_lnfl)];
     // em oracles: collision (128-pv configs) + genrate
     for (nm,path) in [("collide-configs","../../work/w109/G6-solvers/answers-pmt-collide.json"),
                       ("genrate","../../work/w109/G6-solvers/answers-pmt-genrate.json")]{
