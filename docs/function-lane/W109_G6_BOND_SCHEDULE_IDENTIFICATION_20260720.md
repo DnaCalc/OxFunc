@@ -482,3 +482,48 @@ assembly failures (fvsweep 0/1024 under discount `(num/em)/tf·r`; product-order
 forward-exp `−(pv·P+fv)/((P−1)/r)/tf` with x87 P=exp(n·log1p r) is worse on every corpus.
 Tooling: race_log1p{,_e2e,_off}, race_em_staging{,2}, race_expm1_{small,denom,mixed,addcorr},
 diag_fv{,2}, diag_fwd; oracles answers-{ln-exact,pmt-po2n,em-exp,em-ln}.json.
+
+### PMT em is NOT Excel's standard expm1; the wall is REAL, toward-zero-biased (2026-07-23, big workflow)
+A 12-agent exploration workflow + coordinator oracle work resolved WHAT the residual is and
+exhaustively bounded it. Three decisive new results:
+
+1. **PMT's em ≠ Excel's standard expm1.** `EXPON.DIST(x,1,TRUE)=1−e^−x` exposes Excel's expm1
+   DIRECTLY: `expm1(tau) = −EXPON.DIST(−tau,1,TRUE)`. Excel's EXPON.DIST expm1 == the all-double
+   Kahan model **232/234**, but PMT's pinned em matches that same Kahan only **165/234** — and at
+   IDENTICAL tau (n=power-of-two → tau exact) EXPON.DIST gives Kahan while PMT gives something
+   else. So PMT's annuity `(1+r)⁻ⁿ−1` is a **financial-body-specific routine, distinct from the
+   statistical expm1** (which the old "87/87" measured). This is why no {tau,u,ln u} op-graph closes it.
+2. **The residual is REAL, not a po2 (r=2⁻ᵏ) sampling artifact.** On generic rates `r=m·2⁻ᵏ`
+   (m∈{3,5,7} odd, 1+r still exact → log1p CR), the all-double Kahan still matches only **61/90 (68%)**
+   with the SAME structure: signed residual `em_pinned−Kahan = {0:61,+1:25,+2:3,+3:1}`, **never
+   negative** — a systematic **toward-zero bias** (Excel underestimates |expm1|), pure `{0,+1}` at
+   small |tau|. Consolidated 324-point `delta(tau)=em_pinned−CR_expm1` is a **±1–2 ULP spread with a
+   toward-zero bias, NOT a smooth curve** → a genuine last-bit op-graph effect, not a fittable
+   coefficient error.
+3. **Exhaustively refuted (multi-agent SLP enumeration + coordinator x87 races):** extended-x87
+   single-store (F2XM1-native 106, ext-u−1 99, ext-Kahan 133, all < 163), polynomial/rational
+   (fdlibm 129, Cephes 84, CR-expm1 133 — Excel is LESS accurate than CR, so not a library expm1),
+   directed rounding / chop of Kahan (112–119), binexp power (refuted on |tau|≥1: 18/24 vs exp 100%).
+   The all-double Kahan `(u−1)·t/ln(u)` is the firm **163/234 ceiling**; a double-rounded numerator
+   `RN53(RN64(b·t))/ln(u)` nudges to 165. **Interpretation: a hand-coded inline expm1 (tiny-arg fast
+   path that overshoots toward zero + a reduced main path) that systematically underestimates |expm1|
+   by ≤1 ULP — a real Excel imprecision, op-graph outside every tested family.** Reproduce, don't fix.
+
+**Provenance (workflow, verbatim public source):** LibreOffice/OpenOffice `ScGetPMT` and Gnumeric
+`pow1pm1` confirm the EXPRESSION `em=expm1(±n·log1p r)` but use POSITIVE-tau forward assembly +
+a library (near-CR) expm1 — refuted as Excel's op-graph (Excel is −tau discount + non-CR). numpy/
+VB6/.NET use `pow(1+r,+n)` subtractive — refuted. **No open reference implementation matches Excel's
+−tau discount + bespoke non-CR expm1 arrangement; Excel PMT is a distinct, older, x87-native MS routine.**
+
+**Related-function inheritance map (workflow):** PMT → {IPMT, PPMT} → {CUMIPMT, CUMPRINC} (IPMT/PPMT
+consume PMT's payment; CUM* sum them). FV/PV (forward binexp, closed 149/149 + 48/48), NPER (x87,
+closed 1729/1729), NPV, RATE (FD-Newton, mechanism IDed), IRR do NOT inherit PMT's expm1. So closing
+PMT's expm1 op-graph closes five functions. NOTE: the naive `IPMT(per)==RN(FV(per−1)·r)` inheritance
+was REFUTED against the live oracle (0/9, diverging) — the exact IPMT balance recurrence needs its own
+identification, not the simple FV·r form. fvsweep is a DEGENERATE corpus (Excel returned constant across
+256 fine-sweep pv — a generation artifact); drop it as a combine oracle.
+
+Tooling added: race_ext_em, race_genrate, export_em, diag_fwd; direct-expm1 oracle answers-expondist.json;
+generic-rate em answers-pmt-genrate.json; POWER=binexp confirmation answers-pow-{po2neg,po2pos,genneg}.json;
+consolidated em_consolidated.csv; fast Python op-graph tester work/.../expm1_optest.py; full agent digest
+work/.../WORKFLOW_RESULTS.md + COORDINATOR_NOTES.md.
