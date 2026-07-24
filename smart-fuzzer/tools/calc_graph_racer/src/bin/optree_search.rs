@@ -331,6 +331,105 @@ fn main() {
     } else {
         println!("  no 2-tree cover at size<=2 -> em is not a 2-branch composition of size<=2 subtrees.");
     }
+
+    // ================= EXTENSION 3+4: INTERVAL DECOMPOSITION =================
+    // Quotient locked em=spill(N/D). Fix one side to its evidenced value, search the OTHER as a
+    // size<=5 joined tree (op over two size<=2 bank vectors) whose value hits the inverse-solve
+    // interval, then exact-verify em. Reaches quotient trees of effective size ~11.
+    // sorted index (idx/keys) reused from the root join above.
+    let a_dv: Vec<Ext80> = rows.iter().map(|r| ext_from_f64(r.3 - 1.0)).collect();
+    let tau_dv: Vec<Ext80> = rows.iter().map(|r| ext_from_f64(r.2)).collect();
+    let lnu_dv: Vec<Ext80> = rows.iter().map(|r| ext_from_f64(r.4)).collect();
+    let num_sse = sse(&a_dv, &tau_dv, "mul");   // RN53((u-1)*tau) — the evidenced numerator
+    let win2 = |t: f64| { let u = 128.0 * 2f64.powi(-52) * t.abs().max(2f64.powi(-60)); (t - u, t + u) };
+
+    // build once: for a fixed side F and role, join the other side to size<=5 and verify em.
+    let decomp = |fixed: &[Ext80], num_is_fixed: bool, label: &str| -> bool {
+        // target for the searched side S on row 0 (approx): if num fixed, D0 = num0/em0; else N0 = em0*D0
+        let f0 = d(&fixed[0]);
+        let em0 = f64::from_bits(em_bits[0]);
+        let s_target0 = if num_is_fixed { if em0 != 0.0 { f0 / em0 } else { return false } } else { em0 * f0 };
+        // enumerate searched side S = op(A,B), A,B in bank; prefilter S via row-0 target, verify em.
+        let hit = (0..bank.len()).into_par_iter().find_map_any(|bi| {
+            let nb = &bank[bi]; let b0 = d(&nb.v[0]);
+            for op in ["div", "mul", "add", "sub"] {
+                let a0t: Vec<f64> = match op {
+                    "div" => if b0 != 0.0 { vec![s_target0 * b0] } else { vec![] }, // A/B=S -> A=S*B
+                    "mul" => if b0 != 0.0 { vec![s_target0 / b0] } else { vec![] },
+                    "add" => vec![s_target0 - b0], "sub" => vec![s_target0 + b0, b0 - s_target0], _ => vec![],
+                };
+                for (ti, t) in a0t.iter().enumerate() {
+                    let (lo, hi) = win2(*t);
+                    let mut p = keys.partition_point(|&k| k < lo);
+                    while p < keys.len() && keys[p] <= hi {
+                        let ai = idx[p].1 as usize; let na = &bank[ai];
+                        let (aa, bb) = if op == "sub" && ti == 1 { (&nb.v, &na.v) } else { (&na.v, &nb.v) };
+                        let s_vec = x87(aa, bb, op); // searched side value (x87)
+                        let full = if num_is_fixed { spill(&x87(fixed, &s_vec, "div")) } else { spill(&x87(&s_vec, fixed, "div")) };
+                        if bits(&full) == em_bits { return Some((op, ai, bi, ti)); }
+                        // also try SSE searched-side op when both double
+                        if na.dbl && nb.dbl {
+                            let s2 = sse(aa, bb, op);
+                            let full2 = if num_is_fixed { spill(&x87(fixed, &s2, "div")) } else { spill(&x87(&s2, fixed, "div")) };
+                            if bits(&full2) == em_bits { return Some((op, ai, bi, ti)); }
+                        }
+                        p += 1;
+                    }
+                }
+            }
+            None
+        });
+        match hit {
+            Some((op, ai, bi, _)) => {
+                println!("\n>>> DECOMP HIT ({label}): searched side = {}({}, {})", op, "#", "#");
+                print!("  A="); report(&bank, ai, m); print!("  B="); report(&bank, bi, m); true
+            }
+            None => { println!("EXT decomp ({label}): no size<=5 searched-side tree closes em.", ); false }
+        }
+    };
+
+    println!("\nEXT3/4 interval decomposition (numerator=RN53((u-1)*tau) fixed / denominator=lnu_d fixed):");
+    let _ = decomp(&num_sse, true, "fix numerator -> search denominator<=5")
+        || decomp(&lnu_dv, false, "fix denominator=lnu_d -> search numerator<=5");
+
+    // ================= EXTENSION 5: STREAMING SIZE-3 ANY-ROOT PASS =================
+    // Extend the ANY-ROOT envelope from size 2 to size 3 (incl. transcendental/spill roots),
+    // parallel + streaming (generate op over size<=2 pairs, check em, discard — no 23GB storage).
+    let bankr = &bank;
+    let s2 = &by_size[2]; let s1 = &by_size[1]; let s0 = &by_size[0];
+    let em_ref = &em_bits;
+    let check = |v: &[Ext80]| bits(v) == *em_ref;
+    let apply_all = |a: &Node, b: &Node| -> bool {
+        for op in ["add","sub","mul","div"] {
+            if check(&spill(&x87(&a.v,&b.v,op))) || check(&x87(&a.v,&b.v,op)) { return true; }
+            if a.dbl && b.dbl && check(&sse(&a.v,&b.v,op)) { return true; }
+        }
+        if a.v.iter().all(|e| d(e)>0.0) && check(&map2(&a.v,&b.v,|y,x|ext_fyl2x(y,x,CW))) { return true; }
+        if b.v.iter().all(|e| d(e)>0.0) && check(&map2(&b.v,&a.v,|y,x|ext_fyl2x(y,x,CW))) { return true; }
+        if check(&map2(&a.v,&b.v,|x,k|ext_scale(x,k,CW))) || check(&map2(&b.v,&a.v,|x,k|ext_scale(x,k,CW))) { return true; }
+        false
+    };
+    // (size2 x size0) and (size0 x size2)
+    let hit3a = s2.par_iter().any(|&ai| {
+        let a = &bankr[ai as usize];
+        s0.iter().any(|&bi| { let b = &bankr[bi as usize]; apply_all(a,b) })
+    });
+    // (size1 x size1)
+    let hit3b = !hit3a && s1.par_iter().any(|&ai| {
+        let a = &bankr[ai as usize];
+        s1.iter().any(|&bi| { let b = &bankr[bi as usize]; apply_all(a,b) })
+    });
+    // unary over size2
+    let hit3c = !hit3a && !hit3b && s2.par_iter().any(|&ai| {
+        let a = &bankr[ai as usize];
+        (!a.dbl && check(&spill(&a.v))) || (!a.dbl && check(&spill_rz(&a.v)))
+            || check(&a.v.iter().map(|e|ext_sub(&ext_from_f64(0.0),e,CW)).collect::<Vec<_>>())
+            || (a.v.iter().all(|e|d(e).abs()<=1.0) && check(&a.v.iter().map(|e|ext_f2xm1(e,CW)).collect::<Vec<_>>()))
+    });
+    println!("\nEXT5 streaming size-3 any-root pass: em reached = {}", hit3a||hit3b||hit3c);
+    if !(hit3a||hit3b||hit3c) {
+        println!("  NO size<=3 DAG with ANY root (arith/transcendental/spill) reproduces em.");
+    }
 }
 
 fn report(bank: &[Node], i: usize, _m: usize) {

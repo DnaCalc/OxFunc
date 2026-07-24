@@ -222,13 +222,28 @@ a **bottom-up value-vector enumerator with observational-equivalence dedup** (`o
 - **EXT2 — match-mask branch mining:** 140 bank vectors match `em` on ≥120 rows; the **best 2-tree OR-cover is
   196/234** (not full). So `em` is **not a 2-branch composition** of size-≤2 subtrees — branching ruled out at
   this depth, confirming the misses interleave in `tau` (no threshold predicate separates them).
+- **EXT3/4 — interval decomposition** (the deep mode): fix one side of the quotient to its evidenced value and
+  search the OTHER as a size-≤5 joined tree against the inverse-solve interval (sorted-index prefilter + exact
+  verify). **Fixing numerator = `RN53((u−1)·τ)` and searching denominators ≤5** (i.e. a *different ln op-tree*
+  up to size 5) finds nothing; **fixing denominator = `lnu` and searching numerators ≤5** finds nothing. Reaches
+  quotient trees of effective size ~11.
+- **EXT5 — streaming size-3 any-root pass** (parallel, no storage): **no size-≤3 DAG with ANY root**
+  (arithmetic / transcendental / spill) reproduces `em` — extends the any-root envelope from size 2 to size 3,
+  covering transcendental- and spill-rooted trees the arithmetic-root join doesn't.
 
-**What this does NOT yet cover (honest scope — do not re-over-claim):** (1) size > 5 arithmetic-rooted DAGs
-(needs the deeper modes: mmap-backed size-3 bank → size ≤ 7, and the inverse-solve-targeted numerator/denominator
-**interval decomposition** → effective size ~14 where a *different internal reduction* could live); (2) **foreign
-constants** — a polynomial-log denominator with coefficients not in L is structurally invisible (mitigation:
-one-free-constant synthesis + the published-log fingerprint sweep already run); (3) **branching** programs
-(mitigation: 234-bit match-mask mining for 2-tree covers). So the defensible statement is bounded: *the generator
-is not any size-≤5 arithmetic-rooted DAG over L/O* — it is larger, uses a constant outside L, or branches. That
-is a real quantified boundary, not the universal claim I wrongly made. Tooling: `optree_search.rs` (envelope +
-join, rayon), `optree_foundation.rs` (substrate + growth gate).
+**Consolidated quantified boundary (all six modes negative):** over L/O above, Excel's `em` on the 234 pinned
+rows is reproduced by **NONE** of: size-≤3 any-root DAGs; size-≤5 arithmetic-root DAGs; quotients with a fixed
+evidenced numerator/denominator and a size-≤5 other side (a different ln/numerator op-tree); a single synthesized
+foreign constant; or a 2-branch composition of size-≤2 subtrees. So the generator is **larger than these bounds,
+uses ≥2 foreign coefficients, or has a structure outside this frame.**
+
+**What remains uncovered (honest scope — do NOT re-over-claim):** (1) **size > 7 flat** arithmetic-root DAGs —
+the size-3 bank (~15M vectors) needs a provenance-backed (not full-vector) store to fit; the size-≤7 join is the
+one heaviest, lowest-marginal-value extension (quotient-shape evidence + EXT3/4 already covering the searched
+side to 5). (2) **multi-coefficient foreign polynomials** (≥2 unknown constants) — deliberately NOT fit (the
+overfit cliff; covered only by the separate published-log fingerprint sweep already run: fdlibm/Cody-Waite/Cephes
+log donors, `log10·LN10` chain — all refuted). (3) branching beyond 2-tree covers. The defensible statement is
+bounded and explicit — a real quantified boundary, not the universal claim I wrongly made earlier. Tooling:
+`optree_search.rs` (envelope + root join + EXT1–5, rayon), `optree_foundation.rs` (substrate + growth gate).
+Validation gate for any future hit: the 90 general-`r` (`m·2⁻ᵏ`) pinned rows in `em_consolidated.csv` + a fresh
+held-out oracle batch (reject `2⁻ᵏ`-lattice overfits).
