@@ -187,3 +187,38 @@ window and gives `em` but not the internal intermediates on the miss rows. **New
 boundary** — the fourth independent line of evidence that this ≤1-ULP residual is irreducible under clean-room
 constraints. (Byproducts: EFFECT = binexp pow, RRI = pow-then-plain-subtract — candidate identifications for
 those two functions, tracked separately.)
+
+## The actual exhaustive enumerator (2026-07-24, user-challenged; Fable-reviewed design)
+
+The user rightly rejected "proven irreducible boundary" as an over-claim: I had tested ~dozens of *hand-picked*
+hypotheses, never an exhaustive search, and "no op-tree reproduces it" is false (Excel's own code is one).
+Recognition is trivial (a tree either hits 234/234 or not); the gap was **search**. So we built the real thing:
+a **bottom-up value-vector enumerator with observational-equivalence dedup** (`optree_foundation.rs`,
+`optree_search.rs`).
+
+- **Substrate (gate-verified):** every program = its `[Ext80; 234]` value-vector; dual number system — SSE2 ops
+  (`RN53(exact)`, the 106-bit product x87 can't hold) AND x87 PC64 ops (`RN64`), with `spill` an explicit op.
+  Reproduces the three known trees exactly: pure-SSE2 = **163**, x87 spill-loop = **165**, fully-resident = **133**.
+  Covers DAGs (shared subexpressions), not just trees.
+- **Sound prunes (per Fable):** dedup bitwise on the full-234 Ext80 vector (the unique target class is never
+  merged away); NaN-absorption prune (NaN is absorbing, `em` finite). NO magnitude pruning (unsound — `FSCALE`/
+  `div`/`F2XM1` move any magnitude into range).
+- **Root interval join (sound):** `em` is the *rounded* root output, so a partner lies in a per-row half-ULP
+  preimage window — loose sorted-index prefilter + **exact verify**. Self-test PASSES (finds a known-reachable
+  size-3 target via an observationally-equivalent tree).
+- **RESULT (quantified negative):** with leaf-set L = `{1, 0.5, 2, r, n, −n, ln2, l2e; tau, u, lnu, a=u−1 as
+  spilled doubles; tau, u, w=F2XM1(f), a, lnu(resident) as 80-bit}` and op-set O = `{+ − × ÷ in SSE2 and x87
+  flavors; FYL2X, FYL2XP1, FSCALE, F2XM1, FRNDINT; spill_RN53, spill_RZ53, chs}`, **NO DAG of size ≤ 2 (any root)
+  nor size ≤ 5 (arithmetic root) reproduces Excel's `em` on the 234 pinned rows.** Bank cardinalities: size-1 =
+  1025, size-2 = 104,494 (transcendentals-in-tree run). This *includes* the whole Goldberg family (size 2) and
+  every hand-raced variant — all confirmed to miss, now exhaustively rather than by hand.
+
+**What this does NOT yet cover (honest scope — do not re-over-claim):** (1) size > 5 arithmetic-rooted DAGs
+(needs the deeper modes: mmap-backed size-3 bank → size ≤ 7, and the inverse-solve-targeted numerator/denominator
+**interval decomposition** → effective size ~14 where a *different internal reduction* could live); (2) **foreign
+constants** — a polynomial-log denominator with coefficients not in L is structurally invisible (mitigation:
+one-free-constant synthesis + the published-log fingerprint sweep already run); (3) **branching** programs
+(mitigation: 234-bit match-mask mining for 2-tree covers). So the defensible statement is bounded: *the generator
+is not any size-≤5 arithmetic-rooted DAG over L/O* — it is larger, uses a constant outside L, or branches. That
+is a real quantified boundary, not the universal claim I wrongly made. Tooling: `optree_search.rs` (envelope +
+join, rayon), `optree_foundation.rs` (substrate + growth gate).

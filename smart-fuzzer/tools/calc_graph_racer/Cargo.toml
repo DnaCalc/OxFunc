@@ -18,3 +18,4 @@ path = "src/main.rs"
 oxfunc_core = { path = "../../../crates/oxfunc_core", features = ["research-x87"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+rayon = "1"
