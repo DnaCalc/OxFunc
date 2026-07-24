@@ -165,3 +165,25 @@ established from THREE independent angles: forward op-graph search, inverse inte
 different-ln-implementation class. Correct close-out: optionally land spill-Kahan 165 PMT-local, and keep the
 catalog row open per never-accept-divergence with this refutation table as the characterization.
 Racers: `race_lnvia_log10.rs` (+ the Python fingerprint sweeps for the poly-log/association candidates).
+
+## New-observability hunt (2026-07-24, user-directed) — no sibling exposes PMT's expm1
+
+Last clean-room avenue: find an Excel worksheet function that computes PMT's discount `expm1` *directly as its
+result* (an `EXPON.DIST`-style oracle) so we can read the internal denominator without the pinning. Captured
+fresh live-Excel grids (`Run-W109BulkBatch.ps1 -NoCache`, bit-exact via cell refs):
+- **EFFECT(nominal, npery) = (1+nominal/npery)^npery − 1** — the literal `(1+r)^n − 1`. Result = **integer
+  binexp `pow` − 1** (305/315; Kahan-expm1 only 112/315, off by up to +12288 ULP). Uses the binexp pow (the
+  bond-PRICE primitive), NOT PMT's exp/log expm1. Data: `answers-effect-grid.json`. (10 anomalies at `r=2⁻⁸`
+  off by tens of ULP = my naive squaring order ≠ Excel's; a separate EFFECT-ID detail.)
+- **RRI(nper, pv, fv) = (fv/pv)^(1/nper) − 1** — structurally must use exp/log (fractional power). Result =
+  **`pow(base,1/n) − 1` plain subtract** (`exp(arg)−1` 152/154; Kahan-expm1 16/154). Plain subtract, not expm1.
+  Data: `answers-rri-grid.json`.
+- **PV/FV** = binexp discount factor (differs from PMT's `exp(tau)` u on 60/234 rows); **EXPON.DIST** = the
+  *statistical* expm1 (Kahan ≈ 232/234, ≠ PMT's financial 165).
+
+**Verdict:** PMT's discount `expm1` (exp/log Kahan) is a **private routine, used only by PMT → {IPMT, PPMT,
+CUMIPMT, CUMPRINC}**, exposed by no independently-readable worksheet function. The `r=2⁻ᵏ` pinning is the sole
+window and gives `em` but not the internal intermediates on the miss rows. **New observability cannot reach the
+boundary** — the fourth independent line of evidence that this ≤1-ULP residual is irreducible under clean-room
+constraints. (Byproducts: EFFECT = binexp pow, RRI = pow-then-plain-subtract — candidate identifications for
+those two functions, tracked separately.)
