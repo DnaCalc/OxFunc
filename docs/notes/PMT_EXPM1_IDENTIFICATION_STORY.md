@@ -97,3 +97,71 @@ F2XM1-direct, polynomial, w-assemble) on the near-midpoint exact-`tau` rows. It 
 worksheet EXP/LN/log1p captures. Closing the last bit would require **provenance** — a public source of the
 exact 1990s Excel/Multiplan annuity `(1+r)^n` routine (mine the Welinder Gnumeric record next) — not more
 op-graph racing. Ceiling stands at **165/234** (spill-Kahan) on this adversarial oracle.
+
+## Inverse-lane campaign (2026-07-24, Fable-designed) — wall reconfirmed from the sharp angle
+
+User proposed modelling the real generator as `(C source) × (compiler transform)` searched over a
+maximally-discriminating ULP micro-region. Fable's critique **corrected the layer**: 64-bit Excel = MSVC
+**x64** → the compiled body is pure SSE2 RN53 (no x87/extended freedom; the combine is already pinned SSE2),
+so the compiler dimension is empty. All extended-precision freedom lives in Excel's **hand-written x87 library
+routines and their *delivery convention*** (what precision/rounding a transcendental carries when the quotient
+consumes it). Fable also redirected forward-enumeration → an **inverse interval solve**: with `em` pinned
+exactly, back-solve the denominator/numerator each row must have used. Built and ran it (8 new racers). It
+worked as a method — fast, decisive — and **refuted every mechanism**, sharpening the characterization:
+
+- **Inverse solve:** 57/71 misses toward-zero wanting the denominator = `lnu + exactly +1 double-ULP`
+  (uniform, systematic); 14/71 away-from-zero; 2 `|off|>1`. **Not single-valued `D(tau)`** → not
+  denominator-only. D-histogram reconfirmed: the true real quotient of the *pinned* `num_dbl/lnu_dbl` rounds
+  (RN) **correctly to baseline** (our value); Excel returns the toward-zero **neighbor** — so with the pinned
+  operands, no rounding of their quotient yields `em`.
+- **Refuted, all < 163** (real hardware, `race_extdenom_em`/`race_chop_em`/`race_log1pden_em`/
+  `race_reassoc_em`/`race_fullext_em`/`race_uext_denom`/`race_numtauext`): extended-denominator linkage (123),
+  single-site chop (112–120), extended-exp numerator (145), fully-extended-from-`(r,n)` store-once (133,
+  the "too-accurate" regime = F2XM1-direct 133 = CR-adjacent), extended-`tau` numerator (142), all
+  reassociations (119–145), plain `u−1` (14).
+- **Two operand facts locked down:** (i) `FYL2XP1(u−1)`-double **== `FYL2X(u)`-double on all 234 rows** →
+  log1p-vs-log denominator is a bit-for-bit no-op, not the source. (ii) `ln(u)` is **catastrophically
+  sensitive to `u`'s low bits when `u≈1`** (log of the *un-spilled* extended exp result differs from captured
+  `lnu` by up to ±131072 ULP), so Excel **must** spill `u` to double before `FYL2X` — which locks `u_dbl` and
+  `lnu_dbl` as the operative doubles. The discount factor is `exp`-based, not integer-binexp `pow` (binexp
+  `u` differs on 60 rows but `em==(v−1)`=13, Kahan(v)=134 — refuted).
+
+**Conclusion (now from two independent directions):** operands are pinned to the captured doubles, the op-graph
+is the all-double Goldberg `(u−1)·x/log(u)`, and 71 rows sit one ULP off with a uniform toward-zero bias on
+small `|tau|` that **no operand-provenance or op-graph variant reaches**. The inverse solve's certified target
+(uniform `+1`-ULP denominator) is provably unrealizable by any natural computation — the strongest possible
+evidence that this is an **irreducible last-bit boundary** of the specific all-double compensated computation.
+Method (inverse interval solve + provenance-tagged SLP) is validated and reusable on functions with larger
+op-graph freedom. Racers under `smart-fuzzer/tools/calc_graph_racer/src/bin/race_*_em.rs`.
+
+## Fable follow-up: the "different ln implementation" class (A1/A2) — refuted; stopping rule invoked
+
+Fed the refutation table back to Fable. Its sharp read: I had raced every rounding/precision of the *same*
+ln (the hardware `FYL2X` error curve) but never a *different ln implementation* (a second error curve). Three
+signatures argued for it: the 2 rows `>1`-ULP off (formally refute the entire faithful-rounding class — no
+rounding of a correct ln exceeds 1 ULP from CR), the monotone sign-crossing drift (`+0.585→−0.324` ULP =
+minimax fingerprint), and the 57-row one-signed majority. Fable pre-verified the *direction* of the top
+candidate. All tested via the zero-oracle-cost fingerprint filter (reproduce captured `lnu` on 163 hits AND
+the required neighbor on 71 misses):
+- **A1 — constant chain `ln(u)=log10(u)·LN10`** (`LN10=2.302585092994046` is `+0.9` ULP HIGH; Welinder's
+  exact constant-representation point): direction CORRECT (denominator more-negative → `em` toward zero) but
+  **overshoots** — shifts `+1` ULP on 143 rows, not 57 (`race_lnvia_log10`). `log2·ln2` (LOW → wrong dir),
+  `log2/log2e` (too weak) both fail.
+- **A2 — a polynomial/rational ln donor** (fdlibm `log1p`, fdlibm `__ieee754_log` with the `k·ln2`
+  reconstruction, Cody-Waite ALOG-1980): **all faithful ≈ CR** — fdlibm matches captured `lnu` on 225–228/234,
+  Cody-Waite on 176/234 with **symmetric** ±1 scatter (−1:28, +1:30). A faithful minimax log is bias-*centered*,
+  so it structurally CANNOT produce the required one-signed 57-row shift. Refuted.
+- **Last association cells** (additive-correction split `a + a·(tau−lnu)/lnu` = 145; double-divides
+  `a/(lnu/tau)`=129, `tau/(lnu/a)`=120; expanded `(u·tau−tau)/lnu`=13): all worse.
+
+**STOPPING RULE (Fable's, invoked):** A1, A2, the constant-chain variants, and the last association cells all
+fail the fingerprint filter → **the wall is real, stated without hedging.** We have crossed every mechanism
+class expressible with (i) real hardware curves on this host or (ii) published fixed-coefficient period
+implementations. What remains is a bespoke Microsoft-internal approximation whose coefficients are
+unrecoverable without disassembly (prohibited by standing policy); *fitting* a free faithful denominator curve
+to 71 flips is interpolation, not identification (the MINVERSE lesson — zero evidential weight, won't
+generalize to general-`r`). The residual is a **proven** (no longer presumed) irreducible ≤1-ULP boundary,
+established from THREE independent angles: forward op-graph search, inverse interval solve, and the
+different-ln-implementation class. Correct close-out: optionally land spill-Kahan 165 PMT-local, and keep the
+catalog row open per never-accept-divergence with this refutation table as the characterization.
+Racers: `race_lnvia_log10.rs` (+ the Python fingerprint sweeps for the poly-log/association candidates).
