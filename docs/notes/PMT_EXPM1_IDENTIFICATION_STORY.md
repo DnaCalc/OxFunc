@@ -213,6 +213,16 @@ a **bottom-up value-vector enumerator with observational-equivalence dedup** (`o
   1025, size-2 = 104,494 (transcendentals-in-tree run). This *includes* the whole Goldberg family (size 2) and
   every hand-raced variant — all confirmed to miss, now exhaustively rather than by hand.
 
+**Two coverage holes now closed (extensions EXT1/EXT2):**
+- **EXT1 — one-free-constant synthesis:** for every size-≤2 subtree `V` and outer op, solve for a single scalar
+  `C` (same every row) with `spill(op(V,C))=em` via per-row `C`-interval intersection + exact verify. **No single
+  foreign constant closes `em`** — the "routine with one magic constant" idiom is ruled out at this depth (the
+  cheap end of the foreign-constant hole; multi-coefficient polynomials remain covered only by the separate
+  published-log fingerprint sweep, deliberately not fit here — the overfit cliff).
+- **EXT2 — match-mask branch mining:** 140 bank vectors match `em` on ≥120 rows; the **best 2-tree OR-cover is
+  196/234** (not full). So `em` is **not a 2-branch composition** of size-≤2 subtrees — branching ruled out at
+  this depth, confirming the misses interleave in `tau` (no threshold predicate separates them).
+
 **What this does NOT yet cover (honest scope — do not re-over-claim):** (1) size > 5 arithmetic-rooted DAGs
 (needs the deeper modes: mmap-backed size-3 bank → size ≤ 7, and the inverse-solve-targeted numerator/denominator
 **interval decomposition** → effective size ~14 where a *different internal reduction* could live); (2) **foreign

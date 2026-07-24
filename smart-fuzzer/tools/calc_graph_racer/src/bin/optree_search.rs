@@ -51,6 +51,15 @@ fn exp_ext(tau: &Ext80, l2e: &Ext80) -> (Ext80, Ext80) {
     let w = ext_f2xm1(&f, CW); (ext_scale(&ext_add(&w, &ext_one(), CW), &k, CW), w)
 }
 
+// reals X with RN53(X) == em, widened 2 ULP for a sound (never-too-narrow) interval.
+fn round_iv(em: f64) -> (f64, f64) {
+    let up = |x: f64| { let b = x.to_bits(); if x >= 0.0 { f64::from_bits(b + 1) } else { f64::from_bits(b - 1) } };
+    let dn = |x: f64| { let b = x.to_bits(); if x > 0.0 { f64::from_bits(b - 1) } else { f64::from_bits(b + 1) } };
+    let prev = dn(em); let next = up(em);
+    // midpoints (f64-approx) widened by 2 ULP each side
+    (dn(dn(em - (em - prev) * 0.5)), up(up(em + (next - em) * 0.5)))
+}
+
 fn main() {
     let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let ln2 = ext_ln2(); let l2e = ext_l2e(); let one = ext_one();
@@ -231,6 +240,96 @@ fn main() {
             println!("\nNO size<=5 arithmetic-rooted DAG over the combine-leaves reproduces em.");
             println!("(bank size {} = all size<=2 subtrees; root join covers size<=5 div/mul/add/sub roots)", bank.len());
         }
+    }
+
+    // ================= EXTENSION 1: ONE-FREE-CONSTANT SYNTHESIS =================
+    // For each subtree V in the bank and each outer op, solve for a SINGLE scalar C (same every
+    // row) with spill(op(V,C)) == em. Covers the "routine with one magic constant" idiom — a
+    // foreign coefficient the enumerator's fixed leaf set is otherwise blind to.
+    let em_f: Vec<f64> = em_bits.iter().map(|&b| f64::from_bits(b)).collect();
+    let ivs: Vec<(f64, f64)> = em_f.iter().map(|&e| round_iv(e)).collect();
+    let mut synth_hits = 0;
+    'vloop: for (vi, nv) in bank.iter().enumerate() {
+        let vv: Vec<f64> = nv.v.iter().map(|e| d(e)).collect();
+        // op forms: V*C, V/C, C/V, V+C, V-C, C-V  (C the unknown scalar)
+        for form in ["mulC", "VdivC", "CdivV", "addC", "VsubC", "CsubV"] {
+            let (mut lo, mut hi) = (f64::NEG_INFINITY, f64::INFINITY);
+            let mut feasible = true;
+            for i in 0..m {
+                let (el, eh) = ivs[i]; let v = vv[i];
+                // C-interval on row i s.t. op(v,C) in (el,eh)
+                let (mut cl, mut ch) = match form {
+                    "mulC" => if v > 0.0 { (el / v, eh / v) } else if v < 0.0 { (eh / v, el / v) } else { feasible = false; break; },
+                    "VdivC" => { // v/C in (el,eh); C = v/y, y in (el,eh)
+                        let (a, b2) = (v / el, v / eh); (a.min(b2), a.max(b2)) }
+                    "CdivV" => if v != 0.0 { let (a, b2) = (el * v, eh * v); (a.min(b2), a.max(b2)) } else { feasible = false; break; },
+                    "addC" => (el - v, eh - v),
+                    "VsubC" => (v - eh, v - el),
+                    "CsubV" => (el + v, eh + v),
+                    _ => unreachable!(),
+                };
+                if cl > ch { std::mem::swap(&mut cl, &mut ch); }
+                lo = lo.max(cl); hi = hi.min(ch);
+                if lo > hi { feasible = false; break; }
+            }
+            if feasible && lo <= hi {
+                // candidate constant: midpoint; verify exactly (try a few doubles in the interval)
+                for cand in [lo, hi, (lo + hi) * 0.5, f64::from_bits(((lo.to_bits() as i128 + hi.to_bits() as i128) / 2) as u64)] {
+                    if !cand.is_finite() { continue; }
+                    let cvec: Vec<Ext80> = (0..m).map(|_| ext_from_f64(cand)).collect();
+                    let res = match form {
+                        "mulC" => spill(&x87(&nv.v, &cvec, "mul")),
+                        "VdivC" => spill(&x87(&nv.v, &cvec, "div")),
+                        "CdivV" => spill(&x87(&cvec, &nv.v, "div")),
+                        "addC" => spill(&x87(&nv.v, &cvec, "add")),
+                        "VsubC" => spill(&x87(&nv.v, &cvec, "sub")),
+                        "CsubV" => spill(&x87(&cvec, &nv.v, "sub")),
+                        _ => unreachable!(),
+                    };
+                    if bits(&res) == em_bits {
+                        println!("\n>>> FREE-CONSTANT HIT: {} with C = {:.20e} (0x{:016x})", form, cand, cand.to_bits());
+                        print!("  V = "); report(&bank, vi, m);
+                        synth_hits += 1;
+                        break 'vloop;
+                    }
+                }
+            }
+        }
+    }
+    if synth_hits == 0 { println!("EXT1 free-constant synthesis: no single foreign constant closes em over any size<=2 subtree + one outer op."); }
+
+    // ================= EXTENSION 2: MATCH-MASK BRANCH MINING =================
+    // Record the 234-bit em-match mask of every bank vector; if em is a 2-branch composition,
+    // two masks OR-cover all rows. Report the best cover and whether it splits cleanly by |tau|.
+    let taus: Vec<f64> = rows.iter().map(|r| r.2.abs()).collect();
+    let masks: Vec<(u64, Vec<bool>, usize)> = bank.iter().enumerate().filter_map(|(i, nv)| {
+        let bt = bits(&nv.v);
+        let mask: Vec<bool> = bt.iter().zip(&em_bits).map(|(a, b)| a == b).collect();
+        let cnt = mask.iter().filter(|&&x| x).count();
+        if cnt >= 120 { Some((i as u64, mask, cnt)) } else { None }
+    }).collect();
+    println!("\nEXT2 branch mining: {} bank vectors match em on >=120 rows", masks.len());
+    let mut best_cover = 0usize;
+    let mut best_pair = (0u64, 0u64);
+    for a in 0..masks.len() {
+        for b2 in a..masks.len() {
+            let cov = (0..m).filter(|&i| masks[a].1[i] || masks[b2].1[i]).count();
+            if cov > best_cover { best_cover = cov; best_pair = (masks[a].0, masks[b2].0); }
+        }
+    }
+    println!("  best 2-tree OR-cover = {}/{} rows (trees #{} , #{})", best_cover, m, best_pair.0, best_pair.1);
+    if best_cover == m {
+        // check if the split is a clean |tau| threshold
+        let (ia, ib) = (best_pair.0 as usize, best_pair.1 as usize);
+        let ma: Vec<bool> = bits(&bank[ia].v).iter().zip(&em_bits).map(|(a, b)| a == b).collect();
+        let only_a: Vec<f64> = (0..m).filter(|&i| ma[i]).map(|i| taus[i]).collect();
+        let only_b: Vec<f64> = (0..m).filter(|&i| !ma[i]).map(|i| taus[i]).collect();
+        let clean = only_a.iter().cloned().fold(f64::MIN, f64::max) < only_b.iter().cloned().fold(f64::MAX, f64::min)
+            || only_b.iter().cloned().fold(f64::MIN, f64::max) < only_a.iter().cloned().fold(f64::MAX, f64::min);
+        println!("  2-tree cover EXISTS; clean |tau|-threshold split: {} (branching hypothesis {})",
+                 clean, if clean { "PLAUSIBLE — investigate" } else { "unlikely (masks interleave in tau)" });
+    } else {
+        println!("  no 2-tree cover at size<=2 -> em is not a 2-branch composition of size<=2 subtrees.");
     }
 }
 
