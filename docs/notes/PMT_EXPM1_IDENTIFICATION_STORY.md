@@ -247,3 +247,30 @@ bounded and explicit — a real quantified boundary, not the universal claim I w
 `optree_search.rs` (envelope + root join + EXT1–5, rayon), `optree_foundation.rs` (substrate + growth gate).
 Validation gate for any future hit: the 90 general-`r` (`m·2⁻ᵏ`) pinned rows in `em_consolidated.csv` + a fresh
 held-out oracle batch (reject `2⁻ᵏ`-lattice overfits).
+
+## Correction (2026-07-25): the "stopping rule" framing was wrong
+
+The 2026-07-24 sections above invoke a "stopping rule" and describe the residual as needing *provenance*
+because a bespoke coefficient set would be "unrecoverable without disassembly". **That reasoning is
+incorrect and is retracted.** It conflates two different things:
+
+- **Reading** the coefficients out of a binary — forbidden by clean-room policy, and irrelevant.
+- **Determining** the coefficients from behaviour — which is exactly what a bit-exact oracle is *for*.
+
+A constant that exists nowhere but inside a compiled routine is still fully observable through its effect on
+the output bits. With 234 exact-bit rows, a small coefficient set is over-determined by two orders of
+magnitude. Concretely: for any form `em = RN53(N/D)` with `D` linear in `k` unknown coefficients, each row
+converts to an **exact dyadic interval constraint on `D`**, so the hypothesis is a **linear feasibility
+problem in `k` unknowns under 234 interval constraints**, solvable exactly in rational arithmetic — widen by a
+sound bound on the evaluation-order rounding and infeasibility becomes a *proof of refutation*, feasibility a
+small region to verify. EXT1 is the `k = 1` case, already built. Nothing about that requires, or benefits
+from, seeing the binary.
+
+So the correct reading of the negative results above is **"the search has not yet reached far enough"**, not
+"the answer is unobtainable". The anti-overfit lesson (MINVERSE) applies to assigning ~71 free values to 71
+rows — zero constraint, guaranteed fit, no content. It does **not** apply to recovering `k ≲ 6` coefficients
+against 234 exact constraints, which is identification. Do not let the former be used to avoid the latter.
+
+Also retracted, for the same reason: the framing in `W109_G6_PMT_TAKEOVER_BRIEF.md`'s original §2, corrected
+in place. The brief's §21 item 3 now carries the constraint-solving formulation as the highest-value unbuilt
+tool.

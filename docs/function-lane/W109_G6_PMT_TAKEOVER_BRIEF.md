@@ -67,9 +67,13 @@ learn *what algorithm* is used and then implement independently, and we may cite
 Excel's behavior. Public-domain sources (fdlibm/SunPro) and published book algorithms are safe to implement
 from directly. When in doubt, derive the mathematics from first principles and validate against our own oracle.
 
-**Practical consequence for this lane:** if the only remaining path to the last bit requires knowing
-coefficients that exist solely inside a Microsoft binary, the correct outcome is a *documented bounded
-negative*, not a policy exception. We have reached exactly that frontier; see Part X.
+**Practical consequence for this lane:** clean-room forbids *reading* the code. It does not forbid
+*determining* what the code computes — that is the entire purpose of a behavioral oracle. Constants and
+coefficients that exist nowhere but inside a binary are still fully observable through their effect on output
+bits, and a 234-row exact-bit oracle over-determines any small coefficient set by two orders of magnitude.
+Unknown coefficients are therefore a **search-and-constraint-solving problem**, never a stopping point; the
+only question they raise is which mechanism recovers them most efficiently (see §21 item 3 for the exact
+formulation). Nothing in the clean-room policy has blocked, or can block, this lane.
 
 ### 3. Excel's numeric substrate (established across the wider W109 campaign)
 
@@ -531,10 +535,31 @@ Ordered by my estimate of value per unit effort.
    EXT3/4) currently searches the free side to size 5 using the size-≤2 bank. Re-running it against the
    *size-3* bank lifts each side to size 7, i.e. quotient trees of effective size ~15 — Fable's estimate for
    where a genuinely different internal reduction would live. The checkpointed bank makes this cheap now.
-3. **Two-free-constant synthesis, with a hard anti-overfit gate.** EXT1 covers one constant. Two constants
-   (e.g. a `ln2_hi`/`ln2_lo` split, or a two-term correction) is the natural next idiom and still far from the
-   overfit cliff *if and only if* it is validated on the 90 held-out `gen` rows and a fresh oracle batch.
-   Beyond two coefficients, do not fit — it is interpolation with zero evidential weight (see §22).
+3. **Coefficient recovery as exact constraint solving — the highest-value unbuilt tool.** This is the right
+   mechanism whenever a hypothesised form carries unknown constants, and it is a *solve*, not a fit or a blind
+   search. Suppose `em = RN53(N / D)` with `N` pinned and `D = Σ cᵢ·zⁱ` a polynomial/rational in a known
+   reduced argument `z`. Two facts make this tractable:
+   - Each pinned row converts an *equality on bits* into an **exact interval on `D`**: `RN53(N/D) = em`
+     confines `D` to a half-ULP dyadic interval whose endpoints are exact rationals (computable in `i128`
+     dyadic arithmetic, no floats).
+   - `D` is **linear in the coefficients `c`**.
+
+   So the hypothesis becomes **234 exact linear interval constraints in `k` unknowns** — a linear feasibility
+   problem, solvable exactly in rational arithmetic. Widen each interval by a sound bound on the floating-point
+   evaluation error of the candidate evaluation order (a few ULPs for degree-`d` Horner) to obtain a
+   *relaxation*: infeasibility of the relaxed system is a **proof that the form is refuted**, and a non-empty
+   feasible polytope is a small candidate region to verify exactly, coefficient by coefficient.
+
+   With `k ≲ 6` this is over-determined by ~228 constraints, so recovering `c` is **identification, not
+   interpolation** — the MINVERSE overfit lesson does not apply here and must not be mis-invoked to avoid the
+   work. What *is* worthless is assigning 71 free values to the 71 miss rows (zero constraint, guaranteed
+   "fit", no predictive content); the distinction is parameter count against constraint count, nothing else.
+
+   Run it for: the fdlibm / Cody-Waite / Cephes log *forms* with their coefficients freed (the forms were
+   tested, the coefficients never were); `ln2_hi`/`ln2_lo` split constants; a general degree-3..8 minimax
+   denominator; and the same treatment applied to the numerator. Validate any feasible region against the 90
+   general-`r` rows and a fresh oracle batch before believing it. Note EXT1 (§14) is the `k = 1` special case
+   of exactly this, already implemented and negative — generalising it to `k > 1` is the natural next build.
 4. **The `|tau| ≥ 1` / `fv ≠ 0` residual (§11).** Different problem, more freedom, ~15% of a real corpus, and
    entirely untouched by the enumerator (which targets `em` alone). Probably the best *expected value* target
    in the whole lane if the goal is "reduce total divergence" rather than "close `em`".
@@ -650,6 +675,10 @@ For someone picking this up cold, in order:
    real divergence — which the `em` last bit, at ≤1 ULP on ~30% of one internal value, does not do much of.
 
 **Do not** re-run the refuted list in §20 without a specific new reason, and **do not** restate the bounded
-negative in §14 as a universal one. The honest position is: *within everything a clean-room search has been
-able to express so far, the generator has not been found; the residual is a characterized ≤1-ULP boundary
-whose closure needs either a deeper search than we have run or provenance we are not permitted to obtain.*
+negative in §14 as a universal one — it is a statement about how far the search has reached, nothing more.
+
+The position to hold: a reproducing program exists (Excel runs it), we would recognise it instantly, and every
+operand it consumes is already pinned. What is missing is reach — a larger size bound, a coefficient set
+recovered by §21 item 3, a reduction we have not yet expressed, or an observation channel not yet built. Each
+of those is a concrete, attackable object. Pick the one with the best ratio of reach gained to effort spent,
+build it properly, and record exactly what it cleared.
