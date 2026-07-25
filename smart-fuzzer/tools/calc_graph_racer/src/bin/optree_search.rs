@@ -51,6 +51,34 @@ fn exp_ext(tau: &Ext80, l2e: &Ext80) -> (Ext80, Ext80) {
     let w = ext_f2xm1(&f, CW); (ext_scale(&ext_add(&w, &ext_one(), CW), &k, CW), w)
 }
 
+/// Evaluate ONE ROW of a size-3 node from provenance. This is the hot path: it lets the join
+/// verify a candidate row-by-row with early exit on first mismatch, instead of materializing a
+/// 234-element vector per candidate (which is what made the first EXT6 run intractable).
+fn eval3_row(bank: &[Node], op: u8, a: u32, b: u32, i: usize) -> Ext80 {
+    let x = &bank[a as usize].v[i];
+    let y = &bank[b as usize].v[i];
+    match op {
+        0 => ext_add(x, y, CW), 1 => ext_sub(x, y, CW), 2 => ext_mul(x, y, CW), 3 => ext_div(x, y, CW),
+        4 => ext_from_f64(d(x) + d(y)), 5 => ext_from_f64(d(x) - d(y)),
+        6 => ext_from_f64(d(x) * d(y)), 7 => ext_from_f64(d(x) / d(y)),
+        8 => ext_fyl2x(x, y, CW), 9 => ext_fyl2x(y, x, CW),
+        10 => ext_scale(x, y, CW), 11 => ext_scale(y, x, CW),
+        _ => unreachable!(),
+    }
+}
+
+// re-evaluate a size-3 node op(bank[a], bank[b]) from provenance (children are size<=2 full nodes).
+fn eval3(bank: &[Node], op: u8, a: u32, b: u32) -> Vec<Ext80> {
+    let (av, bv) = (&bank[a as usize].v, &bank[b as usize].v);
+    match op {
+        0 => x87(av, bv, "add"), 1 => x87(av, bv, "sub"), 2 => x87(av, bv, "mul"), 3 => x87(av, bv, "div"),
+        4 => sse(av, bv, "add"), 5 => sse(av, bv, "sub"), 6 => sse(av, bv, "mul"), 7 => sse(av, bv, "div"),
+        8 => map2(av, bv, |y, x| ext_fyl2x(y, x, CW)), 9 => map2(bv, av, |y, x| ext_fyl2x(y, x, CW)),
+        10 => map2(av, bv, |x, k| ext_scale(x, k, CW)), 11 => map2(bv, av, |x, k| ext_scale(x, k, CW)),
+        _ => unreachable!(),
+    }
+}
+
 // reals X with RN53(X) == em, widened 2 ULP for a sound (never-too-narrow) interval.
 fn round_iv(em: f64) -> (f64, f64) {
     let up = |x: f64| { let b = x.to_bits(); if x >= 0.0 { f64::from_bits(b + 1) } else { f64::from_bits(b - 1) } };
@@ -189,6 +217,149 @@ fn main() {
     }
 
     if hit.is_some() { report(&bank, bank.len()-1, m); return; }
+
+    // ================= EXTENSION 6: size<=7 flat join via provenance-backed size-3 bank =================
+    if std::env::var("SEARCH3").is_ok() {
+        use std::collections::HashSet;
+        use std::io::Write;
+        // --- flushed progress log (survives kill; the first EXT6 run lost everything to pipe buffering) ---
+        let dir = "../../work/w109/G6-solvers";
+        let mut logf = std::fs::OpenOptions::new().create(true).append(true)
+            .open(format!("{dir}/optree_search3.log")).unwrap();
+        macro_rules! log {
+            ($($t:tt)*) => {{ let s = format!($($t)*); println!("{}", s);
+                let _ = writeln!(logf, "{}", s); let _ = logf.flush(); }}
+        }
+        log!("=== SEARCH3 start: rows={} size<=2 bank={} ===", m, bank.len());
+
+        // --- size-3 provenance bank, checkpointed to disk (18 bytes/entry, not full vectors) ---
+        let ckpt = format!("{dir}/optree_size3_bank.bin");
+        let light: Vec<(u8, u32, u32, bool, f64)> = if std::path::Path::new(&ckpt).exists() {
+            let raw = std::fs::read(&ckpt).unwrap();
+            let n = u64::from_le_bytes(raw[0..8].try_into().unwrap()) as usize;
+            let mut v = Vec::with_capacity(n);
+            for i in 0..n {
+                let o = 8 + i * 18;
+                v.push((raw[o], u32::from_le_bytes(raw[o+1..o+5].try_into().unwrap()),
+                        u32::from_le_bytes(raw[o+5..o+9].try_into().unwrap()), raw[o+9] != 0,
+                        f64::from_le_bytes(raw[o+10..o+18].try_into().unwrap())));
+            }
+            log!("loaded size-3 bank from checkpoint: {} entries", v.len());
+            v
+        } else {
+            let mut pairs: Vec<(u32, u32)> = Vec::new();
+            for &a in &by_size[0] { for &b in &by_size[2] { pairs.push((a, b)); } }
+            for &a in &by_size[1] { for &b in &by_size[1] { pairs.push((a, b)); } }
+            for &a in &by_size[2] { for &b in &by_size[0] { pairs.push((a, b)); } }
+            log!("building size-3 bank from {} child pairs ...", pairs.len());
+            let bankr = &bank; let em_ref = &em_bits;
+            let s3hit = std::sync::Mutex::new(None::<(u8, u32, u32)>);
+            let raw: Vec<(u128, u8, u32, u32, bool, f64)> = pairs.par_iter().flat_map_iter(|&(a, b)| {
+                let na = &bankr[a as usize]; let nb = &bankr[b as usize];
+                let both = na.dbl && nb.dbl;
+                let valid: [(u8, bool); 12] = [(0,true),(1,true),(2,true),(3,true),(4,both),(5,both),(6,both),(7,both),
+                    (8, nb.v.iter().all(|e| d(e) > 0.0)), (9, na.v.iter().all(|e| d(e) > 0.0)), (10,true),(11,true)];
+                let mut out = Vec::new();
+                for (op, ok) in valid { if !ok { continue; }
+                    let v = eval3(bankr, op, a, b);
+                    if has_nan(&v) { continue; }
+                    if bits(&v) == *em_ref { *s3hit.lock().unwrap() = Some((op, a, b)); }
+                    out.push((hash80(&v), op, a, b, op >= 4 && op <= 7, d(&v[0])));
+                }
+                out
+            }).collect();
+            if let Some((op, a, b)) = *s3hit.lock().unwrap() {
+                log!(">>> SIZE-3 HIT during build: op{} (#{},#{})", op, a, b);
+                print!("A="); report(&bank, a as usize, m); print!("B="); report(&bank, b as usize, m);
+                return;
+            }
+            let full_hashes = &seen;
+            let mut v: Vec<(u8, u32, u32, bool, f64)> = Vec::new();
+            let mut lseen: HashSet<u128> = HashSet::with_capacity(raw.len());
+            for (h, op, a, b, dbl, r0) in raw {
+                if full_hashes.contains(&h) { continue; }
+                if lseen.insert(h) { v.push((op, a, b, dbl, r0)); }
+            }
+            let mut buf = Vec::with_capacity(8 + v.len() * 18);
+            buf.extend_from_slice(&(v.len() as u64).to_le_bytes());
+            for &(op, a, b, dbl, r0) in &v {
+                buf.push(op); buf.extend_from_slice(&a.to_le_bytes()); buf.extend_from_slice(&b.to_le_bytes());
+                buf.push(dbl as u8); buf.extend_from_slice(&r0.to_le_bytes());
+            }
+            std::fs::write(&ckpt, &buf).unwrap();
+            log!("size-3 distinct = {} (checkpointed {} MB)", v.len(), buf.len() / 1_048_576);
+            v
+        };
+        log!("bank size<=3 total = {}", bank.len() + light.len());
+
+        // --- unified sorted join index over size<=3 ---
+        #[derive(Clone, Copy)] enum JN { Full(u32), Light(u32) }
+        let mut jnodes: Vec<(f64, JN)> = bank.iter().enumerate().map(|(i, n)| (d(&n.v[0]), JN::Full(i as u32))).collect();
+        for (j, l) in light.iter().enumerate() { jnodes.push((l.4, JN::Light(j as u32))); }
+        jnodes.retain(|x| x.0.is_finite());
+        jnodes.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+        let jkeys: Vec<f64> = jnodes.iter().map(|x| x.0).collect();
+        let (bankr, lightr, jn, jk, emr) = (&bank, &light, &jnodes, &jkeys, &em_bits);
+        let row_of = |n: JN, i: usize| -> Ext80 {
+            match n { JN::Full(k) => bankr[k as usize].v[i],
+                      JN::Light(j) => { let (op, a, b, ..) = lightr[j as usize]; eval3_row(bankr, op, a, b, i) } }
+        };
+        // ROW-WISE verify with early exit — the fix that makes this tractable (most candidates
+        // die on row 1-2, so we never build a 234-element vector).
+        let verify = |an: JN, bn: JN, op: &str, rev: bool| -> bool {
+            for i in 0..m {
+                let (x, y) = if rev { (row_of(bn, i), row_of(an, i)) } else { (row_of(an, i), row_of(bn, i)) };
+                let r = match op { "add" => ext_add(&x, &y, CW), "sub" => ext_sub(&x, &y, CW),
+                                   "mul" => ext_mul(&x, &y, CW), "div" => ext_div(&x, &y, CW), _ => unreachable!() };
+                if ext_to_f64(&r, RN53).to_bits() != emr[i] { return false; }
+            }
+            true
+        };
+        let em0 = f64::from_bits(em_bits[0]);
+        let win = |t: f64| { let u = 64.0 * 2f64.powi(-52) * t.abs().max(2f64.powi(-60)); (t - u, t + u) };
+
+        // --- SHARDED, RESUMABLE join: partial coverage is recorded, so a kill loses one shard ---
+        let nsh: usize = std::env::var("SHARDS").ok().and_then(|s| s.parse().ok()).unwrap_or(400);
+        let start: usize = std::env::var("SHARD_START").ok().and_then(|s| s.parse().ok()).unwrap_or(0);
+        let ssz = (jnodes.len() + nsh - 1) / nsh;
+        log!("join over {} nodes in {} shards of {} (resume with SHARD_START=k)", jnodes.len(), nsh, ssz);
+        let t0 = std::time::Instant::now();
+        for sh in start..nsh {
+            let (lo_i, hi_i) = (sh * ssz, ((sh + 1) * ssz).min(jnodes.len()));
+            if lo_i >= hi_i { break; }
+            let found = (lo_i..hi_i).into_par_iter().find_map_any(|bi| {
+                let (b0, bn) = jn[bi];
+                for op in ["div", "mul", "add", "sub"] {
+                    let ts: [f64; 2] = match op {
+                        "div" => [em0 * b0, f64::NAN],
+                        "mul" => [if b0 != 0.0 { em0 / b0 } else { f64::NAN }, f64::NAN],
+                        "add" => [em0 - b0, f64::NAN],
+                        _ => [em0 + b0, b0 - em0],
+                    };
+                    for (ti, t) in ts.iter().enumerate() {
+                        if !t.is_finite() { continue; }
+                        let (lo, hi) = win(*t);
+                        let mut p = jk.partition_point(|&k| k < lo);
+                        while p < jk.len() && jk[p] <= hi {
+                            let (_, an) = jn[p];
+                            if verify(an, bn, op, op == "sub" && ti == 1) { return Some((op, ti, p, bi)); }
+                            p += 1;
+                        }
+                    }
+                }
+                None
+            });
+            if let Some((op, ti, p, bi)) = found {
+                log!(">>> SIZE<=7 HIT: root {} (rev={}) jnode_a={} jnode_b={}", op, ti == 1, p, bi);
+                return;
+            }
+            if sh % 10 == 0 || sh + 1 == nsh {
+                log!("shard {}/{} cleared (outer {}..{}) elapsed {:?}", sh + 1, nsh, lo_i, hi_i, t0.elapsed());
+            }
+        }
+        log!("EXT6: NO size<=7 arithmetic-rooted DAG over size<=3 subtrees reproduces em. ({:?})", t0.elapsed());
+        return;
+    }
 
     // ---- ROOT INTERVAL JOIN: spill(A op B)==em or sse_op(A,B)==em over the whole bank ----
     // Sorted index on row-0 double value for a loose prefilter; exact-verify all rows.
