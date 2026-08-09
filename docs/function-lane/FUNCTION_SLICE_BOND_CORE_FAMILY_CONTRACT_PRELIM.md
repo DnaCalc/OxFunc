@@ -1,7 +1,7 @@
 # Function Slice Contract (Preliminary) - Bond Core Family
 
-Status: `provisional`
-Workset: `W27`
+Status: `provisional_w109_aligned`
+Workset: `W27`, amended by `W109`
 Primary Functions: `ACCRINT`, `ACCRINTM`, `DURATION`, `MDURATION`, `PRICE`, `PRICEMAT`, `YIELD`, `YIELDDISC`, `YIELDMAT`
 
 ## 1. Scope
@@ -16,6 +16,22 @@ Primary Functions: `ACCRINT`, `ACCRINTM`, `DURATION`, `MDURATION`, `PRICE`, `PRI
 4. regular coupon schedule for `PRICE`, `YIELD`, `DURATION`, and `MDURATION`
 5. direct maturity-security algebra for `PRICEMAT` / `YIELDMAT` using the Excel-style `DaysInYear(issue,settlement)` denominator
 6. `ACCRINT` current admitted first-interest-anchor slice and `ACCRINTM` direct maturity-interest slice
+
+### 2.1 W109 exact-publication alignment for ACCRINT
+
+On the Excel 16.0 build-20228 x64 / workbook Compatibility Version 2
+reference profile, the admitted `ACCRINT` scalar slice additionally requires:
+
+1. the already identified `calc_method=FALSE` flat/whole-period-skip accrual
+   fraction and `calc_method=TRUE` backward period-walk accrual fraction are
+   evaluated and stored in ordinary binary64 arithmetic;
+2. `coupon = (par * rate) / frequency` is evaluated in ordinary binary64 and
+   stored before publication;
+3. the result is published only as
+   `RN53(RN64(coupon * accrual_fraction))`, implemented by the shared
+   `excel_x87_mul(coupon, accrual_fraction)` boundary;
+4. no earlier day-count, fraction, or coupon operation is promoted to an x87
+   calculation route by this publication rule.
 
 ## 3. Explicitly Out Of Slice
 1. 1904 date system support
@@ -39,7 +55,16 @@ Primary Functions: `ACCRINT`, `ACCRINTM`, `DURATION`, `MDURATION`, `PRICE`, `PRI
 4. Runtime harness in `tools/w27-probe/run-w27-bond-odd-bond-baseline.ps1`
 5. Packet execution record in `docs/function-lane/W27_EXECUTION_RECORD.md`
 6. Public benchmark comparison note via `W29`
+7. W109 calculation-graph and closure record in
+   `docs/function-lane/W109_G6_BOND_SCHEDULE_IDENTIFICATION_20260720.md`
+8. W109 exact scorer and frozen held-out generator in
+   `smart-fuzzer/tools/calc_graph_racer/src/bin/race_accrint_publication.rs`
+   and `generate_accrint_publication_heldout.rs`
 
 ## 6. Scope Boundary
 1. The packet closes the previously open direct-Excel parity gap on `PRICEMAT` / `YIELDMAT`.
 2. The F# ExcelFinancialFunctions project was used as a public benchmark and structural cross-check, not as semantic authority over Excel.
+3. The W109 amendment closes only the current-reference ACCRINT calculation-
+   graph discrepancy. `YIELD`, `ODDFYIELD`, `DURATION`/`MDURATION`, and other
+   open bond/financial rows keep the wider family and W109 campaign
+   `scope_partial`.

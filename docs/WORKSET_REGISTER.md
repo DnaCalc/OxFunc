@@ -1349,14 +1349,22 @@ Current checkpoint (2026-08-09):
    BUG-FUNC-043/044/045 and beads `oxf-jwh5.1/.2/.4` are closed signed off, and
    G6-12/G6-13/G6-14 are retired from the open catalog. This does not close the
    wider financial family or W109 campaign.
-3. BESSELJ internal trigonometric inheritance is confirmed and materially
+3. ACCRINT's final publication graph is identified and landed in `cd1f9fe`:
+   the stored ordinary-f64 coupon and stored identified accrual fraction are
+   multiplied only through `excel_x87_mul`. Production replays b39/b40/b42,
+   the recaptured build-20228/CV2 NoCache b43, and a fresh frozen held-out at
+   `146850/146850`; the full core run passed `1519` tests with `4` ignored.
+   BUG-FUNC-030 is closed signed off, closed bead `oxf-bx1u` carries the
+   successor closure evidence without being reopened, and G6-02 is retired.
+   This scoped repair does not close other bond/financial rows or W109.
+4. BESSELJ internal trigonometric inheritance is confirmed and materially
    localized: both cosine sites plus J0-only x87 product staging form an
    oracle-informed `794/794` decomposition, but the best executable model is
    `792/794` because fresh phase witnesses reopen the shared worksheet-COS
    substrate as G4-07. Both lanes remain `scope_partial`.
-4. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
+5. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
    and the remaining bounded search, larger-graph, coefficient-recovery, and
    wrapper/predicate lanes remain actionable.
-5. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+6. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

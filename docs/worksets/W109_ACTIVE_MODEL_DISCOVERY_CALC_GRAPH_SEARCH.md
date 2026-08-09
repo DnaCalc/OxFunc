@@ -80,7 +80,7 @@ G6-01 surface for Phase 2/6 work.
 ## 4. Roadmap (dependency-ordered)
 
 1. **Phase 2 — closed-form quick wins**: YIELDMAT, NPER (FYL2XP1 variants),
-   ACCRINT triple-edge, CONVERT (solve implied factor bits), ACOTH, COMBIN
+   CONVERT (solve implied factor bits), ACOTH, COMBIN
    family (x87 continuous product), CUMPRINC half-schedule, GAUSS/PHI.
    Candidate prior after the pilot: *legacy spill-loop double-rounded
    arithmetic + confirmed x87 transcendental kernels*.
@@ -174,7 +174,25 @@ financial family or W109 campaign:
    `n*(power-1)`. Current evidence is `242/242` adjacent + `600/600` follow-up
    + `2/2` branch-pair + `8/8` wrapper staging.
 
-### 7.3 BESSELJ and PMT remain open
+### 7.3 ACCRINT G6-02 final publication repair
+
+ACCRINT's July schedule identification was correct but its final plain-f64
+publication left 13 one-ULP rows. The exact graph stores
+`coupon=(par*rate)/frequency` and the identified accrual fraction `a` in
+ordinary binary64, then publishes only through
+`excel_x87_mul(coupon,a) = RN53(RN64(coupon*a))`. The repair and exact pins
+landed in `cd1f9fe`.
+
+Production replay is b39 `25410/25410`, b40 `51420/51420`, b42
+`68790/68790`, recaptured build-20228/CV2 NoCache b43 `780/780`, and a fresh
+frozen held-out `450/450`, totaling `146850/146850`. The current-reference
+answer hashes and provenance are recorded in the W109 bond report and
+BUG-FUNC-030 stream. BUG-FUNC-030 is `closed_signed_off`; the already-closed
+bead `oxf-bx1u` remains closed with a successor-evidence comment; G6-02 is
+retired. No FEC/F3E or evaluator-facing handoff is required. This closes only
+G6-02 and does not close the wider bond/financial family or W109 campaign.
+
+### 7.4 BESSELJ and PMT remain open
 
 1. `BESSELJ` requires worksheet COS at both J0/J1 asymptotic cosine sites and
    an x87-double-rounded `cosine*p` only in J0. Those body choices plus live COS

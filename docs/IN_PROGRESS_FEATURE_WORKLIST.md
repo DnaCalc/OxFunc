@@ -333,7 +333,13 @@ Status axes:
   `876635e`; BUG-FUNC-043/044/045 and beads `oxf-jwh5.1/.2/.4` are closed
   signed off, and G6-12/G6-13/G6-14 are retired from the open catalog. This
   three-bug landing does not close the wider financial family or W109. A
-  `BESSELJ` internal-cosine decomposition reaches `794/794` only
+  separate ACCRINT publication repair landed in `cd1f9fe`: the stored
+  ordinary-f64 coupon and stored identified accrual fraction are multiplied
+  only through `excel_x87_mul`. Retained b39/b40/b42 plus recaptured b43 and a
+  fresh frozen held-out replay `146850/146850`; BUG-FUNC-030 is closed signed
+  off, its already-closed bead carries successor evidence, and G6-02 is retired.
+  This likewise does not close other bond/financial lanes. The `BESSELJ`
+  internal-cosine decomposition reaches `794/794` only
   with live worksheet-COS values; the best executable graph is `792/794`, so
   the newly reopened shared COS phase/reduction lane G4-07 blocks promotion.
   The PMT/IPMT/PPMT/CUM family, ATANH,

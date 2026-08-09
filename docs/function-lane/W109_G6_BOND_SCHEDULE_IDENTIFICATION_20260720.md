@@ -6,6 +6,15 @@ both cracked at the SEMANTIC level within hours by exact-constraint methods
 Work dir: `smart-fuzzer/work/w109/G6-b2b3/` (gitignored). Agents: agent-V
 (PRICE staging + landing), agent-W (ACCRINT identification).
 
+**2026-08-09 ACCRINT closure note:** the July ACCRINT narrative below is kept
+as identification history, but its 13-row open-publication conclusion is
+superseded. Commit `cd1f9fe` identifies and lands the final stored-coupon by
+stored-accrual-fraction x87 publication multiply; retained and fresh evidence
+now replays `146,850/146,850`. BUG-FUNC-030 is `closed_signed_off`, and G6-02
+is retired. PRICE, DURATION/MDURATION, YIELD, PMT-family, and other catalog rows
+remain separate open lanes, so the wider report and W109 campaign stay
+`scope_partial`.
+
 ## Lane A — G6-03d: PRICE at Actual/360 & Actual/365 (material, ~cents)
 
 **Identity: Excel's PRICE derives the settlement discount fraction with a
@@ -124,11 +133,10 @@ unchanged on its pinned witnesses.
 
 Canonical agent record: `smart-fuzzer/work/w109/G6-b2b3/agentV_results.md`.
 
-## Lane B — LANDED + TWICE-HELD-OUT GATED (2026-07-20, agent-W)
+## Lane B — ACCRINT graph-identification history (2026-07-20, agent-W)
 
-Final model (all plain SSE2 double — x87 emulation strictly worse on both
-paths; ACCRINT sits in the 2010-rewrite SSE2 body class with GRATIO/BRATIO,
-NOT the x87 legacy-financial class):
+July body model (the later final-publication result below narrows the old
+"all plain SSE2" statement):
 
 1. **calc_method=FALSE = flat fraction + WHOLE-PERIOD SKIP.** For issue
    inside the canonical period: `days(issue→settle)/canonical`. For issue in
@@ -146,7 +154,8 @@ NOT the x87 legacy-financial class):
    settlement-side period is ALWAYS days/canonical, even when settlement
    lands exactly on a coupon date.
 
-Gates (coordinator-verified on the production kernel via check_accrint):
+Historical pre-publication-closure gates (coordinator-verified on the
+production kernel via check_accrint):
 b39 ident 25,407/25,410; **b40 fresh 51,417/51,420; b42 fresh
 68,783/68,790** — combined 145,607/145,620 (99.991%). Suite 1,511 green,
 zero pin movement (the historic BUG-FUNC-030 leap-Feb pin was a true Excel
@@ -155,7 +164,8 @@ witness and survived unchanged). Landed: `accrint_kernel` rewrite +
 (8 live pins incl. the negative-accrual skip witness and a c0/c1 1-ULP
 pair).
 
-Open residual (NOT accepted): 13 bistable rows across the three corpora,
+Historical residual at this checkpoint (subsequently closed below): 13
+bistable rows across the three corpora,
 ALL at rate 0.0615 — perfectly rate-selective across bonds, bases,
 calc_methods, and regimes. The flip therefore lives in the
 `par·rate/f`/publication last-bit staging, not the day-count layer.
@@ -186,12 +196,13 @@ Open residual (NOT accepted): the off-coupon ±1-2 ULP class
 the SAME shared fractional pow-chain wall PRICE left open; one cross-lane
 probe (b41/b43 family) covers both.
 
-Three same-day landings from one cluster: PRICE (b38 945/945), ACCRINT
+At the July checkpoint, three same-day landings came from one cluster: PRICE
+(b38 945/945), ACCRINT
 (b40+b42 145,607/145,620), DURATION/MDURATION (b46 641+644/720 ±2). Every
 lane followed hypothesis-first → lattice → pre-registered held-out gate,
 and TWO of the three had a wrong sub-rule caught only by the gate.
 
-## b43 probe — the 0.0615 bistables SHARPENED (2026-07-20, coordinator)
+## b43 probe — historical 0.0615 discriminator (2026-07-20, coordinator)
 
 Rate-ULP ladders (0.0615 ± 32 ulps × the 12 unique bistable rows, 780 live
 rows): **the flip is ISOLATED at exactly the double nearest 0.0615 — all 64
@@ -210,6 +221,60 @@ agentW_model2.py quantities, race {SSE2, DR-final, DR-all, extended-a}
 variants at 250-bit reference to find which op hits a 53-bit tie at exactly
 the 0.0615 double; then a par-ladder (997.5 ± k·ulp) to separate
 rate-tie from product-tie. Corpus: batch/answers-b43-accrint.json.
+
+## Lane B final closure — exact ACCRINT publication graph (2026-08-09)
+
+The exact current-reference calculation graph preserves the July day-count and
+accrual-fraction programs, but corrects the final publication boundary:
+
+```text
+coupon = (par * rate) / frequency        # ordinary f64, stored
+a      = identified accrual fraction     # ordinary f64, stored
+result = excel_x87_mul(coupon, a)         # RN53(RN64(coupon * a))
+```
+
+This is a one-node correction to the July body classification. The
+`calc_method=FALSE` flat/whole-period-skip fraction and `calc_method=TRUE`
+backward walk stay in ordinary binary64, as does coupon construction. Only the
+final multiplication of the two stored values uses the x87 PC64 operation and
+binary64 publication store. The old plain-f64 final multiply explains all 13
+residual rows without changing the already identified schedule graph.
+
+The repair and exact discriminator pins landed in `cd1f9fe`.
+
+| Corpus | Exact production replay |
+|---|---:|
+| b39 identification | `25,410/25,410` |
+| b40 held-out | `51,420/51,420` |
+| b42 held-out | `68,790/68,790` |
+| b43 rate ladder, recaptured | `780/780` |
+| fresh frozen publication held-out | `450/450` |
+| **Combined** | **`146,850/146,850`** |
+
+The current-reference sign-off sets were captured through Excel 16.0 build
+20228 x64, workbook Compatibility Version 2, `Run-W109BulkBatch.ps1` with
+`-NoCache`, and `cell_value2_bulk` plumbing. The recaptured b43 answer SHA-256
+is `CE2CB4B34FD46DEE40DDCD4724769471F255BA2ECE81D957546BA079D4CDF847`;
+the fresh held-out answer SHA-256 is
+`D0A6F58585AAE4E8C5727FD0EE5E792B686E970FF1B721B6D1CBD257C301B58C`.
+The focused exact pin passed `1/1`; the post-patch full core run passed `1519`
+library tests with `0` failures and `4` ignored tests, plus all integration and
+doc-test targets.
+
+Status axes for G6-02 only:
+
+- `execution_state: complete`
+- `scope_completeness: scope_complete`
+- `target_completeness: target_complete`
+- `integration_completeness: integrated`
+- `open_lanes: []` within G6-02. The wider bond/financial family, other catalog
+  rows, alternate profiles, and global W109 audit remain open.
+
+The scoped `OPERATIONS.md` Sections 12 and 14 audit is recorded in
+`BUG-FUNC-030_accrint_accrued_interest_half_value.md` and passes. The existing
+BondCoreFamily Lean binding/formal substrate is unchanged; the preceding W109
+Lean build passed `492` jobs. No FEC/F3E boundary or evaluator-facing clause
+changed, so no cross-repo handoff is required.
 
 ---
 
