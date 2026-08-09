@@ -135,6 +135,8 @@ close:   catalog row out, ruled-out ledger rows in, evidence doc
 - Ruled-out ledger: [DISCREPANCY_RULED_OUT_LEDGER.csv](../function-lane/DISCREPANCY_RULED_OUT_LEDGER.csv)
 - W108 (x87 numeric core): [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md)
 - PMT current intermediate/timing evidence: [W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md](../function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md)
+- GROWTH/LOGEST single-predictor checkpoint: [W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md](../function-lane/W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md)
+- CUMPRINC exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/CUMPRINC_EXACT_PARTIAL_REPORT_20260809.md`
 
 ## 7. 2026-08-09 reconciliation and active checkpoint
 
@@ -332,6 +334,35 @@ the scoped Sections 12/14 audit are in
 `docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md`. No FEC/F3E or
 evaluator-facing handoff is required.
 
+### 7.8 GROWTH/LOGEST and CUMPRINC bounded discovery checkpoints
+
+Two additional current-build investigations produced durable negative evidence
+without reaching a promotion gate.
+
+For the single-predictor `LOGEST`/`GROWTH` lane, two serialized build-20228/CV2
+NoCache rounds cover 360 `LOGEST` calls and 1,260 `GROWTH` calls. The former
+two-control claim that `GROWTH` universally publishes the observed `LOGEST`
+base times factor-to-x is withdrawn: 240 of 23,328 graphs fit those two rows,
+while the best current reconstruction from observed LOGEST cells is only
+`666/1240` numeric exact. A one-final-EXP graph also misses 18/20 structural
+`#NUM!` outcomes; separately published coefficients followed by POWER/product
+match 20/20 structural outcomes but remain far from numerically exact. The
+coefficient schedule, subnormal publication, fractional power/product staging,
+multivariate/default/orientation/coercion axes, and a genuine held-out remain
+open. Canonical evidence is in
+`W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md`.
+
+For `CUMPRINC`, a frozen 60-call PMT companion and 540-call CUMPRINC discovery
+battery separates published payment, hidden per-period principal, and hidden
+range-fold publication. Shipping is `90/540`; the best oracle-blind
+discount/geometric family is `190/540`, and the broad public `loan.fs` family
+is `172/540`. Exact power-of-two homogeneity coexists with non-exact rounded
+range partition identities. A hidden first-principal low word is insufficient,
+and the apparent `498/540` Ext80 score is explicitly rejected as 90-parameter
+per-query interpolation with no context transfer. No held-out or production
+survivor exists; the durable report is
+`smart-fuzzer/tools/calc_graph_racer/CUMPRINC_EXACT_PARTIAL_REPORT_20260809.md`.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
@@ -341,6 +372,8 @@ Status axes:
    broad post-catalog discovery; declared application-version/Compatibility-
    Version axes; global OPERATIONS Sections 12 and 14 audit. PMT specifically
    retains the private helper, type-1 association, timing/publication, adjacent
-   schedule, and unfinished larger-graph lanes. COS/BESSELJ,
+   schedule, and unfinished larger-graph lanes. GROWTH/LOGEST retain coefficient,
+   publication, full-shape/coercion, and held-out lanes; CUMPRINC retains hidden
+   principal, range-fold, and held-out lanes. COS/BESSELJ,
    ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
    close the wider campaign.
