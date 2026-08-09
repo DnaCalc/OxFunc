@@ -144,11 +144,14 @@ the PMT residual had been proved irreducible.
    Compatibility Version, OS/CPU/input plumbing, cache mode, runner version,
    PowerShell version, and capture time) rather than relying on terminal history.
 
-### 7.2 Newly identified financial graphs
+### 7.2 Landed financial graph repairs
 
-The following lanes have zero residual on their current discovery, held-out,
-and targeted discriminator corpora, but their catalog retirement remains gated
-on final provenance-bearing recapture, full tests, and evidence synchronization:
+The following three bug slices passed provenance-bearing recapture, focused and
+full tests, formal alignment, and evidence synchronization. Their implementation
+and evidence landed in `876635e`; BUG-FUNC-043/044/045 are
+`closed_signed_off`, beads `oxf-jwh5.1/.2/.4` are closed, and catalog rows
+G6-12/G6-13/G6-14 are retired. This scoped retirement does not close the wider
+financial family or W109 campaign:
 
 1. `EFFECT`: x87-double-rounded base construction; for truncated periods below
    `u32::MAX`, LSB-first integer binary exponentiation where every accumulator
@@ -191,8 +194,7 @@ Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: landed EFFECT/RRI/NOMINAL sign-off (post-repair full core:
-   `1518` passed, `4` ignored);
-   shared COS and dependent BESSELJ graphs; all other catalog rows; broad post-catalog discovery;
+4. `open_lanes`: shared COS and dependent BESSELJ graphs; all other catalog
+   rows, including PMT-family and CONVERT; broad post-catalog discovery;
    declared application-version/Compatibility-Version axes; global OPERATIONS
    Sections 12 and 14 audit.

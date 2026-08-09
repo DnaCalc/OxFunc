@@ -2,24 +2,30 @@
 
 This record captures the W109 black-box identification evidence for
 `EFFECT`, `RRI`, and `NOMINAL` on the current reference host. It is an
-in-progress evidence ledger, not a function-phase or packet sign-off.
+identification-and-repair record for three now-landed bug slices, not a wider
+financial-family, function-phase, W109-workset, or global campaign sign-off.
 
 ## Status
 
-- `scope_completeness: scope_partial`
+- `execution_state: complete` for BUG-FUNC-043/044/045
+- `scope_completeness: scope_partial` relative to the wider W109
+  financial/campaign scope; the three declared bug slices are closed and signed
+  off
 - `target_completeness: target_complete` for the exercised current-reference
   Excel build-20228/CV2 identification target
-- `integration_completeness: partial`
+- `integration_completeness: integrated` for these three repairs at `876635e`
 - `open_lanes:`
-  - landed commit/reference synchronization;
+  - the wider W109 financial and discrepancy-catalog lanes, including the
+    PMT/IPMT/PPMT/CUM family and every other still-open row;
   - the ordinary orthogonal alternate-version, alternate-channel, and locale
     sweeps, which are outside this identification packet.
 
-No global or function-phase closure claim is made here. The characterized
-graphs, including EFFECT's exact large-period dispatch and RRI's DAZ/identity
-edge routes, and current working-tree integration have passed their focused
-gates; full-suite, landed-reference, and
-orthogonal-profile lanes above remain open.
+No global, financial-family, W109-workset, or function-phase closure claim is
+made here. The characterized graphs, including EFFECT's exact large-period
+dispatch and RRI's DAZ/identity edge routes, passed their focused, full-suite,
+formal-alignment, and landed-reference gates. Their implementation, exact pins,
+contract/formal alignment, and evidence record landed in `876635e`; the open
+lanes above do not reopen these three current-reference bug slices.
 
 ## Reference host and clean-room provenance
 
@@ -456,10 +462,10 @@ RRI:     154 + 4900 + 375 + 6 + 60 + 35 + 6 = 5536/5536
 NOMINAL: 242 + 600 + 2 + 8   = 852/852
 ```
 
-## Production and test state at this checkpoint
+## Landed production and test state
 
-The current working tree contains candidate Rust routes and exact regression
-pins for the three functions:
+Commit `876635e` contains the selected Rust routes and exact regression pins for
+the three functions:
 
 - `EFFECT`: x87-DR LSB-first integer loop below `u32::MAX`, raw stored power
   chain at/above the boundary, plus wrapper and extreme-domain pins;
@@ -470,7 +476,7 @@ pins for the three functions:
 - `NOMINAL`: the direct-x87/raw hybrid, same-effect `n=2`/`n=3` boundary pins,
   stored-base/power-publication pins, and tail-order pins.
 
-Post-change verification on 2026-08-09:
+Landed-repair verification on 2026-08-09:
 
 1. `effect_uses_x87_spill_binexp_on_banked_and_blind_discriminators`: passed.
 2. `effect_switches_to_raw_pow_chain_at_u32_max_truncated_periods`: passed.
@@ -485,9 +491,17 @@ Post-change verification on 2026-08-09:
 8. `lake build` in `formal/lean`: passed (`492` jobs), including the W109
    EFFECT/NOMINAL route classifiers and ordered RRI wrapper alignment theorems.
 
-## Explicit next gates
+## Closure reconciliation and remaining gates
 
-1. Record the landed ref and synchronize the bug register, catalog, calculation
-   map, ruled-out ledger, workset, and beads.
-2. Only after those gates pass, run the repository pre-closure checklist and
-   completion-claim self-audit before changing any function or workset status.
+1. BUG-FUNC-043/044/045 record `876635e` as the fixed ref and pass their scoped
+   `OPERATIONS.md` Sections 12 and 14 audits. Their beads are closed, their
+   calculation-map rows retain the historical graph/evidence with
+   `closed_signed_off` status, and G6-12/G6-13/G6-14 are retired from the
+   open-only discrepancy catalog.
+2. No FEC/F3E boundary or evaluator-facing clause changed, so no cross-repo
+   handoff is required for these repairs.
+3. W109 remains `scope_partial`, `target_partial`, and only partially integrated
+   because the wider catalog, fresh broad discovery, shared COS/BESSELJ,
+   CONVERT, PMT-family, and other active lanes remain open. The global
+   `OPERATIONS.md` Sections 12 and 14 audit belongs at the campaign exit gate,
+   not to this three-bug closure.

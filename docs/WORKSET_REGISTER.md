@@ -1340,14 +1340,15 @@ Current checkpoint (2026-08-09):
    Compatibility Version 2; cache/profile hardening is in progress so evidence
    from build 20131 cannot be silently attributed to the current host.
 2. EFFECT, RRI, and NOMINAL have identified, production-routed legacy x87
-   graphs plus exact discriminator pins. Fresh no-cache corpora now carry
+   graphs plus exact discriminator pins. Fresh no-cache corpora carry
    build-20228/CV2 provenance; EFFECT's exact `u32::MAX` loop-to-raw-chain
-   boundary is `160/160`. RRI's MIN_NORMAL period cutoff, DAZ/equality/sign
-   order, zero-base route, and exact `periods==1` identity are now pinned; the
-   repaired composite is `5536/5536`; the post-repair full core suite is green
-   (`1518` passed, `4` ignored) and the Lean alignment build passes (`492`
-   jobs). Landed-ref gates remain before those catalog
-   rows retire.
+   boundary is `160/160`, and RRI's repaired composite is `5536/5536`. The
+   implementation, pins, contract/formal alignment, and evidence landed in
+   `876635e`; the post-repair full core suite is green (`1518` passed, `4`
+   ignored), and the Lean alignment build passes (`492` jobs).
+   BUG-FUNC-043/044/045 and beads `oxf-jwh5.1/.2/.4` are closed signed off, and
+   G6-12/G6-13/G6-14 are retired from the open catalog. This does not close the
+   wider financial family or W109 campaign.
 3. BESSELJ internal trigonometric inheritance is confirmed and materially
    localized: both cosine sites plus J0-only x87 product staging form an
    oracle-informed `794/794` decomposition, but the best executable model is

@@ -1,14 +1,19 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-09` (W109 campaign-state intake: registered the confirmed
-`EFFECT`, `RRI`, and adjacent-family `NOMINAL` numeric discrepancies as
+Last reconciled: `2026-08-09` (`876635e` landed the exact current-reference
+`EFFECT`, `RRI`, and `NOMINAL` publication graphs and their tests/evidence;
+BUG-FUNC-043/044/045 are `closed_signed_off`, so G6-12/G6-13/G6-14 were retired
+from this open-only catalog. The wider W109 financial family and campaign remain
+partial.)
+Previous reconcile: `2026-08-09` (W109 campaign-state intake: registered the
+confirmed `EFFECT`, `RRI`, and adjacent-family `NOMINAL` discrepancies as
 G6-12/G6-13/G6-14; replaced the stale duplicate G6-03b PRICE membership with
 the confirmed G4-06 BESSELJ internal-cosine residual; reopened the shared
 worksheet-COS substrate as G4-07 after fresh phase witnesses refuted the former
-universal G4-01 sign-off; corrected the G6-01 PMT
-boundary wording to the superseding 2026-07-25 bounded-search result and retained
-coefficient recovery/larger-graph search as active clean-room lanes)
+universal G4-01 sign-off; corrected the G6-01 PMT boundary wording to the
+superseding 2026-07-25 bounded-search result and retained coefficient
+recovery/larger-graph search as active clean-room lanes)
 Previous reconcile: `2026-07-18` (G3-01 lane-1: distribution pow pinned as POWER's chain
 without the 0.5→sqrt shortcut (`excel_pow_chain` landed); WEIBULL.DIST + EXPON.DIST
 bodies identified as legacy x87 per-op-double-rounded units; held-out evidence
@@ -72,7 +77,7 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `26`
+Open Category-2 rows: `23`
 
 | Group | Current rows |
 |-------|--------------|
@@ -81,7 +86,7 @@ Open Category-2 rows: `26`
 | G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 6 |
 | G5 matrix numeric/shape | 1 |
-| G6 financial exactness/solver | 12 |
+| G6 financial exactness/solver | 9 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
 
@@ -191,9 +196,6 @@ boundary.
 | G6-05 — RATE | W109 (2026-07-21) **SCHEDULE + SUBSTRATE IDENTIFIED (agent-R), exact-bits open.** Mechanism (replaces "586 ULP, cause unknown"): the solver is **forward-difference Newton in r-space** (the r-space sibling of IRR's v-space FD-Newton), NOT secant — `x←guess; f=balance(x); h=1e-6·x; d=(balance(x+h)−f)/h; xn=x−f/d; stop on |f|<1e-7 publishing the STEPPED iterate; x=xn`; cap **~100** (the documented "20" is wrong — rate-B g0.3 needs ~55 iters and Excel returns a value); `#NUM!` on cap-exceeded / domain(1+r≤0) / non-finite. Balance `= pv·(1+r)^nper + pmt·(1/r+type)·((1+r)^nper−1) + fv`; r=0 → `pv+pmt·nper+fv`. **POWER `(1+r)^nper` = the x87 87tran exp·ln chain** — confirmed by the `#NUM!` basin: x87chain reproduces **15/15**, plain-double binexp / powf / binexpX87 only 10/15 (an n=360 1-ULP power error compounds over 50+ iters into a different convergence). **`#NUM!` basin 116/116** across all 5 corpora (rate-B numeric only for guess∈[0.02,0.3]; rate-A `#NUM!` only at {−0.5,−0.3}). Classic secant REFUTED (false-converges on the `#NUM!` rows). OPEN residual (op-graph wall, same class as PMT/GAMMALN): exact bits 0-2/101 — the balance's **catastrophic cancellation** (≈1400-magnitude terms cancelling to ~1e-12, ~1 ULP-of-f amplified 5-60× near the root); not closed by {double, full-Ext80, per-op-double-rounded} balance × {5 powers} × {4 derivs} × {2 arrangements}. Next-session lever: the r1/r2 **near-root one-step ladder** (single Newton step, no trajectory chaos) to pin the exact balance spill pattern + FD-h form. Racer `race_rate.rs`. | NUM-L | M1 | BUG-FUNC-009 / W103 / recon G6-05 / W109 agent-R |
 | G6-06 — IRR | Irrational-root solver residuals remain: `80` ULP and `14096` ULP on the bounded witnesses. | NUM-L | M1 | BUG-FUNC-028 out-of-stream / recon G6-06 |
 | G6-07 — CUMPRINC | The full-schedule control is exact; the half-schedule witness is `1` ULP, localizing the current evidence to boundary-sensitive accumulation. | NUM-S | M1 | recon G6-07 |
-| G6-12 — EFFECT | **Repair validated locally; pending landed ref and catalog retirement (fresh Excel 16.0 build 20228 x64, Compatibility Version 2, `-NoCache`, 2026-08-09):** exact graph is `n=trunc(npery)`, x87-DR base divide/add, then x87-DR LSB-first binexp for `n<u32::MAX` and raw stored-LN/product x87 EXP at/above the exact `u32::MAX` boundary, followed by x87-DR subtraction. Production candidate replays `315/315 + 870/870 + 4/4 + 160/160 = 1349/1349`, including typed extreme-domain outcomes through `f64::MAX`; former u64-loop representative is `144/160` on the boundary battery. Focused tests and the full core suite (`1518` passed, `4` ignored) pass. | NUM-L | M3 | `W109_EFFECT_RRI_NOMINAL_IDENTIFICATION_20260809.md` / BUG-FUNC-043 |
-| G6-13 — RRI | **Repair validated locally; pending landed ref and catalog retirement (build 20228/CV2 NoCache, 2026-08-09):** reject periods below `MIN_NORMAL`; DAZ-normalize `pv/fv`; return `+0` on normalized equality before sign guards; DAZ the x87-DR quotient; zero base returns `-1`; `periods==1` is an exact quotient identity; otherwise use the raw stored-LN/reciprocal-first-product/x87-EXP chain, then x87-DR subtraction. Worksheet POWER dispatch is bypassed. Repaired production replays `154 + 4900 + 375 + 6 + 60 + 35 + 6 = 5536/5536`; the former guard/raw-chain representative scored only `45/60`, `15/35`, and `3/6` on the new edge/identity sets. Focused tests and the full core suite (`1518` passed, `4` ignored) pass. | NUM-L | M3 | `W109_EFFECT_RRI_NOMINAL_IDENTIFICATION_20260809.md` / BUG-FUNC-044 |
-| G6-14 — NOMINAL | **Repair validated locally; pending landed ref and catalog retirement (build 20228/CV2 NoCache, 2026-08-09):** after truncation and x87-DR stored-base creation, `n<=2` uses register-continuous x87 FYL2X/F2XM1/FSCALE with one completed-power store; `n>=3` uses the raw stored-LN/product chain; the tail is `n*(powered-1)`. Production candidate replays `242/242 + 600/600 + 2/2 + 8/8 = 852/852`; the same-effect n=2/n=3 pair and wrapper staging independently pin the branch/publication graph. Focused tests and the full core suite (`1518` passed, `4` ignored) pass. | NUM-L | M3 | `W109_EFFECT_RRI_NOMINAL_IDENTIFICATION_20260809.md` / BUG-FUNC-045 |
 
 The former `G6-09` YIELDMAT row is signed off and removed (2026-07-11). The
 W109 search identified x87 spill-loop arithmetic with the PUBLISHED formula's

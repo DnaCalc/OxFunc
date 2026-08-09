@@ -329,7 +329,11 @@ Status axes:
   `160/160`; RRI's MIN_NORMAL/DAZ/equality/sign/zero-base/period-one composite
   is live-pinned and replays `5536/5536`. Their production repairs and
   discriminator pins pass the post-repair full suite (`1518` passed, `4`
-  ignored) and remain pending a landed ref. A `BESSELJ` internal-cosine decomposition reaches `794/794` only
+  ignored) and Lean build (`492` jobs). The repairs and evidence landed in
+  `876635e`; BUG-FUNC-043/044/045 and beads `oxf-jwh5.1/.2/.4` are closed
+  signed off, and G6-12/G6-13/G6-14 are retired from the open catalog. This
+  three-bug landing does not close the wider financial family or W109. A
+  `BESSELJ` internal-cosine decomposition reaches `794/794` only
   with live worksheet-COS values; the best executable graph is `792/794`, so
   the newly reopened shared COS phase/reduction lane G4-07 blocks promotion.
   The PMT/IPMT/PPMT/CUM family, ATANH,
@@ -344,8 +348,7 @@ Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: EFFECT/RRI/NOMINAL landed sign-off and
-   evidence synchronization; shared COS and dependent BESSELJ identification; PMT/IPMT/PPMT/CUM
+4. `open_lanes`: shared COS and dependent BESSELJ identification; PMT/IPMT/PPMT/CUM
    `log1p`/`expm1` and composition graphs; ATANH and ACOTH shared substrate;
    GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
