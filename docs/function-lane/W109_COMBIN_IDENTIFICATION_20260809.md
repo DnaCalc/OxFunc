@@ -7,8 +7,29 @@ Identification, frozen gate, implementation, and verification: `2026-08-09`
 
 Implementation commit: `c879f3f`
 
-The enclosing G4-04 row remains open for `COMBINA` and its other independent
-members. This report makes no closure claim for those functions.
+This report preserves the original COMBIN-body publication gate. The later
+COMBINA campaign independently closed `COMBINA` and qualified a shared COMBIN
+admission seam; see `W109_COMBINA_IDENTIFICATION_20260809.md`. The enclosing
+G4-04 row now remains open only for `ERF`/`ERF.PRECISE` and
+`ERFC`/`ERFC.PRECISE`.
+
+## 2026-08-09 shared-admission addendum
+
+Shared-admission implementation commit: `3f31f44`
+
+Paired COMBINA/COMBIN boundary discovery showed that the signed-off cyclic body
+also has a previously unprobed admission layer: both inputs use DAZ, remaining
+raw negative values are rejected before truncation, and truncated `n` is
+admitted only through `2_147_483_646`. The next integer is `#NUM!`, even for
+`k=0`. A nonfinite cyclic accumulator can return `#NUM!` immediately because
+complement reduction makes every remaining factor greater than one.
+
+The original `22,242/22,242` body corpora remain exact. New paired controls,
+retired-v1 DAZ discovery, and a genuinely fresh 76-row admission publication
+gate replay `2,195/2,195`; combined COMBIN replay is `24,437/24,437`. The fresh
+gate is `76/76` without refinement, while no-DAZ and raw-value-ceiling controls
+score `66/76` and `62/76`. Lean and `FDEF-071` now record the admission layer
+without changing the identified cyclic body.
 
 ## Identified current-reference graph
 
@@ -94,7 +115,7 @@ Tracked replay source:
 
 ## Production and formal alignment
 
-Commit `c879f3f` changes only:
+The original body commit `c879f3f` changed only:
 
 - `crates/oxfunc_core/src/functions/combin.rs`, which implements the cyclic
   stored-x87 graph and exact current/held-out pins;
@@ -102,7 +123,9 @@ Commit `c879f3f` changes only:
   reduction, cyclic order, store sites, and final-`n` placement without
   duplicating the x87 engine.
 
-`COMBINA` and every other G4-04 function are untouched.
+At that original gate `COMBINA` and every other G4-04 function were untouched.
+The later scoped package changes COMBINA and the shared admission layer under
+the separately frozen evidence in `W109_COMBINA_IDENTIFICATION_20260809.md`.
 
 The sign-off state package also tracks `replay_combin_production.rs`, which
 requires the COMBIN function tag, unique nonempty IDs, strict argument/result
@@ -138,18 +161,21 @@ Status axes for the enclosing G4-04 row and W109 campaign:
 - `scope_completeness: scope_partial`
 - `target_completeness: target_partial`
 - `integration_completeness: partial`
-- `open_lanes`: `COMBINA`, the other independent G4-04 members, remaining
-  catalog rows, broad post-catalog discovery, and declared version/CV axes.
+- `open_lanes`: `ERF`/`ERF.PRECISE`, `ERFC`/`ERFC.PRECISE`, remaining catalog
+  rows, broad post-catalog discovery, and declared version/CV axes.
 
 ### OPERATIONS Section 12 — Pre-Closure Verification Checklist
 
-1. Contract/admission surface: pass; `FDEF-071` binds the exact route without
-   changing admission/coercion semantics.
-2. Formal alignment: pass; the Lean route records the load-bearing schedule.
+1. Contract/admission surface: pass; `FDEF-071` binds the exact body and the
+   later DAZ/ceiling admission correction without changing coercion semantics.
+2. Formal alignment: pass; the Lean route records the load-bearing body and
+   corrected DAZ/ceiling admission schedule.
 3. Rust implementation/tests: pass; focused and full suites are green.
-4. Deterministic replay: pass; production is `22,242/22,242` exact.
+4. Deterministic replay: pass; the retained body plus admission controls are
+   `24,437/24,437` exact, including the fresh `76/76` admission gate.
 5. Evidence/provenance: pass; exact bits, capture profile, process counts,
-   selection discipline, controls, and artifact hashes are recorded.
+   selection discipline, retired-v1 discipline, fresh controls, and artifact
+   hashes are recorded.
 6. Version axes: pass for the declared current build-20228/x64/CV2 target;
    build-20131 overlap is separately recorded without a universal claim.
 7. Public algebra versus empirical behavior: pass; Excel's intentionally
@@ -161,13 +187,14 @@ Status axes for the enclosing G4-04 row and W109 campaign:
 12. State synchronization: pass; this report,
     the mixed-row supersession, `FDEF-071`, the `BUG-FUNC-027` stream/register,
     and the root-owned catalog/map/workset/worklist surfaces are synchronized
-    while the enclosing G4-04 row remains open.
+    while the enclosing G4-04 row remains open only for ERF/ERFC.PRECISE.
 13. Bead state: pass; scoped child `oxf-jwh5.9` contains the evidence and is
     closed while the W109 parent remains open.
 
 ### OPERATIONS Section 14 — Completion Claim Self-Audit
 
-1. Scope re-read: pass; no `COMBINA` or mixed-row closure is claimed.
+1. Scope re-read: pass; this report claims only COMBIN; COMBINA is signed off
+   separately and no mixed-row closure is claimed.
 2. Gate criteria re-read: pass; discovery, frozen held-out, implementation,
    formal route, regression pins, and full verification are present.
 3. Silent scope reduction: pass; truncation, complement reduction, small-k,

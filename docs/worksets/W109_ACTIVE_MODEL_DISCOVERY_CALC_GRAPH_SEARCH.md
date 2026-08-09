@@ -80,7 +80,7 @@ G6-01 surface for Phase 2/6 work.
 ## 4. Roadmap (dependency-ordered)
 
 1. **Phase 2 — closed-form quick wins**: YIELDMAT, NPER (FYL2XP1 variants),
-   CONVERT (solve implied factor bits), ACOTH, COMBIN
+   CONVERT (solve implied factor bits), ACOTH, COMBIN/COMBINA
    family (x87 continuous product), CUMPRINC half-schedule, GAUSS/PHI.
    Candidate prior after the pilot: *legacy spill-loop double-rounded
    arithmetic + confirmed x87 transcendental kernels*.
@@ -330,11 +330,34 @@ stores each accumulator multiply the same way, and multiplies by `n` only at
 publication. It replays `505/505` legacy, `20713/20713` current discovery, and
 a candidate-frozen prior-disjoint `1024/1024` publication gate, for
 `22242/22242` total. Focused/full core, tracked production replay, and the
-492-job Lean route binding pass; bead `oxf-jwh5.9` is closed signed off. G4-04
-remains open for COMBINA and ERF/ERFC.PRECISE, and BUG-FUNC-027 remains open
-for those and unrelated subclasses. Evidence, hashes, rejected controls, and
+492-job Lean route binding pass; bead `oxf-jwh5.9` is closed signed off. The
+later COMBINA paragraph below supersedes this original gate's open-COMBINA
+state; G4-04 now remains open only for ERF/ERFC.PRECISE, and BUG-FUNC-027
+remains open for those and unrelated subclasses. Evidence, hashes, rejected controls, and
 the scoped Sections 12/14 audit are in
 `docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md`. No FEC/F3E or
+evaluator-facing handoff is required.
+
+The subsequent COMBINA campaign retracted the July GAMMALN/product-
+impossibility claim and identified the exact transformed-COMBIN route. COMBINA
+applies DAZ and separately truncates both arguments, publishes one from its
+zero/zero pool before the asymmetric truncated-n/raw-DAZ-k negative guard, and
+then delegates `tn+tk-1,tk` to COMBIN. Paired boundary discovery also corrected
+COMBIN admission: DAZ precedes its raw negative guard and truncated `n` is
+admitted only through `2_147_483_646`; the cyclic body is unchanged and may
+short-circuit a monotone nonfinite accumulator to `#NUM!`.
+
+Production replays `40,330/40,330` COMBINA rows, `2,195/2,195` new COMBIN
+admission controls, and the original `22,242/22,242` COMBIN corpora, for
+`64,767/64,767`. The central COMBINA gate is a candidate-frozen,
+prior-disjoint `2,048/2,048`; the genuinely fresh fractional-ceiling/DAZ gate
+passes COMBIN `76/76` and COMBINA `144/144` without refinement. Focused/full
+core and the 492-job Lean build pass; the implementation landed in `3f31f44`.
+Scoped bead `oxf-jwh5.11` is closed
+signed off; G4-04 remains open only for ERF/ERFC.PRECISE, and
+BUG-FUNC-027/W109 remain open for those and unrelated subclasses. Evidence,
+hashes, retired-v1 discipline, and the scoped Sections 12/14 audit are in
+`docs/function-lane/W109_COMBINA_IDENTIFICATION_20260809.md`. No FEC/F3E or
 evaluator-facing handoff is required.
 
 ### 7.8 GROWTH/LOGEST and CUMPRINC bounded discovery checkpoints
@@ -453,7 +476,7 @@ Status axes:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`: all remaining catalog rows, including PMT-family and the
-   COMBINA/ERF/ERFC.PRECISE members of mixed G4-04;
+   ERF/ERFC.PRECISE members of mixed G4-04;
    broad post-catalog discovery; declared application-version/Compatibility-
    Version axes; global OPERATIONS Sections 12 and 14 audit. PMT specifically
    retains the private helper, type-1 association, timing/publication, adjacent
@@ -465,5 +488,5 @@ Status axes:
    PRICE/DURATION retain their residual accumulator/publication graphs and
    sealed heldouts. IRR retains its private objective, scale/error boundary,
    remaining schedule/publication graph, and sealed heldout. COS/BESSELJ,
-   ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
-   close the wider campaign.
+   ATANH, ACOTH, MINVERSE, CONVERT, COMBIN, and COMBINA closures are scoped and
+   do not close the wider campaign.

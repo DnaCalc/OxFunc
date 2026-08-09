@@ -376,8 +376,17 @@ Status axes:
   exact cyclic stored-x87 factor graph landed in `c879f3f` and replays
   `22242/22242`, including a candidate-frozen prior-disjoint `1024/1024`
   publication gate. Bead `oxf-jwh5.9` is closed signed off; focused/full core
-  and 492-job Lean gates pass. Only COMBIN is signed off—the mixed G4-04 row
-  remains open for COMBINA and ERF/ERFC.PRECISE. The PMT/IPMT/PPMT/CUM family,
+  and 492-job Lean gates pass. The later COMBINA campaign preserves that body,
+  pins shared DAZ and the exact COMBIN admission ceiling, and identifies
+  COMBINA's separate-truncation/zero-pool/asymmetric-guard transformed route.
+  COMBINA replays `40330/40330`; new COMBIN admission controls replay
+  `2195/2195`; combined original/new typed replay is `64767/64767`. The central
+  COMBINA gate is `2048/2048`, and a genuinely fresh admission gate passes
+  COMBIN `76/76` plus COMBINA `144/144` without refinement. Scoped child
+  `oxf-jwh5.11` is closed signed off; the implementation landed in `3f31f44`,
+  and focused/full core and the 492-job Lean build pass. COMBIN and COMBINA are
+  signed off separately—the mixed G4-04 row
+  remains open only for ERF/ERFC.PRECISE. The PMT/IPMT/PPMT/CUM family,
   GAMMALN/GAMMA, distributions, regression, and the other
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
@@ -404,7 +413,7 @@ Status axes:
 4. `open_lanes`: PMT/IPMT/PPMT/CUM private-helper, type-1 association,
    timing/publication, and schedule-composition graphs; unfinished EXT6 and
    larger clean-room graph search;
-   COMBINA/ERF/ERFC.PRECISE in mixed G4-04, GAMMALN/GAMMA, distributions,
+   ERF/ERFC.PRECISE in mixed G4-04, GAMMALN/GAMMA, distributions,
    regression, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.

@@ -1420,9 +1420,21 @@ Current checkpoint (2026-08-09):
    multiplies by `n` only at publication. Legacy, current discovery, and a
    candidate-frozen prior-disjoint publication gate replay `22242/22242`.
    Focused/full core and 492-job Lean gates pass; bead `oxf-jwh5.9` is closed
-   signed off. Only the COMBIN sublane is closed: mixed G4-04 remains open for
-   COMBINA and ERF/ERFC.PRECISE, and no FEC/F3E handoff is needed.
-10. The PMT-family wall is not proved irreducible. The 2026-08-09 hardening
+   signed off. The later paired COMBINA campaign preserves that body and adds
+   shared DAZ plus the exact `n<=2147483646` admission ceiling; the original
+   and new COMBIN corpora replay `24437/24437`.
+10. COMBINA's exact current-reference route applies DAZ and separate argument
+    truncation, publishes one from the zero/zero pool before its asymmetric
+    negative-choice guard, and delegates transformed total `tn+tk-1,tk` to
+    the COMBIN kernel. Current production replays `40330/40330`; the central
+    candidate-frozen prior-disjoint gate is `2048/2048`, and a genuinely fresh
+    fractional-ceiling/DAZ gate passes COMBIN `76/76` plus COMBINA `144/144`
+    without refinement. Combined original/new typed replay is `64767/64767`;
+    focused/full core and 492-job Lean gates pass. The implementation landed in
+    `3f31f44`. Scoped child `oxf-jwh5.11`
+    is closed signed off. COMBIN and COMBINA are signed off separately; mixed
+    G4-04 remains open only for ERF/ERFC.PRECISE. No FEC/F3E handoff is needed.
+11. The PMT-family wall is not proved irreducible. The 2026-08-09 hardening
     records the x87-spill helper representative at `226/324`, hard-refutes direct
     low-word delivery, exactly certifies `51/60` tested smooth interval systems
     while leaving nine numerical-only, and limits the
@@ -1433,13 +1445,13 @@ Current checkpoint (2026-08-09):
     helper-association probes, per-function schedule composition, and alternate
     version/profile axes remain actionable. See
     `docs/function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md`.
-11. Current-build bounded-negative checkpoints are now durable for GROWTH/
+12. Current-build bounded-negative checkpoints are now durable for GROWTH/
     LOGEST, CUMPRINC, RATE, PRICE/DURATION, and IRR. None has an exact discovery
     survivor or an opened heldout. IRR's 300-row discovery and 900-point
     worksheet-NPV companion specifically prove that worksheet evaluator
     cancellation snapping is not the private IRR objective; its best frozen
     no-snap leader remains `44/72`. `BUG-FUNC-048` and child bead
     `oxf-jwh5.10` own that open lane.
-12. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+13. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

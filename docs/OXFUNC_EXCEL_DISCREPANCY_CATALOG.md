@@ -42,12 +42,17 @@ low-word and tested smooth correction families are bounded-negative; the
 general-rate gate remains non-exact at best `378/480`. The July irreducibility
 framing remains retracted, EXT6 is unfinished through logged shard `191/400`,
 and BUG-FUNC-015 stays open and actionable.)
-Previous reconcile: `2026-08-09` (the COMBIN sublane of mixed G4-04 is
-`closed_signed_off`: the exact cyclic stored-x87 graph landed in `c879f3f`
-and replays `22242/22242`, including a candidate-frozen prior-disjoint
-`1024/1024` publication gate. Bead `oxf-jwh5.9` is closed. G4-04 remains open
-for COMBINA and its other independent members, and the wider W109 campaign
-remains partial.)
+Previous reconcile: `2026-08-09` (the COMBIN and COMBINA current-reference
+sublanes of mixed G4-04 are `closed_signed_off`. COMBIN's cyclic stored-x87
+body remains exact and now includes shared DAZ plus the exact truncated-n
+admission ceiling; COMBINA uses DAZ, separate truncation, its zero-pool/
+asymmetric-guard order, and the transformed COMBIN route. Original/new typed
+production replay is `64767/64767`; the central COMBINA gate is `2048/2048`
+and the genuinely fresh paired admission gate is `220/220` without refinement.
+Beads `oxf-jwh5.9` and `oxf-jwh5.11` are closed. G4-04 remains one open mixed
+row only for ERF/ERFC.PRECISE, so the catalog's mechanically reconciled open
+count remains 16; the implementation landed in `3f31f44`, and the wider W109
+campaign remains partial.)
 Previous reconcile: `2026-08-09` (the exact current-reference CONVERT graph landed
 in `8ef5cac`: every linear product, quotient, and separate decimal-prefix
 multiply publishes through x87 PC64-to-binary64 double rounding; exact unit
@@ -220,7 +225,7 @@ No current open rows.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G4-04 — COMBIN (closed); COMBINA, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | **COMBIN sublane closed_signed_off (2026-08-09):** `k=min(k,n-k)`; starting at `i=2`, form stored-x87 `factor=(n-k+i-1)/i`, then stored-x87 `acc*=factor`; publish only after a final stored-x87 `acc*n`. The graph landed in `c879f3f` and is exact on `505/505` legacy + `20713/20713` current discovery + a candidate-frozen prior-disjoint `1024/1024` publication gate = `22242/22242`; native, continuous-x87, forward-order, and rounded-integer controls are rejected. **The mixed row remains open only for the other members.** COMBINA remains reduced to the GAMMALN/EXP substrate; FACTDOUBLE is an exact control; ERF/ERFC.PRECISE remain on the incomplete-gamma staging lane described under G3-01. | NUM-S | M2 | BUG-FUNC-027 combinatorial group / W109_COMBIN_IDENTIFICATION_20260809.md / mixed G4-04 remains open |
+| G4-04 — COMBIN, COMBINA (closed); FACTDOUBLE control; ERF.PRECISE, ERFC.PRECISE (open) | **COMBIN and COMBINA current-reference sublanes closed_signed_off (2026-08-09):** COMBIN applies DAZ, rejects remaining raw negatives, truncates, admits `n<=2147483646`, reduces `k=min(k,n-k)`, then uses the cyclic stored-x87 quotient/product graph with `n` multiplied last. COMBINA applies DAZ and separate truncation, publishes one from the zero/zero pool before its asymmetric truncated-n/raw-DAZ-k guard, and delegates `tn+tk-1,tk` to COMBIN. The original COMBIN body is `22242/22242`; new COMBIN admission controls are `2195/2195`; COMBINA is `40330/40330`; combined replay is `64767/64767`. Candidate-frozen gates pass COMBINA `2048/2048` centrally and fresh paired admission `220/220` without refinement. The July GAMMALN/product-impossibility claim is retracted. FACTDOUBLE remains an exact control. **This mixed row remains open only for ERF/ERFC.PRECISE** on the incomplete-gamma staging lane described under G3-01. | NUM-S | M2 | BUG-FUNC-027 combinatorial group / W109_COMBIN_IDENTIFICATION_20260809.md / W109_COMBINA_IDENTIFICATION_20260809.md / mixed G4-04 open only for ERF/ERFC.PRECISE |
 
 The former `G4-05` CONVERT row was signed off and removed on 2026-08-09 after
 `8ef5cac` landed the exact current-reference table, dispatch, and three-store

@@ -26,14 +26,43 @@ The compiled production kernel is exact on `505/505` legacy-build rows,
 prior-disjoint held-out at `1,024/1,024`: `22,242/22,242` combined. Focused
 Rust, the full core suite, focused Lean, and the full Lean build are green.
 
+A later paired COMBINA boundary campaign qualified the previously unprobed
+COMBIN admission seam without changing that body: DAZ precedes the raw
+negative guard, truncated `n` is admitted only through `2_147_483_646`, and a
+nonfinite cyclic accumulator returns `#NUM!` immediately. The original body
+corpora remain exact; 2,195 new admission/control rows are also exact, so
+combined COMBIN production replay is `24,437/24,437`. A genuinely fresh
+76-row admission gate passed `76/76` without refinement. The shared admission
+correction and COMBINA route landed in `3f31f44`.
+
 This signs off only the current-reference `COMBIN` sublane with
 `scope_completeness: scope_complete`, `target_completeness: target_complete`,
-`integration_completeness: integrated`, and `open_lanes: []`. `COMBINA` and
-the other independent members keep the mixed G4-04 row and aggregate
-`BUG-FUNC-027` stream open. Scoped child bead `oxf-jwh5.9` is closed; the W109
-parent remains open. See
+`integration_completeness: integrated`, and `open_lanes: []`. The other
+independent members keep the mixed G4-04 row and aggregate `BUG-FUNC-027`
+stream open. Scoped child bead `oxf-jwh5.9` is closed; the W109 parent remains
+open. See
 `W109_COMBIN_IDENTIFICATION_20260809.md` for controls, hashes, provenance, and
 the scoped OPERATIONS Sections 12/14 audit.
+
+## COMBINA — exact transformed-COMBIN graph (2026-08-09)
+
+The July claim that no product graph could publish the observed inexact
+integer, and that COMBINA therefore required GAMMALN, is retracted. COMBINA
+applies DAZ and separately truncates both inputs; its zero/zero pool precedes
+the asymmetric truncated-n/raw-DAZ-k negative guard; it then delegates
+`trunc(n)+trunc(k)-1, trunc(k)` to the corrected COMBIN admission and cyclic
+stored-x87 body.
+
+Current production is exact on `40,330/40,330` typed COMBINA rows. The central
+candidate-frozen prior-disjoint gate is `2,048/2,048`, and the genuinely fresh
+fractional-ceiling/DAZ gate is `144/144` without refinement. Together with the
+paired COMBIN gate the fresh publication result is `220/220`; the route landed
+in `3f31f44`. The
+current-reference COMBINA sublane is `scope_complete`, `target_complete`, and
+`integrated`, with `open_lanes: []`; scoped child `oxf-jwh5.11` is closed
+signed off. G4-04 remains open only for ERF/ERFC.PRECISE. See
+`W109_COMBINA_IDENTIFICATION_20260809.md` for hashes, retired-v1 discipline,
+controls, boundary semantics, and the Sections 12/14 audit.
 
 ## ACOTH — historical wall superseded by exact graph (2026-08-09)
 

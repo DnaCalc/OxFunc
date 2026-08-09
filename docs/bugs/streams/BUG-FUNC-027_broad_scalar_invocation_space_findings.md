@@ -4,12 +4,13 @@
 - **Bug id**: `BUG-FUNC-027`
 - **Opened**: `2026-05-09`
 - **Status**: `open` aggregate (CLASS-A, CLASS-C4 ATANH, CLASS-C5 ACOTH, and
-  the `COMBIN` sublane are signed off; `COMBINA` and other independent
-  CLASS-B/C subclasses remain)
+  the `COMBIN` and `COMBINA` current-reference sublanes are signed off; other
+  independent CLASS-B/C subclasses remain)
 - **Owner workset**: `W092`
 - **Bead**: `oxf-vgxs` (unary non-finite audit), `oxf-jwh5.6` (CLASS-C4
-  ATANH), `oxf-jwh5.7` (CLASS-C5 ACOTH), and closed child
-  `oxf-jwh5.9` (`COMBIN`); other CLASS-B/C lanes remain
+  ATANH), `oxf-jwh5.7` (CLASS-C5 ACOTH), closed child `oxf-jwh5.9`
+  (`COMBIN`), and closed child `oxf-jwh5.11` (`COMBINA` plus shared COMBIN
+  admission); other CLASS-B/C lanes remain
 
 ## Source Refs
 - **Reported against ref**: working tree at `2026-05-09` for the W092 broad
@@ -18,8 +19,9 @@
 - **Reproduced on ref**: same working tree
 - **Introduced in ref**: `unknown`
 - **Fixed in ref**: `mixed`; ATANH is in `a03a75f`, ACOTH is verified in the
-  accepted current working tree, `COMBIN` is in `c879f3f`, and other
-  subclasses remain open
+  accepted current working tree, the `COMBIN` body is in `c879f3f`, and the
+  COMBINA/shared-admission package is in `3f31f44`; other subclasses remain
+  open
 
 ## Ownership And Root Cause
 - **Ownership class**: split — see Section "Mismatch Classes"
@@ -409,8 +411,8 @@ numeric-drift class with repair direction match-Excel — OxFunc must reproduce
 Excel's floating-point result even when Excel is less accurate than the
 mathematical integer. They were tracked as a follow-up classification group
 in this stream; the earlier "not OxFunc bugs" framing is superseded by the
-doctrine update. The `COMBIN` half of that historical group is now signed off
-below, while `COMBINA` remains an independent open lane.
+doctrine update. The `COMBIN` and `COMBINA` current-reference sublanes are now
+signed off separately below; the aggregate stream remains open.
 
 ## 2026-08-09 COMBIN current-reference sublane signed off
 
@@ -424,6 +426,10 @@ than replacing them with the mathematical integer.
 The compiled production kernel replays `505/505` legacy rows,
 `20,713/20,713` current discovery rows, and a candidate-frozen,
 prior-disjoint held-out at `1,024/1,024`, for `22,242/22,242` exact overall.
+The later paired COMBINA boundary campaign preserves that body and adds shared
+DAZ, the exact truncated-`n` ceiling `2_147_483_646`, and a monotone nonfinite
+short-circuit. The original and 2,195 new admission/control rows replay
+`24,437/24,437`; the fresh admission gate is `76/76` without refinement.
 The current-reference `COMBIN` sublane therefore reports:
 
 - `scope_completeness: scope_complete`
@@ -433,13 +439,41 @@ The current-reference `COMBIN` sublane therefore reports:
 
 The enclosing stream remains `open` with `scope_completeness: scope_partial`,
 `target_completeness: target_partial`, and
-`integration_completeness: partial`. Its open lanes include `COMBINA`,
-CLASS-B1..B3, unresolved CLASS-C substrates, and wider W109/version/CV axes.
+`integration_completeness: partial`. Its open lanes include CLASS-B1..B3,
+unresolved CLASS-C substrates, and wider W109/version/CV axes.
 No FEC/F3E or evaluator-facing clause changed, so no OxFml handoff is
 required for this sublane. Scoped child `oxf-jwh5.9` is closed while the W109
 parent and aggregate bug stream remain open.
 See `docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md` for the frozen
 controls, artifact hashes, provenance, and scoped closure audits.
+
+## 2026-08-09 COMBINA current-reference sublane signed off
+
+The July claim that an inexact integer made every product graph impossible and
+forced a GAMMALN route is retracted. COMBINA applies DAZ and separately
+truncates both arguments, publishes one from the zero/zero pool before its
+asymmetric truncated-n/raw-DAZ-k negative guard, and delegates transformed
+`tn+tk-1,tk` to the corrected COMBIN admission and cyclic stored-x87 body.
+
+Current production replays `40,330/40,330` typed COMBINA rows. A
+candidate-frozen prior-disjoint central gate passes `2,048/2,048`; a genuinely
+fresh admission gate passes COMBIN `76/76` and COMBINA `144/144`, `220/220`
+combined, without refinement. Retired v1 is preserved because its initial
+`108/116` score exposed shared DAZ; the companion COMBINA v1 answers were never
+opened.
+
+The current-reference `COMBINA` sublane reports:
+
+- `scope_completeness: scope_complete`
+- `target_completeness: target_complete`
+- `integration_completeness: integrated`
+- `open_lanes: []`
+
+No FEC/F3E or evaluator-facing clause changed, so no OxFml handoff is required.
+Scoped child `oxf-jwh5.11` is closed signed off without closing the W109 parent
+or aggregate stream. See
+`docs/function-lane/W109_COMBINA_IDENTIFICATION_20260809.md` for hashes,
+controls, boundary semantics, formal alignment, and the scoped audits.
 
 ## Evidence
 1. `smart-fuzzer/runs/broad-scalar-cycle-003/` (literal-text, plumbing-flagged)
@@ -461,6 +495,7 @@ controls, artifact hashes, provenance, and scoped closure audits.
 17. Local explorer source: `smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
 18. Driver: `smart-fuzzer/tools/Run-BroadScalarExploration.ps1`
 19. COMBIN exact-graph report: `docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md`
+20. COMBINA exact-graph/admission report: `docs/function-lane/W109_COMBINA_IDENTIFICATION_20260809.md`
 
 ## 2026-06-19 CLASS-A Landed (live Excel 16.0 build 20026)
 
@@ -487,7 +522,10 @@ tracked separately as bead `oxf-vgxs`.
 - [ ] CLASS-B1..B3 Excel-doctrine threshold pinned and modelled
 - [ ] CLASS-C1..C5 substrate-by-substrate kernel correction landed
 - [x] COMBIN current-reference sublane exact graph landed and replayed
-  `22,242/22,242` at `c879f3f`; scoped child `oxf-jwh5.9` is closed
-- [ ] COMBINA and the other independent combinatorial sublanes identified
+  `24,437/24,437` including the shared admission correction; scoped child
+  `oxf-jwh5.9` is closed
+- [x] COMBINA current-reference sublane exact graph landed and replayed
+  `40,330/40,330`; scoped child `oxf-jwh5.11` is closed
+- [ ] Other independent combinatorial/ERF precise sublanes identified
 - [x] follow-up beads opened for each class group and tracked in `.beads/` (CLASS-A audit `oxf-vgxs`; B/C beads pending)
 - [ ] handoff to OxFml not required so far (no seam-side surface affected)
