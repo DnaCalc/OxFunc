@@ -138,6 +138,7 @@ close:   catalog row out, ruled-out ledger rows in, evidence doc
 - GROWTH/LOGEST single-predictor checkpoint: [W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md](../function-lane/W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md)
 - CUMPRINC exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/CUMPRINC_EXACT_PARTIAL_REPORT_20260809.md`
 - RATE exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/RATE_EXACT_GRAPH_PARTIAL_REPORT_20260809.md`
+- PRICE/DURATION residual-graph partial report: `smart-fuzzer/tools/calc_graph_racer/PRICE_DURATION_RESIDUAL_GRAPH_SCOPE_PARTIAL_20260809.md`
 
 ## 7. 2026-08-09 reconciliation and active checkpoint
 
@@ -392,6 +393,33 @@ uncaptured. Canonical evidence, artifact hashes, replay commands, and the
 three-axis audit are in
 `smart-fuzzer/tools/calc_graph_racer/RATE_EXACT_GRAPH_PARTIAL_REPORT_20260809.md`.
 
+### 7.10 PRICE and DURATION residual-graph checkpoint
+
+The previously landed bond schedule repairs remain materially correct, but
+their residual exact-graph lanes are not identified. Fresh build-20228/CV2
+Value2/NoCache discovery captures add 528 PRICE rows, 264 DURATION rows, and a
+frozen adaptive 72-row PRICE companion to the historical build-20131 controls.
+All fresh artifacts carry aligned ids/argument bits, numeric kinds, and clean
+pre/post Excel process checks; the initially generated disjoint PRICE and
+DURATION heldouts remain sealed and uncaptured.
+
+For PRICE, production is `564/600` and the best coherent Chain-power,
+forward-fold, separate-redemption family is `571/600`; every one of the 29
+remaining rows is exactly one ULP low. There are zero exact survivors among
+1,152 fixed graphs, 288 retained-PC64 variants, 80 factorized-coupon variants,
+and 48 fixed association families. The six original misses and 23 adaptive
+misses therefore do not support the former simple “shared fractional-pow wall”
+attribution: retaining base/exponent/pow/result lifetimes does not improve the
+leader. An accumulator or publication axis is still missing.
+
+For DURATION, production and the best fixed graph are `237/264`, max 3 ULP.
+Neither 288 retained-PC64 variants nor 72 factorized-coupon variants contain an
+exact survivor; factorization lowers maximum distance to 2 without increasing
+the exact count. The landed schedule quantities and coarse cashflow ordering
+remain supported, but the numerator/denominator accumulator graph is open.
+Hashes, provenance, candidate scores, and replay commands are in
+`smart-fuzzer/tools/calc_graph_racer/PRICE_DURATION_RESIDUAL_GRAPH_SCOPE_PARTIAL_20260809.md`.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
@@ -405,6 +433,8 @@ Status axes:
    publication, full-shape/coercion, and held-out lanes; CUMPRINC retains hidden
    principal, range-fold, and held-out lanes. RATE retains its private
    cancellation/small-rate objective, exact FD/update association, publication
-   distinction, wider semantic surface, and sealed heldout lanes. COS/BESSELJ,
+   distinction, wider semantic surface, and sealed heldout lanes.
+   PRICE/DURATION retain their residual accumulator/publication graphs and
+   sealed heldouts. COS/BESSELJ,
    ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
    close the wider campaign.
