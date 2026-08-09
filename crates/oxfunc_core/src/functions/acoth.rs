@@ -3,8 +3,8 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
-    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
-    map_unary_numeric_error_to_ws,
+    eval_unary_numeric_via_executor, map_unary_numeric_error_to_ws, UnaryNumericExecSpec,
+    UnaryNumericSurfaceError,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -23,33 +23,67 @@ pub const ACOTH_META: FunctionMeta = function_spec! {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
-/// Above this `|x|`, Excel's ACOTH switches from the direct ratio-log to the
-/// reciprocal ln1p-pair `ATANH(1/x)` path (W109). The switch is bracketed by the
-/// live corpus near `3.5` (rows just below want the ratio, just above want the
-/// pair); the exact double is not yet pinned (needs dense probes — see W109 ACOTH).
-const ACOTH_PAIR_FLOOR: f64 = 3.5;
+/// First binary64 `|x|` routed to Excel's direct inverse odd-power series.
+///
+/// W109 pinned the adjacent distinguishing endpoints to
+/// `0x400d92b14ec204ef` (ratio) and `0x400d92b14ec204f3` (series); the three
+/// doubles between them are observational overlap. The decimal literal below
+/// is exactly the latter bit pattern.
+const ACOTH_SERIES_FLOOR: f64 = f64::from_bits(0x400d_92b1_4ec2_04f3);
+const ACOTH_SERIES_TERM_CAP: usize = 32;
+
+fn acoth_series_magnitude(a: f64) -> f64 {
+    let reciprocal = crate::excel_numeric::excel_x87_div(1.0, a);
+
+    // Excel flushes the reciprocal-to-series handoff when it is subnormal. In
+    // particular, both signs of a sufficiently large finite input publish +0.
+    if reciprocal < f64::MIN_POSITIVE {
+        return 0.0;
+    }
+
+    let square = crate::excel_numeric::excel_x87_mul(a, a);
+    let mut power = a;
+    let mut sum = reciprocal;
+
+    for k in 1..ACOTH_SERIES_TERM_CAP {
+        power = crate::excel_numeric::excel_x87_mul(power, square);
+        let denominator = crate::excel_numeric::excel_x87_mul((2 * k + 1) as f64, power);
+        let term = crate::excel_numeric::excel_x87_div(1.0, denominator);
+        let next = crate::excel_numeric::excel_x87_add(sum, term);
+        if next == sum {
+            break;
+        }
+        sum = next;
+    }
+
+    sum
+}
 
 pub fn acoth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     let a = n.abs();
     if a <= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    // W109 identification (2026-07-12): Excel's ACOTH is exactly ODD (compute on
-    // |x|, restore the sign) and splits into two regimes, mirroring ATANH:
-    //   * `|x| < ~3.5`: the direct ratio `0.5·ln((|x|+1)/(|x|-1))` with the x87
-    //     CRT ln (the binary64 ratio's rounding is load-bearing), i.e. ATANH's
-    //     region-C form on `1/|x|` but with the ratio formed directly.
-    //   * `|x| >= ~3.5`: the reciprocal ln1p pair `0.5·(ln1p(1/|x|)−ln1p(−1/|x|))`
-    //     via the x87 `fyl2xp1` pair — i.e. `ATANH(1/|x|)` on the region-B path.
-    // Strictly dominates the prior platform-ln1p form (0 regressions, +19 rows on
-    // the 56-row live corpus; 53/56). Residual: 3 pair-branch rows (±5, +8.1) at
-    // +-1..2 ULP and the exact switch double remain open (dense probes — see W109).
-    let mag = if a < ACOTH_PAIR_FLOOR {
-        0.5 * crate::excel_numeric::excel_log((a + 1.0) / (a - 1.0))
+    // W109 build-20228/CV2 identification: ACOTH computes on |x| and restores
+    // the sign after one of two distinct calculation graphs:
+    //   * below the pinned switch, native binary64 +/-1 staging, an x87-PC64
+    //     stored division, then FYL2X and half-scale;
+    //   * at and above it, the direct inverse odd-power series with every
+    //     reciprocal, multiply, divide, and accumulator add stored through
+    //     x87 PC64.
+    // The frozen graph scored 202,217/202,217 discovery inputs and
+    // 66,552/66,552 disjoint held-out inputs exactly.
+    let mag = if a < ACOTH_SERIES_FLOOR {
+        let ratio = crate::excel_numeric::excel_x87_div(a + 1.0, a - 1.0);
+        // Storing the FYL2X result before multiplying by the exact power-of-two
+        // scale is bit-equivalent here to keeping the half-scale in x87.
+        0.5 * crate::excel_numeric::excel_log(ratio)
     } else {
-        crate::excel_numeric::excel_atanh_small(1.0 / a)
+        acoth_series_magnitude(a)
     };
-    Ok(mag.copysign(n))
+
+    // Excel publishes positive zero for both signs after the reciprocal flush.
+    Ok(if mag == 0.0 { 0.0 } else { mag.copysign(n) })
 }
 
 pub fn eval_acoth_surface(
@@ -88,16 +122,18 @@ mod tests {
         // artifact (the parser rounded 1+ULP down to 1.0). With the exact input
         // 1 + 2^-52, live Excel 16.0 b20026 returns 18.36840028483855, which this
         // kernel matches bit-for-bit — so it must stay finite, not collapse to #NUM!.
-        let y = acoth_kernel(1.0 + f64::EPSILON).expect("finite just above 1");
-        assert!((y - 18.36840028483855).abs() < 1e-10, "got {y}");
+        assert_eq!(
+            acoth_kernel(f64::from_bits(0x3ff0_0000_0000_0001))
+                .expect("finite just above 1")
+                .to_bits(),
+            0x4032_5e4f_7b27_37fa
+        );
     }
 
     #[test]
     fn acoth_large_and_negative_args_bit_exact() {
-        // BUG-FUNC-027 C5: the direct 0.5*ln((x+1)/(x-1)) form drifted up to ~1.2e14
-        // ULP for large |x|. The odd-symmetric ln1p form matches live Excel 16.0
-        // b20026 bit-for-bit across the range (a 1-ULP x87-ln residual remains at a
-        // few scattered mid-range points, tracked on catalog G4). Bits from elem-probe.
+        // BUG-FUNC-027 C5: the direct ratio form loses the reciprocal tail for
+        // large |x|. W109 identified Excel's far-field inverse-power series.
         assert_eq!(
             acoth_kernel(1_000_000.0).unwrap().to_bits(),
             0x3eb0_c6f7_a0b5_f3b3
@@ -114,14 +150,48 @@ mod tests {
         );
     }
 
-    /// W109 (2026-07-12): the two-regime identification. ACOTH(2) takes the
-    /// ratio branch (|x| < 3.5) and equals ATANH(0.5) bit-for-bit (the ACOTH(x) =
-    /// ATANH(1/x) identity — 0x3fe193ea7aad030b); ACOTH(20) takes the reciprocal
-    /// ln1p-pair branch (|x| >= 3.5). Both pinned from live Excel 16.0 build 20131.
+    /// W109: pinned witnesses for both identified calculation graphs.
     #[test]
     fn acoth_two_regime_matches_live_excel_pinned_witnesses() {
         assert_eq!(acoth_kernel(2.0).unwrap().to_bits(), 0x3fe1_93ea_7aad_030b); // ratio branch
-        assert_eq!(acoth_kernel(20.0).unwrap().to_bits(), 0x3fa9_9f11_cd5f_7091); // pair branch
-        assert_eq!(acoth_kernel(-20.0).unwrap().to_bits(), 0xbfa9_9f11_cd5f_7091); // odd
+        assert_eq!(acoth_kernel(20.0).unwrap().to_bits(), 0x3fa9_9f11_cd5f_7091); // series branch
+        assert_eq!(
+            acoth_kernel(-20.0).unwrap().to_bits(),
+            0xbfa9_9f11_cd5f_7091
+        ); // odd
+    }
+
+    #[test]
+    fn acoth_switch_and_series_staging_match_live_excel() {
+        // Last ratio-only discriminator and first series-only discriminator.
+        assert_eq!(
+            acoth_kernel(f64::from_bits(0x400d_92b1_4ec2_04ef))
+                .unwrap()
+                .to_bits(),
+            0x3fd1_c145_ba62_96bf
+        );
+        assert_eq!(
+            acoth_kernel(f64::from_bits(0x400d_92b1_4ec2_04f3))
+                .unwrap()
+                .to_bits(),
+            0x3fd1_c145_ba62_96bb
+        );
+
+        // These mid-range rows distinguish the direct inverse-power body from
+        // the superseded reciprocal-ln1p-pair hypothesis.
+        assert_eq!(acoth_kernel(5.0).unwrap().to_bits(), 0x3fc9_f323_ecbf_984d);
+        assert_eq!(
+            acoth_kernel(f64::from_bits(0x4020_3333_35a5_6e96))
+                .unwrap()
+                .to_bits(),
+            0x3fbf_c459_9b38_1b0e
+        );
+    }
+
+    #[test]
+    fn acoth_reciprocal_flush_publishes_positive_zero_for_both_signs() {
+        let magnitude = f64::from_bits(0x7fd1_7e73_a05c_2b97);
+        assert_eq!(acoth_kernel(magnitude).unwrap().to_bits(), 0);
+        assert_eq!(acoth_kernel(-magnitude).unwrap().to_bits(), 0);
     }
 }

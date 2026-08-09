@@ -873,41 +873,6 @@ pub(crate) fn excel_log1p(x: f64) -> f64 {
     hi + lo_rest
 }
 
-// ============================================================================
-// ATANH small-|x| path — the x87 `fyl2xp1` log1p pair.
-//
-// W109 (2026-07-12): below the ratio-log switch (|x| ~ 1.05e-4), live 64-bit
-// Excel computes ATANH as `0.5*(ln1p(x) - ln1p(-x))` where each `ln1p` is the
-// x87 hardware `FYL2XP1` (ln2 * log2(1+x)), the difference and the halving stay
-// in x87 extended (PC=64), and there is a single final store to binary64. This
-// is bit-exact on every region-B row (|x| below ~9.0e-5: 175/175); it is the
-// same x87 transcendental family Excel uses for EXP/LN/POWER. A narrow band
-// (~9.5e-5..1.07e-4) around the switch to the ratio-log path is +-1 ULP under
-// both this pair and the SSE2 log1p pair — Excel's exact internal-log1p
-// rounding there is a documented open residual (see W109 ATANH notes).
-// ============================================================================
-
-/// Excel ATANH small-|x| path: `0.5*(ln1p(x) - ln1p(-x))` via the x87 `fyl2xp1`
-/// pair, extended temporaries, single final store. Caller guarantees `|x| < 1`.
-#[cfg(target_arch = "x86_64")]
-pub(crate) fn excel_atanh_small(x: f64) -> f64 {
-    use x87::raw::{
-        CW_PC64_RN as CW, ext_from_f64 as e, ext_fyl2xp1, ext_ln2, ext_mul, ext_sub, ext_to_f64,
-    };
-    let ln2 = ext_ln2();
-    let t1 = ext_fyl2xp1(&ln2, &e(x), CW); // ln(1 + x)
-    let t2 = ext_fyl2xp1(&ln2, &e(-x), CW); // ln(1 - x)
-    let d = ext_sub(&t1, &t2, CW); // extended difference
-    ext_to_f64(&ext_mul(&d, &e(0.5), CW), CW) // * 0.5, single store
-}
-
-/// Portable fallback for non-`x86_64` hosts: the SSE2 double-double `log1p`
-/// pair. (The reference oracle is `x86_64`; this keeps the crate buildable.)
-#[cfg(not(target_arch = "x86_64"))]
-pub(crate) fn excel_atanh_small(x: f64) -> f64 {
-    0.5 * (excel_log1p(x) - excel_log1p(-x))
-}
-
 /// sqrt(x) — IEEE-754 correctly-rounded, deterministic (hardware SQRTSD).
 #[inline]
 pub(crate) fn excel_sqrt(x: f64) -> f64 {

@@ -33,6 +33,27 @@ def evalAcothSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode St
   | .error (.worksheetError code) => .error code
   | .error _ => .error .value
 
+/--
+W109 executable publication-route tag for the identified current-reference
+ACOTH graph. The tag records the load-bearing route order without duplicating
+the Rust/x87 numeric backend: a subnormal reciprocal publishes positive zero;
+otherwise the exact binary64 threshold `0x400d92b14ec204f3` selects either the
+stored x87 ratio-log graph or the stored x87 direct inverse odd-power series.
+-/
+inductive AcothPublicationRoute where
+  | reciprocalFlushPositiveZero
+  | storedX87RatioLog
+  | storedX87InverseOddPowerSeries
+  deriving DecidableEq, Repr
+
+def acothPublicationRoute (reciprocalFlush belowSeriesThreshold : Bool) : AcothPublicationRoute :=
+  if reciprocalFlush then
+    .reciprocalFlushPositiveZero
+  else if belowSeriesThreshold then
+    .storedX87RatioLog
+  else
+    .storedX87InverseOddPowerSeries
+
 theorem evalAcoth_abs_one_is_num :
     evalAcothSurfaceClass (.number 1) = .error .num := by
   native_decide
@@ -42,5 +63,11 @@ theorem acothMeta_profiles :
     ∧ acothMeta.coercionLiftProfile = CoercionLiftProfile.unaryNumericScalarOrArrayElementwise
     ∧ acothMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
   simp [acothMeta]
+
+theorem acoth_publication_route_order_and_split :
+    acothPublicationRoute true false = .reciprocalFlushPositiveZero
+    ∧ acothPublicationRoute false true = .storedX87RatioLog
+    ∧ acothPublicationRoute false false = .storedX87InverseOddPowerSeries := by
+  native_decide
 
 end OxFunc.Functions
