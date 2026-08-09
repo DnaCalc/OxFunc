@@ -31,6 +31,9 @@ Context-sensitive Category 1 discrepancies do not live here. They live in
 `smart-fuzzer/corpus/context_sensitive_catalog/` and are evaluated downstream
 through OxCalc -> OxFml -> OxFunc.
 
+The durable method for identifying the calculation graph behind an open row is
+[SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md](SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md).
+
 Cases where OxFunc already agrees with Excel but Excel itself deviates from the
 mathematically-most-accurate result live in
 [EXCEL_MATH_DEVIATION_CATALOG.md](EXCEL_MATH_DEVIATION_CATALOG.md), not here.

@@ -120,6 +120,8 @@ close:   catalog row out, ruled-out ledger rows in, evidence doc
 
 ## 6. Pointers
 
+- Durable method: [SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md](../SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md)
+- Campaign prompt: [GPT56_ULTRA_DISCREPANCY_CLOSURE_CAMPAIGN_PROMPT.md](../GPT56_ULTRA_DISCREPANCY_CLOSURE_CAMPAIGN_PROMPT.md)
 - Catalog: [OXFUNC_EXCEL_DISCREPANCY_CATALOG.md](../OXFUNC_EXCEL_DISCREPANCY_CATALOG.md)
 - Calc map (seed hypotheses): [DISCREPANCY_CALCULATION_MAP.csv](../function-lane/DISCREPANCY_CALCULATION_MAP.csv)
 - Ruled-out ledger: [DISCREPANCY_RULED_OUT_LEDGER.csv](../function-lane/DISCREPANCY_RULED_OUT_LEDGER.csv)

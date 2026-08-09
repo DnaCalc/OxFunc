@@ -53,6 +53,12 @@ Current direction from W096:
 - `.beads/` - live execution-state surface for open OxFunc work.
 - `docs/KNOWN_EXACTNESS_DEVIATIONS.md` - project-wide register of current
   OxFunc-vs-Excel exactness residuals that are known but not waived.
+- `docs/SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md` - clean-room calculation-graph
+  search, high-information Excel probing, active learning, and promotion method
+  for resolving exactness discrepancies.
+- `docs/GPT56_ULTRA_DISCREPANCY_CLOSURE_CAMPAIGN_PROMPT.md` - reusable
+  quality-first AutoRun prompt for a persistent GPT-5.6 Ultra discrepancy-
+  discovery and exact-parity campaign.
 - `docs/worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md` - current migration plan for bead-based execution and active-tree reduction.
 - `docs/worksets/` - workset packets and historical provenance; not the live execution-state surface.
 - `docs/function-lane/` - mutable function/value working artifacts.
