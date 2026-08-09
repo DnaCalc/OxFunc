@@ -3,11 +3,13 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-027`
 - **Opened**: `2026-05-09`
-- **Status**: `open` aggregate (CLASS-A, CLASS-C4 ATANH, and CLASS-C5 are
-  signed off; other independent CLASS-B/C subclasses remain)
+- **Status**: `open` aggregate (CLASS-A, CLASS-C4 ATANH, CLASS-C5 ACOTH, and
+  the `COMBIN` sublane are signed off; `COMBINA` and other independent
+  CLASS-B/C subclasses remain)
 - **Owner workset**: `W092`
 - **Bead**: `oxf-vgxs` (unary non-finite audit), `oxf-jwh5.6` (CLASS-C4
-  ATANH), and `oxf-jwh5.7` (CLASS-C5 ACOTH); other CLASS-B/C lanes remain
+  ATANH), `oxf-jwh5.7` (CLASS-C5 ACOTH), and closed child
+  `oxf-jwh5.9` (`COMBIN`); other CLASS-B/C lanes remain
 
 ## Source Refs
 - **Reported against ref**: working tree at `2026-05-09` for the W092 broad
@@ -16,7 +18,8 @@
 - **Reproduced on ref**: same working tree
 - **Introduced in ref**: `unknown`
 - **Fixed in ref**: `mixed`; ATANH is in `a03a75f`, ACOTH is verified in the
-  accepted current working tree, and other subclasses remain open
+  accepted current working tree, `COMBIN` is in `c879f3f`, and other
+  subclasses remain open
 
 ## Ownership And Root Cause
 - **Ownership class**: split — see Section "Mismatch Classes"
@@ -404,9 +407,39 @@ local, `41,648,951,840,265.01` in Excel; and similar for `COMBINA(9,6)`).
 Per CHARTER §4.1 (2026-05-28 update), these are OxFunc bugs in the
 numeric-drift class with repair direction match-Excel — OxFunc must reproduce
 Excel's floating-point result even when Excel is less accurate than the
-mathematical integer. They are tracked as a follow-up classification group
-in this stream pending a focused repair lane; the earlier "not OxFunc bugs"
-framing is superseded by the doctrine update.
+mathematical integer. They were tracked as a follow-up classification group
+in this stream; the earlier "not OxFunc bugs" framing is superseded by the
+doctrine update. The `COMBIN` half of that historical group is now signed off
+below, while `COMBINA` remains an independent open lane.
+
+## 2026-08-09 COMBIN current-reference sublane signed off
+
+The exact graph at `c879f3f` applies complement reduction
+`k = min(k, n-k)`, then evaluates ascending `i=2..k` factors
+`(n-k+i-1)/i`, storing every division and accumulator multiplication through
+`RN53(RN64(op))`, before a final stored-x87 multiplication by `n`. This
+reproduces Excel's deliberately inexact floating-point publications rather
+than replacing them with the mathematical integer.
+
+The compiled production kernel replays `505/505` legacy rows,
+`20,713/20,713` current discovery rows, and a candidate-frozen,
+prior-disjoint held-out at `1,024/1,024`, for `22,242/22,242` exact overall.
+The current-reference `COMBIN` sublane therefore reports:
+
+- `scope_completeness: scope_complete`
+- `target_completeness: target_complete`
+- `integration_completeness: integrated`
+- `open_lanes: []`
+
+The enclosing stream remains `open` with `scope_completeness: scope_partial`,
+`target_completeness: target_partial`, and
+`integration_completeness: partial`. Its open lanes include `COMBINA`,
+CLASS-B1..B3, unresolved CLASS-C substrates, and wider W109/version/CV axes.
+No FEC/F3E or evaluator-facing clause changed, so no OxFml handoff is
+required for this sublane. Scoped child `oxf-jwh5.9` is closed while the W109
+parent and aggregate bug stream remain open.
+See `docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md` for the frozen
+controls, artifact hashes, provenance, and scoped closure audits.
 
 ## Evidence
 1. `smart-fuzzer/runs/broad-scalar-cycle-003/` (literal-text, plumbing-flagged)
@@ -427,6 +460,7 @@ framing is superseded by the doctrine update.
 16. Plumbing rule: `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`
 17. Local explorer source: `smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
 18. Driver: `smart-fuzzer/tools/Run-BroadScalarExploration.ps1`
+19. COMBIN exact-graph report: `docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md`
 
 ## 2026-06-19 CLASS-A Landed (live Excel 16.0 build 20026)
 
@@ -452,5 +486,8 @@ tracked separately as bead `oxf-vgxs`.
 - [x] CLASS-A1..A7 minimized into focused tests and repair landed (2026-06-19)
 - [ ] CLASS-B1..B3 Excel-doctrine threshold pinned and modelled
 - [ ] CLASS-C1..C5 substrate-by-substrate kernel correction landed
+- [x] COMBIN current-reference sublane exact graph landed and replayed
+  `22,242/22,242` at `c879f3f`; scoped child `oxf-jwh5.9` is closed
+- [ ] COMBINA and the other independent combinatorial sublanes identified
 - [x] follow-up beads opened for each class group and tracked in `.beads/` (CLASS-A audit `oxf-vgxs`; B/C beads pending)
 - [ ] handoff to OxFml not required so far (no seam-side surface affected)

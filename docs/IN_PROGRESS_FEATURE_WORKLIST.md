@@ -372,9 +372,13 @@ Status axes:
   product/quotient/prefix-multiply graph pass a frozen prior-disjoint
   `10418/10418` publication gate and `34189/34189` compiled production replay.
   Bead `oxf-jwh5.8` is closed signed off and G4-05 is retired; focused/full
-  core and 492-job Lean gates pass; no FEC/F3E handoff is needed. The
-  PMT/IPMT/PPMT/CUM family,
-  COMBIN, GAMMALN/GAMMA, distributions, regression, and the other
+  core and 492-job Lean gates pass; no FEC/F3E handoff is needed. COMBIN's
+  exact cyclic stored-x87 factor graph landed in `c879f3f` and replays
+  `22242/22242`, including a candidate-frozen prior-disjoint `1024/1024`
+  publication gate. Bead `oxf-jwh5.9` is closed signed off; focused/full core
+  and 492-job Lean gates pass. Only COMBIN is signed off—the mixed G4-04 row
+  remains open for COMBINA and ERF/ERFC.PRECISE. The PMT/IPMT/PPMT/CUM family,
+  GAMMALN/GAMMA, distributions, regression, and the other
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
   negative result over the stated search grammar and size limits is established,
@@ -386,6 +390,7 @@ Status axes:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
-   COMBIN, GAMMALN/GAMMA, distributions, regression, and every other
+   COMBINA/ERF/ERFC.PRECISE in mixed G4-04, GAMMALN/GAMMA, distributions,
+   regression, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.

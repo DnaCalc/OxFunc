@@ -11,27 +11,29 @@ The former factorial-ratio `n!/(n-k)!` staging was 1 ULP off on the catalog
 witness `PERMUT(61,20)` and overflowed spuriously for `n > 170`.
 In-crate pin: `permut_matches_live_excel_pinned_witnesses`.
 
-## COMBIN — substantial findings, kernel still open
+## COMBIN — historical wall superseded by exact graph (2026-08-09)
 
-Positive identification: **Excel reduces `k -> min(k, n-k)`** —
-`COMBIN(23,13)` publishes bit-identical results to `COMBIN(23,10)`.
+The July dedicated-lgamma hypothesis is retracted. The exact current-reference
+graph landed in `c879f3f`. After Excel-style truncation and
+`k = min(k, n-k)`, `k=0` returns `1`; otherwise the graph walks `i=2..k` in
+ascending order, stores `(n-k+i-1)/i` through `RN53(RN64(div))`, stores each
+accumulator product through `RN53(RN64(mul))`, and finally multiplies by `n`
+through the same stored-x87 publication operation. The characteristic `k=3`
+schedule is `((n-2)/2) * ((n-1)/3) * n`.
 
-Ruled out (505-row live corpus; see the ruled-out ledger):
-- every product-loop family: `c *= num/den` and `c = (c·num)/den`, ascending
-  and descending, strict / per-step double-rounded / fully extended
-  (best candidate 82/505);
-- factorial ratios `n!/(n-k)!/k!` and permutations thereof (strict doubles;
-  matches only 29/81 of the `n <= 170` rows even with k-reduction);
-- reciprocal-multiply loops `c·num·RN(1/den)` (66/505);
-- `EXP(GAMMALN(n+1)-GAMMALN(k+1)-GAMMALN(n-k+1))` composed from Excel's
-  PUBLISHED GAMMALN values through the identified x87 EXP (30-2000 ULP off).
+The compiled production kernel is exact on `505/505` legacy-build rows,
+`20,713/20,713` current-build discovery rows, and a candidate-frozen,
+prior-disjoint held-out at `1,024/1,024`: `22,242/22,242` combined. Focused
+Rust, the full core suite, focused Lean, and the full Lean build are green.
 
-Error signature: ±1 ULP around exactly-representable results at small `n`
-(`(23,10)` +1, `(200,3)` −1) growing to ~7 ULP at `2^400` magnitudes — smaller
-than any published-GAMMALN composition, larger than extended product loops.
-Leading hypothesis: a dedicated internal extended-precision
-lgamma/exp substrate (the Phase-5 statistical-kernel lane). COMBIN therefore
-moves out of the quick-win batch; re-attack alongside GAMMALN identification.
+This signs off only the current-reference `COMBIN` sublane with
+`scope_completeness: scope_complete`, `target_completeness: target_complete`,
+`integration_completeness: integrated`, and `open_lanes: []`. `COMBINA` and
+the other independent members keep the mixed G4-04 row and aggregate
+`BUG-FUNC-027` stream open. Scoped child bead `oxf-jwh5.9` is closed; the W109
+parent remains open. See
+`W109_COMBIN_IDENTIFICATION_20260809.md` for controls, hashes, provenance, and
+the scoped OPERATIONS Sections 12/14 audit.
 
 ## ACOTH — historical wall superseded by exact graph (2026-08-09)
 

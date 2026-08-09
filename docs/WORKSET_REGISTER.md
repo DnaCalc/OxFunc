@@ -1407,9 +1407,17 @@ Current checkpoint (2026-08-09):
    core and 492-job Lean gates pass. Bead `oxf-jwh5.8` is closed signed off and
    G4-05 is retired without closing W109; no FEC/F3E or evaluator-facing
    handoff is needed.
-9. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
+9. COMBIN's exact current-reference graph landed in `c879f3f`: after
+   `k=min(k,n-k)`, a cyclic ascending factor schedule stores every quotient and
+   accumulator multiply through x87 PC64-to-binary64 double rounding and
+   multiplies by `n` only at publication. Legacy, current discovery, and a
+   candidate-frozen prior-disjoint publication gate replay `22242/22242`.
+   Focused/full core and 492-job Lean gates pass; bead `oxf-jwh5.9` is closed
+   signed off. Only the COMBIN sublane is closed: mixed G4-04 remains open for
+   COMBINA and ERF/ERFC.PRECISE, and no FEC/F3E handoff is needed.
+10. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
    and the remaining bounded search, larger-graph, coefficient-recovery, and
    wrapper/predicate lanes remain actionable.
-10. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+11. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

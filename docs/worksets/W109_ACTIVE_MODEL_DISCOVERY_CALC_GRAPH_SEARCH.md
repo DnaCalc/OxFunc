@@ -308,12 +308,27 @@ evaluator-facing handoff is required. Evidence,
 hashes, retired-gate discipline, and the scoped Sections 12/14 audit are in
 `docs/function-lane/W109_CONVERT_IDENTIFICATION_20260809.md`.
 
+The COMBIN sublane of mixed G4-04 is also exact on the current reference.
+After truncation and `k=min(k,n-k)`, the landed `c879f3f` graph walks factors
+cyclically from `i=2`: it stores `(n-k+i-1)/i` through x87 PC64-to-binary64,
+stores each accumulator multiply the same way, and multiplies by `n` only at
+publication. It replays `505/505` legacy, `20713/20713` current discovery, and
+a candidate-frozen prior-disjoint `1024/1024` publication gate, for
+`22242/22242` total. Focused/full core, tracked production replay, and the
+492-job Lean route binding pass; bead `oxf-jwh5.9` is closed signed off. G4-04
+remains open for COMBINA and ERF/ERFC.PRECISE, and BUG-FUNC-027 remains open
+for those and unrelated subclasses. Evidence, hashes, rejected controls, and
+the scoped Sections 12/14 audit are in
+`docs/function-lane/W109_COMBIN_IDENTIFICATION_20260809.md`. No FEC/F3E or
+evaluator-facing handoff is required.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: all remaining catalog rows, including PMT-family and COMBIN;
+4. `open_lanes`: all remaining catalog rows, including PMT-family and the
+   COMBINA/ERF/ERFC.PRECISE members of mixed G4-04;
    broad post-catalog discovery; declared application-version/Compatibility-
    Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ,
-   ATANH, ACOTH, and MINVERSE closures are scoped and do not close the wider
-   campaign.
+   ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
+   close the wider campaign.
