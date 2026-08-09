@@ -1365,9 +1365,19 @@ Current checkpoint (2026-08-09):
    `cosine*p`, with production replay `794/794`. BUG-FUNC-046/047 and beads
    `oxf-jwh5.5/.5.1` are closed signed off; G4-06/G4-07 are retired. The full
    core and 492-job Lean gates pass. This scoped closure does not close W109.
-5. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
+5. ATANH's exact current-reference graph is identified and landed in
+   `a03a75f`: DAZ publishes positive zero for either subnormal sign, ordinary
+   binary64 `x+(x*x*x)/3` is used below the exact
+   `0x3f1af82b729c1d83` threshold, and the signed-ratio route stores x87
+   double-rounded add/sub/div nodes before worksheet LN. Dense discovery,
+   exact live boundary bisection, a retired refinement set, and a fresh
+   post-selection held-out replay combine to `20780/20780`; the full core and
+   492-job Lean gates pass. BUG-FUNC-027 CLASS-C4 and bead `oxf-jwh5.6` are
+   closed signed off, and G4-02 is retired. Other BUG-FUNC-027 subclasses,
+   ACOTH, and the wider W109 campaign remain open; no FEC/F3E handoff is needed.
+6. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
    and the remaining bounded search, larger-graph, coefficient-recovery, and
    wrapper/predicate lanes remain actionable.
-6. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+7. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

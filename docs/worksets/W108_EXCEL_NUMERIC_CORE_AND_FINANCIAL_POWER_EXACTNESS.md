@@ -367,6 +367,13 @@ and GROWTH, and support centered-regression investigation for FORECAST. These
 are bounded insights, not row-closure claims. The W108 annuity gate remains
 open.
 
+Supersession (2026-08-09): item 1 records W108's bounded build-20131 state,
+not current ATANH truth. W109 later identified and landed the exact
+current-reference three-regime graph in `a03a75f`, with `20780/20780` durable
+typed-bit replay; G4-02 is closed signed off. See
+`docs/function-lane/W109_ATANH_IDENTIFICATION_20260712.md`. This does not alter
+the still-open W108 annuity or wider W109 lanes.
+
 The same expanded closure pass resolved TBILLYIELD independently: the
 left-associative `*360/days` path produced `308/2156` one-ULP failures, while
 grouping the day-scale factor as `*(360/days)` is `2156/2156` exact. The G6

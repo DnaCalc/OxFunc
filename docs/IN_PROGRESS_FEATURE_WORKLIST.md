@@ -346,7 +346,12 @@ Status axes:
   only J0 `cosine*p` (`794/794` production). BUG-FUNC-046/047 and beads
   `oxf-jwh5.5/.5.1` are closed signed off; G4-06/G4-07 are retired. The full
   core and 492-job Lean gates pass; this scoped closure does not close W109.
-  The PMT/IPMT/PPMT/CUM family, ATANH,
+  ATANH's current-reference graph landed in `a03a75f`: DAZ positive-zero
+  publication, the exact binary64 cubic threshold, and the stored-x87 signed
+  ratio route replay `20780/20780`. BUG-FUNC-027 CLASS-C4 and bead
+  `oxf-jwh5.6` are closed signed off; G4-02 is retired. This scoped closure
+  leaves the other BUG-FUNC-027 subclasses and W109 open. The
+  PMT/IPMT/PPMT/CUM family, ACOTH,
   GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and the other
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
@@ -359,7 +364,7 @@ Status axes:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
-   ATANH and ACOTH shared substrate;
+   ACOTH's independent exact-graph lane;
    GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.

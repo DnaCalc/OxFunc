@@ -35,6 +35,11 @@ moves out of the quick-win batch; re-attack alongside GAMMALN identification.
 
 ## ACOTH — blocked on the ATANH kernel (recorded 2026-07-11)
 
+Supersession (2026-08-09): the blocking/inheritance interpretation below is
+historical and retracted. ATANH's exact graph landed independently in
+`a03a75f` and does not use the former reciprocal-ln1p helper. ACOTH remains
+open as its own graph-identification lane; it is not blocked on G4-02.
+
 All 13 natural graphs ruled out (platform/portable log1p, CRT-branchy log1p,
 worksheet-ln ratios, fully extended ratios, internal atanh-of-reciprocal
 stagings): Excel sits consistently 1 ULP above the log-identity forms at the

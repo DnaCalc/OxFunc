@@ -1,7 +1,13 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-09` (`ed9f222` landed the corrected worksheet-COS
+Last reconciled: `2026-08-09` (`a03a75f` landed the exact current-reference
+ATANH three-regime graph. Dense discovery, exact boundary bisection, a retired
+refinement set, and a fresh post-selection held-out replay `20780/20780` typed
+bit outcomes; BUG-FUNC-027 CLASS-C4 is `closed_signed_off`, bead `oxf-jwh5.6`
+is closed, and G4-02 was retired. Other BUG-FUNC-027 subclasses and the wider
+W109 campaign remain partial.)
+Previous reconcile: `2026-08-09` (`ed9f222` landed the corrected worksheet-COS
 odd-quadrant tangent-square publication graph and the dependent BESSELJ
 composition. COS replays `2561/2561`, production BESSELJ replays `794/794`,
 BUG-FUNC-046/047 are `closed_signed_off`, and G4-06/G4-07 were retired. The
@@ -86,14 +92,14 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `20`
+Open Category-2 rows: `19`
 
 | Group | Current rows |
 |-------|--------------|
 | G1 error-code/domain guards | 0 |
 | G2 structural kind/shape/admission | 0 |
 | G3 special/statistical numeric exactness | 7 |
-| G4 elementary/trig numeric exactness | 4 |
+| G4 elementary/trig numeric exactness | 3 |
 | G5 matrix numeric/shape | 1 |
 | G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
@@ -147,8 +153,7 @@ No current open rows.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G4-02 — ATANH | **W109 (2026-07-12): region C AND region B PROMOTED — only a 6-row switch band remains.** Region C (`|x| >= ~1.05e-4`, incl. the entire catalog mid-small band and near-1 rows): naive `0.5·ln((1+x)/(1-x))` with the x87 CRT ln, **163/163** (binary64 ratio double-rounding load-bearing; not odd — `ATANH(-0.2)` is 1 ULP off `-ATANH(0.2)`; signed ratio removes the prior copysign divergence). Region B (`|x| <= ~9.0e-5`): Excel's x87 `fyl2xp1` ln1p pair `0.5·(ln1p(x)−ln1p(−x))`, extended temporaries + single store, **175/175** — promoted via `excel_atanh_small`; passthrough emergent; pair exactly odd. Ratio floor lowered `1.25e-4 → 1.05e-4`. OPEN: a narrow switch band at 3 distinct `|x|` values (`9.563e-5, 9.9996e-5, 1.0137e-4`; 6 rows) where Excel is `+-1` ULP from BOTH the x87 pair AND the SSE2 log1p pair — an internal-log1p switch that 3 points cannot disambiguate offline (overfit risk). Needs dense adjacent-double live probes across `[8e-5, 1.3e-4]` both signs to pin the exact switch and the band micro-path. | NUM-S | M3 | W109_ATANH_IDENTIFICATION_20260712.md / atanh.rs |
-| G4-03 — ACOTH | **W109 (2026-07-12): two-regime x87 form PROMOTED — strict improvement (35→53/56, 0 regressions, +19 rows).** ACOTH IS exactly odd (`copysign(ACOTH(|x|), x)`) and mirrors ATANH: `|x| < ~3.5` uses the direct ratio `0.5·ln((|x|+1)/(|x|-1))` (x87 CRT ln); `|x| >= ~3.5` uses the reciprocal ln1p pair `0.5·(ln1p(1/|x|)−ln1p(−1/|x|))` via the x87 `fyl2xp1` pair (= `ATANH(1/|x|)`, reusing `excel_atanh_small`). Confirmed: `ACOTH(2)=ATANH(0.5)` bit-for-bit. The earlier "direct signed ratio 40/57 / ln1p 35/57" were both non-odd single-forms; the standalone `log1p(2/(x-1))` is ruled out at large `|x|` (`0/6`). OPEN residual: 3 pair-branch rows (`±5.0` at −1 ULP, `+8.1` at +2 ULP) and the exact switch double — need dense adjacent-double probes near `|x|∈[3,10]`. | NUM-S | M3 | recon G4-03 / W109 ACOTH racer / atanh.rs+acoth.rs |
+| G4-03 — ACOTH | **W109 (2026-07-12): a two-regime x87 representative improved `35→53/56` with zero regressions.** ACOTH is exactly odd. The representative uses a direct positive ratio below the provisional switch and a reciprocal `fyl2xp1` pair above it. **2026-08-09 correction:** ATANH's exact graph in `a03a75f` disproves the former claim that this helper is ATANH's small-input body, so ACOTH's remaining three rows and switch are now an independent graph-identification lane rather than an ATANH blocker/inheritor. The current residuals are `±5.0` at −1 ULP and `+8.1` at +2 ULP; a new answer-blind dense/adjacent search is active. | NUM-S | M3 | recon G4-03 / W109 ACOTH racer / acoth.rs |
 | G4-04 — COMBIN, COMBINA, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | **W109 sweep (2026-07-14): two DISTINCT substrates.** COMBIN = multiplicative product but **NOT bit-exact** (cycle-2 design-for-divergence capture CORRECTED the earlier "bit-exact <2^53" over-claim, which rested on a non-discriminating 7-point corpus where all forms agree below ~2^40): on 16 discriminating `(n,k)` with representable results, Excel matches OxFunc's multiply-first `(acc*(n-k+i))/i` only `6/16`, ratio-first `2/16`, exact-integer `6/16`, and NEITHER `8/16` — Excel sits `1`-`3` ULP BELOW the multiply-first product on larger `n,k`. Plain-double AND x87-prec64 product orderings all score `6/16` → a genuine op-graph residual (PERMUT x87-spill-product family, which IS closed at `702/702` — race COMBIN against that substrate). COMBINA = **`exp(gammaln)` substrate, NOT a product** — CONFIRMED: `COMBINA(20,7)=C(26,7)` returns `657799.9999999999`, 1 ULP BELOW the exact integer `657800` (impossible for a product); reduces to the **GAMMALN/x87 wall** (crack GAMMALN → COMBINA free). FACTDOUBLE bit-exact (7/7); ERF.PRECISE: **W109 2026-07-17 — NO coefficient tables exist: ERF/ERFC.PRECISE ARE the NSWC gratio a<1 branches themselves** (cross-view proof `ERF.PRECISE ≡ GAMMA.DIST(·,½,1)` / `ERFC.PRECISE ≡ CHIDIST(·,1)` 160/160×2; z<0.5 = the 190 DIRECT path `exp(½·ln z²)·g·(1−j)` with **g = 1+gam1(½) evaluated x87-EXTENDED, h pinned `0x3fc06eba8214db6c`**; erfc side = the a<1 CF with unsplit exp argument, proven by messy-grid regression slope +0.95; subnormal publication flush at the far tail; every published implementation + all rational/Padé/Taylor/constant micro-forms ruled out; best true-x87 model `check_erf190` 663/1218, ~92% within ±1 — residual = ONE staging op, recipe + untouched held-out in W109_G3-01_GRATIO_IDENTIFICATION_20260716.md). Recipe: capture `GAMMALN(n+k)/(k+1)/(n)` + `EXP` at the COMBINA arg-triples to formally reduce it to GAMMALN. `±1` ULP drift where OxFunc currently differs. PERMUT resolved out (W109 2026-07-11: ascending x87 spill-loop product, `702/702` live rows, see [`W109_PERMUT_COMBIN_FINDINGS_20260711.md`](function-lane/W109_PERMUT_COMBIN_FINDINGS_20260711.md)). COMBIN: `k -> min(k, n-k)` reduction CONFIRMED; all product-loop, factorial-ratio, reciprocal-multiply, and published-GAMMALN-composition kernels ruled out on a 505-row live corpus — leading hypothesis is an internal extended lgamma/exp substrate (Phase-5 lane). | NUM-S | M2 | BUG-FUNC-027 combinatorial group / recon G4-04 / W109 findings |
 | G4-05 — CONVERT | Unit-conversion factor drift, `1` ULP at `CONVERT(1,"m","ft")`; `CONVERT(1,"in","m")` is an exact control. | NUM-S | M1 | recon G4-05 |
 

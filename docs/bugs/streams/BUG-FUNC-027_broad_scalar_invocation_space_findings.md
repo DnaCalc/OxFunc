@@ -210,14 +210,17 @@ seven cycles unless noted as `singleton_witness`.
   automatically when COS parity lands (Bessel tables themselves signed off
   under BUG-FUNC-024).
 
-### CLASS-C4: ATANH near ±1 precision
+### CLASS-C4: ATANH calculation graph — closed_signed_off (2026-08-09)
 
 - **Ownership**: `OxFunc-owned bug`
 - **Root cause**: `numeric_algorithm_exactness_gap`
 - **Witness**: `=ATANH(-0.999999999)` `3.14E7` ULP;
   `=ATANH(-0.9999999999999990)` `1.48E13` ULP.
-- **Repair direction**: switch to the `log1p`-based formulation
-  `0.5 * log1p(2x / (1-x))` near boundary.
+- **Final repair**: commit `a03a75f` lands the exact current-reference
+  three-regime graph: subnormal DAZ to positive zero; ordinary binary64
+  `x+x^3/3` below exact threshold `0x3f1af82b729c1d83`; otherwise the signed
+  ratio with x87 double-rounded add, subtract, and divide before the established
+  x87 worksheet-LN publication.
 - **FIXED (2026-06-21).** The defect was **lost odd symmetry**, not boundary precision:
   the platform libm gives `atanh(-x) != -atanh(x)` near -1 (up to `~1.5e13` ULP), while
   Excel's ATANH is exactly odd. OxFunc already matched Excel bit-for-bit on the
@@ -242,6 +245,27 @@ seven cycles unless noted as `singleton_witness`.
   collapsing tiny inputs and drifting near the boundary. The candidate was
   reverted. The restored odd-symmetric platform path matches `235/368`; ATANH
   remains an M2 piecewise-kernel search.
+- **July piecewise interpretation retracted (2026-08-09).** The later sparse
+  `fyl2xp1`-pair result (`175/175`) and emergent subnormal-passthrough claim were
+  also observational overfits. The earlier June global-oddness diagnosis above
+  is historical and retracted as well: the final signed-ratio route evaluates
+  positive and negative inputs independently and is not globally odd. A
+  5,902-row dense disagreement map identifies
+  the actual small body as binary64 `x+x^3/3`, and subnormals publish positive
+  zero under DAZ. A 43-step live adjacent-double bisection pins the exact seam.
+  The former ordinary ratio wrapper also misses staging discriminators: all
+  three add/sub/div operations require `RN53(RN64(op))` stores.
+- **Current-reference sign-off (2026-08-09).** The frozen exact graph scores
+  `5,902/5,902` on dense discovery, `8,510/8,510` on a fresh post-selection
+  held-out, and `20,780/20,780` on the durable combined replay. Focused ATANH
+  tests pass `9/9`; full `oxfunc_core` passes `1,520` tests with `4` ignored,
+  including every integration/doc-test target. Live sign-off profile: Excel
+  16.0 build 20228 x64, workbook Compatibility Version 2, `Range.Value2` /
+  `Formula2`, `-NoCache`. The exact report and artifact hashes are in
+  `docs/function-lane/W109_ATANH_IDENTIFICATION_20260712.md`.
+- **State:** CLASS-C4 / catalog G4-02 is `closed_signed_off`. BUG-FUNC-027 stays
+  open because its GAMMA, ACOTH, and other independent subclasses remain open;
+  this scoped closure does not close the aggregate stream.
 
 ### CLASS-C5: ACOTH and ACOSH near 1
 

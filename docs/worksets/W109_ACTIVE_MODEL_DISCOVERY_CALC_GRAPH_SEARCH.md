@@ -97,9 +97,12 @@ G6-01 surface for Phase 2/6 work.
    beta/gamma continued fractions, legacy-vs-modern pair differencing,
    fixed-statistic probes for the tests, metamorphic identification for the
    regression family; MINVERSE distinguishing-matrix race.
-5. **Phase 6 — ATANH piecewise search** over the 368-case corpus with
-   branch-threshold binary search; then a full catalog re-sweep after each
-   primitive lands.
+5. **Phase 6 — ATANH signed off; ACOTH remains independent.** The original
+   368-case reversal triggered a dense 5,902-row map, exact live boundary
+   bisection, retired refinement set, and fresh post-selection held-out. The
+   exact ATANH graph landed in `a03a75f`; ACOTH no longer inherits its former
+   small-input helper and remains a separate candidate search. Continue a full
+   catalog re-sweep after each primitive lands.
 
 ## 5. Operating procedure per row
 
@@ -212,11 +215,30 @@ G6-02 and does not close the wider bond/financial family or W109 campaign.
    residual wrapper/predicate axes remain actionable. EXT6 is also incomplete:
    its log stops at shard `191/400`.
 
+### 7.5 ATANH G4-02 exact graph signed off
+
+The sparse July x87-ln1p-pair interpretation is retracted. Current-reference
+Excel uses three routes: `|x|>=1` publishes `#NUM!`; both subnormal signs publish
+positive zero under DAZ; normal inputs below exact threshold
+`0x3f1af82b729c1d83` use ordinary binary64 `x+(x*x*x)/3`; inputs at/above the
+threshold form the signed ratio through x87-double-rounded add, subtract, and
+divide stores before the established worksheet-LN publication.
+
+Evidence is `5902/5902` dense discovery, a 43-step adjacent-double live
+bisection, a 7,050-row set explicitly retired into refinement, `8510/8510` on a
+fresh post-selection held-out, and `20780/20780` on the durable combined replay.
+The implementation, exact pins, and reusable generators/racer landed in
+`a03a75f`; focused tests and the full core passed, and Lean carries the route
+binding without duplicating x87 arithmetic. BUG-FUNC-027 CLASS-C4 is
+`closed_signed_off`, bead `oxf-jwh5.6` is closed, and G4-02 is retired. Other
+BUG-FUNC-027 subclasses, ACOTH, and the wider W109 campaign remain open. No
+FEC/F3E or evaluator-facing handoff is required.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: all remaining catalog rows, including PMT-family and CONVERT;
+4. `open_lanes`: all remaining catalog rows, including PMT-family, ACOTH, and CONVERT;
    broad post-catalog discovery; declared application-version/Compatibility-
    Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ closure
    is scoped and does not close the wider campaign.

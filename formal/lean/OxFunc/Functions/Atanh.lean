@@ -33,6 +33,26 @@ def evalAtanhSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode St
   | .error (.worksheetError code) => .error code
   | .error _ => .error .value
 
+/--
+W109 executable publication-route tag for the identified current-reference
+ATANH graph. The tag records the load-bearing route order without duplicating
+the Rust/x87 numeric backend: DAZ publication precedes the exact binary64
+cubic/ratio threshold, and the ratio route has stored x87 add/sub/div nodes.
+-/
+inductive AtanhPublicationRoute where
+  | denormalPositiveZero
+  | binary64Cubic
+  | storedX87Ratio
+  deriving DecidableEq, Repr
+
+def atanhPublicationRoute (denormal belowRatioThreshold : Bool) : AtanhPublicationRoute :=
+  if denormal then
+    .denormalPositiveZero
+  else if belowRatioThreshold then
+    .binary64Cubic
+  else
+    .storedX87Ratio
+
 theorem evalAtanh_abs_one_is_num :
     evalAtanhSurfaceClass (.number 1) = .error .num := by
   native_decide
@@ -42,5 +62,11 @@ theorem atanhMeta_profiles :
     ∧ atanhMeta.coercionLiftProfile = CoercionLiftProfile.unaryNumericScalarOrArrayElementwise
     ∧ atanhMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
   simp [atanhMeta]
+
+theorem atanh_publication_route_order_and_split :
+    atanhPublicationRoute true false = .denormalPositiveZero
+    ∧ atanhPublicationRoute false true = .binary64Cubic
+    ∧ atanhPublicationRoute false false = .storedX87Ratio := by
+  native_decide
 
 end OxFunc.Functions

@@ -1,6 +1,14 @@
 # Candidate Closure Sweep — ATANH and TBILLYIELD — 2026-07-10
 
-Status: `tbillyield_closed`; `atanh_open`.
+Status: `historical_superseded_for_atanh`; `tbillyield_closed`.
+
+Supersession (2026-08-09): this document preserves the build-20131 candidate
+sweep and its then-correct rejection of a single global ratio graph. It is not
+current ATANH state. Commit `a03a75f` and
+`W109_ATANH_IDENTIFICATION_20260712.md` identify the current-reference
+three-regime graph from dense build-20228/CV2 black-box evidence and replay it
+`20780/20780`; G4-02 is closed signed off. The historical counts and narrative
+below remain unchanged as provenance for the earlier negative result.
 
 ## Scope and environment
 

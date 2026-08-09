@@ -88,10 +88,11 @@ mod tests {
     }
 
     #[test]
-    fn atanh_is_odd_symmetric_and_bit_exact_near_minus_one() {
-        // BUG-FUNC-027 C4: the platform libm broke odd symmetry near -1 (up to
-        // ~1.5e13 ULP). The |x|-then-copysign form matches live Excel 16.0 b20026
-        // bit-for-bit; bits pinned from the elem-probe ledger.
+    fn atanh_matches_live_excel_pins_near_minus_one() {
+        // BUG-FUNC-027 C4 historical boundary witnesses. The identified signed
+        // ratio graph matches both rows; this particular adjacent positive/
+        // negative pair happens to be an exact sign flip, but ATANH is not
+        // globally odd (the independent 0.2 discriminator below proves that).
         assert_eq!(
             atanh_kernel(-0.9999999999999990).unwrap().to_bits(),
             0xc031_9dc9_df78_50b1
@@ -150,12 +151,12 @@ mod tests {
         );
     }
 
-    /// W109 (2026-07-12): region B — Excel's x87 `fyl2xp1` ln1p pair. Bit-exact
-    /// to live Excel 16.0 build 20131 on 175/175 region-B rows (|x| below the
-    /// ratio-log switch). Pins span passthrough, the small-correction regime, and
-    /// the near-boundary top of region B (all from the G4-hyp / G4-02 answer sets).
+    /// W109 (2026-08-09): the normal-input small body is ordinary binary64
+    /// `x + x^3/3`, not the formerly inferred x87 `fyl2xp1` pair. Pins span the
+    /// exact-input regime and the top of the cubic lane; subnormal DAZ is pinned
+    /// separately by `atanh_exact_three_regime_w109_pins`.
     #[test]
-    fn atanh_region_b_matches_live_excel_pinned_witnesses() {
+    fn atanh_cubic_body_matches_live_excel_pinned_witnesses() {
         let pins: [(u64, u64); 4] = [
             (0x01a5_6e1f_c2f8_f359, 0x01a5_6e1f_c2f8_f359), // 1e-300 (passthrough)
             (0x3e6c_775b_423f_371b, 0x3e6c_775b_423f_3723), // 5.302250e-08
@@ -168,11 +169,10 @@ mod tests {
         }
     }
 
-    /// The region-B pair is exactly odd by construction (x -> -x negates the
-    /// ln1p difference), unlike the region-C ratio. Live Excel agrees: the
-    /// negative row is the exact sign flip of the positive one.
+    /// The binary64 cubic body is odd on this pinned normal-input row, unlike
+    /// the independently evaluated signed-ratio route above the exact seam.
     #[test]
-    fn atanh_region_b_pair_is_odd() {
+    fn atanh_cubic_body_is_odd_on_pinned_normal_row() {
         let x = f64::from_bits(0x3f15_0c68_6bf5_4163); // 8.029353e-05
         assert_eq!(atanh_kernel(-x).unwrap().to_bits(), 0xbf15_0c68_6cb7_882b);
         assert_eq!(
