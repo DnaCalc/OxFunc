@@ -1357,11 +1357,14 @@ Current checkpoint (2026-08-09):
    BUG-FUNC-030 is closed signed off, closed bead `oxf-bx1u` carries the
    successor closure evidence without being reopened, and G6-02 is retired.
    This scoped repair does not close other bond/financial rows or W109.
-4. BESSELJ internal trigonometric inheritance is confirmed and materially
-   localized: both cosine sites plus J0-only x87 product staging form an
-   oracle-informed `794/794` decomposition, but the best executable model is
-   `792/794` because fresh phase witnesses reopen the shared worksheet-COS
-   substrate as G4-07. Both lanes remain `scope_partial`.
+4. The shared worksheet-COS and dependent BESSELJ publication graphs are
+   identified and landed in `ed9f222`. COS retains its tiny guard and FPREM1
+   reduction, uses FCOS on even quadrants, and the signed tangent-square
+   reconstruction on odd quadrants; selected evidence is `2561/2561`.
+   BESSELJ consumes corrected COS at both J0/J1 sites and stages only J0
+   `cosine*p`, with production replay `794/794`. BUG-FUNC-046/047 and beads
+   `oxf-jwh5.5/.5.1` are closed signed off; G4-06/G4-07 are retired. The full
+   core and 492-job Lean gates pass. This scoped closure does not close W109.
 5. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
    and the remaining bounded search, larger-graph, coefficient-recovery, and
    wrapper/predicate lanes remain actionable.

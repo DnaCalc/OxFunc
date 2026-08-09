@@ -43,12 +43,22 @@ Define the current-phase contract for the `W059` engineering radix conversion fa
 3. negative orders return `#NUM!`,
 4. `BESSELK` and `BESSELY` reject `x <= 0` with `#NUM!`,
 5. `BESSELI` and `BESSELJ` accept signed `x` and preserve odd-order sign parity,
-6. orders `0` and `1` use compact approximation kernels; higher orders use recurrence.
+6. orders `0` and `1` use compact approximation kernels; higher orders use recurrence,
+7. on the `|x| >= 8` BESSELJ path, both J0 and J1 asymptotic cosine sites consume
+   the shared worksheet-COS publication graph while their sine sites remain on
+   the ordinary platform path,
+8. J0 alone publishes `cosine * P` through the x87-double-rounded multiply
+   boundary; J1 and the remaining setup, Horner, scaling, and recurrence
+   operations retain their ordinary arithmetic,
+9. the W109 graph in items 7-8 is aligned for Excel 16.0 build 20228 x64 and
+   workbook Compatibility Version 2; alternate application/channel/CV sweeps
+   remain orthogonal validation work.
 
 ## 5. Runtime / Formal Anchors
 Runtime anchors:
 1. `crates/oxfunc_core/src/functions/engineering_radix_family.rs`
 2. `crates/oxfunc_core/src/functions/bessel_convert_family.rs`
+3. `crates/oxfunc_core/src/excel_numeric/mod.rs`
 
 Formal anchors:
 1. `formal/lean/OxFunc/Functions/EngineeringRadixFamily.lean`
@@ -58,3 +68,6 @@ Native replay anchors:
 1. `docs/function-lane/W59_SCENARIO_MANIFEST_SEED.csv`
 2. `tools/w59-probe/run-w59-engineering-conversions-bessel-baseline.ps1`
 3. `.tmp/w59-engineering-conversions-bessel-results.csv`
+4. `smart-fuzzer/tools/calc_graph_racer/src/bin/race_besselj_internal_trig.rs`
+5. `smart-fuzzer/work/w109/G4-besselj/batch-besselj-internal-trig-heldout-20260809.json`
+6. `smart-fuzzer/work/w109/G4-besselj/answers-besselj-internal-trig-heldout-20260809.json`

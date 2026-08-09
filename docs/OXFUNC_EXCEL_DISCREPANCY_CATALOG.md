@@ -1,7 +1,12 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-09` (`cd1f9fe` landed ACCRINT's exact final
+Last reconciled: `2026-08-09` (`ed9f222` landed the corrected worksheet-COS
+odd-quadrant tangent-square publication graph and the dependent BESSELJ
+composition. COS replays `2561/2561`, production BESSELJ replays `794/794`,
+BUG-FUNC-046/047 are `closed_signed_off`, and G4-06/G4-07 were retired. The
+wider W109 campaign remains partial.)
+Previous reconcile: `2026-08-09` (`cd1f9fe` landed ACCRINT's exact final
 publication graph; BUG-FUNC-030 is `closed_signed_off`, so G6-02 was retired
 after `146850/146850` exact replay. The wider bond/financial family and W109
 campaign remain partial.)
@@ -81,14 +86,14 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `22`
+Open Category-2 rows: `20`
 
 | Group | Current rows |
 |-------|--------------|
 | G1 error-code/domain guards | 0 |
 | G2 structural kind/shape/admission | 0 |
 | G3 special/statistical numeric exactness | 7 |
-| G4 elementary/trig numeric exactness | 6 |
+| G4 elementary/trig numeric exactness | 4 |
 | G5 matrix numeric/shape | 1 |
 | G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
@@ -146,24 +151,23 @@ No current open rows.
 | G4-03 — ACOTH | **W109 (2026-07-12): two-regime x87 form PROMOTED — strict improvement (35→53/56, 0 regressions, +19 rows).** ACOTH IS exactly odd (`copysign(ACOTH(|x|), x)`) and mirrors ATANH: `|x| < ~3.5` uses the direct ratio `0.5·ln((|x|+1)/(|x|-1))` (x87 CRT ln); `|x| >= ~3.5` uses the reciprocal ln1p pair `0.5·(ln1p(1/|x|)−ln1p(−1/|x|))` via the x87 `fyl2xp1` pair (= `ATANH(1/|x|)`, reusing `excel_atanh_small`). Confirmed: `ACOTH(2)=ATANH(0.5)` bit-for-bit. The earlier "direct signed ratio 40/57 / ln1p 35/57" were both non-odd single-forms; the standalone `log1p(2/(x-1))` is ruled out at large `|x|` (`0/6`). OPEN residual: 3 pair-branch rows (`±5.0` at −1 ULP, `+8.1` at +2 ULP) and the exact switch double — need dense adjacent-double probes near `|x|∈[3,10]`. | NUM-S | M3 | recon G4-03 / W109 ACOTH racer / atanh.rs+acoth.rs |
 | G4-04 — COMBIN, COMBINA, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | **W109 sweep (2026-07-14): two DISTINCT substrates.** COMBIN = multiplicative product but **NOT bit-exact** (cycle-2 design-for-divergence capture CORRECTED the earlier "bit-exact <2^53" over-claim, which rested on a non-discriminating 7-point corpus where all forms agree below ~2^40): on 16 discriminating `(n,k)` with representable results, Excel matches OxFunc's multiply-first `(acc*(n-k+i))/i` only `6/16`, ratio-first `2/16`, exact-integer `6/16`, and NEITHER `8/16` — Excel sits `1`-`3` ULP BELOW the multiply-first product on larger `n,k`. Plain-double AND x87-prec64 product orderings all score `6/16` → a genuine op-graph residual (PERMUT x87-spill-product family, which IS closed at `702/702` — race COMBIN against that substrate). COMBINA = **`exp(gammaln)` substrate, NOT a product** — CONFIRMED: `COMBINA(20,7)=C(26,7)` returns `657799.9999999999`, 1 ULP BELOW the exact integer `657800` (impossible for a product); reduces to the **GAMMALN/x87 wall** (crack GAMMALN → COMBINA free). FACTDOUBLE bit-exact (7/7); ERF.PRECISE: **W109 2026-07-17 — NO coefficient tables exist: ERF/ERFC.PRECISE ARE the NSWC gratio a<1 branches themselves** (cross-view proof `ERF.PRECISE ≡ GAMMA.DIST(·,½,1)` / `ERFC.PRECISE ≡ CHIDIST(·,1)` 160/160×2; z<0.5 = the 190 DIRECT path `exp(½·ln z²)·g·(1−j)` with **g = 1+gam1(½) evaluated x87-EXTENDED, h pinned `0x3fc06eba8214db6c`**; erfc side = the a<1 CF with unsplit exp argument, proven by messy-grid regression slope +0.95; subnormal publication flush at the far tail; every published implementation + all rational/Padé/Taylor/constant micro-forms ruled out; best true-x87 model `check_erf190` 663/1218, ~92% within ±1 — residual = ONE staging op, recipe + untouched held-out in W109_G3-01_GRATIO_IDENTIFICATION_20260716.md). Recipe: capture `GAMMALN(n+k)/(k+1)/(n)` + `EXP` at the COMBINA arg-triples to formally reduce it to GAMMALN. `±1` ULP drift where OxFunc currently differs. PERMUT resolved out (W109 2026-07-11: ascending x87 spill-loop product, `702/702` live rows, see [`W109_PERMUT_COMBIN_FINDINGS_20260711.md`](function-lane/W109_PERMUT_COMBIN_FINDINGS_20260711.md)). COMBIN: `k -> min(k, n-k)` reduction CONFIRMED; all product-loop, factorial-ratio, reciprocal-multiply, and published-GAMMALN-composition kernels ruled out on a 505-row live corpus — leading hypothesis is an internal extended lgamma/exp substrate (Phase-5 lane). | NUM-S | M2 | BUG-FUNC-027 combinatorial group / recon G4-04 / W109 findings |
 | G4-05 — CONVERT | Unit-conversion factor drift, `1` ULP at `CONVERT(1,"m","ft")`; `CONVERT(1,"in","m")` is an exact control. | NUM-S | M1 | recon G4-05 |
-| G4-06 — BESSELJ (internal cosine inheritance) | **Broader W109 replay supersedes the earlier J0-only `79/79` repair claim (fresh Excel 16.0 build 20228 x64, Compatibility Version 2, `-NoCache`, 2026-08-09):** over a 794-row branch/disagreement corpus, platform trig scores `454/794`, the current J0-only working-tree route `732/794`, both asymptotic cosine sites through the current `excel_cos` substrate `791/794`, and that route plus J0-only x87-double-rounded `cosine*p` `792/794`. An oracle-informed decomposition using live worksheet COS reaches `794/794`, proving the required Bessel body is both cosine sites plus J0-only x87 product staging. Two remaining linked rows at `x=150−1 ULP` are inherited from the separately open shared-COS substrate G4-07, so the current J0-only repair must not be promoted. Mandatory pins include `BESSELJ(150−1 ULP,0)=0xbf495d8a81b9c8bf`, order 2 `0xbf18c693cd8c2560`, and `BESSELJ(108.43896102905273438,2)=0xbfa9b1eac88983f1`. | NUM-L | M2 | BUG-FUNC-046 / oxf-jwh5.5 / 794-row W109 trig-inheritance replay |
-| G4-07 — COS (shared worksheet phase/reduction residual) | **Fresh counterexample reopens the former universal G4-01 COS sign-off (build 20228/CV2 NoCache, 2026-08-09):** at exact phases `0x4062a6de04ab6900` and `0x4062a6de04ab6902`, worksheet COS publishes one ULP above the current fFCOS model (`0xbf86a0d99f46996e` vs `...996d`, and `0xbf86a0d99f461970` vs `...196f`). Immediate adjacent phases remain exact. The focused 25-row ladder scores the current model `17/25`; all tested public/x87 reduction, precision-control, and store variants score no better, so no executable replacement graph is yet identified. These shared-substrate misses explain the last two G4-06 BESSELJ rows. Active learning must identify a general graph and reject point patches before either row can retire. | NUM-S | M1 | BUG-FUNC-047 / oxf-jwh5.5.1 / W109 COS phase ladder |
-
 
 The former `G4-01` trig row was signed off and removed on 2026-07-11 after a
-`5425/5425` corpus. Fresh build-20228/CV2 phase witnesses now refute the
-universal COS part of that claim; the original corpus result remains valid, but
-the newly exposed shared residual is tracked explicitly as G4-07. The W109
-search's current representative chains are: SIN = `FPREM1(x, FLDPI)` +
-parity + `FSIN`; COS = `|x| < 2^-26 -> 1.0` else `FPREM1(|x|, FLDPI/2)` with
-quadrant dispatch; TAN = π/2 chain with `-1/tan` (extended) on odd quadrants;
-COT/CSC/SEC = double-rounded reciprocals of the published primaries. The
-reduction constant is the 64-bit ROM `FLDPI` π. Validated `5425/5425` on the
-original live rows (all six functions,
-incl. held-out sweeps and a bit-resolution COS threshold ladder). See
+`5425/5425` corpus. Its evidence remains valid, but fresh build-20228/CV2 phase
+witnesses later refuted only the universal raw-FSIN odd-quadrant COS inference.
+The correction landed in `ed9f222`: COS retains the exact-one tiny guard and
+`FPREM1(|x|,FLDPI/2)` reduction, uses FCOS on even quadrants, and reconstructs
+odd-quadrant sine magnitude as signed
+`FSQRT(FPTAN(r)^2/(1+FPTAN(r)^2))` continuously in x87 PC64/RN. The selected
+graph is `2561/2561` across the original 1020 validation rows, a 1027-row
+adjacent/random discovery battery, and a frozen 514-row oracle-blind hold-out;
+the original 24-row threshold ladder remains separate guard evidence. SEC
+continues to consume the published COS through its identified double-rounded
+reciprocal. BESSELJ now consumes corrected COS at both J0/J1 asymptotic sites
+and stages only J0 `cosine*P`, producing `794/794`. G4-06/G4-07 are retired;
+their history remains in BUG-FUNC-046/047, the calculation map, and the
+ruled-out ledger. See
 [`W109_TRIG_IDENTIFICATION_20260711.md`](function-lane/W109_TRIG_IDENTIFICATION_20260711.md).
-The GAMMA-reflection and Bessel inheritors must be re-raced against the eventual
-G4-07 repair; BUG-FUNC-046 is explicitly dependent on that shared substrate.
 
 ## G5 — Matrix Numeric And Shape
 

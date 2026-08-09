@@ -192,16 +192,20 @@ bead `oxf-bx1u` remains closed with a successor-evidence comment; G6-02 is
 retired. No FEC/F3E or evaluator-facing handoff is required. This closes only
 G6-02 and does not close the wider bond/financial family or W109 campaign.
 
-### 7.4 BESSELJ and PMT remain open
+### 7.4 COS/BESSELJ signed off; PMT remains open
 
-1. `BESSELJ` requires worksheet COS at both J0/J1 asymptotic cosine sites and
-   an x87-double-rounded `cosine*p` only in J0. Those body choices plus live COS
-   values decompose the fresh held-out battery at `794/794`; the best executable
-   model is `792/794`. The remaining pair is a shared worksheet-COS substrate
-   gap at exact phases `0x4062a6de04ab6900/6902`, registered separately as
-   BUG-FUNC-047/G4-07. This is an active identification lane, not a signed-off
-   repair.
-2. The July-25 PMT takeover brief explicitly retracts the July-24
+1. The corrected worksheet-COS graph retains the tiny exact-one guard and
+   FPREM1 reduction, keeps FCOS on even quadrants, and reconstructs the signed
+   odd-quadrant sine magnitude through continuous-PC64 FPTAN square/ratio/FSQRT.
+   It is `1027/1027` on discovery, `1020/1020` on prior validation, and
+   `514/514` on a frozen oracle-blind held-out: `2561/2561` total selected
+   evidence, with the original 24-row threshold ladder retained separately.
+2. BESSELJ routes both J0/J1 asymptotic cosine sites through corrected COS and
+   stages only J0 `cosine*p` through `excel_x87_mul`. The landed production
+   kernel is `794/794`; the repair, pins, and tooling landed in `ed9f222`.
+   BUG-FUNC-046/047 and beads `oxf-jwh5.5/.5.1` are closed signed off, and
+   G4-06/G4-07 are retired. No FEC/F3E or evaluator-facing handoff is required.
+3. The July-25 PMT takeover brief explicitly retracts the July-24
    "proven irreducible / needs provenance" framing. The only defensible result
    is bounded-negative over the documented leaf/operator/size limits. A
    reproducing Excel program exists; larger graphs, coefficient recovery, and
@@ -212,7 +216,7 @@ Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: shared COS and dependent BESSELJ graphs; all other catalog
-   rows, including PMT-family and CONVERT; broad post-catalog discovery;
-   declared application-version/Compatibility-Version axes; global OPERATIONS
-   Sections 12 and 14 audit.
+4. `open_lanes`: all remaining catalog rows, including PMT-family and CONVERT;
+   broad post-catalog discovery; declared application-version/Compatibility-
+   Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ closure
+   is scoped and does not close the wider campaign.

@@ -338,10 +338,14 @@ Status axes:
   only through `excel_x87_mul`. Retained b39/b40/b42 plus recaptured b43 and a
   fresh frozen held-out replay `146850/146850`; BUG-FUNC-030 is closed signed
   off, its already-closed bead carries successor evidence, and G6-02 is retired.
-  This likewise does not close other bond/financial lanes. The `BESSELJ`
-  internal-cosine decomposition reaches `794/794` only
-  with live worksheet-COS values; the best executable graph is `792/794`, so
-  the newly reopened shared COS phase/reduction lane G4-07 blocks promotion.
+  This likewise does not close other bond/financial lanes. The shared
+  worksheet-COS graph and dependent `BESSELJ` composition landed in `ed9f222`:
+  COS retains the tiny guard/FPREM1/FCOS structure and uses the signed
+  tangent-square reconstruction on odd quadrants (`2561/2561` selected
+  evidence), while BESSELJ routes both J0/J1 cosine sites through it and stages
+  only J0 `cosine*p` (`794/794` production). BUG-FUNC-046/047 and beads
+  `oxf-jwh5.5/.5.1` are closed signed off; G4-06/G4-07 are retired. The full
+  core and 492-job Lean gates pass; this scoped closure does not close W109.
   The PMT/IPMT/PPMT/CUM family, ATANH,
   GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and the other
   catalog rows remain active model-identification work. The July-24 PMT
@@ -354,8 +358,8 @@ Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: shared COS and dependent BESSELJ identification; PMT/IPMT/PPMT/CUM
-   `log1p`/`expm1` and composition graphs; ATANH and ACOTH shared substrate;
+4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
+   ATANH and ACOTH shared substrate;
    GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.

@@ -38,6 +38,27 @@ def besselyMeta : FunctionMeta := {
   functionId := "FUNC.BESSELY"
 }
 
+/--
+W109 executable route tag for the two BESSELJ asymptotic seeds. Both sites
+consume the shared worksheet-COS publication graph; only J0 stages the
+published cosine times its P polynomial through the x87 double-rounded helper.
+The tag captures that binding without duplicating the floating-point kernel.
+-/
+inductive BesselJAsymptoticSeed where
+  | j0
+  | j1
+  deriving DecidableEq, Repr
+
+inductive BesselJCosinePublicationRoute where
+  | worksheetCosWithJ0X87Product
+  | worksheetCosPlainProduct
+  deriving DecidableEq, Repr
+
+def besseljCosinePublicationRoute :
+    BesselJAsymptoticSeed → BesselJCosinePublicationRoute
+  | .j0 => .worksheetCosWithJ0X87Product
+  | .j1 => .worksheetCosPlainProduct
+
 def besselSeed (fnName : String) (x order : Rat) : Option Rat :=
   if fnName = "BESSELI" ∧ x = (3 / 2 : Rat) ∧ order = 1 then
     some ((981666428 : Rat) / 1000000000)
@@ -70,5 +91,10 @@ theorem besselConvert_ids :
     ∧ besselkMeta.functionId = "FUNC.BESSELK"
     ∧ besselyMeta.functionId = "FUNC.BESSELY" := by
   simp [besselConvertBaseMeta, besseliMeta, besseljMeta, besselkMeta, besselyMeta]
+
+theorem besselj_asymptotic_cosine_routes_are_site_specific :
+    besseljCosinePublicationRoute .j0 = .worksheetCosWithJ0X87Product
+    ∧ besseljCosinePublicationRoute .j1 = .worksheetCosPlainProduct := by
+  native_decide
 
 end OxFunc.Functions
