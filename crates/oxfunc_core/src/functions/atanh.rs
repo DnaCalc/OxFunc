@@ -23,33 +23,38 @@ pub const ATANH_META: FunctionMeta = function_spec! {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
-/// Below this |x|, Excel switches ATANH off the naive log-ratio onto the x87
-/// `fyl2xp1` ln1p-difference small-argument path (W109). The ratio-log is
-/// bit-exact for every live row at |x| >= ~1.07e-4; the pair is bit-exact for
-/// every row at |x| <= ~9.0e-5. The switch is placed in the gap between them.
-const ATANH_RATIO_FLOOR: f64 = 1.05e-4;
+/// Exact W109 switch from the binary64 cubic body to the x87-spilled ratio
+/// body. The preceding positive input is observationally equal under both
+/// bodies; the negative input at this bit pattern selects the ratio route.
+const ATANH_RATIO_FLOOR: f64 = f64::from_bits(0x3f1a_f82b_729c_1d83);
 
 pub fn atanh_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     let a = n.abs();
     if a >= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    // W109 identification (2026-07-12): for |x| >= the ratio floor — which covers
-    // the entire catalog band (mid-small witnesses) AND the near-1 rows — Excel's
-    // ATANH is the naive log-ratio 0.5·ln((1+x)/(1-x)) evaluated with the x87
-    // CRT ln, bit-for-bit (163/163 live rows). The double-rounding of the
-    // binary64 ratio is load-bearing; a higher-precision ratio does NOT match.
-    // The signed ratio is evaluated directly (Excel's ATANH is NOT exactly odd
-    // here — the negative argument rounds independently), so no abs/copysign.
-    if a >= ATANH_RATIO_FLOOR {
-        return Ok(0.5 * crate::excel_numeric::excel_log((1.0 + n) / (1.0 - n)));
+    // Current-reference Excel observes DAZ inputs in this legacy body. Both
+    // signs of every subnormal input publish positive zero.
+    if a < f64::MIN_POSITIVE {
+        return Ok(0.0);
     }
-    // Small-|x| region B: Excel's x87 `fyl2xp1` ln1p pair 0.5·(ln1p(x)−ln1p(−x)),
-    // extended temporaries with a single final store — bit-exact on every live
-    // region-B row (175/175, |x| <= ~9.0e-5), and passthrough (atanh(x)->x) is
-    // emergent for subnormal x. A narrow band (~9.5e-5..1.07e-4) straddling the
-    // switch is +-1 ULP on Excel's exact internal-log1p rounding — open, see W109.
-    Ok(crate::excel_numeric::excel_atanh_small(n))
+    // W109 G4-02 (build 20228/CV2, NoCache): the old apparent x87-ln1p pair
+    // was observationally equivalent only on the sparse small-input corpus.
+    // Dense disagreement mapping identifies the actual body as the ordinary
+    // binary64 cubic `x + x^3/3`, up to the exact threshold above.
+    if a < ATANH_RATIO_FLOOR {
+        return Ok(n + (n * n * n) / 3.0);
+    }
+
+    // The ratio body is a legacy x87 spill unit: each wrapper operation is
+    // RN53(RN64(op)) before the established x87 LN publication. All three
+    // add/sub/div stores are independently required by the fresh wrapper-mask
+    // held-out. The signed ratio is evaluated directly, so this region is not
+    // globally odd.
+    let numerator = crate::excel_numeric::excel_x87_add(1.0, n);
+    let denominator = crate::excel_numeric::excel_x87_sub(1.0, n);
+    let ratio = crate::excel_numeric::excel_x87_div(numerator, denominator);
+    Ok(0.5 * crate::excel_numeric::excel_log(ratio))
 }
 
 pub fn eval_atanh_surface(
@@ -100,13 +105,13 @@ mod tests {
     }
 
     #[test]
-    fn atanh_x87_log_candidate_is_not_global() {
-        // The ratio-log is the production path only for |x| >= the floor; below
-        // it the small-arg path must be retained. The subnormal input is the
-        // canonical witness: the ratio rounds to 1 and collapses to zero, while
-        // live Excel (and the retained path) preserve the input.
+    fn atanh_ratio_candidate_is_not_global() {
+        // The ratio-log is the production path only for |x| >= the floor. A
+        // tiny *normal* input is the canonical discriminator: the ratio rounds
+        // to 1 and collapses to zero, while Excel's cubic body preserves the
+        // input. Subnormals are a separate DAZ lane pinned below.
         let candidate = |x: f64| 0.5 * crate::excel_numeric::excel_log((1.0 + x) / (1.0 - x));
-        let tiny = f64::from_bits(1);
+        let tiny = f64::from_bits(0x01a5_6e1f_c2f8_f359); // 1e-300
         assert_eq!(candidate(tiny).to_bits(), 0.0_f64.to_bits());
         assert_eq!(atanh_kernel(tiny).unwrap().to_bits(), tiny.to_bits());
     }
@@ -174,5 +179,29 @@ mod tests {
             atanh_kernel(-x).unwrap().to_bits(),
             (-atanh_kernel(x).unwrap()).to_bits()
         );
+    }
+
+    #[test]
+    fn atanh_exact_three_regime_w109_pins() {
+        // Fresh Excel 16.0 build 20228 x64, CV2, Value2/Formula2, NoCache.
+        // The subnormal pair pins DAZ/+0 publication; the six seam rows pin
+        // the sign-sensitive representative threshold; the final three rows
+        // independently require x87 double rounding at the ratio wrapper.
+        for (input_bits, expected_bits) in [
+            (0x0004_8b60_699b_04c8, 0x0000_0000_0000_0000),
+            (0x8004_8b60_699b_04c8, 0x0000_0000_0000_0000),
+            (0x3f1a_f82b_729c_1d82, 0x3f1a_f82b_7434_c925),
+            (0xbf1a_f82b_729c_1d82, 0xbf1a_f82b_7434_c925),
+            (0x3f1a_f82b_729c_1d83, 0x3f1a_f82b_7434_c926),
+            (0xbf1a_f82b_729c_1d83, 0xbf1a_f82b_7434_b84c),
+            (0x3f1a_f82b_729c_1d84, 0x3f1a_f82b_7434_c926),
+            (0xbf1a_f82b_729c_1d84, 0xbf1a_f82b_7434_b84c),
+            (0x3f21_e551_424c_dd9f, 0x3f21_e551_442a_7334),
+            (0x3f24_358b_30f8_d001, 0x3f24_358b_33a8_99ac),
+            (0xbf24_358b_30f8_d001, 0xbf24_358b_33a8_9164),
+        ] {
+            let actual = atanh_kernel(f64::from_bits(input_bits)).expect("valid ATANH witness");
+            assert_eq!(actual.to_bits(), expected_bits, "input=0x{input_bits:016x}");
+        }
     }
 }
