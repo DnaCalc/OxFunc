@@ -22,9 +22,10 @@ pub const POWER_META: FunctionMeta = function_spec! {
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    // POWER (and the `^` operator and the financial growth callers, which all share `power_kernel`)
-    // publishes an exact-integer exponent via repeated multiplication rather than `powf` — a real,
-    // separable precision deviation, declared once here. `power_kernel` reads this policy instead of
+    // POWER (and the `^` operator) publishes an exact-integer exponent via repeated multiplication
+    // rather than `powf` — a real, separable precision deviation, declared once here. Financial
+    // functions use site-specific x87 graphs and must not inherit this wrapper dispatch implicitly.
+    // `power_kernel` reads this policy instead of
     // unconditionally hand-coding the rule; the integer-detection tolerance and the
     // binary-exponentiation algorithm live in this module (the impl that interprets the variant),
     // never as data on the meta. Verified live Excel 16.0 build 20026.

@@ -422,6 +422,23 @@ pub(crate) fn excel_pow_chain(base: f64, exp: f64) -> f64 {
     }
 }
 
+/// Register-continuous legacy x87 power: `FYL2X(exp, base)` feeds the
+/// `FRNDINT`/`F2XM1`/`FSCALE` assembly directly, with only the completed power
+/// stored to binary64. This is a separate call-site substrate from
+/// [`excel_pow_chain`], which publishes `ln(base)` and the product first.
+///
+/// Identified for NOMINAL's `trunc(npery) <= 2` branch in W109. `base` must be
+/// finite and positive and `exp` finite; the caller owns domain handling.
+pub(crate) fn excel_pow_x87_direct(base: f64, exp: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        x87::pow_direct(base, exp)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        base.powf(exp)
+    }
+}
 
 /// Excel `SIN` — bit-exact to 64-bit Excel on `x86_64` (W109 G4-01, validated
 /// 1020/1020 live rows incl. held-out, build 20131): the legacy CRT `fFSIN`

@@ -1298,3 +1298,64 @@ Current checkpoint:
    per-function IPMT/PPMT/CUM op-order/accumulation lanes.
 4. The next gate is repo-owned replay of the full `5,319`-row Phase-E family
    corpus and a non-regressing helper-rounding result.
+
+Supersession note:
+1. W109 is now the active execution continuation for discrepancy discovery and
+   calculation-graph identification. W108 remains the provenance owner for the
+   numeric-core and annuity foundations already established here.
+2. The July-24 PMT "irreducible / needs provenance" interpretation is retracted
+   by the July-25 W109 PMT takeover brief. The defensible result is a bounded
+   negative over the recorded leaf/operator/size limits; a reproducing program
+   still exists and larger-graph plus coefficient-recovery searches remain open.
+
+## W109 Active Model Discovery And Calculation-Graph Search
+
+Status: `in_progress`
+
+Execution target:
+identify and repair every OxFunc-owned Excel discrepancy by treating each row as
+a black-box calculation-program identification problem, using exact typed-bit
+oracle evidence, active-learning discriminator design, reusable graph-racing
+tools, independent held-out gates, and fresh no-cache sign-off.
+
+Canonical surfaces:
+1. `docs/worksets/W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md`
+2. `docs/SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md`
+3. `docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md`
+4. `docs/function-lane/DISCREPANCY_CALCULATION_MAP.csv`
+5. `docs/function-lane/DISCREPANCY_RULED_OUT_LEDGER.csv`
+6. `docs/function-lane/W109_WALL_CLUES_LEDGER.md`
+7. `smart-fuzzer/tools/calc_graph_racer/`
+8. `smart-fuzzer/tools/OracleCache.psm1` and the W109 batch runners
+9. `crates/oxfunc_core/src/excel_numeric/` and affected function kernels
+10. `.beads/` epic `oxf-jwh5` and child lanes
+
+Depends on:
+`W108`, the W109 live-oracle plumbing, and the current discrepancy/bug-stream
+truth surfaces.
+
+Current checkpoint (2026-08-09):
+1. The catalog, reports, implementation, and live Excel baseline were
+   reconciled. The reference host is Excel 16.0 build 20228 x64 with workbook
+   Compatibility Version 2; cache/profile hardening is in progress so evidence
+   from build 20131 cannot be silently attributed to the current host.
+2. EFFECT, RRI, and NOMINAL have identified, production-routed legacy x87
+   graphs plus exact discriminator pins. Fresh no-cache corpora now carry
+   build-20228/CV2 provenance; EFFECT's exact `u32::MAX` loop-to-raw-chain
+   boundary is `160/160`. RRI's MIN_NORMAL period cutoff, DAZ/equality/sign
+   order, zero-base route, and exact `periods==1` identity are now pinned; the
+   repaired composite is `5536/5536`; the post-repair full core suite is green
+   (`1518` passed, `4` ignored) and the Lean alignment build passes (`492`
+   jobs). Landed-ref gates remain before those catalog
+   rows retire.
+3. BESSELJ internal trigonometric inheritance is confirmed and materially
+   localized: both cosine sites plus J0-only x87 product staging form an
+   oracle-informed `794/794` decomposition, but the best executable model is
+   `792/794` because fresh phase witnesses reopen the shared worksheet-COS
+   substrate as G4-07. Both lanes remain `scope_partial`.
+4. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
+   and the remaining bounded search, larger-graph, coefficient-recovery, and
+   wrapper/predicate lanes remain actionable.
+5. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+   alone is insufficient without a fresh broad discovery sweep and the
+   OPERATIONS Sections 12 and 14 global audits.

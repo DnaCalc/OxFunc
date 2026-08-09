@@ -320,26 +320,33 @@ Status axes:
 
 ### IP-26 Excel Numeric Core And Financial Exactness
 
-- Current state: W108 is in progress. `EXP`, `LN`, `LOG10`, `LOG`, and `POWER`
-  are signed off bit-exact on the declared x86-64 reference baseline. The
-  PMT/IPMT/PPMT/CUM family remains open: Phase E confirms the discount
-  arrangement already used by OxFunc but leaves the exact final rounding of
-  `expm1(-nper*log1p(rate))` and per-function payment/principal accumulation
-  unresolved. A bounded 2026-07-10 propagation pass now gives all 24 open
-  Category-2 rows two live-Excel witnesses plus a calculation-path search map.
-  The required expanded closure sweep rejected the apparent two-witness x87-LN
-  ATANH candidate (`297/368` exact, `71` regressions), so it was reverted and
-  ATANH remains open. The same pass repaired TBILLYIELD's expression association
-  and signed it off `2156/2156`; its G6 row is removed. A test-only
-  `power_kernel` XNPV candidate still closes the catalog's 16-ULP witness, while
-  production XNPV routing stays unchanged pending a cancellation/order corpus.
-- Canonical owner: [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md), [EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md](C:\Work\DnaCalc\OxFunc\docs\EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md), [OXFUNC_EXCEL_DISCREPANCY_CATALOG.md](C:\Work\DnaCalc\OxFunc\docs\OXFUNC_EXCEL_DISCREPANCY_CATALOG.md), and `BUG-FUNC-015`.
+- Current state: W109 is the active continuation of W108's exact-numeric work.
+  `EXP`, `LN`, `LOG10`, `LOG`, `POWER`, the primary trigonometric family,
+  XNPV, and the earlier W109 quick-win functions are signed off on the declared
+  x86-64 reference baseline. The 2026-08-09 reconciliation identified distinct
+  legacy x87 calculation graphs for `EFFECT`, `RRI`, and `NOMINAL`. EFFECT's
+  post-truncation `u32::MAX` loop-to-raw-power dispatch is now live-pinned
+  `160/160`; RRI's MIN_NORMAL/DAZ/equality/sign/zero-base/period-one composite
+  is live-pinned and replays `5536/5536`. Their production repairs and
+  discriminator pins pass the post-repair full suite (`1518` passed, `4`
+  ignored) and remain pending a landed ref. A `BESSELJ` internal-cosine decomposition reaches `794/794` only
+  with live worksheet-COS values; the best executable graph is `792/794`, so
+  the newly reopened shared COS phase/reduction lane G4-07 blocks promotion.
+  The PMT/IPMT/PPMT/CUM family, ATANH,
+  GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and the other
+  catalog rows remain active model-identification work. The July-24 PMT
+  "irreducible / needs provenance" framing is superseded: only a bounded
+  negative result over the stated search grammar and size limits is established,
+  and larger graphs plus coefficient recovery remain actionable.
+- Canonical owners: [W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md), [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md), [OXFUNC_EXCEL_DISCREPANCY_CATALOG.md](C:\Work\DnaCalc\OxFunc\docs\OXFUNC_EXCEL_DISCREPANCY_CATALOG.md), and `.beads/` epic `oxf-jwh5`.
 
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: repo-owned replay of the full Phase-E corpus, exact
-   `log1p`/`expm1` store/rounding placement, IPMT/PPMT/CUM op-order and
-   accumulation, ATANH piecewise-kernel search, XNPV candidate non-regression grid,
-   remaining per-row calculation-map searches, alternate CPU/version validation.
+4. `open_lanes`: EFFECT/RRI/NOMINAL landed sign-off and
+   evidence synchronization; shared COS and dependent BESSELJ identification; PMT/IPMT/PPMT/CUM
+   `log1p`/`expm1` and composition graphs; ATANH and ACOTH shared substrate;
+   GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and every other
+   open catalog row; fresh broad discovery; alternate CPU/application-version/
+   Compatibility-Version validation; global Sections 12 and 14 closure audit.

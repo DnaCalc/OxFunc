@@ -5,7 +5,8 @@ use crate::coercion::CoercionError;
 // financial substrate to the x87 primitives (`fyl2xp1`/`f2xm1`) is tracked as
 // W108 Phase C and requires its own live-Excel re-validation.
 use crate::excel_numeric::{
-    excel_expm1, excel_expm1_internal, excel_log1p, exp_portable,
+    excel_expm1, excel_expm1_internal, excel_log1p, excel_pow_chain, excel_pow_x87_direct,
+    excel_x87_add, excel_x87_div, excel_x87_mul, excel_x87_recip, excel_x87_sub, exp_portable,
 };
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
@@ -153,6 +154,15 @@ fn validate_finite(values: &[f64]) -> Result<(), FinancialError> {
         Ok(())
     } else {
         Err(FinancialError::Value)
+    }
+}
+
+#[inline]
+fn financial_daz(value: f64) -> f64 {
+    if value.abs() < f64::MIN_POSITIVE {
+        0.0_f64.copysign(value)
+    } else {
+        value
     }
 }
 
@@ -955,10 +965,55 @@ pub fn pduration(
 
 pub fn rri(periods: f64, present_value: f64, future_value: f64) -> Result<f64, FinancialError> {
     validate_finite(&[periods, present_value, future_value])?;
-    if periods <= 0.0 || present_value <= 0.0 || future_value <= 0.0 {
+    // W109's live edge-domain batteries pin the guard order as tightly as the
+    // positive-domain power graph. Positive subnormal periods are rejected
+    // before the equality shortcut, while MIN_POSITIVE is admitted.
+    if periods < f64::MIN_POSITIVE {
         return Err(FinancialError::Num);
     }
-    let result = (future_value / present_value).powf(1.0 / periods) - 1.0;
+
+    // This legacy financial body observes DAZ-normalized value inputs.
+    // Equality precedes the sign guards, so equal zeros/subnormals (and even
+    // equal negative normal values) publish +0.
+    let present_value = financial_daz(present_value);
+    let future_value = financial_daz(future_value);
+    if present_value == future_value {
+        return Ok(0.0);
+    }
+    if present_value <= 0.0 || future_value < 0.0 {
+        return Err(FinancialError::Num);
+    }
+
+    // W109 G6-13 / BUG-FUNC-044: RRI is a legacy x87 spill body. Its wrapper
+    // division, reciprocal, and final subtraction are each RN53(RN64(op)); the
+    // power itself is the raw x87 chain
+    // `exp(RN53(RN64((1/n) * ln(base))))`. Native `powf` misses the near-one
+    // cancellation ladder by 2^27 output ULP, and `ln(base)/n` misses 97 of the
+    // fresh 4,900 rows. This is NOT the worksheet POWER wrapper: RRI(2,1,2)
+    // takes the raw chain and bypasses POWER's exponent-0.5 sqrt shortcut.
+    // The published quotient is DAZ-normalized too. Its zero lane is exactly
+    // -1 and must bypass the raw LN/EXP helper, whose contract requires a
+    // finite positive base.
+    let base = financial_daz(excel_x87_div(future_value, present_value));
+    if base == 0.0 {
+        return Ok(-1.0);
+    }
+    if !base.is_finite() {
+        return Err(FinancialError::Num);
+    }
+    let reciprocal = excel_x87_recip(periods);
+    if !reciprocal.is_finite() {
+        return Err(FinancialError::Num);
+    }
+
+    // periods==1 is an exact identity route, not merely an exponent that
+    // happens to equal one. Adjacent binary64 period values take the raw chain.
+    let powered = if periods == 1.0 {
+        base
+    } else {
+        excel_pow_chain(base, reciprocal)
+    };
+    let result = excel_x87_sub(powered, 1.0);
     if result.is_finite() {
         Ok(result)
     } else {
@@ -972,7 +1027,21 @@ pub fn nominal(effect_rate: f64, periods_per_year: f64) -> Result<f64, Financial
     if effect_rate <= 0.0 || periods < 1.0 {
         return Err(FinancialError::Num);
     }
-    let result = periods * ((1.0 + effect_rate).powf(1.0 / periods) - 1.0);
+    // W109 G6-14 / BUG-FUNC-045: NOMINAL has two legacy x87 power routes after
+    // truncating npery. For n<=2 (equivalently reciprocal exponent >=0.5), the
+    // base and exponent stay register-continuous through FYL2X/F2XM1/FSCALE;
+    // for n>=3, Excel uses the stored-ln/product `excel_pow_chain` substrate.
+    // Both routes store the completed power to binary64 before subtracting one,
+    // then multiply by the truncated period count. The `1+effect` base itself
+    // is an x87 double-rounded add (targeted live discriminators 4/4).
+    let base = excel_x87_add(1.0, effect_rate);
+    let reciprocal = 1.0 / periods;
+    let powered = if periods <= 2.0 {
+        excel_pow_x87_direct(base, reciprocal)
+    } else {
+        excel_pow_chain(base, reciprocal)
+    };
+    let result = periods * (powered - 1.0);
     if result.is_finite() {
         Ok(result)
     } else {
@@ -986,13 +1055,34 @@ pub fn effect(nominal_rate: f64, periods_per_year: f64) -> Result<f64, Financial
     if nominal_rate <= 0.0 || periods < 1.0 {
         return Err(FinancialError::Num);
     }
-    let compounded = match power_kernel(1.0 + nominal_rate / periods, periods) {
-        Ok(value) => value,
-        Err(WorksheetErrorCode::Div0) => return Err(FinancialError::Div0),
-        Err(WorksheetErrorCode::Num) => return Err(FinancialError::Num),
-        Err(_) => return Err(FinancialError::Value),
+    // W109 G6-12 / BUG-FUNC-043: EFFECT's integer power is LSB-first binary
+    // exponentiation, but it belongs to the legacy x87 spill-loop body class:
+    // EVERY accumulator multiply and squaring is RN53(RN64(a*b)). POWER's
+    // ordinary-f64 integer helper is therefore not interchangeable. The base
+    // wrapper is also x87-spilled (`1 + nominal/n`; four targeted add-rounding
+    // probes distinguish it 4/4). The loop is selected only while the truncated
+    // count is below `u32::MAX`; at and above that exact boundary Excel switches
+    // to the stored-base raw x87 LN/product/EXP chain. Banked grid 315/315;
+    // fresh blind grid 870/870; fresh boundary/extreme-domain battery 160/160.
+    let base = excel_x87_add(1.0, excel_x87_div(nominal_rate, periods));
+    let compounded = if periods < u32::MAX as f64 {
+        let mut exponent = periods as u32;
+        let mut accumulator = 1.0;
+        let mut factor = base;
+        while exponent > 0 {
+            if exponent & 1 == 1 {
+                accumulator = excel_x87_mul(accumulator, factor);
+            }
+            exponent >>= 1;
+            if exponent > 0 {
+                factor = excel_x87_mul(factor, factor);
+            }
+        }
+        accumulator
+    } else {
+        excel_pow_chain(base, periods)
     };
-    let result = compounded - 1.0;
+    let result = excel_x87_sub(compounded, 1.0);
     if result.is_finite() {
         Ok(result)
     } else {
@@ -1729,6 +1819,308 @@ mod tests {
     }
 
     #[test]
+    fn effect_uses_x87_spill_binexp_on_banked_and_blind_discriminators() {
+        // BUG-FUNC-043 / G6-12. The ordinary POWER integer path diverges on the
+        // first four rows; the last four independently pin the x87-DR base add.
+        // Excel's x87-spill body publishes every pinned value (banked 315/315,
+        // fresh blind 870/870, targeted base-add discriminators 4/4).
+        for (nominal_bits, periods_bits, excel_bits) in [
+            (
+                0x3fa0000000000000_u64,
+                0x4020000000000000_u64,
+                0x3fa038708c703800_u64,
+            ),
+            (
+                0x3fa2000000000000_u64,
+                0x4022000000000000_u64,
+                0x3fa248a8fcfca840_u64,
+            ),
+            (
+                0x3ef4000000000000_u64,
+                0x4014000000000000_u64,
+                0x3ef4000a00020000_u64,
+            ),
+            (
+                0x3fe9000000000000_u64,
+                0x4069000000000000_u64,
+                0x3ff2e4e18daed698_u64,
+            ),
+            (
+                0x3f4b9617a9a5a876_u64,
+                0x4085500000000000_u64,
+                0x3f4b990fc35d0000_u64,
+            ),
+            (
+                0x3ea73473ef62382d_u64,
+                0x4073600000000000_u64,
+                0x3ea734745e800000_u64,
+            ),
+            (
+                0x3f642dcd48c15028_u64,
+                0x4079000000000000_u64,
+                0x3f6434274b6dee00_u64,
+            ),
+            (
+                0x3f307f0b9d772723_u64,
+                0x4074f00000000000_u64,
+                0x3f307f9348af0000_u64,
+            ),
+        ] {
+            let actual = effect(f64::from_bits(nominal_bits), f64::from_bits(periods_bits))
+                .expect("EFFECT exactness discriminator");
+            assert_eq!(actual.to_bits(), excel_bits);
+        }
+    }
+
+    #[test]
+    fn effect_switches_to_raw_pow_chain_at_u32_max_truncated_periods() {
+        // BUG-FUNC-043 / G6-12. Live Excel 16.0 build 20228 x64, CV2,
+        // NoCache. The dispatch predicate is applied after truncation:
+        // 4_294_967_294 stays on the x87-DR LSB loop, while 4_294_967_295
+        // and every larger finite count use the stored-base raw power chain.
+        for (periods_bits, excel_bits) in [
+            (0x41efffffffc00000_u64, 0x3faa403b3dfedfa0_u64),
+            (0x41efffffffd80000_u64, 0x3faa403b3dfedfa0_u64),
+            (0x41efffffffe00000_u64, 0x3faa403b3ea009a0_u64),
+            (0x41effffffff80000_u64, 0x3faa403b3ea009a0_u64),
+            (0x41f0000000000000_u64, 0x3faa403b3ebaf340_u64),
+        ] {
+            let actual = effect(0.05, f64::from_bits(periods_bits))
+                .expect("EFFECT u32 dispatch discriminator");
+            assert_eq!(actual.to_bits(), excel_bits);
+        }
+    }
+
+    #[test]
+    fn rri_uses_raw_x87_pow_chain_and_x87_spill_wrapper() {
+        // BUG-FUNC-044 / G6-13. The first three rows pin the cancellation ladder;
+        // the fourth separates reciprocal-multiply from `ln(base)/n`; the fifth
+        // proves RRI bypasses POWER's exponent-0.5 sqrt dispatch. The remaining
+        // rows independently distinguish x87-DR quotient, reciprocal, and final
+        // subtraction sites from ordinary binary64 wrapper operations.
+        for (periods_bits, pv_bits, fv_bits, excel_bits) in [
+            (
+                0x4050000000000000_u64,
+                0x3ff0000000000000_u64,
+                0x3ff0000100000000_u64,
+                0x3e4fffff00000000_u64,
+            ),
+            (
+                0x4030000000000000_u64,
+                0x3ff0000000000000_u64,
+                0x3ff0000040000000_u64,
+                0x3e4fffffc0000000_u64,
+            ),
+            (
+                0x4010000000000000_u64,
+                0x3ff0000000000000_u64,
+                0x3ff0000010000000_u64,
+                0x3e4ffffff0000000_u64,
+            ),
+            (
+                0x4022000000000000_u64,
+                0x3ff0000000000000_u64,
+                0x4063c8c0e120f369_u64,
+                0x3fe82c52bd05167a_u64,
+            ),
+            (
+                0x4000000000000000_u64,
+                0x3ff0000000000000_u64,
+                0x4000000000000000_u64,
+                0x3fda827999fcef30_u64,
+            ),
+            (
+                0x3fe6e006120d042e_u64,
+                0x402978cc6ac1e168_u64,
+                0x40233c61102a784a_u64,
+                0xbfd4ca3920945ee6_u64,
+            ),
+            (
+                0x4005212d6e8139b0_u64,
+                0x3fcab99943a5b3ab_u64,
+                0x4004e632e21067d4_u64,
+                0x3ff9a5b86541f846_u64,
+            ),
+            (
+                0x3fe8e568cfd0b2e3_u64,
+                0x3fca61d325e4cc68_u64,
+                0x4003de1b6b8eca5b_u64,
+                0x40378351f3b47272_u64,
+            ),
+            (
+                0x3fcbfcb653b0b35f_u64,
+                0x4008495ceb04db83_u64,
+                0x4030d4b519cf7924_u64,
+                0x40a3b424c968f2bf_u64,
+            ),
+            (
+                0x3fd139ecfdbe8f22_u64,
+                0x4014ddff55ccc4ac_u64,
+                0x3fd1fca822b3c00d_u64,
+                0xbfefffd76a65a154_u64,
+            ),
+            (
+                0x3fc90ab8bd6cd61e_u64,
+                0x402cfffb4faa7327_u64,
+                0x3ff148ab7524aae2_u64,
+                0xbfeffffc6585a794_u64,
+            ),
+        ] {
+            let actual = rri(
+                f64::from_bits(periods_bits),
+                f64::from_bits(pv_bits),
+                f64::from_bits(fv_bits),
+            )
+            .expect("RRI exactness discriminator");
+            assert_eq!(actual.to_bits(), excel_bits);
+        }
+    }
+
+    #[test]
+    fn rri_matches_excel_daz_guard_order_and_exact_period_identity() {
+        // BUG-FUNC-044 / G6-13. Live Excel 16.0 build 20228 x64, CV2,
+        // NoCache. These rows represent the 60-row edge-domain, 35-row blind
+        // disagreement, and six-row exact-period batteries. They pin the
+        // subnormal-period cutoff, input/quotient DAZ, equality-before-sign
+        // ordering, the zero-base -1 route, and the narrow periods==1 identity.
+        const PZ: u64 = 0x0000_0000_0000_0000;
+        const NZ: u64 = 0x8000_0000_0000_0000;
+        const MIN_SUB: u64 = 0x0000_0000_0000_0001;
+        const MAX_SUB: u64 = 0x000f_ffff_ffff_ffff;
+        const MIN_NORMAL: u64 = 0x0010_0000_0000_0000;
+        const ONE: u64 = 0x3ff0_0000_0000_0000;
+        const TWO: u64 = 0x4000_0000_0000_0000;
+        const MAX_FINITE: u64 = 0x7fef_ffff_ffff_ffff;
+
+        for (periods_bits, pv_bits, fv_bits, expected_bits) in [
+            // Equality after DAZ, before the value sign guards.
+            (ONE, PZ, NZ, PZ),
+            (ONE, MIN_SUB, MAX_SUB, PZ),
+            (ONE, 0xbff0_0000_0000_0000, 0xbff0_0000_0000_0000, PZ),
+            // Zero/subnormal future and quotient lanes.
+            (ONE, TWO, PZ, 0xbff0_0000_0000_0000),
+            (ONE, TWO, MIN_SUB, 0xbff0_0000_0000_0000),
+            (
+                MAX_FINITE,
+                0x4340_0000_0000_0000,
+                MIN_NORMAL,
+                0xbff0_0000_0000_0000,
+            ),
+            (MAX_FINITE, TWO, 0x0020_0000_0000_0000, PZ),
+            // periods==1 is a direct identity; adjacent period doubles are not.
+            (ONE, ONE, MAX_FINITE, MAX_FINITE),
+            (ONE, ONE, 0x7fef_ffff_ffff_fffe, 0x7fef_ffff_ffff_fffe),
+            (ONE, ONE, 0x3ff0_0000_0000_0001, 0x3cb0_0000_0000_0000),
+            (
+                0x3fef_ffff_ffff_ffff,
+                ONE,
+                MAX_FINITE,
+                0x7fef_ffff_ffff_ff2a,
+            ),
+            (
+                0x3ff0_0000_0000_0001,
+                ONE,
+                MAX_FINITE,
+                0x7fef_ffff_ffff_fb2a,
+            ),
+        ] {
+            let actual = rri(
+                f64::from_bits(periods_bits),
+                f64::from_bits(pv_bits),
+                f64::from_bits(fv_bits),
+            )
+            .expect("RRI edge-domain numeric witness");
+            assert_eq!(actual.to_bits(), expected_bits);
+        }
+
+        for (periods_bits, pv_bits, fv_bits) in [
+            (MAX_SUB, ONE, ONE),
+            (MIN_SUB, TWO, PZ),
+            (ONE, TWO, 0x8010_0000_0000_0000),
+            (ONE, MIN_SUB, MAX_FINITE),
+        ] {
+            assert_eq!(
+                rri(
+                    f64::from_bits(periods_bits),
+                    f64::from_bits(pv_bits),
+                    f64::from_bits(fv_bits),
+                ),
+                Err(FinancialError::Num)
+            );
+        }
+    }
+
+    #[test]
+    fn nominal_uses_direct_x87_then_raw_pow_routes_with_stored_power() {
+        // BUG-FUNC-045 / G6-14. These pins cover: native-powf cancellation;
+        // the same-effect n=2/n=3 route boundary; x87-DR stored base creation;
+        // the required store before direct FYL2X; and inner subtraction before
+        // the final period multiply. The composite scores 842/842 across the
+        // fresh adjacent-family and boundary-follow-up corpora.
+        for (effect_bits, periods_bits, excel_bits) in [
+            (
+                0x3e00000080000000_u64,
+                0x4018000000000000_u64,
+                0x3e00000200000000_u64,
+            ),
+            (
+                0x400bf137020fc250_u64,
+                0x4000000000000000_u64,
+                0x4001e9f49f3f60d8_u64,
+            ),
+            (
+                0x400bf137020fc250_u64,
+                0x4008000000000000_u64,
+                0x3fff342fbb6b38db_u64,
+            ),
+            (
+                0x3eb4b5bf2f080059_u64,
+                0x4000000000000000_u64,
+                0x3eb4b5bec3c00000_u64,
+            ),
+            (
+                0x3e5bc03275fff5c1_u64,
+                0x4000000000000000_u64,
+                0x3e5bc03278000000_u64,
+            ),
+            (
+                0x3d8683445358528c_u64,
+                0x4000000000000000_u64,
+                0x3d86840000000000_u64,
+            ),
+            (
+                0x3f7aa803f3d0ccd0_u64,
+                0x4000000000000000_u64,
+                0x3f7a9cf2ed8bec00_u64,
+            ),
+            (
+                0x3dc87a14003e7108_u64,
+                0x4010000000000000_u64,
+                0x3dc87a0000000000_u64,
+            ),
+            (
+                0x3d81af400727aaf4_u64,
+                0x402a000000000000_u64,
+                0x3d81ac0000000000_u64,
+            ),
+            (
+                0x3eb4b5bf2f080059_u64,
+                0x408df00000000000_u64,
+                0x3eb4b5be44200000_u64,
+            ),
+            (
+                0x3e2329aa1001d534_u64,
+                0x4074700000000000_u64,
+                0x3e2329a380000000_u64,
+            ),
+        ] {
+            let actual = nominal(f64::from_bits(effect_bits), f64::from_bits(periods_bits))
+                .expect("NOMINAL exactness discriminator");
+            assert_eq!(actual.to_bits(), excel_bits);
+        }
+    }
+
+    #[test]
     fn nominal_of_effect_stays_just_below_nominal_input_for_widened_rows() {
         for periods in [2.0_f64, 4.0, 12.0, 365.0] {
             let effective = effect(0.05, periods).expect("effect widened row");
@@ -2033,12 +2425,21 @@ mod tests {
         let t = PaymentTiming::EndOfPeriod;
         // Was 0.0 (buggy band); now ~ -pv*r = -2e-8 (Excel -1.999999...e-8), NOT collapsed.
         let a = ipmt(1e-13, 1.0, 360.0, 200_000.0, 0.0, t).unwrap();
-        assert!(a < 0.0 && (a - (-2e-8)).abs() < 1e-22, "tiny +rate flows through: {a:e}");
+        assert!(
+            a < 0.0 && (a - (-2e-8)).abs() < 1e-22,
+            "tiny +rate flows through: {a:e}"
+        );
         let b = ipmt(1e-13, 2.0, 360.0, 200_000.0, 0.0, t).unwrap();
-        assert!(b < 0.0 && (b - f64::from_bits(0xbe556a498245c036)).abs() <= 2.0 * f64::EPSILON * b.abs());
+        assert!(
+            b < 0.0
+                && (b - f64::from_bits(0xbe556a498245c036)).abs() <= 2.0 * f64::EPSILON * b.abs()
+        );
         // Negative tiny rate flows through too (old band's abs() wrongly caught it) -> +interest.
         let c = ipmt(-1e-13, 1.0, 360.0, 200_000.0, 0.0, t).unwrap();
-        assert!(c > 0.0 && (c - 2e-8).abs() < 1e-22, "tiny -rate flows through: {c:e}");
+        assert!(
+            c > 0.0 && (c - 2e-8).abs() < 1e-22,
+            "tiny -rate flows through: {c:e}"
+        );
         // EXACT zero rate -> +0.0 (sign preserved), bit-exact.
         assert_eq!(
             ipmt(0.0, 1.0, 360.0, 200_000.0, 0.0, t).unwrap().to_bits(),

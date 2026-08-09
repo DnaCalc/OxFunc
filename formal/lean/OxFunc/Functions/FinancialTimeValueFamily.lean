@@ -69,6 +69,62 @@ inductive PaymentTiming where
   | beginningOfPeriod
   deriving DecidableEq, Repr
 
+/-- W109 executable route tag for EFFECT after `npery` truncation. -/
+inductive EffectPublicationRoute where
+  | x87SpillLsbBinexp
+  | rawStoredPowChain
+  deriving DecidableEq, Repr
+
+def effectPublicationRoute (truncatedPeriods : Nat) : EffectPublicationRoute :=
+  if truncatedPeriods < 4294967295 then
+    .x87SpillLsbBinexp
+  else
+    .rawStoredPowChain
+
+/-- W109 executable route tag for NOMINAL after `npery` truncation. -/
+inductive NominalPublicationRoute where
+  | directRegisterX87
+  | rawStoredPowChain
+  deriving DecidableEq, Repr
+
+def nominalPublicationRoute (truncatedPeriods : Nat) : NominalPublicationRoute :=
+  if truncatedPeriods ≤ 2 then
+    .directRegisterX87
+  else
+    .rawStoredPowChain
+
+/--
+Ordered W109 RRI wrapper route. The booleans are the results of the Rust
+binary64 predicates after the documented DAZ boundaries. This model records
+the semantically load-bearing branch priority without pretending that `Rat`
+duplicates the x87 numeric backend.
+-/
+inductive RriPublicationRoute where
+  | numError
+  | positiveZero
+  | negativeOne
+  | exactPeriodIdentity
+  | rawStoredPowChain
+  deriving DecidableEq, Repr
+
+def rriPublicationRoute
+    (periodBelowMinNormal valuesEqual invalidValueSigns baseZero
+      baseOrReciprocalNonfinite periodIsOne : Bool) : RriPublicationRoute :=
+  if periodBelowMinNormal then
+    .numError
+  else if valuesEqual then
+    .positiveZero
+  else if invalidValueSigns then
+    .numError
+  else if baseZero then
+    .negativeOne
+  else if baseOrReciprocalNonfinite then
+    .numError
+  else if periodIsOne then
+    .exactPeriodIdentity
+  else
+    .rawStoredPowChain
+
 def timingFactor (periodicRate : Rat) : PaymentTiming → Rat
   | .endOfPeriod => 1
   | .beginningOfPeriod => 1 + periodicRate
@@ -169,6 +225,33 @@ theorem pmt_integer_publication_seed_05_10 :
 
 theorem financial_growth_uses_shared_power_publication :
     growthIntegerPublication (1 / 20 : Rat) 10 = powerNatPublication (21 / 20 : Rat) 10 := by
+  native_decide
+
+theorem effect_publication_switches_at_u32_max :
+    effectPublicationRoute 4294967294 = .x87SpillLsbBinexp
+    ∧ effectPublicationRoute 4294967295 = .rawStoredPowChain := by
+  native_decide
+
+theorem nominal_publication_switches_after_two :
+    nominalPublicationRoute 2 = .directRegisterX87
+    ∧ nominalPublicationRoute 3 = .rawStoredPowChain := by
+  native_decide
+
+theorem rri_period_guard_precedes_equality :
+    rriPublicationRoute true true false false false false = .numError := by
+  native_decide
+
+theorem rri_equality_precedes_sign_guard :
+    rriPublicationRoute false true true false false false = .positiveZero := by
+  native_decide
+
+theorem rri_zero_base_precedes_power_routes :
+    rriPublicationRoute false false false true false true = .negativeOne := by
+  native_decide
+
+theorem rri_exact_period_identity_is_distinct_from_raw_power :
+    rriPublicationRoute false false false false false true = .exactPeriodIdentity
+    ∧ rriPublicationRoute false false false false false false = .rawStoredPowChain := by
   native_decide
 
 end OxFunc.Functions

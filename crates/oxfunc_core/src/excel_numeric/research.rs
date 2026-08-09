@@ -50,6 +50,19 @@ pub fn excel_pow_positive(base: f64, exp: f64) -> f64 {
     super::excel_pow_positive(base, exp)
 }
 
+/// The raw x87 pow chain with no POWER-wrapper special cases (notably no
+/// `exp == 0.5 -> sqrt` shortcut). Distribution and financial call sites that
+/// expose the CRT chain directly use this research gateway.
+pub fn excel_pow_chain(base: f64, exp: f64) -> f64 {
+    super::excel_pow_chain(base, exp)
+}
+
+/// Register-continuous x87 power used by NOMINAL for reciprocal exponents at
+/// least `0.5`; the log/product stays extended until the completed power store.
+pub fn excel_pow_x87_direct(base: f64, exp: f64) -> f64 {
+    super::excel_pow_x87_direct(base, exp)
+}
+
 /// The x87 double-rounded product `RN53(RN64(a*b))` Excel uses inside `POWER`.
 pub fn x87_mul(a: f64, b: f64) -> f64 {
     super::x87::mul(a, b)

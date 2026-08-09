@@ -90,6 +90,58 @@ pub(super) fn exp(x: f64) -> f64 {
     result
 }
 
+/// `base^exponent` through the register-continuous x87 `FYL2X` ->
+/// `FRNDINT`/`F2XM1`/`FSCALE` chain. Unlike [`exp`] composed with [`ln`], the
+/// logarithm/product is never published to binary64 before the base-2 exponent
+/// assembly. Excel's legacy NOMINAL financial helper uses this route when the
+/// reciprocal exponent is at least `0.5` (truncated `npery <= 2`).
+///
+/// `base` must be finite and positive and `exponent` finite; callers own domain
+/// and publication/error handling.
+pub(super) fn pow_direct(base: f64, exponent: f64) -> f64 {
+    let mut result: f64 = 0.0;
+    let cw_core: u16 = CW_CORE;
+    let mut cw_save: u16 = 0;
+    // SAFETY: straight-line x87 arithmetic with balanced stack depth. The
+    // caller's control word is saved/restored and all memory operands are valid
+    // references to local binary64/u16 values.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld qword ptr [{exponent}]", // st0 = exponent
+            "fld qword ptr [{base}]",     // st0 = base, st1 = exponent
+            "fyl2x",                      // st0 = exponent*log2(base)
+            "fld st(0)",                  // st0 = t, st1 = t
+            "frndint",                    // st0 = k = rint(t), st1 = t
+            "fxch st(1)",                 // st0 = t, st1 = k
+            "fsub st, st(1)",             // st0 = f = t-k
+            "ftst",
+            "fnstsw ax",
+            "fabs",
+            "f2xm1",                      // st0 = 2^|f|-1, st1 = k
+            "fld1",
+            "faddp st(1), st",            // st0 = 1+w, st1 = k
+            "sahf",
+            "jae 2f",
+            "fld1",
+            "fdivrp st(1), st",           // st0 = 1/(1+w), st1 = k
+            "2:",
+            "fscale",
+            "fstp qword ptr [{result}]",  // required binary64 publication
+            "fstp st(0)",                 // pop k
+            "fldcw word ptr [{save}]",
+            base = in(reg) &base,
+            exponent = in(reg) &exponent,
+            result = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+            out("ax") _,
+        );
+    }
+    result
+}
+
 /// Shared `y*log2(x)` epilogue: with `st0 = x` and `st1 = y` already on the x87
 /// stack under CW `0x133F`, run `fyl2x` and store the binary64 result. This is
 /// the `fFLN`/`fFLOGm` core (`ln = fldln2·log2`, `log10 = fldlg2·log2`,
