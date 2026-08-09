@@ -139,6 +139,7 @@ close:   catalog row out, ruled-out ledger rows in, evidence doc
 - CUMPRINC exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/CUMPRINC_EXACT_PARTIAL_REPORT_20260809.md`
 - RATE exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/RATE_EXACT_GRAPH_PARTIAL_REPORT_20260809.md`
 - PRICE/DURATION residual-graph partial report: `smart-fuzzer/tools/calc_graph_racer/PRICE_DURATION_RESIDUAL_GRAPH_SCOPE_PARTIAL_20260809.md`
+- IRR exact-graph discovery checkpoint: [W109_IRR_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md](../function-lane/W109_IRR_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md)
 
 ## 7. 2026-08-09 reconciliation and active checkpoint
 
@@ -420,6 +421,31 @@ remain supported, but the numerator/denominator accumulator graph is open.
 Hashes, provenance, candidate scores, and replay commands are in
 `smart-fuzzer/tools/calc_graph_racer/PRICE_DURATION_RESIDUAL_GRAPH_SCOPE_PARTIAL_20260809.md`.
 
+### 7.11 IRR objective/evaluator decomposition checkpoint
+
+A frozen 300-row build-20228/CV2 IRR discovery set and an answer-blind
+900-point worksheet-NPV companion now separate three surfaces that the July
+description conflated: raw worksheet NPV, worksheet evaluator publication, and
+IRR's private objective. The companion captures raw NPV, direct `NPV+c0`, and
+referenced-raw-cell `+c0` at the supplied guess and both sides of a binary32
+`0.001` perturbation in discount-factor space.
+
+Worksheet direct and referenced-cell composition agree `900/900`. Both snap 18
+nonzero near-cancellations to +0; a scale-relative threshold between the
+largest snapped ratio `5.684341886080802e-16` and the smallest published
+nonzero ratio `2.830802259268159e-14` classifies the discovery, but its exact
+constant is not pinned. IRR does not inherit any of those 18 snap decisions,
+and adding the smallest classifying snap to the best worksheet-tail objective
+worsens the guaranteed two-step subset from `40/72` to `37/72`.
+
+Raw worksheet NPV also remains structurally open: reverse-Horner division leads
+at `636/900`, max 4 ULP, with no exact survivor. The best frozen no-snap IRR
+objective/schedule graph is only `44/72` on the guaranteed two-step subset; the
+public VB Financial.IRR control is `2/300`. The 180-row heldout is still sealed
+and uncaptured. Exact hashes, provenance, replay commands, and the three-axis
+handoff are in
+[W109_IRR_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md](../function-lane/W109_IRR_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md).
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
@@ -435,6 +461,7 @@ Status axes:
    cancellation/small-rate objective, exact FD/update association, publication
    distinction, wider semantic surface, and sealed heldout lanes.
    PRICE/DURATION retain their residual accumulator/publication graphs and
-   sealed heldouts. COS/BESSELJ,
+   sealed heldouts. IRR retains its private objective, scale/error boundary,
+   remaining schedule/publication graph, and sealed heldout. COS/BESSELJ,
    ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
    close the wider campaign.
