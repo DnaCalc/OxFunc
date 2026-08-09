@@ -90,6 +90,16 @@ Rows intentionally split to successor exactness streams:
 2. `=MINVERSE({1,2;3,4})` remains a `2x2` low-bit matrix drift; successor
    `BUG-FUNC-025`, bead `oxf-dzfk`.
 
+## 2026-08-09 Successor Reconciliation
+
+Both numeric successors are now closed signed off: BUG-FUNC-024 repaired and
+validated BESSELY, while BUG-FUNC-025 landed the exact current-reference
+MINVERSE per-operation x87 graph in `bce3558` and replays `1599/1599` cells.
+This parent remains open only because the already-separated `MINVERSE(5)` /
+`MMULT(5,2)` final-cell publication/comparator seam is still awaiting
+downstream acknowledgement under `CSC-0024`, `CSC-0025`, and `HO-FN-010`.
+Bead `oxf-i45e` therefore remains open; child bead `oxf-dzfk` is closed.
+
 ## Evidence
 1. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
 2. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`

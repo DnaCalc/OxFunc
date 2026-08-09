@@ -1,7 +1,13 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-09` (`a03a75f` landed the exact current-reference
+Last reconciled: `2026-08-09` (`bce3558` landed the exact current-reference
+MINVERSE graph: right-looking Doolittle LU with all eight arithmetic sites
+published through x87 PC64-to-PC53 double rounding plus completed-output +0
+normalization. Production replays `1599/1599`; BUG-FUNC-025 and bead
+`oxf-dzfk` are closed signed off, and G5-01 was retired. The separate 1x1
+final-cell publication seam and the wider W109 campaign remain partial.)
+Previous reconcile: `2026-08-09` (`a03a75f` landed the exact current-reference
 ATANH three-regime graph. Dense discovery, exact boundary bisection, a retired
 refinement set, and a fresh post-selection held-out replay `20780/20780` typed
 bit outcomes; BUG-FUNC-027 CLASS-C4 is `closed_signed_off`, bead `oxf-jwh5.6`
@@ -176,9 +182,13 @@ ruled-out ledger. See
 
 ## G5 — Matrix Numeric And Shape
 
-| Function(s) | Discrepancy | Sev | Mat | Evidence |
-|-------------|-------------|-----|-----|----------|
-| G5-01 — MINVERSE | W109 (2026-07-13, **KERNEL LANDED**): algorithm = **Doolittle LU + partial pivot + division multiplier + sequential elimination + per-column unit-vector solves (forward L·y streaming-asc, division-form back-sub), plain double**. The shipping kernel until this landing was **Gauss-Jordan on `[A\|I]`** (`80/159` 3x3, `102/448` 4x4) — the prior "OxFunc already implements the identified algorithm" note was WRONG (it assumed the Python-Doolittle match implied the Rust shipped Doolittle; the Rust actually shipped ruled-out Gauss-Jordan). `inverse_kernel` in `matrix_family.rs` is now swapped to Doolittle and RE-VERIFIED end-to-end through the compiled surface (`eval_surface_value_call` via `matrix_local_eval`): **3x3 `80→150/159`, 4x4 `102→448/448` (perfect)** = +416 cells, `1502/1502` lib tests green, ZERO regressions (old-kernel passing cells are a strict subset). Ruled out for the residual this round: adjugate/cofactor `adj(A)/det` (`51/155`/`85/448`), Gauss-Jordan (`80/159`/`102/448`), the full **32-variant solve-ordering** sweep (fwd/back × stream/sum-then-sub × asc/desc × div/recip — all ≤`150`), and **x87 80-bit extended** registers-with-double-stores (best `110/159`, strictly worse — MINVERSE is plain SSE2 double, NOT a legacy x87 body). The `9` residual `+1`/`+2`-ULP misses are all on ill-conditioned 3x3 (small-determinant integer matrices e.g. [[2,-1,0],[-1,2,-1],[0,-1,2]] det 4, [[1,2,3],[4,5,6],[7,8,10]] det -3, near-identity 1e-8) where Excel lands 1 ULP off the exact representable value in a direction plain-double Doolittle does not — the residual DIRECTION flips (Excel further from exact on tridiag/integer, closer on near-identity), so it is a genuinely different op-graph for these cells, NOT one-extra/one-fewer rounding. Deferred as a targeted decoder probe; 4x4 has zero residual. | NUM-S | M3 | W109 4x4 harvest / G5-01-answers-m4b.json; matrix_family.rs:180 |
+No open Category-2 matrix numeric row remains on the current reference profile.
+G5-01 MINVERSE was retired on 2026-08-09 after `bce3558` landed the
+per-operation x87-double-rounded Doolittle graph and positive-zero publication
+rule. Direct production replay is `607/607` banked + `576/576` retired
+refinement + `416/416` frozen disjoint publication = `1599/1599`. History,
+candidate corrections, hashes, and checklists remain in BUG-FUNC-025 and
+[`W109_MINVERSE_IDENTIFICATION_20260809.md`](function-lane/W109_MINVERSE_IDENTIFICATION_20260809.md).
 
 `MINVERSE(5)` and `MMULT(5,2)` are deliberately absent here. Nested `TYPE`
 evidence proves that their function results remain `1x1` arrays; Excel's final-cell

@@ -96,7 +96,8 @@ G6-01 surface for Phase 2/6 work.
 4. **Phase 5 — statistical substrate**: GAMMALN kernel, incomplete
    beta/gamma continued fractions, legacy-vs-modern pair differencing,
    fixed-statistic probes for the tests, metamorphic identification for the
-   regression family; MINVERSE distinguishing-matrix race.
+   regression family. The MINVERSE distinguishing-matrix race is now signed
+   off separately in Section 7.6.
 5. **Phase 6 — ATANH signed off; ACOTH remains independent.** The original
    368-case reversal triggered a dense 5,902-row map, exact live boundary
    bisection, retired refinement set, and fresh post-selection held-out. The
@@ -234,11 +235,34 @@ binding without duplicating x87 arithmetic. BUG-FUNC-027 CLASS-C4 is
 BUG-FUNC-027 subclasses, ACOTH, and the wider W109 campaign remain open. No
 FEC/F3E or evaluator-facing handoff is required.
 
+### 7.6 MINVERSE G5-01 exact graph signed off
+
+The July Doolittle structure was correct, but its “plain SSE2 double” claim is
+retracted. The negative experiment tested continuously retained x87 regions;
+it did not test the legacy per-operation `RN53(RN64(op))` publication pattern.
+An exhaustive eight-site mask race now identifies x87 double rounding at LU
+factor division, elimination multiply/subtract, forward and backward solve
+multiply/subtract, and final division. Completed numeric zero cells publish as
+positive zero.
+
+The first `576`-row targeted set changed the model and is explicitly retired
+into refinement. A second bank/refinement-disjoint gate froze `32`
+discriminators per arithmetic site, `64` signed-zero rows, and `96` controls;
+fresh build-20228/CV2 matrix Value2 NoCache capture selected the graph
+`416/416`, uniquely across all 256 masks. The landed production surface replays
+`607/607 + 576/576 + 416/416 = 1599/1599`. Implementation, exact pins, and
+deterministic tooling landed in `bce3558`; full core passes `1521` tests with
+`4` ignored, and the 492-job Lean build records the route binding.
+BUG-FUNC-025 and bead `oxf-dzfk` are closed signed off; G5-01 is retired. The
+separate `MINVERSE(5)` final-cell publication seam remains in parent
+BUG-FUNC-023 / HO-FN-010, so this scoped closure does not close that parent or
+the wider campaign. No new FEC/F3E handoff is required.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: all remaining catalog rows, including PMT-family, ACOTH, and CONVERT;
+4. `open_lanes`: all remaining catalog rows, including PMT-family, ACOTH, COMBIN, and CONVERT;
    broad post-catalog discovery; declared application-version/Compatibility-
-   Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ closure
-   is scoped and does not close the wider campaign.
+   Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ,
+   ATANH, and MINVERSE closures are scoped and do not close the wider campaign.

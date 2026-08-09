@@ -39,6 +39,7 @@ Define the current-phase contract for the `W067` rounding, matrix, and sumproduc
 4. Matrix functions that compute a `1x1` array output preserve that array as an OxFunc function result; Excel worksheet-cell publication may display the anchor value as a scalar, including `MINVERSE(5)` and `MMULT(5,2)`, but nested `TYPE` probes classify the result as an array.
 5. `MUNIT` follows separate scalar numeric coercion, admitting numeric text and truncating fractional sizes toward zero before validation.
 6. non-square matrix lanes publish `#VALUE!`, singular inverse lanes publish `#NUM!`, and multiplication shape mismatch publishes `#VALUE!`.
+7. `MINVERSE` uses right-looking Doolittle LU with partial pivoting and per-column unit-vector solves. Its factor division, elimination multiply/subtract, forward-solve multiply/subtract, backward-solve multiply/subtract, and final division each publish through `RN53(RN64(op))`; completed numeric zero cells publish as positive zero. This route is the current-reference Excel 16.0 build 20228 x64 / Compatibility Version 2 graph identified by W109.
 
 ## 5. Sumproduct / Series Contract
 1. `SUMPRODUCT`, `SUMX2MY2`, `SUMX2PY2`, `SUMXMY2`, and `SERIESSUM` use the refs-visible adapter seam on the admitted current baseline.
@@ -62,6 +63,8 @@ Native replay anchors:
 1. `docs/function-lane/W67_SCENARIO_MANIFEST_SEED.csv`
 2. `tools/w67-probe/run-w67-math-matrix-rounding-baseline.ps1`
 3. `.tmp/w67-math-matrix-rounding-results.csv`
+4. `smart-fuzzer/tools/calc_graph_racer/src/bin/race_minverse_residual.rs`
+5. `smart-fuzzer/work/w109/G5-01-minverse/` (banked, retired refinement, and frozen publication artifacts)
 
 Provenance anchors:
 1. `docs/function-lane/W16_BATCH32_CEILING_FLOOR_NOTES.md`

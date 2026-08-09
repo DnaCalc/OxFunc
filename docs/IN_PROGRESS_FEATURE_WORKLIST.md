@@ -92,6 +92,10 @@ Supersession note:
 
 ### IP-18 Smart-Fuzzer Differential Exploration
 - Current state: active smart-fuzzer lane. `W088` supplied the pilot substrate; `W089` has now run the first comprehensive manifest-seed exploration against live Excel COM. The 2026-04-30 pass recorded `339` broad seed cases, `139` successor array-support replay cases, a `1,000,000`-case local finance reference run, and an Excel throughput benchmark. It fixed the `ABS` array-lift gap as `BUG-FUNC-022`, corrected stale POWER known-deviation classification in the smart-fuzzer inventory, and promoted residual statistical exactness drift to `BUG-FUNC-021` plus non-statistical/matrix drift to `BUG-FUNC-023`. The `BUG-FUNC-023` follow-up repaired `VDB`; its attempted `MINVERSE(5)` / `MMULT(5,2)` scalar collapse was later reverted when nested `TYPE` probes proved an internal `1x1` array, so final-cell appearance is now Category-1 publication work (`CSC-0024`/`CSC-0025`, `HO-FN-010`). Numeric successors split to `BUG-FUNC-024` (`BESSELY`, subsequently signed off) and `BUG-FUNC-025` (`MINVERSE` matrix numeric exactness). The 2026-05-09 broad scalar exploration extended W092 outside the manifest-seed plateau by walking `~50` single/two-arg numeric scalar functions across per-family numeric bands; aggregate `11.5M` local cases plus `4,200` Excel comparisons surfaced `BUG-FUNC-027` covering 15 recurring mismatch subclasses (GAMMALN tiny pos `+Inf`, GAMMA tiny non-zero false pole, SINH/COSH overflow, POWER overflow, PERMUTATIONA overflow, FISHERINV saturation, MROUND zero-num, MOD `#NUM!` threshold, trig large-arg `#NUM!`, trig precision drift, ATANH near-boundary, ACOTH/ACOSH near-1, ATAN2 magnitude spread).
+- 2026-08-09 successor update: `BUG-FUNC-025` MINVERSE numeric semantics are
+  closed signed off at `bce3558` with `1599/1599` production replay; only the
+  already-separate `1x1` final-cell publication seam remains in parent
+  BUG-FUNC-023 / `HO-FN-010`.
 - Canonical owner: [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md), [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md), [COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md), [BROAD_SCALAR_EXPLORATION_2026-05-09.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\BROAD_SCALAR_EXPLORATION_2026-05-09.md), [BUG-FUNC-021_w090_statistical_numeric_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-021_w090_statistical_numeric_exactness_drift.md), [BUG-FUNC-022_abs_unary_array_lift_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-022_abs_unary_array_lift_gap.md), [BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md), [BUG-FUNC-024_bessely_current_baseline_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-024_bessely_current_baseline_exactness_drift.md), [BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md), [BUG-FUNC-027_broad_scalar_invocation_space_findings.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-027_broad_scalar_invocation_space_findings.md), [smart-fuzzer\README.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\README.md), and [SMART_FUZZER_DESIGN.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\SMART_FUZZER_DESIGN.md).
 
 ### IP-19 Canonical Runtime Function Registry
@@ -192,7 +196,7 @@ Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_complete` for the W092 long-run objective through the current stop gate
 3. `integration_completeness`: `integrated`
-4. `open_lanes`: broader catalog-axis saturation, richer generator design, provider/context/locale/version fixtures, `BUG-FUNC-018` landed-ref promotion, `BUG-FUNC-021`, `BUG-FUNC-024`, `BUG-FUNC-025`, `BUG-FUNC-015`, and `HO-FN-010`.
+4. `open_lanes`: broader catalog-axis saturation, richer generator design, provider/context/locale/version fixtures, `BUG-FUNC-018` landed-ref promotion, `BUG-FUNC-021`, `BUG-FUNC-015`, and `HO-FN-010`.
 
 ### IP-20 UDF Registration And Name-Resolution Seam
 - Current state: active design lane with the first OxFunc-local API tranche landed and `HO-FN-014` acknowledged by OxFml. W093 defines the source-neutral UDF registration contract and OxFml invalidation seam so XLL, VBA, JavaScript custom functions, Automation, and worksheet registered-external paths can converge on OxFunc registry truth without moving workbook defined names into OxFunc.
@@ -350,9 +354,14 @@ Status axes:
   publication, the exact binary64 cubic threshold, and the stored-x87 signed
   ratio route replay `20780/20780`. BUG-FUNC-027 CLASS-C4 and bead
   `oxf-jwh5.6` are closed signed off; G4-02 is retired. This scoped closure
-  leaves the other BUG-FUNC-027 subclasses and W109 open. The
+  leaves the other BUG-FUNC-027 subclasses and W109 open. MINVERSE numeric
+  semantics landed in `bce3558`: all eight LU/solve arithmetic sites use
+  per-operation x87 double rounding and completed zeros publish +0. Production
+  replay is `1599/1599`; BUG-FUNC-025 and bead `oxf-dzfk` are closed signed
+  off, and G5-01 is retired. The separate 1x1 final-cell publication seam
+  remains under BUG-FUNC-023 / HO-FN-010. The
   PMT/IPMT/PPMT/CUM family, ACOTH,
-  GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and the other
+  COMBIN, GAMMALN/GAMMA, distributions, regression, CONVERT, and the other
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
   negative result over the stated search grammar and size limits is established,
@@ -365,6 +374,6 @@ Status axes:
 3. `integration_completeness`: `partial`
 4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
    ACOTH's independent exact-graph lane;
-   GAMMALN/GAMMA, distributions, regression, MINVERSE, CONVERT, and every other
+   COMBIN, GAMMALN/GAMMA, distributions, regression, CONVERT, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.
