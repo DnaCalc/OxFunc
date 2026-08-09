@@ -26,7 +26,11 @@ param(
 # ~20k-row chunk), and writes the answers back in the racer's WitnessSet
 # format:
 #
-#   { "function": "...", "witnesses": [ { "id", "args", "expected_bits" } ] }
+#   { "function": "...", "witnesses": [ ... ],
+#     "capture_provenance": { ... } }
+#
+# `capture_provenance` is additive: existing WitnessSet consumers continue to
+# read the unchanged `function` and `witnesses` members.
 #
 # It shares ONE persistent OracleCache with Run-W109ProbeBatch.ps1: cache
 # reads dedup work, cache writes are byte-identical (routed through the same
@@ -64,8 +68,32 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$script:RunnerPath = $MyInvocation.MyCommand.Path
+$script:RunnerVersion = "w109-bulk-batch-v2"
 Import-Module (Join-Path $scriptRoot "OracleCache.psm1") -Force
 Import-Module (Join-Path $scriptRoot "CellRefBatch.psm1") -Force
+
+function New-CaptureProvenance {
+    param([object] $Environment, [string] $CacheMode, [object] $CacheStats)
+    $runnerItem = Get-Item -LiteralPath $script:RunnerPath
+    return [ordered]@{
+        schema_version = "w109-capture-provenance-v1"
+        captured_utc = [DateTime]::UtcNow.ToString("o")
+        environment = $Environment
+        oracle_cache = [ordered]@{
+            mode = $CacheMode
+            root = $(if ($CacheMode -eq "cache" -and $null -ne $CacheStats) { $CacheStats.cache_root } else { $null })
+            hits = $(if ($CacheMode -eq "cache" -and $null -ne $CacheStats) { $CacheStats.hits } else { 0 })
+            misses = $(if ($CacheMode -eq "cache" -and $null -ne $CacheStats) { $CacheStats.misses } else { 0 })
+        }
+        runner = [ordered]@{
+            name = $runnerItem.Name
+            version = $script:RunnerVersion
+            script_last_write_utc = $runnerItem.LastWriteTimeUtc.ToString("o")
+            powershell_version = $PSVersionTable.PSVersion.ToString()
+        }
+    }
+}
 
 # --- xlEnum constants (avoid loading the interop assembly) ---------------
 $script:xlCalculationManual = -4135
@@ -80,15 +108,6 @@ $script:BulkStartupSeconds = 0.0    # one-off Excel instance creation cost
 $script:BulkComputeSeconds = 0.0    # fill + calc + read (excludes startup)
 $script:BulkProbeCount = 0          # scalar probes actually computed live
 
-function ConvertFrom-BitsHex {
-    param([Parameter(Mandatory)] [string] $Hex)
-    if (-not ($Hex -match '^0x[0-9a-fA-F]{16}$')) {
-        throw "bad bits hex '$Hex'"
-    }
-    $bits = [uint64]::Parse($Hex.Substring(2), [Globalization.NumberStyles]::HexNumber)
-    return [System.BitConverter]::ToDouble([System.BitConverter]::GetBytes($bits), 0)
-}
-
 function ConvertTo-OracleRequest {
     param([Parameter(Mandatory)] [string] $FunctionName, [Parameter(Mandatory)] [object] $Probe)
     $args = New-Object 'System.Collections.Generic.List[object]'
@@ -100,15 +119,15 @@ function ConvertTo-OracleRequest {
                 $cols = @($items[0]).Count
                 $values = @()
                 foreach ($row in $items) {
-                    $values += @(@($row) | ForEach-Object { ConvertFrom-BitsHex ([string]$_) })
+                    $values += @(@($row) | ForEach-Object { [double](ConvertFrom-W109MixedScalarArg $_) })
                 }
                 [void]$args.Add(@{ kind = "matrix"; rows = $rows; cols = $cols; values = $values })
             } else {
-                $values = @($items | ForEach-Object { ConvertFrom-BitsHex ([string]$_) })
+                $values = @($items | ForEach-Object { [double](ConvertFrom-W109MixedScalarArg $_) })
                 [void]$args.Add(@{ kind = "matrix"; rows = $values.Count; cols = 1; values = $values })
             }
         } else {
-            [void]$args.Add((ConvertFrom-BitsHex ([string]$a)))
+            [void]$args.Add((ConvertFrom-W109MixedScalarArg $a))
         }
     }
     $request = @{ function_name = $FunctionName; args = $args.ToArray() }
@@ -129,6 +148,14 @@ function _Rel {
     if ($null -ne $Object -and [System.Runtime.InteropServices.Marshal]::IsComObject($Object)) {
         [void] [System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($Object)
     }
+}
+
+function _Get-ExcelBitness {
+    param([object] $Excel)
+    $os = $(try { [string] $Excel.OperatingSystem } catch { "" })
+    if ($os -match '(?i)64[ -]?bit') { return "64-bit" }
+    if ($os -match '(?i)32[ -]?bit') { return "32-bit" }
+    return "unknown"
 }
 
 function _Candidate-HasMatrix {
@@ -170,7 +197,9 @@ function _Ensure-BulkExcel {
     $script:BulkEnvironment = [ordered]@{
         excel_version = [string] $script:BulkExcel.Version
         excel_build = $(try { [string] $script:BulkExcel.Build } catch { $null })
+        excel_bitness = _Get-ExcelBitness $script:BulkExcel
         workbook_compatibility = $(try { [string] $script:BulkWorkbook.CompatibilityVersion } catch { "unknown" })
+        excel_operating_system = $(try { [string] $script:BulkExcel.OperatingSystem } catch { "unknown" })
         excel_input_plumbing = "cell_value2_bulk"
     }
     $sw.Stop()
@@ -212,8 +241,7 @@ function _Invoke-BulkScalarChunk {
         $argList = @($Candidates[$r].args)
         for ($c = 0; $c -lt $Arity; $c++) {
             $a = $argList[$c]
-            if ($a -is [bool]) { $argArray[$r, $c] = [bool] $a }
-            else { $argArray[$r, $c] = [double] $a }
+            $argArray[$r, $c] = ConvertFrom-W109MixedScalarArg $a
         }
     }
     $tl = $cells.Item(1, 1)
@@ -267,14 +295,26 @@ function Invoke-ExcelBulkBatch {
     # with outcomes parallel to $Candidates. Reuses the persistent session
     # (does NOT quit Excel -- the caller tears it down once at the end).
     [CmdletBinding()]
-    param([Parameter(Mandatory)] [object[]] $Candidates)
+    param([Parameter(Mandatory)] [AllowEmptyCollection()] [object[]] $Candidates)
 
     if ($Candidates.Count -eq 0) {
-        return [ordered]@{ blocked = $false; outcomes = @(); environment = @{ excel_input_plumbing = "cell_value2_bulk" } }
+        try {
+            _Ensure-BulkExcel
+            return [ordered]@{ blocked = $false; outcomes = @(); environment = $script:BulkEnvironment }
+        }
+        catch {
+            return [ordered]@{
+                blocked = $true
+                blocker = "Excel environment handshake failed: $($_.Exception.Message)"
+                outcomes = @()
+                environment = @{ excel_input_plumbing = "cell_value2_bulk" }
+            }
+        }
     }
 
     try {
         $outcomes = New-Object 'object[]' $Candidates.Count
+        $matrixEnvironment = $null
 
         # Partition: scalar (fast bulk path) vs matrix (delegate to legacy).
         $scalarIdx = New-Object 'System.Collections.Generic.List[int]'
@@ -290,6 +330,7 @@ function Invoke-ExcelBulkBatch {
             if ($legacy.blocked) {
                 return [ordered]@{ blocked = $true; blocker = "matrix-delegate: $($legacy.blocker)"; outcomes = @(); environment = $legacy.environment }
             }
+            $matrixEnvironment = $legacy.environment
             $legacyOutcomes = @($legacy.outcomes)
             for ($k = 0; $k -lt $matrixIdx.Count; $k++) { $outcomes[$matrixIdx[$k]] = $legacyOutcomes[$k] }
         }
@@ -326,7 +367,17 @@ function Invoke-ExcelBulkBatch {
         return [ordered]@{
             blocked = $false
             outcomes = @($outcomes)
-            environment = $(if ($null -ne $script:BulkEnvironment) { $script:BulkEnvironment } else { [ordered]@{ excel_input_plumbing = "cell_value2_bulk" } })
+            environment = $(
+                if ($scalarIdx.Count -gt 0 -and $null -ne $script:BulkEnvironment) {
+                    $script:BulkEnvironment
+                }
+                elseif ($null -ne $matrixEnvironment) {
+                    $matrixEnvironment
+                }
+                else {
+                    [ordered]@{ excel_input_plumbing = "cell_value2_bulk" }
+                }
+            )
         }
     }
     catch {
@@ -344,7 +395,12 @@ $functionName = [string]$batchDoc.function
 
 if ($probes.Count -eq 0) {
     Write-Host "probe batch is empty; nothing to ask"
-    $answered = [ordered]@{ function = $functionName; witnesses = @() }
+    $answered = [ordered]@{
+        function = $functionName
+        witnesses = @()
+        capture_provenance = New-CaptureProvenance `
+            -Environment $null -CacheMode $(if ($NoCache) { "no_cache" } else { "cache" }) -CacheStats $null
+    }
     $outDir = Split-Path -Parent $Out
     if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
     $answered | ConvertTo-Json -Depth 16 | Set-Content -Path $Out -Encoding utf8NoBOM
@@ -358,6 +414,7 @@ if ($null -eq $Invoker) {
 }
 
 $outcomesByIndex = $null
+$captureEnvironment = $null
 $totalSw = [System.Diagnostics.Stopwatch]::StartNew()
 try {
     if ($NoCache) {
@@ -368,6 +425,7 @@ try {
         if ($outcomesByIndex.Count -ne $requests.Count) {
             Write-Error "bulk engine returned $($outcomesByIndex.Count) outcomes for $($requests.Count) probes"; exit 1
         }
+        $captureEnvironment = $bulk.environment
     } else {
         # Cached mode: dedup via OracleCache, misses computed by the bulk
         # invoker, answers persisted into the SHARED cache.
@@ -376,6 +434,7 @@ try {
         $result = Get-OracleAnswers @oracleArgs
         if ($result.blocked) { Write-Error "oracle blocked: $($result.blocker)"; exit 1 }
         $outcomesByIndex = @($result.answers | ForEach-Object { $_.outcome })
+        $captureEnvironment = $result.environment
     }
 }
 finally {
@@ -399,9 +458,14 @@ for ($i = 0; $i -lt $probes.Count; $i++) {
     })
 }
 
+$captureStats = $(if ($NoCache) { $null } else { Get-OracleCacheStats })
 $answered = [ordered]@{
     function = $functionName
     witnesses = $witnesses.ToArray()
+    capture_provenance = New-CaptureProvenance `
+        -Environment $captureEnvironment `
+        -CacheMode $(if ($NoCache) { "no_cache" } else { "cache" }) `
+        -CacheStats $captureStats
 }
 $outDir = Split-Path -Parent $Out
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }

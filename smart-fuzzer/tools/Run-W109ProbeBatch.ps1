@@ -15,7 +15,11 @@ param(
 # and overlapping batches never re-ask Excel), and writes the answers back in
 # the racer's WitnessSet format:
 #
-#   { "function": "...", "witnesses": [ { "id", "args", "expected_bits" } ] }
+#   { "function": "...", "witnesses": [ ... ],
+#     "capture_provenance": { ... } }
+#
+# `capture_provenance` is additive: existing WitnessSet consumers continue to
+# read the unchanged `function` and `witnesses` members.
 #
 # Probe args are exact-bits hex; scalars go through cell Value2 plumbing as
 # doubles, arrays as single-column matrix ranges. Non-numeric Excel outcomes
@@ -27,7 +31,31 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$script:RunnerPath = $MyInvocation.MyCommand.Path
+$script:RunnerVersion = "w109-probe-batch-v2"
 Import-Module (Join-Path $scriptRoot "OracleCache.psm1") -Force
+
+function New-CaptureProvenance {
+    param([object] $Environment, [object] $CacheStats)
+    $runnerItem = Get-Item -LiteralPath $script:RunnerPath
+    return [ordered]@{
+        schema_version = "w109-capture-provenance-v1"
+        captured_utc = [DateTime]::UtcNow.ToString("o")
+        environment = $Environment
+        oracle_cache = [ordered]@{
+            mode = "cache"
+            root = $(if ($null -ne $CacheStats) { $CacheStats.cache_root } else { $CacheRoot })
+            hits = $(if ($null -ne $CacheStats) { $CacheStats.hits } else { 0 })
+            misses = $(if ($null -ne $CacheStats) { $CacheStats.misses } else { 0 })
+        }
+        runner = [ordered]@{
+            name = $runnerItem.Name
+            version = $script:RunnerVersion
+            script_last_write_utc = $runnerItem.LastWriteTimeUtc.ToString("o")
+            powershell_version = $PSVersionTable.PSVersion.ToString()
+        }
+    }
+}
 
 function ConvertFrom-BitsHex {
     param([Parameter(Mandatory)] [string] $Hex)
@@ -78,7 +106,11 @@ $batchDoc = Get-Content $Batch -Raw | ConvertFrom-Json
 $probes = @($batchDoc.probes)
 if ($probes.Count -eq 0) {
     Write-Host "probe batch is empty; nothing to ask"
-    $answered = [ordered]@{ function = [string]$batchDoc.function; witnesses = @() }
+    $answered = [ordered]@{
+        function = [string]$batchDoc.function
+        witnesses = @()
+        capture_provenance = New-CaptureProvenance -Environment $null -CacheStats $null
+    }
     $answered | ConvertTo-Json -Depth 16 | Set-Content -Path $Out -Encoding utf8NoBOM
     exit 0
 }
@@ -114,6 +146,7 @@ for ($i = 0; $i -lt $probes.Count; $i++) {
 $answered = [ordered]@{
     function = $functionName
     witnesses = $witnesses.ToArray()
+    capture_provenance = New-CaptureProvenance -Environment $result.environment -CacheStats (Get-OracleCacheStats)
 }
 $outDir = Split-Path -Parent $Out
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }

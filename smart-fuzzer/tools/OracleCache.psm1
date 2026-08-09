@@ -8,7 +8,8 @@
 #
 # Cache layout:
 #   <CacheRoot>/env.json                    - pinned oracle environment
-#                                             (excel_build, excel_version, cpu_id)
+#                                             (version/build/bitness/workbook
+#                                              compatibility/cpu identity)
 #   <CacheRoot>/build-<build>/<FUNC>.jsonl  - one shard per function, one JSON
 #                                             record per answered question
 #
@@ -22,7 +23,7 @@
 #   Initialize-OracleCache -CacheRoot <path> [-Environment <hashtable>]
 #     Loads (or creates) env.json and primes the in-memory index. Pass
 #     -Environment to pin a synthetic environment (tests); otherwise the first
-#     live batch records the real one.
+#     live environment handshake records the real one.
 #
 #   Get-OracleCacheKey -Request <object>
 #     Canonical cache key for a request:
@@ -37,6 +38,9 @@
 #                     [-Invoker <scriptblock>]
 #     Answers every request, serving cached rows first and batching only the
 #     misses through Invoke-ExcelCellRefBatch (or -Invoker, for tests).
+#     Before loading shards, calls the invoker with an empty candidate array
+#     and validates version/build/bitness/workbook compatibility against
+#     env.json. A mismatch or incomplete legacy manifest fails closed.
 #     Duplicate requests inside one call are asked at most once. Returns
 #     [ordered]@{ blocked; blocker?; answers } with answers parallel to
 #     Requests: [ordered]@{ key; outcome; from_cache }.
@@ -55,6 +59,7 @@ Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot "CellRefBatch.psm1") -Force
 
 $script:SchemaVersion = "oracle-cache-v1"
+$script:EnvironmentSchemaVersion = "oracle-environment-v2"
 $script:CacheRoot = $null
 $script:Environment = $null
 $script:Index = @{}          # key -> outcome (ordered hashtable)
@@ -69,7 +74,7 @@ function _Get-DefaultCacheRoot {
 
 function _Get-CpuId {
     try {
-        $name = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name
+        $name = (Get-CimInstance Win32_Processor -ErrorAction Stop | Select-Object -First 1).Name
         if ([string]::IsNullOrWhiteSpace($name)) { return "unknown-cpu" }
         return ($name -replace '\s+', ' ').Trim()
     } catch {
@@ -96,6 +101,104 @@ function _Get-RequestProperty {
     }
     $prop = $Request.PSObject.Properties[$Name]
     if ($null -ne $prop) { return $prop.Value }
+    return $null
+}
+
+function _Get-EnvironmentProperty {
+    param([object] $Environment, [string] $Name)
+    if ($null -eq $Environment) { return $null }
+    if ($Environment -is [System.Collections.IDictionary]) {
+        if ($Environment.Contains($Name)) { return $Environment[$Name] }
+        return $null
+    }
+    $prop = $Environment.PSObject.Properties[$Name]
+    if ($null -ne $prop) { return $prop.Value }
+    return $null
+}
+
+function _Normalize-ExcelBitness {
+    param([object] $Bitness, [object] $OperatingSystem)
+    $text = [string] $Bitness
+    if ([string]::IsNullOrWhiteSpace($text) -or $text -eq "unknown") { $text = [string] $OperatingSystem }
+    if ($text -match '(?i)64[ -]?bit|\bx64\b|amd64') { return "64-bit" }
+    if ($text -match '(?i)32[ -]?bit|\bx86\b') { return "32-bit" }
+    return $(if ([string]::IsNullOrWhiteSpace($text)) { "" } else { $text.Trim() })
+}
+
+function _Normalize-Environment {
+    param([object] $Environment, [switch] $AddCpuId)
+    $os = [string] (_Get-EnvironmentProperty $Environment "excel_operating_system")
+    if ([string]::IsNullOrWhiteSpace($os)) {
+        $os = [string] (_Get-EnvironmentProperty $Environment "operating_system")
+    }
+    $compatibility = [string] (_Get-EnvironmentProperty $Environment "workbook_compatibility")
+    if ([string]::IsNullOrWhiteSpace($compatibility)) {
+        $compatibility = [string] (_Get-EnvironmentProperty $Environment "workbook_compatibility_version")
+    }
+    $cpuId = [string] (_Get-EnvironmentProperty $Environment "cpu_id")
+    if ($AddCpuId -and [string]::IsNullOrWhiteSpace($cpuId)) { $cpuId = _Get-CpuId }
+
+    $normalized = [ordered]@{
+        environment_schema = $script:EnvironmentSchemaVersion
+        excel_version = ([string] (_Get-EnvironmentProperty $Environment "excel_version")).Trim()
+        excel_build = ([string] (_Get-EnvironmentProperty $Environment "excel_build")).Trim()
+        excel_bitness = _Normalize-ExcelBitness `
+            -Bitness (_Get-EnvironmentProperty $Environment "excel_bitness") `
+            -OperatingSystem $os
+        workbook_compatibility = $compatibility.Trim()
+        cpu_id = $(if ([string]::IsNullOrWhiteSpace($cpuId)) { "unknown-cpu" } else { $cpuId.Trim() })
+    }
+    $plumbing = [string] (_Get-EnvironmentProperty $Environment "excel_input_plumbing")
+    if (-not [string]::IsNullOrWhiteSpace($plumbing)) { $normalized["excel_input_plumbing"] = $plumbing.Trim() }
+    if (-not [string]::IsNullOrWhiteSpace($os)) { $normalized["excel_operating_system"] = $os.Trim() }
+    return $normalized
+}
+
+function _Get-MissingEnvironmentFields {
+    param([object] $Environment)
+    $missing = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($field in @("excel_version", "excel_build", "excel_bitness", "workbook_compatibility")) {
+        $value = [string] (_Get-EnvironmentProperty $Environment $field)
+        if ([string]::IsNullOrWhiteSpace($value) -or $value -eq "unknown") { [void]$missing.Add($field) }
+    }
+    return $missing.ToArray()
+}
+
+function _Get-EnvironmentValidationError {
+    param([object] $PinnedEnvironment, [object] $ActiveEnvironment)
+    $pinnedSchema = [string] (_Get-EnvironmentProperty $PinnedEnvironment "environment_schema")
+    if (-not $pinnedSchema.Equals($script:EnvironmentSchemaVersion, [StringComparison]::OrdinalIgnoreCase)) {
+        $displaySchema = $(if ([string]::IsNullOrWhiteSpace($pinnedSchema)) { "missing" } else { $pinnedSchema })
+        return "OracleCache: pinned env.json has legacy/unsupported environment schema '$displaySchema'; it cannot be safely validated. Use a new CacheRoot and recapture under $($script:EnvironmentSchemaVersion)."
+    }
+    $pinned = _Normalize-Environment -Environment $PinnedEnvironment
+    $active = _Normalize-Environment -Environment $ActiveEnvironment -AddCpuId
+    $pinnedMissing = @(_Get-MissingEnvironmentFields $pinned)
+    if ($pinnedMissing.Count -gt 0) {
+        return "OracleCache: pinned env.json is legacy/incomplete (missing $($pinnedMissing -join ', ')); it cannot be safely validated. Use a new CacheRoot and recapture under $($script:EnvironmentSchemaVersion)."
+    }
+    $activeMissing = @(_Get-MissingEnvironmentFields $active)
+    if ($activeMissing.Count -gt 0) {
+        return "OracleCache: active Excel environment is incomplete (missing $($activeMissing -join ', ')); refusing cache reads and writes because identity cannot be validated."
+    }
+
+    $mismatches = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($field in @("excel_version", "excel_build", "excel_bitness", "workbook_compatibility")) {
+        $p = ([string] (_Get-EnvironmentProperty $pinned $field)).Trim()
+        $a = ([string] (_Get-EnvironmentProperty $active $field)).Trim()
+        if (-not $p.Equals($a, [StringComparison]::OrdinalIgnoreCase)) {
+            [void]$mismatches.Add("$field pinned='$p' active='$a'")
+        }
+    }
+    $pinnedCpu = ([string] (_Get-EnvironmentProperty $pinned "cpu_id")).Trim()
+    $activeCpu = ([string] (_Get-EnvironmentProperty $active "cpu_id")).Trim()
+    if ($pinnedCpu -and $activeCpu -and $pinnedCpu -ne "unknown-cpu" -and $activeCpu -ne "unknown-cpu" -and
+        -not $pinnedCpu.Equals($activeCpu, [StringComparison]::OrdinalIgnoreCase)) {
+        [void]$mismatches.Add("cpu_id pinned='$pinnedCpu' active='$activeCpu'")
+    }
+    if ($mismatches.Count -gt 0) {
+        return "OracleCache: active Excel environment does not match pinned env.json: $($mismatches -join '; '). Refusing cache reads and writes; use the matching Excel profile or a new CacheRoot."
+    }
     return $null
 }
 
@@ -262,9 +365,19 @@ function Initialize-OracleCache {
     if (-not (Test-Path $CacheRoot)) { New-Item -ItemType Directory -Force -Path $CacheRoot | Out-Null }
     $envPath = Join-Path $CacheRoot "env.json"
     if ($null -ne $Environment) {
-        $script:Environment = $Environment
-        if (-not (Test-Path $envPath)) {
-            ($Environment | ConvertTo-Json -Depth 4) | Set-Content -Path $envPath -Encoding utf8NoBOM
+        $provided = _Normalize-Environment -Environment $Environment -AddCpuId
+        $providedMissing = @(_Get-MissingEnvironmentFields $provided)
+        if ($providedMissing.Count -gt 0) {
+            throw "OracleCache: supplied environment is incomplete (missing $($providedMissing -join ', '))"
+        }
+        if (Test-Path $envPath) {
+            $existing = Get-Content $envPath -Raw | ConvertFrom-Json
+            $validationError = _Get-EnvironmentValidationError -PinnedEnvironment $existing -ActiveEnvironment $provided
+            if ($null -ne $validationError) { throw $validationError }
+            $script:Environment = _Normalize-Environment -Environment $existing
+        } else {
+            $script:Environment = $provided
+            ($provided | ConvertTo-Json -Depth 4) | Set-Content -Path $envPath -Encoding utf8NoBOM
         }
     } elseif (Test-Path $envPath) {
         $script:Environment = Get-Content $envPath -Raw | ConvertFrom-Json
@@ -279,10 +392,10 @@ function Initialize-OracleCache {
 
 function _Pin-EnvironmentFromBatch {
     param([object] $BatchEnvironment)
-    $pinned = [ordered]@{
-        excel_version = [string] $BatchEnvironment.excel_version
-        excel_build = [string] $BatchEnvironment.excel_build
-        cpu_id = (_Get-CpuId)
+    $pinned = _Normalize-Environment -Environment $BatchEnvironment -AddCpuId
+    $missing = @(_Get-MissingEnvironmentFields $pinned)
+    if ($missing.Count -gt 0) {
+        throw "OracleCache: cannot pin incomplete active environment (missing $($missing -join ', '))"
     }
     $script:Environment = $pinned
     $envPath = Join-Path $script:CacheRoot "env.json"
@@ -295,7 +408,11 @@ function Get-OracleAnswers {
         [Parameter(Mandatory)] [object[]] $Requests,
         [string] $CacheRoot = $null,
         [int] $BatchSize = 5000,
-        [scriptblock] $Invoker = $null
+        [scriptblock] $Invoker = $null,
+        # Optional test/embedding seam. Production callers omit this so the
+        # invoker is called with an empty candidate array to discover the live
+        # environment before ANY cache shard is loaded.
+        [object] $ActiveEnvironment = $null
     )
     if ($null -ne $CacheRoot -and $CacheRoot -ne "") {
         if ($script:CacheRoot -ne $CacheRoot) { Initialize-OracleCache -CacheRoot $CacheRoot | Out-Null }
@@ -304,6 +421,44 @@ function Get-OracleAnswers {
     }
     if ($null -eq $Invoker) {
         $Invoker = { param($candidates) Invoke-ExcelCellRefBatch -Candidates $candidates }
+    }
+
+    # Cache identity is validated before shard loading, hit classification, or
+    # append. An empty invoker call is an environment handshake, not an Excel
+    # worksheet question. This intentionally starts Excel even for an all-hit
+    # run: serving an unvalidated hit is the corruption mode this guard closes.
+    if ($null -eq $ActiveEnvironment) {
+        try {
+            $environmentProbe = & $Invoker ([object[]]::new(0))
+        } catch {
+            return [ordered]@{
+                blocked = $true
+                blocker = "OracleCache: environment probe failed before cache access: $($_.Exception.Message)"
+                answers = @()
+            }
+        }
+        if ($null -eq $environmentProbe) {
+            return [ordered]@{ blocked = $true; blocker = "OracleCache: environment probe returned no result"; answers = @() }
+        }
+        if ($environmentProbe.blocked) {
+            return [ordered]@{ blocked = $true; blocker = "OracleCache: environment probe blocked: $($environmentProbe.blocker)"; answers = @() }
+        }
+        $ActiveEnvironment = $environmentProbe.environment
+    }
+    $normalizedActive = _Normalize-Environment -Environment $ActiveEnvironment -AddCpuId
+    if ($null -eq $script:Environment) {
+        try {
+            _Pin-EnvironmentFromBatch $normalizedActive
+        } catch {
+            return [ordered]@{ blocked = $true; blocker = $_.Exception.Message; answers = @() }
+        }
+    } else {
+        $validationError = _Get-EnvironmentValidationError `
+            -PinnedEnvironment $script:Environment -ActiveEnvironment $normalizedActive
+        if ($null -ne $validationError) {
+            return [ordered]@{ blocked = $true; blocker = $validationError; answers = @() }
+        }
+        $script:Environment = _Normalize-Environment -Environment $script:Environment
     }
 
     # 1. Key every request; load shards lazily per function (only when the
@@ -341,11 +496,14 @@ function Get-OracleAnswers {
             if ($batch.blocked) {
                 return [ordered]@{ blocked = $true; blocker = $batch.blocker; answers = @() }
             }
-            if ($null -eq $script:Environment) {
-                _Pin-EnvironmentFromBatch $batch.environment
-                # Now that the env is pinned, existing shards become reachable;
-                # they cannot contain these keys (we just missed), so no reload
-                # of already-answered functions is needed for this batch.
+            $batchValidationError = _Get-EnvironmentValidationError `
+                -PinnedEnvironment $script:Environment -ActiveEnvironment $batch.environment
+            if ($null -ne $batchValidationError) {
+                return [ordered]@{
+                    blocked = $true
+                    blocker = "OracleCache: invoker environment changed during capture. $batchValidationError"
+                    answers = @()
+                }
             }
             $outcomes = @($batch.outcomes)
             if ($outcomes.Count -ne $slice.Count) {
@@ -374,7 +532,14 @@ function Get-OracleAnswers {
             from_cache = $wasHit[$i]
         })
     }
-    return [ordered]@{ blocked = $false; answers = $answers.ToArray() }
+    return [ordered]@{
+        blocked = $false
+        answers = $answers.ToArray()
+        # Provenance describes the active runner/session, while env.json and
+        # cache records retain the pinned identity. Plumbing may legitimately
+        # differ between the interchangeable cell-ref and bulk runners.
+        environment = $normalizedActive
+    }
 }
 
 function Get-OracleCacheStats {

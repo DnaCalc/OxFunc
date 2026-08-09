@@ -60,6 +60,20 @@ foreach ($f in $unsafeCases) {
 }
 
 Write-Host ""
+Write-Host "ConvertFrom-W109MixedScalarArg"
+$decodedOne = ConvertFrom-W109MixedScalarArg "0x3ff0000000000000"
+Assert-Equal "mixed scalar: exact bits string becomes f64" "0x3ff0000000000000" (Get-F64BitsHex $decodedOne)
+$decodedAdjacent = ConvertFrom-W109MixedScalarArg "0x3ff0000000000001"
+Assert-Equal "mixed scalar: adjacent bits stay exact" "0x3ff0000000000001" (Get-F64BitsHex $decodedAdjacent)
+$literalMeter = ConvertFrom-W109MixedScalarArg "m"
+Assert-Equal "mixed scalar: unit text value preserved" "m" $literalMeter
+Assert-Equal "mixed scalar: unit text type preserved" "System.String" $literalMeter.GetType().FullName
+$literalHexLike = ConvertFrom-W109MixedScalarArg "0x3ff000000000000"
+Assert-Equal "mixed scalar: non-16-digit hex-like text is literal" "0x3ff000000000000" $literalHexLike
+$logical = ConvertFrom-W109MixedScalarArg $true
+Assert-Equal "mixed scalar: logical type preserved" "System.Boolean" $logical.GetType().FullName
+
+Write-Host ""
 Write-Host "Get-StandardSeverityClass"
 
 function _Number-Outcome {

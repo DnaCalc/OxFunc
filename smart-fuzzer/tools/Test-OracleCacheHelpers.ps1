@@ -39,11 +39,21 @@ function Assert-Equal {
 }
 
 $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("oracle-cache-test-" + [Guid]::NewGuid().ToString("N"))
-$testEnv = [ordered]@{ excel_version = "16.0"; excel_build = "test"; cpu_id = "test-cpu" }
+$testEnv = [ordered]@{
+    excel_version = "16.0"
+    excel_build = "test"
+    excel_bitness = "64-bit"
+    workbook_compatibility = "test"
+    cpu_id = "test-cpu"
+}
 
 try {
     Write-Host "Get-OracleCacheKey"
     Initialize-OracleCache -CacheRoot $tempRoot -Environment $testEnv | Out-Null
+    $manifest = Get-Content (Join-Path $tempRoot "env.json") -Raw | ConvertFrom-Json
+    Assert-Equal "manifest schema upgraded" "oracle-environment-v2" $manifest.environment_schema
+    Assert-Equal "manifest records bitness" "64-bit" $manifest.excel_bitness
+    Assert-Equal "manifest records workbook compatibility" "test" $manifest.workbook_compatibility
 
     # Scalar canonicalization: key is function + f64 bits, not decimal text.
     $k1 = Get-OracleCacheKey -Request @{ function_name = "sin"; args = @(1.5) }
@@ -84,8 +94,9 @@ try {
     $script:askedBatches = 0
     $mockInvoker = {
         param($candidates)
-        $script:askedRows += @($candidates).Count
-        $script:askedBatches += 1
+        $candidateCount = @($candidates).Count
+        $script:askedRows += $candidateCount
+        if ($candidateCount -gt 0) { $script:askedBatches += 1 }
         $outcomes = @(@($candidates) | ForEach-Object {
             $v = [double] @($_.args)[0] * 2.0
             [ordered]@{ kind = "number"; value = $v; bits_hex = (Get-TestBitsHex $v); digest_payload = "number:$(Get-TestBitsHex $v)" }
@@ -93,7 +104,14 @@ try {
         return [ordered]@{
             blocked = $false
             outcomes = $outcomes
-            environment = [ordered]@{ excel_version = "16.0"; excel_build = "test"; workbook_compatibility = "test"; excel_input_plumbing = "mock" }
+            environment = [ordered]@{
+                excel_version = "16.0"
+                excel_build = "test"
+                excel_bitness = "64-bit"
+                workbook_compatibility = "test"
+                cpu_id = "test-cpu"
+                excel_input_plumbing = "mock"
+            }
         }
     }
 
@@ -145,6 +163,48 @@ try {
     $script:askedRows = 0
     $rRetry = Get-OracleAnswers -Requests @(@{ function_name = "DOUBLE"; args = @(99.0) }) -Invoker $mockInvoker
     Assert-Equal "blocked row was not cached" 1 $script:askedRows
+
+    Write-Host "Environment mismatch fails closed"
+    $mismatchInvoker = {
+        param($candidates)
+        [ordered]@{
+            blocked = $false
+            outcomes = @()
+            environment = [ordered]@{
+                excel_version = "16.0"
+                excel_build = "other-build"
+                excel_bitness = "64-bit"
+                workbook_compatibility = "test"
+                cpu_id = "test-cpu"
+                excel_input_plumbing = "mock"
+            }
+        }
+    }
+    $shardPath = Join-Path $tempRoot "build-test\DOUBLE.jsonl"
+    $linesBeforeMismatch = @(Get-Content $shardPath).Count
+    $rMismatch = Get-OracleAnswers -Requests @(@{ function_name = "DOUBLE"; args = @(1.0) }) -Invoker $mismatchInvoker
+    Assert-Equal "mismatched cache use is blocked" $true $rMismatch.blocked
+    Assert-Equal "mismatch names Excel build" $true ($rMismatch.blocker -like "*excel_build pinned='test' active='other-build'*")
+    Assert-Equal "mismatch does not append shard" $linesBeforeMismatch @(Get-Content $shardPath).Count
+
+    # Legacy manifests lack bitness and CompatibilityVersion. They are not
+    # silently upgraded because those axes cannot be reconstructed for old rows.
+    $legacyRoot = Join-Path $tempRoot "legacy"
+    New-Item -ItemType Directory -Force -Path $legacyRoot | Out-Null
+    [ordered]@{ excel_version = "16.0"; excel_build = "test"; cpu_id = "test-cpu" } |
+        ConvertTo-Json | Set-Content (Join-Path $legacyRoot "env.json") -Encoding utf8NoBOM
+    Initialize-OracleCache -CacheRoot $legacyRoot | Out-Null
+    $rLegacy = Get-OracleAnswers -Requests @(@{ function_name = "DOUBLE"; args = @(1.0) }) -Invoker $mockInvoker
+    Assert-Equal "legacy manifest fails closed" $true $rLegacy.blocked
+    Assert-Equal "legacy failure gives migration action" $true ($rLegacy.blocker -like "*legacy/unsupported*new CacheRoot*")
+
+    $schemaLessRoot = Join-Path $tempRoot "schema-less"
+    New-Item -ItemType Directory -Force -Path $schemaLessRoot | Out-Null
+    $testEnv | ConvertTo-Json | Set-Content (Join-Path $schemaLessRoot "env.json") -Encoding utf8NoBOM
+    Initialize-OracleCache -CacheRoot $schemaLessRoot | Out-Null
+    $rSchemaLess = Get-OracleAnswers -Requests @(@{ function_name = "DOUBLE"; args = @(1.0) }) -Invoker $mockInvoker
+    Assert-Equal "schema-less manifest fails closed" $true $rSchemaLess.blocked
+    Assert-Equal "schema-less failure names required schema" $true ($rSchemaLess.blocker -like "*environment schema 'missing'*oracle-environment-v2*")
 }
 finally {
     if (Test-Path $tempRoot) { Remove-Item -Recurse -Force $tempRoot }

@@ -136,6 +136,81 @@ function Get-UlpDistance {
     return [double][Math]::Abs($aKey - $bKey)
 }
 
+function ConvertFrom-W109MixedScalarArg {
+    # ProbeBatch scalar contract used by Run-W109BulkBatch:
+    #   * exact 16-digit bits-hex strings are binary64 inputs,
+    #   * every other string is literal worksheet text,
+    #   * booleans stay logical, and already-materialized numerics become f64.
+    # The exact regex is intentionally narrow so unit names such as "m" and
+    # "ft" can never be mistaken for numbers.
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [object] $Value)
+    if ($Value -is [bool]) { return [bool] $Value }
+    if ($Value -is [string]) {
+        $text = [string] $Value
+        if ($text -match '^0x[0-9a-fA-F]{16}$') {
+            $bits = [uint64]::Parse($text.Substring(2), [Globalization.NumberStyles]::HexNumber)
+            return [System.BitConverter]::ToDouble([System.BitConverter]::GetBytes($bits), 0)
+        }
+        return $text
+    }
+    return [double] $Value
+}
+
+function _Get-ExcelBitness {
+    param([object] $Excel)
+    $os = $(try { [string] $Excel.OperatingSystem } catch { "" })
+    if ($os -match '(?i)64[ -]?bit') { return "64-bit" }
+    if ($os -match '(?i)32[ -]?bit') { return "32-bit" }
+    return "unknown"
+}
+
+function _New-ExcelEnvironment {
+    param([object] $Excel, [object] $Workbook, [string] $Plumbing)
+    return [ordered]@{
+        excel_version = [string] $Excel.Version
+        excel_build = $(try { [string] $Excel.Build } catch { $null })
+        excel_bitness = _Get-ExcelBitness $Excel
+        workbook_compatibility = $(try { [string] $Workbook.CompatibilityVersion } catch { "unknown" })
+        excel_operating_system = $(try { [string] $Excel.OperatingSystem } catch { "unknown" })
+        excel_input_plumbing = $Plumbing
+    }
+}
+
+function _Get-ExcelEnvironmentOnly {
+    # Environment handshake used by OracleCache before it loads even one hit.
+    # No worksheet formula is evaluated and no oracle question is asked.
+    param([string] $Plumbing = "cell_value2")
+    $excel = $null; $workbook = $null
+    try {
+        $excel = New-Object -ComObject Excel.Application
+        try { $excel.Visible = $false } catch {}
+        try { $excel.DisplayAlerts = $false } catch {}
+        $workbook = $excel.Workbooks.Add()
+        return [ordered]@{
+            blocked = $false
+            outcomes = @()
+            environment = _New-ExcelEnvironment -Excel $excel -Workbook $workbook -Plumbing $Plumbing
+        }
+    }
+    catch {
+        return [ordered]@{
+            blocked = $true
+            blocker = "Excel environment handshake failed: $($_.Exception.Message)"
+            outcomes = @()
+            environment = @{ excel_input_plumbing = $Plumbing }
+        }
+    }
+    finally {
+        if ($null -ne $workbook) { try { $workbook.Close($false) } catch {} }
+        if ($null -ne $excel) { try { $excel.Quit() } catch {} }
+        _Release-ComObject $workbook
+        _Release-ComObject $excel
+        [System.GC]::Collect()
+        [System.GC]::WaitForPendingFinalizers()
+    }
+}
+
 function _Get-CandidateColumnLetter {
     param([int] $ZeroBasedColIndex)
     if ($ZeroBasedColIndex -lt 26) {
@@ -186,11 +261,7 @@ function _New-ScalarArgValueArray {
         for ($col = 0; $col -lt $MaxArity; $col++) {
             if ($col -lt $argList.Count) {
                 $a = $argList[$col]
-                if ($a -is [bool]) {
-                    $array[$row, $col] = [bool] $a
-                } else {
-                    $array[$row, $col] = [double] $a
-                }
+                $array[$row, $col] = ConvertFrom-W109MixedScalarArg $a
             } else {
                 $array[$row, $col] = $null
             }
@@ -362,10 +433,10 @@ function _Write-MatrixCells {
 function Invoke-ExcelCellRefBatch {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)] [object[]] $Candidates
+        [Parameter(Mandatory)] [AllowEmptyCollection()] [object[]] $Candidates
     )
     if ($Candidates.Count -eq 0) {
-        return [ordered]@{ blocked = $false; outcomes = @(); environment = @{ excel_input_plumbing = "cell_value2" } }
+        return _Get-ExcelEnvironmentOnly -Plumbing "cell_value2"
     }
     $hasMatrix = $false
     foreach ($c in $Candidates) { if (_Has-MatrixArg $c) { $hasMatrix = $true; break } }
@@ -424,12 +495,7 @@ function _Invoke-ExcelCellRefScalarBatch {
         return [ordered]@{
             blocked = $false
             outcomes = @($outcomes)
-            environment = [ordered]@{
-                excel_version = [string] $excel.Version
-                excel_build = $(try { [string] $excel.Build } catch { $null })
-                workbook_compatibility = $(try { [string] $workbook.CompatibilityVersion } catch { "unknown" })
-                excel_input_plumbing = "cell_value2"
-            }
+            environment = _New-ExcelEnvironment -Excel $excel -Workbook $workbook -Plumbing "cell_value2"
         }
     }
     catch {
@@ -491,12 +557,7 @@ function _Invoke-ExcelCellRefMatrixBatch {
         return [ordered]@{
             blocked = $false
             outcomes = @($outcomes)
-            environment = [ordered]@{
-                excel_version = [string] $excel.Version
-                excel_build = $(try { [string] $excel.Build } catch { $null })
-                workbook_compatibility = $(try { [string] $workbook.CompatibilityVersion } catch { "unknown" })
-                excel_input_plumbing = "cell_value2_matrix"
-            }
+            environment = _New-ExcelEnvironment -Excel $excel -Workbook $workbook -Plumbing "cell_value2_matrix"
         }
     }
     catch {
@@ -686,6 +747,7 @@ function Get-StandardSeverityClass {
 
 Export-ModuleMember -Function `
     Invoke-ExcelCellRefBatch, `
+    ConvertFrom-W109MixedScalarArg, `
     Get-F64BitsHex, `
     ConvertTo-ExcelOutcome, `
     Get-UlpDistance, `

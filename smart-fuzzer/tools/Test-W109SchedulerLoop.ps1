@@ -84,12 +84,50 @@ try {
             [ordered]@{ kind = "number"; value = $v; bits_hex = $bits; digest_payload = "number:$bits" }
         })
         [ordered]@{ blocked = $false; outcomes = $outcomes;
-            environment = [ordered]@{ excel_version = "16.0"; excel_build = "mock"; excel_input_plumbing = "mock" } }
+            environment = [ordered]@{
+                excel_version = "16.0"
+                excel_build = "mock"
+                excel_bitness = "64-bit"
+                workbook_compatibility = "2"
+                cpu_id = "test-cpu"
+                excel_input_plumbing = "mock"
+            } }
     }
     & (Join-Path $scriptRoot "Run-W109ProbeBatch.ps1") -Batch $batchPath -Out $answersPath -CacheRoot $cacheRoot -Invoker $mock
     $answers = Get-Content $answersPath -Raw | ConvertFrom-Json
     Assert-True "answers written for both probes" (@($answers.witnesses).Count -eq 2)
     Assert-True "answer bits are DOUBLE(1.5)=3" ((@($answers.witnesses) | Where-Object { $_.id -eq "p-one-and-half" }).expected_bits -eq (Bits 3.0))
+    Assert-True "capture provenance added without changing witnesses" ($answers.capture_provenance.schema_version -eq "w109-capture-provenance-v1")
+    Assert-True "capture identifies cache mode" ($answers.capture_provenance.oracle_cache.mode -eq "cache")
+    Assert-True "capture records Excel build" ($answers.capture_provenance.environment.excel_build -eq "mock")
+    Assert-True "capture records Excel bitness" ($answers.capture_provenance.environment.excel_bitness -eq "64-bit")
+    Assert-True "capture records workbook compatibility" ($answers.capture_provenance.environment.workbook_compatibility -eq "2")
+    Assert-True "capture records probe runner version" ($answers.capture_provenance.runner.version -eq "w109-probe-batch-v2")
+
+    # The bulk runner's no-cache sign-off path must persist the same optional
+    # provenance envelope while leaving the WitnessSet array shape unchanged.
+    $bulkAnswersPath = Join-Path $work "answers-bulk-no-cache.json"
+    & (Join-Path $scriptRoot "Run-W109BulkBatch.ps1") `
+        -Batch $batchPath -Out $bulkAnswersPath -NoCache -Invoker $mock
+    $bulkAnswers = Get-Content $bulkAnswersPath -Raw | ConvertFrom-Json
+    Assert-True "bulk no-cache preserves witnesses" (@($bulkAnswers.witnesses).Count -eq 2)
+    Assert-True "bulk capture identifies no-cache mode" ($bulkAnswers.capture_provenance.oracle_cache.mode -eq "no_cache")
+    Assert-True "bulk capture has no cache root" ($null -eq $bulkAnswers.capture_provenance.oracle_cache.root)
+    Assert-True "bulk capture records Excel identity" (
+        $bulkAnswers.capture_provenance.environment.excel_build -eq "mock" -and
+        $bulkAnswers.capture_provenance.environment.excel_bitness -eq "64-bit" -and
+        $bulkAnswers.capture_provenance.environment.workbook_compatibility -eq "2")
+    Assert-True "bulk capture records runner version" ($bulkAnswers.capture_provenance.runner.version -eq "w109-bulk-batch-v2")
+
+    $bulkCachedPath = Join-Path $work "answers-bulk-cached.json"
+    & (Join-Path $scriptRoot "Run-W109BulkBatch.ps1") `
+        -Batch $batchPath -Out $bulkCachedPath -CacheRoot $cacheRoot -Invoker $mock
+    $bulkCached = Get-Content $bulkCachedPath -Raw | ConvertFrom-Json
+    Assert-True "bulk cached path reuses witness array" (@($bulkCached.witnesses).Count -eq 2)
+    Assert-True "bulk cached provenance records hits" (
+        $bulkCached.capture_provenance.oracle_cache.mode -eq "cache" -and
+        $bulkCached.capture_provenance.oracle_cache.hits -eq 2 -and
+        $bulkCached.capture_provenance.oracle_cache.misses -eq 0)
 
     # --- eliminate ---
     $survivorsPath = Join-Path $work "survivors.json"
