@@ -445,6 +445,8 @@ public VB Financial.IRR control is `2/300`. The 180-row heldout is still sealed
 and uncaptured. Exact hashes, provenance, replay commands, and the three-axis
 handoff are in
 [W109_IRR_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md](../function-lane/W109_IRR_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md).
+The open lane is registered as `BUG-FUNC-048` and W109 child bead
+`oxf-jwh5.10`; neither is a completion claim.
 
 Status axes:
 1. `scope_completeness`: `scope_partial`

@@ -1433,6 +1433,13 @@ Current checkpoint (2026-08-09):
     helper-association probes, per-function schedule composition, and alternate
     version/profile axes remain actionable. See
     `docs/function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md`.
-11. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+11. Current-build bounded-negative checkpoints are now durable for GROWTH/
+    LOGEST, CUMPRINC, RATE, PRICE/DURATION, and IRR. None has an exact discovery
+    survivor or an opened heldout. IRR's 300-row discovery and 900-point
+    worksheet-NPV companion specifically prove that worksheet evaluator
+    cancellation snapping is not the private IRR objective; its best frozen
+    no-snap leader remains `44/72`. `BUG-FUNC-048` and child bead
+    `oxf-jwh5.10` own that open lane.
+12. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

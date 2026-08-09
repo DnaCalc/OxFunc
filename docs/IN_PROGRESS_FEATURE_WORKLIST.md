@@ -389,6 +389,12 @@ Status axes:
   timing reciprocal identity is local: the frozen general-rate leader is only
   `378/480` and exactly explains `1/15` contexts. G6-01 therefore remains open
   at the private helper, type-1 association, and adjacent-schedule graphs.
+  Current-build partial checkpoints also preserve bounded-negative evidence for
+  GROWTH/LOGEST, CUMPRINC, RATE, PRICE/DURATION, and IRR without consuming their
+  sealed heldouts. IRR's worksheet-NPV companion isolates evaluator
+  cancellation snapping but proves IRR does not inherit it; the best no-snap
+  leader remains only `44/72`. `BUG-FUNC-048` and bead `oxf-jwh5.10` remain
+  investigating/in_progress for the private objective and solver graph.
 - Canonical owners: [W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md), [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md), [OXFUNC_EXCEL_DISCREPANCY_CATALOG.md](C:\Work\DnaCalc\OxFunc\docs\OXFUNC_EXCEL_DISCREPANCY_CATALOG.md), and `.beads/` epic `oxf-jwh5`.
 
 Status axes:
