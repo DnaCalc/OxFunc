@@ -31,10 +31,20 @@ struct Witness {
     expected: u64,
 }
 
+#[derive(Clone)]
+struct CosCapturedRow {
+    id: String,
+    class: String,
+    x: f64,
+    expected: u64,
+}
+
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 struct BodyStaging {
     /// Diagnostic only: inject fresh captured worksheet-COS bits at two phases.
     live_cos_corrections: bool,
+    /// Route worksheet COS through the executable tangent-square sine branch.
+    tangent_square_cos: bool,
     /// J0 setup bits: 8/x, z*z, x-phase, (2/pi)/x, sqrt, phase->fFCOS unspilled.
     j0_setup: u8,
     /// J0 wrapper bits: cos*p, z*sin, (z*sin)*q, subtraction, scale*body.
@@ -273,6 +283,39 @@ fn ext_sincos(x: &rx::Ext80, cw: u16) -> (rx::Ext80, rx::Ext80) {
     (sine, cosine)
 }
 
+#[cfg(target_arch = "x86_64")]
+fn ext_sin_with_status(x: &rx::Ext80, cw: u16) -> (rx::Ext80, u16) {
+    let mut sine = rx::Ext80([0; 10]);
+    let mut status = 0_u16;
+    let mut cw_save = 0_u16;
+    // SAFETY: one x87 value is pushed and popped; the status word is copied
+    // immediately after FSIN and the caller's control word is restored.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{cw}]",
+            "fld tbyte ptr [{x}]",
+            "fsin",
+            "fnstsw ax",
+            "mov word ptr [{status}], ax",
+            "fstp tbyte ptr [{sine}]",
+            "fldcw word ptr [{save}]",
+            x = in(reg) x.0.as_ptr(),
+            sine = in(reg) sine.0.as_mut_ptr(),
+            status = in(reg) &mut status,
+            cw = in(reg) &cw,
+            save = in(reg) &mut cw_save,
+            out("ax") _,
+        );
+    }
+    (sine, status)
+}
+
+#[cfg(not(target_arch = "x86_64"))]
+fn ext_sin_with_status(x: &rx::Ext80, cw: u16) -> (rx::Ext80, u16) {
+    (rx::ext_sin(x, cw), 0)
+}
+
 #[cfg(not(target_arch = "x86_64"))]
 fn ext_sincos(x: &rx::Ext80, cw: u16) -> (rx::Ext80, rx::Ext80) {
     (rx::ext_sin(x, cw), rx::ext_cos(x, cw))
@@ -350,6 +393,47 @@ enum HalfPiMethod {
 enum TrigInstruction {
     Separate,
     SinCos,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum QuotientMethod {
+    ExtDivide,
+    ExtMultiplyFullTwoOverPi,
+    ExtMultiplyStoredTwoOverPi,
+    F64Divide,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ReductionMethod {
+    DirectFullHalfPi,
+    DirectStoredHalfPi,
+    SplitProductSum,
+    SplitSequentialSubtract,
+    F64ProductSubtract,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum AlternativeTrigMethod {
+    TanNormalize,
+    TanReciprocalMultiply,
+    TanSqrtReciprocalMultiply,
+    TanSquareRatioSqrt,
+    TanHalfAngle,
+    TanTimesCos,
+    PythagoreanFromCos,
+    NormalizeSeparateSinCos,
+    NormalizePairedSinCos,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ExplicitReductionGraph {
+    quotient_method: QuotientMethod,
+    reduction_method: ReductionMethod,
+    arithmetic_cw: u16,
+    quotient_spill: bool,
+    product_spill: bool,
+    residue_spill: bool,
+    trig_instruction: TrigInstruction,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -439,6 +523,245 @@ fn cos_graph_model(x: f64, graph: CosGraph) -> f64 {
         _ => sine,
     };
     rx::ext_to_f64(&value, graph.store_cw)
+}
+
+fn maybe_store_ext(value: rx::Ext80, spill: bool, cw: u16) -> rx::Ext80 {
+    if spill {
+        rx::ext_from_f64(rx::ext_to_f64(&value, cw))
+    } else {
+        value
+    }
+}
+
+fn cos_explicit_reduction_model(x: f64, graph: ExplicitReductionGraph) -> f64 {
+    if !x.is_finite() {
+        return f64::NAN;
+    }
+    if x.abs() < f64::from_bits(0x3e50_0000_0000_0000) {
+        return 1.0;
+    }
+
+    let cw = graph.arithmetic_cw;
+    let xa = rx::ext_abs(&rx::ext_from_f64(x), cw);
+    let minus_one = rx::ext_chs(&rx::ext_one(), cw);
+    let full_half_pi = rx::ext_scale(&rx::ext_pi(), &minus_one, cw);
+    let stored_half_pi = rx::ext_from_f64(std::f64::consts::FRAC_PI_2);
+    let quotient = match graph.quotient_method {
+        QuotientMethod::ExtDivide => rx::ext_rndint(&rx::ext_div(&xa, &full_half_pi, cw), cw),
+        QuotientMethod::ExtMultiplyFullTwoOverPi => {
+            let two_over_pi = rx::ext_div(&rx::ext_from_f64(2.0), &rx::ext_pi(), cw);
+            rx::ext_rndint(&rx::ext_mul(&xa, &two_over_pi, cw), cw)
+        }
+        QuotientMethod::ExtMultiplyStoredTwoOverPi => rx::ext_rndint(
+            &rx::ext_mul(&xa, &rx::ext_from_f64(std::f64::consts::FRAC_2_PI), cw),
+            cw,
+        ),
+        QuotientMethod::F64Divide => {
+            rx::ext_from_f64((x.abs() / std::f64::consts::FRAC_PI_2).round())
+        }
+    };
+    let quotient = maybe_store_ext(quotient, graph.quotient_spill, cw);
+    let quotient_f64 = rx::ext_to_f64(&quotient, rx::CW_PC64_RN);
+    let quotient_low = (quotient_f64 as u64) & 3;
+
+    let residue = match graph.reduction_method {
+        ReductionMethod::DirectFullHalfPi => {
+            let product = rx::ext_mul(&quotient, &full_half_pi, cw);
+            let product = maybe_store_ext(product, graph.product_spill, cw);
+            rx::ext_sub(&xa, &product, cw)
+        }
+        ReductionMethod::DirectStoredHalfPi => {
+            let product = rx::ext_mul(&quotient, &stored_half_pi, cw);
+            let product = maybe_store_ext(product, graph.product_spill, cw);
+            rx::ext_sub(&xa, &product, cw)
+        }
+        ReductionMethod::SplitProductSum => {
+            let low_half_pi = rx::ext_sub(&full_half_pi, &stored_half_pi, cw);
+            let high_product = rx::ext_mul(&quotient, &stored_half_pi, cw);
+            let low_product = rx::ext_mul(&quotient, &low_half_pi, cw);
+            let product = rx::ext_add(&high_product, &low_product, cw);
+            let product = maybe_store_ext(product, graph.product_spill, cw);
+            rx::ext_sub(&xa, &product, cw)
+        }
+        ReductionMethod::SplitSequentialSubtract => {
+            let low_half_pi = rx::ext_sub(&full_half_pi, &stored_half_pi, cw);
+            let high_product = rx::ext_mul(&quotient, &stored_half_pi, cw);
+            let high_product = maybe_store_ext(high_product, graph.product_spill, cw);
+            let high_residue = rx::ext_sub(&xa, &high_product, cw);
+            let low_product = rx::ext_mul(&quotient, &low_half_pi, cw);
+            rx::ext_sub(&high_residue, &low_product, cw)
+        }
+        ReductionMethod::F64ProductSubtract => {
+            rx::ext_from_f64(x.abs() - quotient_f64 * std::f64::consts::FRAC_PI_2)
+        }
+    };
+    let residue = maybe_store_ext(residue, graph.residue_spill, cw);
+    let (sine, cosine) = match graph.trig_instruction {
+        TrigInstruction::Separate => (rx::ext_sin(&residue, cw), rx::ext_cos(&residue, cw)),
+        TrigInstruction::SinCos => ext_sincos(&residue, cw),
+    };
+    let value = match quotient_low {
+        0 => cosine,
+        1 => rx::ext_chs(&sine, cw),
+        2 => rx::ext_chs(&cosine, cw),
+        _ => sine,
+    };
+    rx::ext_to_f64(&value, rx::CW_PC64_RN)
+}
+
+fn cos_alternative_trig_model(
+    x: f64,
+    method: AlternativeTrigMethod,
+    cw: u16,
+    spill_mask: u8,
+) -> f64 {
+    if !x.is_finite() {
+        return f64::NAN;
+    }
+    if x.abs() < f64::from_bits(0x3e50_0000_0000_0000) {
+        return 1.0;
+    }
+    let divisor = half_pi_for_graph(CosGraph::default());
+    let xa = rx::ext_abs(&rx::ext_from_f64(x), cw);
+    let (residue, quotient) = rx::ext_prem1_quo(&xa, &divisor, cw);
+    let spill =
+        |value: rx::Ext80, bit: u8| maybe_store_ext(value, spill_mask & (1 << bit) != 0, cw);
+    let sine = match method {
+        AlternativeTrigMethod::TanNormalize
+        | AlternativeTrigMethod::TanReciprocalMultiply
+        | AlternativeTrigMethod::TanSqrtReciprocalMultiply
+        | AlternativeTrigMethod::TanSquareRatioSqrt => {
+            let tangent = spill(rx::ext_tan(&residue, cw), 0);
+            let square = spill(rx::ext_mul(&tangent, &tangent, cw), 1);
+            let sum = spill(rx::ext_add(&rx::ext_one(), &square, cw), 2);
+            match method {
+                AlternativeTrigMethod::TanNormalize => {
+                    let norm = spill(rx::ext_sqrt(&sum, cw), 3);
+                    spill(rx::ext_div(&tangent, &norm, cw), 4)
+                }
+                AlternativeTrigMethod::TanReciprocalMultiply => {
+                    let norm = spill(rx::ext_sqrt(&sum, cw), 3);
+                    let reciprocal = spill(rx::ext_div(&rx::ext_one(), &norm, cw), 4);
+                    spill(rx::ext_mul(&tangent, &reciprocal, cw), 5)
+                }
+                AlternativeTrigMethod::TanSqrtReciprocalMultiply => {
+                    let reciprocal = spill(rx::ext_div(&rx::ext_one(), &sum, cw), 3);
+                    let root = spill(rx::ext_sqrt(&reciprocal, cw), 4);
+                    spill(rx::ext_mul(&tangent, &root, cw), 5)
+                }
+                AlternativeTrigMethod::TanSquareRatioSqrt => {
+                    let ratio = spill(rx::ext_div(&square, &sum, cw), 3);
+                    let mut sine = spill(rx::ext_sqrt(&ratio, cw), 4);
+                    if rx::ext_to_f64(&tangent, rx::CW_PC64_RN).is_sign_negative() {
+                        sine = rx::ext_chs(&sine, cw);
+                    }
+                    sine
+                }
+                _ => unreachable!(),
+            }
+        }
+        AlternativeTrigMethod::TanHalfAngle => {
+            let minus_one = rx::ext_chs(&rx::ext_one(), cw);
+            let half_residue = spill(rx::ext_scale(&residue, &minus_one, cw), 0);
+            let tangent = spill(rx::ext_tan(&half_residue, cw), 1);
+            let square = spill(rx::ext_mul(&tangent, &tangent, cw), 2);
+            let denominator = spill(rx::ext_add(&rx::ext_one(), &square, cw), 3);
+            let numerator = spill(rx::ext_add(&tangent, &tangent, cw), 4);
+            spill(rx::ext_div(&numerator, &denominator, cw), 5)
+        }
+        AlternativeTrigMethod::TanTimesCos => {
+            let tangent = spill(rx::ext_tan(&residue, cw), 0);
+            let cosine = spill(rx::ext_cos(&residue, cw), 1);
+            spill(rx::ext_mul(&tangent, &cosine, cw), 2)
+        }
+        AlternativeTrigMethod::PythagoreanFromCos => {
+            let cosine = spill(rx::ext_cos(&residue, cw), 0);
+            let square = spill(rx::ext_mul(&cosine, &cosine, cw), 1);
+            let complement = spill(rx::ext_sub(&rx::ext_one(), &square, cw), 2);
+            let mut sine = spill(rx::ext_sqrt(&complement, cw), 3);
+            if rx::ext_to_f64(&residue, rx::CW_PC64_RN).is_sign_negative() {
+                sine = rx::ext_chs(&sine, cw);
+            }
+            sine
+        }
+        AlternativeTrigMethod::NormalizeSeparateSinCos
+        | AlternativeTrigMethod::NormalizePairedSinCos => {
+            let (raw_sine, raw_cosine) = if method == AlternativeTrigMethod::NormalizePairedSinCos {
+                ext_sincos(&residue, cw)
+            } else {
+                (rx::ext_sin(&residue, cw), rx::ext_cos(&residue, cw))
+            };
+            let raw_sine = spill(raw_sine, 0);
+            let raw_cosine = spill(raw_cosine, 1);
+            let sine_square = spill(rx::ext_mul(&raw_sine, &raw_sine, cw), 2);
+            let cosine_square = spill(rx::ext_mul(&raw_cosine, &raw_cosine, cw), 3);
+            let norm_square = spill(rx::ext_add(&sine_square, &cosine_square, cw), 4);
+            let norm = spill(rx::ext_sqrt(&norm_square, cw), 5);
+            rx::ext_div(&raw_sine, &norm, cw)
+        }
+    };
+    let cosine = rx::ext_cos(&residue, cw);
+    let value = match quotient & 3 {
+        0 => cosine,
+        1 => rx::ext_chs(&sine, cw),
+        2 => rx::ext_chs(&cosine, cw),
+        _ => sine,
+    };
+    rx::ext_to_f64(&value, rx::CW_PC64_RN)
+}
+
+fn explicit_reduction_candidates() -> Vec<(String, ExplicitReductionGraph)> {
+    let mut candidates = Vec::new();
+    for quotient_method in [
+        QuotientMethod::ExtDivide,
+        QuotientMethod::ExtMultiplyFullTwoOverPi,
+        QuotientMethod::ExtMultiplyStoredTwoOverPi,
+        QuotientMethod::F64Divide,
+    ] {
+        for reduction_method in [
+            ReductionMethod::DirectFullHalfPi,
+            ReductionMethod::DirectStoredHalfPi,
+            ReductionMethod::SplitProductSum,
+            ReductionMethod::SplitSequentialSubtract,
+            ReductionMethod::F64ProductSubtract,
+        ] {
+            for (cw_name, arithmetic_cw) in [
+                ("PC24", rx::CW_PC24_RN),
+                ("PC53", rx::CW_PC53_RN),
+                ("PC64", rx::CW_PC64_RN),
+            ] {
+                for quotient_spill in [false, true] {
+                    for product_spill in [false, true] {
+                        for residue_spill in [false, true] {
+                            for trig_instruction in
+                                [TrigInstruction::Separate, TrigInstruction::SinCos]
+                            {
+                                let graph = ExplicitReductionGraph {
+                                    quotient_method,
+                                    reduction_method,
+                                    arithmetic_cw,
+                                    quotient_spill,
+                                    product_spill,
+                                    residue_spill,
+                                    trig_instruction,
+                                };
+                                candidates.push((
+                                    format!(
+                                        "q={quotient_method:?} r={reduction_method:?} {cw_name} qs={} ps={} rs={} trig={trig_instruction:?}",
+                                        u8::from(quotient_spill),
+                                        u8::from(product_spill),
+                                        u8::from(residue_spill),
+                                    ),
+                                    graph,
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    candidates
 }
 
 fn cos_reduced_platform_model(x: f64, paired: bool) -> f64 {
@@ -671,6 +994,90 @@ fn cos_quadrant_double_double(x: f64) -> f64 {
     let xa = rx::ext_abs(&rx::ext_from_f64(x), graph.arithmetic_cw);
     let (residue, quotient) = rx::ext_prem1_quo(&xa, &divisor, graph.arithmetic_cw);
     let (sine, cosine) = dd_sin_cos_ext80(&residue);
+    match quotient & 3 {
+        0 => cosine,
+        1 => -sine,
+        2 => -cosine,
+        _ => sine,
+    }
+}
+
+const AMD_SIN_COEFFICIENTS: [f64; 6] = [
+    f64::from_bits(0xbfc5_5555_5555_5555),
+    f64::from_bits(0x3f81_1111_1111_0bb3),
+    f64::from_bits(0xbf2a_01a0_19e8_3e5c),
+    f64::from_bits(0x3ec7_1de3_796c_de01),
+    f64::from_bits(0xbe5a_e600_b42f_dfa7),
+    f64::from_bits(0x3de5_e0b2_f9a4_3bb8),
+];
+
+fn amd_sin_sse2(r: f64, rr: f64) -> f64 {
+    let [s1, s2, s3, s4, s5, s6] = AMD_SIN_COEFFICIENTS;
+    let x2 = r * r;
+    let x4 = x2 * x2;
+    let x6 = x4 * x2;
+    let mut upper = s6 * x2;
+    let mut lower = s3 * x2;
+    upper += s5;
+    upper *= x2;
+    lower += s2;
+    lower *= x2;
+    upper += s4;
+    upper *= x6;
+    lower += s1;
+    let polynomial = upper + lower;
+    let x3 = r * x2;
+    let mut correction = x3 * polynomial;
+    correction -= 0.5 * x2 * rr;
+    correction += rr;
+    r + correction
+}
+
+fn amd_sin_fma3(r: f64, rr: f64) -> f64 {
+    let [s1, s2, s3, s4, s5, s6] = AMD_SIN_COEFFICIENTS;
+    let x2 = r * r;
+    let mut polynomial = s6.mul_add(x2, s5);
+    polynomial = polynomial.mul_add(x2, s4);
+    polynomial = polynomial.mul_add(x2, s3);
+    polynomial = polynomial.mul_add(x2, s2);
+    polynomial = polynomial.mul_add(x2, s1);
+    let x3 = r * x2;
+    let main = x3.mul_add(polynomial, r);
+    // The public AMD FMA path retains the reduction tail through the sine
+    // reconstruction. This algebraically equivalent form keeps the two
+    // explicitly rounded binary64 terms visible for candidate replay.
+    let tail = rr - 0.5 * x2 * rr;
+    main + tail
+}
+
+fn cos_quadrant_amd_poly(x: f64, use_fma: bool, retain_ext_tail: bool) -> f64 {
+    let graph = CosGraph::default();
+    let divisor = half_pi_for_graph(graph);
+    let xa = rx::ext_abs(&rx::ext_from_f64(x), graph.arithmetic_cw);
+    let (residue, quotient) = rx::ext_prem1_quo(&xa, &divisor, graph.arithmetic_cw);
+    let r = rx::ext_to_f64(&residue, rx::CW_PC64_RN);
+    let rr = if retain_ext_tail {
+        let high = rx::ext_from_f64(r);
+        rx::ext_to_f64(
+            &rx::ext_sub(&residue, &high, rx::CW_PC64_RN),
+            rx::CW_PC64_RN,
+        )
+    } else {
+        0.0
+    };
+    let sine = if use_fma {
+        amd_sin_fma3(r, rr)
+    } else {
+        amd_sin_sse2(r, rr)
+    };
+    let cosine = if use_fma {
+        // Only the sine branch is discriminated by the current q=3/7
+        // batteries. Keep the established hardware cosine explicit until a
+        // q=0/2 oracle battery supports the public polynomial counterpart.
+        rx::ext_to_f64(&rx::ext_cos(&residue, rx::CW_PC64_RN), rx::CW_PC64_RN)
+    } else {
+        rx::ext_to_f64(&rx::ext_cos(&residue, rx::CW_PC64_RN), rx::CW_PC64_RN)
+    };
     match quotient & 3 {
         0 => cosine,
         1 => -sine,
@@ -1113,6 +1520,13 @@ fn bessj0_asymptotic(x: f64, routing: TrigRouting, staging: BodyStaging) -> f64 
     let cosine = if routing.j0_cos {
         if staging.j0_setup & (1 << 5) != 0 {
             excel_cos_ext_model(&reduced_ext)
+        } else if staging.tangent_square_cos {
+            cos_alternative_trig_model(
+                reduced,
+                AlternativeTrigMethod::TanSquareRatioSqrt,
+                rx::CW_PC64_RN,
+                0,
+            )
         } else if staging.live_cos_corrections {
             excel_cos_live_capture_model(reduced)
         } else {
@@ -1181,6 +1595,13 @@ fn bessj1_asymptotic(x: f64, routing: TrigRouting, staging: BodyStaging) -> f64 
     let cosine = if routing.j1_cos {
         if staging.j1_setup & (1 << 5) != 0 {
             excel_cos_ext_model(&reduced_ext)
+        } else if staging.tangent_square_cos {
+            cos_alternative_trig_model(
+                reduced,
+                AlternativeTrigMethod::TanSquareRatioSqrt,
+                rx::CW_PC64_RN,
+                0,
+            )
         } else if staging.live_cos_corrections {
             excel_cos_live_capture_model(reduced)
         } else {
@@ -1481,6 +1902,350 @@ fn count_preoracle_disagreements(batch_path: &Path) -> usize {
         .count()
 }
 
+fn ext80_hex(value: &rx::Ext80) -> String {
+    let mut text = String::from("0x");
+    for byte in value.0.iter().rev() {
+        text.push_str(&format!("{byte:02x}"));
+    }
+    text
+}
+
+fn ext80_significand(value: &rx::Ext80) -> u64 {
+    let mut bytes = [0_u8; 8];
+    bytes.copy_from_slice(&value.0[..8]);
+    u64::from_le_bytes(bytes)
+}
+
+fn cos_disagreement_signature(x: f64) -> [u64; 5] {
+    [
+        excel_cos_model(x).to_bits(),
+        cos_quadrant_residue_spill(x, rx::CW_PC64_RN).to_bits(),
+        cos_quadrant_sincos(x, rx::CW_PC64_RN).to_bits(),
+        cos_quadrant_double_double(x).to_bits(),
+        cos_pi_parity(x, rx::CW_PC64_RN).to_bits(),
+    ]
+}
+
+fn has_cos_candidate_disagreement(x: f64) -> bool {
+    let signature = cos_disagreement_signature(x);
+    signature[1..].iter().any(|output| *output != signature[0])
+}
+
+fn append_cos_search_probe(
+    probes: &mut Vec<Value>,
+    metadata: &mut String,
+    id: &str,
+    class: &str,
+    x: f64,
+) {
+    let divisor = half_pi_for_graph(CosGraph::default());
+    let (residue, quotient) =
+        rx::ext_prem1_quo(&rx::ext_from_f64(x.abs()), &divisor, rx::CW_PC64_RN);
+    let (_, status) = ext_sin_with_status(&residue, rx::CW_PC64_RN);
+    probes.push(json!({
+        "probe": { "id": id, "args": [format_bits(x)] }
+    }));
+    metadata.push_str(&format!(
+        "{id},{class},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+        format_bits(x),
+        ext80_hex(&residue),
+        quotient,
+        (status >> 9) & 1,
+        format_bits(x.cos()),
+        format_bits(excel_cos_model(x)),
+        format_bits(cos_quadrant_residue_spill(x, rx::CW_PC64_RN)),
+        format_bits(cos_quadrant_sincos(x, rx::CW_PC64_RN)),
+        format_bits(cos_quadrant_double_double(x)),
+        format_bits(cos_reduced_platform_model(x, false)),
+        format_bits(cos_pi_parity(x, rx::CW_PC64_RN)),
+        format_bits(cos_quadrant_complement(x, false, false)),
+        format_bits(msvcrt_cos(x)),
+    ));
+}
+
+fn next_lcg(state: &mut u64) -> u64 {
+    *state = state
+        .wrapping_mul(6_364_136_223_846_793_005)
+        .wrapping_add(1_442_695_040_888_963_407);
+    *state
+}
+
+fn generate_cos_search_batches(root: &Path) {
+    std::fs::create_dir_all(root).expect("create COS search work directory");
+    const META_HEADER: &str = "id,class,x_bits,residue_ext80,quotient_low3,fsin_c1,platform_bits,continuous_bits,residue_spill_bits,fsincos_bits,dd_series_bits,reduced_platform_bits,pi_parity_bits,complement_fcos_bits,msvcrt_bits\n";
+    let center = 0x4062_a6de_04ab_6901_u64;
+
+    let mut adjacent_probes = Vec::new();
+    let mut adjacent_meta = String::from(META_HEADER);
+    for (index, offset) in (-256_i64..=256).enumerate() {
+        let bits = (i128::from(center) + i128::from(offset)) as u64;
+        append_cos_search_probe(
+            &mut adjacent_probes,
+            &mut adjacent_meta,
+            &format!("cos-adj-{index:04}"),
+            "adjacent",
+            f64::from_bits(bits),
+        );
+    }
+
+    let mut random_values = BTreeMap::<u64, &'static str>::new();
+    let mut state = 0x5731_09c0_5e11_2026_u64;
+    while random_values
+        .values()
+        .filter(|class| **class == "near-random")
+        .count()
+        < 256
+    {
+        let raw = next_lcg(&mut state);
+        let offset = i64::try_from(raw & 0x01ff_ffff).unwrap() - 0x0100_0000;
+        let bits = (i128::from(center) + i128::from(offset)) as u64;
+        let x = f64::from_bits(bits);
+        if has_cos_candidate_disagreement(x) {
+            random_values.insert(bits, "near-random");
+        }
+    }
+    while random_values
+        .values()
+        .filter(|class| **class == "broad-random")
+        .count()
+        < 256
+    {
+        let raw_q = next_lcg(&mut state);
+        let raw_r = next_lcg(&mut state);
+        let quotient = 3_u64 + 4 * (raw_q % 16_777_215);
+        let residue = ((raw_r >> 11) as f64 / ((1_u64 << 53) as f64) - 0.5) * 1.4;
+        let x = quotient as f64 * std::f64::consts::FRAC_PI_2 + residue;
+        if x < f64::from_bits(0x41a0_0000_0000_0000) && has_cos_candidate_disagreement(x) {
+            random_values.insert(x.to_bits(), "broad-random");
+        }
+    }
+    random_values.insert(0x4062_a6de_04ab_6900, "known-discriminator");
+    random_values.insert(0x4062_a6de_04ab_6902, "known-discriminator");
+
+    let mut random_probes = Vec::new();
+    let mut random_meta = String::from(META_HEADER);
+    for (index, (bits, class)) in random_values.into_iter().enumerate() {
+        append_cos_search_probe(
+            &mut random_probes,
+            &mut random_meta,
+            &format!("cos-rnd-{index:04}"),
+            class,
+            f64::from_bits(bits),
+        );
+    }
+
+    let adjacent_batch = json!({
+        "function": "COS",
+        "row_id": "w109-cos-adjacent-disagreement-20260809",
+        "probes": adjacent_probes,
+    });
+    let random_batch = json!({
+        "function": "COS",
+        "row_id": "w109-cos-random-disagreement-20260809",
+        "probes": random_probes,
+    });
+    let adjacent_count = adjacent_batch["probes"].as_array().unwrap().len();
+    let random_count = random_batch["probes"].as_array().unwrap().len();
+    let manifest = json!({
+        "schema_version": "oxfunc.w109.cos_disagreement_search.v1",
+        "method": "oracle-blind deterministic candidate-disagreement search",
+        "clean_room_sources": [
+            "documented x87 public instruction semantics",
+            "documented C sin/cos APIs",
+            "live worksheet COS through public Excel interfaces"
+        ],
+        "adjacent_center_bits": format!("0x{center:016x}"),
+        "adjacent_offsets_ulp": [-256, 256],
+        "random_seed": "0x573109c05e112026",
+        "candidate_axes": [
+            "FCOS/FSIN/FSINCOS",
+            "PC24/PC53/PC64 and RC modes",
+            "FLDPI/2 construction",
+            "residue store",
+            "double-double trig series",
+            "documented MSVCRT sin/cos"
+        ],
+        "adjacent_count": adjacent_count,
+        "random_count": random_count,
+    });
+
+    for (file_name, value) in [
+        (
+            "batch-cos-adjacent-disagreement-20260809.json",
+            adjacent_batch,
+        ),
+        ("batch-cos-random-disagreement-20260809.json", random_batch),
+        ("batch-cos-disagreement-search-manifest.json", manifest),
+    ] {
+        let path = root.join(file_name);
+        std::fs::write(&path, serde_json::to_string_pretty(&value).unwrap())
+            .unwrap_or_else(|error| panic!("write {}: {error}", path.display()));
+        println!("  {}", path.display());
+    }
+    std::fs::write(
+        root.join("batch-cos-adjacent-disagreement-20260809-meta.csv"),
+        adjacent_meta,
+    )
+    .expect("write COS adjacent metadata");
+    std::fs::write(
+        root.join("batch-cos-random-disagreement-20260809-meta.csv"),
+        random_meta,
+    )
+    .expect("write COS random metadata");
+    println!(
+        "generated COS disagreement batches: {} adjacent + {} random",
+        adjacent_count, random_count
+    );
+}
+
+fn append_tangent_heldout_probe(
+    probes: &mut Vec<Value>,
+    metadata: &mut String,
+    id: &str,
+    class: &str,
+    x: f64,
+) {
+    let divisor = half_pi_for_graph(CosGraph::default());
+    let (residue, quotient) =
+        rx::ext_prem1_quo(&rx::ext_from_f64(x.abs()), &divisor, rx::CW_PC64_RN);
+    let tangent_square = cos_alternative_trig_model(
+        x,
+        AlternativeTrigMethod::TanSquareRatioSqrt,
+        rx::CW_PC64_RN,
+        0,
+    );
+    probes.push(json!({
+        "probe": { "id": id, "args": [format_bits(x)] }
+    }));
+    metadata.push_str(&format!(
+        "{id},{class},{},{},{},{},{}\n",
+        format_bits(x),
+        quotient,
+        ext80_hex(&residue),
+        format_bits(excel_cos_model(x)),
+        format_bits(tangent_square),
+    ));
+}
+
+fn generate_cos_tangent_heldout(root: &Path) {
+    std::fs::create_dir_all(root).expect("create COS tangent held-out directory");
+    let center = 0x4062_a6de_04ab_6901_u64;
+    let known = [0x4062_a6de_04ab_6900_u64, 0x4062_a6de_04ab_6902];
+    let differs = |x: f64| {
+        excel_cos_model(x).to_bits()
+            != cos_alternative_trig_model(
+                x,
+                AlternativeTrigMethod::TanSquareRatioSqrt,
+                rx::CW_PC64_RN,
+                0,
+            )
+            .to_bits()
+    };
+
+    let mut heldout = BTreeMap::<u64, &'static str>::new();
+    let mut near_state = 0x91e1_0da5_5eed_2026_u64;
+    let mut near_attempts = 0_u64;
+    while heldout
+        .values()
+        .filter(|class| **class == "near-heldout")
+        .count()
+        < 256
+    {
+        near_attempts += 1;
+        assert!(near_attempts < 20_000_000, "near held-out search exhausted");
+        let raw = next_lcg(&mut near_state);
+        let offset = i64::try_from(raw & 0x07ff_ffff).unwrap() - 0x0400_0000;
+        let bits = (i128::from(center) + i128::from(offset)) as u64;
+        if !known.contains(&bits) && differs(f64::from_bits(bits)) {
+            heldout.insert(bits, "near-heldout");
+        }
+    }
+
+    let mut broad_state = 0xa11c_e5ed_f109_2026_u64;
+    let mut broad_attempts = 0_u64;
+    while heldout
+        .values()
+        .filter(|class| **class == "broad-heldout")
+        .count()
+        < 256
+    {
+        broad_attempts += 1;
+        assert!(
+            broad_attempts < 20_000_000,
+            "broad held-out search exhausted"
+        );
+        let raw_q = next_lcg(&mut broad_state);
+        let raw_r = next_lcg(&mut broad_state);
+        let quotient = 1_u64 + 2 * (raw_q % 16_777_215);
+        let residue = ((raw_r >> 11) as f64 / ((1_u64 << 53) as f64) - 0.5) * 1.55;
+        let x = quotient as f64 * std::f64::consts::FRAC_PI_2 + residue;
+        if x < f64::from_bits(0x41a0_0000_0000_0000) && !known.contains(&x.to_bits()) && differs(x)
+        {
+            heldout.insert(x.to_bits(), "broad-heldout");
+        }
+    }
+
+    let mut probes = Vec::new();
+    let mut metadata = String::from(
+        "id,class,x_bits,quotient_low3,residue_ext80,continuous_bits,tangent_square_bits\n",
+    );
+    for (index, (bits, class)) in heldout.into_iter().enumerate() {
+        append_tangent_heldout_probe(
+            &mut probes,
+            &mut metadata,
+            &format!("cos-tan-held-{index:04}"),
+            class,
+            f64::from_bits(bits),
+        );
+    }
+    for (index, bits) in known.into_iter().enumerate() {
+        append_tangent_heldout_probe(
+            &mut probes,
+            &mut metadata,
+            &format!("cos-tan-control-{index:02}"),
+            "known-control",
+            f64::from_bits(bits),
+        );
+    }
+    let batch = json!({
+        "function": "COS",
+        "row_id": "w109-cos-tangent-square-heldout-20260809",
+        "probes": probes,
+    });
+    let manifest = json!({
+        "schema_version": "oxfunc.w109.cos_tangent_square_heldout.v1",
+        "method": "oracle-blind deterministic candidate-disagreement holdout",
+        "frozen_candidate": "FPREM1(|x|, FLDPI/2); odd-quadrant sine = sign(FPTAN(r))*FSQRT(FPTAN(r)^2/(1+FPTAN(r)^2)); PC64/RN; no spills",
+        "baseline": "continuous FPREM1 plus FSIN/FCOS dispatch",
+        "near_seed": "0x91e10da55eed2026",
+        "broad_seed": "0xa11ce5edf1092026",
+        "near_attempts": near_attempts,
+        "broad_attempts": broad_attempts,
+        "heldout_count": 512,
+        "known_control_count": 2,
+        "oracle_answers_used_during_generation": false,
+    });
+    for (file_name, value) in [
+        ("batch-cos-tangent-square-heldout-20260809.json", batch),
+        (
+            "batch-cos-tangent-square-heldout-20260809-manifest.json",
+            manifest,
+        ),
+    ] {
+        let path = root.join(file_name);
+        std::fs::write(&path, serde_json::to_string_pretty(&value).unwrap())
+            .unwrap_or_else(|error| panic!("write {}: {error}", path.display()));
+        println!("  {}", path.display());
+    }
+    let meta_path = root.join("batch-cos-tangent-square-heldout-20260809-meta.csv");
+    std::fs::write(&meta_path, metadata)
+        .unwrap_or_else(|error| panic!("write {}: {error}", meta_path.display()));
+    println!("  {}", meta_path.display());
+    println!(
+        "generated COS tangent-square holdout: 512 held-out + 2 controls; attempts near={near_attempts} broad={broad_attempts}"
+    );
+}
+
 fn generate_intermediate_discriminator(root: &Path) {
     std::fs::create_dir_all(root).expect("create BESSELJ work directory");
     let failing_x_bits = 0x4062_bfff_ffff_ffff_u64;
@@ -1618,6 +2383,369 @@ fn generate_intermediate_discriminator(root: &Path) {
     println!("wrote BESSELJ COS phase follow-up: 3 probes");
     println!("  {}", followup_path.display());
     println!("  {}", followup_meta_path.display());
+}
+
+fn load_cos_search_rows(root: &Path) -> Vec<CosCapturedRow> {
+    let mut rows = Vec::new();
+    for stem in [
+        "cos-adjacent-disagreement-20260809",
+        "cos-random-disagreement-20260809",
+    ] {
+        let meta_path = root.join(format!("batch-{stem}-meta.csv"));
+        let mut classes = HashMap::new();
+        for line in std::fs::read_to_string(&meta_path)
+            .unwrap_or_else(|error| panic!("read {}: {error}", meta_path.display()))
+            .lines()
+            .skip(1)
+        {
+            let mut fields = line.split(',');
+            let id = fields.next().expect("COS metadata id");
+            let class = fields.next().expect("COS metadata class");
+            classes.insert(id.to_string(), class.to_string());
+        }
+
+        let answers_path = root.join(format!("answers-{stem}.json"));
+        let answers: Value = serde_json::from_str(
+            &std::fs::read_to_string(&answers_path)
+                .unwrap_or_else(|error| panic!("read {}: {error}", answers_path.display())),
+        )
+        .unwrap_or_else(|error| panic!("parse {}: {error}", answers_path.display()));
+        for witness in answers["witnesses"].as_array().expect("COS witnesses") {
+            let id = witness["id"].as_str().expect("COS witness id").to_string();
+            rows.push(CosCapturedRow {
+                class: classes
+                    .get(&id)
+                    .unwrap_or_else(|| panic!("metadata class for {id}"))
+                    .clone(),
+                id,
+                x: parse_bits(witness["args"][0].as_str().expect("COS argument bits")),
+                expected: parse_bits(
+                    witness["expected_bits"]
+                        .as_str()
+                        .expect("COS expected bits"),
+                )
+                .to_bits(),
+            });
+        }
+    }
+    rows
+}
+
+fn analyze_cos_search(root: &Path) {
+    let rows = load_cos_search_rows(root);
+    println!("worksheet COS large-battery replay ({} rows):", rows.len());
+    for (name, candidate) in [
+        ("platform", f64::cos as fn(f64) -> f64),
+        ("continuous FPREM1", excel_cos_model as fn(f64) -> f64),
+        (
+            "residue-spill FPREM1",
+            (|x| cos_quadrant_residue_spill(x, rx::CW_PC64_RN)) as fn(f64) -> f64,
+        ),
+        (
+            "FSINCOS FPREM1",
+            (|x| cos_quadrant_sincos(x, rx::CW_PC64_RN)) as fn(f64) -> f64,
+        ),
+        (
+            "double-double series",
+            cos_quadrant_double_double as fn(f64) -> f64,
+        ),
+        (
+            "AMD poly SSE2 + ext tail",
+            (|x| cos_quadrant_amd_poly(x, false, true)) as fn(f64) -> f64,
+        ),
+        (
+            "AMD poly SSE2 spilled",
+            (|x| cos_quadrant_amd_poly(x, false, false)) as fn(f64) -> f64,
+        ),
+        (
+            "AMD poly FMA3 + ext tail",
+            (|x| cos_quadrant_amd_poly(x, true, true)) as fn(f64) -> f64,
+        ),
+        (
+            "AMD poly FMA3 spilled",
+            (|x| cos_quadrant_amd_poly(x, true, false)) as fn(f64) -> f64,
+        ),
+    ] {
+        let exact = rows
+            .iter()
+            .filter(|row| candidate(row.x).to_bits() == row.expected)
+            .count();
+        println!("  {name:26} {exact}/{}", rows.len());
+    }
+
+    let mut continuous_amd_relation = BTreeMap::<&'static str, usize>::new();
+    for row in &rows {
+        let continuous = excel_cos_model(row.x).to_bits() == row.expected;
+        let amd = cos_quadrant_amd_poly(row.x, false, true).to_bits() == row.expected;
+        let key = match (continuous, amd) {
+            (true, true) => "both",
+            (true, false) => "continuous-only",
+            (false, true) => "amd-only",
+            (false, false) => "neither",
+        };
+        *continuous_amd_relation.entry(key).or_default() += 1;
+    }
+    println!("  continuous/AMD relation {continuous_amd_relation:?}");
+
+    let mut alternative_scores = Vec::new();
+    for method in [
+        AlternativeTrigMethod::TanNormalize,
+        AlternativeTrigMethod::TanReciprocalMultiply,
+        AlternativeTrigMethod::TanSqrtReciprocalMultiply,
+        AlternativeTrigMethod::TanSquareRatioSqrt,
+        AlternativeTrigMethod::TanHalfAngle,
+        AlternativeTrigMethod::TanTimesCos,
+        AlternativeTrigMethod::PythagoreanFromCos,
+        AlternativeTrigMethod::NormalizeSeparateSinCos,
+        AlternativeTrigMethod::NormalizePairedSinCos,
+    ] {
+        for (cw_name, cw) in [
+            ("PC24", rx::CW_PC24_RN),
+            ("PC53", rx::CW_PC53_RN),
+            ("PC64", rx::CW_PC64_RN),
+        ] {
+            for spill_mask in 0_u8..64 {
+                let exact = rows
+                    .iter()
+                    .filter(|row| {
+                        cos_alternative_trig_model(row.x, method, cw, spill_mask).to_bits()
+                            == row.expected
+                    })
+                    .count();
+                alternative_scores.push((exact, method, cw_name, spill_mask));
+            }
+        }
+    }
+    alternative_scores.sort_by(|left, right| right.0.cmp(&left.0));
+    println!(
+        "alternative reduced-trig matrix: {} graphs; best {}/{}",
+        alternative_scores.len(),
+        alternative_scores[0].0,
+        rows.len()
+    );
+    for (exact, method, cw_name, spill_mask) in alternative_scores.iter().take(24) {
+        println!(
+            "  {exact:4}/{} method={method:?} {cw_name} spill=0x{spill_mask:02x}",
+            rows.len()
+        );
+    }
+    let (_, best_method, _, best_spill_mask) = alternative_scores[0];
+    let best_cw = rx::CW_PC64_RN;
+    let mut continuous_alternative_relation = BTreeMap::<&'static str, usize>::new();
+    println!("best alternative residuals:");
+    for row in &rows {
+        let continuous = excel_cos_model(row.x).to_bits() == row.expected;
+        let candidate =
+            cos_alternative_trig_model(row.x, best_method, best_cw, best_spill_mask).to_bits();
+        let alternative = candidate == row.expected;
+        let key = match (continuous, alternative) {
+            (true, true) => "both",
+            (true, false) => "continuous-only",
+            (false, true) => "alternative-only",
+            (false, false) => "neither",
+        };
+        *continuous_alternative_relation.entry(key).or_default() += 1;
+        if !alternative {
+            println!(
+                "  id={} class={} x={} live=0x{:016x} candidate=0x{candidate:016x} continuous=0x{:016x}",
+                row.id,
+                row.class,
+                format_bits(row.x),
+                row.expected,
+                excel_cos_model(row.x).to_bits(),
+            );
+        }
+    }
+    println!("  continuous/alternative relation {continuous_alternative_relation:?}");
+
+    let prior_path = root
+        .parent()
+        .expect("W109 work root")
+        .join("G4-01-cos/answers-validation.json");
+    let prior: Value = serde_json::from_str(
+        &std::fs::read_to_string(&prior_path)
+            .unwrap_or_else(|error| panic!("read {}: {error}", prior_path.display())),
+    )
+    .unwrap_or_else(|error| panic!("parse {}: {error}", prior_path.display()));
+    let prior_rows = prior["witnesses"].as_array().expect("prior COS witnesses");
+    let prior_continuous = prior_rows
+        .iter()
+        .filter(|row| {
+            let x = parse_bits(row["args"][0].as_str().expect("prior COS argument"));
+            excel_cos_model(x).to_bits()
+                == parse_bits(
+                    row["expected_bits"]
+                        .as_str()
+                        .expect("prior COS expected bits"),
+                )
+                .to_bits()
+        })
+        .count();
+    let prior_alternative = prior_rows
+        .iter()
+        .filter(|row| {
+            let x = parse_bits(row["args"][0].as_str().expect("prior COS argument"));
+            cos_alternative_trig_model(x, best_method, best_cw, best_spill_mask).to_bits()
+                == parse_bits(
+                    row["expected_bits"]
+                        .as_str()
+                        .expect("prior COS expected bits"),
+                )
+                .to_bits()
+        })
+        .count();
+    println!(
+        "prior G4-01 validation: continuous {prior_continuous}/{}; tangent-square hybrid {prior_alternative}/{}",
+        prior_rows.len(),
+        prior_rows.len(),
+    );
+
+    let mut scores = explicit_reduction_candidates()
+        .into_iter()
+        .map(|(name, graph)| {
+            let exact = rows
+                .iter()
+                .filter(|row| cos_explicit_reduction_model(row.x, graph).to_bits() == row.expected)
+                .count();
+            (exact, name, graph)
+        })
+        .collect::<Vec<_>>();
+    scores.sort_by(|left, right| right.0.cmp(&left.0).then_with(|| left.1.cmp(&right.1)));
+    let best_exact = scores[0].0;
+    println!(
+        "explicit quotient/product reduction: {} graphs; best {best_exact}/{}",
+        scores.len(),
+        rows.len()
+    );
+    for (exact, name, _) in scores.iter().take(24) {
+        println!("  {exact:4}/{} {name}", rows.len());
+    }
+
+    let (_, best_name, best_graph) = &scores[0];
+    println!("best explicit graph residuals ({best_name}):");
+    let mut by_class = BTreeMap::<String, usize>::new();
+    let residuals = rows
+        .iter()
+        .filter(|row| cos_explicit_reduction_model(row.x, *best_graph).to_bits() != row.expected)
+        .collect::<Vec<_>>();
+    for row in &residuals {
+        *by_class.entry(row.class.clone()).or_default() += 1;
+    }
+    for row in residuals.iter().take(32) {
+        println!(
+            "  {} class={} x={} expected=0x{:016x} candidate=0x{:016x} continuous=0x{:016x}",
+            row.id,
+            row.class,
+            format_bits(row.x),
+            row.expected,
+            cos_explicit_reduction_model(row.x, *best_graph).to_bits(),
+            excel_cos_model(row.x).to_bits(),
+        );
+    }
+    println!(
+        "  residual classes {by_class:?}; displayed {}/{}",
+        residuals.len().min(32),
+        residuals.len()
+    );
+
+    let mut rounding_rows = rows
+        .iter()
+        .map(|row| {
+            let raw = excel_cos_ext_value(&rx::ext_from_f64(row.x));
+            let discarded = ext80_significand(&raw) & 0x7ff;
+            let midpoint_distance = discarded.abs_diff(0x400);
+            (
+                midpoint_distance,
+                discarded,
+                excel_cos_model(row.x).to_bits() != row.expected,
+                row,
+                raw,
+            )
+        })
+        .collect::<Vec<_>>();
+    rounding_rows.sort_by_key(|row| row.0);
+    println!("closest raw-x87 results to a binary64 rounding midpoint:");
+    for (distance, discarded, miss, row, raw) in rounding_rows.iter().take(32) {
+        println!(
+            "  dist={distance:4} low11=0x{discarded:03x} miss={} id={} x={} raw={} live=0x{:016x}",
+            u8::from(*miss),
+            row.id,
+            format_bits(row.x),
+            ext80_hex(raw),
+            row.expected,
+        );
+        if *miss {
+            println!(
+                "    AMD-SSE2-tail=0x{:016x} spill=0x{:016x} DD=0x{:016x}",
+                cos_quadrant_amd_poly(row.x, false, true).to_bits(),
+                cos_quadrant_residue_spill(row.x, rx::CW_PC64_RN).to_bits(),
+                cos_quadrant_double_double(row.x).to_bits(),
+            );
+        }
+    }
+}
+
+fn analyze_cos_tangent_heldout(root: &Path) {
+    let answers_path = root.join("answers-cos-tangent-square-heldout-20260809.json");
+    if !answers_path.exists() {
+        println!(
+            "awaiting live COS tangent holdout: {}",
+            answers_path.display()
+        );
+        return;
+    }
+    let answers: Value = serde_json::from_str(
+        &std::fs::read_to_string(&answers_path)
+            .unwrap_or_else(|error| panic!("read {}: {error}", answers_path.display())),
+    )
+    .unwrap_or_else(|error| panic!("parse {}: {error}", answers_path.display()));
+    let rows = answers["witnesses"]
+        .as_array()
+        .expect("COS tangent witnesses");
+    let mut baseline_exact = 0_usize;
+    let mut tangent_exact = 0_usize;
+    let mut tangent_failures = Vec::new();
+    for row in rows {
+        let x = parse_bits(row["args"][0].as_str().expect("COS tangent argument"));
+        let expected = parse_bits(
+            row["expected_bits"]
+                .as_str()
+                .expect("COS tangent expected bits"),
+        )
+        .to_bits();
+        baseline_exact += usize::from(excel_cos_model(x).to_bits() == expected);
+        let candidate = cos_alternative_trig_model(
+            x,
+            AlternativeTrigMethod::TanSquareRatioSqrt,
+            rx::CW_PC64_RN,
+            0,
+        )
+        .to_bits();
+        tangent_exact += usize::from(candidate == expected);
+        if candidate != expected {
+            tangent_failures.push((
+                row["id"].as_str().expect("COS tangent id"),
+                x,
+                expected,
+                candidate,
+            ));
+        }
+    }
+    println!(
+        "COS tangent-square oracle-blind holdout: baseline {baseline_exact}/{}; tangent-square {tangent_exact}/{}",
+        rows.len(),
+        rows.len(),
+    );
+    for (id, x, expected, candidate) in tangent_failures.iter().take(32) {
+        println!(
+            "  miss id={id} x={} expected=0x{expected:016x} candidate=0x{candidate:016x} baseline=0x{:016x}",
+            format_bits(*x),
+            excel_cos_model(*x).to_bits(),
+        );
+    }
+    if !tangent_failures.is_empty() {
+        std::process::exit(2);
+    }
 }
 
 fn analyze_intermediate_discriminator(root: &Path) {
@@ -1834,6 +2962,31 @@ fn analyze_intermediate_discriminator(root: &Path) {
             )
         })
         .collect::<Vec<_>>();
+    let mut unique_phase_rows = BTreeMap::new();
+    for (x, expected) in &captured_cos {
+        unique_phase_rows.insert(x.to_bits(), *expected);
+    }
+    println!("unique phase diagnostics:");
+    for (phase_bits, expected) in unique_phase_rows {
+        let x = f64::from_bits(phase_bits);
+        let divisor = half_pi_for_graph(CosGraph::default());
+        let (residue, quotient) =
+            rx::ext_prem1_quo(&rx::ext_from_f64(x.abs()), &divisor, rx::CW_PC64_RN);
+        let (_, status) = ext_sin_with_status(&residue, rx::CW_PC64_RN);
+        let baseline = excel_cos_model(x).to_bits();
+        let spill = cos_quadrant_residue_spill(x, rx::CW_PC64_RN).to_bits();
+        let mut significand_bytes = [0_u8; 8];
+        significand_bytes.copy_from_slice(&residue.0[..8]);
+        let significand = u64::from_le_bytes(significand_bytes);
+        println!(
+            "  x=0x{phase_bits:016x} residue_l16=0x{:04x} q={} C1={} live=0x{expected:016x} baseline={} spill={}",
+            significand & 0xffff,
+            quotient,
+            (status >> 9) & 1,
+            if baseline == expected { "yes" } else { "no" },
+            if spill == expected { "yes" } else { "no" },
+        );
+    }
     let correction_unit = f64::from_bits(((1023 - 70) as u64) << 52);
     let mut best_correction_exact = 0_usize;
     let mut best_correction_steps = Vec::new();
@@ -2003,12 +3156,28 @@ fn analyze_intermediate_discriminator(root: &Path) {
 
 fn main() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../work/w109/G4-besselj");
+    if std::env::args().any(|arg| arg == "--generate-cos-search") {
+        generate_cos_search_batches(&root);
+        return;
+    }
+    if std::env::args().any(|arg| arg == "--generate-cos-tangent-heldout") {
+        generate_cos_tangent_heldout(&root);
+        return;
+    }
     if std::env::args().any(|arg| arg == "--generate-intermediate") {
         generate_intermediate_discriminator(&root);
         return;
     }
     if std::env::args().any(|arg| arg == "--analyze-intermediate") {
         analyze_intermediate_discriminator(&root);
+        return;
+    }
+    if std::env::args().any(|arg| arg == "--analyze-cos-search") {
+        analyze_cos_search(&root);
+        return;
+    }
+    if std::env::args().any(|arg| arg == "--analyze-cos-tangent-heldout") {
+        analyze_cos_tangent_heldout(&root);
         return;
     }
     let batch_path = root.join("batch-besselj-internal-trig-heldout-20260809.json");
@@ -2473,14 +3642,27 @@ fn main() {
     let live_cos_score = score("live-COS decomposition", &rows, true, |x, order| {
         besselj_model(x, order, both_cos, live_cos_diagnostic)
     });
+    let tangent_square_cos_candidate = BodyStaging {
+        tangent_square_cos: true,
+        j0: 1,
+        ..BodyStaging::default()
+    };
+    let tangent_square_cos_score = score(
+        "tangent-square COS + J0 cos*p x87",
+        &rows,
+        true,
+        |x, order| besselj_model(x, order, both_cos, tangent_square_cos_candidate),
+    );
     println!(
-        "summary: production={}/{} platform={platform_exact}/{} trig_best={best_exact}/{} trig_masks={best_masks:?} staged_best={best_final_exact}/{} live_cos_decomposition={}/{} staged_masks={:?}",
+        "summary: production={}/{} platform={platform_exact}/{} trig_best={best_exact}/{} trig_masks={best_masks:?} staged_best={best_final_exact}/{} live_cos_decomposition={}/{} tangent_square_cos={}/{} staged_masks={:?}",
         production_score.exact,
         rows.len(),
         rows.len(),
         rows.len(),
         rows.len(),
         live_cos_score.exact,
+        rows.len(),
+        tangent_square_cos_score.exact,
         rows.len(),
         best_final
             .iter()
@@ -2497,7 +3679,7 @@ fn main() {
             })
             .collect::<Vec<_>>()
     );
-    if best_final_exact != rows.len() {
+    if tangent_square_cos_score.exact != rows.len() {
         std::process::exit(2);
     }
 }

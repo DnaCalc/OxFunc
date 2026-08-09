@@ -1,4 +1,5 @@
 use crate::coercion::CoercionError;
+use crate::excel_numeric::{excel_cos, excel_x87_mul};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -232,7 +233,11 @@ fn bessj0(x: f64) -> f64 {
                 -0.000_000_093_493_515_2,
             ],
         );
-        (NR_2_OVER_PI / ax).sqrt() * (xx.cos() * ans1 - z * xx.sin() * ans2)
+        // W109 G4-06 / BUG-FUNC-046: both J asymptotic bodies inherit worksheet
+        // COS, while only J0 publishes cosine*P through an x87 double-rounded
+        // multiply. Sine and the Y-family sites remain on their platform paths.
+        let cosine_p = excel_x87_mul(excel_cos(xx), ans1);
+        (NR_2_OVER_PI / ax).sqrt() * (cosine_p - z * xx.sin() * ans2)
     }
 }
 
@@ -294,7 +299,7 @@ fn bessj1(x: f64) -> f64 {
                 0.000_000_105_787_412,
             ],
         );
-        (NR_2_OVER_PI / ax).sqrt() * (xx.cos() * ans1 - z * xx.sin() * ans2)
+        (NR_2_OVER_PI / ax).sqrt() * (excel_cos(xx) * ans1 - z * xx.sin() * ans2)
     };
     if x < 0.0 { -ans } else { ans }
 }
@@ -801,9 +806,8 @@ mod tests {
         // BUG-FUNC-024 companion: live Excel 16.0 b19929 witnesses (elem-probe,
         // cell-ref plumbing, 2026-07-02) covering the J-specific asymptotic tables
         // (P0 transposition, six-entry P1) plus upward/downward recurrence lanes.
-        // BESSELJ(50,0)/BESSELJ(150,0) are deliberately absent: Excel's COS is
-        // 1 ULP off ours at those reduced arguments (large-argument trig stream),
-        // which J0 inherits at full weight.
+        // The final W109 rows independently pin J1's inherited worksheet-COS
+        // route, the shared COS odd-quadrant repair, and J0's x87 cosine*P store.
         let witnesses: &[(f64, f64, u64)] = &[
             (8.0, 0.0, 0x3fc5_f8a7_55e1_788c),
             (8.75, 0.0, 0xbf9a_9256_3e96_315c),
@@ -823,6 +827,24 @@ mod tests {
             (20.0, 5.0, 0x3fc3_5987_db6a_c779),
             (100.0, 3.0, 0x3fb3_875c_878f_ce53),
             (10.0, 10.0, 0x3fca_8ee7_9d2f_09d3),
+            (50.0, 0.0, 0x3fac_936e_f381_9aff),
+            (50.0, 2.0, 0xbfae_92ad_1c82_750a),
+            (65_536.0, 1.0, 0x3f69_86d2_3d0c_2950),
+            (
+                f64::from_bits(0x4062_bfff_ffff_ffff),
+                0.0,
+                0xbf49_5d8a_81b9_c8bf,
+            ),
+            (
+                f64::from_bits(0x4062_bfff_ffff_ffff),
+                2.0,
+                0xbf18_c693_cd8c_2560,
+            ),
+            (
+                f64::from_bits(0x405b_1c17_f000_0000),
+                2.0,
+                0xbfa9_b1ea_c889_83f1,
+            ),
         ];
         for &(x, n, excel_bits) in witnesses {
             let actual = besselj_kernel(x, n)

@@ -468,18 +468,19 @@ pub(crate) fn excel_sin(x: f64) -> f64 {
     }
 }
 
-/// Excel `COS` — bit-exact on `x86_64` (W109 G4-01, 1044/1044 incl. the
-/// bit-resolution threshold ladder): `|x| < 2^-26` publishes exactly `1.0`
-/// (live-probed; `2^-26` itself takes the chain); otherwise the `fFCOS`
-/// π/2-quadrant chain on `|x|` — `FPREM1(|x|, FLDPI/2)` with the quotient
-/// low bits selecting `{cos, -sin, -cos, sin}` (cos is even; FPREM1 reports
-/// quotient-magnitude bits, so the dispatch is only valid on `|x|`).
+/// Excel `COS` — bit-exact on `x86_64` (W109 G4-01/G4-07, 2561/2561 across
+/// the original corpus, a focused/randomized discovery battery, and a fresh
+/// oracle-blind held-out): `|x| < 2^-26` publishes exactly `1.0` (live-probed;
+/// `2^-26` itself takes the chain). Otherwise Excel reduces `|x|` with
+/// `FPREM1(|x|, FLDPI/2)`. Even quadrants use `FCOS`; odd quadrants reconstruct
+/// the sine magnitude as `sqrt(tan(r)^2 / (1 + tan(r)^2))` in continuous x87
+/// PC64/RN arithmetic, then apply the residue and quadrant signs.
 pub(crate) fn excel_cos(x: f64) -> f64 {
     #[cfg(target_arch = "x86_64")]
     {
         use x87::raw::{
-            CW_PC64_RN, ext_abs, ext_chs, ext_cos, ext_from_f64, ext_one, ext_pi, ext_prem1_quo,
-            ext_scale, ext_sin, ext_to_f64,
+            CW_PC64_RN, ext_abs, ext_add, ext_chs, ext_cos, ext_div, ext_from_f64, ext_mul,
+            ext_one, ext_pi, ext_prem1_quo, ext_scale, ext_sqrt, ext_tan, ext_to_f64,
         };
         if !x.is_finite() {
             return f64::NAN;
@@ -493,11 +494,22 @@ pub(crate) fn excel_cos(x: f64) -> f64 {
         let pi_half = ext_scale(&ext_pi(), &minus_one, cw); // exact halving
         let xa = ext_abs(&ext_from_f64(x), cw);
         let (r, q) = ext_prem1_quo(&xa, &pi_half, cw);
+        let odd_quadrant_sine = || {
+            let tangent = ext_tan(&r, cw);
+            let square = ext_mul(&tangent, &tangent, cw);
+            let denominator = ext_add(&ext_one(), &square, cw);
+            let ratio = ext_div(&square, &denominator, cw);
+            let mut sine = ext_sqrt(&ratio, cw);
+            if ext_to_f64(&tangent, cw).is_sign_negative() {
+                sine = ext_chs(&sine, cw);
+            }
+            sine
+        };
         let v = match q & 3 {
             0 => ext_cos(&r, cw),
-            1 => ext_chs(&ext_sin(&r, cw), cw),
+            1 => ext_chs(&odd_quadrant_sine(), cw),
             2 => ext_chs(&ext_cos(&r, cw), cw),
-            _ => ext_sin(&r, cw),
+            _ => odd_quadrant_sine(),
         };
         ext_to_f64(&v, cw)
     }
@@ -1006,7 +1018,14 @@ mod tests {
         }
         let cos_rows: &[(u64, u64)] = &[
             (0x40489b7812ada40a, 0x3fdfcbaf84b75409), // COS(49.214601836), old 1-ULP row
-            (0x4062a6de04ab6903, 0xbf86a0d99f45d970), // COS(149.214601836)
+            // G4-07 odd-quadrant tangent-square publication discriminators and
+            // their immediate neighbors. The former FSIN branch missed the two
+            // interior even-bit phases by one ULP.
+            (0x4062a6de04ab68ff, 0xbf86a0d99f46d96c),
+            (0x4062a6de04ab6900, 0xbf86a0d99f46996e),
+            (0x4062a6de04ab6901, 0xbf86a0d99f46596e),
+            (0x4062a6de04ab6902, 0xbf86a0d99f461970),
+            (0x4062a6de04ab6903, 0xbf86a0d99f45d970),
         ];
         for &(xb, want) in cos_rows {
             assert_eq!(excel_cos(f64::from_bits(xb)).to_bits(), want);
