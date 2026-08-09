@@ -915,6 +915,13 @@ pub fn accrint_kernel(
     let pcd =
         change_month_flag(first, -num_months, end_flag).ok_or(derr(WorksheetErrorCode::Num))?;
     let canonical = coup_days_accr(pcd, first, num_months, end_flag, fc, basis_)?;
+    // W109 G6-02 publication identification (build 20228/CV2 NoCache): the
+    // coupon and accrual fraction are both stored binary64 values, but their
+    // final product is an x87 PC64 multiply followed by the binary64 result
+    // store. This rare double-rounding site is decisive on the b43 rate ladder
+    // and the frozen publication held-out; all earlier day-count arithmetic
+    // remains the identified plain-SSE2 graph.
+    let coupon = par * rate_ / fc;
 
     if !from_issue {
         // ---- calc_method FALSE: FLAT fraction (with the whole-period skip). ----
@@ -934,7 +941,7 @@ pub fn accrint_kernel(
         } else {
             days_between_num(issue, settlement, basis_)? / canonical
         };
-        return Ok(par * rate_ / fc * a);
+        return Ok(crate::excel_numeric::excel_x87_mul(coupon, a));
     }
 
     // ---- calc_method TRUE: period walk accruing from issue. ----
@@ -967,7 +974,7 @@ pub fn accrint_kernel(
                 a += days_i / coup_days_i;
             }
         }
-        return Ok(par * rate_ / fc * a);
+        return Ok(crate::excel_numeric::excel_x87_mul(coupon, a));
     }
 
     // Settlement past the first interest date: forward-collect the period terms, then sum
@@ -1008,7 +1015,7 @@ pub fn accrint_kernel(
     for t in terms.iter().rev() {
         a += *t;
     }
-    Ok(par * rate_ / fc * a)
+    Ok(crate::excel_numeric::excel_x87_mul(coupon, a))
 }
 fn evaln(
     args: &[CalcValue],
@@ -1326,6 +1333,109 @@ mod tests {
               0.05, 997.5, 4.0, 1.0, false),
             0x402f_940f_c0fc_0fc2
         );
+    }
+
+    #[test]
+    fn accrint_x87_final_publication_matches_live_excel_w109() {
+        // W109 G6-02 final-publication identification. The stored coupon and
+        // stored accrual fraction are multiplied through RN53(RN64(coupon*a)).
+        // These live-Excel build-20228/CV2 pins include the b43 isolated-rate
+        // discriminator plus rows from the frozen 450-row NoCache held-out.
+        let cases = [
+            (
+                [
+                    0x40e5_41e0_0000_0000,
+                    0x40e5_4fe0_0000_0000,
+                    0x40e5_6780_0000_0000,
+                    0x3faf_7ced_9168_72b0,
+                    0x408f_2c00_0000_0000,
+                    0x4010_0000_0000_0000,
+                    0x4008_0000_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                ],
+                0x4049_3095_55ee_8cc8,
+            ),
+            (
+                [
+                    0x40e5_3d20_0000_0000,
+                    0x40e5_6ac0_0000_0000,
+                    0x40e5_b900_0000_0000,
+                    0x3faf_7ced_9168_72b0,
+                    0x408f_2c00_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                    0x0000_0000_0000_0000,
+                ],
+                0x4064_d1e5_8b59_214c,
+            ),
+            (
+                [
+                    0x40e5_4ca0_0000_0000,
+                    0x40e5_b860_0000_0000,
+                    0x40e6_10c0_0000_0000,
+                    0x3faf_7ced_9168_72e0,
+                    0x40a4_9269_68d9_5565,
+                    0x4010_0000_0000_0000,
+                    0x0000_0000_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                ],
+                0x4085_bb9c_e8bb_9d6c,
+            ),
+            (
+                [
+                    0x40e4_be40_0000_0000,
+                    0x40e5_16e0_0000_0000,
+                    0x40e4_e460_0000_0000,
+                    0x3fb8_59d7_ff5d_f323,
+                    0x4091_45e9_f238_5198,
+                    0x4010_0000_0000_0000,
+                    0x4000_0000_0000_0000,
+                    0x0000_0000_0000_0000,
+                ],
+                0xc051_d15a_0e17_c888,
+            ),
+            (
+                [
+                    0x40e6_65e0_0000_0000,
+                    0x40e6_7de0_0000_0000,
+                    0x40e7_13e0_0000_0000,
+                    0x3fc4_c62c_5266_ded7,
+                    0x40c1_a670_15f9_623c,
+                    0x3ff0_0000_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                ],
+                0x40b5_d566_21fe_8dba,
+            ),
+            (
+                [
+                    0x40e5_d840_0000_0000,
+                    0x40e6_1d60_0000_0000,
+                    0x40e5_f840_0000_0000,
+                    0x3fa9_9999_9999_999a,
+                    0x40b5_621e_068e_c68e,
+                    0x4000_0000_0000_0000,
+                    0x3ff0_0000_0000_0000,
+                    0x0000_0000_0000_0000,
+                ],
+                0xc054_415a_f4e8_4828,
+            ),
+        ];
+        for (args, expected) in cases {
+            let a = args.map(f64::from_bits);
+            let got = accrint_kernel(
+                a[0],
+                a[1],
+                a[2],
+                a[3],
+                Some(a[4]),
+                a[5],
+                Some(a[6]),
+                Some(a[7] != 0.0),
+            )
+            .expect("valid ACCRINT publication witness");
+            assert_eq!(got.to_bits(), expected);
+        }
     }
 
     #[test]
