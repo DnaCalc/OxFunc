@@ -98,12 +98,16 @@ G6-01 surface for Phase 2/6 work.
    fixed-statistic probes for the tests, metamorphic identification for the
    regression family. The MINVERSE distinguishing-matrix race is now signed
    off separately in Section 7.6.
-5. **Phase 6 — ATANH signed off; ACOTH remains independent.** The original
+5. **Phase 6 — ATANH and ACOTH signed off independently.** The original
    368-case reversal triggered a dense 5,902-row map, exact live boundary
    bisection, retired refinement set, and fresh post-selection held-out. The
-   exact ATANH graph landed in `a03a75f`; ACOTH no longer inherits its former
-   small-input helper and remains a separate candidate search. Continue a full
-   catalog re-sweep after each primitive lands.
+   exact ATANH graph landed in `a03a75f`. ACOTH did not inherit its former
+   small-input helper: its separate answer-blind campaign identified a direct
+   inverse odd-power series, exact threshold `0x400d92b14ec204f3`, and +0
+   reciprocal flush, with a frozen `66552/66552` held-out and
+   `268769/268769` production replay; the package landed in `7f7eac9`.
+   Continue a full catalog re-sweep after
+   each primitive lands.
 
 ## 5. Operating procedure per row
 
@@ -232,7 +236,7 @@ The implementation, exact pins, and reusable generators/racer landed in
 `a03a75f`; focused tests and the full core passed, and Lean carries the route
 binding without duplicating x87 arithmetic. BUG-FUNC-027 CLASS-C4 is
 `closed_signed_off`, bead `oxf-jwh5.6` is closed, and G4-02 is retired. Other
-BUG-FUNC-027 subclasses, ACOTH, and the wider W109 campaign remain open. No
+BUG-FUNC-027 subclasses and the wider W109 campaign remain open. No
 FEC/F3E or evaluator-facing handoff is required.
 
 ### 7.6 MINVERSE G5-01 exact graph signed off
@@ -258,11 +262,42 @@ separate `MINVERSE(5)` final-cell publication seam remains in parent
 BUG-FUNC-023 / HO-FN-010, so this scoped closure does not close that parent or
 the wider campaign. No new FEC/F3E handoff is required.
 
+### 7.7 ACOTH G4-03 exact graph signed off
+
+The sparse July reciprocal-FYL2XP1-pair interpretation is retracted. The exact
+current-reference graph computes on `abs(x)` and restores sign only for
+nonzero results. Below `0x400d92b14ec204f3`, native binary64 `a+1` and `a-1`
+feed a stored x87-PC64 division and worksheet LN/half publication. At and above
+the threshold, Excel uses the direct inverse odd-power series with each
+reciprocal, multiply, divide, and accumulator add stored through x87 PC64 to
+binary64. If the initial reciprocal is subnormal, both input signs publish
+positive zero.
+
+The last ratio-only discriminator is `0x400d92b14ec204ef`; the first
+series-only discriminator is the threshold, and the three intervening doubles
+are observational overlap. The candidate scores `202217/202217` on the
+discovery bank. It was then frozen before a deterministic prior-disjoint
+`66552`-row held-out, which passed `66552/66552` with zero anomalies and no
+model refinement. The frozen scorer and actual production `acoth_kernel` both
+replay `268769/268769` distinct signed inputs exactly.
+The production, formal, pin, and durable-tool package landed in `7f7eac9`.
+
+Focused ACOTH tests pass `7/7`; the full core library passes `1523` with `4`
+ignored and all integration/doc-test targets green; all seven reusable ACOTH
+racer/generator binaries release-check clean; and the 492-job Lean build
+records the positive-zero/ratio/series route order. BUG-FUNC-027 CLASS-C5 and
+bead `oxf-jwh5.7` are closed signed off, and G4-03 is retired. Evidence,
+process-count provenance, hashes, and the scoped Sections 12/14 audit are in
+`docs/function-lane/W109_ACOTH_IDENTIFICATION_20260809.md`. Other
+BUG-FUNC-027 subclasses and W109 remain open. No FEC/F3E or evaluator-facing
+handoff is required.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: all remaining catalog rows, including PMT-family, ACOTH, COMBIN, and CONVERT;
+4. `open_lanes`: all remaining catalog rows, including PMT-family, COMBIN, and CONVERT;
    broad post-catalog discovery; declared application-version/Compatibility-
    Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ,
-   ATANH, and MINVERSE closures are scoped and do not close the wider campaign.
+   ATANH, ACOTH, and MINVERSE closures are scoped and do not close the wider
+   campaign.

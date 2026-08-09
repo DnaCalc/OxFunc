@@ -1375,8 +1375,8 @@ Current checkpoint (2026-08-09):
    exact live boundary bisection, a retired refinement set, and a fresh
    post-selection held-out replay combine to `20780/20780`; the full core and
    492-job Lean gates pass. BUG-FUNC-027 CLASS-C4 and bead `oxf-jwh5.6` are
-   closed signed off, and G4-02 is retired. Other BUG-FUNC-027 subclasses,
-   ACOTH, and the wider W109 campaign remain open; no FEC/F3E handoff is needed.
+   closed signed off, and G4-02 is retired. Other BUG-FUNC-027 subclasses and
+   the wider W109 campaign remain open; no FEC/F3E handoff is needed.
 6. MINVERSE's exact current-reference numeric graph is identified and landed in
    `bce3558`: right-looking Doolittle LU with all eight arithmetic sites
    published through x87 PC64-to-PC53 double rounding and completed-output +0
@@ -1386,9 +1386,20 @@ Current checkpoint (2026-08-09):
    ignored, and the 492-job Lean route binding passes. BUG-FUNC-025 and bead
    `oxf-dzfk` are closed signed off; G5-01 is retired. The separate 1x1
    final-cell publication seam remains open under BUG-FUNC-023 / HO-FN-010.
-7. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
+7. ACOTH's exact current-reference graph landed in `7f7eac9`: below
+   `0x400d92b14ec204f3`, native binary64 ratio add/sub feed
+   a stored-x87 divide and worksheet LN; at/above it, a direct inverse
+   odd-power series stores every reciprocal/multiply/divide/add through x87
+   PC64, and a subnormal reciprocal publishes +0 for both signs. Discovery is
+   `202217/202217`, the candidate-frozen prior-disjoint held-out is
+   `66552/66552`, and actual production replay is `268769/268769`. Focused,
+   full-core, seven-tool release-check, and 492-job Lean gates pass.
+   BUG-FUNC-027 CLASS-C5 and bead `oxf-jwh5.7` are closed signed off; G4-03 is
+   retired. Other BUG-FUNC-027 subclasses and W109 remain open; no FEC/F3E
+   handoff is needed.
+8. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
    and the remaining bounded search, larger-graph, coefficient-recovery, and
    wrapper/predicate lanes remain actionable.
-8. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+9. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

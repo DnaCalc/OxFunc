@@ -3,9 +3,11 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-027`
 - **Opened**: `2026-05-09`
-- **Status**: `open` (CLASS-A landed + Excel-verified 2026-06-19; CLASS-B/C remain)
+- **Status**: `open` aggregate (CLASS-A, CLASS-C4 ATANH, and CLASS-C5 are
+  signed off; other independent CLASS-B/C subclasses remain)
 - **Owner workset**: `W092`
-- **Bead**: `oxf-vgxs` (unary non-finite audit follow-up); CLASS-B/C beads pending
+- **Bead**: `oxf-vgxs` (unary non-finite audit), `oxf-jwh5.6` (CLASS-C4
+  ATANH), and `oxf-jwh5.7` (CLASS-C5 ACOTH); other CLASS-B/C lanes remain
 
 ## Source Refs
 - **Reported against ref**: working tree at `2026-05-09` for the W092 broad
@@ -13,7 +15,8 @@
   `broad-scalar-cycle-009`
 - **Reproduced on ref**: same working tree
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `unfixed`
+- **Fixed in ref**: `mixed`; ATANH is in `a03a75f`, ACOTH is verified in the
+  accepted current working tree, and other subclasses remain open
 
 ## Ownership And Root Cause
 - **Ownership class**: split — see Section "Mismatch Classes"
@@ -264,7 +267,7 @@ seven cycles unless noted as `singleton_witness`.
   `Formula2`, `-NoCache`. The exact report and artifact hashes are in
   `docs/function-lane/W109_ATANH_IDENTIFICATION_20260712.md`.
 - **State:** CLASS-C4 / catalog G4-02 is `closed_signed_off`. BUG-FUNC-027 stays
-  open because its GAMMA, ACOTH, and other independent subclasses remain open;
+  open because its GAMMA and other independent subclasses remain open;
   this scoped closure does not close the aggregate stream.
 
 ### CLASS-C5: ACOTH and ACOSH near 1
@@ -284,12 +287,12 @@ seven cycles unless noted as `singleton_witness`.
   `1.0`, so it really evaluated `ACOTH(1.0)`/`ACOSH(1.0)`. Removed from catalog G1.
   The remaining `ACOTH(1.001)` ~11244-ULP **numeric** drift is unaffected and
   stays on the catalog G4 ACOTH row.
-- **FIXED (2026-06-21) — catastrophic band closed.** The large-`|x|` `~1.2e14` ULP band
+- **INTERIM FIX (2026-06-21; superseded 2026-08-09).** The large-`|x|` `~1.2e14` ULP band
   came from the direct `0.5*ln((x+1)/(x-1))` ratio losing precision; replaced with the
   odd-symmetric `0.5*ln1p(2/(|x|-1))` form (ACOTH is odd like ATANH). Notably Excel's
   `ACOTH(x)` is **not** `ATANH(1/x)` (they differ ~39 ULP at `x=1.001`). Bit-exact vs
   live Excel 16.0 b20026 across the probed range (`1.001 .. 1e6` and negatives) **except**
-  `ACOTH(5)`/`ACOTH(10)` (open, not accepted): 6 double-precision forms all miss
+  `ACOTH(5)`/`ACOTH(10)` (then open, not accepted): 6 double-precision forms all miss
   `ACOTH(5)` by 1 ULP in the same direction (Excel's own/extended-precision `ln`), and
   `ACOTH(10)` is bit-exact only under `atanh(1/x)` — which regresses `ACOTH(1.001)` by
   39 ULP — so no single double form matches every point. Reclassified NUM-S on catalog
@@ -303,6 +306,26 @@ seven cycles unless noted as `singleton_witness`.
   Excel's exact ACOTH routine. Probe harness `tools/elem-probe/run-elem-probe.ps1`. Regression
   `acoth::tests::acoth_large_and_negative_args_bit_exact`. Probe harness:
   `tools/elem-probe/run-elem-probe.ps1`.
+- **Current-reference sign-off (2026-08-09; landed `7f7eac9`).** The reciprocal-ln1p and
+  ATANH-inheritance interpretations are retracted. Excel uses native binary64
+  `|x|+1` / `|x|-1`, one stored x87-PC64 division, and worksheet LN below exact
+  threshold `0x400d92b14ec204f3`; at and above it, Excel uses the direct inverse
+  odd-power series with every reciprocal, multiply, divide, and accumulator
+  add stored through x87 PC64-to-binary64. A subnormal initial reciprocal
+  publishes positive zero for both signs.
+- The last ratio-only discriminator is `0x400d92b14ec204ef`, the first
+  series-only discriminator is the threshold, and three intermediate doubles
+  are observational overlap. The graph scores `202217/202217` discovery rows,
+  then passed a deterministic candidate-frozen prior-disjoint held-out
+  `66552/66552` with no model refinement. The frozen scorer and actual
+  production kernel both replay `268769/268769` distinct signed inputs.
+  Focused ACOTH tests pass `7/7`; the full core, all seven reusable tool bins,
+  and the 492-job Lean route binding pass. Exact evidence, hashes, provenance,
+  and Sections 12/14 are in
+  `docs/function-lane/W109_ACOTH_IDENTIFICATION_20260809.md`.
+- **State:** CLASS-C5 / catalog G4-03 is `closed_signed_off`; bead
+  `oxf-jwh5.7` is closed. The aggregate BUG-FUNC-027 stream remains open for
+  unrelated subclasses.
 
 ## 2026-05-09 Plumbing Caveat And Cell-Ref Re-Replay
 
@@ -354,7 +377,7 @@ revised per-subclass measurement is:
 | `C3` trig moderate-large | **grows**       | `1.31E7` (`TAN(797601.58)`)                    | max `3.34E12` (`COT/TAN/SEC/CSC` in `~10^5..10^6` band)         | Cody-Waite-vs-extended-π drift up to a full radian-band; repair scope widens |
 | `C3.h` (new) hyperbolic overflow | **new**     | n/a                                              | `COTH(x)` returns NaN locally / `±1` in Excel for `|x|>>700`    | Kind-class subclass; saturation guard analogous to CLASS-A3 |
 | `C4` ATANH near `±1`   | **stable**        | `1.48E13` (`ATANH(-0.999...9)`)                | `1.48E13` reproduced; max `1.48E13`; median `1`                 | log1p reformulation remains correct repair |
-| `C5` ACOTH/ACOSH near 1 | **broadens**     | `11,244` (`ACOTH(1.001)`)                      | `11,244` reproduced; new band `ACOTH(|x|>>1)` up to `1.20E14`   | Add `ACOTH(x) = ATANH(1/x)` series for large argument |
+| `C5` ACOTH/ACOSH near 1 | **broadens**     | `11,244` (`ACOTH(1.001)`)                      | `11,244` reproduced; new band `ACOTH(|x|>>1)` up to `1.20E14`   | Resolved 2026-08-09 by the exact ratio/direct-inverse-series graph; the former `ATANH(1/x)` prescription is superseded |
 
 Per-cycle rollups:
 

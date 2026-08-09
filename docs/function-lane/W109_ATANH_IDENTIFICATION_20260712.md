@@ -174,9 +174,10 @@ Status axes for the current-reference ATANH calculation-graph slice:
 - `scope_completeness: scope_complete`
 - `target_completeness: target_complete`
 - `integration_completeness: integrated`
-- `open_lanes: []` within G4-02. ACOTH, other elementary/trig rows, alternate
-  application/channel/CPU profiles, locale sweeps, and the wider W109/global
-  campaign remain separate open scope.
+- `open_lanes: []` within G4-02. ACOTH remained separate and was subsequently
+  signed off independently in `W109_ACOTH_IDENTIFICATION_20260809.md`; other
+  elementary/trig rows, alternate application/channel/CPU profiles, locale
+  sweeps, and the wider W109/global campaign remain separate open scope.
 
 ### OPERATIONS Section 12 — Pre-Closure Verification Checklist
 

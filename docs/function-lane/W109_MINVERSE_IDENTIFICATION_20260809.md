@@ -168,6 +168,6 @@ For current-reference `MINVERSE` numeric-array semantics:
 4. `open_lanes`: `[]`
 
 The wider W109 campaign remains `scope_partial` / `target_partial` / `partial`.
-Its open lanes include PMT-family, ACOTH, CONVERT, COMBIN, GAMMA/GAMMALN,
+Its open lanes include PMT-family, CONVERT, COMBIN, GAMMA/GAMMALN,
 distribution/regression rows, the remaining catalog, broad post-catalog
 discovery, and alternate application/channel/Compatibility-Version axes.

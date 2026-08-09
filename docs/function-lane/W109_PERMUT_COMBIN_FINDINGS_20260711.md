@@ -33,19 +33,21 @@ Leading hypothesis: a dedicated internal extended-precision
 lgamma/exp substrate (the Phase-5 statistical-kernel lane). COMBIN therefore
 moves out of the quick-win batch; re-attack alongside GAMMALN identification.
 
-## ACOTH — blocked on the ATANH kernel (recorded 2026-07-11)
+## ACOTH — historical wall superseded by exact graph (2026-08-09)
 
-Supersession (2026-08-09): the blocking/inheritance interpretation below is
-historical and retracted. ATANH's exact graph landed independently in
-`a03a75f` and does not use the former reciprocal-ln1p helper. ACOTH remains
-open as its own graph-identification lane; it is not blocked on G4-02.
+The July blocking/inheritance interpretation is retracted. ATANH's exact graph
+landed independently in `a03a75f`, and ACOTH does not use the former
+reciprocal-ln1p helper. Its separate W109 campaign identified the exact
+current-reference graph: native binary64 ratio add/sub plus one stored-x87
+division below `0x400d92b14ec204f3`, and a direct inverse odd-power series with
+stored-x87 reciprocal/multiply/divide/add above it. A subnormal reciprocal
+publishes +0 for both signs.
 
-All 13 natural graphs ruled out (platform/portable log1p, CRT-branchy log1p,
-worksheet-ln ratios, fully extended ratios, internal atanh-of-reciprocal
-stagings): Excel sits consistently 1 ULP above the log-identity forms at the
-witnesses. ACOTH almost certainly publishes through Excel's internal ATANH
-kernel — the unidentified piecewise G4-02 row. Re-race ACOTH as
-`atanh(1/x)`-staging variants once G4-02 lands.
+The frozen prior-disjoint held-out passed `66552/66552`; the actual production
+kernel replay is `268769/268769`. G4-03 and BUG-FUNC-027 CLASS-C5 are signed
+off while the aggregate bug stream and wider W109 remain open. See
+`W109_ACOTH_IDENTIFICATION_20260809.md` for exact endpoints, artifact hashes,
+provenance, and the scoped audit.
 
 ## CONVERT — deferred (harness gap)
 

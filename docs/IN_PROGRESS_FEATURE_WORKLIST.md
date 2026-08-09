@@ -359,8 +359,15 @@ Status axes:
   per-operation x87 double rounding and completed zeros publish +0. Production
   replay is `1599/1599`; BUG-FUNC-025 and bead `oxf-dzfk` are closed signed
   off, and G5-01 is retired. The separate 1x1 final-cell publication seam
-  remains under BUG-FUNC-023 / HO-FN-010. The
-  PMT/IPMT/PPMT/CUM family, ACOTH,
+  remains under BUG-FUNC-023 / HO-FN-010. ACOTH's independently identified
+  current-reference graph landed in `7f7eac9`: exact switch
+  `0x400d92b14ec204f3`, stored-x87 ratio division below it, stored-x87 direct
+  inverse odd-power series above it, and positive-zero reciprocal flush. The
+  frozen prior-disjoint held-out is `66552/66552` and actual production replay
+  is `268769/268769`; focused/full core, seven-tool release-check, and 492-job
+  Lean gates pass. BUG-FUNC-027 CLASS-C5 and bead `oxf-jwh5.7` are closed
+  signed off, and G4-03 is retired without closing the aggregate stream or
+  W109. The PMT/IPMT/PPMT/CUM family,
   COMBIN, GAMMALN/GAMMA, distributions, regression, CONVERT, and the other
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
@@ -373,7 +380,6 @@ Status axes:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
-   ACOTH's independent exact-graph lane;
    COMBIN, GAMMALN/GAMMA, distributions, regression, CONVERT, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.
