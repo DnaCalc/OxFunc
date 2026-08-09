@@ -10,6 +10,12 @@ use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
 
+/// Largest first argument admitted by the current reference COMBIN lane.
+///
+/// The paired W109 boundary sweep pins `2_147_483_646` as admitted and
+/// `2_147_483_647` as `#NUM!`, independently of the cyclic publication body.
+pub(crate) const COMBIN_MAX_N: i64 = 2_147_483_646;
+
 pub const COMBIN_META: FunctionMeta = function_spec! {
     function_id: "FUNC.COMBIN",
     arity: Arity::exact(2),
@@ -37,8 +43,29 @@ pub const COMBIN_META: FunctionMeta = function_spec! {
 pub fn combin_kernel(n: f64, k: f64) -> Result<f64, WorksheetErrorCode> {
     use crate::excel_numeric::{excel_x87_div, excel_x87_mul};
 
+    // Range.Value2 cannot inject NaN/infinity into the live worksheet probe,
+    // but the direct Rust kernel must not inherit saturating float-to-int casts.
+    if !n.is_finite() || !k.is_finite() {
+        return Err(WorksheetErrorCode::Num);
+    }
+    // The current x64 reference uses denormals-are-zero at this admission
+    // seam. Preserve the sign on the zero itself; ordinary `< 0` checks then
+    // admit either subnormal sign as zero while rejecting negative normals.
+    let n = if n.is_subnormal() {
+        0.0_f64.copysign(n)
+    } else {
+        n
+    };
+    let k = if k.is_subnormal() {
+        0.0_f64.copysign(k)
+    } else {
+        k
+    };
     let n = trunc_nonnegative(n)?;
     let raw_k = trunc_nonnegative(k)?;
+    if n > COMBIN_MAX_N {
+        return Err(WorksheetErrorCode::Num);
+    }
     if raw_k > n {
         return Err(WorksheetErrorCode::Num);
     }
@@ -52,6 +79,13 @@ pub fn combin_kernel(n: f64, k: f64) -> Result<f64, WorksheetErrorCode> {
         let numerator = (n - k + i - 1) as f64;
         let factor = excel_x87_div(numerator, i as f64);
         acc = excel_x87_mul(acc, factor);
+        // With k reduced to min(k,n-k), every remaining factor is greater
+        // than one. Once the accumulator becomes nonfinite it cannot recover;
+        // short-circuiting preserves the typed #NUM result and prevents an
+        // admitted near-central 32-bit input from walking ~1e9 iterations.
+        if !acc.is_finite() {
+            return Err(WorksheetErrorCode::Num);
+        }
     }
     let result = excel_x87_mul(acc, n as f64);
     if result.is_finite() {
@@ -133,6 +167,49 @@ mod tests {
         assert_eq!(
             combin_kernel(258.0, 49.0).unwrap().to_bits(),
             0x4afe_ff3e_f80e_71b4
+        );
+    }
+
+    /// Paired current-build COMBIN controls for the COMBINA wrapper campaign
+    /// locate the inherited signed-32-bit admission ceiling exactly.
+    #[test]
+    fn combin_matches_live_excel_integer_ceiling() {
+        assert_eq!(combin_kernel(2_147_483_646.0, 0.0), Ok(1.0));
+        assert_eq!(combin_kernel(2_147_483_646.0, 1.0), Ok(2_147_483_646.0));
+        assert_eq!(combin_kernel(2_147_483_646.0, 2_147_483_646.0), Ok(1.0));
+        assert_eq!(
+            combin_kernel(2_147_483_647.0, 0.0),
+            Err(WorksheetErrorCode::Num)
+        );
+    }
+
+    #[test]
+    fn combin_large_central_overflow_short_circuits_to_num() {
+        assert_eq!(
+            combin_kernel(2_000_000_000.0, 1_000_000_000.0),
+            Err(WorksheetErrorCode::Num)
+        );
+    }
+
+    #[test]
+    fn combin_direct_nonfinite_inputs_are_defensively_num() {
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            assert_eq!(combin_kernel(value, 0.0), Err(WorksheetErrorCode::Num));
+            assert_eq!(combin_kernel(1.0, value), Err(WorksheetErrorCode::Num));
+        }
+    }
+
+    #[test]
+    fn combin_matches_live_excel_daz_boundary() {
+        assert_eq!(combin_kernel(-f64::from_bits(1), 0.25), Ok(1.0));
+        assert_eq!(combin_kernel(1.25, -f64::from_bits(1)), Ok(1.0));
+        assert_eq!(
+            combin_kernel(-f64::MIN_POSITIVE, 0.25),
+            Err(WorksheetErrorCode::Num)
+        );
+        assert_eq!(
+            combin_kernel(1.25, -f64::MIN_POSITIVE),
+            Err(WorksheetErrorCode::Num)
         );
     }
 }
