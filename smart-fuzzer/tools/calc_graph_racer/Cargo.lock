@@ -6,6 +6,7 @@ version = 4
 name = "calc_graph_racer"
 version = "0.1.0"
 dependencies = [
+ "libm",
  "oxfunc_core",
  "rayon",
  "serde",
