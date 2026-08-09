@@ -1,7 +1,14 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-09` (the ACOTH graph landed in `7f7eac9` and
+Last reconciled: `2026-08-09` (the exact current-reference CONVERT graph landed
+in `8ef5cac`: every linear product, quotient, and separate decimal-prefix
+multiply publishes through x87 PC64-to-binary64 double rounding; exact unit
+tables and direct temperature routes are pinned. The frozen prior-disjoint
+publication gate is `10418/10418` and compiled production replay is
+`34189/34189`; bead `oxf-jwh5.8` is closed signed off, so G4-05 was retired.
+The wider W109 campaign remains partial.)
+Previous reconcile: `2026-08-09` (the ACOTH graph landed in `7f7eac9` and
 replays `268769/268769`: native binary64 ratio add/sub plus stored-x87 divide
 below exact threshold `0x400d92b14ec204f3`, stored-x87 direct inverse
 odd-power series above it, and positive-zero reciprocal flush. The frozen
@@ -105,15 +112,15 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `19`
+Open Category-2 rows: `16`
 
 | Group | Current rows |
 |-------|--------------|
 | G1 error-code/domain guards | 0 |
 | G2 structural kind/shape/admission | 0 |
 | G3 special/statistical numeric exactness | 7 |
-| G4 elementary/trig numeric exactness | 3 |
-| G5 matrix numeric/shape | 1 |
+| G4 elementary/trig numeric exactness | 1 |
+| G5 matrix numeric/shape | 0 |
 | G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
@@ -167,7 +174,16 @@ No current open rows.
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
 | G4-04 — COMBIN, COMBINA, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | **W109 sweep (2026-07-14): two DISTINCT substrates.** COMBIN = multiplicative product but **NOT bit-exact** (cycle-2 design-for-divergence capture CORRECTED the earlier "bit-exact <2^53" over-claim, which rested on a non-discriminating 7-point corpus where all forms agree below ~2^40): on 16 discriminating `(n,k)` with representable results, Excel matches OxFunc's multiply-first `(acc*(n-k+i))/i` only `6/16`, ratio-first `2/16`, exact-integer `6/16`, and NEITHER `8/16` — Excel sits `1`-`3` ULP BELOW the multiply-first product on larger `n,k`. Plain-double AND x87-prec64 product orderings all score `6/16` → a genuine op-graph residual (PERMUT x87-spill-product family, which IS closed at `702/702` — race COMBIN against that substrate). COMBINA = **`exp(gammaln)` substrate, NOT a product** — CONFIRMED: `COMBINA(20,7)=C(26,7)` returns `657799.9999999999`, 1 ULP BELOW the exact integer `657800` (impossible for a product); reduces to the **GAMMALN/x87 wall** (crack GAMMALN → COMBINA free). FACTDOUBLE bit-exact (7/7); ERF.PRECISE: **W109 2026-07-17 — NO coefficient tables exist: ERF/ERFC.PRECISE ARE the NSWC gratio a<1 branches themselves** (cross-view proof `ERF.PRECISE ≡ GAMMA.DIST(·,½,1)` / `ERFC.PRECISE ≡ CHIDIST(·,1)` 160/160×2; z<0.5 = the 190 DIRECT path `exp(½·ln z²)·g·(1−j)` with **g = 1+gam1(½) evaluated x87-EXTENDED, h pinned `0x3fc06eba8214db6c`**; erfc side = the a<1 CF with unsplit exp argument, proven by messy-grid regression slope +0.95; subnormal publication flush at the far tail; every published implementation + all rational/Padé/Taylor/constant micro-forms ruled out; best true-x87 model `check_erf190` 663/1218, ~92% within ±1 — residual = ONE staging op, recipe + untouched held-out in W109_G3-01_GRATIO_IDENTIFICATION_20260716.md). Recipe: capture `GAMMALN(n+k)/(k+1)/(n)` + `EXP` at the COMBINA arg-triples to formally reduce it to GAMMALN. `±1` ULP drift where OxFunc currently differs. PERMUT resolved out (W109 2026-07-11: ascending x87 spill-loop product, `702/702` live rows, see [`W109_PERMUT_COMBIN_FINDINGS_20260711.md`](function-lane/W109_PERMUT_COMBIN_FINDINGS_20260711.md)). COMBIN: `k -> min(k, n-k)` reduction CONFIRMED; all product-loop, factorial-ratio, reciprocal-multiply, and published-GAMMALN-composition kernels ruled out on a 505-row live corpus — leading hypothesis is an internal extended lgamma/exp substrate (Phase-5 lane). | NUM-S | M2 | BUG-FUNC-027 combinatorial group / recon G4-04 / W109 findings |
-| G4-05 — CONVERT | Unit-conversion factor drift, `1` ULP at `CONVERT(1,"m","ft")`; `CONVERT(1,"in","m")` is an exact control. | NUM-S | M1 | recon G4-05 |
+
+The former `G4-05` CONVERT row was signed off and removed on 2026-08-09 after
+`8ef5cac` landed the exact current-reference table, dispatch, and three-store
+publication graph. A deterministic, prior-disjoint `10418`-row frozen
+publication gate passed `10418/10418` without refinement; direct replay of
+discovery, both explicitly retired refinement attempts, the v3 refinement
+battery, publication gate, and Value2 readback control is `34189/34189`.
+History, candidate corrections, exact pins, provenance, hashes, and the scoped
+Sections 12/14 audit remain in
+[`W109_CONVERT_IDENTIFICATION_20260809.md`](function-lane/W109_CONVERT_IDENTIFICATION_20260809.md).
 
 The former `G4-03` ACOTH row was signed off and removed on 2026-08-09 after
 the exact graph landed in `7f7eac9`,

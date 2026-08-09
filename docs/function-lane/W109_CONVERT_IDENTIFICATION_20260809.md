@@ -1,6 +1,9 @@
 # W109 CONVERT Current-Reference Calculation-Graph Identification
 
-Status: `implementation_validated_pending_state_reconciliation`
+Status: `closed_signed_off` for the current-reference CONVERT G4-05 slice
+
+Implementation, formal binding, evidence tooling, and exact pins landed in
+commit `8ef5cac`.
 
 Scope: OxFunc-owned `CONVERT` semantics for the declared unit catalog on Excel
 16.0 build 20228 x64, workbook Compatibility Version 2. Locale, alternate
@@ -169,7 +172,7 @@ make it reproducible.
 
 | # | Check | Result |
 | ---: | --- | --- |
-| 1 | Function contract rows complete and promoted? | partial — local contract aligned; shared conformance/state promotion is reserved to root reconciliation |
+| 1 | Function contract rows complete and promoted? | yes — the conversion contract and FDEF-056 are aligned to the exact current-reference route |
 | 2 | Lean obligations satisfied/aligned? | yes — executable route binding and 492-job build |
 | 3 | Rust implementation and tests pass? | yes — focused pins, full core, integrations, and doctests green |
 | 4 | Deterministic replay artifact exists? | yes — committed generator/scorer/replay sources plus five evidence tiers |
@@ -179,26 +182,26 @@ make it reproducible.
 | 8 | XLL seam limits documented where material? | yes — no material XLL qualification for the pure scalar kernel; live worksheet Value2 is authoritative |
 | 9 | Cross-repo impact assessed/handoff filed if needed? | yes — no FEC/F3E or evaluator-facing change, so no handoff is required |
 | 10 | No known semantic gap remains in declared scope? | yes |
-| 11 | Completion-language audit passed? | yes — status remains pending until shared state reconciliation |
-| 12 | In-progress worklist updated? | pending — intentionally reserved to root |
-| 13 | Bead/blocker surface updated? | pending — intentionally reserved to root |
+| 11 | Completion-language audit passed? | yes — only the declared current-reference CONVERT slice is signed off; wider W109 stays partial |
+| 12 | In-progress worklist updated? | yes — catalog, map, workset register, W109 owner, and worklist are synchronized |
+| 13 | Bead/blocker surface updated? | yes — `oxf-jwh5.8` is closed signed off while the W109 epic remains in progress |
 
 ## 7. OPERATIONS Section 14 — Completion Claim Self-Audit
 
 1. **Scope re-read — pass.** The exercised current-reference unit catalog,
    prefixes, table construction, store graph, temperature routes, and error
    dispatch match the declared slice.
-2. **Gate criteria re-read — partial.** Discovery, retired refinement,
+2. **Gate criteria re-read — pass.** Discovery, retired refinement,
    disjoint publication, production replay, exact pins, full core, contract,
-   and Lean gates pass; shared state reconciliation remains with root.
+   Lean, and shared-state reconciliation gates pass.
 3. **Silent scope reduction — pass.** No supported category, ordered pair,
    prefix, sign, power ladder, temperature pair, or `bar` error lane was
    removed.
 4. **Looks-done-but-is-not patterns — pass.** There are no tolerance-based
    parity claims, numeric nudges, answer-selected publication rows, stubs, or
    unexercised contract/formal additions.
-5. **Result included — pass.** The three-axis status below explicitly retains
-   the remaining integration lane.
+5. **Result included — pass.** The three-axis status below records the scoped
+   integrated result while keeping the wider campaign explicitly partial.
 
 ## 8. Three-Axis Result
 
@@ -206,10 +209,9 @@ For the declared current-reference `CONVERT` semantic slice:
 
 1. `scope_completeness`: `scope_complete`
 2. `target_completeness`: `target_complete`
-3. `integration_completeness`: `partial`
-4. `open_lanes`:
-   - shared catalog/map/workset/bead reconciliation by root;
-   - locale, alternate Excel version/channel, and alternate architecture are
-     orthogonal future phases outside this current-reference slice.
+3. `integration_completeness`: `integrated`
+4. `open_lanes`: `[]` within G4-05. Locale, alternate Excel
+   version/channel, and alternate architecture are orthogonal future phases
+   outside this current-reference slice.
 
 The wider W109 campaign remains `scope_partial` / `target_partial` / `partial`.

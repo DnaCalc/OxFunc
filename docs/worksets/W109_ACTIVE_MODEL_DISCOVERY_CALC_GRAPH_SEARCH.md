@@ -292,11 +292,27 @@ process-count provenance, hashes, and the scoped Sections 12/14 audit are in
 BUG-FUNC-027 subclasses and W109 remain open. No FEC/F3E or evaluator-facing
 handoff is required.
 
+CONVERT's exact current-reference graph landed in `8ef5cac`. Every supported
+linear route publishes `number*from_factor`, the resulting quotient by the
+to-factor, and a separate decimal-prefix delta multiply through x87 PC64-to-
+binary64 double rounding. Length uses exact integer angstrom factors; pressure
+uses independently rounded reciprocals of the public units-per-pascal table;
+temperature uses direct ordered-pair affine formulas; and unsupported `bar`
+returns `#N/A`. The graph is exact on the `7026`-row discovery bank, both
+explicitly retired refinement attempts, the `4226`-row v3 refinement battery,
+an independent Value2/readback control, and a candidate-frozen prior-disjoint
+`10418/10418` publication gate. Compiled production replay is `34189/34189`.
+Focused/full core and the 492-job Lean route-binding gates pass, G4-05 is
+retired, bead `oxf-jwh5.8` is closed signed off, and no FEC/F3E or
+evaluator-facing handoff is required. Evidence,
+hashes, retired-gate discipline, and the scoped Sections 12/14 audit are in
+`docs/function-lane/W109_CONVERT_IDENTIFICATION_20260809.md`.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: all remaining catalog rows, including PMT-family, COMBIN, and CONVERT;
+4. `open_lanes`: all remaining catalog rows, including PMT-family and COMBIN;
    broad post-catalog discovery; declared application-version/Compatibility-
    Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ,
    ATANH, ACOTH, and MINVERSE closures are scoped and do not close the wider

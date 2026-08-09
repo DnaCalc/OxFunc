@@ -367,8 +367,14 @@ Status axes:
   is `268769/268769`; focused/full core, seven-tool release-check, and 492-job
   Lean gates pass. BUG-FUNC-027 CLASS-C5 and bead `oxf-jwh5.7` are closed
   signed off, and G4-03 is retired without closing the aggregate stream or
-  W109. The PMT/IPMT/PPMT/CUM family,
-  COMBIN, GAMMALN/GAMMA, distributions, regression, CONVERT, and the other
+  W109. CONVERT's exact current-reference graph landed in `8ef5cac`: its
+  direct-unit tables, direct temperature routes, and generic x87-PC64 stored
+  product/quotient/prefix-multiply graph pass a frozen prior-disjoint
+  `10418/10418` publication gate and `34189/34189` compiled production replay.
+  Bead `oxf-jwh5.8` is closed signed off and G4-05 is retired; focused/full
+  core and 492-job Lean gates pass; no FEC/F3E handoff is needed. The
+  PMT/IPMT/PPMT/CUM family,
+  COMBIN, GAMMALN/GAMMA, distributions, regression, and the other
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
   negative result over the stated search grammar and size limits is established,
@@ -380,6 +386,6 @@ Status axes:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
-   COMBIN, GAMMALN/GAMMA, distributions, regression, CONVERT, and every other
+   COMBIN, GAMMALN/GAMMA, distributions, regression, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/
    Compatibility-Version validation; global Sections 12 and 14 closure audit.

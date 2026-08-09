@@ -49,9 +49,15 @@ off while the aggregate bug stream and wider W109 remain open. See
 `W109_ACOTH_IDENTIFICATION_20260809.md` for exact endpoints, artifact hashes,
 provenance, and the scoped audit.
 
-## CONVERT — deferred (harness gap)
+## CONVERT — deferred (historical harness gap; superseded 2026-08-09)
 
 CONVERT takes text unit arguments; `CellRefBatch.psm1` currently plumbs
 numeric cells only. Needs a small harness extension (string-literal unit args
 inside the formula text are bit-exact-safe) before the factor-bits probes can
 run. Not attempted this pass.
+
+This deferral no longer describes current state. The hardened typed runner and
+exact-bit Value2 readback controls enabled a full clean-room campaign; the
+identified graph landed in `8ef5cac`, passed the frozen prior-disjoint
+`10418/10418` publication gate, and replays compiled production
+`34189/34189`. See `W109_CONVERT_IDENTIFICATION_20260809.md`.

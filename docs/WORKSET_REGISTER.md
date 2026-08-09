@@ -1397,9 +1397,19 @@ Current checkpoint (2026-08-09):
    BUG-FUNC-027 CLASS-C5 and bead `oxf-jwh5.7` are closed signed off; G4-03 is
    retired. Other BUG-FUNC-027 subclasses and W109 remain open; no FEC/F3E
    handoff is needed.
-8. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
+8. CONVERT's exact current-reference graph landed in `8ef5cac`: each linear
+   product, quotient, and separate decimal-prefix multiply is stored through
+   x87 PC64-to-binary64 double rounding. Length uses exact integer-angstrom
+   factors, pressure uses independently rounded reciprocal entries,
+   temperature dispatches by direct ordered pair, and unsupported `bar`
+   returns `#N/A`. The candidate-frozen prior-disjoint publication gate is
+   `10418/10418`; compiled production replay is `34189/34189`; focused/full
+   core and 492-job Lean gates pass. Bead `oxf-jwh5.8` is closed signed off and
+   G4-05 is retired without closing W109; no FEC/F3E or evaluator-facing
+   handoff is needed.
+9. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
    and the remaining bounded search, larger-graph, coefficient-recovery, and
    wrapper/predicate lanes remain actionable.
-9. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
+10. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.
