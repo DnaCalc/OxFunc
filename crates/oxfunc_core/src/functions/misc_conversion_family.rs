@@ -1,4 +1,5 @@
 use crate::coercion::CoercionError;
+use crate::excel_numeric::{excel_x87_div, excel_x87_mul};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -174,159 +175,156 @@ enum ConvertCategory {
 struct LinearUnit {
     category: ConvertCategory,
     factor_to_base: f64,
+    prefix_exponent: i32,
 }
 
 fn convert_direct_linear_unit(unit: &str) -> Option<LinearUnit> {
     match unit {
         "m" => Some(LinearUnit {
             category: ConvertCategory::Length,
-            factor_to_base: 1.0,
+            factor_to_base: 10_000_000_000.0,
+            prefix_exponent: 0,
         }),
         "in" => Some(LinearUnit {
             category: ConvertCategory::Length,
-            factor_to_base: 0.0254,
+            factor_to_base: 254_000_000.0,
+            prefix_exponent: 0,
         }),
         "ft" => Some(LinearUnit {
             category: ConvertCategory::Length,
-            factor_to_base: 0.3048,
+            factor_to_base: 3_048_000_000.0,
+            prefix_exponent: 0,
         }),
         "yd" => Some(LinearUnit {
             category: ConvertCategory::Length,
-            factor_to_base: 0.9144,
+            factor_to_base: 9_144_000_000.0,
+            prefix_exponent: 0,
         }),
         "mi" => Some(LinearUnit {
             category: ConvertCategory::Length,
-            factor_to_base: 1609.344,
+            factor_to_base: 16_093_440_000_000.0,
+            prefix_exponent: 0,
         }),
         "Nmi" => Some(LinearUnit {
             category: ConvertCategory::Length,
-            factor_to_base: 1852.0,
+            factor_to_base: 18_520_000_000_000.0,
+            prefix_exponent: 0,
         }),
         "g" => Some(LinearUnit {
             category: ConvertCategory::Mass,
             factor_to_base: 1.0,
+            prefix_exponent: 0,
         }),
         "lbm" => Some(LinearUnit {
             category: ConvertCategory::Mass,
             factor_to_base: 453.59237,
+            prefix_exponent: 0,
         }),
         "ozm" => Some(LinearUnit {
             category: ConvertCategory::Mass,
             factor_to_base: 28.349_523_125,
+            prefix_exponent: 0,
         }),
         "sec" => Some(LinearUnit {
             category: ConvertCategory::Time,
             factor_to_base: 1.0,
+            prefix_exponent: 0,
         }),
         "mn" => Some(LinearUnit {
             category: ConvertCategory::Time,
             factor_to_base: 60.0,
+            prefix_exponent: 0,
         }),
         "hr" => Some(LinearUnit {
             category: ConvertCategory::Time,
             factor_to_base: 3600.0,
+            prefix_exponent: 0,
         }),
         "day" => Some(LinearUnit {
             category: ConvertCategory::Time,
             factor_to_base: 86_400.0,
+            prefix_exponent: 0,
         }),
         "Pa" => Some(LinearUnit {
             category: ConvertCategory::Pressure,
             factor_to_base: 1.0,
-        }),
-        "bar" => Some(LinearUnit {
-            category: ConvertCategory::Pressure,
-            factor_to_base: 100_000.0,
+            prefix_exponent: 0,
         }),
         "atm" => Some(LinearUnit {
             category: ConvertCategory::Pressure,
             factor_to_base: 101_325.0,
+            prefix_exponent: 0,
         }),
         "psi" => Some(LinearUnit {
             category: ConvertCategory::Pressure,
-            factor_to_base: 6894.757_293_168,
+            // Reciprocal of the public units-per-pascal table entry
+            // 1.4503773773020920E-04, independently rounded to binary64.
+            factor_to_base: f64::from_bits(0x40ba_eec1_ddf7_0f99),
+            prefix_exponent: 0,
         }),
         "l" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 1.0,
+            prefix_exponent: 0,
         }),
         "tsp" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 0.004_928_921_593_75,
+            prefix_exponent: 0,
         }),
         "tbs" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 0.014_786_764_781_25,
+            prefix_exponent: 0,
         }),
         "oz" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 0.029_573_529_562_5,
+            prefix_exponent: 0,
         }),
         "cup" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 0.236_588_236_5,
+            prefix_exponent: 0,
         }),
         "pt" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 0.473_176_473,
+            prefix_exponent: 0,
         }),
         "qt" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 0.946_352_946,
+            prefix_exponent: 0,
         }),
         "gal" => Some(LinearUnit {
             category: ConvertCategory::Volume,
             factor_to_base: 3.785_411_784,
+            prefix_exponent: 0,
         }),
         _ => None,
     }
 }
 
-fn convert_prefix_scale(prefix: &str) -> Option<f64> {
+fn convert_prefix_exponent(prefix: &str) -> Option<i32> {
     match prefix {
-        "Y" => Some(1.0e24),
-        "Z" => Some(1.0e21),
-        "E" => Some(1.0e18),
-        "P" => Some(1.0e15),
-        "T" => Some(1.0e12),
-        "G" => Some(1.0e9),
-        "M" => Some(1.0e6),
-        "k" => Some(1.0e3),
-        "h" => Some(1.0e2),
-        "da" => Some(1.0e1),
-        "d" => Some(1.0e-1),
-        "c" => Some(1.0e-2),
-        "m" => Some(1.0e-3),
-        "u" => Some(1.0e-6),
-        "n" => Some(1.0e-9),
-        "p" => Some(1.0e-12),
-        "f" => Some(1.0e-15),
-        _ => None,
-    }
-}
-
-fn convert_prefixable_base(unit: &str) -> Option<LinearUnit> {
-    match unit {
-        "m" => Some(LinearUnit {
-            category: ConvertCategory::Length,
-            factor_to_base: 1.0,
-        }),
-        "g" => Some(LinearUnit {
-            category: ConvertCategory::Mass,
-            factor_to_base: 1.0,
-        }),
-        "l" => Some(LinearUnit {
-            category: ConvertCategory::Volume,
-            factor_to_base: 1.0,
-        }),
-        "Pa" => Some(LinearUnit {
-            category: ConvertCategory::Pressure,
-            factor_to_base: 1.0,
-        }),
-        "sec" => Some(LinearUnit {
-            category: ConvertCategory::Time,
-            factor_to_base: 1.0,
-        }),
+        "Y" => Some(24),
+        "Z" => Some(21),
+        "E" => Some(18),
+        "P" => Some(15),
+        "T" => Some(12),
+        "G" => Some(9),
+        "M" => Some(6),
+        "k" => Some(3),
+        "h" => Some(2),
+        "da" => Some(1),
+        "d" => Some(-1),
+        "c" => Some(-2),
+        "m" => Some(-3),
+        "u" => Some(-6),
+        "n" => Some(-9),
+        "p" => Some(-12),
+        "f" => Some(-15),
         _ => None,
     }
 }
@@ -337,30 +335,39 @@ fn convert_linear_unit(unit: &str) -> Option<LinearUnit> {
     }
     for base in ["sec", "Pa", "m", "g", "l"] {
         if let Some(prefix) = unit.strip_suffix(base) {
-            return Some(LinearUnit {
-                category: convert_prefixable_base(base)?.category,
-                factor_to_base: convert_prefixable_base(base)?.factor_to_base
-                    * convert_prefix_scale(prefix)?,
-            });
+            let mut resolved = convert_direct_linear_unit(base)?;
+            resolved.prefix_exponent = convert_prefix_exponent(prefix)?;
+            return Some(resolved);
         }
     }
     None
 }
 
-fn convert_temperature_to_kelvin(value: f64, unit: &str) -> Option<f64> {
-    match unit {
-        "K" => Some(value),
-        "C" => Some(value + 273.15),
-        "F" => Some((value - 32.0) / 1.8 + 273.15),
-        _ => None,
-    }
+const CONVERT_DECIMAL_POW10: [f64; 79] = [
+    1.0e-39, 1.0e-38, 1.0e-37, 1.0e-36, 1.0e-35, 1.0e-34, 1.0e-33, 1.0e-32, 1.0e-31, 1.0e-30,
+    1.0e-29, 1.0e-28, 1.0e-27, 1.0e-26, 1.0e-25, 1.0e-24, 1.0e-23, 1.0e-22, 1.0e-21, 1.0e-20,
+    1.0e-19, 1.0e-18, 1.0e-17, 1.0e-16, 1.0e-15, 1.0e-14, 1.0e-13, 1.0e-12, 1.0e-11, 1.0e-10,
+    1.0e-9, 1.0e-8, 1.0e-7, 1.0e-6, 1.0e-5, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1.0e0, 1.0e1, 1.0e2,
+    1.0e3, 1.0e4, 1.0e5, 1.0e6, 1.0e7, 1.0e8, 1.0e9, 1.0e10, 1.0e11, 1.0e12, 1.0e13, 1.0e14,
+    1.0e15, 1.0e16, 1.0e17, 1.0e18, 1.0e19, 1.0e20, 1.0e21, 1.0e22, 1.0e23, 1.0e24, 1.0e25, 1.0e26,
+    1.0e27, 1.0e28, 1.0e29, 1.0e30, 1.0e31, 1.0e32, 1.0e33, 1.0e34, 1.0e35, 1.0e36, 1.0e37, 1.0e38,
+    1.0e39,
+];
+
+fn convert_decimal_power10(exponent: i32) -> f64 {
+    debug_assert!((-39..=39).contains(&exponent));
+    CONVERT_DECIMAL_POW10[(exponent + 39) as usize]
 }
 
-fn convert_temperature_from_kelvin(value: f64, unit: &str) -> Option<f64> {
-    match unit {
-        "K" => Some(value),
-        "C" => Some(value - 273.15),
-        "F" => Some((value - 273.15) * 1.8 + 32.0),
+fn convert_temperature(value: f64, from: &str, to: &str) -> Option<f64> {
+    match (from, to) {
+        (left, right) if left == right && matches!(left, "K" | "C" | "F") => Some(value),
+        ("K", "C") => Some(value - 273.15),
+        ("C", "K") => Some(value + 273.15),
+        ("K", "F") => Some((value - 273.15) * 1.8 + 32.0),
+        ("F", "K") => Some((value - 32.0) / 1.8 + 273.15),
+        ("C", "F") => Some(value * 1.8 + 32.0),
+        ("F", "C") => Some((value - 32.0) / 1.8),
         _ => None,
     }
 }
@@ -375,18 +382,21 @@ pub fn convert_kernel(
     }
     let from = from_unit.trim();
     let to = to_unit.trim();
-    if let (Some(k), Some(_)) = (
-        convert_temperature_to_kelvin(number, from),
-        convert_temperature_from_kelvin(0.0, to),
-    ) {
-        return convert_temperature_from_kelvin(k, to).ok_or(WorksheetErrorCode::NA);
+    if let Some(converted) = convert_temperature(number, from, to) {
+        return Ok(converted);
     }
     let from = convert_linear_unit(from).ok_or(WorksheetErrorCode::NA)?;
     let to = convert_linear_unit(to).ok_or(WorksheetErrorCode::NA)?;
     if from.category != to.category {
         return Err(WorksheetErrorCode::NA);
     }
-    Ok(number * from.factor_to_base / to.factor_to_base)
+    // Frozen W109 G4-05 graph, selected before and exact on the disjoint
+    // 10,418-row publication gate. Every arithmetic site is an x87 PC64 op
+    // followed by a binary64 store; prefix scaling is a separate final site.
+    let product = excel_x87_mul(number, from.factor_to_base);
+    let core = excel_x87_div(product, to.factor_to_base);
+    let prefix_delta = convert_decimal_power10(from.prefix_exponent - to.prefix_exponent);
+    Ok(excel_x87_mul(core, prefix_delta))
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -840,6 +850,62 @@ mod tests {
         );
         assert_eq!(
             convert_kernel(1.0, "stone", "kg"),
+            Err(WorksheetErrorCode::NA)
+        );
+    }
+
+    #[test]
+    fn convert_v3_graph_matches_banked_refinement_and_publication_bit_pins() {
+        // W109 G4-05: discovery/retired-bank, retired-v2, refinement-only v3,
+        // and frozen disjoint publication witnesses. The publication rows pin
+        // both the first-product and quotient PC64-to-f64 store sites.
+        let rows = [
+            // Discovery bank: prefix-final staging.
+            (0x3ff0_0000_0000_0000, "El", "Gl", 0x41cd_cd65_0000_0000),
+            // Retired v1: independently rounded reciprocal pressure factor.
+            (0xc3a1_b121_9d59_f352, "atm", "psi", 0xc3e0_3ffe_1b65_b53b),
+            // Retired v2's sole miss, later used only as refinement evidence.
+            (0x457b_c2d0_0cc5_6eb2, "nm", "Pm", 0x4080_c7cd_ff92_ed2e),
+            // Refinement-only cross-pair replay of the exposed mantissa.
+            (0x457b_c2d0_0cc5_6eaa, "fm", "Gm", 0x4080_c7cd_ff92_ed29),
+            // Frozen publication: first and second length sites.
+            (0x410e_b5cd_ddec_4445, "Pm", "um", 0x456a_0335_0818_112b),
+            (0xc5ac_d796_2a1d_b89f, "um", "ft", 0xc488_ce45_a4fc_f02a),
+            // Frozen publication: first and second mass sites.
+            (0x3336_e4da_7fdb_ec42, "ozm", "pg", 0x3602_7255_d603_9ff2),
+            (0x3e42_df4c_87b1_8c3c, "Yg", "lbm", 0x42b1_9ef4_6fc2_69d0),
+            // Frozen publication: first and second pressure sites.
+            (0xbb5c_7a76_8454_e9e2, "atm", "TPa", 0xb9e8_34b7_65b6_e8c4),
+            (0x3100_f06d_910e_68f2, "TPa", "atm", 0x3273_edd3_686e_d878),
+            // Frozen publication: first and second volume sites.
+            (0xc2d4_2d58_985e_b212, "tbs", "gal", 0xc254_2d58_985e_b213),
+            (0xc9da_49b8_6a4f_4ebc, "El", "qt", 0xcd98_17ff_2f5c_fdc9),
+            // Time has no candidate-disagreement rows, so pin independent
+            // all-pair prefix coverage from the same publication gate.
+            (0x34cd_87bc_9caa_c616, "Esec", "Gsec", 0x36ab_808d_b2b1_b804),
+        ];
+        for (number_bits, from, to, expected_bits) in rows {
+            let actual = convert_kernel(f64::from_bits(number_bits), from, to)
+                .unwrap_or_else(|error| panic!("{from}->{to} unexpectedly failed: {error:?}"));
+            assert_eq!(actual.to_bits(), expected_bits, "{from}->{to}");
+        }
+    }
+
+    #[test]
+    fn convert_v3_pins_direct_temperature_routes_and_unsupported_bar() {
+        // The direct C->F route differs by three ULP from composition through
+        // Kelvin for this frozen publication witness.
+        let celsius = f64::from_bits(0xbfb8_e95e_2dd6_11af);
+        assert_eq!(
+            convert_kernel(celsius, "C", "F").unwrap().to_bits(),
+            0x403f_d328_bce0_b1e0
+        );
+        assert_eq!(
+            convert_kernel(1.0, "bar", "Pa"),
+            Err(WorksheetErrorCode::NA)
+        );
+        assert_eq!(
+            convert_kernel(1.0, "Pa", "bar"),
             Err(WorksheetErrorCode::NA)
         );
     }
