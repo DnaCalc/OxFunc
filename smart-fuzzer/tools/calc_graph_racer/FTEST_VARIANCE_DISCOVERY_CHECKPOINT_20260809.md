@@ -127,6 +127,45 @@ The evidence separates the residuals as follows:
   to a graph-distinct private F.TEST tail/publication route in addition to any
   remaining variance-schedule question.
 
+## Current-BRATIO private-tail staging race
+
+A follow-up offline race evaluates the repository's current TOMS-708 BRATIO
+body directly instead of composing separately published worksheet FDIST. For
+every frozen ratio/df group it enumerates 3,200 deterministic graphs spanning:
+
+- ordinary versus stored-x87 multiplication of `df1 * ratio`;
+- ordinary versus stored-x87 denominator and both complement divisions;
+- direct CDF and direct right-tail BRATIO calls, each component of the returned
+  accurate-complement pair, and explicit ordinary/stored-x87 complements; and
+- multiply-by-two and add-to-self on the selected smaller tail;
+- direct `2-2p` and `2-(p+p)` from the original larger tail, with independent
+  ordinary/stored-x87 scale, add, and subtract sites; and
+- complement-first publication of the original larger tail with independent
+  ordinary/stored-x87 complement and final scale/add sites.
+
+No graph is close to an exact survivor. The best fixed graph is only `9/48`
+whether allowed to choose any frozen ratio group, restricted to the forward
+native-ratio group, or restricted to the forward stored-x87-ratio group. Across
+the entire 3,200-graph family and all frozen ratio groups, only `12/48` F.TEST
+target bit patterns are reachable at all. Candidate outputs are retained even
+when they fall outside `[0,1]`, so the direct complement forms are scored rather
+than pruned before comparison.
+
+| Two-sided publication family | Any frozen ratio | Forward native ratio | Forward stored-x87 ratio |
+| --- | ---: | ---: | ---: |
+| `2*small` | 9/48 | 9/48 | 9/48 |
+| `small+small` | 9/48 | 9/48 | 9/48 |
+| `2-2*large` | 6/48 | 6/48 | 6/48 |
+| `2-(large+large)` | 6/48 | 6/48 | 6/48 |
+| complement-first double/add | 6/48 | 6/48 | 6/48 |
+
+This result does **not** identify or rule out Excel's private incomplete-beta
+body. It bounds a narrower hypothesis: wrapping the current production BRATIO
+realization in the enumerated quotient/complement/publication stagings cannot
+explain F.TEST. The exact beta-tail/bgrat realization remains an upstream
+substrate lane, in addition to the F.TEST-private wrapper and variance schedule.
+No new oracle call is justified by this negative race.
+
 ## Explicit July-claim retraction
 
 Retract the universal July decomposition claim that Excel F.TEST is reproduced
@@ -157,6 +196,7 @@ the residual surface.
 | Artifact | Bytes | SHA-256 |
 | --- | ---: | --- |
 | `race_ftest_variance.rs` | 51,064 | `872C94F1E1AC7FB8C5902EE84D4B50A31C4937F00B703002A710461BB17B800F` |
+| `race_ftest_private_tail.rs` | 14,259 | `144AD1A4EF9A2562E2A940408DC9E69FE95F243F768C464EB045E8809CFCC66D` |
 | `refine_ftest_variance_fdist.rs` | 60,423 | `B0E3A2F700E985193EAB5D391F1064B085945F1E18CFEB5BCE37C28A319332CC` |
 | `invert_ftest_variance_target.rs` | 5,786 | `4927DFBB9DBBAFA6FBBF638722D841427D37EFBAF0B16BC01C13AF9E6472B594` |
 | `audit-ftest-variance-discovery-v2.json` | 84,814 | `3068FE549F4A02C7B255F2DFCD24F9F37D205ED9B0B59612E443C9F56E21DE43` |
@@ -180,6 +220,8 @@ the build/x64/CV2/Value2/NoCache pre/post-zero capture contract.
 - `integration_completeness`: `partial`
 - `open_lanes`:
   - identify the private F.TEST tail/publication graph on the 11 local-skip rows;
+  - identify the upstream beta-tail/bgrat body rather than treating the
+    current production BRATIO realization as exact;
   - separate the remaining private variance schedule from quotient and tail staging, preferably with a future answer-blind exact-control `B=[-1,0,1]` discovery if root reopens oracle work;
   - freeze an independent publication heldout only after one coherent private-graph survivor exists;
   - production, workset, BUG-FUNC, bead, and formal integration remain
