@@ -1296,8 +1296,15 @@ Current checkpoint:
    discount arrangement as the correct high-level Excel structure.
 3. Exact PMT-family parity remains open at the `log1p`/`expm1` last-bit and
    per-function IPMT/PPMT/CUM op-order/accumulation lanes.
-4. The next gate is repo-owned replay of the full `5,319`-row Phase-E family
-   corpus and a non-regressing helper-rounding result.
+4. W109 current-reference hardening has replayed the focused private-helper
+   intermediates and timing metamers. It hard-refutes direct hidden-low-word
+   delivery, exactly certifies infeasibility for `51/60` tested smooth interval
+   systems, and retains nine as numerical negative evidence, but identifies no exact
+   replacement: the x87-spill representative is `226/324`, and the frozen
+   general-rate timing leader is only `378/480` with `1/15` exact contexts.
+5. The next gate is an exact helper/type-1-association graph that survives a
+   prior-disjoint end-to-end PMT replay, followed by the adjacent schedule
+   composition lanes. See the W109 PMT intermediate/timing report.
 
 Supersession note:
 1. W109 is now the active execution continuation for discrepancy discovery and
@@ -1415,9 +1422,17 @@ Current checkpoint (2026-08-09):
    Focused/full core and 492-job Lean gates pass; bead `oxf-jwh5.9` is closed
    signed off. Only the COMBIN sublane is closed: mixed G4-04 remains open for
    COMBINA and ERF/ERFC.PRECISE, and no FEC/F3E handoff is needed.
-10. The PMT-family wall is not proved irreducible. EXT6 stopped at shard 191/400,
-   and the remaining bounded search, larger-graph, coefficient-recovery, and
-   wrapper/predicate lanes remain actionable.
+10. The PMT-family wall is not proved irreducible. The 2026-08-09 hardening
+    records the x87-spill helper representative at `226/324`, hard-refutes direct
+    low-word delivery, exactly certifies `51/60` tested smooth interval systems
+    while leaving nine numerical-only, and limits the
+    `832/832` reciprocal timing identity to the power-of-two lane. A frozen
+    general-rate discriminator has no exact tail graph (best `378/480`, only
+    `1/15` contexts exact), leaving the type-1 helper/association unresolved.
+    EXT6's durable log still stops at shard `191/400`; larger graphs,
+    helper-association probes, per-function schedule composition, and alternate
+    version/profile axes remain actionable. See
+    `docs/function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md`.
 11. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.

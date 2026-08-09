@@ -382,14 +382,22 @@ Status axes:
   catalog rows remain active model-identification work. The July-24 PMT
   "irreducible / needs provenance" framing is superseded: only a bounded
   negative result over the stated search grammar and size limits is established,
-  and larger graphs plus coefficient recovery remain actionable.
+  and larger graphs plus coefficient recovery remain actionable. Current-build
+  PMT hardening hard-refutes direct hidden-low-word delivery, exactly certifies
+  infeasibility for `51/60` tested smooth interval systems while retaining nine
+  as numerical negative evidence, and shows that the `832/832` power-of-two
+  timing reciprocal identity is local: the frozen general-rate leader is only
+  `378/480` and exactly explains `1/15` contexts. G6-01 therefore remains open
+  at the private helper, type-1 association, and adjacent-schedule graphs.
 - Canonical owners: [W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W109_ACTIVE_MODEL_DISCOVERY_CALC_GRAPH_SEARCH.md), [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md), [OXFUNC_EXCEL_DISCREPANCY_CATALOG.md](C:\Work\DnaCalc\OxFunc\docs\OXFUNC_EXCEL_DISCREPANCY_CATALOG.md), and `.beads/` epic `oxf-jwh5`.
 
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: PMT/IPMT/PPMT/CUM `log1p`/`expm1` and composition graphs;
+4. `open_lanes`: PMT/IPMT/PPMT/CUM private-helper, type-1 association,
+   timing/publication, and schedule-composition graphs; unfinished EXT6 and
+   larger clean-room graph search;
    COMBINA/ERF/ERFC.PRECISE in mixed G4-04, GAMMALN/GAMMA, distributions,
    regression, and every other
    open catalog row; fresh broad discovery; alternate CPU/application-version/

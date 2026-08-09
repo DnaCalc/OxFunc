@@ -1,7 +1,17 @@
-# PMT & the Annuity Cluster — Complete Takeover Brief
+# PMT & the Annuity Cluster — Historical Takeover Brief
 
 **Status date:** 2026-07-25 · **Lane:** W109 G6-01 (+ G6-07) · **Audience:** whoever picks up the PMT
 identification next, with no prior context.
+
+> **Current-authority warning (2026-08-09):** this brief is historical and its
+> “structurally identified”, single-residual, sibling-inheritance, and search
+> boundary language is not current campaign truth. The July “irreducible / needs
+> provenance” conclusion was retracted. Fresh current-build work refutes tested
+> low-word/smooth corrections, proves only a local `832/832` power-of-two timing
+> identity, and leaves the frozen general-rate tail non-exact at best `378/480`.
+> Read
+> [`W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md`](W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md)
+> and the current G6-01 catalog row first. G6-01 remains open and actionable.
 
 Read this first. It supersedes the narrower `W109_G6_PMT_RESUME_20260723.md` (still accurate but pre-dates
 the enumerator campaign). The field-diary companion with the narrative is `docs/notes/PMT_EXPM1_IDENTIFICATION_STORY.md`.

@@ -134,6 +134,7 @@ close:   catalog row out, ruled-out ledger rows in, evidence doc
 - Calc map (seed hypotheses): [DISCREPANCY_CALCULATION_MAP.csv](../function-lane/DISCREPANCY_CALCULATION_MAP.csv)
 - Ruled-out ledger: [DISCREPANCY_RULED_OUT_LEDGER.csv](../function-lane/DISCREPANCY_RULED_OUT_LEDGER.csv)
 - W108 (x87 numeric core): [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md)
+- PMT current intermediate/timing evidence: [W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md](../function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md)
 
 ## 7. 2026-08-09 reconciliation and active checkpoint
 
@@ -217,8 +218,17 @@ G6-02 and does not close the wider bond/financial family or W109 campaign.
    "proven irreducible / needs provenance" framing. The only defensible result
    is bounded-negative over the documented leaf/operator/size limits. A
    reproducing Excel program exists; larger graphs, coefficient recovery, and
-   residual wrapper/predicate axes remain actionable. EXT6 is also incomplete:
-   its log stops at shard `191/400`.
+   residual wrapper/predicate axes remain actionable. The 2026-08-09
+   current-build hardening adds three narrower results without closing G6-01:
+   the x87-spill helper representative is `226/324`; direct hidden-low-word
+   delivery is hard-refuted, `51/60` tested smooth interval systems have exact
+   infeasibility certificates, and nine retain numerical negative evidence; the
+   power-of-two timing reciprocal identity is `832/832` but does not generalize
+   to the frozen general-rate gate, whose best subtractive family is only
+   `378/480` and exactly explains `1/15` contexts. The unresolved type-1
+   helper/association prevents a global tail-order claim. EXT6 is also
+   incomplete: its durable log stops at shard `191/400`. Canonical evidence is
+   in `W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md`.
 
 ### 7.5 ATANH G4-02 exact graph signed off
 
@@ -329,6 +339,8 @@ Status axes:
 4. `open_lanes`: all remaining catalog rows, including PMT-family and the
    COMBINA/ERF/ERFC.PRECISE members of mixed G4-04;
    broad post-catalog discovery; declared application-version/Compatibility-
-   Version axes; global OPERATIONS Sections 12 and 14 audit. COS/BESSELJ,
+   Version axes; global OPERATIONS Sections 12 and 14 audit. PMT specifically
+   retains the private helper, type-1 association, timing/publication, adjacent
+   schedule, and unfinished larger-graph lanes. COS/BESSELJ,
    ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
    close the wider campaign.

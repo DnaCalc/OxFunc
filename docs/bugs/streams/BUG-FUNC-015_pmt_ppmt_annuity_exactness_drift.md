@@ -31,9 +31,11 @@ PMT-family substrate campaign.
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
 - **Root cause class**: `initial_impl_gap`
-- **Root cause summary**: non-zero-rate `PMT` and `PPMT` publication currently
-  follows the local annuity formulas closely but not Excel's exact `Value2`
-  result bits across the pilot matrix.
+- **Root cause summary**: the landed quotient-first discount structure is the
+  right high-level PMT composition, but Excel's private `|tau|<1` annuity
+  helper and the timing-1 association/publication path remain unidentified.
+  Current evidence rules out several bounded graph and correction families; it
+  does not prove irreducibility or authorize a fitted approximation.
 
 ## Why Did We Get This Wrong?
 - **Spec already correct and code was wrong?**: `partial`
@@ -302,3 +304,72 @@ annuity term.
 - [x] linked reports updated
 - [ ] handoff filed if required
 - [ ] fix landed or non-OxFunc ownership recorded
+
+## 2026-08-09 W109 Intermediate And Timing Discrimination
+
+This checkpoint supersedes the July-24 claims that the residual was “not
+black-box-closable”, “needed provenance”, or had reached a proved boundary.
+Those claims exceeded the evidence. The clean-room result is bounded-negative
+only for the explicitly searched leaves, operators, precision/store schedules,
+and graph sizes. A reproducing Excel program exists; larger graphs and newly
+designed discriminators remain actionable. The long EXT6 run is still active,
+with its durable log last reporting shard `191/400`.
+
+The current-build evidence uses Excel `16.0` build `20228`, 64-bit, workbook
+Compatibility Version `2`, `Range.Value2` bulk input/output, and `NoCache` where
+fresh capture was required.
+
+### Private-helper intermediate audit
+
+1. Across `234` power-of-two-rate and `90` independent general-rate rows, the
+   ordinary binary64 Kahan representative scores `224/324`; the per-operation
+   x87-PC64-to-binary64 spill representative scores `226/324`.
+2. Exact representability of `n*log1p(rate)` is strongly associated with misses
+   in the power-of-two and pooled adjusted analyses, but the independent
+   general-rate adjusted result does not support treating it as a universal
+   branch predicate. It remains a probe stratifier, not an identified mechanism.
+3. A TwoProduct low-word repair cannot close the gap: `239/324` rows have a zero
+   exact low word, leaving `93` existing x87-helper misses immutable and an
+   absolute low-only ceiling of `231/324`.
+4. All `60` tested smooth degree-`0..8` quotient, denominator, and joint
+   smooth-plus-low interval systems require positive numerical LP widening;
+   exact rational Farkas certificates establish infeasibility for `51/60`.
+   The other nine remain numerical negative evidence only. Least-squares gains
+   fail to transfer to the independent general-rate cohort, so no coefficient
+   vector is promoted.
+
+### Timing-factor metamers
+
+The `fv=0`, power-of-two-rate metamer is a strong local identity: stored
+reciprocal multiplication matches all `832/832` paired type-0/type-1 rows,
+while true division matches `773/832`. This cancels the opaque helper only in
+that algebraically special lane and is not a global timing-order proof.
+
+A separately frozen general-rate discriminator captured `15` contexts, each
+with a `16`-value consecutive-PV ladder at both timing values (`480/480` calls).
+The best tested subtractive family,
+`(q - q*store(rate/(1+rate)))*rate`, scores `378/480` (`239/240` type 0,
+`139/240` type 1), but explains only `1/15` contexts exactly. PC64-continuous
+divide and reciprocal forms are observational twins at `360/480`; every stored
+divide/reciprocal and before/after-rate alternative scores lower. The remaining
+type-1 helper/association path therefore contaminates any standalone tail
+inference, and no timing graph is identified or eligible for production.
+
+### Current decision
+
+`BUG-FUNC-015` remains `investigating`. No production or formal change is
+authorized by this checkpoint. The next useful probe is a frozen
+helper-association discriminator for the type-1 lane, followed by larger-graph
+search and per-function PPMT/IPMT/CUM recurrence/publication identification.
+The canonical evidence and artifact hashes are recorded in
+`docs/function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md`.
+
+Status axes:
+
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: private `|tau|<1` helper graph; type-1 helper association and
+   timing-factor staging; PPMT/IPMT/CUM recurrence/publication graphs; unfinished
+   EXT6 and larger-graph search; alternate Excel-version/Compatibility-Version
+   validation; production/formal integration after exact identification.
