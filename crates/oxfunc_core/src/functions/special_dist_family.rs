@@ -283,12 +283,13 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
-    // Published GAMMALN / GAMMALN.PRECISE surface: the identified Excel op-graph
-    // kernel (W109 G3-02) for positive arguments. Domain handling is preserved
-    // exactly from the prior `ln_gamma_positive` guard (non-finite / x <= 0 ->
-    // #NUM!); only the positive-x numeric path changes. GAMMA and the shared
+    // Published GAMMALN / GAMMALN.PRECISE surface. The full positive numeric
+    // graph remains under W109 identification; this admission boundary is
+    // independently pinned. Current-reference Excel rejects every positive
+    // binary64 subnormal with #NUM! while admitting `f64::MIN_POSITIVE`; the
+    // same guard also retains the non-positive domain. GAMMA and the shared
     // internal lgamma are unaffected.
-    if !x.is_finite() || x <= 0.0 {
+    if !x.is_finite() || x < f64::MIN_POSITIVE {
         return Err(WorksheetErrorCode::Num);
     }
     Ok(crate::excel_numeric::gammaln_excel(x))
@@ -1028,6 +1029,30 @@ mod tests {
         assert!(v.is_finite(), "GAMMALN(1e-300) was non-finite: {v}");
         assert_close(v, 690.7755278982137, 1e-9);
         assert!(gammaln_precise_kernel(1e-300).unwrap().is_finite());
+    }
+
+    #[test]
+    fn gammaln_rejects_positive_subnormals_and_admits_min_normal() {
+        // W109 G3-02 current-reference discovery plus separately frozen
+        // answer-blind heldout: 40/40 positive-subnormal rows publish #NUM!
+        // across GAMMALN and GAMMALN.PRECISE. The adjacent min-normal endpoint
+        // is admitted and its exact published value is pinned here.
+        for x in [f64::from_bits(1), f64::from_bits(0x000f_ffff_ffff_ffff)] {
+            assert_eq!(gammaln_kernel(x), Err(WorksheetErrorCode::Num));
+            assert_eq!(gammaln_precise_kernel(x), Err(WorksheetErrorCode::Num));
+        }
+
+        let expected = f64::from_bits(0x4086_232b_dd7a_bcd2);
+        assert_bits_eq(
+            "gammaln(min-normal)",
+            gammaln_kernel(f64::MIN_POSITIVE).unwrap(),
+            expected,
+        );
+        assert_bits_eq(
+            "gammaln.precise(min-normal)",
+            gammaln_precise_kernel(f64::MIN_POSITIVE).unwrap(),
+            expected,
+        );
     }
 
     // BUG-FUNC-027 CLASS-A2: GAMMA(-1E-200) rounds to 0 but is not the pole at 0;
