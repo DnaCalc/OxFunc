@@ -137,6 +137,7 @@ close:   catalog row out, ruled-out ledger rows in, evidence doc
 - PMT current intermediate/timing evidence: [W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md](../function-lane/W109_PMT_INTERMEDIATE_AND_TIMING_DISCRIMINATION_20260809.md)
 - GROWTH/LOGEST single-predictor checkpoint: [W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md](../function-lane/W109_GROWTH_LOGEST_SINGLE_PREDICTOR_DISCOVERY_20260809.md)
 - CUMPRINC exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/CUMPRINC_EXACT_PARTIAL_REPORT_20260809.md`
+- RATE exact-graph partial report: `smart-fuzzer/tools/calc_graph_racer/RATE_EXACT_GRAPH_PARTIAL_REPORT_20260809.md`
 
 ## 7. 2026-08-09 reconciliation and active checkpoint
 
@@ -363,6 +364,34 @@ per-query interpolation with no context transfer. No held-out or production
 survivor exists; the durable report is
 `smart-fuzzer/tools/calc_graph_racer/CUMPRINC_EXACT_PARTIAL_REPORT_20260809.md`.
 
+### 7.9 RATE private-objective and publication checkpoint
+
+The current-build RATE lane now has a frozen 256-row cancellation-tuned
+discovery bank and a paired 512-call worksheet-FV companion, both captured on
+Excel build 20228, x64, Compatibility Version 2 through exact-bit Value2
+plumbing with NoCache and clean pre/post process checks. The RATE generator
+makes every tested first residual smaller than `1e-7`, so the bank directly
+tests whether Excel publishes the current guess or applies a step.
+
+No tested graph is exact. The frozen balance/finite-difference/update grammar
+has zero survivors among 13,824 candidates and a best score of `2/256`.
+Replacing the private objective with worksheet FV also tops out at `2/256`.
+A 30,720-graph helper race reaches `502/512` on the paired FV calls, but all
+associations share ten cancellation/small-rate misses; expanding to 7,864,320
+raw-power inline-helper and outer-spill graphs still leaves RATE at `2/256`.
+This is a bounded negative over the enumerated grammar, not an
+irreducibility result.
+
+The schedule layer does establish one directional fact: a pre-step residual or
+delta check that publishes the unstepped current guess scores `0/256` and is
+refuted. First-step, residual-stop-next, and delta-stop-next remain
+observationally tied while the private objective is inexact. The inherited
+x87-power and basin evidence remains useful structure but is not a complete
+current-reference graph. The answer-blind 256-row heldout remains sealed and
+uncaptured. Canonical evidence, artifact hashes, replay commands, and the
+three-axis audit are in
+`smart-fuzzer/tools/calc_graph_racer/RATE_EXACT_GRAPH_PARTIAL_REPORT_20260809.md`.
+
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
@@ -374,6 +403,8 @@ Status axes:
    retains the private helper, type-1 association, timing/publication, adjacent
    schedule, and unfinished larger-graph lanes. GROWTH/LOGEST retain coefficient,
    publication, full-shape/coercion, and held-out lanes; CUMPRINC retains hidden
-   principal, range-fold, and held-out lanes. COS/BESSELJ,
+   principal, range-fold, and held-out lanes. RATE retains its private
+   cancellation/small-rate objective, exact FD/update association, publication
+   distinction, wider semantic surface, and sealed heldout lanes. COS/BESSELJ,
    ATANH, ACOTH, MINVERSE, CONVERT, and COMBIN closures are scoped and do not
    close the wider campaign.
