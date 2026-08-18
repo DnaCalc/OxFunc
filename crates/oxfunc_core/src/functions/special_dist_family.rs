@@ -161,6 +161,19 @@ pub fn erf_precise_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     Ok(erf_approx(x))
 }
 
+/// Published-worksheet staging `SQRT(x/2)` used by Excel's df=1 chi-square
+/// and `GAMMA.DIST(x, 0.5, 2, TRUE)` identities. Live Excel 16.0 build 20228
+/// matched `ERF.PRECISE` / `ERFC.PRECISE` of this argument on 154/154
+/// distinct nonnegative x (divide-by-two first; `SQRT(x)/SQRT(2)` is not
+/// the same graph).
+pub fn erf_of_sqrt_half_x(x: f64) -> Result<f64, WorksheetErrorCode> {
+    erf_precise_kernel((x / 2.0).sqrt())
+}
+
+pub fn erfc_of_sqrt_half_x(x: f64) -> Result<f64, WorksheetErrorCode> {
+    erfc_precise_kernel((x / 2.0).sqrt())
+}
+
 // Excel-emulation for the positive-tail ERFC regime.
 //
 // Policy: DnaCalc emulates Excel's observed output bits; mathematical

@@ -4,6 +4,7 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::special_dist_family::{erf_of_sqrt_half_x, erfc_of_sqrt_half_x};
 use crate::functions::special_math_common::{
     bisect_inverse, bratio, gamma, regularized_gamma_p, regularized_gamma_q,
 };
@@ -147,7 +148,15 @@ pub fn chisq_dist_kernel(
     let x = validate_nonnegative_x(x)?;
     let k = truncate_positive_integer(deg_freedom)?;
     if cumulative {
-        Ok(regularized_gamma_p(k / 2.0, x / 2.0))
+        // Inverse-problem identity, live Excel 16.0 b20228: CHISQ.DIST(x,1,TRUE)
+        // == ERF.PRECISE(SQRT(x/2)) == GAMMA.DIST(x,0.5,2,TRUE) on 154/154
+        // distinct x. Rival stagings SQRT(x)/SQRT(2) and SQRT(x)*(1/SQRT(2))
+        // fail the same bank.
+        if k == 1.0 {
+            erf_of_sqrt_half_x(x)
+        } else {
+            Ok(regularized_gamma_p(k / 2.0, x / 2.0))
+        }
     } else {
         chisq_pdf_kernel(x, k)
     }
@@ -156,7 +165,14 @@ pub fn chisq_dist_kernel(
 pub fn chisq_dist_rt_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let x = validate_nonnegative_x(x)?;
     let k = truncate_positive_integer(deg_freedom)?;
-    Ok(regularized_gamma_q(k / 2.0, x / 2.0))
+    // Same capture: CHIDIST(x,1) == CHISQ.DIST.RT(x,1) == ERFC.PRECISE(SQRT(x/2))
+    // bit-exactly. Routing through the published ERFC kernel is the identified
+    // graph, not a numeric fit.
+    if k == 1.0 {
+        erfc_of_sqrt_half_x(x)
+    } else {
+        Ok(regularized_gamma_q(k / 2.0, x / 2.0))
+    }
 }
 
 fn search_upper_bound<F>(target: f64, initial_hi: f64, f: F) -> f64
@@ -758,6 +774,27 @@ fn coercion_to_ws(error: &CoercionError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::value::WorksheetErrorCode;
+
+    #[test]
+    fn chisq_df1_matches_published_erf_erfc_sqrt_half_x() {
+        use crate::functions::special_dist_family::{
+            erf_of_sqrt_half_x, erfc_of_sqrt_half_x,
+        };
+        for x in [0.0, 0.25, 0.5, 1.0, 2.0, 3.841458820694124, 10.0, 20.0] {
+            let rt = chisq_dist_rt_kernel(x, 1.0).unwrap();
+            let cdf = chisq_dist_kernel(x, 1.0, true).unwrap();
+            assert_eq!(rt.to_bits(), erfc_of_sqrt_half_x(x).unwrap().to_bits(), "rt x={x}");
+            assert_eq!(cdf.to_bits(), erf_of_sqrt_half_x(x).unwrap().to_bits(), "cdf x={x}");
+        }
+        // Exact publication at zero does not depend on the ERFC body.
+        assert_eq!(
+            chisq_dist_rt_kernel(0.0, 1.0).unwrap().to_bits(),
+            0x3ff0000000000000
+        );
+        // Live Excel 16.0 b20228 CHIDIST(1,1) is 0x3fd44ed0bb7cb209.
+        // The current ERFC.PRECISE body is still one ULP off that witness;
+        // the df=1 dispatch only claims the composition, not the ERFC body.
+    }
 
     #[test]
     fn chisq_family_matches_known_rows() {
