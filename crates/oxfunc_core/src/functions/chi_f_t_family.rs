@@ -170,6 +170,12 @@ pub fn chisq_dist_rt_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetEr
     // graph, not a numeric fit.
     if k == 1.0 {
         erfc_of_sqrt_half_x(x)
+    } else if k == 2.0 {
+        // Inverse-problem identity, live Excel 16.0 b20228: CHIDIST(x,2)
+        // == EXP(-x/2) == EXP(-(x/2)) on 68/68 nonnegative rows. The
+        // worksheet EXP is the signed-off x87 elementary. The complementary
+        // CDF 1-EXP(-x/2) is NOT this graph (9/11 on a follow-up bank).
+        Ok(crate::excel_numeric::excel_exp(-(x / 2.0)))
     } else {
         Ok(regularized_gamma_q(k / 2.0, x / 2.0))
     }
@@ -794,6 +800,11 @@ mod tests {
         // Live Excel 16.0 b20228 CHIDIST(1,1) is 0x3fd44ed0bb7cb209.
         // The current ERFC.PRECISE body is still one ULP off that witness;
         // the df=1 dispatch only claims the composition, not the ERFC body.
+        for x in [0.0, 0.125, 0.5, 1.0, 2.0, 8.0, 16.0, 40.0] {
+            let rt = chisq_dist_rt_kernel(x, 2.0).unwrap();
+            let exp = crate::excel_numeric::excel_exp(-(x / 2.0));
+            assert_eq!(rt.to_bits(), exp.to_bits(), "df=2 x={x}");
+        }
     }
 
     #[test]

@@ -10,7 +10,7 @@ Reference: Excel 16.0 build 20228, x64, Value2
 - `scope_completeness`: `scope_partial` (df=1 / Gamma(0.5,2) CDF route only)
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `integrated` for the landed dispatch
-- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; inverses; CHISQ.TEST statistic for df≠1
+- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; inverses; even-df Poisson-series association (df=4/6 not exact); CHISQ.TEST statistic for df≠1
 
 ## Method
 
@@ -46,6 +46,22 @@ On the same 154 Excel rows, before the dispatch OxFunc CHIDIST matched
 63/154 (max 30 ULP). The ERFC composition matched 88/154 (max 31 ULP).
 The dispatch is the identified graph; it also improves the current residual.
 The remaining misses are the still-open ERF/ERFC.PRECISE body.
+
+## Follow-up identities (2026-08-18, same build)
+
+A second 68-row bank plus an 11-row CDF complement check:
+
+| Identity | Exact |
+|---|---:|
+| `CHIDIST(x,2)` = `EXP(-x/2)` | 68/68 |
+| `CHIDIST(x,2)` = `EXP(-(x/2))` | 68/68 |
+| `CHISQ.DIST(x,2,TRUE)` = `1-EXP(-x/2)` | 9/11 (refuted as the CDF graph) |
+| `GAMMA.DIST(x,0.5,1,TRUE)` = `ERF.PRECISE(SQRT(x))` | 68/68 |
+| `GAMMA.DIST(x,0.5,4,TRUE)` = `ERF.PRECISE(SQRT(x/4))` | 68/68 |
+| `CHIDIST(x,4)` = `EXP(-x/2)*(1+x/2)` | 50/68 (refuted) |
+| `CHIDIST(x,6)` = next Poisson term | 46/68 (refuted) |
+
+Landed: df=2 right-tail through `excel_exp(-(x/2))`; `GAMMA.DIST` CDF at shape `0.5` through `ERF.PRECISE(SQRT(x/beta))` for any positive finite scale.
 
 ## What this is not
 

@@ -4,7 +4,6 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, prepare_args_values_only};
-use crate::functions::special_dist_family::erf_of_sqrt_half_x;
 use crate::functions::special_math_common::{
     bisect_inverse, ln_gamma, regularized_beta, regularized_gamma_p,
 };
@@ -192,11 +191,14 @@ pub fn gamma_dist_kernel(
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num));
     }
     if cumulative {
-        // Inverse-problem identity, live Excel 16.0 b20228: GAMMA.DIST(x,0.5,2,TRUE)
-        // == ERF.PRECISE(SQRT(x/2)) == CHISQ.DIST(x,1,TRUE) on 154/154 x.
-        // Other (alpha,beta) pairs are not claimed by that capture.
-        if alpha == 0.5 && beta == 2.0 {
-            return erf_of_sqrt_half_x(x).map_err(BetaGammaStatsError::Domain);
+        // Inverse-problem identity, live Excel 16.0 b20228:
+        // GAMMA.DIST(x,0.5,beta,TRUE) == ERF.PRECISE(SQRT(x/beta))
+        // for beta in {1,2,4} on 68/68 (and beta=2 on the earlier 154/154
+        // bank). Staging is divide-then-sqrt, matching the df=1 chi route
+        // when beta=2. Other shapes are not claimed.
+        if alpha == 0.5 && beta > 0.0 && beta.is_finite() {
+            return crate::functions::special_dist_family::erf_precise_kernel((x / beta).sqrt())
+                .map_err(BetaGammaStatsError::Domain);
         }
         // W109 lane-3 (2026-07-18): the pre-W109 integer-shape fast path
         // (1 − e^{-x}·Σ x^k/k!) is an OxFunc-side shortcut Excel does NOT
@@ -548,14 +550,18 @@ mod tests {
 
     #[test]
     fn gamma_dist_half_shape_scale_two_matches_erf_sqrt_half_x() {
-        use crate::functions::special_dist_family::erf_of_sqrt_half_x;
-        for x in [0.0, 0.5, 1.0, 2.0, 6.6348966010212145] {
-            let got = gamma_dist_kernel(x, 0.5, 2.0, true).unwrap();
-            assert_eq!(
-                got.to_bits(),
-                erf_of_sqrt_half_x(x).unwrap().to_bits(),
-                "x={x}"
-            );
+        use crate::functions::special_dist_family::erf_precise_kernel;
+        for (x, beta) in [
+            (0.0, 2.0),
+            (0.5, 1.0),
+            (1.0, 1.0),
+            (1.0, 2.0),
+            (2.0, 4.0),
+            (6.6348966010212145, 2.0),
+        ] {
+            let got = gamma_dist_kernel(x, 0.5, beta, true).unwrap();
+            let expect = erf_precise_kernel((x / beta).sqrt()).unwrap();
+            assert_eq!(got.to_bits(), expect.to_bits(), "x={x} beta={beta}");
         }
     }
 }
