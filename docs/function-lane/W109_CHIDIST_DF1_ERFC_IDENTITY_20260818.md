@@ -95,6 +95,19 @@ A 70-pair bank (`k ∈ {0,1,2,3,5}`, mixed `μ`) on live Excel 16.0 build 20228:
 
 Landed `poisson_dist_kernel` CDF as `EXP(-μ)` for `k=0` and GRATIO `Q(k+1, μ)` for `k≥1`, which is CHIDIST internals after the exact `2μ/2` recovery. The PMF path is unchanged.
 
+## Follow-up identities (2026-08-19, continued)
+
+Poisson PMF is **not** a CDF/CHIDIST difference (19/65) and **not** `EXP(-μ)*μ^k/FACT(k)` (23/65, only `k=0` is exact). Odd-df `CHIDIST(x,3)` is **not** a worksheet `ERFC+EXP` recurrence (best 15/47).
+
+Cross-family CDFs that did latch:
+
+| Identity | Exact | Action |
+|---|---:|---|
+| `CHISQ.DIST(x,df,TRUE)` = `GAMMA.DIST(x,df/2,2,TRUE)` | 88/88, df in 1..10 | Chi CDF now routes through `gamma_dist_kernel` |
+| `1-CHIDIST` as chi CDF | 49/88 | Refuted |
+| `NEGBINOM.DIST(f,s,p,TRUE)` = `BETA.DIST(p,s,f+1,TRUE)` | 150/150 | Landed through `regularized_beta` |
+| `1-BETA` / `BETA(1-p,f+1,s)` | 1/8 | Refuted |
+
 ## What this is not
 
 - Not a full G3-01 or G4-04 closure.

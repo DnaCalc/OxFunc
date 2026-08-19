@@ -4,7 +4,7 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
-use crate::functions::special_dist_family::{erf_of_sqrt_half_x, erfc_of_sqrt_half_x};
+use crate::functions::special_dist_family::erfc_of_sqrt_half_x;
 use crate::functions::special_math_common::{
     bisect_inverse, bratio, gamma, regularized_gamma_p, regularized_gamma_q,
 };
@@ -152,17 +152,18 @@ pub fn chisq_dist_kernel(
         // == ERF.PRECISE(SQRT(x/2)) == GAMMA.DIST(x,0.5,2,TRUE) on 154/154
         // distinct x. Rival stagings SQRT(x)/SQRT(2) and SQRT(x)*(1/SQRT(2))
         // fail the same bank.
-        if k == 1.0 {
-            erf_of_sqrt_half_x(x)
-        } else if k == 2.0 {
-            // Inverse-problem identity, live Excel 16.0 b20228:
-            // CHISQ.DIST(x,2,TRUE) == EXPON.DIST(x/2,1,TRUE) ==
-            // GAMMA.DIST(x,1,2,TRUE) on 85/85. 1-EXP(-x/2) is not the
-            // CDF (57/85). Divide-first, then rate-1 EXPON.
-            crate::functions::discrete_dist_family::expon_dist_kernel(x / 2.0, 1.0, true)
-        } else {
-            Ok(regularized_gamma_p(k / 2.0, x / 2.0))
-        }
+        // Inverse-problem identity, live Excel 16.0 b20228:
+        // CHISQ.DIST(x,df,TRUE) == GAMMA.DIST(x, df/2, 2, TRUE) on 88/88
+        // across df in {1,2,3,4,5,6,8,10}. 1-CHIDIST is not the CDF (49/88).
+        // Routes df=1/2 through the landed ERF/EXPON gamma specials.
+        crate::functions::beta_gamma_stats_family::gamma_dist_kernel(x, k / 2.0, 2.0, true).map_err(
+            |e| match e {
+                crate::functions::beta_gamma_stats_family::BetaGammaStatsError::Domain(code) => {
+                    code
+                }
+                _ => WorksheetErrorCode::Value,
+            },
+        )
     } else {
         chisq_pdf_kernel(x, k)
     }
@@ -789,9 +790,7 @@ mod tests {
 
     #[test]
     fn chisq_df1_matches_published_erf_erfc_sqrt_half_x() {
-        use crate::functions::special_dist_family::{
-            erf_of_sqrt_half_x, erfc_of_sqrt_half_x,
-        };
+        use crate::functions::special_dist_family::{erf_of_sqrt_half_x, erfc_of_sqrt_half_x};
         for x in [0.0, 0.25, 0.5, 1.0, 2.0, 3.841458820694124, 10.0, 20.0] {
             let rt = chisq_dist_rt_kernel(x, 1.0).unwrap();
             let cdf = chisq_dist_kernel(x, 1.0, true).unwrap();
@@ -839,6 +838,20 @@ mod tests {
             )
             .unwrap();
             assert_eq!(chi6.to_bits(), pois2.to_bits(), "df=6 x={x}");
+        }
+    }
+
+    #[test]
+    fn chisq_cdf_matches_gamma_scale_two_identity() {
+        for df in [1.0, 2.0, 3.0, 4.0, 5.0, 10.0] {
+            for x in [0.0, 0.5, 1.0, 2.0, 8.0, 20.0] {
+                let chi = chisq_dist_kernel(x, df, true).unwrap();
+                let gam = crate::functions::beta_gamma_stats_family::gamma_dist_kernel(
+                    x, df / 2.0, 2.0, true,
+                )
+                .unwrap();
+                assert_eq!(chi.to_bits(), gam.to_bits(), "df={df} x={x}");
+            }
         }
     }
 

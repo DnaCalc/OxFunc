@@ -1,11 +1,9 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-19` (Poisson CDF identified as the even-df chi
-right-tail: `POISSON.DIST(k,μ,TRUE)` = `CHIDIST(2μ,2(k+1))` 70/70. A
-published-PMF fold is not the graph (45/70). CDF now dispatches `k=0` through
-`EXP(-μ)` and `k≥1` through GRATIO `Q(k+1,μ)`. PMF path unchanged. G3-01
-still open for the Poisson PMF body, remaining GRATIO, and ERF.)
+Last reconciled: `2026-08-19` (NEGBINOM CDF = `BETA.DIST(p,s,f+1,TRUE)` 150/150;
+chi CDF = `GAMMA.DIST(x,df/2,2,TRUE)` 88/88. Poisson PMF is not a CDF
+difference. G3-01 still open for Poisson/Negbinom PMFs, remaining GRATIO, ERF.)
 Previous reconcile: `2026-08-09` (current-build G6-06 IRR objective-graph
 decomposition: a 300-row discovery plus a 900-point worksheet-NPV companion
 separates worksheet evaluator publication from IRR's private objective. The

@@ -4,7 +4,7 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
-use crate::functions::special_math_common::regularized_gamma_q;
+use crate::functions::special_math_common::{regularized_beta, regularized_gamma_q};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -501,11 +501,15 @@ pub fn negbinom_dist_kernel(
     let number_f = number_f as u64;
     let number_s = number_s as u64;
     if cumulative {
-        let mut sum = 0.0;
-        for failures in 0..=number_f {
-            sum += negbinom_dist_kernel(failures as f64, number_s as f64, probability_s, false)?;
-        }
-        Ok(sum)
+        // Inverse-problem identity, live Excel 16.0 b20228: NEGBINOM.DIST(f,s,p,TRUE)
+        // == BETA.DIST(p,s,f+1,TRUE) == BETADIST(p,s,f+1) on 150/150 pairs
+        // (s in {1,2,3,5,8}, f in {0,1,2,4,7,12}, p in {0.1,0.3,0.5,0.7,0.9}).
+        // 1-BETA.DIST and BETA.DIST(1-p,f+1,s,TRUE) are not the graph.
+        Ok(regularized_beta(
+            probability_s,
+            number_s as f64,
+            (number_f + 1) as f64,
+        ))
     } else if probability_s == 0.0 {
         Ok(0.0)
     } else if probability_s == 1.0 {
@@ -967,6 +971,22 @@ mod tests {
             poisson_dist_kernel(0.0, 1.5, true).unwrap().to_bits(),
             crate::excel_numeric::excel_exp(-1.5).to_bits()
         );
+    }
+
+    #[test]
+    fn negbinom_cdf_matches_beta_dist_identity() {
+        for &(f, s, p) in &[
+            (0.0, 2.0, 0.5),
+            (1.0, 2.0, 0.5),
+            (3.0, 2.0, 0.4),
+            (5.0, 3.0, 0.4),
+            (12.0, 8.0, 0.1),
+            (7.0, 1.0, 0.9),
+        ] {
+            let nb = negbinom_dist_kernel(f, s, p, true).unwrap();
+            let beta = crate::functions::special_math_common::regularized_beta(p, s, f + 1.0);
+            assert_eq!(nb.to_bits(), beta.to_bits(), "f={f} s={s} p={p}");
+        }
     }
 
     #[test]
