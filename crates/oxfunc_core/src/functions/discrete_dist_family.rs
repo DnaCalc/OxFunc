@@ -4,6 +4,7 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::special_math_common::regularized_gamma_q;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -203,7 +204,7 @@ fn binom_pmf_direct(number_s: u64, trials: u64, probability_s: f64) -> f64 {
 // ---- stirlerr CR-double table s(m), m = 1..=15 (index 0 unused) ----
 // s(m) = ln(m!) - m*ln(m) + m - 0.5*ln(2*pi*m)  (mpmath prec 200)
 const STIRLERR: [f64; 16] = [
-    0.0, // m = 0 (unused; kept for 1-based indexing)
+    0.0,                                // m = 0 (unused; kept for 1-based indexing)
     f64::from_bits(0x3FB4C071BCDA0A5B), // s( 1)
     f64::from_bits(0x3FA52A9B923EA649), // s( 2)
     f64::from_bits(0x3F9C579A268D80B3), // s( 3)
@@ -310,8 +311,7 @@ fn binom_pmf(number_s: u64, trials: u64, probability_s: f64) -> f64 {
     let nq = n * q;
     // lc: O3 grouping (agent-T round 6, 403/475 flips predicted, 0 false pos):
     //   ((s(n) - s(k)) - (s(n-k) + bd0(k,np))) - bd0(n-k,nq)
-    let lc = ((binom_stirlerr(n) - binom_stirlerr(k))
-        - (binom_stirlerr(nk) + binom_bd0(k, np)))
+    let lc = ((binom_stirlerr(n) - binom_stirlerr(k)) - (binom_stirlerr(nk) + binom_bd0(k, np)))
         - binom_bd0(nk, nq);
     // lf: 2lnA (agent-T round 5) — log1p(-k/n) realized as a DIFFERENCE OF TWO
     //   SEPARATE hardware lns, left-to-right: (M_LN_2PI + ln k) + (ln(n-k) - ln n).
@@ -405,11 +405,19 @@ pub fn poisson_dist_kernel(x: f64, mean: f64, cumulative: bool) -> Result<f64, W
     }
     let x = x as u64;
     if cumulative {
-        let mut sum = 0.0;
-        for k in 0..=x {
-            sum += poisson_dist_kernel(k as f64, mean, false)?;
+        // Inverse-problem identity, live Excel 16.0 b20228 (70 pairs, k in
+        // {0,1,2,3,5}): POISSON.DIST(k,μ,TRUE) == CHIDIST(2μ, 2(k+1)) ==
+        // CHISQ.DIST.RT(2μ, 2(k+1)) bit-exactly. Worksheet 2*μ / μ*2 / μ+μ
+        // all agree (multiply-by-two is exact). A fold of published PMFs is
+        // not the graph (45/70). 1-GAMMA.DIST(μ,k+1,1,TRUE) is not the
+        // graph (45/70). k=0 is the identified CHIDIST(df=2) elementary
+        // EXP(-μ); k≥1 is GRATIO Q(k+1, μ), i.e. CHIDIST internals after
+        // the exact 2μ / 2 recovery.
+        if x == 0 {
+            Ok(crate::excel_numeric::excel_exp(-mean))
+        } else {
+            Ok(regularized_gamma_q((x + 1) as f64, mean))
         }
-        Ok(sum)
     } else if mean == 0.0 {
         Ok(if x == 0 { 1.0 } else { 0.0 })
     } else {
@@ -932,6 +940,33 @@ mod tests {
         assert!((poisson_dist_kernel(3.0, 2.0, false).unwrap() - 0.1804470443154836).abs() < 1e-12);
         assert!((poisson_dist_kernel(3.0, 2.0, true).unwrap() - 0.857123460498547).abs() < 1e-12);
         assert_eq!(poisson_dist_kernel(0.0, 0.0, false).unwrap(), 1.0);
+    }
+
+    #[test]
+    fn poisson_cdf_matches_chidist_even_df_identity() {
+        for &(k, mu) in &[
+            (0.0, 0.0),
+            (0.0, 0.5),
+            (0.0, 2.0),
+            (1.0, 0.25),
+            (1.0, 2.0),
+            (2.0, 3.0),
+            (3.0, 2.0),
+            (5.0, 8.0),
+        ] {
+            let cdf = poisson_dist_kernel(k, mu, true).unwrap();
+            let chi = crate::functions::chi_f_t_family::chisq_dist_rt_kernel(
+                2.0 * mu,
+                2.0 * (k + 1.0),
+            )
+            .unwrap();
+            assert_eq!(cdf.to_bits(), chi.to_bits(), "k={k} mu={mu}");
+        }
+        // k=0 is the identified EXP(-μ) elementary, not a GRATIO a=1 wrapper.
+        assert_eq!(
+            poisson_dist_kernel(0.0, 1.5, true).unwrap().to_bits(),
+            crate::excel_numeric::excel_exp(-1.5).to_bits()
+        );
     }
 
     #[test]

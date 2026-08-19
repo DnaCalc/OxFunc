@@ -73,12 +73,27 @@ Landed: df=2 right-tail through `excel_exp(-(x/2))`; `GAMMA.DIST` CDF at shape `
 | `EXPON.DIST(x,1/beta,TRUE)` | 1 ULP misses when 1/beta inexact | Refuted as the Gamma staging |
 | `GAMMA`/`EXPON` PDF | 33/85 | Refuted |
 | `CHIDIST(x,2)` = `POISSON.DIST(0,x/2,TRUE)` | 45/45 | Same as EXP |
-| `CHIDIST(x,4)` = `POISSON.DIST(1,x/2,TRUE)` | 45/45 | Identified; not dispatched — OxFunc Poisson CDF is still a local PMF sum |
+| `CHIDIST(x,4)` = `POISSON.DIST(1,x/2,TRUE)` | 45/45 | Poisson CDF now dispatched (see 2026-08-19) |
 | `CHIDIST(x,6)` = `POISSON.DIST(2,x/2,TRUE)` | 45/45 | Same |
 | `CHIDIST(x,4)/EXP(-x/2)` = `1+x/2` | 70/85, leftover ±1–7 ULP | Series association still open |
 | `ERFC.PRECISE(z)` = `CHIDIST(2*z*z,1)` | 27/27 | Implied Q is the published ERFC surface; no separate body |
 
-General even-df rule observed: `CHIDIST(x, 2(k+1))` = `POISSON.DIST(k, x/2, TRUE)`. Dispatch waits on a bit-exact Poisson CDF.
+General even-df rule observed: `CHIDIST(x, 2(k+1))` = `POISSON.DIST(k, x/2, TRUE)`.
+
+## Poisson CDF landing (2026-08-19)
+
+A 70-pair bank (`k ∈ {0,1,2,3,5}`, mixed `μ`) on live Excel 16.0 build 20228:
+
+| Identity | Exact |
+|---|---:|
+| `POISSON.DIST` = `POISSON` alias | 70/70 |
+| `POISSON.DIST(k,μ,TRUE)` = `CHIDIST(2*μ, 2(k+1))` | 70/70 |
+| same with `μ*2` and `μ+μ` | 70/70 |
+| `CHISQ.DIST.RT(2*μ, 2(k+1))` | 70/70 |
+| `1-GAMMA.DIST(μ,k+1,1,TRUE)` | 45/70 (refuted) |
+| sum of published `POISSON.DIST(j,μ,FALSE)` for `j=0..k` | 45/70 (refuted; only `k=0` is 14/14) |
+
+Landed `poisson_dist_kernel` CDF as `EXP(-μ)` for `k=0` and GRATIO `Q(k+1, μ)` for `k≥1`, which is CHIDIST internals after the exact `2μ/2` recovery. The PMF path is unchanged.
 
 ## What this is not
 

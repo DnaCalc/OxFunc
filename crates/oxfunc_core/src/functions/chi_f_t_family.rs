@@ -822,27 +822,24 @@ mod tests {
     }
 
     #[test]
-    fn even_df_poisson_identity_is_not_our_poisson_sum() {
-        // Live Excel 16.0 b20228: CHIDIST(x,4)==POISSON.DIST(1,x/2,TRUE)
-        // and CHIDIST(x,6)==POISSON.DIST(2,x/2,TRUE) on 45/45. OxFunc's
-        // Poisson CDF is still a local PMF sum, so it is not yet a safe
-        // dispatch target (it disagrees with the current GRATIO route).
-        let mut disagree = 0u32;
+    fn even_df_chidist_matches_poisson_cdf_identity() {
+        // Live Excel 16.0 b20228: CHIDIST(x, 2(k+1)) == POISSON.DIST(k, x/2, TRUE).
+        // After the Poisson CDF dispatch, OxFunc reproduces that identity.
         for i in 1..40 {
             let x = 0.5 * f64::from(i);
-            let gratio = regularized_gamma_q(2.0, x / 2.0);
-            let pois = crate::functions::discrete_dist_family::poisson_dist_kernel(
+            let chi4 = chisq_dist_rt_kernel(x, 4.0).unwrap();
+            let pois1 = crate::functions::discrete_dist_family::poisson_dist_kernel(
                 1.0, x / 2.0, true,
             )
             .unwrap();
-            if gratio.to_bits() != pois.to_bits() {
-                disagree += 1;
-            }
+            assert_eq!(chi4.to_bits(), pois1.to_bits(), "df=4 x={x}");
+            let chi6 = chisq_dist_rt_kernel(x, 6.0).unwrap();
+            let pois2 = crate::functions::discrete_dist_family::poisson_dist_kernel(
+                2.0, x / 2.0, true,
+            )
+            .unwrap();
+            assert_eq!(chi6.to_bits(), pois2.to_bits(), "df=6 x={x}");
         }
-        assert!(
-            disagree > 0,
-            "unexpected: OxFunc Poisson CDF already matches GRATIO Q(2,x/2)"
-        );
     }
 
     #[test]
