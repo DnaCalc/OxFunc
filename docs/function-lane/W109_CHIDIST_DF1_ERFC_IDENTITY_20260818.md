@@ -10,7 +10,7 @@ Reference: Excel 16.0 build 20228, x64, Value2
 - `scope_completeness`: `scope_partial` (df=1 / Gamma(0.5,2) CDF route only)
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `integrated` for the landed dispatch
-- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; BINOM CDF leftover vs BETA (1–4 ULP); ACOSH near-1 collapse; GAUSS tiny-x; Poisson PMF; even-df Poisson-series association; CHISQ.TEST statistic for df≠1
+- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; BINOM CDF leftover vs BETA (1–4 ULP); GAUSS tiny-x; Poisson PMF; even-df Poisson-series association; CHISQ.TEST statistic for df≠1
 
 ## Method
 
@@ -128,7 +128,7 @@ Same method on a different set of functions, then applied back.
 | `LOGNORM.DIST` = `NORM.DIST(LN(x),μ,σ)` | 45/45 | Same composition |
 | `LOGNORM.INV(0.5)` = `EXP(NORM.INV(0.5))` | 45/45 | Landed EXP site as `excel_exp` |
 | `NORM.DIST` = `NORM.S.DIST((x-μ)/σ)` | 45/45 | Already the local graph |
-| `ACOSH(x)` = `LN(x+SQRT(x*x-1))` | 24/24 on a coarse bank; `ACOSH(1+eps)=0` while native LN is not | Not landed; near-1 collapse / overflow `#NUM!` at `1e200` still open |
+| `ACOSH(x)` = `LN(x+SQRT(x*x-1))` | 29/29 including 1+1ulp via Value2 array | Landed; `x*x` overflow `#NUM!` as in ASINH |
 | `ACOSH` via `SQRT((x-1)*(x+1))` | 18/24 | Refuted |
 | `WEIBULL(x,1,β)` = `EXPON(x/β,1)` | 22/24, 2 ULP | Not landed; WEIBULL keeps its own x87 body |
 | `BINOM.DIST` CDF = `BETA.DIST(1-p,n-k,k+1)` | 135/150, leftover 1–4 ULP | Not landed; Value2 `q=1-p` does not close the misses |
