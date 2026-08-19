@@ -24,11 +24,13 @@ pub const FISHERINV_META: FunctionMeta = function_spec! {
 };
 
 pub fn fisherinv_kernel(y: f64) -> Result<f64, WorksheetErrorCode> {
-    let e = (2.0 * y).exp();
+    // Inverse-problem identity, live Excel 16.0 b20228: FISHERINV(y) ==
+    // (EXP(2*y)-1)/(EXP(2*y)+1) on 27/27 signed rows. FISHERINV is not
+    // TANH (10/27). The algebraically equal 1-2/(EXP(2*y)+1) misses (9/27).
+    let e = crate::excel_numeric::excel_exp(2.0 * y);
     // BUG-FUNC-027 CLASS-A6: for large positive y, e=e^(2y) overflows to +Inf and
     // the direct form gives Inf/Inf = NaN; Excel saturates to +1. The large
     // negative side already saturates to -1 via e -> 0, so only +Inf needs a guard.
-    // The interior formula is preserved bit-for-bit.
     if e.is_infinite() {
         return Ok(1.0);
     }
@@ -64,9 +66,9 @@ mod tests {
     }
 
     #[test]
-    fn fisherinv_interior_is_unchanged() {
+    fn fisherinv_interior_follows_worksheet_exp_identity() {
         let y = 0.5_f64;
-        let e = (2.0 * y).exp();
+        let e = crate::excel_numeric::excel_exp(2.0 * y);
         assert_eq!(fisherinv_kernel(y), Ok((e - 1.0) / (e + 1.0)));
     }
 }

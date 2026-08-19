@@ -319,7 +319,10 @@ pub fn lognorm_dist_kernel(
     if x <= 0.0 || !x.is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    let z = (x.ln() - mean) / sigma;
+    // Inverse-problem identity, live Excel 16.0 b20228: LOGNORM.DIST(x,μ,σ,TRUE)
+    // == NORM.S.DIST((LN(x)-μ)/σ,TRUE) == NORMSDIST((LN(x)-μ)/σ)
+    // == NORM.DIST(LN(x),μ,σ,TRUE) on 45/45 mixed (x,μ,σ) rows.
+    let z = (crate::excel_numeric::excel_log(x) - mean) / sigma;
     if cumulative {
         Ok(norm_cdf(z))
     } else {
@@ -329,7 +332,10 @@ pub fn lognorm_dist_kernel(
 
 pub fn lognorm_inv_kernel(p: f64, mean: f64, sigma: f64) -> Result<f64, WorksheetErrorCode> {
     validate_positive_sigma(sigma)?;
-    Ok((mean + sigma * inverse_standard_normal(p)?).exp())
+    // Same capture: LOGNORM.INV(0.5,μ,σ) == EXP(NORM.INV(0.5,μ,σ)) on 45/45.
+    Ok(crate::excel_numeric::excel_exp(
+        mean + sigma * inverse_standard_normal(p)?,
+    ))
 }
 
 pub fn confidence_norm_kernel(

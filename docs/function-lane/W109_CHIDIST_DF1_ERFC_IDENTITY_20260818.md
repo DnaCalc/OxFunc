@@ -10,7 +10,7 @@ Reference: Excel 16.0 build 20228, x64, Value2
 - `scope_completeness`: `scope_partial` (df=1 / Gamma(0.5,2) CDF route only)
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `integrated` for the landed dispatch
-- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; inverses; even-df Poisson-series association (df=4/6 not exact); CHISQ.TEST statistic for df≠1
+- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; BINOM CDF leftover vs BETA (1–4 ULP); ACOSH near-1 collapse; GAUSS tiny-x; Poisson PMF; even-df Poisson-series association; CHISQ.TEST statistic for df≠1
 
 ## Method
 
@@ -108,9 +108,46 @@ Cross-family CDFs that did latch:
 | `NEGBINOM.DIST(f,s,p,TRUE)` = `BETA.DIST(p,s,f+1,TRUE)` | 150/150 | Landed through `regularized_beta` |
 | `1-BETA` / `BETA(1-p,f+1,s)` | 1/8 | Refuted |
 
+## Cross-family identities (2026-08-20)
+
+Same method on a different set of functions, then applied back.
+
+| Identity | Exact | Action |
+|---|---:|---|
+| `FISHER(x)` = `0.5*LN((1+x)/(1-x))` | 33/33 | Landed through `excel_log` of the combined ratio |
+| `FISHER` = `ATANH` | 21/33 | Refuted; ATANH keeps a cubic small-x body |
+| `FISHER` = `0.5*(LN(1+x)-LN(1-x))` | 10/33 | Refuted |
+| `FISHERINV(y)` = `(EXP(2*y)-1)/(EXP(2*y)+1)` | 27/27 | Landed through `excel_exp` |
+| `FISHERINV` = `TANH` | 10/27 | Refuted |
+| `FISHERINV` = `1-2/(EXP(2*y)+1)` | 9/27 | Refuted (association) |
+| `CHISQ.INV(p,df)` = `GAMMA.INV(p,df/2,2)` | 63/63 | Landed; endpoints `p=0 -> 0`, `p=1 -> #NUM!` also match |
+| `CHIINV` = `CHISQ.INV.RT` | 63/63 | Alias |
+| `CHISQ.INV.RT` = `GAMMA.INV(1-p,df/2,2)` | 34/63 | Refuted (1-minus) |
+| `CHISQ.INV(p,2)` = `-2*LN(1-p)` | 24/36 | Refuted (closed form is not the inverse graph) |
+| `LOGNORM.DIST` = `NORM.S.DIST((LN(x)-μ)/σ)` | 45/45 | Landed LN site as `excel_log` |
+| `LOGNORM.DIST` = `NORM.DIST(LN(x),μ,σ)` | 45/45 | Same composition |
+| `LOGNORM.INV(0.5)` = `EXP(NORM.INV(0.5))` | 45/45 | Landed EXP site as `excel_exp` |
+| `NORM.DIST` = `NORM.S.DIST((x-μ)/σ)` | 45/45 | Already the local graph |
+| `ACOSH(x)` = `LN(x+SQRT(x*x-1))` | 24/24 on a coarse bank; `ACOSH(1+eps)=0` while native LN is not | Not landed; near-1 collapse / overflow `#NUM!` at `1e200` still open |
+| `ACOSH` via `SQRT((x-1)*(x+1))` | 18/24 | Refuted |
+| `WEIBULL(x,1,β)` = `EXPON(x/β,1)` | 22/24, 2 ULP | Not landed; WEIBULL keeps its own x87 body |
+| `BINOM.DIST` CDF = `BETA.DIST(1-p,n-k,k+1)` | 135/150, leftover 1–4 ULP | Not landed; Value2 `q=1-p` does not close the misses |
+| `BINOM.INV` = `CRITBINOM` | 27/27 | Alias |
+| `TINV` = `T.INV.2T` | 27/27 | Alias |
+| `FINV` = `F.INV.RT` | 27/27 | Alias |
+| `STANDARDIZE` = `(x-μ)/σ` | 16/16 | Already the local graph |
+| `PHI` = `NORM.S.DIST` pdf | 14/14 | Already closed |
+| `GAUSS` = `0.5*ERF(x*SQRT(0.5))` | 13/14; sole miss `x=1e-8` | Tiny-x body still open |
+| `ASINH` = `LN(x+SQRT(x*x+1))` | 6/10 | Not the graph |
+
+BINOM CDF argument-order was the Negbinom lesson applied back: the public beta
+form is the right *shape* (`I_{1-p}(n-k,k+1)`), but Excel's BINOM surface is
+not the published `BETA.DIST` / `NEGBINOM.DIST` kernel (15 leftover 1–4 ULP
+rows, unchanged when `1-p` is written as Value2).
+
 ## What this is not
 
 - Not a full G3-01 or G4-04 closure.
 - Not an ERF coefficient identification.
 - Not a claim about `GAMMA.DIST` at other shapes/scales.
-- Not a CHIINV / GAMMA.INV graph.
+- Not a BINOM CDF landing: the beta form remains a near-identity only.

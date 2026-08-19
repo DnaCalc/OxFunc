@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::functions::special_dist_family::erfc_of_sqrt_half_x;
 use crate::functions::special_math_common::{
-    bisect_inverse, bratio, gamma, regularized_gamma_p, regularized_gamma_q,
+    bisect_inverse, bratio, gamma, regularized_gamma_q,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -203,12 +203,20 @@ where
 }
 
 pub fn chisq_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
-    let p = validate_probability_open_unit(probability)?;
     let k = truncate_positive_integer(deg_freedom)?;
-    let hi = search_upper_bound(p, k, |x| regularized_gamma_p(k / 2.0, x / 2.0));
-    Ok(bisect_inverse(p, 0.0, hi, |x| {
-        regularized_gamma_p(k / 2.0, x / 2.0)
-    }))
+    // Inverse-problem identity, live Excel 16.0 b20228: CHISQ.INV(p, df)
+    // == GAMMA.INV(p, df/2, 2) on 63/63 interior pairs. Endpoints also
+    // match: CHISQ.INV(0,2)=0 and CHISQ.INV(1,2)=#NUM!. CHIINV /
+    // CHISQ.INV.RT is the right-tail inverse, not GAMMA.INV(1-p,...) (34/63).
+    if !probability.is_finite() {
+        return Err(WorksheetErrorCode::Num);
+    }
+    crate::functions::beta_gamma_stats_family::gamma_inv_kernel(probability, k / 2.0, 2.0).map_err(
+        |e| match e {
+            crate::functions::beta_gamma_stats_family::BetaGammaStatsError::Domain(code) => code,
+            _ => WorksheetErrorCode::Value,
+        },
+    )
 }
 
 pub fn chisq_inv_rt_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
@@ -853,6 +861,24 @@ mod tests {
                 assert_eq!(chi.to_bits(), gam.to_bits(), "df={df} x={x}");
             }
         }
+    }
+
+    #[test]
+    fn chisq_inv_matches_gamma_inv_scale_two_identity() {
+        for df in [1.0, 2.0, 3.0, 4.0, 5.0, 10.0] {
+            for p in [0.01, 0.05, 0.25, 0.5, 0.9, 0.99] {
+                let chi = chisq_inv_kernel(p, df).unwrap();
+                let gam = crate::functions::beta_gamma_stats_family::gamma_inv_kernel(
+                    p,
+                    df / 2.0,
+                    2.0,
+                )
+                .unwrap();
+                assert_eq!(chi.to_bits(), gam.to_bits(), "df={df} p={p}");
+            }
+        }
+        assert_eq!(chisq_inv_kernel(0.0, 2.0), Ok(0.0));
+        assert_eq!(chisq_inv_kernel(1.0, 2.0), Err(WorksheetErrorCode::Num));
     }
 
     #[test]
