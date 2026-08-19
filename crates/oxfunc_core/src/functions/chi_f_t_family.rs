@@ -154,6 +154,12 @@ pub fn chisq_dist_kernel(
         // fail the same bank.
         if k == 1.0 {
             erf_of_sqrt_half_x(x)
+        } else if k == 2.0 {
+            // Inverse-problem identity, live Excel 16.0 b20228:
+            // CHISQ.DIST(x,2,TRUE) == EXPON.DIST(x/2,1,TRUE) ==
+            // GAMMA.DIST(x,1,2,TRUE) on 85/85. 1-EXP(-x/2) is not the
+            // CDF (57/85). Divide-first, then rate-1 EXPON.
+            crate::functions::discrete_dist_family::expon_dist_kernel(x / 2.0, 1.0, true)
         } else {
             Ok(regularized_gamma_p(k / 2.0, x / 2.0))
         }
@@ -803,8 +809,40 @@ mod tests {
         for x in [0.0, 0.125, 0.5, 1.0, 2.0, 8.0, 16.0, 40.0] {
             let rt = chisq_dist_rt_kernel(x, 2.0).unwrap();
             let exp = crate::excel_numeric::excel_exp(-(x / 2.0));
-            assert_eq!(rt.to_bits(), exp.to_bits(), "df=2 x={x}");
+            assert_eq!(rt.to_bits(), exp.to_bits(), "df=2 rt x={x}");
+            let cdf = chisq_dist_kernel(x, 2.0, true).unwrap();
+            let expon = crate::functions::discrete_dist_family::expon_dist_kernel(
+                x / 2.0,
+                1.0,
+                true,
+            )
+            .unwrap();
+            assert_eq!(cdf.to_bits(), expon.to_bits(), "df=2 cdf x={x}");
         }
+    }
+
+    #[test]
+    fn even_df_poisson_identity_is_not_our_poisson_sum() {
+        // Live Excel 16.0 b20228: CHIDIST(x,4)==POISSON.DIST(1,x/2,TRUE)
+        // and CHIDIST(x,6)==POISSON.DIST(2,x/2,TRUE) on 45/45. OxFunc's
+        // Poisson CDF is still a local PMF sum, so it is not yet a safe
+        // dispatch target (it disagrees with the current GRATIO route).
+        let mut disagree = 0u32;
+        for i in 1..40 {
+            let x = 0.5 * f64::from(i);
+            let gratio = regularized_gamma_q(2.0, x / 2.0);
+            let pois = crate::functions::discrete_dist_family::poisson_dist_kernel(
+                1.0, x / 2.0, true,
+            )
+            .unwrap();
+            if gratio.to_bits() != pois.to_bits() {
+                disagree += 1;
+            }
+        }
+        assert!(
+            disagree > 0,
+            "unexpected: OxFunc Poisson CDF already matches GRATIO Q(2,x/2)"
+        );
     }
 
     #[test]

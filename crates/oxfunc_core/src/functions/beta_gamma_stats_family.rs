@@ -200,6 +200,15 @@ pub fn gamma_dist_kernel(
             return crate::functions::special_dist_family::erf_precise_kernel((x / beta).sqrt())
                 .map_err(BetaGammaStatsError::Domain);
         }
+        // Inverse-problem identity, live Excel 16.0 b20228:
+        // GAMMA.DIST(x,1,beta,TRUE) == EXPON.DIST(x/beta,1,TRUE)
+        // (85/85 on dyadic scales; 11/11 on beta=3 and beta=5).
+        // EXPON.DIST(x,1/beta,TRUE) misses by 1 ULP when 1/beta is inexact.
+        // PDF identity is false (33/85).
+        if alpha == 1.0 {
+            return crate::functions::discrete_dist_family::expon_dist_kernel(x / beta, 1.0, true)
+                .map_err(BetaGammaStatsError::Domain);
+        }
         // W109 lane-3 (2026-07-18): the pre-W109 integer-shape fast path
         // (1 − e^{-x}·Σ x^k/k!) is an OxFunc-side shortcut Excel does NOT
         // take — on the b26 integer-a corpora it scored 8.1% with ±4,400-ULP
@@ -562,6 +571,16 @@ mod tests {
             let got = gamma_dist_kernel(x, 0.5, beta, true).unwrap();
             let expect = erf_precise_kernel((x / beta).sqrt()).unwrap();
             assert_eq!(got.to_bits(), expect.to_bits(), "x={x} beta={beta}");
+        }
+        for (x, beta) in [(1e-12, 3.0), (3.0, 5.0), (1.0, 3.0), (8.0, 5.0)] {
+            let got = gamma_dist_kernel(x, 1.0, beta, true).unwrap();
+            let expect = crate::functions::discrete_dist_family::expon_dist_kernel(
+                x / beta,
+                1.0,
+                true,
+            )
+            .unwrap();
+            assert_eq!(got.to_bits(), expect.to_bits(), "shape1 x={x} beta={beta}");
         }
     }
 }

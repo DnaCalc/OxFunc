@@ -63,6 +63,23 @@ A second 68-row bank plus an 11-row CDF complement check:
 
 Landed: df=2 right-tail through `excel_exp(-(x/2))`; `GAMMA.DIST` CDF at shape `0.5` through `ERF.PRECISE(SQRT(x/beta))` for any positive finite scale.
 
+## Follow-up identities (2026-08-19)
+
+| Identity | Exact | Action |
+|---|---:|---|
+| `CHISQ.DIST(x,2,TRUE)` = `EXPON.DIST(x/2,1,TRUE)` | 85/85 | Landed |
+| `CHISQ.DIST(x,2,TRUE)` = `GAMMA.DIST(x,1,2,TRUE)` | 85/85 | Same graph |
+| `GAMMA.DIST(x,1,beta,TRUE)` = `EXPON.DIST(x/beta,1,TRUE)` | 85/85 dyadic; 11/11 for beta=3,5 | Landed (divide-first) |
+| `EXPON.DIST(x,1/beta,TRUE)` | 1 ULP misses when 1/beta inexact | Refuted as the Gamma staging |
+| `GAMMA`/`EXPON` PDF | 33/85 | Refuted |
+| `CHIDIST(x,2)` = `POISSON.DIST(0,x/2,TRUE)` | 45/45 | Same as EXP |
+| `CHIDIST(x,4)` = `POISSON.DIST(1,x/2,TRUE)` | 45/45 | Identified; not dispatched — OxFunc Poisson CDF is still a local PMF sum |
+| `CHIDIST(x,6)` = `POISSON.DIST(2,x/2,TRUE)` | 45/45 | Same |
+| `CHIDIST(x,4)/EXP(-x/2)` = `1+x/2` | 70/85, leftover ±1–7 ULP | Series association still open |
+| `ERFC.PRECISE(z)` = `CHIDIST(2*z*z,1)` | 27/27 | Implied Q is the published ERFC surface; no separate body |
+
+General even-df rule observed: `CHIDIST(x, 2(k+1))` = `POISSON.DIST(k, x/2, TRUE)`. Dispatch waits on a bit-exact Poisson CDF.
+
 ## What this is not
 
 - Not a full G3-01 or G4-04 closure.

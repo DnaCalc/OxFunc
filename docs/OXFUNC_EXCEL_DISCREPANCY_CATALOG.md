@@ -1,13 +1,14 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-08-18` (inverse-problem identities on live Excel 16.0
-build 20228: `CHIDIST(x,1)` = `ERFC.PRECISE(SQRT(x/2))` 154/154;
-`CHIDIST(x,2)` = `EXP(-x/2)` 68/68, while `1-EXP` is not the CDF graph;
-`GAMMA.DIST(x,0.5,beta,TRUE)` = `ERF.PRECISE(SQRT(x/beta))` for beta in
-{1,2,4}. Those routes are now dispatched. Even-df Poisson series for df=4/6
-are refuted. G3-01/G3-05/G4-04 remain open for the ERF body and remaining
-GRATIO tails.)
+Last reconciled: `2026-08-19` (inverse-problem follow-up: `CHISQ.DIST(x,2,TRUE)`
+= `EXPON.DIST(x/2,1,TRUE)` 85/85, so the df=2 CDF is `-expm1` not `1-EXP`.
+`GAMMA.DIST(x,1,beta,TRUE)` = `EXPON.DIST(x/beta,1,TRUE)` including
+non-dyadic beta (divide-first; `1/beta` rate misses 1 ULP). Even-df
+`CHIDIST(x,2(k+1))` = `POISSON.DIST(k,x/2,TRUE)` 45/45, not dispatched
+until OxFunc's Poisson CDF is the Excel graph. Implied Q from
+`CHIDIST(2z^2,1)` is published `ERFC.PRECISE(z)` 27/27. G3-01/G4-04 remain
+open for the ERF body and remaining GRATIO/Poisson tails.)
 Previous reconcile: `2026-08-09` (current-build G6-06 IRR objective-graph
 decomposition: a 300-row discovery plus a 900-point worksheet-NPV companion
 separates worksheet evaluator publication from IRR's private objective. The
