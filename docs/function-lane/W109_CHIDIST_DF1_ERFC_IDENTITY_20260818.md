@@ -10,7 +10,7 @@ Reference: Excel 16.0 build 20228, x64, Value2
 - `scope_completeness`: `scope_partial` (df=1 / Gamma(0.5,2) CDF route only)
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `integrated` for the landed dispatch
-- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; BINOM CDF leftover vs BETA (1–4 ULP); GAUSS tiny-x; Poisson PMF; even-df Poisson-series association; CHISQ.TEST statistic for df≠1
+- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; BINOM CDF leftover vs BETA (implied-x is 1-p ±1 ULP on most misses); GAUSS tiny-x (`x*PHI(0)` on dyadic |x|≤2^-50, `NORMSDIST-0.5` above 2^-48); Poisson PMF duals not exact; even-df Poisson-series association; CHISQ.TEST statistic for df≠1
 
 ## Method
 
@@ -138,7 +138,23 @@ Same method on a different set of functions, then applied back.
 | `STANDARDIZE` = `(x-μ)/σ` | 16/16 | Already the local graph |
 | `PHI` = `NORM.S.DIST` pdf | 14/14 | Already closed |
 | `GAUSS` = `0.5*ERF(x*SQRT(0.5))` | 13/14; sole miss `x=1e-8` | Tiny-x body still open |
-| `ASINH` = `LN(x+SQRT(x*x+1))` | 6/10 | Not the graph |
+| `ASINH` = `LN(x+SQRT(x*x+1))` | 6/10 unsigned | Misses negatives |
+| `ASINH` = `SIGN(x)*LN(ABS(x)+SQRT(x*x+1))` | 23/23 Value2 array | Landed; `x*x+1` overflow uses `LN(2*|x|)` |
+| `ASINH` = `SIGN*LN(ABS+HYPOT)` | 0/23 | Refuted as the worksheet graph |
+
+## Lateral evaluation-tree pass (2026-08-21)
+
+Clean-room ideas beyond “ask which public function it is”:
+
+1. **Dual of a landed CDF identity.** If `POISSON.DIST(k,μ,TRUE)=CHIDIST(2μ,2(k+1))`, the PMF might be the corresponding gamma/chi *pdf*. It is not: `GAMMA.DIST(μ,k+1,1,FALSE)` and `2*CHISQ.DIST(2μ,2(k+1),FALSE)` are 15/48; `EXP*POWER/FACT` is 21/48.
+2. **Implied-argument inversion.** Invert the near-identity and read the hidden `x` Excel fed the public kernel. `BETA.INV(BINOM.DIST(k,n,p,TRUE), n-k, k+1)` equals `1-p` on 89/125; 27 of 36 misses are ±1 ULP on `1-p` (often `nextafter(1-p,0)`). A handful are hundreds to millions of ULP, so BINOM is not a stored-`q` wrapper of `BETA.DIST`. Same pattern on `F.DIST` implied-z (20/45, 17 of 25 misses 1 ULP).
+3. **Helper-cell staging.** Materialize `x*SQRT(0.5)` before `ERF`. Did not close GAUSS (13/22, same as the inlined tree).
+4. **Cancellation-avoiding sibling.** `GAUSS(x)` is `NORMSDIST(x)-0.5` except where that subtraction underflows (dyadic |x| ≤ 2^-49). On dyadic |x| ≤ 2^-50, `GAUSS(x)=x*PHI(0)` bit-exactly. At 2^-49 the mantissa is quantized (`0x3cc8000000000000`). Tiny-x body still open.
+5. **Signed vs unsigned public form.** ACOSH taught `LN(x+SQRT(x*x-1))`. ASINH needs the `SIGN/ABS` wrapper; the unsigned LN form is the negative-x failure mode (12/23).
+6. **RANGE as a window on a CDF.** `BINOM.DIST.RANGE(n,p,0,k)=BINOM.DIST(k,n,p,TRUE)` 125/125 — same surface, not a new graph.
+7. **Odd-df leftover as ERFC plus one published term** with helper `z=x/2`, `s=SQRT(z)`: 1–4/10, leftover 1–5 ULP. Not landed.
+
+`BINOM.DIST.RANGE` matching the CDF is useful once the CDF graph is identified; it does not by itself identify it.
 
 BINOM CDF argument-order was the Negbinom lesson applied back: the public beta
 form is the right *shape* (`I_{1-p}(n-k,k+1)`), but Excel's BINOM surface is
@@ -151,3 +167,4 @@ rows, unchanged when `1-p` is written as Value2).
 - Not an ERF coefficient identification.
 - Not a claim about `GAMMA.DIST` at other shapes/scales.
 - Not a BINOM CDF landing: the beta form remains a near-identity only.
+- Not a GAUSS landing: `NORMSDIST-0.5` / `x*PHI(0)` split is characterized, not dispatched.

@@ -34,9 +34,19 @@ pub fn asinh_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if !(n * n).is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    // Below the threshold Excel publishes the finite value sign(x) * ln(|x| + hypot(x, 1))
-    // (bit-exact on the disputed lanes where platform libm `asinh` differs by 1+ ULP).
-    Ok(n.signum() * (n.abs() + n.hypot(1.0)).ln())
+    // Inverse-problem identity, live Excel 16.0 b20228 Range.Value2:
+    // ASINH(x) == SIGN(x)*LN(ABS(x)+SQRT(x*x+1)) on 23/23 signed rows.
+    // The unsigned LN(x+SQRT(x*x+1)) misses negatives. Worksheet HYPOT
+    // is not the graph. When x*x+1 overflows (x*x == f64::MAX), SQRT
+    // cannot be formed; the published finite value is LN(2*|x|).
+    let a = n.abs();
+    let sq = a * a;
+    let inner = if !(sq + 1.0).is_finite() {
+        a + a
+    } else {
+        a + (sq + 1.0).sqrt()
+    };
+    Ok(n.signum() * crate::excel_numeric::excel_log(inner))
 }
 
 pub fn eval_asinh_surface(
@@ -64,8 +74,17 @@ mod tests {
     }
 
     #[test]
-    fn asinh_kernel_matches_std() {
-        assert_eq!(asinh_kernel(0.5), Ok(0.5f64.asinh()));
+    fn asinh_kernel_matches_worksheet_ln_identity() {
+        for x in [0.0_f64, 1e-10, 0.5, 1.0, -1.0, 2.0, 10.0] {
+            let a = x.abs();
+            let expect = x.signum()
+                * crate::excel_numeric::excel_log(a + (a * a + 1.0).sqrt());
+            assert_eq!(
+                asinh_kernel(x).unwrap().to_bits(),
+                expect.to_bits(),
+                "x={x}"
+            );
+        }
     }
 
     #[test]
