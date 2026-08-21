@@ -6,6 +6,14 @@ Audience: a swarm of independent agents who will propose evaluation trees,
 discriminators, and clean-room probes. This file is the shared prior. It is
 not a closure claim.
 
+**Correction pointer (same day):** a theory swarm plus Excel captures attacked
+this document. Several sections here are retired. Do not quote §4.4 (tooth
+law), the inferred Ext80 `gam1(½)` mantissa `0x906eba8214db6c6f`, T1c, or
+`NORMSDIST = 0.5+GAUSS` as current fact. The surviving scoreboard, capture
+verdicts, and new hard constraints are in
+[`W109_ERF_SWARM_RESULTS_20260821.md`](W109_ERF_SWARM_RESULTS_20260821.md).
+Production kernels are still unchanged.
+
 Reference oracle: Excel 16.0 build 20228, x64, Workbook Compatibility Version 2,
 numeric inputs through `Range.Value2` / `cell_value2_bulk`, NoCache unless a
 cited older corpus says otherwise.
