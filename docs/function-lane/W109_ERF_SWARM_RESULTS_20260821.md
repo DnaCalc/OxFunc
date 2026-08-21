@@ -180,11 +180,11 @@ CV; both captured CV=2). All control pins fired on every script
 | # | Capture | Verdict |
 |---|---|---|
 | 1 | Tiny-tie separators | **G-A400 wins 14/14, unanimously** — every separator returned the stored-z-reuse bits (e.g. GAUSS(`0x02e64367549eb209`) = `0x02d1c37756a97d08`). G-A80 (x87-continuous w-recovery with binary64 w-store) is **dead**; no third values. The surviving tie class is the 400-member stored-z family: at tiny z Excel publishes the algebraic z-reuse value — either the body short-circuits the transcendental recovery there, or its internal exp∘ln is fine enough to round back to z where host x87 microcode does not (RN53(w_x87) = z−1 on all 14). NORMSDIST/NORM.S.DIST free-riders identical to each other on every row. |
-| 2 | z = 1/8 walk | **H-D1 confirmed at the landmark**: ERF.PRECISE(`0x3fc0000000000001`) = `0x3fc1f5e1a35c3b8a` = plateau−1 (plateau `…8b` refuted). Historical 1/8 pins reproduced exactly on 20228. The plateau branch-190 family is dead at the six; the P-side −1 tooth is real and directly measured. Full 146-row tooth-map read: offline scoring in progress. |
-| 3 | ToothB fresh binades | 424/424 rows captured (e=−28/−27/−26 ladders + offsets), CV=2. P1 (alias account) / P2–P3 (inner-cluster variant A vs B) / P4 reads: offline scoring in progress. |
+| 2 | z = 1/8 walk | **H-D1 confirmed at the landmark**: ERF.PRECISE(`0x3fc0000000000001`) = `0x3fc1f5e1a35c3b8a` = plateau−1 (plateau `…8b` refuted). Historical 1/8 pins reproduced exactly on 20228. The plateau branch-190 family is dead at the six; the P-side −1 tooth is real and directly measured. Offline map read: see §5b — all forced values confirmed; one deviation (√2/8 measures m=−2, not −1). |
+| 3 | ToothB fresh binades | 424/424 rows captured (e=−28/−27/−26 ladders + offsets), CV=2. Offline read: see §5b — **P1 alias account CONFIRMED, inner-cluster variant A confirmed, variants B/C affirmatively refuted, physical z-comb refuted (P4)**; plus an unpredicted exact-integer −1 window. |
 | 4 | NORMSDIST ladder | **G-F3 confirmed 64/64** on provenance-rich 20228 (eq_HF1 60/64, eq_HF2 59/64 — the rivals fail exactly at the discriminating rows). NS(−1) = `0x3fc44ed0bb7cb209` = bit-exact half of same-sheet ERFC.PRECISE(z). Falsifier row confirmed: NS(−37.52) = `+0` while ERFC.PRECISE(z) = `0x001f434e9fdf09f1` (finite, bottom normal binade) — the trailing-halving + PHI-class flush asymmetry, exactly as predicted. **The NORMSDIST/NORM.S.DIST CDF wrapper is identified** (and NORM.DIST / LOGNORM.DIST CDFs inherit via the proven 45/45 transforms). The divide-staged z control (`0x…3bcc`) correctly did NOT match. |
 | 5 | Complement direction | Direction law fully intact on 20228/CV2: Q-primary 28/28 above 0.5, P-primary clean below, collapse pins at 0.5 match history, no 1.375 seam. **New store-site identification: all 4/4 subtract breakers came back x87** — e.g. ERFC(`0x3d735c7211223903`) = `0x3fefffffffffd44e` (x87 prediction; SSE `…4f` refuted). The below-half complement is `Q = RN53(RN64(1 − stored P))` — an x87 double-rounded spill, observationally equal to plain RN53 except for P < 2⁻¹². G-G1's tie class is closed. |
-| 6 | b26-zcross | 8,192/8,192 rows captured, zero round-trip mismatches. Width-jump (×2 exp-frame) read: offline scoring in progress. |
+| 6 | b26-zcross | 8,192/8,192 rows captured, zero round-trip mismatches. Offline read: see §5b — **the w-double-GRID version of the exp frame is refuted (no ×2 jump), and so is the ln frame; the residual is exp-result-RELATIVE with a fixed scale ≈0.90·2⁻⁵³** — a scale-free relative grain, not ulp(w) quantization. |
 | 7 | Tail discriminators | **Split-exp family killed**: ERFC.PRECISE(`0x40150000012804DF`) = `0x3d3fd5f0287efbdc` — 5 ULP above the unsplit-family prediction (inside its ≤7-ULP F-noise envelope), 20 ULP from the split prediction. Unsplit `exp(−RN53(z·z))` staging survives; Cody-F is not bit-exact at the separator (consistent with the characterized F-noise — the named-F hunt continues). Flush crossing narrowed: probes at 26.5433/26.5435/26.5438 all publish +0, so with the frozen last-finite at 26.543000000000003 the crossing sits in (26.543000000000003, 26.5433). |
 
 Net new identifications from the batch: tiny-direct route is the stored-z
@@ -192,9 +192,68 @@ algebraic family (480→400 tie, transcendental-recovery class dead); the
 P-side −1 tooth is real at the 1/8 landmarks; the NORMSDIST wrapper G-F3 is
 confirmed on the reference build (wrapper closed, body still open); the
 below-half complement subtract is an x87 RN64→RN53 spill; the tail's split-exp
-class is dead on a direct separator. Open after the batch: the body comb
-(reads 2/3/6 pending), the named tail F, and the re-scoped g_eff window
-capture.
+class is dead on a direct separator.
+
+## 5b. Offline reads of captures 2/3/6 (same day)
+
+Gates: the prebuilt `check_erf190.exe` cfg-304 dump reproduced the frozen
+`dump-m30.txt` bit-for-bit (256/256); an independent mpmath prec-64
+replication matched the Rust dump on all 424 toothB rows. eps convention =
+`toothB_parse.py`. Derived dumps and the tooth map are banked in the swarm
+dir (`derived-dump-*`, `derived-z8-toothmap-m_of_k-20260821.tsv`).
+
+**ToothB (capture 3).**
+- **P1 CONFIRMED**: e=−28 tooth rows are exactly the m30 list
+  [4,10,…,89,95], zero rotation shift; corr with the e=−30 pattern +0.9982
+  raw, **+0.99992 under a variant-A-staged reference** — mantissa invariance
+  is essentially exact. The §4.4 alias account stands.
+- **P2/P3: inner-cluster variant A** (`0.5 + RN53(0.5−j)`) **confirmed**;
+  variant B (fused `RN53(1−j)`, predicted break at e=−27 row 94) and
+  variant C (ext outer add, row 29) both affirmatively refuted; the
+  predicted variant-A signature at e=−26 row 8 (x = 9·2⁻⁵⁵, step ≈0.59)
+  observed exactly.
+- **New unexplained object**: exact-integer **−1 windows** — all rows with
+  x ∈ [2.203·2⁻⁵⁴, 4.5·2⁻⁵⁴) sit exactly −1.000 published ULP below the
+  comb, contiguous across the e=−27/−26 ladders and ending exactly at the
+  variant-A visibility threshold 9·2⁻⁵⁵; plus an extra −1 at each ladder's
+  boundary row 98 (−2.0 total), a displaced tooth (34→37) at e=−26, and a
+  smooth drifting bias in the elevated regime. No proposed staging predicts
+  these windows; they are the sharpest new body constraint from the batch.
+- **P4: physical z-comb refuted** — interleaved half-step grids show two
+  independent alias patterns (phase difference bimodal at exactly the
+  complement of frac(g·2⁴⁴) = 876/2048); teeth do NOT share z positions
+  across grids.
+
+**b26-zcross (capture 6).** Measured across the z-binade crossing at 2⁻²⁹:
+width 1.026 → 1.014 pub-ULP (ratio 0.99, **no ×2 jump**), exact rate
+74.3% → 74.3%. The w-double-GRID quantization story is refuted — and the ln
+frame stays refuted too (e30→e20 ln-transfer fails ~3×). What survives and
+sharpens: **W/m_ans is frame-constant at 0.91/0.90 across the crossing — the
+residual is exp-result-relative with a fixed RELATIVE grain ≈0.90·2⁻⁵³**,
+i.e. a scale-free relative perturbation of the exp result (the b25/b18 cells
+could not separate grid from relative because their w-mantissa was
+corpus-averaged; b26 pins m_w at 2.0 vs 1.0). The e=−20 leg carries the
+known extra coherent component (widths 1.61/1.51, lag-1 autocorr +0.25/+0.15)
+and is reported separately.
+
+**z=1/8 tooth map (capture 2).** 146/146 rows joined; m-histogram
+{−2:3, −1:32, 0:105, +1:6}. All forced values confirmed (m=−1 at
+k∈{0,1,4,8,29,37}; m=0 at k∈{11,15,18,22,25,32,40}). **Deviation: the √2/8
+row measures m=−2, not the forced −1** (Excel `0x3fc944d158b76b61`; H-D1's
+alternative hit 6/6 ladder landmarks but missed s6). Structure: a 15-wide
+central megatooth m=−1 on k∈[−4,+10]; strongly asymmetric (below-1/8 rows
+have NO −1 teeth, only sparse +1 at k = −58, −49, −33); post-megatooth tail
+spacing ≈8.3k, consistent with Agent D's per-op-53 stored-z·g period class
+(8.15k) though not its simple duty. Cross-surface coherence perfect:
+ERFC = RN53(1−P) 146/146, legacy ERF ≡ ERF.PRECISE 146/146,
+CHIDIST(2z²,1) ≡ ERFC 146/146; the GAUSS helper columns are fully explained
+by the wrapper's argument round-trip (z′ = z+{0,1,2} ulp), G-F3-consistent
+145/145 — one-body thesis intact at ulp resolution.
+
+Open after the batch and reads: the body's relative-grain exp/ln object
+(now with the −1 windows, the megatooth map, and the 0.90·2⁻⁵³ grain as
+hard constraints), the √2/8 m=−2 outlier, the named tail F, and the
+re-scoped g_eff window capture.
 
 ## 6. New oracle without a capture
 
@@ -234,6 +293,13 @@ D/E-class work should mine it next.
 5. Minor verifier-noted slips retained in the per-agent records (A: po2 family
    spans fields 1..973 in the direct route; E: ceiling 146/355 and max
    residual +4.17; H: 8-of-12 window splits, pred_g_dyadic constant unnamed).
+6. Capture-file hygiene (from the offline reads): `answers-toothB-fresh.json`
+   carries a UTF-8 BOM (serde rejects it); `answers-b26-zcross.json` has
+   doubled `0x0x` bit prefixes and its embedded provenance records
+   `cv=False` (CV was not read by that script — the session's other scripts
+   verified CV=2 on the same Excel instance; build 20228 is embedded).
+   Sanitized copies were used for scoring; originals untouched. Normalize
+   before any promotion-grade use.
 
 ## 9. Artifacts
 
