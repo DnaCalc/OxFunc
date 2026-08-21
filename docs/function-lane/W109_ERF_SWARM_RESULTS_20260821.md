@@ -164,6 +164,38 @@ object[,] plumbing, provenance headers, none auto-run. Priority order:
 Free riders worth adding to any session: NORMSDIST/NORM.S.DIST columns on the
 tiny-tie capture (A's script already carries them).
 
+## 5a. Capture outcomes (same day, 2026-08-21, build 20228/x64/CV2)
+
+The root lane authorized the batch; scripts 1–7 executed sequentially by a
+capture worker (Excel process hygiene clean: 0 processes before, between, and
+after; every script's own quit succeeded). Build 20228 x64, Workbook
+Compatibility Version 2 — **identical to the frozen banks' reference oracle**,
+so these results score directly against the prior. `Run-GEffTightening.ps1`
+skipped as flagged. Outputs are new files in the swarm work dir; no frozen
+bank touched. Pre-run fixes applied per §8 (toothB CV readout → the
+CellRefBatch `CompatibilityVersion` pattern; NORMSDIST ladder now records
+CV; both captured CV=2). All control pins fired on every script
+(GAUSS(1) three independent times, PHI(0), R-pins at 1/8, NORMSDIST(0)).
+
+| # | Capture | Verdict |
+|---|---|---|
+| 1 | Tiny-tie separators | **G-A400 wins 14/14, unanimously** — every separator returned the stored-z-reuse bits (e.g. GAUSS(`0x02e64367549eb209`) = `0x02d1c37756a97d08`). G-A80 (x87-continuous w-recovery with binary64 w-store) is **dead**; no third values. The surviving tie class is the 400-member stored-z family: at tiny z Excel publishes the algebraic z-reuse value — either the body short-circuits the transcendental recovery there, or its internal exp∘ln is fine enough to round back to z where host x87 microcode does not (RN53(w_x87) = z−1 on all 14). NORMSDIST/NORM.S.DIST free-riders identical to each other on every row. |
+| 2 | z = 1/8 walk | **H-D1 confirmed at the landmark**: ERF.PRECISE(`0x3fc0000000000001`) = `0x3fc1f5e1a35c3b8a` = plateau−1 (plateau `…8b` refuted). Historical 1/8 pins reproduced exactly on 20228. The plateau branch-190 family is dead at the six; the P-side −1 tooth is real and directly measured. Full 146-row tooth-map read: offline scoring in progress. |
+| 3 | ToothB fresh binades | 424/424 rows captured (e=−28/−27/−26 ladders + offsets), CV=2. P1 (alias account) / P2–P3 (inner-cluster variant A vs B) / P4 reads: offline scoring in progress. |
+| 4 | NORMSDIST ladder | **G-F3 confirmed 64/64** on provenance-rich 20228 (eq_HF1 60/64, eq_HF2 59/64 — the rivals fail exactly at the discriminating rows). NS(−1) = `0x3fc44ed0bb7cb209` = bit-exact half of same-sheet ERFC.PRECISE(z). Falsifier row confirmed: NS(−37.52) = `+0` while ERFC.PRECISE(z) = `0x001f434e9fdf09f1` (finite, bottom normal binade) — the trailing-halving + PHI-class flush asymmetry, exactly as predicted. **The NORMSDIST/NORM.S.DIST CDF wrapper is identified** (and NORM.DIST / LOGNORM.DIST CDFs inherit via the proven 45/45 transforms). The divide-staged z control (`0x…3bcc`) correctly did NOT match. |
+| 5 | Complement direction | Direction law fully intact on 20228/CV2: Q-primary 28/28 above 0.5, P-primary clean below, collapse pins at 0.5 match history, no 1.375 seam. **New store-site identification: all 4/4 subtract breakers came back x87** — e.g. ERFC(`0x3d735c7211223903`) = `0x3fefffffffffd44e` (x87 prediction; SSE `…4f` refuted). The below-half complement is `Q = RN53(RN64(1 − stored P))` — an x87 double-rounded spill, observationally equal to plain RN53 except for P < 2⁻¹². G-G1's tie class is closed. |
+| 6 | b26-zcross | 8,192/8,192 rows captured, zero round-trip mismatches. Width-jump (×2 exp-frame) read: offline scoring in progress. |
+| 7 | Tail discriminators | **Split-exp family killed**: ERFC.PRECISE(`0x40150000012804DF`) = `0x3d3fd5f0287efbdc` — 5 ULP above the unsplit-family prediction (inside its ≤7-ULP F-noise envelope), 20 ULP from the split prediction. Unsplit `exp(−RN53(z·z))` staging survives; Cody-F is not bit-exact at the separator (consistent with the characterized F-noise — the named-F hunt continues). Flush crossing narrowed: probes at 26.5433/26.5435/26.5438 all publish +0, so with the frozen last-finite at 26.543000000000003 the crossing sits in (26.543000000000003, 26.5433). |
+
+Net new identifications from the batch: tiny-direct route is the stored-z
+algebraic family (480→400 tie, transcendental-recovery class dead); the
+P-side −1 tooth is real at the 1/8 landmarks; the NORMSDIST wrapper G-F3 is
+confirmed on the reference build (wrapper closed, body still open); the
+below-half complement subtract is an x87 RN64→RN53 spill; the tail's split-exp
+class is dead on a direct separator. Open after the batch: the body comb
+(reads 2/3/6 pending), the named tail F, and the re-scoped g_eff window
+capture.
+
 ## 6. New oracle without a capture
 
 `answers-b24-normref.json` (16,495 NORM.S.DIST rows, all-negative x down to
