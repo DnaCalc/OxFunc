@@ -4,7 +4,10 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
-use crate::functions::normal_dist_common::{erf_approx, phi_kernel};
+use crate::functions::normal_dist_common::{
+    GAM1_HALF_H_BITS, GAUSS_TINY_MAX_BITS, erf_approx, phi_kernel, stored_normal_z,
+};
+use crate::functions::special_dist_family::erfc_precise_kernel;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -121,8 +124,97 @@ pub enum NormalLogEvalError {
     Coercion(CoercionError),
 }
 
-fn norm_cdf(x: f64) -> f64 {
+fn erf_based_cdf(x: f64) -> f64 {
     0.5 * (1.0 + erf_approx(x / std::f64::consts::SQRT_2))
+}
+
+fn flush_subnormal(value: f64) -> f64 {
+    if value.abs() < f64::MIN_POSITIVE {
+        0.0
+    } else {
+        value
+    }
+}
+
+/// TOMS 654 branch-190 `j` series at `a = 1/2`, binary64 arithmetic.
+fn branch190_j(x: f64) -> f64 {
+    let a = 0.5;
+    let mut an = 3.0;
+    let mut c = x;
+    let mut sum = x / (a + 3.0);
+    let tolerance = (3.0 * 5e-15) / (a + 1.0);
+    for _ in 0..200 {
+        an += 1.0;
+        c = -(c * (x / an));
+        let term = c / (a + an);
+        sum += term;
+        if term.abs() <= tolerance {
+            break;
+        }
+    }
+    let inner_poly = (sum / 6.0 - 0.5 / (a + 2.0)) * x + 1.0 / (a + 1.0);
+    a * x * inner_poly
+}
+
+/// Tiny-direct GAUSS (G-A400 dataflow): reuse stored `z` as `w`, `g = 1+h`,
+/// inner `0.5+(0.5-j)`, `(w*g)*inner`, then `0.5 * product`. Identified on
+/// the 14 separator inputs (2026-08-21, stored-z class 14/14). The Ext80
+/// continuous series of the racer is collapsed here to binary64; j is
+/// negligible on the deep-tiny separators and first visible near 1e-15.
+fn gauss_tiny_direct(x: f64) -> f64 {
+    let z = stored_normal_z(x);
+    if z == 0.0 {
+        return 0.0;
+    }
+    let xx = z * z;
+    let j = branch190_j(xx);
+    let g = 1.0 + f64::from_bits(GAM1_HALF_H_BITS);
+    let inner = 0.5 + (0.5 - j);
+    let product = (z * g) * inner;
+    let mut y = 0.5 * product;
+    if x.is_sign_negative() {
+        y = -y;
+    }
+    flush_subnormal(y)
+}
+
+/// G-F3: `NORMSDIST` / `NORM.S.DIST` CDF wrapper, live Excel 16.0 b20228
+/// (64/64 on the provenance-rich ladder). `z = |x|*RN(1/√2)`;
+/// `Q` is the published ERFC body at `z` (still an open kernel);
+/// `x < 0 → RN53(0.5*Q)`, `x ≥ 0 → RN53(1-0.5*Q)`; PHI-class flush after
+/// the 0.5 multiply (`NORMSDIST(-37.52) = +0` with ERFC still finite).
+pub fn identified_std_normal_cdf(x: f64) -> f64 {
+    if x == 0.0 {
+        return 0.5;
+    }
+    let z = stored_normal_z(x);
+    let q = match erfc_precise_kernel(z) {
+        Ok(value) => value,
+        Err(_) => return f64::NAN,
+    };
+    let half_q = 0.5 * q;
+    let ns = if x.is_sign_negative() {
+        half_q
+    } else {
+        1.0 - half_q
+    };
+    flush_subnormal(ns)
+}
+
+/// GAUSS is NORMSDIST's graph minus 0.5 on the ordinary route
+/// (`abs(x) > 1e-15`). Inclusive tiny-direct uses stored-z branch 190.
+pub fn identified_gauss(x: f64) -> f64 {
+    if x == 0.0 {
+        return 0.0;
+    }
+    if x.abs() <= f64::from_bits(GAUSS_TINY_MAX_BITS) {
+        return gauss_tiny_direct(x);
+    }
+    identified_std_normal_cdf(x) - 0.5
+}
+
+fn norm_cdf(x: f64) -> f64 {
+    identified_std_normal_cdf(x)
 }
 
 fn validate_positive_sigma(sigma: f64) -> Result<(), WorksheetErrorCode> {
@@ -259,7 +351,7 @@ fn inverse_standard_normal_acklam_refined(p: f64) -> f64 {
             / ((((D[0] * q + D[1]) * q + D[2]) * q + D[3]) * q + 1.0)
     };
 
-    let err = norm_cdf(x) - p;
+    let err = erf_based_cdf(x) - p;
     x - err / phi_kernel(x)
 }
 
@@ -632,6 +724,43 @@ mod tests {
             expected_bits,
             "{actual} vs {}",
             f64::from_bits(expected_bits)
+        );
+    }
+
+    #[test]
+    fn normsdist_gf3_wrapper_pins_live_excel_20228() {
+        // Live Excel 16.0 b20228 G-F3 ladder. NS(-1) = RN53(0.5*Q) transports
+        // the still-open ERFC body (1 ULP high at this z, same witness as
+        // CHIDIST(1,1)). NS(1) = RN53(1-0.5*Q) matches Excel because the
+        // complement absorbs that ULP. The dispatch claims the wrapper, not
+        // the ERFC body.
+        let ns_neg1 = identified_std_normal_cdf(-1.0);
+        assert!(
+            ns_neg1.to_bits().abs_diff(0x3fc44ed0bb7cb209) <= 1,
+            "G-F3 should not add error beyond the ERFC body; got {:#x}",
+            ns_neg1.to_bits()
+        );
+        let q = crate::functions::special_dist_family::erfc_precise_kernel(
+            crate::functions::normal_dist_common::stored_normal_z(-1.0),
+        )
+        .unwrap();
+        assert_eq!(ns_neg1.to_bits(), (0.5 * q).to_bits());
+        assert_eq!(identified_std_normal_cdf(1.0).to_bits(), 0x3feaec4bd120d37e);
+        assert_eq!(identified_std_normal_cdf(0.0).to_bits(), 0x3fe0000000000000);
+        // Trailing-halving + PHI-class flush: NS(-37.52) publishes +0.
+        assert_eq!(identified_std_normal_cdf(-37.52).to_bits(), 0);
+        assert_eq!(
+            norm_s_dist_kernel(1.0, true).unwrap().to_bits(),
+            identified_std_normal_cdf(1.0).to_bits()
+        );
+        // GAUSS is NS minus 0.5 on the ordinary route.
+        assert_eq!(
+            identified_gauss(1.0).to_bits(),
+            (identified_std_normal_cdf(1.0) - 0.5).to_bits()
+        );
+        assert_eq!(
+            identified_gauss(-1.0).to_bits(),
+            (identified_std_normal_cdf(-1.0) - 0.5).to_bits()
         );
     }
 

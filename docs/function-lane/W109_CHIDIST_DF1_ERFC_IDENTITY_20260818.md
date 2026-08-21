@@ -10,7 +10,11 @@ Reference: Excel 16.0 build 20228, x64, Value2
 - `scope_completeness`: `scope_partial` (df=1 / Gamma(0.5,2) CDF route only)
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `integrated` for the landed dispatch
-- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body; BINOM CDF leftover vs BETA (implied-x is 1-p ±1 ULP on most misses); GAUSS tiny-x (`x*PHI(0)` on dyadic |x|≤2^-50, `NORMSDIST-0.5` above 2^-48); Poisson PMF duals not exact; even-df Poisson-series association; CHISQ.TEST statistic for df≠1
+- `open_lanes`: remaining G3-01 GRATIO/BRATIO body; ERF/ERFC.PRECISE body;
+  GAUSS/NORMSDIST residual inherited from that body after the G-F3 / G-A400
+  wrapper (`W109_NORMSDIST_GF3_WRAPPER_20260821.md`); BINOM CDF leftover vs
+  BETA (implied-x is 1-p ±1 ULP on most misses); Poisson PMF duals not exact;
+  even-df Poisson-series association; CHISQ.TEST statistic for df≠1
 
 ## Method
 

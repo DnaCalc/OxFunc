@@ -12,7 +12,9 @@ law), the inferred Ext80 `gam1(½)` mantissa `0x906eba8214db6c6f`, T1c, or
 `NORMSDIST = 0.5+GAUSS` as current fact. The surviving scoreboard, capture
 verdicts, and new hard constraints are in
 [`W109_ERF_SWARM_RESULTS_20260821.md`](W109_ERF_SWARM_RESULTS_20260821.md).
-Production kernels are still unchanged.
+The G-F3 / G-A400 *wrapper* later landed on the still-open ERFC body
+([`W109_NORMSDIST_GF3_WRAPPER_20260821.md`](W109_NORMSDIST_GF3_WRAPPER_20260821.md));
+the body itself is unchanged scaffolding.
 
 Reference oracle: Excel 16.0 build 20228, x64, Workbook Compatibility Version 2,
 numeric inputs through `Range.Value2` / `cell_value2_bulk`, NoCache unless a
@@ -24,15 +26,16 @@ cited older corpus says otherwise.
 - `scope_completeness`: `scope_partial`
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `partial`
-- `open_lanes`: ERF/ERFC.PRECISE body (all numeric branches); GAUSS tiny-direct
-  body; GAUSS ordinary wrapper residuals inherited from Q; NORMSDIST /
-  NORM.S.DIST CDF inherited from the same body; CHIDIST(df=1) and
-  GAMMA.DIST(shape=0.5) inherited after an identified argument transform;
-  frozen GAUSS heldouts sealed until one coherent discovery survivor exists
+- `open_lanes`: ERF/ERFC.PRECISE body (all numeric branches); GAUSS/NORMSDIST
+  residual inherited from that body after the landed G-F3 / G-A400 wrapper;
+  tiny-route comb/grain; CHIDIST(df=1) and GAMMA.DIST(shape=0.5) inherited
+  after an identified argument transform; frozen GAUSS heldouts sealed until
+  one coherent discovery survivor exists
 
-This document is a theory pack, not an implementation. Production currently
-still uses `libm::erf` / a fitted `libm::erfc` correction. Those are
-scaffolding. Do not treat them as identified graphs.
+This document is a theory pack, not an implementation. Production now uses
+the identified G-F3 / G-A400 *wrapper* on top of `libm::erf` / a fitted
+`libm::erfc` correction. The body remains scaffolding. Do not treat the
+fitted ERFC as an identified graph.
 
 ---
 
@@ -147,15 +150,19 @@ Non-finite: kernels return `#NUM!` for non-finite x. Excel never publishes
 - `erf_of_sqrt_half_x` / `erfc_of_sqrt_half_x` → the identified
   `SQRT(x/2)` wrappers used by chi/gamma df=1 and shape 0.5
 
-`crates/oxfunc_core/src/functions/normal_dist_common.rs`:
+`crates/oxfunc_core/src/functions/normal_log_family.rs` (wrapper landing,
+2026-08-21):
 
-- `gauss_kernel` → `0.5 * libm::erf(x / SQRT_2)` with a `x == 0` zero
-- `norm_cdf` (in `normal_log_family.rs`) → `0.5 * (1 + erf_approx(x / SQRT_2))`
+- `identified_std_normal_cdf` → G-F3: `z = |x|*RN(1/√2)`, `Q = ERFC(z)`,
+  `x<0 → RN53(0.5*Q)`, `x≥0 → RN53(1-0.5*Q)`, PHI-class flush
+- `identified_gauss` → that graph minus 0.5, except inclusive
+  `abs(x) ≤ 1e-15` stored-z G-A400 tiny-direct
+- inverse surfaces keep `erf_based_cdf` (`0.5 * (1 + libm::erf(x/√2))`)
 - `phi_kernel` → the closed PHI graph above
 
-These production paths are **known not to be Excel's graph**. They exist so
-the rest of the catalog can call a function. Improving the libm-correction
-fit is not the assignment. Identifying the evaluation tree is.
+The wrapper is the identified Excel graph. `Q` is still the fitted/libm
+ERFC scaffolding. Improving that fit is not the assignment. Identifying
+the evaluation tree is.
 
 ### 2.3 Catalog rows
 
@@ -964,6 +971,9 @@ Primary:
   sub-lane, tooth law, b18, b25)
 - `docs/function-lane/W109_CAMPAIGN_RESUME_20260718.md` (open wall 3)
 - `docs/function-lane/W109_CHIDIST_DF1_ERFC_IDENTITY_20260818.md`
+- `docs/function-lane/W109_ERF_SWARM_RESULTS_20260821.md`
+- `docs/function-lane/W109_NORMSDIST_GF3_WRAPPER_20260821.md`
+- `crates/oxfunc_core/src/functions/normal_log_family.rs`
 - `smart-fuzzer/tools/calc_graph_racer/ERF_GAUSS_EXACT_GRAPH_DISCOVERY_CHECKPOINT_20260809.md`
 - `smart-fuzzer/tools/calc_graph_racer/ERF_GAUSS_ROUTE_STORE_OFFLINE_CHECKPOINT_20260809.md`
 - `smart-fuzzer/tools/calc_graph_racer/ERF_GAUSS_DIRECT_TINY_TIE_MINING_OFFLINE_CHECKPOINT_20260809.md`

@@ -21,12 +21,18 @@ re-scoped before execution).
 - `execution_state`: `in_progress`
 - `scope_completeness`: `scope_partial`
 - `target_completeness`: `target_partial`
-- `integration_completeness`: `partial`
-- `open_lanes`: unchanged from the handoff, minus the refuted objects below;
-  plus one hygiene lane (§8)
+- `integration_completeness`: `partial` (G-F3 / G-A400 dispatch integrated;
+  ERFC body still scaffolding)
+- `open_lanes`: ERF/ERFC.PRECISE body; GAUSS/NORMSDIST residual inherited from
+  that body; tiny-route comb/grain after the G-A400 dataflow; hygiene lane (§8)
 
-Nothing here is landed in production. All capture scripts are designs; oracle
-execution stays with the serialized root lane.
+The G-F3 NORMSDIST wrapper and derived GAUSS (including stored-z tiny-direct)
+are now in the production kernels — see §10 and
+[`W109_NORMSDIST_GF3_WRAPPER_20260821.md`](W109_NORMSDIST_GF3_WRAPPER_20260821.md).
+That is a wrapper landing on the still-open ERFC body, analogous to
+`CHIDIST(df=1)` through `ERFC.PRECISE(SQRT(x/2))`. Capture scripts remain
+designs; oracle execution stays with the serialized root lane. Heldouts stay
+sealed.
 
 ---
 
@@ -312,3 +318,19 @@ D/E-class work should mine it next.
 - Full agent+verifier records (headline, computed results, spot-checks,
   proposals): session workflow output; per-agent extracts were reviewed and
   the load-bearing numbers are reproduced in this document.
+
+## 10. Production landing (same day, subsequent session)
+
+Landed the identified G-F3 NORMSDIST wrapper and derived GAUSS, including
+the stored-z G-A400 tiny-direct route, on the still-open ERFC.PRECISE body.
+Record: [`W109_NORMSDIST_GF3_WRAPPER_20260821.md`](W109_NORMSDIST_GF3_WRAPPER_20260821.md).
+
+This is the CHIDIST(df=1) pattern: the public graph is now what production
+computes; leftover ±1 ULP at `NORMSDIST(-1)` / `GAUSS(-1)` is the ERFC body
+at `z = RN(1/√2)` (same witness as `CHIDIST(1,1)`). `GAUSS(1)` moved from
+2 ULP (`0.5*libm::erf`) to 0 ULP because `1-0.5*Q` absorbs that body ULP.
+Inverse surfaces were kept on `erf_based_cdf` so INV bit pins do not ride
+the open body.
+
+Not a function-phase-complete claim. Body, tiny comb/grain, and sealed
+heldouts remain open.

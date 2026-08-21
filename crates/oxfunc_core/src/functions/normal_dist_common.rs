@@ -29,11 +29,21 @@ pub fn erf_approx(x: f64) -> f64 {
     libm::erf(x)
 }
 
-pub fn gauss_kernel(x: f64) -> f64 {
-    if x == 0.0 {
-        return 0.0;
-    }
-    0.5 * erf_approx(x / std::f64::consts::SQRT_2)
+/// Stored GAUSS/NORMSDIST argument `z = |x| * RN(1/√2)`.
+/// Live Excel 16.0 b20228: native multiply matches the published wrapper;
+/// divide-by-√2 is refuted (`GAUSS(1)` bits).
+pub const FRAC_1_SQRT_2_BITS: u64 = 0x3fe6a09e667f3bcd;
+
+/// Inclusive tiny-direct GAUSS predicate: `abs(x) <= 1e-15` is the odd
+/// stored-z route; the successor double is the ordinary G-F3 wrapper.
+pub const GAUSS_TINY_MAX_BITS: u64 = 0x3cd203af9ee75616;
+
+/// Per-op binary64 `gam1(1/2)` return `h`, Agent A 2026-08-21, two independent
+/// reproductions. `g = 1+h` is formed in the tiny body.
+pub const GAM1_HALF_H_BITS: u64 = 0x3fc06eba8214db6b;
+
+pub fn stored_normal_z(x: f64) -> f64 {
+    x.abs() * f64::from_bits(FRAC_1_SQRT_2_BITS)
 }
 
 #[cfg(test)]
@@ -57,10 +67,8 @@ mod tests {
     }
 
     #[test]
-    fn phi_and_gauss_match_excel_probe_lanes() {
+    fn phi_matches_excel_probe_lanes() {
         assert!((phi_kernel(0.0) - 0.398942280401433).abs() < 1e-12);
         assert!((phi_kernel(1.0) - 0.241970724519143).abs() < 1e-12);
-        assert!(gauss_kernel(0.0).abs() < 1e-12);
-        assert!((gauss_kernel(1.0) - 0.341344746068543).abs() < 1e-7);
     }
 }
