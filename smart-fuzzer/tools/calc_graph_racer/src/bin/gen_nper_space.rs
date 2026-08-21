@@ -18,9 +18,7 @@
 //!
 //! Args: 0=rate, 1=pmt, 2=pv, 3=fv, 4=type.
 
-use calc_graph_racer::dsl::{
-    Candidate, ConstVal, EvalModel, GraphBuilder, NodeId, Op,
-};
+use calc_graph_racer::dsl::{Candidate, ConstVal, EvalModel, GraphBuilder, NodeId, Op};
 use calc_graph_racer::eval::format_bits_hex;
 use calc_graph_racer::scheduler::ProbeCase;
 use calc_graph_racer::score::WitnessArg;

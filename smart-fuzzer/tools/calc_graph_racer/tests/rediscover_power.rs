@@ -62,7 +62,10 @@ fn confirmed() -> Candidate {
     let x = b.strict(Op::Arg(0));
     let y = b.strict(Op::Arg(1));
     let abs_y = b.strict(Op::Abs(y));
-    let pos = b.strict(Op::PowExcelPositive { base: x, exp: abs_y });
+    let pos = b.strict(Op::PowExcelPositive {
+        base: x,
+        exp: abs_y,
+    });
     let rec = b.push(Op::Recip(pos), EvalModel::X87_STORED);
     let direct = b.strict(Op::PowExcelPositive { base: x, exp: y });
     let out = b.strict(Op::Branch {
@@ -83,7 +86,10 @@ fn strict_recip_variant() -> Candidate {
     let x = b.strict(Op::Arg(0));
     let y = b.strict(Op::Arg(1));
     let abs_y = b.strict(Op::Abs(y));
-    let pos = b.strict(Op::PowExcelPositive { base: x, exp: abs_y });
+    let pos = b.strict(Op::PowExcelPositive {
+        base: x,
+        exp: abs_y,
+    });
     let rec = b.strict(Op::Recip(pos));
     let direct = b.strict(Op::PowExcelPositive { base: x, exp: y });
     let out = b.strict(Op::Branch {
@@ -156,8 +162,8 @@ fn rediscovers_power_staging() {
     let mut witnesses = Vec::new();
     // Known discriminators from the sign-off evidence.
     for (i, (x, y)) in [
-        (2.0, 0.5),   // sqrt special case (exp chain is 1 ULP off)
-        (2.0, -0.5),  // sqrt + reciprocal staging
+        (2.0, 0.5),  // sqrt special case (exp chain is 1 ULP off)
+        (2.0, -0.5), // sqrt + reciprocal staging
         (10.0, 0.3),
         (2.0, 10.0),
         (1.5, -3.0),

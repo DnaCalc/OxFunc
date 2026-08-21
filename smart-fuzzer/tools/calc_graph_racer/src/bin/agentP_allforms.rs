@@ -29,7 +29,13 @@ fn hist(name: &str, v: &[i64]) {
     }
     let n = v.len();
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:30} {:4}/{:4} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:30} {:4}/{:4} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 3 {
@@ -63,24 +69,51 @@ fn main() {
     // each form: name -> fn(r)->em
     type F = Box<dyn Fn(f64) -> f64>;
     let forms: Vec<(&str, F)> = vec![
-        ("kahan (u-1)*t/lnu", Box::new(|r: f64| {
-            let t = -rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { t } else if t.abs() < 1.0 { (u - 1.0) * t / rx::excel_ln(u) } else { u - 1.0 }
-        })),
-        ("portable expm1(t)", Box::new(|r: f64| rx::excel_expm1(-rx::excel_log1p(r)))),
-        ("RN53(u_ext-1)", Box::new(|r: f64| {
-            let t = -rx::excel_log1p(r);
-            rx::ext_to_f64(&rx::ext_sub(&exp_ext(&rx::ext_from_f64(t)), &rx::ext_one(), CW), CW)
-        })),
-        ("kahan on ext-exp u", Box::new(|r: f64| {
-            let t = -rx::excel_log1p(r);
-            let ue = exp_ext(&rx::ext_from_f64(t));
-            let u = rx::ext_to_f64(&ue, CW);
-            if u == 1.0 { return t; }
-            let um1 = rx::ext_to_f64(&rx::ext_sub(&ue, &rx::ext_one(), CW), CW); // extended u-1 stored
-            if t.abs() < 1.0 { um1 * t / rx::excel_ln(u) } else { um1 }
-        })),
+        (
+            "kahan (u-1)*t/lnu",
+            Box::new(|r: f64| {
+                let t = -rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    t
+                } else if t.abs() < 1.0 {
+                    (u - 1.0) * t / rx::excel_ln(u)
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
+        (
+            "portable expm1(t)",
+            Box::new(|r: f64| rx::excel_expm1(-rx::excel_log1p(r))),
+        ),
+        (
+            "RN53(u_ext-1)",
+            Box::new(|r: f64| {
+                let t = -rx::excel_log1p(r);
+                rx::ext_to_f64(
+                    &rx::ext_sub(&exp_ext(&rx::ext_from_f64(t)), &rx::ext_one(), CW),
+                    CW,
+                )
+            }),
+        ),
+        (
+            "kahan on ext-exp u",
+            Box::new(|r: f64| {
+                let t = -rx::excel_log1p(r);
+                let ue = exp_ext(&rx::ext_from_f64(t));
+                let u = rx::ext_to_f64(&ue, CW);
+                if u == 1.0 {
+                    return t;
+                }
+                let um1 = rx::ext_to_f64(&rx::ext_sub(&ue, &rx::ext_one(), CW), CW); // extended u-1 stored
+                if t.abs() < 1.0 {
+                    um1 * t / rx::excel_ln(u)
+                } else {
+                    um1
+                }
+            }),
+        ),
     ];
 
     println!("=== n=1 all expm1 forms vs pinned ===");
@@ -118,9 +151,13 @@ fn main() {
         let kah = (u - 1.0) * t / lnu;
         println!(
             "  r=0x{:016x} em=0x{:016x} kah=0x{:016x} du={:+} u=0x{:016x} t=0x{:016x} lnu=0x{:016x}",
-            r.to_bits(), em_x.to_bits(), kah.to_bits(),
+            r.to_bits(),
+            em_x.to_bits(),
+            kah.to_bits(),
             kah.to_bits() as i64 - em_x.to_bits() as i64,
-            u.to_bits(), t.to_bits(), lnu.to_bits()
+            u.to_bits(),
+            t.to_bits(),
+            lnu.to_bits()
         );
     }
     println!("  total uncovered: {}", cnt);

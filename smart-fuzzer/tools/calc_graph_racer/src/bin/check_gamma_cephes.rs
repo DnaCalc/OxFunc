@@ -40,14 +40,28 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
-    fn store(self, yes: bool) -> V {
-        if yes { V::new(rx::ext_to_f64(&self.0, CW)) } else { self }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
+    fn store(self, yes: bool) -> V {
+        if yes {
+            V::new(rx::ext_to_f64(&self.0, CW))
+        } else {
+            self
+        }
+    }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
 }
 
 fn polevl(x: V, c: &[f64], step_store: bool) -> V {
@@ -64,7 +78,9 @@ fn stirf(x: f64, m: u32) -> f64 {
     let bit = |i: u32| m & (1 << i) != 0;
     let xv = V::new(x);
     let w = V::new(1.0).div(xv).store(true); // w = 1/x is a stored variable
-    let w = V::new(1.0).add(w.mul(polevl(w, &STIR, bit(3)))).store(bit(4));
+    let w = V::new(1.0)
+        .add(w.mul(polevl(w, &STIR, bit(3))))
+        .store(bit(4));
     let y = rx::excel_exp(x);
     let y = if x > MAXSTIR {
         let v = rx::excel_pow_positive(x, 0.5 * x - 0.25);
@@ -157,7 +173,11 @@ fn main() {
     let mut misses = 0;
     for &(x, want) in &rows {
         let v = gamma_pos(x, m);
-        let (ex, n) = if x > 33.0 { (&mut st_ex, &mut st_n) } else { (&mut sm_ex, &mut sm_n) };
+        let (ex, n) = if x > 33.0 {
+            (&mut st_ex, &mut st_n)
+        } else {
+            (&mut sm_ex, &mut sm_n)
+        };
         *n += 1;
         if v.to_bits() == want.to_bits() {
             *ex += 1;

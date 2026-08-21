@@ -20,15 +20,27 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
+    }
     fn st(self, yes: bool) -> V {
         if yes { V::new(self.f()) } else { self }
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn sub(self, o: V) -> V {
+        V(rx::ext_sub(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
 }
 
 fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
@@ -73,7 +85,8 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
             }
             s.st(true).f()
         }
-        4 => { // c / POWER(w, i+1), binexp LSB-first, spill per bit(0)
+        4 => {
+            // c / POWER(w, i+1), binexp LSB-first, spill per bit(0)
             let mut s = V::new(0.0);
             for (i, c) in cf.iter().enumerate() {
                 let mut p = V::new(1.0);
@@ -92,14 +105,16 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
             }
             s.st(true).f()
         }
-        5 => { // reverse-order division chain: s = (s + c)/w from last term
+        5 => {
+            // reverse-order division chain: s = (s + c)/w from last term
             let mut s = V::new(0.0);
             for c in cf.iter().rev() {
                 s = s.add(V::new(*c)).st(bit(1)).div(w).st(bit(2));
             }
             s.st(true).f()
         }
-        6 => { // t seeded as 1/w, then t /= w per subsequent term
+        6 => {
+            // t seeded as 1/w, then t /= w per subsequent term
             let mut t = V::new(1.0).div(w).st(bit(0));
             let mut s = V::new(cf[0]).mul(t).st(bit(1));
             for c in &cf[1..] {
@@ -108,7 +123,8 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
             }
             s.st(true).f()
         }
-        7 => { // split positive/negative accumulators, subtract at end
+        7 => {
+            // split positive/negative accumulators, subtract at end
             let mut sp = V::new(0.0);
             let mut sn = V::new(0.0);
             let mut t = V::new(1.0);
@@ -123,7 +139,8 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
             }
             sp.sub(sn).st(true).f()
         }
-        _ => { // term = c/p, p multiplied AFTER use (p tracks w^i then bumps)
+        _ => {
+            // term = c/p, p multiplied AFTER use (p tracks w^i then bumps)
             let mut s = V::new(0.0);
             let mut p = w;
             for c in cf {
@@ -137,25 +154,27 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
 
 fn main() {
     let mut obs: Vec<(f64, Vec<f64>, u64)> = Vec::new();
-    for file in ["../../work/w109/G6-solvers/answers-npv-r0.json",
-                 "../../work/w109/G6-solvers/answers-npv-r1.json"] {
-    let ws: WitnessSet = serde_json::from_str(
-        &std::fs::read_to_string(file).expect("read"),
-    )
-    .expect("parse");
-    for w in &ws.witnesses {
-        let rate = match &w.args[0] {
-            WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
-            _ => continue,
-        };
-        let cf: Vec<f64> = match &w.args[1] {
-            WitnessArg::Array(items) => items.iter().map(|s| parse_bits_hex(s).unwrap()).collect(),
-            _ => continue,
-        };
-        if let Some(want) = parse_bits_hex(&w.expected_bits) {
-            obs.push((rate, cf, want.to_bits()));
+    for file in [
+        "../../work/w109/G6-solvers/answers-npv-r0.json",
+        "../../work/w109/G6-solvers/answers-npv-r1.json",
+    ] {
+        let ws: WitnessSet =
+            serde_json::from_str(&std::fs::read_to_string(file).expect("read")).expect("parse");
+        for w in &ws.witnesses {
+            let rate = match &w.args[0] {
+                WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
+                _ => continue,
+            };
+            let cf: Vec<f64> = match &w.args[1] {
+                WitnessArg::Array(items) => {
+                    items.iter().map(|s| parse_bits_hex(s).unwrap()).collect()
+                }
+                _ => continue,
+            };
+            if let Some(want) = parse_bits_hex(&w.expected_bits) {
+                obs.push((rate, cf, want.to_bits()));
+            }
         }
-    }
     }
     println!("{} NPV rows", obs.len());
     let mut results: Vec<(u32, u32, u8)> = Vec::new();

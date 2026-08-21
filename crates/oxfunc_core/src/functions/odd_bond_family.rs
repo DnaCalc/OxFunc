@@ -1059,10 +1059,23 @@ mod tests {
         ];
         for (yld, exp) in ladder {
             let got = oddfprice_kernel(
-                44013.0, 44562.0, 43831.0, 44197.0, 0.05, yld, 100.0, 2.0, Some(0.0),
+                44013.0,
+                44562.0,
+                43831.0,
+                44197.0,
+                0.05,
+                yld,
+                100.0,
+                2.0,
+                Some(0.0),
             )
             .expect("oddfprice should succeed");
-            assert_eq!(got.to_bits(), exp, "ODDFPRICE yld={yld}: {:#018x} != {exp:#018x}", got.to_bits());
+            assert_eq!(
+                got.to_bits(),
+                exp,
+                "ODDFPRICE yld={yld}: {:#018x} != {exp:#018x}",
+                got.to_bits()
+            );
         }
     }
 

@@ -12,15 +12,22 @@ const RZ53: u16 = CW_PC53_RN | 0x0C00;
 
 // ln(u) via fyl2x(ln2, u) at a given control word (store to f64)
 fn lnu_fyl2x(u: f64, cw_compute: u16, cw_store: u16) -> f64 {
-    ext_to_f64(&ext_fyl2x(&ext_ln2(), &ext_from_f64(u), cw_compute), cw_store)
+    ext_to_f64(
+        &ext_fyl2x(&ext_ln2(), &ext_from_f64(u), cw_compute),
+        cw_store,
+    )
 }
 // ln(u) = log1p(y) via fyl2xp1(ln2, y), y=u-1 as double
 fn lnu_fyl2xp1(y: f64, cw_compute: u16, cw_store: u16) -> f64 {
-    ext_to_f64(&ext_fyl2xp1(&ext_ln2(), &ext_from_f64(y), cw_compute), cw_store)
+    ext_to_f64(
+        &ext_fyl2xp1(&ext_ln2(), &ext_from_f64(y), cw_compute),
+        cw_store,
+    )
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let labels = [
         "L0 fyl2x PC64 RN [prod]",
         "L1 fyl2x PC53 RN",
@@ -36,7 +43,9 @@ fn main() {
     let mut tot = 0u32;
     for line in csv.lines().skip(1) {
         let f: Vec<&str> = line.split(',').collect();
-        if f.len() < 6 { continue; }
+        if f.len() < 6 {
+            continue;
+        }
         let tau = f64::from_bits(u64::from_str_radix(f[2], 16).unwrap());
         let pin = u64::from_str_radix(f[5], 16).unwrap();
         let u = rx::excel_exp(tau);
@@ -54,16 +63,31 @@ fn main() {
         ];
         for i in 0..8 {
             let em = (num / dens[i]).to_bits();
-            if em == pin { score[i] += 1; } else {
+            if em == pin {
+                score[i] += 1;
+            } else {
                 let d = (em as i64) - (pin as i64);
-                if d > 0 { dirbias[i][0] += 1; } else { dirbias[i][2] += 1; }
+                if d > 0 {
+                    dirbias[i][0] += 1;
+                } else {
+                    dirbias[i][2] += 1;
+                }
             }
         }
         tot += 1;
     }
-    println!("=== ln(u) denominator variants, pure em oracle N={} ===", tot);
+    println!(
+        "=== ln(u) denominator variants, pure em oracle N={} ===",
+        tot
+    );
     for i in 0..8 {
-        println!("  {:26} {:3}/{}  ({:.1}%)  miss_dir[+/-]={:?}", labels[i], score[i], tot,
-                 100.0 * score[i] as f64 / tot as f64, (dirbias[i][0], dirbias[i][2]));
+        println!(
+            "  {:26} {:3}/{}  ({:.1}%)  miss_dir[+/-]={:?}",
+            labels[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            (dirbias[i][0], dirbias[i][2])
+        );
     }
 }

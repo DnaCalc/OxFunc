@@ -44,7 +44,11 @@ fn report(name: &str, res: &[i64]) {
     let w2: u32 = res.iter().filter(|&&d| d.abs() <= 2).count() as u32;
     println!(
         "  {:24} n={:4}  exact {:5.1}%  within+-1 {:5.1}%  within+-2 {:5.1}%",
-        name, res.len(), 100.0 * ex as f64 / n, 100.0 * w1 as f64 / n, 100.0 * w2 as f64 / n
+        name,
+        res.len(),
+        100.0 * ex as f64 / n,
+        100.0 * w1 as f64 / n,
+        100.0 * w2 as f64 / n
     );
     print!("        hist ");
     for (k, c) in &m {

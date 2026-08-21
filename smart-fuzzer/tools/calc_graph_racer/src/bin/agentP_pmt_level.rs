@@ -24,7 +24,10 @@ fn em_kahan(r: f64, n: f64) -> f64 {
 
 // x87 double-rounded divide: RN53(RN64(a/b))
 fn x87_div(a: f64, b: f64) -> f64 {
-    rx::ext_to_f64(&rx::ext_div(&rx::ext_from_f64(a), &rx::ext_from_f64(b), CW), CW)
+    rx::ext_to_f64(
+        &rx::ext_div(&rx::ext_from_f64(a), &rx::ext_from_f64(b), CW),
+        CW,
+    )
 }
 // fully-extended pmt: (pv*r)/em all extended, single store. em given extended.
 fn pmt_ext(pv: f64, r: f64, em_ext: &rx::Ext80) -> f64 {
@@ -51,7 +54,8 @@ fn em_kahan_ext(r: f64, n: f64) -> rx::Ext80 {
 }
 
 fn load(path: &str) -> Vec<(f64, f64, f64, u64)> {
-    let ws: WitnessSet = serde_json::from_str(&std::fs::read_to_string(path).expect("read")).expect("parse");
+    let ws: WitnessSet =
+        serde_json::from_str(&std::fs::read_to_string(path).expect("read")).expect("parse");
     let mut o = Vec::new();
     for w in &ws.witnesses {
         let a: Vec<f64> = w
@@ -122,10 +126,14 @@ fn main() {
         }
         println!(
             "n={:3}: both={:4}  BOTH-pv exact:  SSE-div={:4} ({:5.1}%)  X87-div={:4} ({:5.1}%)  EXT-spill={:4} ({:5.1}%)",
-            target_n, both,
-            sse, 100.0 * sse as f64 / both as f64,
-            x87, 100.0 * x87 as f64 / both as f64,
-            ext, 100.0 * ext as f64 / both as f64,
+            target_n,
+            both,
+            sse,
+            100.0 * sse as f64 / both as f64,
+            x87,
+            100.0 * x87 as f64 / both as f64,
+            ext,
+            100.0 * ext as f64 / both as f64,
         );
     }
 }

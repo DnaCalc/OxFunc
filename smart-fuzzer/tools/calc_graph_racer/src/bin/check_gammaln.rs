@@ -114,6 +114,10 @@ fn main() {
                 }
             }
         }
-        println!("{name:24} {exact}/{} exact, max_ulp {max_ulp} (worst x={})", rows.len(), worst.1);
+        println!(
+            "{name:24} {exact}/{} exact, max_ulp {max_ulp} (worst x={})",
+            rows.len(),
+            worst.1
+        );
     }
 }

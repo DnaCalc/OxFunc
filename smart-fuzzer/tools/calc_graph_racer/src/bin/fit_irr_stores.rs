@@ -27,21 +27,34 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
+    }
     fn st(self, yes: bool) -> V {
         if yes { V::new(self.f()) } else { self }
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn sub(self, o: V) -> V {
+        V(rx::ext_sub(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
 }
 
 fn npv(cf: &[f64], v: V, m: u32, form: u8) -> V {
     let bit = |i: u32| m & (1 << i) != 0;
     match form {
-        0 => { // seq multiply in v
+        0 => {
+            // seq multiply in v
             let mut s = V::new(cf[0]);
             let mut t = V::new(1.0);
             for c in &cf[1..] {
@@ -50,14 +63,16 @@ fn npv(cf: &[f64], v: V, m: u32, form: u8) -> V {
             }
             s.st(bit(3))
         }
-        1 => { // horner in v
+        1 => {
+            // horner in v
             let mut s = V::new(*cf.last().unwrap());
             for c in cf[..cf.len() - 1].iter().rev() {
                 s = s.mul(v).st(bit(1)).add(V::new(*c)).st(bit(2));
             }
             s.st(bit(3))
         }
-        2 => { // per-term division by w = 1/v
+        2 => {
+            // per-term division by w = 1/v
             let w = V::new(1.0).div(v).st(true);
             let mut s = V::new(cf[0]);
             let mut t = V::new(1.0);
@@ -67,7 +82,8 @@ fn npv(cf: &[f64], v: V, m: u32, form: u8) -> V {
             }
             s.st(bit(3))
         }
-        _ => { // shared NPV(rate) routine: rate = 1/v - 1, w = 1 + rate
+        _ => {
+            // shared NPV(rate) routine: rate = 1/v - 1, w = 1 + rate
             let rate = V::new(1.0).div(v).st(true).sub(V::new(1.0)).st(true);
             let w = V::new(1.0).add(rate).st(true);
             let mut s = V::new(cf[0]);
@@ -164,7 +180,9 @@ fn main() {
             for m in 0u32..(1 << 12) {
                 let sc = obs
                     .iter()
-                    .filter(|(cf, g, want, _)| simulate(cf, *g, m, form, tol, hneg, assoc).to_bits() == *want)
+                    .filter(|(cf, g, want, _)| {
+                        simulate(cf, *g, m, form, tol, hneg, assoc).to_bits() == *want
+                    })
                     .count() as u32;
                 results.push((sc, m, form, cfg));
             }

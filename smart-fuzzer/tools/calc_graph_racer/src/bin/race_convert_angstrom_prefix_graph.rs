@@ -254,7 +254,12 @@ fn main() {
     }
     let table = ["m", "in", "ft", "yd", "mi", "Nmi"]
         .into_iter()
-        .map(|unit| (unit.to_string(), format!("0x{:016x}", angstroms(unit).to_bits())))
+        .map(|unit| {
+            (
+                unit.to_string(),
+                format!("0x{:016x}", angstroms(unit).to_bits()),
+            )
+        })
         .collect();
     let report = Report {
         schema_version: "w109.convert.angstrom_prefix_graph_race.v1",

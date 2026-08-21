@@ -7,7 +7,7 @@
 #[path = "convert_research/common.rs"]
 mod common;
 
-use common::{MetaDocument, MODEL_NAMES, ordered_bits};
+use common::{MODEL_NAMES, MetaDocument, ordered_bits};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
@@ -218,7 +218,10 @@ fn main() {
                 .push(predicted_raw.clone());
             let score = scores.get_mut(model_name).unwrap();
             *score.class_total.entry(row.class.clone()).or_default() += 1;
-            *score.category_total.entry(row.category.clone()).or_default() += 1;
+            *score
+                .category_total
+                .entry(row.category.clone())
+                .or_default() += 1;
             let pair = format!("{}->{}", row.from_unit, row.to_unit);
             *score.pair_total.entry(pair.clone()).or_default() += 1;
             let Some(answer_bits) = answer_bits else {
@@ -244,7 +247,10 @@ fn main() {
             if residual == 0 {
                 score.exact += 1;
                 *score.class_exact.entry(row.class.clone()).or_default() += 1;
-                *score.category_exact.entry(row.category.clone()).or_default() += 1;
+                *score
+                    .category_exact
+                    .entry(row.category.clone())
+                    .or_default() += 1;
                 *score.pair_exact.entry(pair).or_default() += 1;
             } else {
                 score.mismatch += 1;
@@ -296,7 +302,10 @@ fn main() {
         "CONVERT {split}: {} modeled rows, {} typed controls, {} numeric / {} nonnumeric answers",
         modeled_rows, controls, numeric_answers, nonnumeric_answers
     );
-    println!("{:<48} {:>8} {:>8} {:>10}", "model", "exact", "total", "max_abs_ulp");
+    println!(
+        "{:<48} {:>8} {:>8} {:>10}",
+        "model", "exact", "total", "max_abs_ulp"
+    );
     for model in MODEL_NAMES {
         let score = &scores[model];
         println!(
@@ -312,7 +321,10 @@ fn main() {
     } else {
         println!("exact survivors: {}", survivors.join(", "));
     }
-    println!("prediction equivalence classes: {}", equivalence_classes.len());
+    println!(
+        "prediction equivalence classes: {}",
+        equivalence_classes.len()
+    );
     for group in &equivalence_classes {
         if group.len() > 1 {
             println!("  collapsed: {}", group.join(" == "));

@@ -47,9 +47,11 @@ fn scalar(v: f64) -> WitnessArg {
 #[test]
 fn rediscovers_tbillyield_association() {
     // ---- candidate space: all associations of 100 - p / p * 360 / days ----
-    let leaf_100 = |b: &mut GraphBuilder| -> NodeId { b.strict(Op::Const(ConstVal::from_f64(100.0))) };
+    let leaf_100 =
+        |b: &mut GraphBuilder| -> NodeId { b.strict(Op::Const(ConstVal::from_f64(100.0))) };
     let leaf_p = |b: &mut GraphBuilder| -> NodeId { b.strict(Op::Arg(0)) };
-    let leaf_360 = |b: &mut GraphBuilder| -> NodeId { b.strict(Op::Const(ConstVal::from_f64(360.0))) };
+    let leaf_360 =
+        |b: &mut GraphBuilder| -> NodeId { b.strict(Op::Const(ConstVal::from_f64(360.0))) };
     let leaf_days = |b: &mut GraphBuilder| -> NodeId { b.strict(Op::Arg(1)) };
     let leaves: Vec<&dyn Fn(&mut GraphBuilder) -> NodeId> =
         vec![&leaf_100, &leaf_p, &leaf_p, &leaf_360, &leaf_days];
@@ -76,14 +78,19 @@ fn rediscovers_tbillyield_association() {
     assert!(
         candidates.iter().any(|c| c.description == confirmed_desc),
         "the confirmed association must be in the enumerated space; got: {:?}",
-        candidates.iter().map(|c| &c.description).collect::<Vec<_>>()
+        candidates
+            .iter()
+            .map(|c| &c.description)
+            .collect::<Vec<_>>()
     );
 
     // ---- witnesses: the closure-sweep shape (settl/duration/price grid) ----
     let mut rng = Rng(0x5EED_7B11_71E1D);
     let mut witnesses = Vec::new();
     // Structured sweep echoing the sign-off grid.
-    for days in [7u64, 14, 28, 35, 56, 91, 120, 150, 182, 210, 245, 280, 320, 364] {
+    for days in [
+        7u64, 14, 28, 35, 56, 91, 120, 150, 182, 210, 245, 280, 320, 364,
+    ] {
         for k in 0..11 {
             let price = 85.0 + 1.383 * k as f64 + 0.0137 * days as f64 / 364.0;
             let expected = tbillyield_excel(price, days as f64);

@@ -186,9 +186,10 @@ fn main() {
         let witness = by_id[row.id.as_str()];
         let actual = bits(&witness.expected_bits).expect("temperature answer must be numeric");
         let number = common::f64_from_hex(&row.number_bits).unwrap();
-        for (name, predicted) in MODELS
-            .iter()
-            .zip(predictions(number, &row.from_unit, &row.to_unit))
+        for (name, predicted) in
+            MODELS
+                .iter()
+                .zip(predictions(number, &row.from_unit, &row.to_unit))
         {
             let score = scores.get_mut(*name).unwrap();
             score.total += 1;

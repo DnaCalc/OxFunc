@@ -83,7 +83,13 @@ fn hist(name: &str, v: &[i64]) {
         return;
     }
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:34} {:5}/{:5} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:34} {:5}/{:5} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 3 {
@@ -114,7 +120,12 @@ fn main() {
             small.push(*row);
         }
     }
-    println!("gold rows: {}  |t|>2: {}  |t|<=2: {}", rows.len(), big.len(), small.len());
+    println!(
+        "gold rows: {}  |t|>2: {}  |t|<=2: {}",
+        rows.len(),
+        big.len(),
+        small.len()
+    );
 
     // ===== Reference full model over ALL rows (kahan + u-1 branch), several t deliveries =====
     let tds = [
@@ -155,7 +166,10 @@ fn main() {
             let u = rx::excel_exp(t);
             ra.push((u - 1.0).to_bits() as i64 - em_x.to_bits() as i64);
             let uext = exp_ext(&e(t));
-            rb.push(tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64);
+            rb.push(
+                tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64
+                    - em_x.to_bits() as i64,
+            );
             rc.push(rx::excel_expm1(t).to_bits() as i64 - em_x.to_bits() as i64);
         }
         println!(" [{}]", tn);
@@ -175,7 +189,9 @@ fn main() {
         let u = tf(&uext);
         re.push((u - 1.0).to_bits() as i64 - em_x.to_bits() as i64);
         // extended u-1, single store
-        rf.push(tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64);
+        rf.push(
+            tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64,
+        );
     }
     hist("bigt extT->exp, u(f64)-1", &re);
     hist("bigt extT->exp, RN53(u_ext-1)", &rf);

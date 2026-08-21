@@ -183,7 +183,10 @@ fn main() {
     }
     best.sort_by(|a, b| b.1.cmp(&a.1).then(a.2.cmp(&b.2)));
     for (m, exact, max_ulp) in best.iter().take(12) {
-        println!("mask {m:013b}: {exact}/{} exact, max_ulp {max_ulp}", rows.len());
+        println!(
+            "mask {m:013b}: {exact}/{} exact, max_ulp {max_ulp}",
+            rows.len()
+        );
     }
     // Per-path breakdown + failing rows for the winner.
     let (m, _, _) = best[0];

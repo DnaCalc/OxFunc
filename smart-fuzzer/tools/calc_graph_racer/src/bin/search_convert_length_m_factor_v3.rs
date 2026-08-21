@@ -122,7 +122,11 @@ fn fixed_factor(unit: &str) -> f64 {
 }
 
 fn factor(unit: &str, meter: f64) -> f64 {
-    if unit == "m" { meter } else { fixed_factor(unit) }
+    if unit == "m" {
+        meter
+    } else {
+        fixed_factor(unit)
+    }
 }
 
 fn pow10(exponent: i32) -> f64 {
@@ -130,8 +134,7 @@ fn pow10(exponent: i32) -> f64 {
 }
 
 fn predict(row: &Row, meter: f64) -> u64 {
-    let core = (row.number * factor(&row.from.direct, meter))
-        / factor(&row.to.direct, meter);
+    let core = (row.number * factor(&row.from.direct, meter)) / factor(&row.to.direct, meter);
     let delta = pow10(row.from.prefix_exponent - row.to.prefix_exponent);
     let cw = rx::CW_PC64_RN;
     rx::ext_to_f64(
@@ -170,13 +173,19 @@ fn offset(anchor: f64, bit_offset: i64) -> f64 {
     let adjusted = if bit_offset >= 0 {
         anchor.to_bits().checked_add(bit_offset as u64).unwrap()
     } else {
-        anchor.to_bits().checked_sub(bit_offset.unsigned_abs()).unwrap()
+        anchor
+            .to_bits()
+            .checked_sub(bit_offset.unsigned_abs())
+            .unwrap()
     };
     f64::from_bits(adjusted)
 }
 
 fn score(rows: &[Row], meter: f64, anchor: f64) -> Candidate {
-    let exact = rows.iter().filter(|row| predict(row, meter) == row.actual).count();
+    let exact = rows
+        .iter()
+        .filter(|row| predict(row, meter) == row.actual)
+        .count();
     let first_misses = rows
         .iter()
         .filter_map(|row| {
@@ -228,7 +237,10 @@ fn main() {
     let mut zero_miss_offsets = Vec::new();
     for bit_offset in -radius..=radius {
         let meter = offset(anchor, bit_offset);
-        let exact = rows.iter().filter(|row| predict(row, meter) == row.actual).count();
+        let exact = rows
+            .iter()
+            .filter(|row| predict(row, meter) == row.actual)
+            .count();
         if exact > best_exact {
             best_exact = exact;
             best_offsets.clear();
@@ -243,7 +255,9 @@ fn main() {
     let decimal_power_candidates = (-3..=18)
         .map(|exponent| score(&rows, format!("1e{exponent}").parse().unwrap(), anchor))
         .collect();
-    let mut representatives = vec![-radius, -8192, -4096, -2048, -1, 0, 1, 2048, 4096, 8192, radius];
+    let mut representatives = vec![
+        -radius, -8192, -4096, -2048, -1, 0, 1, 2048, 4096, 8192, radius,
+    ];
     representatives.extend(best_offsets.iter().copied().take(16));
     representatives.sort_unstable();
     representatives.dedup();
@@ -267,7 +281,11 @@ fn main() {
     std::fs::write(&out, serde_json::to_vec_pretty(&report).unwrap()).unwrap();
     println!(
         "rows={} best={}/{} best_offsets={} zero_miss_offsets={}",
-        rows.len(), best_exact, rows.len(), report.best_offsets.len(), report.zero_miss_offsets.len()
+        rows.len(),
+        best_exact,
+        rows.len(),
+        report.best_offsets.len(),
+        report.zero_miss_offsets.len()
     );
     println!("wrote -> {}", out.display());
 }

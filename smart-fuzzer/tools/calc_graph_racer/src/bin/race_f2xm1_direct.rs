@@ -11,7 +11,9 @@ const RN53: u16 = CW_PC53_RN;
 const CW: u16 = CW_PC64_RN;
 
 // log2(1+r) via FYL2XP1(1, r), extended
-fn log2_1p(r: f64) -> Ext80 { ext_fyl2xp1(&ext_one(), &ext_from_f64(r), CW) }
+fn log2_1p(r: f64) -> Ext80 {
+    ext_fyl2xp1(&ext_one(), &ext_from_f64(r), CW)
+}
 
 // em = 2^y - 1 for |y|<1 via F2XM1; for |y|>=1 reduce y = K + g, |g|<=0.5,
 // em = 2^K*(1+F2XM1(g)) - 1.
@@ -30,7 +32,8 @@ fn f2xm1_full(y: &Ext80) -> Ext80 {
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let labels = [
         "Y1 y ext (fyl2xp1*-n), F2XM1, spill",
         "Y2 y=-n*fl(log2_1p) spilled, F2XM1(ext y), spill",
@@ -43,7 +46,9 @@ fn main() {
     let mut miss1: Vec<(i32, u32, i64)> = Vec::new();
     for line in csv.lines().skip(1) {
         let ff: Vec<&str> = line.split(',').collect();
-        if ff.len() < 6 { continue; }
+        if ff.len() < 6 {
+            continue;
+        }
         let k: i32 = ff[0].parse().unwrap();
         let n: u32 = ff[1].parse().unwrap();
         let r = 2f64.powi(k);
@@ -65,18 +70,45 @@ fn main() {
         let y4 = ext_to_f64(&f2xm1_full(&ext_from_f64(y_sp2)), RN53).to_bits();
 
         let cands = [y1, y2, y3, y4];
-        for i in 0..4 { if cands[i] == pin { score[i] += 1; if yl1 { score_yl1[i] += 1; } } }
-        if yl1 { tot_yl1 += 1; }
-        if cands[0] != pin { miss1.push((k, n, (cands[0] as i64) - (pin as i64))); }
+        for i in 0..4 {
+            if cands[i] == pin {
+                score[i] += 1;
+                if yl1 {
+                    score_yl1[i] += 1;
+                }
+            }
+        }
+        if yl1 {
+            tot_yl1 += 1;
+        }
+        if cands[0] != pin {
+            miss1.push((k, n, (cands[0] as i64) - (pin as i64)));
+        }
         tot += 1;
     }
-    println!("=== em via HARDWARE F2XM1 direct, N={} (|y|<1 subset={}) ===", tot, tot_yl1);
+    println!(
+        "=== em via HARDWARE F2XM1 direct, N={} (|y|<1 subset={}) ===",
+        tot, tot_yl1
+    );
     for i in 0..4 {
-        println!("  {:44} all {:3}/{} ({:4.1}%)  |y|<1 {:3}/{} ({:4.1}%)",
-                 labels[i], score[i], tot, 100.0*score[i] as f64/tot as f64,
-                 score_yl1[i], tot_yl1, 100.0*score_yl1[i] as f64/tot_yl1 as f64);
+        println!(
+            "  {:44} all {:3}/{} ({:4.1}%)  |y|<1 {:3}/{} ({:4.1}%)",
+            labels[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            score_yl1[i],
+            tot_yl1,
+            100.0 * score_yl1[i] as f64 / tot_yl1 as f64
+        );
     }
-    println!("\nY1 misses: {} ; +{}/-{}", miss1.len(),
-             miss1.iter().filter(|m| m.2 > 0).count(), miss1.iter().filter(|m| m.2 < 0).count());
-    for m in miss1.iter().take(12) { println!("   k={:3} n={:3} d={:+}", m.0, m.1, m.2); }
+    println!(
+        "\nY1 misses: {} ; +{}/-{}",
+        miss1.len(),
+        miss1.iter().filter(|m| m.2 > 0).count(),
+        miss1.iter().filter(|m| m.2 < 0).count()
+    );
+    for m in miss1.iter().take(12) {
+        println!("   k={:3} n={:3} d={:+}", m.0, m.1, m.2);
+    }
 }

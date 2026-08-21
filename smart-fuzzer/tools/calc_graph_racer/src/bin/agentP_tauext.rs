@@ -43,7 +43,12 @@ fn load(path: &str) -> Vec<(String, f64, i64, f64)> {
             continue;
         }
         let (rh, nh) = k.split_once('|').unwrap();
-        out.push((k.clone(), fb(rh), nh.parse().unwrap(), fb(val.as_str().unwrap())));
+        out.push((
+            k.clone(),
+            fb(rh),
+            nh.parse().unwrap(),
+            fb(val.as_str().unwrap()),
+        ));
     }
     out
 }
@@ -54,7 +59,13 @@ fn hist(name: &str, v: &[i64]) {
     }
     let n = v.len();
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:34} {:4}/{:4} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:34} {:4}/{:4} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 2 {
@@ -89,7 +100,10 @@ fn main() {
             let _ = (r, n);
             let uext = exp_ext(taue);
             r_extf.push((tf(&uext) - 1.0).to_bits() as i64 - em_x.to_bits() as i64);
-            r_exte.push(tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64);
+            r_exte.push(
+                tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64
+                    - em_x.to_bits() as i64,
+            );
         }
     }
     println!("sensitive rows with prec-64 ext tau: {}", r_extf.len());

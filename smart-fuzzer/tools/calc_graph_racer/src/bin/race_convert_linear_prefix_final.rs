@@ -236,7 +236,11 @@ fn main() {
             to_exponent,
         );
         for (model, predicted) in MODELS.iter().zip(values) {
-            let score = scores.get_mut(&row.category).unwrap().get_mut(*model).unwrap();
+            let score = scores
+                .get_mut(&row.category)
+                .unwrap()
+                .get_mut(*model)
+                .unwrap();
             score.total += 1;
             let residual = ordered_bits(actual) - ordered_bits(predicted.to_bits());
             if residual == 0 {

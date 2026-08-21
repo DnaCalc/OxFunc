@@ -40,7 +40,13 @@ fn hist(name: &str, v: &[i64]) {
         return;
     }
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:36} {:5}/{:5} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:36} {:5}/{:5} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 3 {
@@ -96,7 +102,11 @@ fn main() {
             pos.push(*row);
         }
     }
-    println!("large |tau|>2:  tau<-2 (em near -1, ROBUST): {}   tau>2 (em large): {}", neg.len(), pos.len());
+    println!(
+        "large |tau|>2:  tau<-2 (em near -1, ROBUST): {}   tau>2 (em large): {}",
+        neg.len(),
+        pos.len()
+    );
 
     // ---- ROBUST lane: t<0, |t|>2, em = expm1(t) via u-1 branch ----
     println!("\n=== ROBUST t<0,|t|>2: t-delivery x expm1-form vs gold ===");
@@ -135,7 +145,10 @@ fn main() {
             let uext = exp_ext(&text);
             let ust = tf(&uext);
             r_ue.push((ust - 1.0).to_bits() as i64 - em_x.to_bits() as i64);
-            r_uee.push(tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64);
+            r_uee.push(
+                tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64
+                    - em_x.to_bits() as i64,
+            );
         }
         println!(" delivery {}", dn);
         hist("   exp(t_f64) stored; u-1 f64", &r_uf);

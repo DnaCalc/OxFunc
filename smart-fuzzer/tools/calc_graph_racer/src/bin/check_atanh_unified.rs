@@ -9,8 +9,12 @@ use calc_graph_racer::score::{WitnessArg, WitnessSet};
 use oxfunc_core::excel_numeric::research as rx;
 
 const CW: u16 = 0x133F;
-fn e(x: f64) -> rx::Ext80 { rx::ext_from_f64(x) }
-fn tof(v: &rx::Ext80) -> f64 { rx::ext_to_f64(v, CW) }
+fn e(x: f64) -> rx::Ext80 {
+    rx::ext_from_f64(x)
+}
+fn tof(v: &rx::Ext80) -> f64 {
+    rx::ext_to_f64(v, CW)
+}
 
 // --- reference forms (from check_atanh_full) ---
 fn atanh_pair_x87(x: f64) -> f64 {
@@ -33,27 +37,32 @@ fn atanh_pair_sse(x: f64) -> f64 {
 
 // --- unified log1p(2x/(1-x)) forms ---
 // arg formed in binary64, various groupings; log1p via x87 fyl2xp1; half staged 2 ways.
-fn uni_a(x: f64) -> f64 { // 2*x/(1-x), half in extended
+fn uni_a(x: f64) -> f64 {
+    // 2*x/(1-x), half in extended
     let r = 2.0 * x / (1.0 - x);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn uni_b(x: f64) -> f64 { // 2*(x/(1-x)), half in extended
+fn uni_b(x: f64) -> f64 {
+    // 2*(x/(1-x)), half in extended
     let r = 2.0 * (x / (1.0 - x));
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn uni_c(x: f64) -> f64 { // (2*x)/(1-x), half in extended
+fn uni_c(x: f64) -> f64 {
+    // (2*x)/(1-x), half in extended
     let r = (2.0 * x) / (1.0 - x);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn uni_a_store(x: f64) -> f64 { // 2*x/(1-x), log1p stored to f64 then *0.5
+fn uni_a_store(x: f64) -> f64 {
+    // 2*x/(1-x), log1p stored to f64 then *0.5
     let r = 2.0 * x / (1.0 - x);
     let l = tof(&rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW));
     0.5 * l
 }
-fn uni_ext(x: f64) -> f64 { // arg 2x/(1-x) fully in x87 extended, half extended
+fn uni_ext(x: f64) -> f64 {
+    // arg 2x/(1-x) fully in x87 extended, half extended
     let ex = e(x);
     let one = rx::ext_one();
     let num = rx::ext_mul(&e(2.0), &ex, CW);
@@ -62,42 +71,56 @@ fn uni_ext(x: f64) -> f64 { // arg 2x/(1-x) fully in x87 extended, half extended
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &r, CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn uni_fdlibm(x: f64) -> f64 { // fdlibm small-x argument: 2x + 2x*x/(1-x), binary64
+fn uni_fdlibm(x: f64) -> f64 {
+    // fdlibm small-x argument: 2x + 2x*x/(1-x), binary64
     let r = 2.0 * x + 2.0 * x * x / (1.0 - x);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
 
 // fdlibm-argument staging variants (all log1p via x87 fyl2xp1, half in extended).
-fn fd_lit(x: f64) -> f64 { // fdlibm literal: t=x+x; t + t*x/(1-x)
+fn fd_lit(x: f64) -> f64 {
+    // fdlibm literal: t=x+x; t + t*x/(1-x)
     let t = x + x;
     let r = t + t * x / (1.0 - x);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn fd_lit_grp(x: f64) -> f64 { // t=x+x; t + t*(x/(1-x))
+fn fd_lit_grp(x: f64) -> f64 {
+    // t=x+x; t + t*(x/(1-x))
     let t = x + x;
     let r = t + t * (x / (1.0 - x));
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn fd_grp2(x: f64) -> f64 { // 2x + (2x*x)/(1-x)
+fn fd_grp2(x: f64) -> f64 {
+    // 2x + (2x*x)/(1-x)
     let r = 2.0 * x + (2.0 * x * x) / (1.0 - x);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &e(r), CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn fd_corr_ext(x: f64) -> f64 { // 2x binary64 + correction 2x^2/(1-x) formed in x87, arg stored
+fn fd_corr_ext(x: f64) -> f64 {
+    // 2x binary64 + correction 2x^2/(1-x) formed in x87, arg stored
     let two_x = e(2.0 * x);
     let xx = rx::ext_mul(&e(x), &e(x), CW);
-    let corr = rx::ext_div(&rx::ext_mul(&e(2.0), &xx, CW), &rx::ext_sub(&rx::ext_one(), &e(x), CW), CW);
+    let corr = rx::ext_div(
+        &rx::ext_mul(&e(2.0), &xx, CW),
+        &rx::ext_sub(&rx::ext_one(), &e(x), CW),
+        CW,
+    );
     let arg = rx::ext_add(&two_x, &corr, CW);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &arg, CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
 }
-fn fd_full_ext(x: f64) -> f64 { // entire fdlibm arg in x87: t=2x; t + t*x/(1-x)
+fn fd_full_ext(x: f64) -> f64 {
+    // entire fdlibm arg in x87: t=2x; t + t*x/(1-x)
     let ex = e(x);
     let t = rx::ext_mul(&e(2.0), &ex, CW);
-    let corr = rx::ext_div(&rx::ext_mul(&t, &ex, CW), &rx::ext_sub(&rx::ext_one(), &ex, CW), CW);
+    let corr = rx::ext_div(
+        &rx::ext_mul(&t, &ex, CW),
+        &rx::ext_sub(&rx::ext_one(), &ex, CW),
+        CW,
+    );
     let arg = rx::ext_add(&t, &corr, CW);
     let l = rx::ext_fyl2xp1(&rx::ext_ln2(), &arg, CW);
     tof(&rx::ext_mul(&l, &e(0.5), CW))
@@ -109,8 +132,13 @@ fn load(paths: &[&str]) -> Vec<(f64, u64)> {
         let ws: WitnessSet =
             serde_json::from_str(&std::fs::read_to_string(p).expect("read")).expect("parse");
         for w in &ws.witnesses {
-            if !w.expected_bits.starts_with("0x") { continue; }
-            let x = match &w.args[0] { WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(), _ => continue };
+            if !w.expected_bits.starts_with("0x") {
+                continue;
+            }
+            let x = match &w.args[0] {
+                WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
+                _ => continue,
+            };
             if let Some(v) = parse_bits_hex(&w.expected_bits) {
                 m.insert(x.to_bits(), v.to_bits());
             }
@@ -124,9 +152,13 @@ fn score_region(name: &str, rows: &[(f64, u64)], lo: f64, hi: f64, f: &dyn Fn(f6
     let mut n = 0u32;
     for (x, want) in rows {
         let a = x.abs();
-        if a < lo || a >= hi { continue; }
+        if a < lo || a >= hi {
+            continue;
+        }
         n += 1;
-        if f(*x).to_bits() == *want { ok += 1; }
+        if f(*x).to_bits() == *want {
+            ok += 1;
+        }
     }
     println!("  {name:28} [{lo:.1e},{hi:.1e}): {ok}/{n}");
 }
@@ -144,7 +176,10 @@ fn main() {
     let band: Vec<(f64, u64)> = rows
         .iter()
         .cloned()
-        .filter(|(x, _)| { let a = x.abs(); a >= 9.5e-5 && a <= 1.02e-4 })
+        .filter(|(x, _)| {
+            let a = x.abs();
+            a >= 9.5e-5 && a <= 1.02e-4
+        })
         .collect();
     println!("Band rows (|x| in [9.5e-5, 1.02e-4]): {}", band.len());
 
@@ -167,11 +202,23 @@ fn main() {
         let mut rb = 0u32;
         let mut rbn = 0u32;
         for (x, want) in &rows {
-            if x.abs() < 9.5e-5 { rbn += 1; if f(*x).to_bits() == *want { rb += 1; } }
+            if x.abs() < 9.5e-5 {
+                rbn += 1;
+                if f(*x).to_bits() == *want {
+                    rb += 1;
+                }
+            }
         }
         let mut ok = 0;
-        for (x, want) in &band { if f(*x).to_bits() == *want { ok += 1; } }
-        println!("\n=== {name}: regionB {rb}/{rbn}  band {ok}/{} ===", band.len());
+        for (x, want) in &band {
+            if f(*x).to_bits() == *want {
+                ok += 1;
+            }
+        }
+        println!(
+            "\n=== {name}: regionB {rb}/{rbn}  band {ok}/{} ===",
+            band.len()
+        );
         for (x, want) in &band {
             let d = f(*x).to_bits() as i64 - *want as i64;
             println!("   x={x:+.6e}  got-want {d:+} ulp");
@@ -188,9 +235,9 @@ fn main() {
         ("uni_ext", uni_ext),
     ] {
         println!(" {name}:");
-        score_region(name, &rows, 0.0, 9.5e-5, &f);       // region B
-        score_region(name, &rows, 9.5e-5, 1.02e-4, &f);   // transition band
-        score_region(name, &rows, 1.02e-4, 1.0, &f);      // region C (fyl2xp1 out of domain for large x)
+        score_region(name, &rows, 0.0, 9.5e-5, &f); // region B
+        score_region(name, &rows, 9.5e-5, 1.02e-4, &f); // transition band
+        score_region(name, &rows, 1.02e-4, 1.0, &f); // region C (fyl2xp1 out of domain for large x)
     }
 
     // Per band row under ratio / pair_x87 / pair_sse (decide the switch side).
@@ -204,26 +251,50 @@ fn main() {
 
     // Boundary from existing data: largest |x| where pair_x87 is exact and
     // smallest |x| where ratio_x87 is exact — brackets the safe production floor.
-    let mut sorted: Vec<(f64, u64)> = rows.iter().cloned().filter(|(x, _)| x.abs() >= 5e-5 && x.abs() <= 2e-4).collect();
+    let mut sorted: Vec<(f64, u64)> = rows
+        .iter()
+        .cloned()
+        .filter(|(x, _)| x.abs() >= 5e-5 && x.abs() <= 2e-4)
+        .collect();
     sorted.sort_by(|a, b| a.0.abs().partial_cmp(&b.0.abs()).unwrap());
     println!("\n--- boundary bracket [5e-5, 2e-4], |x| ascending ---");
     for (x, want) in &sorted {
         let pe = atanh_pair_x87(*x).to_bits() == *want;
         let re = atanh_ratio_x87(*x).to_bits() == *want;
-        println!("   |x|={:.8e}  pair_x87 {}  ratio_x87 {}", x.abs(), if pe {"OK "} else {"..."}, if re {"OK "} else {"..."});
+        println!(
+            "   |x|={:.8e}  pair_x87 {}  ratio_x87 {}",
+            x.abs(),
+            if pe { "OK " } else { "..." },
+            if re { "OK " } else { "..." }
+        );
     }
 
     // Best unified-below / ratio-above piecewise: sweep switch T.
     println!("\n--- piecewise uni_a(|x|<T) | ratio_x87 else ---");
     let mut best = (0u32, 0f64);
-    for &t in &[8e-5f64, 9e-5, 9.5e-5, 1e-4, 1.02e-4, 1.05e-4, 1.1e-4, 1.2e-4, 1.25e-4, 1.5e-4, 2e-4] {
+    for &t in &[
+        8e-5f64, 9e-5, 9.5e-5, 1e-4, 1.02e-4, 1.05e-4, 1.1e-4, 1.2e-4, 1.25e-4, 1.5e-4, 2e-4,
+    ] {
         let mut ok = 0u32;
         for (x, want) in &rows {
-            let v = if x.abs() < t { uni_a(*x) } else { atanh_ratio_x87(*x) };
-            if v.to_bits() == *want { ok += 1; }
+            let v = if x.abs() < t {
+                uni_a(*x)
+            } else {
+                atanh_ratio_x87(*x)
+            };
+            if v.to_bits() == *want {
+                ok += 1;
+            }
         }
-        if ok > best.0 { best = (ok, t); }
+        if ok > best.0 {
+            best = (ok, t);
+        }
         println!("  T={t:.2e}: {ok}/{}", rows.len());
     }
-    println!("BEST uni|ratio piecewise: {}/{} at T={:.2e}", best.0, rows.len(), best.1);
+    println!(
+        "BEST uni|ratio piecewise: {}/{} at T={:.2e}",
+        best.0,
+        rows.len(),
+        best.1
+    );
 }

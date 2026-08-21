@@ -11,7 +11,8 @@ fn main() {
         if p.len() != 2 {
             continue;
         }
-        let g = |s: &str| f64::from_bits(u64::from_str_radix(s.trim_start_matches("0x"), 16).unwrap());
+        let g =
+            |s: &str| f64::from_bits(u64::from_str_radix(s.trim_start_matches("0x"), 16).unwrap());
         println!("{:016x}", regularized_gamma_p(g(p[1]), g(p[0])).to_bits());
     }
 }

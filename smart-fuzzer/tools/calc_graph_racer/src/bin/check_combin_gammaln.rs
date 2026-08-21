@@ -55,8 +55,15 @@ fn main() {
         ];
         for (vn, t) in variants {
             let v = rx::excel_exp(t);
-            let mark = if v.to_bits() == want { "  <-- MATCH" } else { "" };
-            println!("{name} {vn:16} exp -> 0x{:016x} want 0x{want:016x}{mark}", v.to_bits());
+            let mark = if v.to_bits() == want {
+                "  <-- MATCH"
+            } else {
+                ""
+            };
+            println!(
+                "{name} {vn:16} exp -> 0x{:016x} want 0x{want:016x}{mark}",
+                v.to_bits()
+            );
         }
         println!();
     }

@@ -10,7 +10,7 @@ mod common;
 mod model_v3;
 
 use common::{MetaDocument, ordered_bits};
-use model_v3::{Prediction, FREEZE_ID};
+use model_v3::{FREEZE_ID, Prediction};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
@@ -78,8 +78,15 @@ impl Score {
                 if self.first_misses.len() < 64 {
                     self.first_misses.push(format!(
                         "{} {} {}({},{},{}) residual={:+} predicted=0x{:016x} oracle=0x{:016x}",
-                        row.id, row.category, row.class, row.number_bits,
-                        row.from_unit, row.to_unit, residual, predicted_bits, actual_bits,
+                        row.id,
+                        row.category,
+                        row.class,
+                        row.number_bits,
+                        row.from_unit,
+                        row.to_unit,
+                        residual,
+                        predicted_bits,
+                        actual_bits,
                     ));
                 }
             }
@@ -88,8 +95,14 @@ impl Score {
                 if self.first_misses.len() < 64 {
                     self.first_misses.push(format!(
                         "{} {} {}({},{},{}) predicted={} oracle={}",
-                        row.id, row.category, row.class, row.number_bits,
-                        row.from_unit, row.to_unit, predicted, actual,
+                        row.id,
+                        row.category,
+                        row.class,
+                        row.number_bits,
+                        row.from_unit,
+                        row.to_unit,
+                        predicted,
+                        actual,
                     ));
                 }
             }
@@ -155,7 +168,9 @@ fn args() -> Args {
             "--answers" => answers = values.next().map(PathBuf::from),
             "--out" => out = values.next().map(PathBuf::from),
             "-h" | "--help" => {
-                println!("score_convert_unified_v3 --meta <meta.json> --answers <answers.json> [--out <report.json>]");
+                println!(
+                    "score_convert_unified_v3 --meta <meta.json> --answers <answers.json> [--out <report.json>]"
+                );
                 std::process::exit(0);
             }
             other => panic!("unknown argument {other}"),
@@ -181,7 +196,8 @@ fn row_id_even(id: &str) -> bool {
         .expect("row id suffix")
         .parse::<usize>()
         .expect("numeric row id suffix")
-        % 2 == 0
+        % 2
+        == 0
 }
 
 fn expected_args(row: &common::MetaRow) -> Value {
@@ -198,14 +214,23 @@ fn main() {
     assert_eq!(answers.function, "CONVERT");
     let mut by_id = BTreeMap::new();
     for witness in &answers.witnesses {
-        assert!(by_id.insert(witness.id.as_str(), witness).is_none(), "duplicate witness {}", witness.id);
+        assert!(
+            by_id.insert(witness.id.as_str(), witness).is_none(),
+            "duplicate witness {}",
+            witness.id
+        );
     }
     assert_eq!(metadata.rows.len(), by_id.len(), "row count drift");
 
     let mut score = Partitions::default();
     for row in &metadata.rows {
         let witness = by_id[&row.id.as_str()];
-        assert_eq!(witness.args, expected_args(row), "argument drift at {}", row.id);
+        assert_eq!(
+            witness.args,
+            expected_args(row),
+            "argument drift at {}",
+            row.id
+        );
         let number = common::f64_from_hex(&row.number_bits).unwrap();
         score.add(
             row,
@@ -215,18 +240,30 @@ fn main() {
     }
     score.finish();
 
-    let source_split = metadata.rows.first().map(|row| row.split.clone()).unwrap_or_default();
+    let source_split = metadata
+        .rows
+        .first()
+        .map(|row| row.split.clone())
+        .unwrap_or_default();
     println!("freeze_id={FREEZE_ID}");
     println!("source_split={source_split} rows={}", metadata.rows.len());
     println!(
         "all={}/{} even={}/{} odd={}/{} max_ulp={} sum_ulp={}",
-        score.all.exact, score.all.total,
-        score.even_numeric_id_suffix.exact, score.even_numeric_id_suffix.total,
-        score.odd_numeric_id_suffix.exact, score.odd_numeric_id_suffix.total,
-        score.all.max_abs_ulp, score.all.sum_abs_ulp,
+        score.all.exact,
+        score.all.total,
+        score.even_numeric_id_suffix.exact,
+        score.even_numeric_id_suffix.total,
+        score.odd_numeric_id_suffix.exact,
+        score.odd_numeric_id_suffix.total,
+        score.all.max_abs_ulp,
+        score.all.sum_abs_ulp,
     );
     for (category, total) in &score.all.category_total {
-        println!("  {category}: {}/{}", score.all.category_exact.get(category).copied().unwrap_or(0), total);
+        println!(
+            "  {category}: {}/{}",
+            score.all.category_exact.get(category).copied().unwrap_or(0),
+            total
+        );
     }
 
     let report = Report {

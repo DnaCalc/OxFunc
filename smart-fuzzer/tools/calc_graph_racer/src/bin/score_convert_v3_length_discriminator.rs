@@ -53,7 +53,11 @@ struct Report {
     capture_provenance: Value,
 }
 
-struct Args { meta: PathBuf, answers: PathBuf, out: PathBuf }
+struct Args {
+    meta: PathBuf,
+    answers: PathBuf,
+    out: PathBuf,
+}
 
 fn args() -> Args {
     let mut meta = None;
@@ -68,12 +72,18 @@ fn args() -> Args {
             other => panic!("unknown argument {other}"),
         }
     }
-    Args { meta: meta.expect("--meta"), answers: answers.expect("--answers"), out: out.expect("--out") }
+    Args {
+        meta: meta.expect("--meta"),
+        answers: answers.expect("--answers"),
+        out: out.expect("--out"),
+    }
 }
 
 fn bits(raw: &str) -> Option<u64> {
     let digits = raw.strip_prefix("0x")?;
-    (digits.len() == 16).then(|| u64::from_str_radix(digits, 16).ok()).flatten()
+    (digits.len() == 16)
+        .then(|| u64::from_str_radix(digits, 16).ok())
+        .flatten()
 }
 
 fn expected_args(row: &common::MetaRow) -> Value {
@@ -82,17 +92,31 @@ fn expected_args(row: &common::MetaRow) -> Value {
 
 fn main() {
     let args = args();
-    let metadata: MetaDocument = serde_json::from_slice(&std::fs::read(&args.meta).unwrap()).unwrap();
-    let answers: WitnessSet = serde_json::from_slice(&std::fs::read(&args.answers).unwrap()).unwrap();
+    let metadata: MetaDocument =
+        serde_json::from_slice(&std::fs::read(&args.meta).unwrap()).unwrap();
+    let answers: WitnessSet =
+        serde_json::from_slice(&std::fs::read(&args.answers).unwrap()).unwrap();
     assert_eq!(metadata.function, "CONVERT");
     assert_eq!(answers.function, "CONVERT");
-    let by_id: BTreeMap<_, _> = answers.witnesses.iter().map(|w| (w.id.as_str(), w)).collect();
+    let by_id: BTreeMap<_, _> = answers
+        .witnesses
+        .iter()
+        .map(|w| (w.id.as_str(), w))
+        .collect();
     assert_eq!(metadata.rows.len(), by_id.len(), "row count drift");
-    let mut scores: BTreeMap<_, _> = metadata.model_names.iter()
-        .map(|name| (name.clone(), Score::default())).collect();
+    let mut scores: BTreeMap<_, _> = metadata
+        .model_names
+        .iter()
+        .map(|name| (name.clone(), Score::default()))
+        .collect();
     for row in &metadata.rows {
         let witness = by_id[row.id.as_str()];
-        assert_eq!(witness.args, expected_args(row), "argument drift at {}", row.id);
+        assert_eq!(
+            witness.args,
+            expected_args(row),
+            "argument drift at {}",
+            row.id
+        );
         let actual = bits(&witness.expected_bits).expect("length result must be numeric");
         let pair = format!("{}->{}", row.from_unit, row.to_unit);
         for name in &metadata.model_names {
@@ -125,18 +149,27 @@ fn main() {
         score.max_abs_ulp = score.max_value.to_string();
     }
     for (name, score) in &scores {
-        println!("{name}: {}/{} sum={} max={}", score.exact, score.total, score.sum_abs_ulp, score.max_abs_ulp);
+        println!(
+            "{name}: {}/{} sum={} max={}",
+            score.exact, score.total, score.sum_abs_ulp, score.max_abs_ulp
+        );
     }
     let report = Report {
         schema_version: "w109.convert.v3_length_discriminator_score.v1",
         function: "CONVERT",
-        split: metadata.rows.first().map(|row| row.split.clone()).unwrap_or_default(),
+        split: metadata
+            .rows
+            .first()
+            .map(|row| row.split.clone())
+            .unwrap_or_default(),
         rows: metadata.rows.len(),
         metadata_model_names: metadata.model_names,
         scores,
         capture_provenance: answers.capture_provenance,
     };
-    if let Some(parent) = args.out.parent() { std::fs::create_dir_all(parent).unwrap(); }
+    if let Some(parent) = args.out.parent() {
+        std::fs::create_dir_all(parent).unwrap();
+    }
     std::fs::write(&args.out, serde_json::to_vec_pretty(&report).unwrap()).unwrap();
     println!("wrote -> {}", args.out.display());
 }

@@ -101,7 +101,10 @@ fn main() {
         // record
         if hits.is_empty() {
             none += 1;
-            classes.entry("UNEXPLAINED").and_modify(|c| *c += 1).or_insert(1);
+            classes
+                .entry("UNEXPLAINED")
+                .and_modify(|c| *c += 1)
+                .or_insert(1);
         } else if hits.len() == 1 {
             classes.entry(hits[0]).and_modify(|c| *c += 1).or_insert(1);
         } else {

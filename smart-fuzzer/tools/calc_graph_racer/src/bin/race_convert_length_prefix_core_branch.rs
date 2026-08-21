@@ -189,17 +189,10 @@ fn predictions(number: f64, from_raw: &str, to_raw: &str) -> [f64; MODELS.len()]
         &rx::ext_from_f64(angstroms(&from.direct)),
         cw,
     );
-    let x87_core = rx::ext_div(
-        &x87_product,
-        &rx::ext_from_f64(angstroms(&to.direct)),
-        cw,
-    );
+    let x87_core = rx::ext_div(&x87_product, &rx::ext_from_f64(angstroms(&to.direct)), cw);
     let x87_core_stored = rx::ext_to_f64(&x87_core, cw);
     let delta = pow10(from.prefix_exponent - to.prefix_exponent);
-    let x87_continuous = rx::ext_to_f64(
-        &rx::ext_mul(&x87_core, &rx::ext_from_f64(delta), cw),
-        cw,
-    );
+    let x87_continuous = rx::ext_to_f64(&rx::ext_mul(&x87_core, &rx::ext_from_f64(delta), cw), cw);
     let angstrom_ratio_core = number * (angstroms(&from.direct) / angstroms(&to.direct));
     let scale_1e13_core = (number * scale_1e13(&from.direct)) / scale_1e13(&to.direct);
     let effective_from = angstroms(&from.direct) * pow10(from.prefix_exponent);
@@ -222,12 +215,25 @@ fn predictions(number: f64, from_raw: &str, to_raw: &str) -> [f64; MODELS.len()]
         // common final-prefix map is overwritten below.
         number,
         number,
-        if same_direct && raw_differs { number } else { angstrom_core },
-        if same_direct && any_prefix { number } else { angstrom_core },
-        if same_direct && prefix_differs { number } else { angstrom_core },
+        if same_direct && raw_differs {
+            number
+        } else {
+            angstrom_core
+        },
+        if same_direct && any_prefix {
+            number
+        } else {
+            angstrom_core
+        },
+        if same_direct && prefix_differs {
+            number
+        } else {
+            angstrom_core
+        },
         if same_direct { number } else { angstrom_core },
     ];
-    let mut values = cores.map(|core| finish_prefix(core, from.prefix_exponent - to.prefix_exponent));
+    let mut values =
+        cores.map(|core| finish_prefix(core, from.prefix_exponent - to.prefix_exponent));
     values[2] = x87_continuous;
     values[5] = effective_mul_div;
     values[6] = effective_ratio_mul;
@@ -256,9 +262,10 @@ fn main() {
         }
         let actual = bits(&by_id[row.id.as_str()].expected_bits).expect("length must be numeric");
         let number = common::f64_from_hex(&row.number_bits).unwrap();
-        for (name, predicted) in MODELS
-            .iter()
-            .zip(predictions(number, &row.from_unit, &row.to_unit))
+        for (name, predicted) in
+            MODELS
+                .iter()
+                .zip(predictions(number, &row.from_unit, &row.to_unit))
         {
             let score = scores.get_mut(*name).unwrap();
             score.total += 1;

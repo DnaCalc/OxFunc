@@ -36,7 +36,9 @@ struct Probe {
 }
 
 #[derive(Clone, Serialize)]
-struct ProbeEnvelope { probe: Probe }
+struct ProbeEnvelope {
+    probe: Probe,
+}
 
 #[derive(Serialize)]
 struct ProbeBatch {
@@ -48,7 +50,10 @@ struct ProbeBatch {
 }
 
 #[derive(Clone)]
-struct Resolved { direct: String, prefix_exponent: i32 }
+struct Resolved {
+    direct: String,
+    prefix_exponent: i32,
+}
 
 struct Builder {
     sequence: usize,
@@ -60,7 +65,13 @@ struct Builder {
 
 impl Builder {
     fn new(prior: BTreeSet<(u64, String, String)>) -> Self {
-        Self { sequence: 0, prior, emitted: BTreeSet::new(), probes: Vec::new(), rows: Vec::new() }
+        Self {
+            sequence: 0,
+            prior,
+            emitted: BTreeSet::new(),
+            probes: Vec::new(),
+            rows: Vec::new(),
+        }
     }
 
     fn contains(&self, number: f64, from: &str, to: &str) -> bool {
@@ -86,7 +97,11 @@ impl Builder {
         self.probes.push(ProbeEnvelope {
             probe: Probe {
                 id: id.clone(),
-                args: [format!("0x{:016x}", number.to_bits()), from.to_string(), to.to_string()],
+                args: [
+                    format!("0x{:016x}", number.to_bits()),
+                    from.to_string(),
+                    to.to_string(),
+                ],
             },
         });
         self.rows.push(MetaRow {
@@ -106,20 +121,40 @@ impl Builder {
 
 fn prefix_exponent(prefix: &str) -> i32 {
     match prefix {
-        "Y" => 24, "Z" => 21, "E" => 18, "P" => 15, "T" => 12,
-        "G" => 9, "M" => 6, "k" => 3, "h" => 2, "da" => 1,
-        "d" => -1, "c" => -2, "m" => -3, "u" => -6, "n" => -9,
-        "p" => -12, "f" => -15, other => panic!("unknown prefix {other}"),
+        "Y" => 24,
+        "Z" => 21,
+        "E" => 18,
+        "P" => 15,
+        "T" => 12,
+        "G" => 9,
+        "M" => 6,
+        "k" => 3,
+        "h" => 2,
+        "da" => 1,
+        "d" => -1,
+        "c" => -2,
+        "m" => -3,
+        "u" => -6,
+        "n" => -9,
+        "p" => -12,
+        "f" => -15,
+        other => panic!("unknown prefix {other}"),
     }
 }
 
 fn resolve(unit: &str) -> Resolved {
     if common::direct_unit(unit).is_some() {
-        return Resolved { direct: unit.to_string(), prefix_exponent: 0 };
+        return Resolved {
+            direct: unit.to_string(),
+            prefix_exponent: 0,
+        };
     }
     for (prefix, _) in common::PREFIXES {
         if unit == format!("{prefix}m") {
-            return Resolved { direct: "m".to_string(), prefix_exponent: prefix_exponent(prefix) };
+            return Resolved {
+                direct: "m".to_string(),
+                prefix_exponent: prefix_exponent(prefix),
+            };
         }
     }
     panic!("cannot resolve length unit {unit}");
@@ -137,7 +172,9 @@ fn factor(unit: &str) -> f64 {
     }
 }
 
-fn pow10(exponent: i32) -> f64 { format!("1e{exponent}").parse().unwrap() }
+fn pow10(exponent: i32) -> f64 {
+    format!("1e{exponent}").parse().unwrap()
+}
 
 fn pc64_mul(left: &rx::Ext80, right: &rx::Ext80) -> rx::Ext80 {
     rx::ext_mul(left, right, rx::CW_PC64_RN)
@@ -191,7 +228,11 @@ fn predictions(number: f64, from_raw: &str, to_raw: &str) -> BTreeMap<String, St
     } else {
         let multiplier = 1.0 / pow10(-delta);
         rx::ext_to_f64(
-            &rx::ext_mul(&rx::ext_from_f64(f64_core), &rx::ext_from_f64(multiplier), cw),
+            &rx::ext_mul(
+                &rx::ext_from_f64(f64_core),
+                &rx::ext_from_f64(multiplier),
+                cw,
+            ),
             cw,
         )
     };
@@ -207,9 +248,11 @@ fn predictions(number: f64, from_raw: &str, to_raw: &str) -> BTreeMap<String, St
         reciprocal,
         finish_pc64(g15_core, delta),
     ];
-    MODEL_NAMES.iter().zip(values).map(|(name, value)| {
-        ((*name).to_string(), format!("0x{:016x}", value.to_bits()))
-    }).collect()
+    MODEL_NAMES
+        .iter()
+        .zip(values)
+        .map(|(name, value)| ((*name).to_string(), format!("0x{:016x}", value.to_bits())))
+        .collect()
 }
 
 fn informative(number: f64, from: &str, to: &str) -> bool {
@@ -235,11 +278,19 @@ fn candidate(seed: &mut u64, exponent: i32) -> f64 {
 }
 
 fn next_up(value: f64) -> f64 {
-    if value >= 0.0 { f64::from_bits(value.to_bits() + 1) } else { f64::from_bits(value.to_bits() - 1) }
+    if value >= 0.0 {
+        f64::from_bits(value.to_bits() + 1)
+    } else {
+        f64::from_bits(value.to_bits() - 1)
+    }
 }
 
 fn next_down(value: f64) -> f64 {
-    if value > 0.0 { f64::from_bits(value.to_bits() - 1) } else { f64::from_bits(value.to_bits() + 1) }
+    if value > 0.0 {
+        f64::from_bits(value.to_bits() - 1)
+    } else {
+        f64::from_bits(value.to_bits() + 1)
+    }
 }
 
 fn prior_seen(root: &Path) -> BTreeSet<(u64, String, String)> {
@@ -249,9 +300,14 @@ fn prior_seen(root: &Path) -> BTreeSet<(u64, String, String)> {
         "batch-convert-heldout-20260809-meta.json",
         "batch-convert-publication-heldout-v2-20260809-meta.json",
     ] {
-        let document: MetaDocument = serde_json::from_slice(&std::fs::read(root.join(name)).unwrap()).unwrap();
+        let document: MetaDocument =
+            serde_json::from_slice(&std::fs::read(root.join(name)).unwrap()).unwrap();
         for row in document.rows {
-            seen.insert((common::f64_from_hex(&row.number_bits).unwrap().to_bits(), row.from_unit, row.to_unit));
+            seen.insert((
+                common::f64_from_hex(&row.number_bits).unwrap().to_bits(),
+                row.from_unit,
+                row.to_unit,
+            ));
         }
     }
     seen
@@ -267,15 +323,35 @@ fn main() {
     // Explicitly replay the one retired v2 kill, plus exact bit neighbors.
     let target = u64::from_str_radix("457bc2d00cc56eb2", 16).unwrap();
     for offset in -64_i64..=64 {
-        let bits = if offset >= 0 { target + offset as u64 } else { target - offset.unsigned_abs() };
-        builder.push("retired-v2-kill-adjacent", f64::from_bits(bits), "nm", "Pm", true);
-        builder.push("retired-v2-kill-adjacent-negative", f64::from_bits(bits | (1_u64 << 63)), "nm", "Pm", false);
+        let bits = if offset >= 0 {
+            target + offset as u64
+        } else {
+            target - offset.unsigned_abs()
+        };
+        builder.push(
+            "retired-v2-kill-adjacent",
+            f64::from_bits(bits),
+            "nm",
+            "Pm",
+            true,
+        );
+        builder.push(
+            "retired-v2-kill-adjacent-negative",
+            f64::from_bits(bits | (1_u64 << 63)),
+            "nm",
+            "Pm",
+            false,
+        );
     }
 
     // Every same-base prefix pair realizing +/-24 decimal exponents.
     let delta24_pairs = [
-        ("fm", "Gm"), ("pm", "Tm"), ("nm", "Pm"),
-        ("um", "Em"), ("mm", "Zm"), ("m", "Ym"),
+        ("fm", "Gm"),
+        ("pm", "Tm"),
+        ("nm", "Pm"),
+        ("um", "Em"),
+        ("mm", "Zm"),
+        ("m", "Ym"),
     ];
     let exponents: Vec<i32> = (-128..=160).step_by(4).collect();
     for (from, to) in delta24_pairs {
@@ -287,11 +363,22 @@ fn main() {
                     if builder.contains(value, left, right) || !informative(value, left, right) {
                         continue;
                     }
-                    builder.push(&format!("delta24-{direction}-disagreement"), value, left, right, false);
+                    builder.push(
+                        &format!("delta24-{direction}-disagreement"),
+                        value,
+                        left,
+                        right,
+                        false,
+                    );
                     accepted += 1;
-                    if accepted == 2 { break; }
+                    if accepted == 2 {
+                        break;
+                    }
                 }
-                assert_eq!(accepted, 2, "could not fill {left}->{right} exponent {exponent}");
+                assert_eq!(
+                    accepted, 2,
+                    "could not fill {left}->{right} exponent {exponent}"
+                );
             }
         }
     }
@@ -300,15 +387,30 @@ fn main() {
     // magnitude band, shared across the delta-24 family and nearby controls.
     let boundary_exponents = [29, 52, 53, 63, 64, 79, 80, 87, 88, 89, 90, 95, 96, 104, 127];
     let control_pairs = [
-        ("nm", "Tm"), ("nm", "Em"), ("nm", "Zm"),
-        ("pm", "Pm"), ("pm", "Em"), ("um", "Pm"),
-        ("um", "Zm"), ("mm", "Pm"), ("mm", "Em"),
-        ("fm", "Pm"), ("fm", "Em"), ("m", "Zm"),
+        ("nm", "Tm"),
+        ("nm", "Em"),
+        ("nm", "Zm"),
+        ("pm", "Pm"),
+        ("pm", "Em"),
+        ("um", "Pm"),
+        ("um", "Zm"),
+        ("mm", "Pm"),
+        ("mm", "Em"),
+        ("fm", "Pm"),
+        ("fm", "Em"),
+        ("m", "Zm"),
     ];
     for (from, to) in delta24_pairs.into_iter().chain(control_pairs) {
         for exponent in boundary_exponents {
             let power = 2.0_f64.powi(exponent);
-            for value in [next_down(power), power, next_up(power), -next_down(power), -power, -next_up(power)] {
+            for value in [
+                next_down(power),
+                power,
+                next_up(power),
+                -next_down(power),
+                -power,
+                -next_up(power),
+            ] {
                 builder.push("power-boundary-control", value, from, to, false);
             }
         }
@@ -319,7 +421,11 @@ fn main() {
     let target_value = f64::from_bits(target);
     for (from, to) in delta24_pairs.into_iter().chain(control_pairs) {
         for offset in -8_i64..=8 {
-            let bits = if offset >= 0 { target + offset as u64 } else { target - offset.unsigned_abs() };
+            let bits = if offset >= 0 {
+                target + offset as u64
+            } else {
+                target - offset.unsigned_abs()
+            };
             for value in [f64::from_bits(bits), f64::from_bits(bits | (1_u64 << 63))] {
                 builder.push("fixed-kill-mantissa-cross-pair", value, from, to, false);
             }
@@ -328,7 +434,14 @@ fn main() {
         builder.push("fixed-kill-mantissa-reverse", target_value, to, from, false);
     }
 
-    assert!(builder.rows.iter().any(|row| row.number_bits == "0x457bc2d00cc56eb2" && row.from_unit == "nm" && row.to_unit == "Pm"));
+    assert!(
+        builder
+            .rows
+            .iter()
+            .any(|row| row.number_bits == "0x457bc2d00cc56eb2"
+                && row.from_unit == "nm"
+                && row.to_unit == "Pm")
+    );
     let informative_count = builder.rows.iter().filter(|row| row.informative).count();
     let batch = ProbeBatch {
         schema_version: "w109.convert.typed_probe_batch.v3-discriminator",
@@ -357,7 +470,10 @@ fn main() {
     std::fs::write(&meta_path, serde_json::to_vec_pretty(&metadata).unwrap()).unwrap();
     println!(
         "v3 discriminator rows={} informative={} prior={} -> {}",
-        metadata.rows.len(), informative_count, prior_count, batch_path.display()
+        metadata.rows.len(),
+        informative_count,
+        prior_count,
+        batch_path.display()
     );
     println!("metadata -> {}", meta_path.display());
 }

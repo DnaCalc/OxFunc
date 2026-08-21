@@ -324,15 +324,12 @@ fn main() {
         }
     }
     scores.sort_by(|left, right| {
-        right
-            .exact
-            .cmp(&left.exact)
-            .then(
-                left.sum_abs_ulp
-                    .parse::<u128>()
-                    .unwrap()
-                    .cmp(&right.sum_abs_ulp.parse::<u128>().unwrap()),
-            )
+        right.exact.cmp(&left.exact).then(
+            left.sum_abs_ulp
+                .parse::<u128>()
+                .unwrap()
+                .cmp(&right.sum_abs_ulp.parse::<u128>().unwrap()),
+        )
     });
     for score in scores.iter().take(20) {
         println!(

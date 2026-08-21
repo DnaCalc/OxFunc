@@ -45,10 +45,7 @@ const TIME_CANDIDATES: [&str; 7] = [
     "public_direct_x87_decimal_ratio_store_f64_mul_pow10",
 ];
 
-const VOLUME_CANDIDATES: [&str; 2] = [
-    "physical_f64_ratio_mul_pow10",
-    "physical_f64_mul_div_pow10",
-];
+const VOLUME_CANDIDATES: [&str; 2] = ["physical_f64_ratio_mul_pow10", "physical_f64_mul_div_pow10"];
 
 #[derive(Deserialize)]
 struct WitnessSet {
@@ -219,7 +216,9 @@ fn parse_args() -> Args {
             "--answers" => answers = values.next().map(PathBuf::from),
             "--out" => out = values.next().map(PathBuf::from),
             "-h" | "--help" => {
-                println!("score_convert_unified --meta <meta.json> --answers <answers.json> [--out <report.json>]");
+                println!(
+                    "score_convert_unified --meta <meta.json> --answers <answers.json> [--out <report.json>]"
+                );
                 std::process::exit(0);
             }
             other => panic!("unknown argument {other}"),
@@ -285,7 +284,11 @@ fn base_unit(category: &str) -> Option<&'static str> {
 
 fn resolve_unit(name: &str, category: &str) -> ResolvedUnit {
     if let Some(direct) = common::direct_unit(name) {
-        assert_eq!(direct.category.name(), category, "category drift for {name}");
+        assert_eq!(
+            direct.category.name(),
+            category,
+            "category drift for {name}"
+        );
         return ResolvedUnit {
             direct_name: name.to_string(),
             prefix_exponent: 0,
@@ -329,12 +332,7 @@ fn public_direct_decimal(unit: &str) -> &'static str {
     }
 }
 
-fn physical_prediction(
-    model: &str,
-    number: f64,
-    from: &ResolvedUnit,
-    to: &ResolvedUnit,
-) -> f64 {
+fn physical_prediction(model: &str, number: f64, from: &ResolvedUnit, to: &ResolvedUnit) -> f64 {
     let from_decimal = physical_decimal(&from.direct_name);
     let to_decimal = physical_decimal(&to.direct_name);
     let prefix = pow10(from.prefix_exponent - to.prefix_exponent);
@@ -365,12 +363,7 @@ fn physical_prediction(
     }
 }
 
-fn public_prediction(
-    model: &str,
-    number: f64,
-    from: &ResolvedUnit,
-    to: &ResolvedUnit,
-) -> f64 {
+fn public_prediction(model: &str, number: f64, from: &ResolvedUnit, to: &ResolvedUnit) -> f64 {
     let from_decimal = public_direct_decimal(&from.direct_name);
     let to_decimal = public_direct_decimal(&to.direct_name);
     let prefix = pow10(from.prefix_exponent - to.prefix_exponent);
@@ -446,10 +439,7 @@ fn temperature_prediction(number: f64, from: &str, to: &str) -> f64 {
     }
 }
 
-fn fixed_prediction(
-    row: &common::MetaRow,
-    selected: &BTreeMap<String, String>,
-) -> Prediction {
+fn fixed_prediction(row: &common::MetaRow, selected: &BTreeMap<String, String>) -> Prediction {
     let number = common::f64_from_hex(&row.number_bits).unwrap();
     if row.category == "temperature" {
         return Prediction::Numeric(
@@ -465,23 +455,14 @@ fn fixed_prediction(
                 Prediction::ErrorNa
             } else {
                 Prediction::Numeric(
-                    public_prediction(
-                        "public_direct_f64_ratio_mul_pow10",
-                        number,
-                        &from,
-                        &to,
-                    )
-                    .to_bits(),
+                    public_prediction("public_direct_f64_ratio_mul_pow10", number, &from, &to)
+                        .to_bits(),
                 )
             }
         }
-        "mass" | "time" | "volume" => candidate_prediction(
-            &row.category,
-            &selected[&row.category],
-            number,
-            &from,
-            &to,
-        ),
+        "mass" | "time" | "volume" => {
+            candidate_prediction(&row.category, &selected[&row.category], number, &from, &to)
+        }
         other => panic!("unknown category {other}"),
     }
 }
@@ -551,8 +532,7 @@ fn main() {
     }
     assert_eq!(metadata.rows.len(), by_id.len(), "row-count drift");
 
-    let mut candidate_scores: BTreeMap<String, BTreeMap<String, Partitions>> =
-        BTreeMap::new();
+    let mut candidate_scores: BTreeMap<String, BTreeMap<String, Partitions>> = BTreeMap::new();
     for category in ["mass", "time", "volume"] {
         candidate_scores.insert(
             category.to_string(),
@@ -565,7 +545,12 @@ fn main() {
 
     for row in &metadata.rows {
         let witness = by_id[&row.id.as_str()];
-        assert_eq!(witness.args, expected_args(row), "argument drift at {}", row.id);
+        assert_eq!(
+            witness.args,
+            expected_args(row),
+            "argument drift at {}",
+            row.id
+        );
         if !matches!(row.category.as_str(), "mass" | "time" | "volume") {
             continue;
         }
@@ -599,7 +584,11 @@ fn main() {
     let mut unified = Partitions::default();
     for row in &metadata.rows {
         let witness = by_id[&row.id.as_str()];
-        unified.add(row, fixed_prediction(row, &selected), &witness.expected_bits);
+        unified.add(
+            row,
+            fixed_prediction(row, &selected),
+            &witness.expected_bits,
+        );
     }
 
     for category in candidate_scores.values_mut() {

@@ -9,13 +9,22 @@ fn f(bits: u64) -> f64 {
 }
 
 fn fsin(x: f64) -> f64 {
-    rx::ext_to_f64(&rx::ext_sin(&rx::ext_from_f64(x), rx::CW_PC64_RN), rx::CW_PC64_RN)
+    rx::ext_to_f64(
+        &rx::ext_sin(&rx::ext_from_f64(x), rx::CW_PC64_RN),
+        rx::CW_PC64_RN,
+    )
 }
 fn fcos(x: f64) -> f64 {
-    rx::ext_to_f64(&rx::ext_cos(&rx::ext_from_f64(x), rx::CW_PC64_RN), rx::CW_PC64_RN)
+    rx::ext_to_f64(
+        &rx::ext_cos(&rx::ext_from_f64(x), rx::CW_PC64_RN),
+        rx::CW_PC64_RN,
+    )
 }
 fn fptan(x: f64) -> f64 {
-    rx::ext_to_f64(&rx::ext_tan(&rx::ext_from_f64(x), rx::CW_PC64_RN), rx::CW_PC64_RN)
+    rx::ext_to_f64(
+        &rx::ext_tan(&rx::ext_from_f64(x), rx::CW_PC64_RN),
+        rx::CW_PC64_RN,
+    )
 }
 
 /// FPREM1 pre-reduction against 2π (extended FLDPI doubled exactly), then the
@@ -82,8 +91,15 @@ fn main() {
     ] {
         let _ = (x, excel);
     }
-    println!("sin_pi(1.5) 0x{:016x} vs platform 0x{:016x}", sin_pi_parity(1.5).to_bits(), (1.5f64).sin().to_bits());
-    println!("cos_pi(149.214601836) 0x{:016x}", cos_pi_parity(149.214601836f64).to_bits());
+    println!(
+        "sin_pi(1.5) 0x{:016x} vs platform 0x{:016x}",
+        sin_pi_parity(1.5).to_bits(),
+        (1.5f64).sin().to_bits()
+    );
+    println!(
+        "cos_pi(149.214601836) 0x{:016x}",
+        cos_pi_parity(149.214601836f64).to_bits()
+    );
 
     // Debug the cos quadrant dispatch on the failing near-π/2 rows.
     debug_rows();

@@ -11,21 +11,24 @@ use rx::{
 const CW: u16 = CW_PC64_RN;
 const RN53: u16 = CW_PC53_RN;
 
-fn b(s: &str) -> f64 { f64::from_bits(u64::from_str_radix(s, 16).unwrap()) }
+fn b(s: &str) -> f64 {
+    f64::from_bits(u64::from_str_radix(s, 16).unwrap())
+}
 
 // exp(tau) at 80-bit via the fFEXP F2XM1 reduction. Returns (u_ext, w_ext, K) where u=scale(1+w,K).
 fn exp_ext(tau: &Ext80, l2e: &Ext80) -> (Ext80, Ext80, Ext80) {
-    let y = ext_mul(tau, l2e, CW);        // tau*log2(e)
-    let kk = ext_rndint(&y, CW);          // round-nearest integer
-    let f = ext_sub(&y, &kk, CW);         // |f| <= 0.5
-    let w = ext_f2xm1(&f, CW);            // 2^f - 1
+    let y = ext_mul(tau, l2e, CW); // tau*log2(e)
+    let kk = ext_rndint(&y, CW); // round-nearest integer
+    let f = ext_sub(&y, &kk, CW); // |f| <= 0.5
+    let w = ext_f2xm1(&f, CW); // 2^f - 1
     let onepw = ext_add(&w, &ext_one(), CW);
-    let u = ext_scale(&onepw, &kk, CW);   // 2^K*(1+w)
+    let u = ext_scale(&onepw, &kk, CW); // 2^K*(1+w)
     (u, w, kk)
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let ln2 = ext_ln2();
     let l2e = ext_l2e();
     let one = ext_one();
@@ -41,25 +44,34 @@ fn main() {
     let mut score_miss = [0u32; 5];
     let (mut tot, mut nmiss) = (0u32, 0u32);
     let (mut tau_ok, mut u_ok) = (0u32, 0u32);
-    let mut fix1: Vec<(i32,u32)> = Vec::new();
+    let mut fix1: Vec<(i32, u32)> = Vec::new();
     let mut break1 = 0u32;
 
     for line in csv.lines().skip(1) {
         let f: Vec<&str> = line.split(',').collect();
-        if f.len() < 6 { continue; }
+        if f.len() < 6 {
+            continue;
+        }
         let k: i32 = f[0].parse().unwrap();
         let n: u32 = f[1].parse().unwrap();
-        let tau_cap = b(f[2]); let u_cap = b(f[3]); let lnu_cap = b(f[4]); let em = b(f[5]);
+        let tau_cap = b(f[2]);
+        let u_cap = b(f[3]);
+        let lnu_cap = b(f[4]);
+        let em = b(f[5]);
         let emb = em.to_bits();
         tot += 1;
         let r = 2f64.powi(k);
 
         // fully-extended chain from (r,n)
-        let l1p = ext_fyl2xp1(&ln2, &ext_from_f64(r), CW);      // ln(1+r) 80-bit
+        let l1p = ext_fyl2xp1(&ln2, &ext_from_f64(r), CW); // ln(1+r) 80-bit
         let tau_ext = ext_mul(&ext_from_f64(-(n as f64)), &l1p, CW); // -n*ln(1+r)
-        if ext_to_f64(&tau_ext, RN53).to_bits() == tau_cap.to_bits() { tau_ok += 1; }
+        if ext_to_f64(&tau_ext, RN53).to_bits() == tau_cap.to_bits() {
+            tau_ok += 1;
+        }
         let (u_ext, w_ext, _kk) = exp_ext(&tau_ext, &l2e);
-        if ext_to_f64(&u_ext, RN53).to_bits() == u_cap.to_bits() { u_ok += 1; }
+        if ext_to_f64(&u_ext, RN53).to_bits() == u_cap.to_bits() {
+            u_ok += 1;
+        }
 
         let a_ext = ext_sub(&u_ext, &one, CW);
         let lnu_ext = ext_fyl2x(&ln2, &u_ext, CW);
@@ -78,17 +90,50 @@ fn main() {
 
         let cands = [c0, c1, c2, c3, c4];
         let base_miss = c0 != emb;
-        if base_miss { nmiss += 1; }
-        for i in 0..5 { if cands[i]==emb { score[i]+=1; if base_miss { score_miss[i]+=1; } } }
-        if base_miss { if c1==emb { fix1.push((k,n)); } } else if c1!=emb { break1+=1; }
+        if base_miss {
+            nmiss += 1;
+        }
+        for i in 0..5 {
+            if cands[i] == emb {
+                score[i] += 1;
+                if base_miss {
+                    score_miss[i] += 1;
+                }
+            }
+        }
+        if base_miss {
+            if c1 == emb {
+                fix1.push((k, n));
+            }
+        } else if c1 != emb {
+            break1 += 1;
+        }
     }
 
-    println!("N={} misses={} | ext-tau==cap: {}/{}  ext-u==cap: {}/{}", tot, nmiss, tau_ok, tot, u_ok, tot);
+    println!(
+        "N={} misses={} | ext-tau==cap: {}/{}  ext-u==cap: {}/{}",
+        tot, nmiss, tau_ok, tot, u_ok, tot
+    );
     println!("{:<44} {:>12} {:>10}", "candidate", "all", "on-miss");
     for i in 0..5 {
-        println!("{:<44} {:>4}/{} ({:4.1}%) {:>4}/{}", names[i], score[i], tot,
-                 100.0*score[i] as f64/tot as f64, score_miss[i], nmiss);
+        println!(
+            "{:<44} {:>4}/{} ({:4.1}%) {:>4}/{}",
+            names[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            score_miss[i],
+            nmiss
+        );
     }
-    println!("\nfull-ext(1) FIXES {} miss rows, BREAKS {} hit rows", fix1.len(), break1);
-    print!("fixed: "); for x in fix1.iter().take(24) { print!("({},{}) ", x.0, x.1); } println!();
+    println!(
+        "\nfull-ext(1) FIXES {} miss rows, BREAKS {} hit rows",
+        fix1.len(),
+        break1
+    );
+    print!("fixed: ");
+    for x in fix1.iter().take(24) {
+        print!("({},{}) ", x.0, x.1);
+    }
+    println!();
 }

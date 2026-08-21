@@ -39,11 +39,7 @@ fn shapes(lo: usize, hi: usize) -> Vec<Shape> {
     for split in lo..hi {
         for left in shapes(lo, split) {
             for right in shapes(split + 1, hi) {
-                out.push(Shape::Node(
-                    Box::new(left.clone()),
-                    Box::new(right),
-                    split,
-                ));
+                out.push(Shape::Node(Box::new(left.clone()), Box::new(right), split));
             }
         }
     }
@@ -162,7 +158,10 @@ pub fn store_mask_variants(g: &Graph, node_ids: &[NodeId]) -> Vec<Graph> {
 /// product). Capped so |models|^|nodes| stays under 100k variants.
 pub fn model_variants(g: &Graph, node_ids: &[NodeId], models: &[EvalModel]) -> Vec<Graph> {
     let space = (models.len() as u64).pow(node_ids.len() as u32);
-    assert!(space <= 100_000, "model assignment space too large ({space})");
+    assert!(
+        space <= 100_000,
+        "model assignment space too large ({space})"
+    );
     let mut out = Vec::with_capacity(space as usize);
     let mut assignment = vec![0usize; node_ids.len()];
     loop {

@@ -276,19 +276,26 @@ fn main() {
         let from = resolve(&row.from_unit, &row.category);
         let to = resolve(&row.to_unit, &row.category);
         let number = common::f64_from_hex(&row.number_bits).unwrap();
-        let core = (number * factor(&row.category, &from.direct))
-            / factor(&row.category, &to.direct);
-        for (name, predicted) in MODELS
-            .iter()
-            .zip(predictions(core, from.prefix_exponent, to.prefix_exponent))
+        let core =
+            (number * factor(&row.category, &from.direct)) / factor(&row.category, &to.direct);
+        for (name, predicted) in
+            MODELS
+                .iter()
+                .zip(predictions(core, from.prefix_exponent, to.prefix_exponent))
         {
             let score = scores.get_mut(*name).unwrap();
             score.total += 1;
-            *score.category_total.entry(row.category.clone()).or_default() += 1;
+            *score
+                .category_total
+                .entry(row.category.clone())
+                .or_default() += 1;
             let residual = ordered_bits(actual) - ordered_bits(predicted.to_bits());
             if residual == 0 {
                 score.exact += 1;
-                *score.category_exact.entry(row.category.clone()).or_default() += 1;
+                *score
+                    .category_exact
+                    .entry(row.category.clone())
+                    .or_default() += 1;
             } else {
                 let abs = residual.unsigned_abs();
                 score.sum_abs_ulp = score

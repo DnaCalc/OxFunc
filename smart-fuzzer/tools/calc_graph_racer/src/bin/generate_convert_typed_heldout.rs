@@ -57,13 +57,7 @@ impl SplitBuilder {
         }
     }
 
-    fn push_linear(
-        &mut self,
-        class: &str,
-        number: f64,
-        from: &OwnedUnitSpec,
-        to: &OwnedUnitSpec,
-    ) {
+    fn push_linear(&mut self, class: &str, number: f64, from: &OwnedUnitSpec, to: &OwnedUnitSpec) {
         assert_eq!(from.category, to.category);
         if !number.is_finite() || number == 0.0 {
             return;
@@ -324,7 +318,9 @@ fn add_discovery(discovery: &mut SplitBuilder) -> Vec<(OwnedUnitSpec, OwnedUnitS
     // model scores.
     for from in ["K", "C", "F"] {
         for to in ["K", "C", "F"] {
-            for number in [-459.67, -273.15, -40.0, 0.0, 32.0, 68.0, 100.0, 212.0, 273.15, 373.15] {
+            for number in [
+                -459.67, -273.15, -40.0, 0.0, 32.0, 68.0, 100.0, 212.0, 273.15, 373.15,
+            ] {
                 discovery.push_unmodeled("temperature-affine-control", number, from, to);
             }
         }
@@ -442,7 +438,10 @@ fn write_split(root: &Path, split: SplitBuilder) {
         batch_path.display()
     );
     println!("wrote model metadata -> {}", meta_path.display());
-    println!("wrote synthetic scorer self-test -> {}", synthetic_path.display());
+    println!(
+        "wrote synthetic scorer self-test -> {}",
+        synthetic_path.display()
+    );
 }
 
 fn write_smoke(root: &Path, discovery: &SplitBuilder) {
@@ -483,7 +482,9 @@ fn write_smoke(root: &Path, discovery: &SplitBuilder) {
     let meta = MetaDocument {
         schema_version: "w109.convert.model_predictions.v1".to_string(),
         function: "CONVERT".to_string(),
-        selection_note: "Five-row mixed numeric/text live plumbing smoke extracted from the discovery batch.".to_string(),
+        selection_note:
+            "Five-row mixed numeric/text live plumbing smoke extracted from the discovery batch."
+                .to_string(),
         model_names: MODEL_NAMES.iter().map(|name| (*name).to_string()).collect(),
         rows,
     };
@@ -491,7 +492,11 @@ fn write_smoke(root: &Path, discovery: &SplitBuilder) {
     let meta_path = root.join("batch-convert-smoke-20260809-meta.json");
     std::fs::write(&batch_path, serde_json::to_vec_pretty(&batch).unwrap()).unwrap();
     std::fs::write(&meta_path, serde_json::to_vec_pretty(&meta).unwrap()).unwrap();
-    println!("wrote {}-probe typed smoke -> {}", batch.probes.len(), batch_path.display());
+    println!(
+        "wrote {}-probe typed smoke -> {}",
+        batch.probes.len(),
+        batch_path.display()
+    );
 }
 
 fn output_root() -> PathBuf {

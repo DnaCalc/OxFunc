@@ -58,9 +58,7 @@ fn parse_opts(rest: &[String]) -> Result<HashMap<String, String>, String> {
         let key = k
             .strip_prefix("--")
             .ok_or_else(|| format!("expected --option, got '{k}'"))?;
-        let v = it
-            .next()
-            .ok_or_else(|| format!("--{key} needs a value"))?;
+        let v = it.next().ok_or_else(|| format!("--{key} needs a value"))?;
         opts.insert(key.to_string(), v.clone());
     }
     Ok(opts)
@@ -73,8 +71,7 @@ fn required<'a>(opts: &'a HashMap<String, String>, key: &str) -> Result<&'a str,
 }
 
 fn read_json<T: serde::de::DeserializeOwned>(path: &str) -> Result<T, String> {
-    let text =
-        std::fs::read_to_string(path).map_err(|e| format!("read {path}: {e}"))?;
+    let text = std::fs::read_to_string(path).map_err(|e| format!("read {path}: {e}"))?;
     serde_json::from_str(&text).map_err(|e| format!("parse {path}: {e}"))
 }
 
@@ -105,8 +102,13 @@ fn cmd_race(opts: &HashMap<String, String>) -> Result<(), String> {
     for r in &results {
         println!(
             "  {:>5}/{:<5} exact  max_ulp={:<8} structural={:<3} complexity={:<4} {}  {}",
-            r.exact, r.total, r.score.max_ulp, r.score.structural_mismatches,
-            r.score.complexity, r.id, r.description
+            r.exact,
+            r.total,
+            r.score.max_ulp,
+            r.score.structural_mismatches,
+            r.score.complexity,
+            r.id,
+            r.description
         );
     }
     let winners = survivors(&results);

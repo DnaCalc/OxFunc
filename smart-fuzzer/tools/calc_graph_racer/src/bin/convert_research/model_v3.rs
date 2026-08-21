@@ -51,10 +51,23 @@ pub enum CoreVariant {
 
 fn prefix_exponent(prefix: &str) -> i32 {
     match prefix {
-        "Y" => 24, "Z" => 21, "E" => 18, "P" => 15, "T" => 12,
-        "G" => 9, "M" => 6, "k" => 3, "h" => 2, "da" => 1,
-        "d" => -1, "c" => -2, "m" => -3, "u" => -6, "n" => -9,
-        "p" => -12, "f" => -15,
+        "Y" => 24,
+        "Z" => 21,
+        "E" => 18,
+        "P" => 15,
+        "T" => 12,
+        "G" => 9,
+        "M" => 6,
+        "k" => 3,
+        "h" => 2,
+        "da" => 1,
+        "d" => -1,
+        "c" => -2,
+        "m" => -3,
+        "u" => -6,
+        "n" => -9,
+        "p" => -12,
+        "f" => -15,
         other => panic!("unknown prefix {other}"),
     }
 }
@@ -72,8 +85,15 @@ fn prefix_base(category: &str) -> Option<&'static str> {
 
 fn resolve(unit: &str, category: &str) -> ResolvedUnit {
     if let Some(direct) = common::direct_unit(unit) {
-        assert_eq!(direct.category.name(), category, "category drift for {unit}");
-        return ResolvedUnit { direct: unit.to_string(), prefix_exponent: 0 };
+        assert_eq!(
+            direct.category.name(),
+            category,
+            "category drift for {unit}"
+        );
+        return ResolvedUnit {
+            direct: unit.to_string(),
+            prefix_exponent: 0,
+        };
     }
     let base = prefix_base(category).unwrap_or_else(|| panic!("no prefix base for {category}"));
     for (prefix, _) in common::PREFIXES {
@@ -158,7 +178,9 @@ fn linear_prediction(
     let to_factor = factor_to_base(category, &to.direct);
     let stage_first = match variant {
         CoreVariant::FrozenV3 | CoreVariant::FirstProductPc64AllLinear => true,
-        CoreVariant::LengthFirstProductPc64 | CoreVariant::LengthSecondOperationPc64 => category == "length",
+        CoreVariant::LengthFirstProductPc64 | CoreVariant::LengthSecondOperationPc64 => {
+            category == "length"
+        }
         CoreVariant::RetiredV2 => false,
     };
     let product = if stage_first {
@@ -194,7 +216,13 @@ fn temperature_prediction(number: f64, from: &str, to: &str) -> f64 {
     }
 }
 
-pub fn predict(number: f64, category: &str, from_unit: &str, to_unit: &str, variant: CoreVariant) -> Prediction {
+pub fn predict(
+    number: f64,
+    category: &str,
+    from_unit: &str,
+    to_unit: &str,
+    variant: CoreVariant,
+) -> Prediction {
     if category == "temperature" {
         return Prediction::Numeric(temperature_prediction(number, from_unit, to_unit).to_bits());
     }

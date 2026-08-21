@@ -185,7 +185,9 @@ fn args() -> Args {
             "--answers" => answers = values.next().map(PathBuf::from),
             "--out" => out = values.next().map(PathBuf::from),
             "-h" | "--help" => {
-                println!("score_convert_unified_v2 --meta <meta.json> --answers <answers.json> [--out <report.json>]");
+                println!(
+                    "score_convert_unified_v2 --meta <meta.json> --answers <answers.json> [--out <report.json>]"
+                );
                 std::process::exit(0);
             }
             other => panic!("unknown argument {other}"),
@@ -251,7 +253,11 @@ fn prefix_base(category: &str) -> Option<&'static str> {
 
 fn resolve(unit: &str, category: &str) -> ResolvedUnit {
     if let Some(direct) = common::direct_unit(unit) {
-        assert_eq!(direct.category.name(), category, "category drift for {unit}");
+        assert_eq!(
+            direct.category.name(),
+            category,
+            "category drift for {unit}"
+        );
         return ResolvedUnit {
             direct: unit.to_string(),
             prefix_exponent: 0,
@@ -316,15 +322,11 @@ fn pow10(exponent: i32) -> f64 {
 }
 
 fn linear_prediction(number: f64, category: &str, from: &ResolvedUnit, to: &ResolvedUnit) -> f64 {
-    let core = (number * factor_to_base(category, &from.direct))
-        / factor_to_base(category, &to.direct);
+    let core =
+        (number * factor_to_base(category, &from.direct)) / factor_to_base(category, &to.direct);
     let delta = pow10(from.prefix_exponent - to.prefix_exponent);
     let cw = rx::CW_PC64_RN;
-    let extended = rx::ext_mul(
-        &rx::ext_from_f64(core),
-        &rx::ext_from_f64(delta),
-        cw,
-    );
+    let extended = rx::ext_mul(&rx::ext_from_f64(core), &rx::ext_from_f64(delta), cw);
     rx::ext_to_f64(&extended, cw)
 }
 
@@ -413,7 +415,12 @@ fn main() {
     let mut score = Partitions::default();
     for row in &metadata.rows {
         let witness = by_id[&row.id.as_str()];
-        assert_eq!(witness.args, expected_args(row), "argument drift at {}", row.id);
+        assert_eq!(
+            witness.args,
+            expected_args(row),
+            "argument drift at {}",
+            row.id
+        );
         score.add(row, prediction(row), &witness.expected_bits);
     }
     score.finish();

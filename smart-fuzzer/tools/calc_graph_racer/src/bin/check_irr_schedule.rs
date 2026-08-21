@@ -24,7 +24,10 @@ struct V {
 }
 impl V {
     fn new(x: f64, m: Stage) -> V {
-        V { e: rx::ext_from_f64(x), m }
+        V {
+            e: rx::ext_from_f64(x),
+            m,
+        }
     }
     fn f(self) -> f64 {
         rx::ext_to_f64(&self.e, CW)
@@ -39,16 +42,32 @@ impl V {
         V::new(self.f(), self.m)
     }
     fn add(self, o: V) -> V {
-        V { e: rx::ext_add(&self.e, &o.e, CW), m: self.m }.op()
+        V {
+            e: rx::ext_add(&self.e, &o.e, CW),
+            m: self.m,
+        }
+        .op()
     }
     fn sub(self, o: V) -> V {
-        V { e: rx::ext_sub(&self.e, &o.e, CW), m: self.m }.op()
+        V {
+            e: rx::ext_sub(&self.e, &o.e, CW),
+            m: self.m,
+        }
+        .op()
     }
     fn mul(self, o: V) -> V {
-        V { e: rx::ext_mul(&self.e, &o.e, CW), m: self.m }.op()
+        V {
+            e: rx::ext_mul(&self.e, &o.e, CW),
+            m: self.m,
+        }
+        .op()
     }
     fn div(self, o: V) -> V {
-        V { e: rx::ext_div(&self.e, &o.e, CW), m: self.m }.op()
+        V {
+            e: rx::ext_div(&self.e, &o.e, CW),
+            m: self.m,
+        }
+        .op()
     }
 }
 
@@ -86,8 +105,18 @@ struct Sched {
 
 fn publish(v: f64, m: Stage, pa: u8) -> f64 {
     match pa {
-        0 => V::new(1.0, m).div(V::new(v, m)).st().sub(V::new(1.0, m)).st().f(),
-        _ => V::new(1.0, m).sub(V::new(v, m)).st().div(V::new(v, m)).st().f(),
+        0 => V::new(1.0, m)
+            .div(V::new(v, m))
+            .st()
+            .sub(V::new(1.0, m))
+            .st()
+            .f(),
+        _ => V::new(1.0, m)
+            .sub(V::new(v, m))
+            .st()
+            .div(V::new(v, m))
+            .st()
+            .f(),
     }
 }
 
@@ -111,7 +140,12 @@ fn sim(cf: &[f64], guess: f64, s: Sched) -> f64 {
         }
         let dv = match s.dv_assoc {
             0 => V::new(f0, m).mul(V::new(h, m)).div(V::new(den, m)).st().f(),
-            1 => V::new(f0, m).div(V::new(den, m)).st().mul(V::new(h, m)).st().f(),
+            1 => V::new(f0, m)
+                .div(V::new(den, m))
+                .st()
+                .mul(V::new(h, m))
+                .st()
+                .f(),
             _ => {
                 // fused update: v1 = v - f0*h/den in one extended expr
                 let v1 = V::new(v, m)
@@ -201,14 +235,26 @@ fn main() {
                                 for dv_assoc in [0u8, 1, 2] {
                                     for pub_assoc in [0u8, 1] {
                                         let s = Sched {
-                                            stage, horner, hrel, tol, tol_rel, cap,
-                                            apply_last, dv_assoc, pub_assoc,
+                                            stage,
+                                            horner,
+                                            hrel,
+                                            tol,
+                                            tol_rel,
+                                            cap,
+                                            apply_last,
+                                            dv_assoc,
+                                            pub_assoc,
                                         };
                                         let sc = obs
                                             .iter()
                                             .filter(|o| sim(&o.cf, o.g, s).to_bits() == o.want)
-                                            .count() as u32;
-                                        let sn = if stage == Stage::Plain { "plain" } else { "spill" };
+                                            .count()
+                                            as u32;
+                                        let sn = if stage == Stage::Plain {
+                                            "plain"
+                                        } else {
+                                            "spill"
+                                        };
                                         results.push((sc, s, format!(
                                             "{sn}/{}/h{hrel}/tol{tol}{}/c{cap}/al{}/dv{dv_assoc}/pub{pub_assoc}",
                                             if horner { "horner" } else { "seq" },

@@ -28,7 +28,13 @@ fn hist(name: &str, v: &[i64]) {
     }
     let n = v.len();
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:34} {:4}/{:4} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:34} {:4}/{:4} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 3 {
@@ -45,7 +51,10 @@ fn hist(name: &str, v: &[i64]) {
 
 // log1p(x) via x87 fyl2xp1, stored to f64
 fn log1p_x87(x: f64) -> f64 {
-    rx::ext_to_f64(&rx::ext_fyl2xp1(&rx::ext_ln2(), &rx::ext_from_f64(x), CW), CW)
+    rx::ext_to_f64(
+        &rx::ext_fyl2xp1(&rx::ext_ln2(), &rx::ext_from_f64(x), CW),
+        CW,
+    )
 }
 
 fn main() {

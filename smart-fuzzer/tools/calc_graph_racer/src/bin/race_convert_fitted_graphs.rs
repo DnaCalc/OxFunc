@@ -267,7 +267,12 @@ fn fit_constants(
         let witness = answer_by_id
             .get(row.id.as_str())
             .unwrap_or_else(|| panic!("missing fit answer {}", row.id));
-        assert_eq!(witness.args, expected_args(row), "fit argument drift at {}", row.id);
+        assert_eq!(
+            witness.args,
+            expected_args(row),
+            "fit argument drift at {}",
+            row.id
+        );
         let Some(bits) = parse_bits(&witness.expected_bits) else {
             // Unsupported units (notably `bar` on the current reference
             // baseline) intentionally have no fitted constant.
@@ -365,16 +370,8 @@ fn predictions(
     let public_direct_to = public_direct_to_decimal.parse::<f64>().unwrap();
     let public_direct_from_ext = common::ext_from_decimal(public_direct_from_decimal);
     let public_direct_to_ext = common::ext_from_decimal(public_direct_to_decimal);
-    let public_direct_ratio_ext = rx::ext_div(
-        &public_direct_to_ext,
-        &public_direct_from_ext,
-        cw,
-    );
-    let public_direct_core = rx::ext_mul(
-        &rx::ext_from_f64(number),
-        &public_direct_ratio_ext,
-        cw,
-    );
+    let public_direct_ratio_ext = rx::ext_div(&public_direct_to_ext, &public_direct_from_ext, cw);
+    let public_direct_core = rx::ext_mul(&rx::ext_from_f64(number), &public_direct_ratio_ext, cw);
     let public_direct_combined = rx::ext_mul(&public_direct_ratio_ext, &pow10_ext, cw);
 
     let stage_prefixes = |value: rx::Ext80| {
@@ -395,28 +392,12 @@ fn predictions(
         &rx::ext_from_f64(from_prefix),
         cw,
     );
-    let table_prefix_div = rx::ext_div(
-        &table_prefix_first,
-        &rx::ext_from_f64(direct_from),
-        cw,
-    );
-    let table_prefix_mul = rx::ext_mul(
-        &table_prefix_div,
-        &rx::ext_from_f64(direct_to),
-        cw,
-    );
-    let table_prefix_divmul = rx::ext_div(
-        &table_prefix_mul,
-        &rx::ext_from_f64(to_prefix),
-        cw,
-    );
+    let table_prefix_div = rx::ext_div(&table_prefix_first, &rx::ext_from_f64(direct_from), cw);
+    let table_prefix_mul = rx::ext_mul(&table_prefix_div, &rx::ext_from_f64(direct_to), cw);
+    let table_prefix_divmul = rx::ext_div(&table_prefix_mul, &rx::ext_from_f64(to_prefix), cw);
 
     let physical_ratio_staged = stage_prefixes(physical_core_cont);
-    let physical_mul = rx::ext_mul(
-        &rx::ext_from_f64(number),
-        &physical_from_ext,
-        cw,
-    );
+    let physical_mul = rx::ext_mul(&rx::ext_from_f64(number), &physical_from_ext, cw);
     let physical_muldiv = rx::ext_div(&physical_mul, &physical_to_ext, cw);
     let physical_muldiv_staged = stage_prefixes(physical_muldiv);
     let physical_prefix_first = rx::ext_mul(
@@ -426,32 +407,17 @@ fn predictions(
     );
     let physical_prefix_mul = rx::ext_mul(&physical_prefix_first, &physical_from_ext, cw);
     let physical_prefix_div = rx::ext_div(&physical_prefix_mul, &physical_to_ext, cw);
-    let physical_prefix_muldiv = rx::ext_div(
-        &physical_prefix_div,
-        &rx::ext_from_f64(to_prefix),
-        cw,
-    );
+    let physical_prefix_muldiv =
+        rx::ext_div(&physical_prefix_div, &rx::ext_from_f64(to_prefix), cw);
 
     let public_ratio_staged = stage_prefixes(public_direct_core);
-    let public_div = rx::ext_div(
-        &rx::ext_from_f64(number),
-        &public_direct_from_ext,
-        cw,
-    );
+    let public_div = rx::ext_div(&rx::ext_from_f64(number), &public_direct_from_ext, cw);
     let public_divmul = rx::ext_mul(&public_div, &public_direct_to_ext, cw);
     let public_divmul_staged = stage_prefixes(public_divmul);
 
     let stage_prefixes_rz = |value: rx::Ext80| {
-        let with_from = rx::ext_mul(
-            &value,
-            &rx::ext_from_f64(from_prefix),
-            cw_rz,
-        );
-        rx::ext_div(
-            &with_from,
-            &rx::ext_from_f64(to_prefix),
-            cw_rz,
-        )
+        let with_from = rx::ext_mul(&value, &rx::ext_from_f64(from_prefix), cw_rz);
+        rx::ext_div(&with_from, &rx::ext_from_f64(to_prefix), cw_rz)
     };
     let table_ratio_rz = rx::ext_div(
         &rx::ext_from_f64(direct_to),
@@ -491,10 +457,7 @@ fn predictions(
         ((number * physical_from) / physical_to) * pow10,
         rx::ext_to_f64(&physical_core_cont, cw) * pow10,
         (number * rx::ext_to_f64(&physical_ratio_ext, cw)) * pow10,
-        rx::ext_to_f64(
-            &rx::ext_mul(&physical_core_cont, &pow10_ext, cw),
-            cw,
-        ),
+        rx::ext_to_f64(&rx::ext_mul(&physical_core_cont, &pow10_ext, cw), cw),
         number * rx::ext_to_f64(&physical_combined, cw),
         rx::ext_to_f64(
             &rx::ext_mul(&rx::ext_from_f64(number), &physical_combined, cw),
@@ -505,11 +468,7 @@ fn predictions(
         rx::ext_to_f64(&public_direct_core, cw) * pow10,
         number * rx::ext_to_f64(&public_direct_combined, cw),
         rx::ext_to_f64(
-            &rx::ext_mul(
-                &rx::ext_from_f64(number),
-                &public_direct_combined,
-                cw,
-            ),
+            &rx::ext_mul(&rx::ext_from_f64(number), &public_direct_combined, cw),
             cw,
         ),
         rx::ext_to_f64(&table_ratio_staged, cw_rz),
@@ -580,10 +539,14 @@ fn record_miss(score: &mut ModelScore, detail: String) {
 
 fn main() {
     let args = parse_args();
-    let fit_meta: MetaDocument = serde_json::from_slice(&std::fs::read(&args.fit_meta).unwrap()).unwrap();
-    let fit_answers: WitnessSet = serde_json::from_slice(&std::fs::read(&args.fit_answers).unwrap()).unwrap();
-    let score_meta: MetaDocument = serde_json::from_slice(&std::fs::read(&args.score_meta).unwrap()).unwrap();
-    let score_answers: WitnessSet = serde_json::from_slice(&std::fs::read(&args.score_answers).unwrap()).unwrap();
+    let fit_meta: MetaDocument =
+        serde_json::from_slice(&std::fs::read(&args.fit_meta).unwrap()).unwrap();
+    let fit_answers: WitnessSet =
+        serde_json::from_slice(&std::fs::read(&args.fit_answers).unwrap()).unwrap();
+    let score_meta: MetaDocument =
+        serde_json::from_slice(&std::fs::read(&args.score_meta).unwrap()).unwrap();
+    let score_answers: WitnessSet =
+        serde_json::from_slice(&std::fs::read(&args.score_answers).unwrap()).unwrap();
     assert_eq!(fit_meta.function, "CONVERT");
     assert_eq!(fit_answers.function, "CONVERT");
     assert_eq!(score_meta.function, "CONVERT");
@@ -591,7 +554,11 @@ fn main() {
 
     let (constants, fit_ids, fitted_constants) = fit_constants(&fit_meta, &fit_answers);
     let score_by_id = answer_map(&score_answers);
-    assert_eq!(score_meta.rows.len(), score_by_id.len(), "score row-count drift");
+    assert_eq!(
+        score_meta.rows.len(),
+        score_by_id.len(),
+        "score row-count drift"
+    );
     let same_dataset = args.fit_meta == args.score_meta && args.fit_answers == args.score_answers;
     let mut scores: BTreeMap<String, ModelScore> = MODELS
         .iter()
@@ -605,7 +572,12 @@ fn main() {
         let witness = score_by_id
             .get(row.id.as_str())
             .unwrap_or_else(|| panic!("missing score answer {}", row.id));
-        assert_eq!(witness.args, expected_args(row), "score argument drift at {}", row.id);
+        assert_eq!(
+            witness.args,
+            expected_args(row),
+            "score argument drift at {}",
+            row.id
+        );
         if row.predictions.is_empty() {
             controls += 1;
             continue;
@@ -633,13 +605,19 @@ fn main() {
             for model in MODELS {
                 let score = scores.get_mut(model).unwrap();
                 *score.class_total.entry(row.class.clone()).or_default() += 1;
-                *score.category_total.entry(row.category.clone()).or_default() += 1;
+                *score
+                    .category_total
+                    .entry(row.category.clone())
+                    .or_default() += 1;
                 let pair = format!("{}->{}", row.from_unit, row.to_unit);
                 *score.pair_total.entry(pair.clone()).or_default() += 1;
                 if actual.is_none() {
                     score.structural_exact += 1;
                     *score.class_exact.entry(row.class.clone()).or_default() += 1;
-                    *score.category_exact.entry(row.category.clone()).or_default() += 1;
+                    *score
+                        .category_exact
+                        .entry(row.category.clone())
+                        .or_default() += 1;
                     *score.pair_exact.entry(pair).or_default() += 1;
                 } else {
                     score.structural_mismatch += 1;
@@ -662,7 +640,10 @@ fn main() {
             for model in MODELS {
                 let score = scores.get_mut(model).unwrap();
                 *score.class_total.entry(row.class.clone()).or_default() += 1;
-                *score.category_total.entry(row.category.clone()).or_default() += 1;
+                *score
+                    .category_total
+                    .entry(row.category.clone())
+                    .or_default() += 1;
                 *score
                     .pair_total
                     .entry(format!("{}->{}", row.from_unit, row.to_unit))
@@ -696,14 +677,20 @@ fn main() {
             let score = scores.get_mut(*model).unwrap();
             score.numeric_total += 1;
             *score.class_total.entry(row.class.clone()).or_default() += 1;
-            *score.category_total.entry(row.category.clone()).or_default() += 1;
+            *score
+                .category_total
+                .entry(row.category.clone())
+                .or_default() += 1;
             let pair = format!("{}->{}", row.from_unit, row.to_unit);
             *score.pair_total.entry(pair.clone()).or_default() += 1;
             let residual = ordered_bits(actual_bits) - ordered_bits(predicted.to_bits());
             if residual == 0 {
                 score.exact += 1;
                 *score.class_exact.entry(row.class.clone()).or_default() += 1;
-                *score.category_exact.entry(row.category.clone()).or_default() += 1;
+                *score
+                    .category_exact
+                    .entry(row.category.clone())
+                    .or_default() += 1;
                 *score.pair_exact.entry(pair).or_default() += 1;
             } else {
                 score.mismatch += 1;
@@ -748,18 +735,20 @@ fn main() {
 
     println!(
         "fitted {} supported units from {} rows; scoring {} non-fit rows ({} typed controls)",
-        fitted_constants.len(), fit_ids.len(), score_rows, controls
+        fitted_constants.len(),
+        fit_ids.len(),
+        score_rows,
+        controls
     );
-    println!("{:<40} {:>8} {:>8} {:>8} {:>10}", "model", "exact", "numeric", "struct", "max_ulp");
+    println!(
+        "{:<40} {:>8} {:>8} {:>8} {:>10}",
+        "model", "exact", "numeric", "struct", "max_ulp"
+    );
     for model in MODELS {
         let score = &scores[model];
         println!(
             "{:<40} {:>8} {:>8} {:>8} {:>10}",
-            model,
-            score.exact,
-            score.numeric_total,
-            score.structural_exact,
-            score.max_abs_ulp
+            model, score.exact, score.numeric_total, score.structural_exact, score.max_abs_ulp
         );
     }
     if survivors.is_empty() {

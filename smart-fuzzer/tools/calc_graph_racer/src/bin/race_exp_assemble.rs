@@ -22,7 +22,11 @@ fn assemble(x: f64) -> (u64, u64, u64) {
     let w = ext_f2xm1(&ext_abs(&f, cw), cw); // 2^|f| - 1
     let onepw = ext_add(&w, &ext_one(), cw); // 2^|f|
     // m = 2^f  (reciprocal on neg branch)
-    let m = if neg { ext_div(&ext_one(), &onepw, cw) } else { onepw };
+    let m = if neg {
+        ext_div(&ext_one(), &onepw, cw)
+    } else {
+        onepw
+    };
     // u = m * 2^K  (= e^x)
     let u = ext_scale(&m, &k, cw);
     // A) straightforward: em = u - 1, extended, one round
@@ -42,30 +46,66 @@ fn assemble(x: f64) -> (u64, u64, u64) {
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let (mut a_rn, mut a_rz, mut b_rn) = (0u32, 0u32, 0u32);
     let mut tot = 0u32;
     let mut miss_a: Vec<(i32, u32, i64)> = Vec::new();
     for line in csv.lines().skip(1) {
         let f: Vec<&str> = line.split(',').collect();
-        if f.len() < 6 { continue; }
+        if f.len() < 6 {
+            continue;
+        }
         let k: i32 = f[0].parse().unwrap();
         let n: u32 = f[1].parse().unwrap();
         let x = f64::from_bits(u64::from_str_radix(f[2], 16).unwrap());
         let pin = u64::from_str_radix(f[5], 16).unwrap();
         let (ea, ez, eb) = assemble(x);
-        if ea == pin { a_rn += 1; } else { miss_a.push((k, n, (ea as i64) - (pin as i64))); }
-        if ez == pin { a_rz += 1; }
-        if eb == pin { b_rn += 1; }
+        if ea == pin {
+            a_rn += 1;
+        } else {
+            miss_a.push((k, n, (ea as i64) - (pin as i64)));
+        }
+        if ez == pin {
+            a_rz += 1;
+        }
+        if eb == pin {
+            b_rn += 1;
+        }
         tot += 1;
     }
-    println!("=== expm1 assembled from fFEXP reduction, pure em oracle N={} ===", tot);
-    println!("  A) u=2^K*m extended, em=u-1, RN53 : {}/{} ({:.1}%)", a_rn, tot, 100.0*a_rn as f64/tot as f64);
-    println!("  A') same, RZ53 (chop)            : {}/{} ({:.1}%)", a_rz, tot, 100.0*a_rz as f64/tot as f64);
-    println!("  B) pieces (2^K-1)+2^K*(m-1) RN53 : {}/{} ({:.1}%)", b_rn, tot, 100.0*b_rn as f64/tot as f64);
+    println!(
+        "=== expm1 assembled from fFEXP reduction, pure em oracle N={} ===",
+        tot
+    );
+    println!(
+        "  A) u=2^K*m extended, em=u-1, RN53 : {}/{} ({:.1}%)",
+        a_rn,
+        tot,
+        100.0 * a_rn as f64 / tot as f64
+    );
+    println!(
+        "  A') same, RZ53 (chop)            : {}/{} ({:.1}%)",
+        a_rz,
+        tot,
+        100.0 * a_rz as f64 / tot as f64
+    );
+    println!(
+        "  B) pieces (2^K-1)+2^K*(m-1) RN53 : {}/{} ({:.1}%)",
+        b_rn,
+        tot,
+        100.0 * b_rn as f64 / tot as f64
+    );
     println!("\n  A misses (k,n,ulp) sample:");
-    for m in miss_a.iter().take(20) { println!("    k={:3} n={:3} d={:+}", m.0, m.1, m.2); }
+    for m in miss_a.iter().take(20) {
+        println!("    k={:3} n={:3} d={:+}", m.0, m.1, m.2);
+    }
     let plus = miss_a.iter().filter(|m| m.2 > 0).count();
     let minus = miss_a.iter().filter(|m| m.2 < 0).count();
-    println!("  A miss dirs: +{} / -{} (total {})", plus, minus, miss_a.len());
+    println!(
+        "  A miss dirs: +{} / -{} (total {})",
+        plus,
+        minus,
+        miss_a.len()
+    );
 }

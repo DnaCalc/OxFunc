@@ -11,7 +11,8 @@ fn main() {
         if p.len() != 4 {
             continue;
         }
-        let g = |s: &str| f64::from_bits(u64::from_str_radix(s.trim_start_matches("0x"), 16).unwrap());
+        let g =
+            |s: &str| f64::from_bits(u64::from_str_radix(s.trim_start_matches("0x"), 16).unwrap());
         match weibull_dist_kernel(g(p[0]), g(p[1]), g(p[2]), g(p[3]) != 0.0) {
             Ok(v) => println!("{:016x}", v.to_bits()),
             Err(_) => println!("ERR"),

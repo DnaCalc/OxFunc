@@ -25,7 +25,10 @@ fn log1p_port(r: f64) -> f64 {
 }
 // x87 natural log1p via fyl2xp1(ln2, r), stored to f64 (RN53)
 fn log1p_fyl2xp1_store(r: f64) -> f64 {
-    rx::ext_to_f64(&rx::ext_fyl2xp1(&rx::ext_ln2(), &rx::ext_from_f64(r), CW), CW)
+    rx::ext_to_f64(
+        &rx::ext_fyl2xp1(&rx::ext_ln2(), &rx::ext_from_f64(r), CW),
+        CW,
+    )
 }
 // x87 ln(1+r): form 1+r in double, then x87 ln
 fn ln1pr(r: f64) -> f64 {
@@ -42,14 +45,29 @@ struct Kahan {
 fn kahan_expm1(t: f64) -> Kahan {
     let u = rx::excel_exp(t);
     if u == 1.0 {
-        return Kahan { u, lnu: 0.0, em: t, branch: 0 };
+        return Kahan {
+            u,
+            lnu: 0.0,
+            em: t,
+            branch: 0,
+        };
     }
     if t.abs() < 1.0 {
         let lnu = rx::excel_ln(u);
         let em = (u - 1.0) * t / lnu;
-        Kahan { u, lnu, em, branch: 1 }
+        Kahan {
+            u,
+            lnu,
+            em,
+            branch: 1,
+        }
     } else {
-        Kahan { u, lnu: 0.0, em: u - 1.0, branch: 2 }
+        Kahan {
+            u,
+            lnu: 0.0,
+            em: u - 1.0,
+            branch: 2,
+        }
     }
 }
 

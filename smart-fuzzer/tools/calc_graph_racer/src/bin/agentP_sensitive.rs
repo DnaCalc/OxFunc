@@ -40,7 +40,13 @@ fn hist(name: &str, v: &[i64]) {
         return;
     }
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:40} {:4}/{:4} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:40} {:4}/{:4} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 2 {
@@ -77,7 +83,10 @@ fn main() {
         .filter(|(r, n, _)| -(*n as f64) * rx::excel_log1p(*r) > 2.0)
         .cloned()
         .collect();
-    println!("sensitive lane (tau=-n*log1p(r) > 2, em large): {} rows", sens.len());
+    println!(
+        "sensitive lane (tau=-n*log1p(r) > 2, em large): {} rows",
+        sens.len()
+    );
 
     // Each candidate produces em; compare to gold. Enumerate tau-delivery x em-store.
     // tau deliveries as either f64 or Ext80; em = exp(tau)-1.
@@ -86,15 +95,30 @@ fn main() {
     // helper closures for tau (f64 stored)
     let deliveries: Vec<(&str, Box<dyn Fn(f64, f64) -> f64>)> = vec![
         // log1p portable, product f64 (SSE)
-        ("Lport, P=f64(-n*L)", Box::new(|r, n| -n * rx::excel_log1p(r))),
+        (
+            "Lport, P=f64(-n*L)",
+            Box::new(|r, n| -n * rx::excel_log1p(r)),
+        ),
         // log1p portable, product x87 double-rounded
-        ("Lport, P=x87dr(-n*L)", Box::new(|r, n| tf(&rx::ext_mul(&e(-n), &e(rx::excel_log1p(r)), CW)))),
+        (
+            "Lport, P=x87dr(-n*L)",
+            Box::new(|r, n| tf(&rx::ext_mul(&e(-n), &e(rx::excel_log1p(r)), CW))),
+        ),
         // log1p fyl2xp1 stored, product f64
-        ("Lf2xp1st, P=f64(-n*L)", Box::new(|r, n| -n * tf(&log1p_ext(r)))),
+        (
+            "Lf2xp1st, P=f64(-n*L)",
+            Box::new(|r, n| -n * tf(&log1p_ext(r))),
+        ),
         // log1p fyl2xp1 stored, product x87 dr
-        ("Lf2xp1st, P=x87dr", Box::new(|r, n| tf(&rx::ext_mul(&e(-n), &log1p_ext(r), CW)))),
+        (
+            "Lf2xp1st, P=x87dr",
+            Box::new(|r, n| tf(&rx::ext_mul(&e(-n), &log1p_ext(r), CW))),
+        ),
         // log1p fyl2xp1 EXTENDED, product extended then stored to f64
-        ("Lf2xp1ext, P=ext->f64", Box::new(|r, n| tf(&rx::ext_mul(&e(-n), &log1p_ext(r), CW)))),
+        (
+            "Lf2xp1ext, P=ext->f64",
+            Box::new(|r, n| tf(&rx::ext_mul(&e(-n), &log1p_ext(r), CW))),
+        ),
     ];
     for (dn, df) in &deliveries {
         // em = exp(tau_f64) - 1  (f64)
@@ -116,7 +140,9 @@ fn main() {
         let uext = exp_ext(&tau_ext);
         let u = tf(&uext);
         r_ee.push((u - 1.0).to_bits() as i64 - em_x.to_bits() as i64);
-        r_eem.push(tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64);
+        r_eem.push(
+            tf(&rx::ext_sub(&uext, &rx::ext_one(), CW)).to_bits() as i64 - em_x.to_bits() as i64,
+        );
     }
     hist("extTau->exp; u(f64)-1", &r_ee);
     hist("extTau->exp; RN53(u_ext-1)", &r_eem);

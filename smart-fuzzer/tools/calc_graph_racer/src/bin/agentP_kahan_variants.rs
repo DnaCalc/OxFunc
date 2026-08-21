@@ -136,7 +136,10 @@ fn main() {
     println!("n=1 pinned: {}", n1.len());
 
     // collect residuals per variant
-    let names: Vec<&str> = variants(-rx::excel_log1p(n1[0].0)).iter().map(|x| x.0).collect();
+    let names: Vec<&str> = variants(-rx::excel_log1p(n1[0].0))
+        .iter()
+        .map(|x| x.0)
+        .collect();
     let mut res: Vec<Vec<i64>> = vec![Vec::new(); names.len()];
     for (r, _, em_x) in &n1 {
         let t = -rx::excel_log1p(*r);

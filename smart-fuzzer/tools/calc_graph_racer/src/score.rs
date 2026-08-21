@@ -136,7 +136,11 @@ pub struct CandidateResult {
 }
 
 /// Score one candidate over a witness set.
-pub fn score_candidate(c: &Candidate, witnesses: &[Witness], max_failures: usize) -> CandidateResult {
+pub fn score_candidate(
+    c: &Candidate,
+    witnesses: &[Witness],
+    max_failures: usize,
+) -> CandidateResult {
     let mut structural = 0u32;
     let mut inexact = 0u32;
     let mut exact = 0u32;
@@ -232,7 +236,11 @@ pub fn score_candidate(c: &Candidate, witnesses: &[Witness], max_failures: usize
 }
 
 /// Race a candidate set: score all, return results sorted best-first.
-pub fn race(candidates: &[Candidate], witnesses: &[Witness], max_failures: usize) -> Vec<CandidateResult> {
+pub fn race(
+    candidates: &[Candidate],
+    witnesses: &[Witness],
+    max_failures: usize,
+) -> Vec<CandidateResult> {
     let mut results: Vec<CandidateResult> = candidates
         .iter()
         .map(|c| score_candidate(c, witnesses, max_failures))

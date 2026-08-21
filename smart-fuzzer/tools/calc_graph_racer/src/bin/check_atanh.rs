@@ -83,9 +83,15 @@ fn main() {
     let at = load("../../work/w109/G4-hyp-answers-atanh.json");
     let ac = load("../../work/w109/G4-hyp-answers-acoth.json");
     println!("{} ATANH, {} ACOTH rows", at.len(), ac.len());
-    score("atanh pair ext (final*0.5)", &at, &|x| atanh_pair(x, false, false));
-    score("atanh pair ext (y=ln2/2)", &at, &|x| atanh_pair(x, true, false));
-    score("atanh pair stored halves", &at, &|x| atanh_pair(x, false, true));
+    score("atanh pair ext (final*0.5)", &at, &|x| {
+        atanh_pair(x, false, false)
+    });
+    score("atanh pair ext (y=ln2/2)", &at, &|x| {
+        atanh_pair(x, true, false)
+    });
+    score("atanh pair stored halves", &at, &|x| {
+        atanh_pair(x, false, true)
+    });
     score("atanh ratio ext", &at, &|x| atanh_ratio(x, true));
     score("atanh ratio stored", &at, &|x| atanh_ratio(x, false));
     // ACOTH candidates: same chains on 1/x (stored or extended reciprocal)

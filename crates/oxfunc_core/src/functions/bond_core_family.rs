@@ -447,7 +447,13 @@ fn pcomp_disc(
     if yld <= -(c.frequency as f64) {
         return Err(derr(WorksheetErrorCode::Num));
     }
-    let pw = |b: f64, ex: f64| if binexp { excel_bond_pow(b, ex) } else { b.powf(ex) };
+    let pw = |b: f64, ex: f64| {
+        if binexp {
+            excel_bond_pow(b, ex)
+        } else {
+            b.powf(ex)
+        }
+    };
     let dirty = if p.n == 1 {
         let den = 1.0 + (yld / c.frequency as f64) * (dsc / e);
         if den <= 0.0 {
@@ -1288,49 +1294,105 @@ mod tests {
         // corpora (145,620 witnesses, 99.99% bit-exact). Each pin is a live Excel 16.0
         // witness, not a computed value. `k` = accrint_kernel.
         let k = |i, f, s, r, par, fr, b, c| {
-            accrint_kernel(i, f, s, r, Some(par), fr, Some(b), Some(c)).unwrap().to_bits()
+            accrint_kernel(i, f, s, r, Some(par), fr, Some(b), Some(c))
+                .unwrap()
+                .to_bits()
         };
         // Historic BUG-FUNC-030 catalog family; calc TRUE vs FALSE differ by exactly 1 ULP
         // (the pair pins the calc_method staging discriminator).
         let (i, f, s) = (serial(2019, 4, 10), serial(2019, 7, 1), serial(2020, 3, 15));
-        assert_eq!(k(i, f, s, 0.05, 997.5, 2.0, 0.0, true), 0x4047_34aa_aaaa_aaaa);
-        assert_eq!(k(i, f, s, 0.05, 997.5, 2.0, 0.0, false), 0x4047_34aa_aaaa_aaab);
+        assert_eq!(
+            k(i, f, s, 0.05, 997.5, 2.0, 0.0, true),
+            0x4047_34aa_aaaa_aaaa
+        );
+        assert_eq!(
+            k(i, f, s, 0.05, 997.5, 2.0, 0.0, false),
+            0x4047_34aa_aaaa_aaab
+        );
         // calc FALSE, issue 3 periods before pcd (quarterly, act/360): the whole-period skip
         // makes accrual negative for a settlement chronologically after issue.
         assert_eq!(
-            k(serial(2020, 2, 20), serial(2021, 1, 1), serial(2020, 7, 1),
-              0.05, 997.5, 4.0, 2.0, false),
+            k(
+                serial(2020, 2, 20),
+                serial(2021, 1, 1),
+                serial(2020, 7, 1),
+                0.05,
+                997.5,
+                4.0,
+                2.0,
+                false
+            ),
             0xc01c_4333_3333_3333
         );
         // calc FALSE, issue exactly on a grid coupon date (zero stub, all wholes skipped).
         assert_eq!(
-            k(serial(2020, 4, 1), serial(2021, 1, 1), serial(2020, 4, 2),
-              0.05, 997.5, 4.0, 0.0, false),
+            k(
+                serial(2020, 4, 1),
+                serial(2021, 1, 1),
+                serial(2020, 4, 2),
+                0.05,
+                997.5,
+                4.0,
+                0.0,
+                false
+            ),
             0xc038_cc88_8888_8889
         );
         // calc TRUE, act/act annual across a leap interior period (canonical != interior len).
         assert_eq!(
-            k(serial(2019, 3, 1), serial(2021, 3, 1), serial(2021, 10, 6),
-              0.037, 1000.0, 1.0, 1.0, true),
+            k(
+                serial(2019, 3, 1),
+                serial(2021, 3, 1),
+                serial(2021, 10, 6),
+                0.037,
+                1000.0,
+                1.0,
+                1.0,
+                true
+            ),
             0x4058_0ccc_cccc_cccd
         );
         // calc TRUE, long forward walk (backward accumulation of many whole periods).
         assert_eq!(
-            k(serial(2018, 5, 20), serial(2018, 11, 1), serial(2019, 7, 3),
-              0.05, 997.5, 2.0, 0.0, true),
+            k(
+                serial(2018, 5, 20),
+                serial(2018, 11, 1),
+                serial(2019, 7, 3),
+                0.05,
+                997.5,
+                2.0,
+                0.0,
+                true
+            ),
             0x404b_ea88_8888_8889
         );
         // calc TRUE, month-end + leap Feb, settlement exactly on a coupon anniversary
         // (final period stays fractional).
         assert_eq!(
-            k(serial(2019, 2, 28), serial(2019, 8, 31), serial(2020, 8, 31),
-              0.05, 1000.0, 2.0, 0.0, true),
+            k(
+                serial(2019, 2, 28),
+                serial(2019, 8, 31),
+                serial(2020, 8, 31),
+                0.05,
+                1000.0,
+                2.0,
+                0.0,
+                true
+            ),
             0x4052_c8e3_8e38_e38e
         );
         // calc FALSE, act/act quarterly issue stub measured by its own actual period length.
         assert_eq!(
-            k(serial(2019, 3, 11), serial(2019, 7, 1), serial(2019, 7, 4),
-              0.05, 997.5, 4.0, 1.0, false),
+            k(
+                serial(2019, 3, 11),
+                serial(2019, 7, 1),
+                serial(2019, 7, 4),
+                0.05,
+                997.5,
+                4.0,
+                1.0,
+                false
+            ),
             0x402f_940f_c0fc_0fc2
         );
     }
@@ -1637,16 +1699,71 @@ mod tests {
     fn price_binexp_matches_excel_ladders() {
         // (settle, mat, rate, red, [(yld, excel_price_bits)])
         let ladders: &[(f64, f64, f64, f64, &[(f64, u64)])] = &[
-            (44013.0, 44562.0, 0.05, 100.0, &[(0.04, 0x40595c48c592b01e), (0.05, 0x4059000000000000),
-                (0.06, 0x4058a57c040a3442), (0.08, 0x4057f5975cde5332), (0.10, 0x40574c47c2be592c)]),
-            (44058.0, 44562.0, 0.05, 100.0, &[(0.04, 0x405954ad19241473), (0.05, 0x4058ffa2cc4ca8d4),
-                (0.06, 0x4058ac20a4792f7e), (0.08, 0x405809914321b82a), (0.10, 0x40576cba5c994db4)]),
-            (44013.0, 46753.0, 0.05, 100.0, &[(0.04, 0x405a9b2d2aa614e0), (0.05, 0x4059000000000004),
-                (0.06, 0x405781fc6f8e90d4), (0.08, 0x4054d4a282adf7b8), (0.10, 0x4052834134edf821)]),
-            (44013.0, 47119.0, 0.075, 102.0, &[(0.03, 0x4060e30a168e62dc), (0.05, 0x405d9d18c6e14303),
-                (0.07, 0x405a11be4337deae), (0.09, 0x40570a9f1350b950), (0.11, 0x405472ad4fab7123)]),
-            (44094.0, 45658.0, 0.06, 103.0, &[(0.03, 0x405ca695b231486a), (0.05, 0x405a8ebb3948baab),
-                (0.07, 0x4058a4f75d9fc866), (0.09, 0x4056e4e04e91c98c), (0.11, 0x40554a8265f06f2f)]),
+            (
+                44013.0,
+                44562.0,
+                0.05,
+                100.0,
+                &[
+                    (0.04, 0x40595c48c592b01e),
+                    (0.05, 0x4059000000000000),
+                    (0.06, 0x4058a57c040a3442),
+                    (0.08, 0x4057f5975cde5332),
+                    (0.10, 0x40574c47c2be592c),
+                ],
+            ),
+            (
+                44058.0,
+                44562.0,
+                0.05,
+                100.0,
+                &[
+                    (0.04, 0x405954ad19241473),
+                    (0.05, 0x4058ffa2cc4ca8d4),
+                    (0.06, 0x4058ac20a4792f7e),
+                    (0.08, 0x405809914321b82a),
+                    (0.10, 0x40576cba5c994db4),
+                ],
+            ),
+            (
+                44013.0,
+                46753.0,
+                0.05,
+                100.0,
+                &[
+                    (0.04, 0x405a9b2d2aa614e0),
+                    (0.05, 0x4059000000000004),
+                    (0.06, 0x405781fc6f8e90d4),
+                    (0.08, 0x4054d4a282adf7b8),
+                    (0.10, 0x4052834134edf821),
+                ],
+            ),
+            (
+                44013.0,
+                47119.0,
+                0.075,
+                102.0,
+                &[
+                    (0.03, 0x4060e30a168e62dc),
+                    (0.05, 0x405d9d18c6e14303),
+                    (0.07, 0x405a11be4337deae),
+                    (0.09, 0x40570a9f1350b950),
+                    (0.11, 0x405472ad4fab7123),
+                ],
+            ),
+            (
+                44094.0,
+                45658.0,
+                0.06,
+                103.0,
+                &[
+                    (0.03, 0x405ca695b231486a),
+                    (0.05, 0x405a8ebb3948baab),
+                    (0.07, 0x4058a4f75d9fc866),
+                    (0.09, 0x4056e4e04e91c98c),
+                    (0.11, 0x40554a8265f06f2f),
+                ],
+            ),
         ];
         for (s, m, rate, red, pts) in ladders {
             for (yld, exp) in *pts {
@@ -1670,15 +1787,51 @@ mod tests {
         // (settle, mat, rate, yld, red, freq, basis, excel_bits)
         let rows: &[(f64, f64, f64, f64, f64, f64, f64, u64)] = &[
             // Catalog witness G6-03d (basis 2, Actual/360): was ~cents wrong pre-fix.
-            (44094.0, 45658.0, 0.06, 0.03, 103.0, 2.0, 2.0, 0x405ca5adc69c74fb),
+            (
+                44094.0,
+                45658.0,
+                0.06,
+                0.03,
+                103.0,
+                2.0,
+                2.0,
+                0x405ca5adc69c74fb,
+            ),
             // Basis-3 (Actual/365) sibling of the catalog witness.
-            (44094.0, 45658.0, 0.06, 0.03, 103.0, 2.0, 3.0, 0x405ca62e6ffeec41),
+            (
+                44094.0,
+                45658.0,
+                0.06,
+                0.03,
+                103.0,
+                2.0,
+                3.0,
+                0x405ca62e6ffeec41,
+            ),
             // Settlement-on-31st (2020-07-31) US 30/360 (basis 0): the `E - A` rule
             // also corrects the 30/360 last-day-of-month accrual/discount split.
-            (44043.0, 45658.0, 0.06, 0.03, 103.0, 2.0, 0.0, 0x405cbcd7f4f1f43d),
+            (
+                44043.0,
+                45658.0,
+                0.06,
+                0.03,
+                103.0,
+                2.0,
+                0.0,
+                0x405cbcd7f4f1f43d,
+            ),
             // Pow-chain discriminator (basis 3, yld 0.2): platform `powf` is 1 ULP off
             // here; the x87 `exp(RN53(RN64(exp·ln base)))` chain reproduces Excel.
-            (44094.0, 45658.0, 0.06, 0.2, 103.0, 2.0, 3.0, 0x404f217d3fb8f25d),
+            (
+                44094.0,
+                45658.0,
+                0.06,
+                0.2,
+                103.0,
+                2.0,
+                3.0,
+                0x404f217d3fb8f25d,
+            ),
         ];
         for &(s, m, r, y, red, f, b, excel) in rows {
             let got = price_kernel(s, m, r, y, red, f, Some(b)).unwrap();
@@ -1706,31 +1859,87 @@ mod tests {
         let rows: &[(u64, u64, u64, u64, f64, f64, u64)] = &[
             // Catalog witnesses (on-coupon DA 44013/44562, basis 0) — the two
             // former G6-03c rows, now exact.
-            (0x40e57da000000000, 0x40e5c24000000000, 0x3fa999999999999a,
-             0x3fa999999999999a, 2.0, 0.0, 0x3ff76b5d5a9cdbe9), // yld 0.05
-            (0x40e57da000000000, 0x40e5c24000000000, 0x3fa999999999999a,
-             0x3fb47ae147ae147b, 2.0, 0.0, 0x3ff767de5627448a), // yld 0.08
+            (
+                0x40e57da000000000,
+                0x40e5c24000000000,
+                0x3fa999999999999a,
+                0x3fa999999999999a,
+                2.0,
+                0.0,
+                0x3ff76b5d5a9cdbe9,
+            ), // yld 0.05
+            (
+                0x40e57da000000000,
+                0x40e5c24000000000,
+                0x3fa999999999999a,
+                0x3fb47ae147ae147b,
+                2.0,
+                0.0,
+                0x3ff767de5627448a,
+            ), // yld 0.08
             // Actual/360 (basis 2) off-coupon — was material 0/1272 pre-fix.
-            (0x40e57e0000000000, 0x40e64b4000000000, 0x3faeb851eb851eb8,
-             0x3fa999999999999a, 2.0, 2.0, 0x40100d23fbb83359),
+            (
+                0x40e57e0000000000,
+                0x40e64b4000000000,
+                0x3faeb851eb851eb8,
+                0x3fa999999999999a,
+                2.0,
+                2.0,
+                0x40100d23fbb83359,
+            ),
             // Actual/365 (basis 3) off-coupon — was material 0/1272 pre-fix.
-            (0x40e57e0000000000, 0x40e64b4000000000, 0x3faeb851eb851eb8,
-             0x3fb47ae147ae147b, 2.0, 3.0, 0x400fd3bce9b1ada9),
+            (
+                0x40e57e0000000000,
+                0x40e64b4000000000,
+                0x3faeb851eb851eb8,
+                0x3fb47ae147ae147b,
+                2.0,
+                3.0,
+                0x400fd3bce9b1ada9,
+            ),
             // Quarterly (freq 4), basis 2 off-coupon.
-            (0x40e57e0000000000, 0x40e64b4000000000, 0x3fb47ae147ae147b,
-             0x3fa999999999999a, 4.0, 2.0, 0x400ee0804a1d1c7c),
+            (
+                0x40e57e0000000000,
+                0x40e64b4000000000,
+                0x3fb47ae147ae147b,
+                0x3fa999999999999a,
+                4.0,
+                2.0,
+                0x400ee0804a1d1c7c,
+            ),
             // Leap-February bond (basis 1 act/act) off-coupon.
-            (0x40e60ea000000000, 0x40e652a000000000, 0x3fa70a3d70a3d70a,
-             0x3fa999999999999a, 2.0, 1.0, 0x3ff7578208e817ad),
+            (
+                0x40e60ea000000000,
+                0x40e652a000000000,
+                0x3fa70a3d70a3d70a,
+                0x3fa999999999999a,
+                2.0,
+                1.0,
+                0x3ff7578208e817ad,
+            ),
             // W109 G6-03c b45 month-end break regression guards (the CoupDaysBS
             // `diff360_us` accrued span). Feb-month-end settlement 2025-02-28,
             // quarterly, basis 0 — same bond family whose 31st-settlement sibling
             // (2025-03-31) exploded ~2.5e13 ULP with the plain `us_30_360` accrued.
-            (0x40e6528000000000, 0x40e6802000000000, 0x3fa0a3d70a3d70a4,
-             0x3f1a36e2eb1c432d, 4.0, 0.0, 0x3fef9f4c11283edc),
+            (
+                0x40e6528000000000,
+                0x40e6802000000000,
+                0x3fa0a3d70a3d70a4,
+                0x3f1a36e2eb1c432d,
+                4.0,
+                0.0,
+                0x3fef9f4c11283edc,
+            ),
             // 31st-of-month settlement 2023-12-31, semiannual, basis 0.
-            (0x40e61d6000000000, 0x40e6a66000000000, 0x3fac28f5c28f5c29,
-             0x3f1a36e2eb1c432d, 2.0, 0.0, 0x4006955d65e34aa5),
+            (
+                0x40e61d6000000000,
+                0x40e6a66000000000,
+                0x3fac28f5c28f5c29,
+                0x3f1a36e2eb1c432d,
+                2.0,
+                0.0,
+                0x4006955d65e34aa5,
+            ),
         ];
         for (i, &(s, m, cp, y, f, b, excel)) in rows.iter().enumerate() {
             let got = duration_kernel(
@@ -1754,8 +1963,16 @@ mod tests {
     #[test]
     fn yield_unchanged_by_price_fix() {
         let cat = yield_kernel(44013.0, 44562.0, 0.05, 95.0, 100.0, 2.0, Some(0.0)).unwrap();
-        assert_eq!(cat.to_bits(), 0x3fb61465bd6a9970, "yield-catalog must be unchanged");
+        assert_eq!(
+            cat.to_bits(),
+            0x3fb61465bd6a9970,
+            "yield-catalog must be unchanged"
+        );
         let par = yield_kernel(44013.0, 44562.0, 0.05, 100.0, 100.0, 2.0, Some(0.0)).unwrap();
-        assert_eq!(par.to_bits(), 0x3fa99999999999a0, "yield-par must be unchanged");
+        assert_eq!(
+            par.to_bits(),
+            0x3fa99999999999a0,
+            "yield-par must be unchanged"
+        );
     }
 }

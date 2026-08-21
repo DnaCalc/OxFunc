@@ -17,8 +17,8 @@ use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 const UNITS: [&str; 23] = [
-    "Em", "Gm", "Mm", "Nmi", "Pm", "Tm", "Ym", "Zm", "cm", "dam", "dm", "fm",
-    "ft", "hm", "in", "km", "m", "mi", "mm", "nm", "pm", "um", "yd",
+    "Em", "Gm", "Mm", "Nmi", "Pm", "Tm", "Ym", "Zm", "cm", "dam", "dm", "fm", "ft", "hm", "in",
+    "km", "m", "mi", "mm", "nm", "pm", "um", "yd",
 ];
 const SCHEDULES: [&str; 12] = [
     "f64_div_mul",
@@ -336,7 +336,10 @@ fn main() {
                 .iter()
                 .enumerate()
                 .map(|(index, unit)| {
-                    ((*unit).to_string(), format!("0x{:016x}", best_constants[index].to_bits()))
+                    (
+                        (*unit).to_string(),
+                        format!("0x{:016x}", best_constants[index].to_bits()),
+                    )
                 })
                 .collect();
             candidates.push(Candidate {

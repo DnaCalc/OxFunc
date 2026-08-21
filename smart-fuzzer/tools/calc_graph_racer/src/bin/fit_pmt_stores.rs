@@ -18,16 +18,30 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
+    }
     fn st(self, yes: bool) -> V {
         if yes { V::new(self.f()) } else { self }
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
-    fn neg(self) -> V { V::new(0.0).sub(self) }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn sub(self, o: V) -> V {
+        V(rx::ext_sub(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
+    fn neg(self) -> V {
+        V::new(0.0).sub(self)
+    }
 }
 
 // 2^t via f2xm1 + fscale, extended. Returns (P, P-1) where P-1 is the ACCURATE
@@ -99,13 +113,21 @@ fn pow_pm1(w: V, rate: f64, n: u64, m: u32, pform: u8) -> (V, V) {
         4 => {
             // log1p provider: P = 2^(n*log2(1+rate)) via FYL2XP1(rate) directly;
             // P-1 via F2XM1 (accurate expm1 for small rate).
-            let t = V(rx::ext_fyl2xp1(&rx::ext_from_f64(n as f64), &rx::ext_from_f64(rate), CW));
+            let t = V(rx::ext_fyl2xp1(
+                &rx::ext_from_f64(n as f64),
+                &rx::ext_from_f64(rate),
+                CW,
+            ));
             two_pow2(t, bit(0), true)
         }
         _ => {
             // branched provider: FYL2XP1 in-domain (with expm1 P-1), else fyl2x.
             if rate.abs() <= FYL2XP1_DOM {
-                let t = V(rx::ext_fyl2xp1(&rx::ext_from_f64(n as f64), &rx::ext_from_f64(rate), CW));
+                let t = V(rx::ext_fyl2xp1(
+                    &rx::ext_from_f64(n as f64),
+                    &rx::ext_from_f64(rate),
+                    CW,
+                ));
                 two_pow2(t, bit(0), true)
             } else {
                 let t = V(rx::ext_fyl2x(&rx::ext_from_f64(n as f64), &w.0, CW));
@@ -152,7 +174,12 @@ fn pmt(rate: f64, n: f64, pv: f64, fvv: f64, ty: f64, m: u32, pform: u8, comp: u
             // -(pv*P + fv)*rate/((P-1)*tf)
             let num = V::new(pv).mul(p).add(V::new(fvv)).st(bit(6));
             let den = pm1.mul(tf).st(bit(5));
-            num.mul(V::new(rate)).st(bit(4)).div(den).st(bit(7)).neg().f()
+            num.mul(V::new(rate))
+                .st(bit(4))
+                .div(den)
+                .st(bit(7))
+                .neg()
+                .f()
         }
         4 => {
             // via reciprocal: -(pv + fv/P)*(rate*P/(P-1))/tf
@@ -164,7 +191,11 @@ fn pmt(rate: f64, n: f64, pv: f64, fvv: f64, ty: f64, m: u32, pform: u8, comp: u
         5 => {
             // PV-side dual: -(pv + fv/P)/(tf*(1 - 1/P)/rate)
             let pinv = V::new(1.0).div(p).st(bit(4));
-            let apvf = V::new(1.0).sub(pinv).st(bit(3)).div(V::new(rate)).st(bit(5));
+            let apvf = V::new(1.0)
+                .sub(pinv)
+                .st(bit(3))
+                .div(V::new(rate))
+                .st(bit(5));
             let num = V::new(pv).add(V::new(fvv).mul(pinv).st(bit(6))).st(bit(6));
             num.div(tf.mul(apvf).st(bit(5))).st(bit(7)).neg().f()
         }
@@ -228,9 +259,10 @@ fn score(obs: &[(Vec<f64>, u64)], m: u32, pform: u8, comp: u8) -> u32 {
 
 fn main() {
     let argv: Vec<String> = std::env::args().collect();
-    let train_path = argv.get(1).cloned().unwrap_or_else(|| {
-        "../../work/w109/G6-solvers/answers-pmt-r0.json".to_string()
-    });
+    let train_path = argv
+        .get(1)
+        .cloned()
+        .unwrap_or_else(|| "../../work/w109/G6-solvers/answers-pmt-r0.json".to_string());
     let heldout_path = argv.get(2).cloned();
     let obs = load_obs(&train_path);
     println!("{} PMT train rows ({train_path})", obs.len());
@@ -255,15 +287,26 @@ fn main() {
         cand.sort_by(|a, b| b.0.cmp(&a.0).then(b.1.cmp(&a.1)));
         println!("top by HELD-OUT over ALL candidates (best_train={best_train}):");
         for (h, tr, m, pf, cp) in cand.iter().take(16) {
-            println!("  held {h:3}/{}  train {tr:2}/{}  pform{pf} comp{cp} mask {m:09b}", ho.len(), obs.len());
+            println!(
+                "  held {h:3}/{}  train {tr:2}/{}  pform{pf} comp{cp} mask {m:09b}",
+                ho.len(),
+                obs.len()
+            );
         }
         let (_, _, m, pf, cp) = cand[0];
         println!("BEST-ON-HELDOUT pform{pf} comp{cp} mask {m:09b}:");
         for (a, want) in &ho {
             let got = pmt(a[0], a[1], a[2], a[3], a[4], m, pf, cp);
             if got.to_bits() != *want {
-                println!("  MISS rate={:.6e} n={} pv={} fv={} ty={} {:+} ulp",
-                    a[0], a[1], a[2], a[3], a[4], got.to_bits() as i64 - *want as i64);
+                println!(
+                    "  MISS rate={:.6e} n={} pv={} fv={} ty={} {:+} ulp",
+                    a[0],
+                    a[1],
+                    a[2],
+                    a[3],
+                    a[4],
+                    got.to_bits() as i64 - *want as i64
+                );
             }
         }
         return;
@@ -282,13 +325,20 @@ fn main() {
         println!("{sc:3}/{}  pform{pform} comp{comp} mask {m:09b}", obs.len());
     }
     let (best_sc, m, pform, comp) = results[0];
-    println!("CHAMPION {best_sc}/{}  pform{pform} comp{comp} mask {m:09b}", obs.len());
+    println!(
+        "CHAMPION {best_sc}/{}  pform{pform} comp{comp} mask {m:09b}",
+        obs.len()
+    );
     for (a, want) in &obs {
         let got = pmt(a[0], a[1], a[2], a[3], a[4], m, pform, comp);
         if got.to_bits() != *want {
             println!(
                 "  MISS rate={:.6e} n={} pv={} fv={} ty={} {:+} ulp",
-                a[0], a[1], a[2], a[3], a[4],
+                a[0],
+                a[1],
+                a[2],
+                a[3],
+                a[4],
                 got.to_bits() as i64 - *want as i64
             );
         }

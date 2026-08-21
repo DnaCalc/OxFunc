@@ -9,7 +9,9 @@ use rx::{
 };
 const RN53: u16 = CW_PC53_RN;
 const CW: u16 = CW_PC64_RN;
-fn sp(v: &Ext80) -> f64 { ext_to_f64(v, RN53) }
+fn sp(v: &Ext80) -> f64 {
+    ext_to_f64(v, RN53)
+}
 
 // accurate (u-1) for K=0 neg branch: -w*m, m=1/(1+w). Returns Ext80.
 fn accurate_um1(tau: f64) -> (Ext80, f64 /*K*/, bool) {
@@ -26,7 +28,8 @@ fn accurate_um1(tau: f64) -> (Ext80, f64 /*K*/, bool) {
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let labels = [
         "W0 y=RN(u)-1 spill-Kahan [165]",
         "W1 y=fl53(-w*m) spill-Kahan",
@@ -38,7 +41,9 @@ fn main() {
     let (mut tot, mut tot_k0) = (0u32, 0u32);
     for line in csv.lines().skip(1) {
         let ff: Vec<&str> = line.split(',').collect();
-        if ff.len() < 6 { continue; }
+        if ff.len() < 6 {
+            continue;
+        }
         let tau = f64::from_bits(u64::from_str_radix(ff[2], 16).unwrap());
         let u = f64::from_bits(u64::from_str_radix(ff[3], 16).unwrap());
         let lnu = f64::from_bits(u64::from_str_radix(ff[4], 16).unwrap());
@@ -61,14 +66,33 @@ fn main() {
         let w3 = ext_to_f64(&ext_div(&num2, &ext_from_f64(lnu), CW), RN53).to_bits();
 
         let cands = [w0, w1, w2, w3];
-        for i in 0..4 { if cands[i] == pin { score[i] += 1; if is_k0 { score_k0[i] += 1; } } }
-        if is_k0 { tot_k0 += 1; }
+        for i in 0..4 {
+            if cands[i] == pin {
+                score[i] += 1;
+                if is_k0 {
+                    score_k0[i] += 1;
+                }
+            }
+        }
+        if is_k0 {
+            tot_k0 += 1;
+        }
         tot += 1;
     }
-    println!("=== Kahan with w-based accurate numerator, N={} (K0={}) ===", tot, tot_k0);
+    println!(
+        "=== Kahan with w-based accurate numerator, N={} (K0={}) ===",
+        tot, tot_k0
+    );
     for i in 0..4 {
-        println!("  {:34} all {:3}/{} ({:4.1}%)  K0 {:3}/{} ({:4.1}%)",
-                 labels[i], score[i], tot, 100.0*score[i] as f64/tot as f64,
-                 score_k0[i], tot_k0, 100.0*score_k0[i] as f64/tot_k0 as f64);
+        println!(
+            "  {:34} all {:3}/{} ({:4.1}%)  K0 {:3}/{} ({:4.1}%)",
+            labels[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            score_k0[i],
+            tot_k0,
+            100.0 * score_k0[i] as f64 / tot_k0 as f64
+        );
     }
 }

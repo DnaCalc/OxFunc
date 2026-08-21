@@ -64,10 +64,22 @@ struct Variant {
 }
 
 const VARIANTS: [Variant; 4] = [
-    Variant { name: "V0-earlystop-hi", rule: 0 },
-    Variant { name: "V1-lattice-hi", rule: 1 },
-    Variant { name: "V2-lattice-lo", rule: 2 },
-    Variant { name: "V3-lattice-closest", rule: 3 },
+    Variant {
+        name: "V0-earlystop-hi",
+        rule: 0,
+    },
+    Variant {
+        name: "V1-lattice-hi",
+        rule: 1,
+    },
+    Variant {
+        name: "V2-lattice-lo",
+        rule: 2,
+    },
+    Variant {
+        name: "V3-lattice-closest",
+        rule: 3,
+    },
 ];
 
 fn run_variant(p: f64, lo: f64, hi: f64, f: &dyn Fn(f64) -> f64, rule: u8) -> f64 {
@@ -107,7 +119,13 @@ fn score(
                 }
             }
         }
-        print!("  {:20} {:4}/{} worst {:+}", v.name, exact, rows.len(), worst);
+        print!(
+            "  {:20} {:4}/{} worst {:+}",
+            v.name,
+            exact,
+            rows.len(),
+            worst
+        );
         if exact < rows.len() {
             print!("  miss: ");
             for (id, d) in &miss {
@@ -188,7 +206,8 @@ fn main() {
             q,
             0.0,
             hi,
-            Box::new(move |x: f64| regularized_gamma_p(df / 2.0, x / 2.0)) as Box<dyn Fn(f64) -> f64>,
+            Box::new(move |x: f64| regularized_gamma_p(df / 2.0, x / 2.0))
+                as Box<dyn Fn(f64) -> f64>,
         )
     });
     // Q-direct staging: find x with Q(x) <= p (Q decreasing; use -Q to keep the
@@ -200,7 +219,8 @@ fn main() {
             -p,
             0.0,
             hi,
-            Box::new(move |x: f64| -regularized_gamma_q(df / 2.0, x / 2.0)) as Box<dyn Fn(f64) -> f64>,
+            Box::new(move |x: f64| -regularized_gamma_q(df / 2.0, x / 2.0))
+                as Box<dyn Fn(f64) -> f64>,
         )
     });
 
@@ -255,7 +275,12 @@ fn main() {
                 worst = d;
             }
         }
-        println!("  z-space beta*z (V1)  {:4}/{} worst {:+}", exact, gi9.len(), worst);
+        println!(
+            "  z-space beta*z (V1)  {:4}/{} worst {:+}",
+            exact,
+            gi9.len(),
+            worst
+        );
     }
 
     let ci9 = load(&dir, "answers-b19-chiinv.json");
@@ -269,7 +294,8 @@ fn main() {
             -p,
             0.0,
             hi,
-            Box::new(move |x: f64| -regularized_gamma_q(df / 2.0, x / 2.0)) as Box<dyn Fn(f64) -> f64>,
+            Box::new(move |x: f64| -regularized_gamma_q(df / 2.0, x / 2.0))
+                as Box<dyn Fn(f64) -> f64>,
         )
     });
     score("b19 CHIINV via P at 1-p (old)", &ci9, &|a: &[f64]| {
@@ -283,24 +309,30 @@ fn main() {
             q,
             0.0,
             hi,
-            Box::new(move |x: f64| regularized_gamma_p(df / 2.0, x / 2.0)) as Box<dyn Fn(f64) -> f64>,
+            Box::new(move |x: f64| regularized_gamma_p(df / 2.0, x / 2.0))
+                as Box<dyn Fn(f64) -> f64>,
         )
     });
 
     let cl9 = load(&dir, "answers-b19-chisqinv.json");
-    score("b19 CHISQ.INV P-direct (production)", &cl9, &|a: &[f64]| {
-        let (p, df) = (a[0], a[1].trunc());
-        let mut hi = df.max(1.0);
-        while regularized_gamma_p(df / 2.0, hi / 2.0) < p {
-            hi *= 2.0;
-        }
-        (
-            p,
-            0.0,
-            hi,
-            Box::new(move |x: f64| regularized_gamma_p(df / 2.0, x / 2.0)) as Box<dyn Fn(f64) -> f64>,
-        )
-    });
+    score(
+        "b19 CHISQ.INV P-direct (production)",
+        &cl9,
+        &|a: &[f64]| {
+            let (p, df) = (a[0], a[1].trunc());
+            let mut hi = df.max(1.0);
+            while regularized_gamma_p(df / 2.0, hi / 2.0) < p {
+                hi *= 2.0;
+            }
+            (
+                p,
+                0.0,
+                hi,
+                Box::new(move |x: f64| regularized_gamma_p(df / 2.0, x / 2.0))
+                    as Box<dyn Fn(f64) -> f64>,
+            )
+        },
+    );
 
     let bi9 = load(&dir, "answers-b19-betainv.json");
     score("b19 BETAINV z-space", &bi9, &|a: &[f64]| {
@@ -316,19 +348,23 @@ fn main() {
     // FINV(p, d1, d2) = right-tail inverse. Production: invert CDF at 1-p.
     // Q-direct: FDIST's accurate complement form Q(x) = I_{d2/(d2+d1 x)}(d2/2, d1/2).
     let fi9 = load(&dir, "answers-b19-finv.json");
-    score("b19 FINV via CDF at 1-p (production)", &fi9, &|a: &[f64]| {
-        let (p, d1, d2) = (a[0], a[1].trunc(), a[2].trunc());
-        let q = 1.0 - p;
-        let f = move |x: f64| {
-            let z = d1 * x / (d1 * x + d2);
-            regularized_beta(z, d1 / 2.0, d2 / 2.0)
-        };
-        let mut hi = 1.0f64;
-        while f(hi) < q {
-            hi *= 2.0;
-        }
-        (q, 0.0, hi, Box::new(f) as Box<dyn Fn(f64) -> f64>)
-    });
+    score(
+        "b19 FINV via CDF at 1-p (production)",
+        &fi9,
+        &|a: &[f64]| {
+            let (p, d1, d2) = (a[0], a[1].trunc(), a[2].trunc());
+            let q = 1.0 - p;
+            let f = move |x: f64| {
+                let z = d1 * x / (d1 * x + d2);
+                regularized_beta(z, d1 / 2.0, d2 / 2.0)
+            };
+            let mut hi = 1.0f64;
+            while f(hi) < q {
+                hi *= 2.0;
+            }
+            (q, 0.0, hi, Box::new(f) as Box<dyn Fn(f64) -> f64>)
+        },
+    );
     score("b19 FINV Q-direct complement-form", &fi9, &|a: &[f64]| {
         let (p, d1, d2) = (a[0], a[1].trunc(), a[2].trunc());
         let f = move |x: f64| {
@@ -345,20 +381,24 @@ fn main() {
     // TINV(p, df) = two-tailed inverse. Production: t_cdf at 1 - p/2.
     // 2t-direct: invert the published two-tail surface I_{v/(v+x^2)}(v/2, 1/2) at p.
     let ti9 = load(&dir, "answers-b19-tinv.json");
-    score("b19 TINV via CDF at 1-p/2 (production)", &ti9, &|a: &[f64]| {
-        let (p, v) = (a[0], a[1].trunc());
-        let q = 1.0 - p / 2.0;
-        let f = move |x: f64| {
-            let xx = v / (v + x * x);
-            let ib = regularized_beta(xx, v / 2.0, 0.5);
-            1.0 - 0.5 * ib
-        };
-        let mut hi = 1.0f64;
-        while f(hi) < q {
-            hi *= 2.0;
-        }
-        (q, 0.0, hi, Box::new(f) as Box<dyn Fn(f64) -> f64>)
-    });
+    score(
+        "b19 TINV via CDF at 1-p/2 (production)",
+        &ti9,
+        &|a: &[f64]| {
+            let (p, v) = (a[0], a[1].trunc());
+            let q = 1.0 - p / 2.0;
+            let f = move |x: f64| {
+                let xx = v / (v + x * x);
+                let ib = regularized_beta(xx, v / 2.0, 0.5);
+                1.0 - 0.5 * ib
+            };
+            let mut hi = 1.0f64;
+            while f(hi) < q {
+                hi *= 2.0;
+            }
+            (q, 0.0, hi, Box::new(f) as Box<dyn Fn(f64) -> f64>)
+        },
+    );
     score("b19 TINV 2t-direct", &ti9, &|a: &[f64]| {
         let (p, v) = (a[0], a[1].trunc());
         let f = move |x: f64| {

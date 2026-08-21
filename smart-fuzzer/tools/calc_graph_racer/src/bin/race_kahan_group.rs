@@ -9,11 +9,15 @@ use rx::{
 
 fn lnu_ext_of_dbl(u: f64) -> f64 {
     // ln(u) via fyl2x on the double u, RN53 store (== excel_log basically)
-    ext_to_f64(&ext_fyl2x(&ext_ln2(), &ext_from_f64(u), CW_PC64_RN), CW_PC53_RN)
+    ext_to_f64(
+        &ext_fyl2x(&ext_ln2(), &ext_from_f64(u), CW_PC64_RN),
+        CW_PC53_RN,
+    )
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let cw = CW_PC64_RN;
     let labels = [
         "G1 ((u-1)*t)/lnu  [prod]",
@@ -30,7 +34,9 @@ fn main() {
     let mut tot = 0u32;
     for line in csv.lines().skip(1) {
         let f: Vec<&str> = line.split(',').collect();
-        if f.len() < 6 { continue; }
+        if f.len() < 6 {
+            continue;
+        }
         let tau = f64::from_bits(u64::from_str_radix(f[2], 16).unwrap());
         let pin = u64::from_str_radix(f[5], 16).unwrap();
         let u = rx::excel_exp(tau);
@@ -43,7 +49,10 @@ fn main() {
         let g3 = (y * tau * (1.0 / lnu)).to_bits();
         let g4 = (y + y * (tau - lnu) / lnu).to_bits();
         // ext divide t/lnu then double multiply
-        let tql = ext_to_f64(&ext_div(&ext_from_f64(tau), &ext_from_f64(lnu), cw), CW_PC53_RN);
+        let tql = ext_to_f64(
+            &ext_div(&ext_from_f64(tau), &ext_from_f64(lnu), cw),
+            CW_PC53_RN,
+        );
         let g5 = (y * tql).to_bits();
         // full ext: num=(u-1)*(tau/lnu) all ext off double u/tau/lnu, spill RN53
         let g6 = {
@@ -55,12 +64,24 @@ fn main() {
         let g8 = (y * (tau / lnu2)).to_bits();
 
         let gs = [g1, g2, g3, g4, g5, g6, g7, g8];
-        for i in 0..8 { if gs[i] == pin { score[i] += 1; } else { misses[i] += 1; } }
+        for i in 0..8 {
+            if gs[i] == pin {
+                score[i] += 1;
+            } else {
+                misses[i] += 1;
+            }
+        }
         tot += 1;
     }
     println!("=== Kahan grouping race on pure em oracle, N={} ===", tot);
     for i in 0..8 {
-        println!("  {:32} {:3}/{}  ({:.1}%)  misses={}", labels[i], score[i], tot,
-                 100.0 * score[i] as f64 / tot as f64, misses[i]);
+        println!(
+            "  {:32} {:3}/{}  ({:.1}%)  misses={}",
+            labels[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            misses[i]
+        );
     }
 }

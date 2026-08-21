@@ -57,78 +57,153 @@ fn main() {
     type V = Box<dyn Fn(f64, i64) -> f64>;
     let variants: Vec<(&str, V)> = vec![
         // 0 baseline internal-Kahan (SSE f64 (u-1)*t/lnu)
-        ("K0 SSE (u-1)*t/lnu", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { t } else if t.abs() < 1.0 { (u - 1.0) * t / rx::excel_ln(u) } else { u - 1.0 }
-        })),
+        (
+            "K0 SSE (u-1)*t/lnu",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    t
+                } else if t.abs() < 1.0 {
+                    (u - 1.0) * t / rx::excel_ln(u)
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 1 x87 PC64 double-round each Kahan op: p=dr(um1*t); em=dr(p/lnu)
-        ("K1 x87dr (um1*t)/lnu", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 { dr_div(dr_mul(u - 1.0, t), rx::excel_ln(u)) } else { u - 1.0 }
-        })),
+        (
+            "K1 x87dr (um1*t)/lnu",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    dr_div(dr_mul(u - 1.0, t), rx::excel_ln(u))
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 2 x87 extended product kept, divide double-rounded, single store
-        ("K2 ext prod, div store", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 {
-                let p = rx::ext_mul(&e(u - 1.0), &e(t), CW);
-                tf(&rx::ext_div(&p, &e(rx::excel_ln(u)), CW))
-            } else { u - 1.0 }
-        })),
+        (
+            "K2 ext prod, div store",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    let p = rx::ext_mul(&e(u - 1.0), &e(t), CW);
+                    tf(&rx::ext_div(&p, &e(rx::excel_ln(u)), CW))
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 3 op-order (u-1)/lnu*t (SSE)
-        ("K3 SSE (u-1)/lnu*t", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 { (u - 1.0) / rx::excel_ln(u) * t } else { u - 1.0 }
-        })),
+        (
+            "K3 SSE (u-1)/lnu*t",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    (u - 1.0) / rx::excel_ln(u) * t
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 4 op-order t/lnu*(u-1) (SSE)
-        ("K4 SSE t/lnu*(u-1)", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 { t / rx::excel_ln(u) * (u - 1.0) } else { u - 1.0 }
-        })),
+        (
+            "K4 SSE t/lnu*(u-1)",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    t / rx::excel_ln(u) * (u - 1.0)
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 5 denom = log1p(u-1) via fyl2xp1 (SSE arithmetic)
-        ("K5 SSE denom log1p(u-1)", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 {
-                let l = tf(&rx::ext_fyl2xp1(&rx::ext_ln2(), &e(u - 1.0), CW));
-                (u - 1.0) * t / l
-            } else { u - 1.0 }
-        })),
+        (
+            "K5 SSE denom log1p(u-1)",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    let l = tf(&rx::ext_fyl2xp1(&rx::ext_ln2(), &e(u - 1.0), CW));
+                    (u - 1.0) * t / l
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 6 u kept EXTENDED from exp: um1 extended, lnu=ln(u_ext) ext, arithmetic ext single store
-        ("K6 full-ext spill (u_ext)", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let ue = exp_ext(&e(t));
-            let u = tf(&ue);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 {
-                let um1 = rx::ext_sub(&ue, &rx::ext_one(), CW);
-                let lnu = rx::ext_fyl2x(&rx::ext_ln2(), &ue, CW);
-                tf(&rx::ext_div(&rx::ext_mul(&um1, &e(t), CW), &lnu, CW))
-            } else { u - 1.0 }
-        })),
+        (
+            "K6 full-ext spill (u_ext)",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let ue = exp_ext(&e(t));
+                let u = tf(&ue);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    let um1 = rx::ext_sub(&ue, &rx::ext_one(), CW);
+                    let lnu = rx::ext_fyl2x(&rx::ext_ln2(), &ue, CW);
+                    tf(&rx::ext_div(&rx::ext_mul(&um1, &e(t), CW), &lnu, CW))
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 7 x87dr but denom is x87 ln (already), product x87dr, divide SSE
-        ("K7 x87dr prod, SSE div", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 { dr_mul(u - 1.0, t) / rx::excel_ln(u) } else { u - 1.0 }
-        })),
+        (
+            "K7 x87dr prod, SSE div",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    dr_mul(u - 1.0, t) / rx::excel_ln(u)
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
         // 8 SSE prod, x87dr divide
-        ("K8 SSE prod, x87dr div", Box::new(|r, n| {
-            let t = -(n as f64) * rx::excel_log1p(r);
-            let u = rx::excel_exp(t);
-            if u == 1.0 { return t; }
-            if t.abs() < 1.0 { dr_div((u - 1.0) * t, rx::excel_ln(u)) } else { u - 1.0 }
-        })),
+        (
+            "K8 SSE prod, x87dr div",
+            Box::new(|r, n| {
+                let t = -(n as f64) * rx::excel_log1p(r);
+                let u = rx::excel_exp(t);
+                if u == 1.0 {
+                    return t;
+                }
+                if t.abs() < 1.0 {
+                    dr_div((u - 1.0) * t, rx::excel_ln(u))
+                } else {
+                    u - 1.0
+                }
+            }),
+        ),
     ];
 
     for (name, f) in &variants {

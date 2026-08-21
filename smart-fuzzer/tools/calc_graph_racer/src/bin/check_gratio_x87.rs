@@ -121,7 +121,11 @@ fn gratio(c: &Cfg, a: f64, x: f64) -> (f64, f64) {
             let zl = a * lnf(c, x);
             let h = gam1(a);
             let g = 1.0 + h;
-            let go200 = if x < 0.25 { zl > -0.13394 } else { a < x / 2.59 };
+            let go200 = if x < 0.25 {
+                zl > -0.13394
+            } else {
+                a < x / 2.59
+            };
             if go200 {
                 let l = rexp(c, zl);
                 let w = 0.5 + (0.5 + l);
@@ -350,10 +354,34 @@ fn main() {
     println!("{} rows", rows.len());
 
     for (tag, cfg) in [
-        ("std-exp/std-ln", Cfg { x87e: false, x87l: false }),
-        ("x87-exp/std-ln", Cfg { x87e: true, x87l: false }),
-        ("std-exp/x87-ln", Cfg { x87e: false, x87l: true }),
-        ("x87-exp/x87-ln", Cfg { x87e: true, x87l: true }),
+        (
+            "std-exp/std-ln",
+            Cfg {
+                x87e: false,
+                x87l: false,
+            },
+        ),
+        (
+            "x87-exp/std-ln",
+            Cfg {
+                x87e: true,
+                x87l: false,
+            },
+        ),
+        (
+            "std-exp/x87-ln",
+            Cfg {
+                x87e: false,
+                x87l: true,
+            },
+        ),
+        (
+            "x87-exp/x87-ln",
+            Cfg {
+                x87e: true,
+                x87l: true,
+            },
+        ),
     ] {
         let mut exact = 0usize;
         let mut per_a: BTreeMap<u64, (usize, usize)> = BTreeMap::new();

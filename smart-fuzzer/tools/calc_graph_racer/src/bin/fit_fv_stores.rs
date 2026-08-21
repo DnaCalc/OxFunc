@@ -17,16 +17,30 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
+    }
     fn st(self, yes: bool) -> V {
         if yes { V::new(self.f()) } else { self }
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
-    fn neg(self) -> V { V::new(0.0).sub(self) }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn sub(self, o: V) -> V {
+        V(rx::ext_sub(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
+    fn neg(self) -> V {
+        V::new(0.0).sub(self)
+    }
 }
 
 fn pow_n(w: V, n: u64, m: u32, form: u8) -> V {
@@ -120,7 +134,9 @@ fn main() {
             for m in 0u32..(1 << 9) {
                 let sc = obs
                     .iter()
-                    .filter(|(r, n, pmt, pv, ty, want)| fv(*r, *n, *pmt, *pv, *ty, m, form, tyassoc).to_bits() == *want)
+                    .filter(|(r, n, pmt, pv, ty, want)| {
+                        fv(*r, *n, *pmt, *pv, *ty, m, form, tyassoc).to_bits() == *want
+                    })
                     .count() as u32;
                 results.push((sc, m, form, tyassoc));
             }

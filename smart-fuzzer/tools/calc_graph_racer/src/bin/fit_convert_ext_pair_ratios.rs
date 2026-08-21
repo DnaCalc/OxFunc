@@ -134,10 +134,7 @@ fn ext_hex(value: rx::Ext80) -> String {
 
 fn predict(number: f64, ratio: rx::Ext80) -> f64 {
     let cw = rx::CW_PC64_RN;
-    rx::ext_to_f64(
-        &rx::ext_mul(&rx::ext_from_f64(number), &ratio, cw),
-        cw,
-    )
+    rx::ext_to_f64(&rx::ext_mul(&rx::ext_from_f64(number), &ratio, cw), cw)
 }
 
 fn fitness(rows: &[Row], ratio: rx::Ext80) -> Fitness {
@@ -275,8 +272,11 @@ fn main() {
         });
     }
     fits.sort_by(|left, right| {
-        (&left.category, &left.from_unit, &left.to_unit)
-            .cmp(&(&right.category, &right.from_unit, &right.to_unit))
+        (&left.category, &left.from_unit, &left.to_unit).cmp(&(
+            &right.category,
+            &right.from_unit,
+            &right.to_unit,
+        ))
     });
     let imperfect: Vec<_> = fits
         .iter()

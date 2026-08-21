@@ -191,7 +191,10 @@ fn scales() -> Vec<Scale> {
         ("bar_pa", 100_000.0),
         ("pa_per_bar", 0.00001),
         ("torr_pa", "133.32236842105263".parse().unwrap()),
-        ("pa_per_torr", 1.0 / "133.32236842105263".parse::<f64>().unwrap()),
+        (
+            "pa_per_torr",
+            1.0 / "133.32236842105263".parse::<f64>().unwrap(),
+        ),
     ];
     let mut seen = BTreeSet::new();
     let mut result = Vec::new();
@@ -249,29 +252,27 @@ fn prefix(schedule: &str, value: f64, from_exponent: i32, to_exponent: i32) -> f
         "f64_ratio" => value * (from / to),
         "x87_f64_delta_final" => {
             let cw = rx::CW_PC64_RN;
-            let product = rx::ext_mul(
-                &rx::ext_from_f64(value),
-                &rx::ext_from_f64(delta),
-                cw,
-            );
+            let product = rx::ext_mul(&rx::ext_from_f64(value), &rx::ext_from_f64(delta), cw);
             rx::ext_to_f64(&product, cw)
         }
         other => panic!("unknown prefix schedule {other}"),
     }
 }
 
-fn score(rows: &[Row], table: &str, scale: &Scale, core_name: &str, prefix_name: &str) -> Candidate {
+fn score(
+    rows: &[Row],
+    table: &str,
+    scale: &Scale,
+    core_name: &str,
+    prefix_name: &str,
+) -> Candidate {
     let mut fitness = Fitness {
         total: rows.len(),
         ..Fitness::default()
     };
     for row in rows {
-        let (numerator, denominator) = direct_constants(
-            table,
-            scale.value,
-            &row.from_direct,
-            &row.to_direct,
-        );
+        let (numerator, denominator) =
+            direct_constants(table, scale.value, &row.from_direct, &row.to_direct);
         let predicted = prefix(
             prefix_name,
             core(core_name, row.number, numerator, denominator),

@@ -18,9 +18,7 @@
 //!   die at large x);
 //! * fyl2xp1-always — FYL2XP1 with no range branch (control).
 
-use calc_graph_racer::dsl::{
-    Candidate, ConstVal, EvalModel, GraphBuilder, NodeId, Op, Pred,
-};
+use calc_graph_racer::dsl::{Candidate, ConstVal, EvalModel, GraphBuilder, NodeId, Op, Pred};
 use calc_graph_racer::eval::format_bits_hex;
 use calc_graph_racer::scheduler::ProbeCase;
 use calc_graph_racer::score::WitnessArg;
@@ -35,7 +33,11 @@ fn half_scale(b: &mut GraphBuilder, l: NodeId) -> NodeId {
 }
 
 fn t_node(b: &mut GraphBuilder, x: NodeId, dr: bool) -> NodeId {
-    let m = if dr { EvalModel::X87_STORED } else { EvalModel::Strict };
+    let m = if dr {
+        EvalModel::X87_STORED
+    } else {
+        EvalModel::Strict
+    };
     let one = b.strict(Op::Const(ConstVal::from_f64(1.0)));
     let two = b.strict(Op::Const(ConstVal::from_f64(2.0)));
     let d = b.push(Op::Sub(x, one), m);
@@ -249,9 +251,11 @@ fn probe(id: String, x: f64) -> ProbeCase {
 fn pool(rng: &mut Rng, tag: &str, count: usize) -> Vec<ProbeCase> {
     let mut out = Vec::new();
     // Catalog witnesses + structured bands.
-    for (i, x) in [5.0, 10.0, 2.0, 3.0, 1.5, 100.0, 1000.0, 1.0e6, 1.0e9, 1.0001]
-        .iter()
-        .enumerate()
+    for (i, x) in [
+        5.0, 10.0, 2.0, 3.0, 1.5, 100.0, 1000.0, 1.0e6, 1.0e9, 1.0001,
+    ]
+    .iter()
+    .enumerate()
     {
         out.push(probe(format!("{tag}-fixed-{i}"), *x));
     }
@@ -263,7 +267,10 @@ fn pool(rng: &mut Rng, tag: &str, count: usize) -> Vec<ProbeCase> {
     }
     // Near-1 boundary (t large).
     for k in 1..40 {
-        out.push(probe(format!("{tag}-near1-{k:02}"), 1.0 + (2.0f64).powi(-k)));
+        out.push(probe(
+            format!("{tag}-near1-{k:02}"),
+            1.0 + (2.0f64).powi(-k),
+        ));
     }
     // Log-uniform random coverage.
     for i in 0..count {

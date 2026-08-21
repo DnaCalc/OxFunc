@@ -136,9 +136,14 @@ pub enum Op {
     /// Top-level argument by index (scalar unless consumed by `Elem`/`FoldSum`).
     Arg(usize),
     /// Fixed element of an array argument.
-    Elem { arg: usize, index: usize },
+    Elem {
+        arg: usize,
+        index: usize,
+    },
     /// Length of an array argument, as f64.
-    Len { arg: usize },
+    Len {
+        arg: usize,
+    },
     Const(ConstVal),
     Add(NodeId, NodeId),
     Sub(NodeId, NodeId),
@@ -178,21 +183,51 @@ pub enum Op {
     /// The `87trig.asm` `fFCOS` shape: `u = x + π/2` formed in EXTENDED
     /// (unstored), then the `fFSIN` π-parity chain on `u`.
     CosViaSinShift(NodeId),
-    PowExcelPositive { base: NodeId, exp: NodeId },
+    PowExcelPositive {
+        base: NodeId,
+        exp: NodeId,
+    },
     /// The FULL production Excel `POWER` kernel (BUG-FUNC-042): exact-integer
     /// exponents publish via plain-binary64 binary exponentiation; fractional
     /// exponents take the x87 `exp(RN53(RN64(y·ln x)))` staging with the
     /// `|y|==0.5 -> sqrt` case and the `y<0` reciprocal staging; worksheet
     /// error lanes (#NUM!/#DIV/0!) surface as evaluation errors.
-    PowExcelKernel { base: NodeId, exp: NodeId },
-    PowfStrict { base: NodeId, exp: NodeId },
-    Fyl2x { y: NodeId, x: NodeId },
-    Fyl2xp1 { y: NodeId, x: NodeId },
-    Scale { x: NodeId, k: NodeId },
-    Prem { x: NodeId, modulus: NodeId },
-    Prem1 { x: NodeId, modulus: NodeId },
-    Sum { terms: Vec<NodeId>, order: SumOrder },
-    Prod { terms: Vec<NodeId>, order: SumOrder },
+    PowExcelKernel {
+        base: NodeId,
+        exp: NodeId,
+    },
+    PowfStrict {
+        base: NodeId,
+        exp: NodeId,
+    },
+    Fyl2x {
+        y: NodeId,
+        x: NodeId,
+    },
+    Fyl2xp1 {
+        y: NodeId,
+        x: NodeId,
+    },
+    Scale {
+        x: NodeId,
+        k: NodeId,
+    },
+    Prem {
+        x: NodeId,
+        modulus: NodeId,
+    },
+    Prem1 {
+        x: NodeId,
+        modulus: NodeId,
+    },
+    Sum {
+        terms: Vec<NodeId>,
+        order: SumOrder,
+    },
+    Prod {
+        terms: Vec<NodeId>,
+        order: SumOrder,
+    },
     /// Lockstep fold over array arguments. The `body` graph is evaluated once
     /// per element with its own argument space: body `Arg(k)` for
     /// `k < over.len()` is the current element of `over[k]`; body
@@ -216,7 +251,11 @@ pub enum Op {
     /// `acc = (acc * nums[i]) / dens[i]` (combinatorial kernels). `order`
     /// picks direction and per-step store behavior; the model picks
     /// strict / extended arithmetic. Starts from `acc = 1.0`.
-    FoldMulDiv { nums: usize, dens: usize, order: SumOrder },
+    FoldMulDiv {
+        nums: usize,
+        dens: usize,
+        order: SumOrder,
+    },
     Branch {
         pred: Pred,
         then_node: NodeId,

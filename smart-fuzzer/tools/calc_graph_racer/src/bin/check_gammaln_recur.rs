@@ -21,15 +21,31 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
-    fn store(self, yes: bool) -> V {
-        if yes { V::new(rx::ext_to_f64(&self.0, CW)) } else { self }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
+    fn store(self, yes: bool) -> V {
+        if yes {
+            V::new(rx::ext_to_f64(&self.0, CW))
+        } else {
+            self
+        }
+    }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn sub(self, o: V) -> V {
+        V(rx::ext_sub(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
     fn ln(self, input_stored: bool, output_stored: bool) -> V {
         let arg = self.store(input_stored);
         V(rx::ext_fyl2x(&rx::ext_ln2(), &arg.0, CW)).store(output_stored)
@@ -51,10 +67,14 @@ fn stirling_v(xv: V, x_hint: f64, m: u32) -> V {
     let bit = |i: u32| m & (1 << i) != 0;
     let lnx = xv.ln(bit(7), bit(0));
     let q0 = xv
-        .sub(V::new(0.5)).store(bit(2))
-        .mul(lnx).store(bit(2))
-        .sub(xv).store(bit(2))
-        .add(V::new(LS2PI)).store(bit(1));
+        .sub(V::new(0.5))
+        .store(bit(2))
+        .mul(lnx)
+        .store(bit(2))
+        .sub(xv)
+        .store(bit(2))
+        .add(V::new(LS2PI))
+        .store(bit(1));
     if x_hint > 1.0e8 {
         return q0;
     }
@@ -62,9 +82,11 @@ fn stirling_v(xv: V, x_hint: f64, m: u32) -> V {
     let t = if x_hint >= 1000.0 {
         V::new(7.9365079365079365079365e-4)
             .mul(p)
-            .sub(V::new(2.7777777777777777777778e-3)).store(bit(6))
+            .sub(V::new(2.7777777777777777777778e-3))
+            .store(bit(6))
             .mul(p)
-            .add(V::new(0.0833333333333333333333)).store(bit(4))
+            .add(V::new(0.0833333333333333333333))
+            .store(bit(4))
     } else {
         polevl(p, &A, bit(6)).store(bit(4))
     };
@@ -146,7 +168,10 @@ fn main() {
     }
     results.sort_by(|a, b| b.3.cmp(&a.3).then(a.4.cmp(&b.4)));
     for (t, rec, stir, exact, max_ulp) in results.iter().take(15) {
-        println!("T={t} rec={rec:05b} stir={stir:08b}: {exact}/{} max_ulp {max_ulp}", rows.len());
+        println!(
+            "T={t} rec={rec:05b} stir={stir:08b}: {exact}/{} max_ulp {max_ulp}",
+            rows.len()
+        );
     }
     let (t, rec, stir, _, _) = results[0];
     let mut misses = 0;

@@ -39,7 +39,13 @@ fn hist(name: &str, v: &[i64]) {
     }
     let n = v.len();
     let exact = *m.get(&0).unwrap_or(&0);
-    print!("  {:34} {:4}/{:4} ({:5.1}%)  ", name, exact, n, 100.0 * exact as f64 / n as f64);
+    print!(
+        "  {:34} {:4}/{:4} ({:5.1}%)  ",
+        name,
+        exact,
+        n,
+        100.0 * exact as f64 / n as f64
+    );
     let mut big = 0;
     for (k, c) in &m {
         if k.abs() <= 2 {
@@ -92,7 +98,11 @@ fn main() {
     }
     hist("tau=-n*log1p_port", &r_port);
     hist("tau=-n*log1p_CR", &r_cr);
-    println!("portable log1p != CR log1p on sensitive: {}/{}", log1p_differs, sens.len());
+    println!(
+        "portable log1p != CR log1p on sensitive: {}/{}",
+        log1p_differs,
+        sens.len()
+    );
     println!("tau-ulp offset (from portable tau) reproducing em_gold (999=none in +-12):");
     for (k, c) in &off {
         println!("    d={:+}: {}", k, c);

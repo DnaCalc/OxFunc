@@ -73,19 +73,17 @@ struct Cfg {
     series_dbl: bool,
     j_dbl: bool,
     zl_dbl: bool,
-    gam1_ext: bool,   // rational evaluated extended (vs per-op double)
+    gam1_ext: bool, // rational evaluated extended (vs per-op double)
     gam1_ret_dbl: bool,
     g_dbl: bool,
     w_dbl: bool,
-    wg_first: bool,   // (w*g)*inner vs w*(g*inner)
-    inner_dbl: bool,  // 0.5+(0.5-j) rounded to double
+    wg_first: bool,  // (w*g)*inner vs w*(g*inner)
+    inner_dbl: bool, // 0.5+(0.5-j) rounded to double
 }
 
 fn gam1_half(cfg: &Cfg) -> Ext80 {
     let t = ef(0.5);
-    let sp = |v: Ext80| -> Ext80 {
-        if cfg.gam1_ext { v } else { ef(dbl(&v)) }
-    };
+    let sp = |v: Ext80| -> Ext80 { if cfg.gam1_ext { v } else { ef(dbl(&v)) } };
     let mut top = ef(GP[6]);
     for &c in GP[..6].iter().rev() {
         top = sp(ext_add(&ext_mul(&top, &t, CW), &ef(c), CW));
@@ -108,13 +106,15 @@ fn erf190_ext(z: f64, cfg: &Cfg) -> Ext80 {
     if dbl(&x) == 0.0 {
         return ef(0.0);
     }
-    let sp = |v: Ext80| -> Ext80 {
-        if cfg.series_dbl { ef(dbl(&v)) } else { v }
-    };
+    let sp = |v: Ext80| -> Ext80 { if cfg.series_dbl { ef(dbl(&v)) } else { v } };
     let mut an = ef(3.0);
     let mut c = x;
     let mut sum = sp(ext_div(&x, &ext_add(&a, &ef(3.0), CW), CW));
-    let tol = ext_div(&ext_mul(&ef(3.0), &ef(5e-15), CW), &ext_add(&a, &ext_one(), CW), CW);
+    let tol = ext_div(
+        &ext_mul(&ef(3.0), &ef(5e-15), CW),
+        &ext_add(&a, &ext_one(), CW),
+        CW,
+    );
     for _ in 0..200 {
         an = sp(ext_add(&an, &ext_one(), CW));
         c = sp(ext_chs(&ext_mul(&c, &ext_div(&x, &an, CW), CW), CW));
@@ -126,7 +126,11 @@ fn erf190_ext(z: f64, cfg: &Cfg) -> Ext80 {
     }
     let inner_poly = ext_add(
         &ext_mul(
-            &ext_sub(&ext_div(&sum, &ef(6.0), CW), &ext_div(&ef(0.5), &ext_add(&a, &ef(2.0), CW), CW), CW),
+            &ext_sub(
+                &ext_div(&sum, &ef(6.0), CW),
+                &ext_div(&ef(0.5), &ext_add(&a, &ef(2.0), CW), CW),
+                CW,
+            ),
             &x,
             CW,
         ),
@@ -180,8 +184,13 @@ fn dump_ladder(dir: &str) {
         wg_first: true,
         inner_dbl: false,
     };
-    let ans_name = std::env::args().nth(3).unwrap_or_else(|| "answers-b11.json".into());
-    let bits: u32 = std::env::args().nth(4).map(|s| s.parse().unwrap()).unwrap_or(304);
+    let ans_name = std::env::args()
+        .nth(3)
+        .unwrap_or_else(|| "answers-b11.json".into());
+    let bits: u32 = std::env::args()
+        .nth(4)
+        .map(|s| s.parse().unwrap())
+        .unwrap_or(304);
     let cfg = Cfg {
         zz_dbl: bits & 1 != 0,
         series_dbl: bits & 2 != 0,
@@ -267,7 +276,10 @@ fn jscan(dir: &str) {
             }
         }
     }
-    println!("{} distinct z<0.5 dev rows (b9heldout untouched)", rows.len());
+    println!(
+        "{} distinct z<0.5 dev rows (b9heldout untouched)",
+        rows.len()
+    );
 
     let cfg = Cfg {
         zz_dbl: false,

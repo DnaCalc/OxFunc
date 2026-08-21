@@ -108,7 +108,8 @@ fn k_ext_rn64(n: u32, r: f64) -> f64 {
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     type F = fn(u32, f64) -> f64;
     let cands: [(&str, F); 7] = [
         ("1 ext-all RN", k_ext_rn),
@@ -124,7 +125,9 @@ fn main() {
     let mut tot = 0u32;
     for line in csv.lines().skip(1) {
         let f: Vec<&str> = line.split(',').collect();
-        if f.len() < 6 { continue; }
+        if f.len() < 6 {
+            continue;
+        }
         let k: i32 = f[0].parse().unwrap();
         let n: u32 = f[1].parse().unwrap();
         let pin = u64::from_str_radix(f[5], 16).unwrap();
@@ -132,24 +135,38 @@ fn main() {
         let mut got = [0u64; 7];
         for (i, (_, fun)) in cands.iter().enumerate() {
             got[i] = fun(n, r).to_bits();
-            if got[i] == pin { score[i] += 1; }
+            if got[i] == pin {
+                score[i] += 1;
+            }
         }
         rows.push((k, n, pin, got));
         tot += 1;
     }
     println!("=== extended-argument Kahan race, N={} ===", tot);
     for (i, (name, _)) in cands.iter().enumerate() {
-        println!("  {:22} {:3}/{}  ({:.1}%)", name, score[i], tot, 100.0 * score[i] as f64 / tot as f64);
+        println!(
+            "  {:22} {:3}/{}  ({:.1}%)",
+            name,
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64
+        );
     }
     let best = (0..7).max_by_key(|&i| score[i]).unwrap();
-    println!("\n=== misses for best [{}] (k,n, signed ULP) ===", cands[best].0);
+    println!(
+        "\n=== misses for best [{}] (k,n, signed ULP) ===",
+        cands[best].0
+    );
     let mut nm = 0;
     for (k, n, pin, got) in &rows {
         if got[best] != *pin {
             nm += 1;
             if nm <= 25 {
                 let d = (got[best] as i64) - (*pin as i64);
-                println!("  k={:3} n={:3}  err={:+5} pin={:016x} got={:016x}", k, n, d, pin, got[best]);
+                println!(
+                    "  k={:3} n={:3}  err={:+5} pin={:016x} got={:016x}",
+                    k, n, d, pin, got[best]
+                );
             }
         }
     }

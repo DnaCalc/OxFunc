@@ -10,7 +10,9 @@ use rx::{
 
 const RN53: u16 = CW_PC53_RN;
 const CW: u16 = CW_PC64_RN;
-fn sp(v: &Ext80) -> f64 { ext_to_f64(v, RN53) } // spill extended -> double (fl53)
+fn sp(v: &Ext80) -> f64 {
+    ext_to_f64(v, RN53)
+} // spill extended -> double (fl53)
 
 // returns (K, w_ext, onepw_ext, neg)
 fn reduce(tau: f64) -> (Ext80, Ext80, Ext80, bool) {
@@ -24,7 +26,8 @@ fn reduce(tau: f64) -> (Ext80, Ext80, Ext80, bool) {
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let labels = [
         "A -(w_sp * m_sp)      [dbl ops]",
         "B -(w_ext * m_ext) spill final",
@@ -41,7 +44,9 @@ fn main() {
     let mut tot_k0 = 0u32;
     for line in csv.lines().skip(1) {
         let ff: Vec<&str> = line.split(',').collect();
-        if ff.len() < 6 { continue; }
+        if ff.len() < 6 {
+            continue;
+        }
         let tau = f64::from_bits(u64::from_str_radix(ff[2], 16).unwrap());
         let pin = u64::from_str_radix(ff[5], 16).unwrap();
         let (k, w, onepw, neg) = reduce(tau);
@@ -54,11 +59,16 @@ fn main() {
         let onepw_sp = sp(&onepw);
 
         // A: both operands double, product double-rounded (spill)
-        let a = (-(ext_to_f64(&ext_mul(&ext_from_f64(w_sp), &ext_from_f64(m_sp), CW), RN53))).to_bits();
+        let a =
+            (-(ext_to_f64(&ext_mul(&ext_from_f64(w_sp), &ext_from_f64(m_sp), CW), RN53))).to_bits();
         // B: extended operands, product spilled
         let b = (-(ext_to_f64(&ext_mul(&w, &m_ext, CW), RN53))).to_bits();
         // C: double divide w/(1+w), spilled
-        let c = (-(ext_to_f64(&ext_div(&ext_from_f64(w_sp), &ext_from_f64(onepw_sp), CW), RN53))).to_bits();
+        let c = (-(ext_to_f64(
+            &ext_div(&ext_from_f64(w_sp), &ext_from_f64(onepw_sp), CW),
+            RN53,
+        )))
+        .to_bits();
         // D: extended divide, spilled
         let d = (-(ext_to_f64(&ext_div(&w, &onepw, CW), RN53))).to_bits();
         // E: same as B (kept for symmetry with a reg variant) -> use w spilled, m extended
@@ -75,15 +85,32 @@ fn main() {
 
         let cands = [a, b, c, d, e, f_em, g, h];
         for i in 0..8 {
-            if cands[i] == pin { score[i] += 1; if is_k0 { score_k0[i] += 1; } }
+            if cands[i] == pin {
+                score[i] += 1;
+                if is_k0 {
+                    score_k0[i] += 1;
+                }
+            }
         }
-        if is_k0 { tot_k0 += 1; }
+        if is_k0 {
+            tot_k0 += 1;
+        }
         tot += 1;
     }
-    println!("=== fFEXPM1 assembly (Fable H2), N={}  (K0 neg-branch subset={}) ===", tot, tot_k0);
+    println!(
+        "=== fFEXPM1 assembly (Fable H2), N={}  (K0 neg-branch subset={}) ===",
+        tot, tot_k0
+    );
     for i in 0..8 {
-        println!("  {:34} all {:3}/{} ({:4.1}%)   K0 {:3}/{} ({:4.1}%)",
-                 labels[i], score[i], tot, 100.0*score[i] as f64/tot as f64,
-                 score_k0[i], tot_k0, 100.0*score_k0[i] as f64/tot_k0 as f64);
+        println!(
+            "  {:34} all {:3}/{} ({:4.1}%)   K0 {:3}/{} ({:4.1}%)",
+            labels[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            score_k0[i],
+            tot_k0,
+            100.0 * score_k0[i] as f64 / tot_k0 as f64
+        );
     }
 }

@@ -89,7 +89,10 @@ fn pmfk_candidate(k: u32, lam: f64, mask: u32) -> f64 {
         }
         p
     } else {
-        let ln_e = spill(&ext_fyl2x(&ext_ln2(), &ext_from_f64(lam), cw), mask & 1 != 0);
+        let ln_e = spill(
+            &ext_fyl2x(&ext_ln2(), &ext_from_f64(lam), cw),
+            mask & 1 != 0,
+        );
         let t_e = spill(&ext_mul(&ext_from_f64(k as f64), &ln_e, cw), mask & 2 != 0);
         exp_chain_from_ext(&t_e)
     };
@@ -259,9 +262,7 @@ fn main() {
                 ext_to_f64(&r, cw)
             }
             ("lnext", Some(x), _) => {
-                use rx::{
-                    CW_PC64_RN, ext_from_f64, ext_fyl2x, ext_ln2, ext_sub, ext_to_f64,
-                };
+                use rx::{CW_PC64_RN, ext_from_f64, ext_fyl2x, ext_ln2, ext_sub, ext_to_f64};
                 let cw = CW_PC64_RN;
                 let v = ext_fyl2x(&ext_ln2(), &ext_from_f64(x), cw);
                 let hi = ext_to_f64(&v, cw);

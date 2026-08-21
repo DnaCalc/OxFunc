@@ -16,9 +16,7 @@
 //! (power-of-two value scaling, joint permutation, same-date splits of
 //! discovery probes).
 
-use calc_graph_racer::dsl::{
-    Candidate, ConstVal, EvalModel, Graph, GraphBuilder, Op, SumOrder,
-};
+use calc_graph_racer::dsl::{Candidate, ConstVal, EvalModel, Graph, GraphBuilder, Op, SumOrder};
 use calc_graph_racer::eval::format_bits_hex;
 use calc_graph_racer::scheduler::ProbeCase;
 use calc_graph_racer::score::WitnessArg;
@@ -149,7 +147,13 @@ fn build_body(years: Years, base_add: BaseAdd, pow: PowKind, term: Term) -> Grap
     b.finish(out)
 }
 
-fn build_candidate(years: Years, base_add: BaseAdd, pow: PowKind, term: Term, sum: Sum) -> Candidate {
+fn build_candidate(
+    years: Years,
+    base_add: BaseAdd,
+    pow: PowKind,
+    term: Term,
+    sum: Sum,
+) -> Candidate {
     let body = build_body(years, base_add, pow, term);
     let (order, model) = match sum {
         Sum::Forward => (SumOrder::Forward, EvalModel::Strict),
@@ -272,20 +276,29 @@ fn probe(id: String, rate: f64, values: &[f64], dates: &[f64]) -> ProbeCase {
 
 fn structured_pool(rng: &mut Rng, tag: &str, random_count: usize) -> Vec<ProbeCase> {
     let mut pool = Vec::new();
-    let rates = [0.05, 0.1, -0.07, 0.001, 2.5, 1.0e-4, 0.075, 0.3333333333333333];
+    let rates = [
+        0.05,
+        0.1,
+        -0.07,
+        0.001,
+        2.5,
+        1.0e-4,
+        0.075,
+        0.3333333333333333,
+    ];
     let date_patterns: &[&[f64]] = &[
-        &[0.0, 365.0, 730.0],                       // exact whole years
-        &[0.0, 182.0, 547.0],                       // fractional years
-        &[0.0, 91.0, 365.0, 456.0],                 // mixed
-        &[0.0, 182.0, 182.0, 400.0],                // same-date pair
-        &[0.0, 37.0, 142.0, 365.0, 891.0, 1204.0],  // long irregular
-        &[0.0, 1.0, 2.0, 3.0],                      // dense small deltas
+        &[0.0, 365.0, 730.0],                      // exact whole years
+        &[0.0, 182.0, 547.0],                      // fractional years
+        &[0.0, 91.0, 365.0, 456.0],                // mixed
+        &[0.0, 182.0, 182.0, 400.0],               // same-date pair
+        &[0.0, 37.0, 142.0, 365.0, 891.0, 1204.0], // long irregular
+        &[0.0, 1.0, 2.0, 3.0],                     // dense small deltas
     ];
     let value_patterns: &[&[f64]] = &[
         &[-1000.0, 500.0, 600.0],
         &[-1000.0, 1100.0, 250.0],
-        &[-1024.0, 512.0, 256.0, 768.0],            // powers of two (exact ops)
-        &[1.0e9, -999999999.5, 250.25, -0.75],      // cancellation-heavy
+        &[-1024.0, 512.0, 256.0, 768.0], // powers of two (exact ops)
+        &[1.0e9, -999999999.5, 250.25, -0.75], // cancellation-heavy
         &[-3333.33, 1111.11, 1111.11, 1111.11],
         &[10.0, 20.0, 30.0, 40.0, 50.0, -100.0],
     ];
@@ -322,7 +335,13 @@ fn structured_pool(rng: &mut Rng, tag: &str, random_count: usize) -> Vec<ProbeCa
         let values: Vec<f64> = (0..len)
             .map(|k| {
                 let mag = rng.uniform(0.01, 1.0e6);
-                if k == 0 { -mag } else if rng.next_u64() % 3 == 0 { -mag } else { mag }
+                if k == 0 {
+                    -mag
+                } else if rng.next_u64() % 3 == 0 {
+                    -mag
+                } else {
+                    mag
+                }
             })
             .collect();
         pool.push(probe(format!("{tag}-rand-{i:04}"), rate, &values, &dates));
@@ -361,7 +380,12 @@ fn metamorphic_pool(discovery: &[ProbeCase], rng: &mut Rng) -> Vec<ProbeCase> {
         for k in [10i32, -10] {
             let s = (2.0f64).powi(k);
             let scaled: Vec<f64> = values.iter().map(|v| v * s).collect();
-            pool.push(probe(format!("meta-scale{k}-{i:04}"), rate, &scaled, &dates));
+            pool.push(probe(
+                format!("meta-scale{k}-{i:04}"),
+                rate,
+                &scaled,
+                &dates,
+            ));
         }
         // Joint permutation of (value, date) pairs after the anchor: preserves
         // the mathematical sum, exposes accumulation order.

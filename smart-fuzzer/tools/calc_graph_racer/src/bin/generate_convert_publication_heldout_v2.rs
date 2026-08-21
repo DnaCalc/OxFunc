@@ -9,8 +9,8 @@
 mod common;
 
 use common::{
-    Category, MetaDocument, MetaRow, OwnedUnitSpec, PREFIXES, PREFIX_BASES,
-    direct_units_in, prefix_unit,
+    Category, MetaDocument, MetaRow, OwnedUnitSpec, PREFIX_BASES, PREFIXES, direct_units_in,
+    prefix_unit,
 };
 use oxfunc_core::excel_numeric::research as rx;
 use serde::Serialize;
@@ -89,7 +89,11 @@ impl Builder {
         self.probes.push(ProbeEnvelope {
             probe: Probe {
                 id: id.clone(),
-                args: [format!("0x{:016x}", number.to_bits()), from.to_string(), to.to_string()],
+                args: [
+                    format!("0x{:016x}", number.to_bits()),
+                    from.to_string(),
+                    to.to_string(),
+                ],
             },
         });
         self.rows.push(MetaRow {
@@ -129,7 +133,11 @@ fn effective_units(category: Category) -> Vec<OwnedUnitSpec> {
         .find(|(_, candidate)| *candidate == category)
         .unwrap()
         .0;
-    units.extend(PREFIXES.iter().map(|(prefix, _)| prefix_unit(prefix, base).unwrap()));
+    units.extend(
+        PREFIXES
+            .iter()
+            .map(|(prefix, _)| prefix_unit(prefix, base).unwrap()),
+    );
     units.sort_by(|left, right| left.name.cmp(&right.name));
     units.dedup_by(|left, right| left.name == right.name);
     units
@@ -154,8 +162,8 @@ fn next_random(seed: &mut u64) -> u64 {
 
 fn deterministic_value(seed: &mut u64, exponent_radius: i32) -> f64 {
     let raw = next_random(seed);
-    let unbiased = ((raw >> 9) % u64::try_from(2 * exponent_radius + 1).unwrap()) as i32
-        - exponent_radius;
+    let unbiased =
+        ((raw >> 9) % u64::try_from(2 * exponent_radius + 1).unwrap()) as i32 - exponent_radius;
     let exponent = u64::try_from(unbiased + 1023).unwrap();
     let mantissa = (next_random(seed) >> 12) & ((1_u64 << 52) - 1);
     let sign = (next_random(seed) & 1) << 63;
@@ -297,7 +305,12 @@ fn prediction_string(value: Option<f64>) -> String {
     }
 }
 
-fn linear_values(category: &str, number: f64, from: &str, to: &str) -> (Option<f64>, Option<f64>, Option<f64>) {
+fn linear_values(
+    category: &str,
+    number: f64,
+    from: &str,
+    to: &str,
+) -> (Option<f64>, Option<f64>, Option<f64>) {
     let from = resolve(from, category);
     let to = resolve(to, category);
     if category == "pressure" && (from.direct == "bar" || to.direct == "bar") {
@@ -306,11 +319,7 @@ fn linear_values(category: &str, number: f64, from: &str, to: &str) -> (Option<f
     let core = (number * factor(category, &from.direct)) / factor(category, &to.direct);
     let delta = pow10(from.prefix_exponent - to.prefix_exponent);
     let cw = rx::CW_PC64_RN;
-    let extended = rx::ext_mul(
-        &rx::ext_from_f64(core),
-        &rx::ext_from_f64(delta),
-        cw,
-    );
+    let extended = rx::ext_mul(&rx::ext_from_f64(core), &rx::ext_from_f64(delta), cw);
     let unified = rx::ext_to_f64(&extended, cw);
     let f64_final = core * delta;
     let retired = match category {
@@ -333,7 +342,12 @@ fn linear_values(category: &str, number: f64, from: &str, to: &str) -> (Option<f
     (Some(unified), Some(f64_final), Some(retired))
 }
 
-fn model_predictions(category: &str, number: f64, from: &str, to: &str) -> BTreeMap<String, String> {
+fn model_predictions(
+    category: &str,
+    number: f64,
+    from: &str,
+    to: &str,
+) -> BTreeMap<String, String> {
     let values = if category == "temperature" {
         let value = Some(temperature(number, from, to));
         (value, value, value)
@@ -385,7 +399,11 @@ fn main() {
                 for to in &units {
                     let number = next_unique(&builder, &mut seed, &from.name, &to.name);
                     builder.push(
-                        if pass == 0 { "publication-full-pair-a" } else { "publication-full-pair-b" },
+                        if pass == 0 {
+                            "publication-full-pair-a"
+                        } else {
+                            "publication-full-pair-b"
+                        },
                         category.name(),
                         number,
                         &from.name,
@@ -457,7 +475,12 @@ fn main() {
                 added += 1;
             }
         }
-        assert_eq!(added, 128, "insufficient x87-final discriminators for {}", category.name());
+        assert_eq!(
+            added,
+            128,
+            "insufficient x87-final discriminators for {}",
+            category.name()
+        );
     }
 
     // Additional reciprocal-table versus retired-ratio pressure kills.
@@ -488,7 +511,10 @@ fn main() {
             pressure_added += 1;
         }
     }
-    assert_eq!(pressure_added, 128, "insufficient pressure reciprocal discriminators");
+    assert_eq!(
+        pressure_added, 128,
+        "insufficient pressure reciprocal discriminators"
+    );
 
     // Independent affine temperature mantissas.
     for from in ["K", "C", "F"] {
@@ -498,7 +524,13 @@ fn main() {
                 while number == 0.0 || builder.contains(number, from, to) {
                     number = deterministic_value(&mut seed, 8).clamp(-10_000.0, 10_000.0);
                 }
-                builder.push("publication-temperature-random", "temperature", number, from, to);
+                builder.push(
+                    "publication-temperature-random",
+                    "temperature",
+                    number,
+                    from,
+                    to,
+                );
             }
         }
     }
@@ -554,9 +586,16 @@ fn main() {
     )
     .unwrap();
     println!("prior tuples excluded: {prior_count}");
-    println!("wrote {} publication probes -> {}", batch.probes.len(), batch_path.display());
+    println!(
+        "wrote {} publication probes -> {}",
+        batch.probes.len(),
+        batch_path.display()
+    );
     println!("wrote publication metadata -> {}", meta_path.display());
-    println!("wrote synthetic scorer self-test -> {}", synthetic_path.display());
+    println!(
+        "wrote synthetic scorer self-test -> {}",
+        synthetic_path.display()
+    );
     let informative = metadata.rows.iter().filter(|row| row.informative).count();
     println!("offline candidate-informative rows: {informative}");
 }

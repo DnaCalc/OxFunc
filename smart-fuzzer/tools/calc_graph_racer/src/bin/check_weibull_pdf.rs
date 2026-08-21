@@ -32,7 +32,8 @@ fn main() {
         let (Some(xs), Some(as_), Some(bs)) = (it.next(), it.next(), it.next()) else {
             continue;
         };
-        let g = |s: &str| f64::from_bits(u64::from_str_radix(s.trim_start_matches("0x"), 16).unwrap());
+        let g =
+            |s: &str| f64::from_bits(u64::from_str_radix(s.trim_start_matches("0x"), 16).unwrap());
         let (x, alpha, beta) = (g(xs), g(as_), g(bs));
 
         let ratio = x / beta;

@@ -212,7 +212,11 @@ fn cephes_stmt(x0: f64) -> f64 {
     // q = (x - 0.5)*log(x) - x + LS2PI;  (log stored, rest extended, one store)
     let lnx = rx::excel_ln(x);
     let q0 = tof(&rx::ext_add(
-        &rx::ext_sub(&rx::ext_mul(&rx::ext_sub(&e(x), &e(0.5), cw), &e(lnx), cw), &e(x), cw),
+        &rx::ext_sub(
+            &rx::ext_mul(&rx::ext_sub(&e(x), &e(0.5), cw), &e(lnx), cw),
+            &e(x),
+            cw,
+        ),
         &e(LS2PI),
         cw,
     ));
@@ -220,7 +224,11 @@ fn cephes_stmt(x0: f64) -> f64 {
         return q0;
     }
     // p = 1.0/(x*x);
-    let p = tof(&rx::ext_div(&rx::ext_one(), &rx::ext_mul(&e(x), &e(x), cw), cw));
+    let p = tof(&rx::ext_div(
+        &rx::ext_one(),
+        &rx::ext_mul(&e(x), &e(x), cw),
+        cw,
+    ));
     if x >= 1000.0 {
         let mut t = tof(&rx::ext_sub(
             &rx::ext_mul(&e(7.9365079365079365079365e-4), &e(p), cw),
@@ -257,8 +265,14 @@ fn main() {
     }
     println!("{} GAMMALN witnesses", rows.len());
     let cands: Vec<(&str, Box<dyn Fn(f64) -> f64>)> = vec![
-        ("cephes-double-platform", Box::new(|x| cephes_double(x, f64::ln))),
-        ("cephes-double-x87ln", Box::new(|x| cephes_double(x, rx::excel_ln))),
+        (
+            "cephes-double-platform",
+            Box::new(|x| cephes_double(x, f64::ln)),
+        ),
+        (
+            "cephes-double-x87ln",
+            Box::new(|x| cephes_double(x, rx::excel_ln)),
+        ),
         ("cephes-ext", Box::new(cephes_ext)),
         ("cephes-stmt-spill", Box::new(cephes_stmt)),
     ];

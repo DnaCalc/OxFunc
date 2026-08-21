@@ -26,7 +26,11 @@ fn array(vs: &[f64]) -> WitnessArg {
     WitnessArg::Array(vs.iter().map(|v| format_bits_hex(*v)).collect())
 }
 
-fn ratio_prod(body_model: EvalModel, acc_model: EvalModel, order: SumOrder) -> calc_graph_racer::dsl::Graph {
+fn ratio_prod(
+    body_model: EvalModel,
+    acc_model: EvalModel,
+    order: SumOrder,
+) -> calc_graph_racer::dsl::Graph {
     let mut body = GraphBuilder::new();
     let num = body.strict(Op::Arg(0));
     let den = body.strict(Op::Arg(1));
@@ -46,11 +50,22 @@ fn ratio_prod(body_model: EvalModel, acc_model: EvalModel, order: SumOrder) -> c
 
 fn muldiv(model: EvalModel, order: SumOrder) -> calc_graph_racer::dsl::Graph {
     let mut b = GraphBuilder::new();
-    let out = b.push(Op::FoldMulDiv { nums: 0, dens: 1, order }, model);
+    let out = b.push(
+        Op::FoldMulDiv {
+            nums: 0,
+            dens: 1,
+            order,
+        },
+        model,
+    );
     b.finish(out)
 }
 
-fn prod_only(body_model: EvalModel, acc_model: EvalModel, order: SumOrder) -> calc_graph_racer::dsl::Graph {
+fn prod_only(
+    body_model: EvalModel,
+    acc_model: EvalModel,
+    order: SumOrder,
+) -> calc_graph_racer::dsl::Graph {
     let mut body = GraphBuilder::new();
     let num = body.strict(Op::Arg(0));
     let t = body.push(Op::Abs(num), body_model); // identity carrier for staging

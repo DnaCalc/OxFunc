@@ -189,16 +189,17 @@ fn with_offset(anchor: &rx::Ext80, offset: i64) -> rx::Ext80 {
 }
 
 fn ext_hex(value: &rx::Ext80) -> String {
-    value.0.iter().rev().map(|byte| format!("{byte:02x}")).collect()
+    value
+        .0
+        .iter()
+        .rev()
+        .map(|byte| format!("{byte:02x}"))
+        .collect()
 }
 
 fn predict(core: f64, multiplier: &rx::Ext80) -> u64 {
     let cw = rx::CW_PC64_RN;
-    rx::ext_to_f64(
-        &rx::ext_mul(&rx::ext_from_f64(core), multiplier, cw),
-        cw,
-    )
-    .to_bits()
+    rx::ext_to_f64(&rx::ext_mul(&rx::ext_from_f64(core), multiplier, cw), cw).to_bits()
 }
 
 fn load(root: &Path, meta_name: &str, answer_name: &str) -> Vec<Row> {
@@ -232,8 +233,8 @@ fn load(root: &Path, meta_name: &str, answer_name: &str) -> Vec<Row> {
                 return None;
             }
             let number = common::f64_from_hex(&row.number_bits).unwrap();
-            let core = (number * factor(&row.category, &from.direct))
-                / factor(&row.category, &to.direct);
+            let core =
+                (number * factor(&row.category, &from.direct)) / factor(&row.category, &to.direct);
             Some(Row {
                 id: row.id,
                 category: row.category,
@@ -258,12 +259,7 @@ fn score(rows: &[Row], anchor: &rx::Ext80, offset: i64) -> OffsetScore {
             if !is_exact && first_misses.len() < 8 {
                 first_misses.push(format!(
                     "{} {} {}->{} x={} predicted=0x{predicted:016x} oracle=0x{:016x}",
-                    row.id,
-                    row.category,
-                    row.from_unit,
-                    row.to_unit,
-                    row.number_bits,
-                    row.actual,
+                    row.id, row.category, row.from_unit, row.to_unit, row.number_bits, row.actual,
                 ));
             }
             is_exact
@@ -301,8 +297,8 @@ fn main() {
     let anchor = rx::ext_from_f64(anchor_f64);
     let decimal = common::ext_from_decimal("1e-24");
     assert_eq!(anchor.0[8..], decimal.0[8..]);
-    let decimal_offset = i128::from(ext_significand(&decimal))
-        - i128::from(ext_significand(&anchor));
+    let decimal_offset =
+        i128::from(ext_significand(&decimal)) - i128::from(ext_significand(&anchor));
     let decimal_offset = i64::try_from(decimal_offset).unwrap();
 
     let mut best_exact = 0;

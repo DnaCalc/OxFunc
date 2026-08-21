@@ -10,7 +10,9 @@ use calc_graph_racer::score::{WitnessArg, WitnessSet};
 use oxfunc_core::excel_numeric::research as rx;
 
 // x87 double-rounded scalar ops (RN53(RN64)) — the proven legacy financial body op.
-fn xadd(a: f64, b: f64) -> f64 { xop(a, b, '+') }
+fn xadd(a: f64, b: f64) -> f64 {
+    xop(a, b, '+')
+}
 fn xop(a: f64, b: f64, o: char) -> f64 {
     let cw = 0x133Fu16;
     let ea = rx::ext_from_f64(a);
@@ -23,17 +25,27 @@ fn xop(a: f64, b: f64, o: char) -> f64 {
     };
     rx::ext_to_f64(&r, cw)
 }
-fn xdiv(a: f64, b: f64) -> f64 { xop(a, b, '/') }
-fn xmul(a: f64, b: f64) -> f64 { xop(a, b, '*') }
-fn xrecip(x: f64) -> f64 { rx::x87_recip(x) }
+fn xdiv(a: f64, b: f64) -> f64 {
+    xop(a, b, '/')
+}
+fn xmul(a: f64, b: f64) -> f64 {
+    xop(a, b, '*')
+}
+fn xrecip(x: f64) -> f64 {
+    rx::x87_recip(x)
+}
 
 fn binexp_x87(base: f64, mut n: u64) -> f64 {
     let mut acc = 1.0f64;
     let mut b = base;
     while n > 0 {
-        if n & 1 == 1 { acc = xmul(acc, b); }
+        if n & 1 == 1 {
+            acc = xmul(acc, b);
+        }
         n >>= 1;
-        if n > 0 { b = xmul(b, b); }
+        if n > 0 {
+            b = xmul(b, b);
+        }
     }
     acc
 }
@@ -42,13 +54,17 @@ fn binexp_x87(base: f64, mut n: u64) -> f64 {
 fn rev_horner_sse(rate: f64, cf: &[f64]) -> f64 {
     let w = 1.0 + rate;
     let mut a = 0.0;
-    for &c in cf.iter().rev() { a = (a + c) / w; }
+    for &c in cf.iter().rev() {
+        a = (a + c) / w;
+    }
     a
 }
 fn fwd_powf_sse(rate: f64, cf: &[f64]) -> f64 {
     let base = 1.0 + rate;
     let mut t = 0.0;
-    for (i, &c) in cf.iter().enumerate() { t += c / base.powf((i + 1) as f64); }
+    for (i, &c) in cf.iter().enumerate() {
+        t += c / base.powf((i + 1) as f64);
+    }
     t
 }
 
@@ -59,7 +75,9 @@ fn rev_horner_recip_sse(rate: f64, cf: &[f64]) -> f64 {
     let w = 1.0 + rate;
     let ir = 1.0 / w;
     let mut a = 0.0;
-    for &c in cf.iter().rev() { a = (a + c) * ir; }
+    for &c in cf.iter().rev() {
+        a = (a + c) * ir;
+    }
     a
 }
 
@@ -68,7 +86,9 @@ fn rev_horner_recip_x87(rate: f64, cf: &[f64]) -> f64 {
     let w = xadd(1.0, rate);
     let ir = xrecip(w);
     let mut a = 0.0;
-    for &c in cf.iter().rev() { a = xmul(xadd(a, c), ir); }
+    for &c in cf.iter().rev() {
+        a = xmul(xadd(a, c), ir);
+    }
     a
 }
 
@@ -107,7 +127,9 @@ fn fwd_runprod_reversed_sum_x87(rate: f64, cf: &[f64]) -> f64 {
         terms.push(xdiv(c, factor));
     }
     let mut s = 0.0;
-    for &t in terms.iter().rev() { s = xadd(s, t); }
+    for &t in terms.iter().rev() {
+        s = xadd(s, t);
+    }
     s
 }
 
@@ -121,7 +143,9 @@ fn fwd_runprod_fwd_sum_sse_revterms(rate: f64, cf: &[f64]) -> f64 {
         terms.push(c / factor);
     }
     let mut s = 0.0;
-    for &t in terms.iter() { s += t; }
+    for &t in terms.iter() {
+        s += t;
+    }
     s
 }
 
@@ -153,7 +177,9 @@ fn fwd_binexp_recip_x87(rate: f64, cf: &[f64]) -> f64 {
 fn rev_horner_split_sse(rate: f64, cf: &[f64]) -> f64 {
     let w = 1.0 + rate;
     let mut a = 0.0;
-    for &c in cf.iter().rev() { a = a / w + c / w; }
+    for &c in cf.iter().rev() {
+        a = a / w + c / w;
+    }
     a
 }
 
@@ -169,13 +195,26 @@ fn rev_horner_x87_wfused(rate: f64, cf: &[f64]) -> f64 {
 
 fn main() {
     let mut obs: Vec<(f64, Vec<f64>, u64, String)> = Vec::new();
-    for file in ["../../work/w109/G6-solvers/answers-npv-r0.json",
-                 "../../work/w109/G6-solvers/answers-npv-r1.json"] {
-        let ws: WitnessSet = serde_json::from_str(&std::fs::read_to_string(file).expect("read")).expect("parse");
+    for file in [
+        "../../work/w109/G6-solvers/answers-npv-r0.json",
+        "../../work/w109/G6-solvers/answers-npv-r1.json",
+    ] {
+        let ws: WitnessSet =
+            serde_json::from_str(&std::fs::read_to_string(file).expect("read")).expect("parse");
         for w in &ws.witnesses {
-            let rate = match &w.args[0] { WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(), _ => continue };
-            let cf: Vec<f64> = match &w.args[1] { WitnessArg::Array(items) => items.iter().map(|s| parse_bits_hex(s).unwrap()).collect(), _ => continue };
-            if let Some(want) = parse_bits_hex(&w.expected_bits) { obs.push((rate, cf, want.to_bits(), w.id.clone().unwrap_or_default())); }
+            let rate = match &w.args[0] {
+                WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
+                _ => continue,
+            };
+            let cf: Vec<f64> = match &w.args[1] {
+                WitnessArg::Array(items) => {
+                    items.iter().map(|s| parse_bits_hex(s).unwrap()).collect()
+                }
+                _ => continue,
+            };
+            if let Some(want) = parse_bits_hex(&w.expected_bits) {
+                obs.push((rate, cf, want.to_bits(), w.id.clone().unwrap_or_default()));
+            }
         }
     }
     println!("{} NPV rows", obs.len());
@@ -191,7 +230,10 @@ fn main() {
         ("fwd_runprod_recip_x87", fwd_runprod_recip_x87),
         ("fwd_runprod_div_sse", fwd_runprod_div_sse),
         ("fwd_runprod_reversed_sum_x87", fwd_runprod_reversed_sum_x87),
-        ("fwd_runprod_fwd_sum_sse_revterms", fwd_runprod_fwd_sum_sse_revterms),
+        (
+            "fwd_runprod_fwd_sum_sse_revterms",
+            fwd_runprod_fwd_sum_sse_revterms,
+        ),
         ("fwd_binexp_x87", fwd_binexp_x87),
         ("fwd_binexp_recip_x87", fwd_binexp_recip_x87),
         ("rev_horner_split_sse", rev_horner_split_sse),
@@ -205,10 +247,14 @@ fn main() {
         let mut cltot = 0;
         for (r, cf, want, id) in &obs {
             let is_cl = id.starts_with("npvA");
-            if is_cl { cltot += 1; }
+            if is_cl {
+                cltot += 1;
+            }
             if f(*r, cf).to_bits() == *want {
                 hit += 1;
-                if is_cl { cl += 1; }
+                if is_cl {
+                    cl += 1;
+                }
             }
         }
         println!("{name:34} {hit:3}/{}  cluster {cl}/{cltot}", obs.len());
@@ -230,10 +276,14 @@ fn main() {
         println!("\n-- cluster rows for {name} (npvA*) --");
         let mut max_abs_delta: i64 = 0;
         for (r, cf, want, id) in &obs {
-            if !id.starts_with("npvA") { continue; }
+            if !id.starts_with("npvA") {
+                continue;
+            }
             let got = f(*r, cf).to_bits();
             let delta = got as i64 - *want as i64;
-            if delta.abs() > max_abs_delta { max_abs_delta = delta.abs(); }
+            if delta.abs() > max_abs_delta {
+                max_abs_delta = delta.abs();
+            }
             let marker = if delta == 0 { "" } else { " <-- MISS" };
             println!("  {id:10} rate={r:.10} \u{394}={delta:+}{marker}");
         }
@@ -248,12 +298,18 @@ fn main() {
         let mut cl = 0;
         let mut cltot = 0;
         for (r, cf, want, id) in &obs {
-            if !id.starts_with("npvA") { continue; }
+            if !id.starts_with("npvA") {
+                continue;
+            }
             cltot += 1;
             let got = f(*r, cf).to_bits();
             let delta = got as i64 - *want as i64;
-            if delta == 0 { cl += 1; }
-            if delta.abs() > max_abs_delta { max_abs_delta = delta.abs(); }
+            if delta == 0 {
+                cl += 1;
+            }
+            if delta.abs() > max_abs_delta {
+                max_abs_delta = delta.abs();
+            }
         }
         maxdeltas.push((name, max_abs_delta, cl, cltot));
     }

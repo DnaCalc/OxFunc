@@ -37,7 +37,13 @@ fn main() {
                     ));
                 }
                 Err(err) => {
-                    misses.push((u64::MAX, w.id.clone().unwrap_or_default(), x, format!("{err:?}"), w.expected_bits.clone()));
+                    misses.push((
+                        u64::MAX,
+                        w.id.clone().unwrap_or_default(),
+                        x,
+                        format!("{err:?}"),
+                        w.expected_bits.clone(),
+                    ));
                 }
             }
         }

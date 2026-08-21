@@ -149,11 +149,7 @@ fn fit_pairs(
 
 fn x87_mul(number: f64, multiplier: f64, cw: u16) -> f64 {
     rx::ext_to_f64(
-        &rx::ext_mul(
-            &rx::ext_from_f64(number),
-            &rx::ext_from_f64(multiplier),
-            cw,
-        ),
+        &rx::ext_mul(&rx::ext_from_f64(number), &rx::ext_from_f64(multiplier), cw),
         cw,
     )
 }
@@ -233,14 +229,20 @@ fn main() {
         for (name, predicted) in MODELS.iter().zip(predictions) {
             let score = scores.get_mut(*name).unwrap();
             score.total += 1;
-            *score.category_total.entry(row.category.clone()).or_default() += 1;
+            *score
+                .category_total
+                .entry(row.category.clone())
+                .or_default() += 1;
             *score.class_total.entry(row.class.clone()).or_default() += 1;
             let pair = format!("{}->{}", row.from_unit, row.to_unit);
             *score.pair_total.entry(pair.clone()).or_default() += 1;
             let residual = ordered_bits(actual) - ordered_bits(predicted.to_bits());
             if residual == 0 {
                 score.exact += 1;
-                *score.category_exact.entry(row.category.clone()).or_default() += 1;
+                *score
+                    .category_exact
+                    .entry(row.category.clone())
+                    .or_default() += 1;
                 *score.class_exact.entry(row.class.clone()).or_default() += 1;
                 *score.pair_exact.entry(pair).or_default() += 1;
             } else {

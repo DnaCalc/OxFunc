@@ -44,6 +44,9 @@ fn dump(path: &str, tag: &str) {
 
 fn main() {
     println!("tag,r,n,pv,fv,ty,em,u,expected,tau");
-    dump("../../work/w109/G6-solvers/answers-pmt-heldout.json", "heldout");
+    dump(
+        "../../work/w109/G6-solvers/answers-pmt-heldout.json",
+        "heldout",
+    );
     dump("../../work/w109/G6-solvers/answers-pmt-fvty.json", "fvty");
 }

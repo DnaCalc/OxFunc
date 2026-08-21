@@ -291,8 +291,7 @@ fn gratio_gam1(a: f64) -> f64 {
         return 0.0;
     }
     if t > 0.0 {
-        let top =
-            (((((P[6] * t + P[5]) * t + P[4]) * t + P[3]) * t + P[2]) * t + P[1]) * t + P[0];
+        let top = (((((P[6] * t + P[5]) * t + P[4]) * t + P[3]) * t + P[2]) * t + P[1]) * t + P[0];
         let bot = (((Q[4] * t + Q[3]) * t + Q[2]) * t + Q[1]) * t + 1.0;
         let w = top / bot;
         if d > 0.0 {
@@ -661,7 +660,16 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
             // nearest-rounded exp (chop measurably hurts there).
             let t1 = a * x.ln() - x;
             let g = gratio_norm_gamma(a);
-            return gratio_after40(a, x, exp_rd(t1) / g, crate::excel_numeric::excel_exp(t1) / g, e, acc, x0, &mut wk);
+            return gratio_after40(
+                a,
+                x,
+                exp_rd(t1) / g,
+                crate::excel_numeric::excel_exp(t1) / g,
+                e,
+                acc,
+                x0,
+                &mut wk,
+            );
         }
         let twoa = a + a;
         let m = twoa as i64;
@@ -697,7 +705,16 @@ pub fn gratio(a: f64, x: f64) -> (f64, f64) {
         }
         let t1 = a * x.ln() - x;
         let g = gratio_norm_gamma(a);
-        return gratio_after40(a, x, exp_rd(t1) / g, crate::excel_numeric::excel_exp(t1) / g, e, acc, x0, &mut wk);
+        return gratio_after40(
+            a,
+            x,
+            exp_rd(t1) / g,
+            crate::excel_numeric::excel_exp(t1) / g,
+            e,
+            acc,
+            x0,
+            &mut wk,
+        );
     }
 
     // statement 30: a >= big
@@ -848,7 +865,8 @@ fn gratio_temme_270(a: f64, l: f64, y: f64, z: f64, e: f64, s: f64, iop: usize) 
         if s.abs() <= 1e-3 {
             return gratio_temme_340(a, l, z, u, c, w);
         }
-        let c0 = ((((((((((((D0[12] * z + D0[11]) * z + D0[10]) * z + D0[9]) * z + D0[8]) * z
+        let c0 = ((((((((((((D0[12] * z + D0[11]) * z + D0[10]) * z + D0[9]) * z + D0[8])
+            * z
             + D0[7])
             * z
             + D0[6])
@@ -882,17 +900,17 @@ fn gratio_temme_270(a: f64, l: f64, y: f64, z: f64, e: f64, s: f64, iop: usize) 
             + D1[0])
             * z
             + D10;
-        let c2 = (((((((((D2[9] * z + D2[8]) * z + D2[7]) * z + D2[6]) * z + D2[5]) * z + D2[4])
-            * z
-            + D2[3])
-            * z
-            + D2[2])
-            * z
-            + D2[1])
-            * z
-            + D2[0])
-            * z
-            + D20;
+        let c2 =
+            (((((((((D2[9] * z + D2[8]) * z + D2[7]) * z + D2[6]) * z + D2[5]) * z + D2[4]) * z
+                + D2[3])
+                * z
+                + D2[2])
+                * z
+                + D2[1])
+                * z
+                + D2[0])
+                * z
+                + D20;
         let c3 = (((((((D3[7] * z + D3[6]) * z + D3[5]) * z + D3[4]) * z + D3[3]) * z + D3[2])
             * z
             + D3[1])
@@ -900,8 +918,8 @@ fn gratio_temme_270(a: f64, l: f64, y: f64, z: f64, e: f64, s: f64, iop: usize) 
             + D3[0])
             * z
             + D30;
-        let c4 = (((((D4[5] * z + D4[4]) * z + D4[3]) * z + D4[2]) * z + D4[1]) * z + D4[0]) * z
-            + D40;
+        let c4 =
+            (((((D4[5] * z + D4[4]) * z + D4[3]) * z + D4[2]) * z + D4[1]) * z + D4[0]) * z + D40;
         let c5 = (((D5[3] * z + D5[2]) * z + D5[1]) * z + D5[0]) * z + D50;
         let c6 = (D6[1] * z + D6[0]) * z + D60;
         t = ((((((D70 * u + c6) * u + c5) * u + c4) * u + c3) * u + c2) * u + c1) * u + c0;
@@ -1147,8 +1165,7 @@ fn bratio_gam1(a: f64) -> f64 {
         return 0.0;
     }
     if t > 0.0 {
-        let top =
-            (((((P[6] * t + P[5]) * t + P[4]) * t + P[3]) * t + P[2]) * t + P[1]) * t + P[0];
+        let top = (((((P[6] * t + P[5]) * t + P[4]) * t + P[3]) * t + P[2]) * t + P[1]) * t + P[0];
         let bot = (((Q[4] * t + Q[3]) * t + Q[2]) * t + Q[1]) * t + 1.0;
         let w = top / bot;
         if d > 0.0 {
@@ -1272,11 +1289,7 @@ fn bratio_algdiv(a: f64, b: f64) -> f64 {
     w *= c / b;
     let u = d * bratio_alnrel(a / b);
     let v = a * (b.ln() - 1.0);
-    if u > v {
-        (w - v) - u
-    } else {
-        (w - u) - v
-    }
+    if u > v { (w - v) - u } else { (w - u) - v }
 }
 
 /// bcorr: evaluation of del(a0) + del(b0) - del(a0 + b0) where a0, b0 >= 8.
@@ -2131,7 +2144,9 @@ fn bratio_bgrat(a: f64, b: f64, x: f64, y: f64, w: f64, eps: f64) -> (f64, i32) 
         return (w, 1);
     }
     let mut r = b * (1.0 + bratio_gam1(b)) * crate::excel_numeric::excel_exp(b * z.ln());
-    r = r * crate::excel_numeric::excel_exp(a * lnx) * crate::excel_numeric::excel_exp(0.5 * bm1 * lnx);
+    r = r
+        * crate::excel_numeric::excel_exp(a * lnx)
+        * crate::excel_numeric::excel_exp(0.5 * bm1 * lnx);
     let mut u = bratio_algdiv(b, a) + b * nu.ln();
     u = r * crate::excel_numeric::excel_exp(-u);
     if u == 0.0 {

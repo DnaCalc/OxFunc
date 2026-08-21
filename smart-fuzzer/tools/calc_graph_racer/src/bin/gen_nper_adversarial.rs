@@ -85,7 +85,8 @@ fn main() {
             break;
         }
         let exp_pow = 1 + (rng.next_u64() % 40) as u64;
-        let rate = f64::from_bits(((1023 - exp_pow) << 52) | (rng.next_u64() & 0x000f_ffff_ffff_ffff));
+        let rate =
+            f64::from_bits(((1023 - exp_pow) << 52) | (rng.next_u64() & 0x000f_ffff_ffff_ffff));
         if !(rate.is_finite() && rate > 1.0e-13 && rate < 0.6) {
             continue;
         }

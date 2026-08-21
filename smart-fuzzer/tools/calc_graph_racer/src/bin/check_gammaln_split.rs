@@ -36,15 +36,31 @@ const CW: u16 = 0x133F;
 #[derive(Clone, Copy)]
 struct V(Ext80);
 impl V {
-    fn new(x: f64) -> V { V(rx::ext_from_f64(x)) }
-    fn store(self, yes: bool) -> V {
-        if yes { V::new(rx::ext_to_f64(&self.0, CW)) } else { self }
+    fn new(x: f64) -> V {
+        V(rx::ext_from_f64(x))
     }
-    fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
-    fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
-    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
-    fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
-    fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
+    fn store(self, yes: bool) -> V {
+        if yes {
+            V::new(rx::ext_to_f64(&self.0, CW))
+        } else {
+            self
+        }
+    }
+    fn f(self) -> f64 {
+        rx::ext_to_f64(&self.0, CW)
+    }
+    fn add(self, o: V) -> V {
+        V(rx::ext_add(&self.0, &o.0, CW))
+    }
+    fn sub(self, o: V) -> V {
+        V(rx::ext_sub(&self.0, &o.0, CW))
+    }
+    fn mul(self, o: V) -> V {
+        V(rx::ext_mul(&self.0, &o.0, CW))
+    }
+    fn div(self, o: V) -> V {
+        V(rx::ext_div(&self.0, &o.0, CW))
+    }
     fn ln(self, input_stored: bool, output_stored: bool) -> V {
         let arg = self.store(input_stored);
         V(rx::ext_fyl2x(&rx::ext_ln2(), &arg.0, CW)).store(output_stored)
@@ -106,10 +122,14 @@ fn stirling(x0: f64, m: u32) -> f64 {
     let xv = V::new(x0);
     let lnx = xv.ln(false, bit(0));
     let q0 = xv
-        .sub(V::new(0.5)).store(bit(2))
-        .mul(lnx).store(bit(2))
-        .sub(xv).store(bit(2))
-        .add(V::new(LS2PI)).store(bit(1));
+        .sub(V::new(0.5))
+        .store(bit(2))
+        .mul(lnx)
+        .store(bit(2))
+        .sub(xv)
+        .store(bit(2))
+        .add(V::new(LS2PI))
+        .store(bit(1));
     if x0 > 1.0e8 {
         return q0.f();
     }
@@ -117,9 +137,11 @@ fn stirling(x0: f64, m: u32) -> f64 {
     let t = if x0 >= 1000.0 {
         V::new(7.9365079365079365079365e-4)
             .mul(p)
-            .sub(V::new(2.7777777777777777777778e-3)).store(bit(6))
+            .sub(V::new(2.7777777777777777777778e-3))
+            .store(bit(6))
             .mul(p)
-            .add(V::new(0.0833333333333333333333)).store(bit(4))
+            .add(V::new(0.0833333333333333333333))
+            .store(bit(4))
     } else {
         polevl(p, &A, bit(6)).store(bit(4))
     };
@@ -160,8 +182,16 @@ fn main() {
             prev = cur;
         }
     }
-    let neither: Vec<f64> = boundary.iter().filter(|r| !r.1 && !r.2).map(|r| r.0).collect();
-    println!("neither-family rows: {} {:?}", neither.len(), &neither[..neither.len().min(20)]);
+    let neither: Vec<f64> = boundary
+        .iter()
+        .filter(|r| !r.1 && !r.2)
+        .map(|r| r.0)
+        .collect();
+    println!(
+        "neither-family rows: {} {:?}",
+        neither.len(),
+        &neither[..neither.len().min(20)]
+    );
     let mut bt = (0.0f64, usize::MAX);
     for t in [9.75f64, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0] {
         let bad = boundary
@@ -188,7 +218,11 @@ fn main() {
     let sm = small_masks.first().copied();
     let tm = stir_masks.first().copied();
     for &(x, want) in &rows {
-        let v = if x < t { sm.map(|m| small(x, m)) } else { tm.map(|m| stirling(x, m)) };
+        let v = if x < t {
+            sm.map(|m| small(x, m))
+        } else {
+            tm.map(|m| stirling(x, m))
+        };
         let fam = if x < t { "small" } else { "stir" };
         if let Some(v) = v {
             if v.to_bits() != want.to_bits() {

@@ -67,11 +67,7 @@ fn ratio_direct(a: f64, mask: u8) -> f64 {
 }
 
 fn reciprocal(a: f64, x87: bool) -> f64 {
-    if x87 {
-        x87_div(1.0, a)
-    } else {
-        1.0 / a
-    }
+    if x87 { x87_div(1.0, a) } else { 1.0 / a }
 }
 
 /// Superseded W109 discovery hypothesis: reciprocal followed by two FYL2XP1

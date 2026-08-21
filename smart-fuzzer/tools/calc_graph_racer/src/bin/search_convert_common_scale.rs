@@ -161,20 +161,12 @@ fn predict(schedule: &str, number: f64, from: f64, to: f64) -> f64 {
         "f64_mul_div" => (number * to) / from,
         "f64_ratio_mul" => number * (to / from),
         "x87_f64_div_mul_pc64" => {
-            let divided = rx::ext_div(
-                &rx::ext_from_f64(number),
-                &rx::ext_from_f64(from),
-                cw,
-            );
+            let divided = rx::ext_div(&rx::ext_from_f64(number), &rx::ext_from_f64(from), cw);
             let result = rx::ext_mul(&divided, &rx::ext_from_f64(to), cw);
             rx::ext_to_f64(&result, cw)
         }
         "x87_f64_mul_div_pc64" => {
-            let multiplied = rx::ext_mul(
-                &rx::ext_from_f64(number),
-                &rx::ext_from_f64(to),
-                cw,
-            );
+            let multiplied = rx::ext_mul(&rx::ext_from_f64(number), &rx::ext_from_f64(to), cw);
             let result = rx::ext_div(&multiplied, &rx::ext_from_f64(from), cw);
             rx::ext_to_f64(&result, cw)
         }
@@ -189,10 +181,14 @@ fn predict(schedule: &str, number: f64, from: f64, to: f64) -> f64 {
 
 fn main() {
     let args = args();
-    let fit_meta: MetaDocument = serde_json::from_slice(&std::fs::read(&args.fit_meta).unwrap()).unwrap();
-    let fit_answers: WitnessSet = serde_json::from_slice(&std::fs::read(&args.fit_answers).unwrap()).unwrap();
-    let score_meta: MetaDocument = serde_json::from_slice(&std::fs::read(&args.score_meta).unwrap()).unwrap();
-    let score_answers: WitnessSet = serde_json::from_slice(&std::fs::read(&args.score_answers).unwrap()).unwrap();
+    let fit_meta: MetaDocument =
+        serde_json::from_slice(&std::fs::read(&args.fit_meta).unwrap()).unwrap();
+    let fit_answers: WitnessSet =
+        serde_json::from_slice(&std::fs::read(&args.fit_answers).unwrap()).unwrap();
+    let score_meta: MetaDocument =
+        serde_json::from_slice(&std::fs::read(&args.score_meta).unwrap()).unwrap();
+    let score_answers: WitnessSet =
+        serde_json::from_slice(&std::fs::read(&args.score_answers).unwrap()).unwrap();
     assert_eq!(fit_answers.function, "CONVERT");
     assert_eq!(score_answers.function, "CONVERT");
     // Fit every supported effective-unit ratio from the base-unit row.  This
@@ -225,10 +221,14 @@ fn main() {
                     let Some(actual) = bits(&score_by_id[row.id.as_str()].expected_bits) else {
                         continue;
                     };
-                    let Some(from_effective) = effective.get(&(category.to_string(), row.from_unit.clone())) else {
+                    let Some(from_effective) =
+                        effective.get(&(category.to_string(), row.from_unit.clone()))
+                    else {
                         continue;
                     };
-                    let Some(to_effective) = effective.get(&(category.to_string(), row.to_unit.clone())) else {
+                    let Some(to_effective) =
+                        effective.get(&(category.to_string(), row.to_unit.clone()))
+                    else {
                         continue;
                     };
                     // Units per hidden category base.  Each division is kept
@@ -275,7 +275,11 @@ fn main() {
             .filter(|candidate| candidate.category == category)
             .cloned()
             .collect();
-        let best_exact = category_candidates.iter().map(|candidate| candidate.exact).max().unwrap();
+        let best_exact = category_candidates
+            .iter()
+            .map(|candidate| candidate.exact)
+            .max()
+            .unwrap();
         let mut survivors: Vec<_> = category_candidates
             .into_iter()
             .filter(|candidate| candidate.exact == best_exact)

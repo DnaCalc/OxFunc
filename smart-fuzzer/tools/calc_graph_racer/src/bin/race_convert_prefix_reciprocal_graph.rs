@@ -191,18 +191,18 @@ fn predictions(core: f64, from_exp: i32, to_exp: i32) -> [f64; MODELS.len()] {
     } else {
         core / pow10(-delta)
     };
-    let f64_recip = if delta >= 0 { core * pow10(delta) } else { core * reciprocal };
+    let f64_recip = if delta >= 0 {
+        core * pow10(delta)
+    } else {
+        core * reciprocal
+    };
     let exact_sign_directed = if delta >= 0 {
         rx::ext_to_f64(&rx::ext_mul(&core_ext, &exact_pow10(delta), cw), cw)
     } else {
         rx::ext_to_f64(&rx::ext_div(&core_ext, &exact_pow10(-delta), cw), cw)
     };
     let exact_signed = rx::ext_to_f64(&rx::ext_mul(&core_ext, &exact_pow10(delta), cw), cw);
-    let divided = rx::ext_div(
-        &core_ext,
-        &rx::ext_from_f64(pow10(to_exp)),
-        cw,
-    );
+    let divided = rx::ext_div(&core_ext, &rx::ext_from_f64(pow10(to_exp)), cw);
     let separate = rx::ext_to_f64(
         &rx::ext_mul(&divided, &rx::ext_from_f64(pow10(from_exp)), cw),
         cw,
@@ -221,11 +221,17 @@ fn predictions(core: f64, from_exp: i32, to_exp: i32) -> [f64; MODELS.len()] {
 
 fn score_row(score: &mut Score, row: &common::MetaRow, delta: i32, predicted: u64, actual: u64) {
     score.total += 1;
-    *score.category_total.entry(row.category.clone()).or_default() += 1;
+    *score
+        .category_total
+        .entry(row.category.clone())
+        .or_default() += 1;
     let residual = ordered_bits(actual) - ordered_bits(predicted);
     if residual == 0 {
         score.exact += 1;
-        *score.category_exact.entry(row.category.clone()).or_default() += 1;
+        *score
+            .category_exact
+            .entry(row.category.clone())
+            .or_default() += 1;
         return;
     }
     *score.delta_misses.entry(delta).or_default() += 1;
@@ -250,7 +256,12 @@ fn score_row(score: &mut Score, row: &common::MetaRow, delta: i32, predicted: u6
     }
 }
 
-fn process(root: &Path, meta_name: &str, answer_name: &str, scores: &mut BTreeMap<String, Score>) -> usize {
+fn process(
+    root: &Path,
+    meta_name: &str,
+    answer_name: &str,
+    scores: &mut BTreeMap<String, Score>,
+) -> usize {
     let metadata: MetaDocument =
         serde_json::from_slice(&std::fs::read(root.join(meta_name)).unwrap()).unwrap();
     let answers: WitnessSet =
@@ -278,14 +289,21 @@ fn process(root: &Path, meta_name: &str, answer_name: &str, scores: &mut BTreeMa
             continue;
         }
         let number = common::f64_from_hex(&row.number_bits).unwrap();
-        let core = (number * factor(&row.category, &from.direct))
-            / factor(&row.category, &to.direct);
+        let core =
+            (number * factor(&row.category, &from.direct)) / factor(&row.category, &to.direct);
         let delta = from.prefix_exponent - to.prefix_exponent;
-        for (name, prediction) in MODELS
-            .iter()
-            .zip(predictions(core, from.prefix_exponent, to.prefix_exponent))
+        for (name, prediction) in
+            MODELS
+                .iter()
+                .zip(predictions(core, from.prefix_exponent, to.prefix_exponent))
         {
-            score_row(scores.get_mut(*name).unwrap(), row, delta, prediction.to_bits(), actual);
+            score_row(
+                scores.get_mut(*name).unwrap(),
+                row,
+                delta,
+                prediction.to_bits(),
+                actual,
+            );
         }
         rows += 1;
     }
@@ -317,11 +335,18 @@ fn main() {
         .map(|(meta, answers)| process(&root, meta, answers, &mut scores))
         .sum();
     for score in scores.values_mut() {
-        if score.sum_abs_ulp.is_empty() { score.sum_abs_ulp = "0".to_string(); }
-        if score.max_abs_ulp.is_empty() { score.max_abs_ulp = "0".to_string(); }
+        if score.sum_abs_ulp.is_empty() {
+            score.sum_abs_ulp = "0".to_string();
+        }
+        if score.max_abs_ulp.is_empty() {
+            score.max_abs_ulp = "0".to_string();
+        }
     }
     for (name, score) in &scores {
-        println!("{name}: {}/{} sum={} max={}", score.exact, score.total, score.sum_abs_ulp, score.max_abs_ulp);
+        println!(
+            "{name}: {}/{} sum={} max={}",
+            score.exact, score.total, score.sum_abs_ulp, score.max_abs_ulp
+        );
     }
     let report = Report {
         schema_version: "w109.convert.prefix_reciprocal_graph_race.v1",

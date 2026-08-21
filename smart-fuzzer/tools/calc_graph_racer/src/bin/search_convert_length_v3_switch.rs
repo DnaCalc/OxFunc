@@ -146,11 +146,7 @@ fn pow10(exponent: i32) -> f64 {
 fn final_prefix(core: f64, delta: i32) -> f64 {
     let cw = rx::CW_PC64_RN;
     rx::ext_to_f64(
-        &rx::ext_mul(
-            &rx::ext_from_f64(core),
-            &rx::ext_from_f64(pow10(delta)),
-            cw,
-        ),
+        &rx::ext_mul(&rx::ext_from_f64(core), &rx::ext_from_f64(pow10(delta)), cw),
         cw,
     )
 }
@@ -185,18 +181,12 @@ fn rule_matches(family: &str, attrs: &Attributes, input: i32, delta: i32) -> boo
     match family {
         "input_ge" => attrs.input_exponent >= input,
         "same_direct_input_ge" => attrs.same_direct && attrs.input_exponent >= input,
-        "input_ge_delta_le" => {
-            attrs.input_exponent >= input && attrs.delta_exponent <= delta
-        }
+        "input_ge_delta_le" => attrs.input_exponent >= input && attrs.delta_exponent <= delta,
         "same_direct_input_ge_delta_le" => {
-            attrs.same_direct
-                && attrs.input_exponent >= input
-                && attrs.delta_exponent <= delta
+            attrs.same_direct && attrs.input_exponent >= input && attrs.delta_exponent <= delta
         }
         "same_direct_input_ge_delta_eq" => {
-            attrs.same_direct
-                && attrs.input_exponent >= input
-                && attrs.delta_exponent == delta
+            attrs.same_direct && attrs.input_exponent >= input && attrs.delta_exponent == delta
         }
         _ => panic!("unknown rule family {family}"),
     }
@@ -205,9 +195,18 @@ fn rule_matches(family: &str, attrs: &Attributes, input: i32, delta: i32) -> boo
 fn main() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../work/w109/G4-convert");
     let datasets = [
-        ("batch-convert-discovery-20260809-meta.json", "answers-convert-discovery-20260809-clean.json"),
-        ("batch-convert-heldout-20260809-meta.json", "answers-convert-heldout-20260809.json"),
-        ("batch-convert-publication-heldout-v2-20260809-meta.json", "answers-convert-publication-heldout-v2-20260809.json"),
+        (
+            "batch-convert-discovery-20260809-meta.json",
+            "answers-convert-discovery-20260809-clean.json",
+        ),
+        (
+            "batch-convert-heldout-20260809-meta.json",
+            "answers-convert-heldout-20260809.json",
+        ),
+        (
+            "batch-convert-publication-heldout-v2-20260809-meta.json",
+            "answers-convert-publication-heldout-v2-20260809.json",
+        ),
     ];
     let rows: Vec<_> = datasets
         .into_iter()
@@ -250,7 +249,10 @@ fn main() {
             to_unit: row.to_unit.clone(),
             number_bits: row.number_bits.clone(),
         };
-        for (name, alternate) in [("ratio_core", ratio), ("effective_factor_mul_div", effective)] {
+        for (name, alternate) in [
+            ("ratio_core", ratio),
+            ("effective_factor_mul_div", effective),
+        ] {
             if alternate != primary {
                 differences.get_mut(name).unwrap().push(Difference {
                     attrs: attrs.clone(),
@@ -288,21 +290,16 @@ fn main() {
                     vec![0]
                 };
                 for delta_threshold in deltas {
-                    let switches_needed = needed.iter().all(|row| {
-                        rule_matches(family, row, input_threshold, delta_threshold)
-                    });
+                    let switches_needed = needed
+                        .iter()
+                        .all(|row| rule_matches(family, row, input_threshold, delta_threshold));
                     if !switches_needed {
                         continue;
                     }
                     let harmful_count = harmful
                         .iter()
                         .filter(|row| {
-                            rule_matches(
-                                family,
-                                &row.attrs,
-                                input_threshold,
-                                delta_threshold,
-                            )
+                            rule_matches(family, &row.attrs, input_threshold, delta_threshold)
                         })
                         .count();
                     if harmful_count == 0 {

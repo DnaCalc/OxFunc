@@ -43,10 +43,10 @@ enum Frac {
 }
 #[derive(Clone, Copy, PartialEq)]
 enum T1 {
-    LeftChain,  // ((dbr + 1) - p100) - accr
-    OnePGroup,  // dbr + ((1 - p100) - accr)
-    PairGroup,  // (dbr + (1 - p100)) - accr
-    DocsForm,   // (1 + dbr) - term2   (term2 reused, per the published formula)
+    LeftChain, // ((dbr + 1) - p100) - accr
+    OnePGroup, // dbr + ((1 - p100) - accr)
+    PairGroup, // (dbr + (1 - p100)) - accr
+    DocsForm,  // (1 + dbr) - term2   (term2 reused, per the published formula)
 }
 #[derive(Clone, Copy, PartialEq)]
 enum Fin {
@@ -140,9 +140,17 @@ fn build(arith: Arith, p100: P100, frac: Frac, t1: T1, fin: Fin) -> Candidate {
     };
     let id = format!(
         "ym-{}-{}-{}-{}-{}",
-        if arith == Arith::Strict { "sarith" } else { "spill" },
+        if arith == Arith::Strict {
+            "sarith"
+        } else {
+            "spill"
+        },
         if p100 == P100::Div100 { "d100" } else { "m001" },
-        if frac == Frac::DivThenMul { "dfrac" } else { "mfrac" },
+        if frac == Frac::DivThenMul {
+            "dfrac"
+        } else {
+            "mfrac"
+        },
         match t1 {
             T1::LeftChain => "t1left",
             T1::OnePGroup => "t1one",
@@ -158,9 +166,21 @@ fn build(arith: Arith, p100: P100, frac: Frac, t1: T1, fin: Fin) -> Candidate {
     );
     let description = format!(
         "arith={}; price/100={}; dayfrac={}; term1={}; final={}",
-        if arith == Arith::Strict { "strict" } else { "x87 spill-loop" },
-        if p100 == P100::Div100 { "price/100" } else { "price*0.01" },
-        if frac == Frac::DivThenMul { "(x/b)*rate" } else { "(x*rate)/b" },
+        if arith == Arith::Strict {
+            "strict"
+        } else {
+            "x87 spill-loop"
+        },
+        if p100 == P100::Div100 {
+            "price/100"
+        } else {
+            "price*0.01"
+        },
+        if frac == Frac::DivThenMul {
+            "(x/b)*rate"
+        } else {
+            "(x*rate)/b"
+        },
         match t1 {
             T1::LeftChain => "((dbr+1)-p)-accr",
             T1::OnePGroup => "dbr+((1-p)-accr)",
@@ -210,7 +230,15 @@ struct Pair {
     graph: ProbeCase,
 }
 
-fn make_pair(id: String, issue: f64, a_days: f64, dsm_days: f64, rate: f64, price: f64, basis: f64) -> Pair {
+fn make_pair(
+    id: String,
+    issue: f64,
+    a_days: f64,
+    dsm_days: f64,
+    rate: f64,
+    price: f64,
+    basis: f64,
+) -> Pair {
     let settlement = issue + a_days;
     let maturity = settlement + dsm_days;
     let dim = a_days + dsm_days;
@@ -229,7 +257,13 @@ fn make_pair(id: String, issue: f64, a_days: f64, dsm_days: f64, rate: f64, pric
         },
         graph: ProbeCase {
             id,
-            args: vec![scalar(dim), scalar(a_days), scalar(b), scalar(rate), scalar(price)],
+            args: vec![
+                scalar(dim),
+                scalar(a_days),
+                scalar(b),
+                scalar(rate),
+                scalar(price),
+            ],
         },
     }
 }
@@ -239,7 +273,8 @@ fn pool(rng: &mut Rng, tag: &str, count: usize) -> Vec<Pair> {
     let mut n = 0;
     for rate in [0.0525, 0.06, 0.011, 0.1875, 0.0333333333333333] {
         for price in [98.59811340546048, 100.0, 95.5, 101.25, 89.03] {
-            for (a_days, dsm_days) in [(166.0, 398.0), (30.0, 300.0), (5.0, 1000.0), (400.0, 87.0)] {
+            for (a_days, dsm_days) in [(166.0, 398.0), (30.0, 300.0), (5.0, 1000.0), (400.0, 87.0)]
+            {
                 for basis in [2.0, 3.0] {
                     out.push(make_pair(
                         format!("{tag}-grid-{n:04}"),

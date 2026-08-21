@@ -272,7 +272,11 @@ fn q_publish(cfg: &Cfg, a: f64, x: f64, gln: &Ext80) -> f64 {
 fn ulp_signed(a: f64, b: f64) -> i64 {
     fn toi(x: f64) -> i64 {
         let i = x.to_bits() as i64;
-        if i < 0 { i64::MIN.wrapping_sub(i).wrapping_neg() ^ i64::MIN } else { i }
+        if i < 0 {
+            i64::MIN.wrapping_sub(i).wrapping_neg() ^ i64::MIN
+        } else {
+            i
+        }
     }
     // total-order mapping: for negatives flip
     fn key(x: f64) -> i64 {
@@ -309,7 +313,13 @@ fn load_rows(dir: &str, amax: f64) -> Vec<Row> {
         };
         let (x, a, beta) = (s(0), s(1), s(2));
         if a <= amax {
-            rows.push(Row { id: id.clone(), a, x: x / beta, is_p: true, excel });
+            rows.push(Row {
+                id: id.clone(),
+                a,
+                x: x / beta,
+                is_p: true,
+                excel,
+            });
         }
     }
     let chi: WitnessSet = serde_json::from_str(
@@ -329,7 +339,13 @@ fn load_rows(dir: &str, amax: f64) -> Vec<Row> {
         let (x, df) = (s(0), s(1));
         let a = df / 2.0;
         if a <= amax && (a == 1.0 || a == 2.0 || a == 3.0 || a == 5.0) {
-            rows.push(Row { id: id.clone(), a, x: x / 2.0, is_p: false, excel });
+            rows.push(Row {
+                id: id.clone(),
+                a,
+                x: x / 2.0,
+                is_p: false,
+                excel,
+            });
         }
     }
     rows
@@ -342,7 +358,10 @@ fn main() {
         .map(|s| s.parse().unwrap())
         .unwrap_or(2.0);
     let rows = load_rows(&dir, amax);
-    println!("loaded {} rows with a <= {amax} (P view + Q view)", rows.len());
+    println!(
+        "loaded {} rows with a <= {amax} (P view + Q view)",
+        rows.len()
+    );
 
     let gln0 = ef(0.0);
     // Stage A only supports gln = 0 slices (a = 1, 2); ln 2 handled in stage B.
@@ -358,9 +377,11 @@ fn main() {
                         for arg_spill in [false, true] {
                             for term_div_first in [true, false] {
                                 for comp in [Comp::Dbl, Comp::Ext] {
-                                    for eps in
-                                        [1.110_223_024_625_156_5e-16, 2.220_446_049_250_313e-16, 1e-15]
-                                    {
+                                    for eps in [
+                                        1.110_223_024_625_156_5e-16,
+                                        2.220_446_049_250_313e-16,
+                                        1e-15,
+                                    ] {
                                         let cfg = Cfg {
                                             series,
                                             cf,

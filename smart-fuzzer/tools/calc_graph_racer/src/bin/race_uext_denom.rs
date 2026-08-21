@@ -5,13 +5,15 @@
 //! the +1 double-ULP denominator the inverse solve demands — invisible to worksheet LN(u_dbl).
 use oxfunc_core::excel_numeric::research as rx;
 use rx::{
-    CW_PC53_RN, CW_PC64_RN, Ext80, ext_add, ext_div, ext_f2xm1, ext_from_f64, ext_fyl2x,
-    ext_from_f64 as ef, ext_l2e, ext_ln2, ext_mul, ext_one, ext_rndint, ext_scale, ext_sub, ext_to_f64,
+    CW_PC53_RN, CW_PC64_RN, Ext80, ext_add, ext_div, ext_f2xm1, ext_from_f64, ext_from_f64 as ef,
+    ext_fyl2x, ext_l2e, ext_ln2, ext_mul, ext_one, ext_rndint, ext_scale, ext_sub, ext_to_f64,
 };
 const CW: u16 = CW_PC64_RN;
 const RN53: u16 = CW_PC53_RN;
 
-fn b(s: &str) -> f64 { f64::from_bits(u64::from_str_radix(s, 16).unwrap()) }
+fn b(s: &str) -> f64 {
+    f64::from_bits(u64::from_str_radix(s, 16).unwrap())
+}
 
 fn exp_ext(tau: &Ext80, l2e: &Ext80) -> Ext80 {
     let y = ext_mul(tau, l2e, CW);
@@ -22,7 +24,8 @@ fn exp_ext(tau: &Ext80, l2e: &Ext80) -> Ext80 {
 }
 
 fn main() {
-    let csv = std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
+    let csv =
+        std::fs::read_to_string("../../work/w109/G6-solvers/expm1_intermediates.csv").unwrap();
     let ln2 = ext_ln2();
     let l2e = ext_l2e();
 
@@ -35,17 +38,22 @@ fn main() {
     let mut score = [0u32; 4];
     let mut score_miss = [0u32; 4];
     let (mut tot, mut nmiss) = (0u32, 0u32);
-    let mut den_diff_dir: std::collections::HashMap<i64,u32> = std::collections::HashMap::new();
+    let mut den_diff_dir: std::collections::HashMap<i64, u32> = std::collections::HashMap::new();
     let mut uext_ok = 0u32;
-    let mut fix1: Vec<(i32,u32)> = Vec::new();
+    let mut fix1: Vec<(i32, u32)> = Vec::new();
     let mut break1 = 0u32;
 
     for line in csv.lines().skip(1) {
         let f: Vec<&str> = line.split(',').collect();
-        if f.len() < 6 { continue; }
+        if f.len() < 6 {
+            continue;
+        }
         let k: i32 = f[0].parse().unwrap();
         let n: u32 = f[1].parse().unwrap();
-        let tau = b(f[2]); let u = b(f[3]); let lnu = b(f[4]); let em = b(f[5]);
+        let tau = b(f[2]);
+        let u = b(f[3]);
+        let lnu = b(f[4]);
+        let em = b(f[5]);
         let emb = em.to_bits();
         tot += 1;
         let r = 2f64.powi(k);
@@ -58,7 +66,9 @@ fn main() {
         let u_ext = exp_ext(&tau_ext, &l2e);
         let u_resp = ext_to_f64(&u_ext, RN53);
         let uok = u_resp.to_bits() == u.to_bits();
-        if uok { uext_ok += 1; }
+        if uok {
+            uext_ok += 1;
+        }
 
         let a = u - 1.0;
         let num_dbl = a * tau;
@@ -76,20 +86,57 @@ fn main() {
 
         let cands = [c0, c1, c2, c3];
         let base_miss = c0 != emb;
-        if base_miss { nmiss += 1; }
-        for i in 0..4 { if cands[i]==emb { score[i]+=1; if base_miss { score_miss[i]+=1; } } }
-        if base_miss { if c1==emb { fix1.push((k,n)); } } else if c1!=emb { break1+=1; }
+        if base_miss {
+            nmiss += 1;
+        }
+        for i in 0..4 {
+            if cands[i] == emb {
+                score[i] += 1;
+                if base_miss {
+                    score_miss[i] += 1;
+                }
+            }
+        }
+        if base_miss {
+            if c1 == emb {
+                fix1.push((k, n));
+            }
+        } else if c1 != emb {
+            break1 += 1;
+        }
     }
 
-    println!("N={} misses={} | u_ext spills==captured u on {}/{}", tot, nmiss, uext_ok, tot);
-    let mut dds: Vec<_> = den_diff_dir.iter().collect(); dds.sort();
+    println!(
+        "N={} misses={} | u_ext spills==captured u on {}/{}",
+        tot, nmiss, uext_ok, tot
+    );
+    let mut dds: Vec<_> = den_diff_dir.iter().collect();
+    dds.sort();
     print!("denominator(new-captured) ulp-diff distribution: ");
-    for (d,c) in dds { print!("{}:{} ", d, c); } println!();
+    for (d, c) in dds {
+        print!("{}:{} ", d, c);
+    }
+    println!();
     println!("{:<50} {:>12} {:>10}", "candidate", "all", "on-miss");
     for i in 0..4 {
-        println!("{:<50} {:>4}/{} ({:4.1}%) {:>4}/{}", names[i], score[i], tot,
-                 100.0*score[i] as f64/tot as f64, score_miss[i], nmiss);
+        println!(
+            "{:<50} {:>4}/{} ({:4.1}%) {:>4}/{}",
+            names[i],
+            score[i],
+            tot,
+            100.0 * score[i] as f64 / tot as f64,
+            score_miss[i],
+            nmiss
+        );
     }
-    println!("\nuext-denom(1) FIXES {} miss rows, BREAKS {} hit rows", fix1.len(), break1);
-    print!("fixed: "); for x in fix1.iter().take(24) { print!("({},{}) ", x.0, x.1); } println!();
+    println!(
+        "\nuext-denom(1) FIXES {} miss rows, BREAKS {} hit rows",
+        fix1.len(),
+        break1
+    );
+    print!("fixed: ");
+    for x in fix1.iter().take(24) {
+        print!("({},{}) ", x.0, x.1);
+    }
+    println!();
 }

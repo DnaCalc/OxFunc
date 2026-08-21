@@ -11,9 +11,7 @@
 //!
 //! Graph arg: 0 = x.
 
-use calc_graph_racer::dsl::{
-    Candidate, ConstVal, EvalModel, Graph, GraphBuilder, NodeId, Op,
-};
+use calc_graph_racer::dsl::{Candidate, ConstVal, EvalModel, Graph, GraphBuilder, NodeId, Op};
 use calc_graph_racer::eval::format_bits_hex;
 use calc_graph_racer::scheduler::ProbeCase;
 use calc_graph_racer::score::WitnessArg;
@@ -56,7 +54,10 @@ fn reduced_input(b: &mut GraphBuilder, x: NodeId, reduce: Reduce) -> NodeId {
 }
 
 fn trig_node(b: &mut GraphBuilder, r: NodeId, reduce: Reduce, op: fn(NodeId) -> Op) -> NodeId {
-    if matches!(reduce, Reduce::PiParity | Reduce::Pi2Quadrant | Reduce::ViaSinShift) {
+    if matches!(
+        reduce,
+        Reduce::PiParity | Reduce::Pi2Quadrant | Reduce::ViaSinShift
+    ) {
         // Swap in the composite CRT chain op matching the direct instruction.
         let probe = op(0);
         let chain: fn(NodeId) -> Op = match (reduce, probe) {
@@ -81,7 +82,10 @@ fn trig_node(b: &mut GraphBuilder, r: NodeId, reduce: Reduce, op: fn(NodeId) -> 
 
 /// Like `trig_node` but the result stays EXTENDED (store=false).
 fn trig_node_cont(b: &mut GraphBuilder, r: NodeId, reduce: Reduce, op: fn(NodeId) -> Op) -> NodeId {
-    if matches!(reduce, Reduce::PiParity | Reduce::Pi2Quadrant | Reduce::ViaSinShift) {
+    if matches!(
+        reduce,
+        Reduce::PiParity | Reduce::Pi2Quadrant | Reduce::ViaSinShift
+    ) {
         let probe = op(0);
         let chain: fn(NodeId) -> Op = match (reduce, probe) {
             (Reduce::ViaSinShift, Op::Cos(_)) => Op::CosViaSinShift,
@@ -277,8 +281,16 @@ fn pool(rng: &mut Rng, tag: &str, count: usize) -> Vec<ProbeCase> {
     };
     // Catalog/fixed rows.
     for (i, x) in [
-        797601.58, 134217727.0, 100000.0, 961281.44, 49.214601836, 149.214601836, 0.5, 1.0e-8,
-        -100000.0, -797601.58,
+        797601.58,
+        134217727.0,
+        100000.0,
+        961281.44,
+        49.214601836,
+        149.214601836,
+        0.5,
+        1.0e-8,
+        -100000.0,
+        -797601.58,
     ]
     .iter()
     .enumerate()
@@ -328,7 +340,10 @@ fn main() {
         ("SIN", direct_candidates("sin", Op::Sin)),
         ("COS", direct_candidates("cos", Op::Cos)),
         ("TAN", direct_candidates("tan", Op::Tan)),
-        ("COT", recip_candidates("cot", Op::Tan, Some((Op::Cos, Op::Sin)))),
+        (
+            "COT",
+            recip_candidates("cot", Op::Tan, Some((Op::Cos, Op::Sin))),
+        ),
         ("CSC", recip_candidates("csc", Op::Sin, None)),
         ("SEC", recip_candidates("sec", Op::Cos, None)),
     ];

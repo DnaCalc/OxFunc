@@ -13,7 +13,7 @@
 //! disagreement filters, complete exponent strata, and IEEE boundary ladders.
 
 use oxfunc_core::excel_numeric::research as rx;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
