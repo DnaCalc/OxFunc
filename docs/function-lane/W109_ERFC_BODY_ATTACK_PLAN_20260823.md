@@ -120,6 +120,14 @@ Headline: NSWC DERFC1 with unsplit `excel_exp` is the new named leader
 identification.** Cody C/D ±1 ULP is a ±14-row wiggle, not a last-bit
 hit. Production corr-fit is worse than libm on this corpus. No landing.
 
-Plan A is executed. Plan B.1 (coeff last-bit) is executed and negative.
-Plan B.2 (Horner association) and B.3 (cut-points) plus SLATEC/MATH77
-Chebyshev remain.
+Plan A and B.1 executed 2026-08-23 (named F + Cody ±1 ULP). Sequential
+tests 1–3 executed the same day; see
+[`W109_ERFC_NAMED_F_RACE_20260823.md`](W109_ERFC_NAMED_F_RACE_20260823.md).
+
+| Test | Result |
+|---|---|
+| 1 NSWC Horner / cuts | x87-continuous + store `u/v` + cuts 0.5/1.5 → 6127/15556, pins 2–4 ULP. Constraint, not ID. |
+| 2 SLATEC/MATH77 Chebyshev | 5149–5296/15556. Killed as the body. Small-z Chebyshev 1419/1864 is the best named P-side series, still not exact. |
+| 3 branch-190 extra RN53 stores | `check_erf190` ceiling 850/1508 P-side; inner A vs B tied; leftover comb. No new constant. |
+
+Body remains unidentified. Do not land.
