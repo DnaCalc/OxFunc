@@ -237,6 +237,11 @@ exceptions masked), then stored to binary64 with one final round:
   parity is a host-CPU property (validated: AMD Zen2; reference impl 294/294 live Excel).
   Cross-host dump/diff: `smart-fuzzer/tools/calc_graph_racer` bin `compare_x87_host`
   (ground-truth TSV + EXP midpoint ladder + raw `F2XM1`/`FYL2X` + x87 mul).
+  **2026-08-23 host pair:** Windows AMD family 23 model 96 stepping 1 (Zen 2)
+  vs Linux KVM `dna-firehorse` AMD EPYC family 23 model 1 stepping 2 (Zen 1):
+  `differ=0` on 3157 distinct rows, including 249/249 Excel ground-truth
+  (0 misses on both hosts). These two AMD 17h microcodes agreed on this
+  battery; Intel vs AMD remains untested.
 
 This is NOT any modern libm (not UCRT, glibc, MKL-VML, SVML) and NOT correctly-rounded —
 so §8's Track-B correctly-rounded core, while a good portable fallback, is NOT what Excel
