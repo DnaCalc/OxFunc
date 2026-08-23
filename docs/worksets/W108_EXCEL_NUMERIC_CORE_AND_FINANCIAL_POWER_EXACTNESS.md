@@ -235,6 +235,8 @@ exceptions masked), then stored to binary64 with one final round:
 - The ~0.502-ULP "away-from-1.0" `sign(k)` bias is `FLDL2E` (rounded up) carried through
   `×2^k`. The `F2XM1`/`FYL2X` last bit is CPU microcode → on the hardest ~1-in-30 rows,
   parity is a host-CPU property (validated: AMD Zen2; reference impl 294/294 live Excel).
+  Cross-host dump/diff: `smart-fuzzer/tools/calc_graph_racer` bin `compare_x87_host`
+  (ground-truth TSV + EXP midpoint ladder + raw `F2XM1`/`FYL2X` + x87 mul).
 
 This is NOT any modern libm (not UCRT, glibc, MKL-VML, SVML) and NOT correctly-rounded —
 so §8's Track-B correctly-rounded core, while a good portable fallback, is NOT what Excel
