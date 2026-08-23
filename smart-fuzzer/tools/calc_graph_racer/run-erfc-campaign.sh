@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Firehorse ERFC-body campaign. 12/16 vCPUs, 96h default, resume-safe.
 set -euo pipefail
+# Non-interactive ssh/tmux often lacks rustup PATH.
+if [[ -f "$HOME/.cargo/env" ]]; then
+  # shellcheck source=/dev/null
+  source "$HOME/.cargo/env"
+fi
 RACER="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$RACER/../../.." && pwd)"
 OUT="$ROOT/smart-fuzzer/work/w109/erfc-campaign"
