@@ -145,6 +145,10 @@ will want; date every entry.
   `z*z` changes 3/13687 implied-F values (max 190 ULP, tail). Pins
   identical. Split `excel_exp(-z)*excel_exp(-z)` is dead. The 7 ULP mid
   ceiling is an F-form object, not a missing square-store.
+- **2026-08-31 residual hist:** 2389 exact + 3414 at 1 ULP on mid NSWC
+  (75% ≤1 ULP); one row at 7 ULP. Oscillatory comb (2142 sign switches).
+  Piecewise NSWC/CF at 1.6 → 3699 exact. CF tail saturates at n=21.
+  Next: CF x87 store-mask campaign on firehorse.
 
 ## Wall 4 — bgrat body op-graph
 

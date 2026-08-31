@@ -122,6 +122,14 @@ does not hit any pin and does not break the 7 ULP mid ceiling. Keep
 `w_rn53` as the F_or default going forward (matches the swarm law;
 pins identical to native). Do not land.
 
+## Residual law + truncated CF + piecewise (2026-08-31)
+
+See [`W109_ERFC_FBODY_CAMPAIGN_20260831.md`](W109_ERFC_FBODY_CAMPAIGN_20260831.md).
+Mid NSWC vs `F_or`: 2389 exact, **3414 at 1 ULP**, 1453 at 2; only one
+row at 7 ULP. Comb, not a 7-ULP family wall. CF tail plateaus at n=21.
+Piecewise NSWC/CF cut 1.6 scores 3699 exact (constraint). Firehorse is
+now on CF store-masks, not NSWC PQR cubes.
+
 ## Test 1 — NSWC Horner association / store-site (2026-08-23)
 
 Racer: `race_erfc_nswc_assoc.rs`. Same 15,556-row corpus. Coefficients
