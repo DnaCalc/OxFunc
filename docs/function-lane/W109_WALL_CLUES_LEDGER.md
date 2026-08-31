@@ -141,6 +141,10 @@ will want; date every entry.
   A&S 7.1.14 CF, Gautschi CF. None is the body. NSWC still leads mid
   (2388/7741 max 7). CF A&S leads tail exact (1283/5934) with the same
   189 ULP ceiling. fdlibm split-exp F ≈ libm on tail (wrong staging).
+- **2026-08-31 F_or w-oracle:** `excel_exp(-RN53(RN64(z·z)))` vs native
+  `z*z` changes 3/13687 implied-F values (max 190 ULP, tail). Pins
+  identical. Split `excel_exp(-z)*excel_exp(-z)` is dead. The 7 ULP mid
+  ceiling is an F-form object, not a missing square-store.
 
 ## Wall 4 — bgrat body op-graph
 

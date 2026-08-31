@@ -103,6 +103,25 @@ on mid. fdlibm's split `exp(−x²−0.5625)` F is a poor match to unsplit
 named rationals on tail *exact count* but keeps a 189 ULP ceiling.
 Do not land.
 
+## F_or rebuilt under identified w (2026-08-31)
+
+Three oracles, same F graphs, z≥0.5, skip non-finite / ULP>2²⁰.
+
+| w | NSWC mid | NSWC tail max | pins |
+|---|---|---|---|
+| `excel_exp(-(z*z))` native | 2388/7741 max 7 | 1243/5934 max **189** | unchanged, none exact |
+| `excel_exp(-RN53(RN64(z*z)))` x87-DR | **2389**/7741 max 7 | 1243/5934 max **96** | **same bits as native** |
+| `excel_exp(-z)*excel_exp(-z)` split | 0/1 | — | 10¹⁵-class ULP, dead |
+
+`F_or` native vs rn53: **3 / 13687** rows differ, max 190 ULP (tail).
+Native vs split: 13675 / 13687 differ.
+
+**Verdict:** the leftover is F, not w. Identified unsplit staging is
+confirmed (split-exp control dies). Switching the square to x87-DR
+does not hit any pin and does not break the 7 ULP mid ceiling. Keep
+`w_rn53` as the F_or default going forward (matches the swarm law;
+pins identical to native). Do not land.
+
 ## Test 1 — NSWC Horner association / store-site (2026-08-23)
 
 Racer: `race_erfc_nswc_assoc.rs`. Same 15,556-row corpus. Coefficients

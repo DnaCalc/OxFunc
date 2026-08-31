@@ -14,7 +14,7 @@
 
 use calc_graph_racer::eval::parse_bits_hex;
 use calc_graph_racer::score::{WitnessArg, WitnessSet, ulp_distance};
-use oxfunc_core::excel_numeric::research::excel_exp;
+use oxfunc_core::excel_numeric::research::{excel_exp, x87_mul};
 use oxfunc_core::functions::special_dist_family::erfc_precise_kernel;
 use std::collections::BTreeMap;
 
@@ -958,12 +958,11 @@ fn main() {
     }
 
     println!();
-    println!("implied-F form race (z>=0.5): F_or = Q / excel_exp(-z^2)");
-    println!(
-        "{:<24} {:>22} {:>22}",
-        "F graph", "mid [0.5,4)", "tail z>=4"
-    );
-    let f_graphs: [(&str, fn(f64) -> f64); 9] = [
+    println!("implied-F form race (z>=0.5): F_or = Q / w");
+    println!("  w_native = excel_exp(-(z*z))           // today's table, SSE z^2");
+    println!("  w_rn53   = excel_exp(-RN53(RN64(z*z))) // identified unsplit arg (x87-DR square)");
+    println!("  w_split  = excel_exp(-z)*excel_exp(-z) // split-exp control, should lose");
+    let f_graphs: [(&str, fn(f64) -> f64); 7] = [
         ("nswc_derfc0", nswc_derfc0),
         ("nswc_ccdd", nswc_ccdd_f),
         ("cody_erfcx", cody_erfcx_large),
@@ -971,67 +970,112 @@ fn main() {
         ("fdlibm_F", fdlibm_f),
         ("cf_as714", cf_as714_f),
         ("cf_gautschi", cf_gautschi_f),
-        ("libm_erfc/w", |z| {
-            let w = excel_exp(-(z * z));
-            if w == 0.0 {
-                f64::NAN
-            } else {
-                libm::erfc(z) / w
-            }
-        }),
-        ("RPINV/z", |z| 0.5641895835477563 / z),
     ];
-    for (name, eval) in f_graphs {
-        let mut mid_a = Acc::new();
-        let mut tail_a = Acc::new();
-        for &(z, qbits) in &rows {
-            if z < 0.5 {
-                continue;
-            }
-            let w = excel_exp(-(z * z));
-            if w == 0.0 {
-                continue;
-            }
-            let f_or = f64::from_bits(qbits) / w;
-            let fg = eval(z);
-            if !f_or.is_finite() || !fg.is_finite() {
-                continue;
-            }
-            let d = ulp_distance(fg, f_or).unwrap_or(u64::MAX);
-            if d > (1u64 << 20) {
-                continue;
-            }
-            if z < 4.0 {
-                mid_a.add(d);
-            } else {
-                tail_a.add(d);
-            }
-        }
+    let oracles: [(&str, fn(f64) -> f64); 3] = [
+        ("w_native", |z| excel_exp(-(z * z))),
+        ("w_rn53", |z| excel_exp(-x87_mul(z, z))),
+        ("w_split", |z| excel_exp(-z) * excel_exp(-z)),
+    ];
+    for (w_name, w_fn) in oracles {
+        println!();
+        println!("oracle {w_name}");
         println!(
             "{:<24} {:>22} {:>22}",
-            name,
-            fmt_acc(&mid_a),
-            fmt_acc(&tail_a)
+            "F graph", "mid [0.5,4)", "tail z>=4"
         );
-    }
-    println!();
-    println!("implied-F pins (F ulp vs F_or):");
-    for &z in &PIN_Z {
-        let Some((_, expected)) = rows.iter().find(|(zz, _)| *zz == z) else {
-            continue;
-        };
-        let w = excel_exp(-(z * z));
-        if w == 0.0 {
-            continue;
-        }
-        let f_or = f64::from_bits(*expected) / w;
-        print!("  z={z}:");
         for (name, eval) in f_graphs {
-            let d = ulp_distance(eval(z), f_or).unwrap_or(u64::MAX);
-            print!(" {name}={d}");
+            let mut mid_a = Acc::new();
+            let mut tail_a = Acc::new();
+            for &(z, qbits) in &rows {
+                if z < 0.5 {
+                    continue;
+                }
+                let w = w_fn(z);
+                if w == 0.0 || !w.is_finite() {
+                    continue;
+                }
+                let f_or = f64::from_bits(qbits) / w;
+                let fg = eval(z);
+                if !f_or.is_finite() || !fg.is_finite() {
+                    continue;
+                }
+                let d = ulp_distance(fg, f_or).unwrap_or(u64::MAX);
+                if d > (1u64 << 20) {
+                    continue;
+                }
+                if z < 4.0 {
+                    mid_a.add(d);
+                } else {
+                    tail_a.add(d);
+                }
+            }
+            println!(
+                "{:<24} {:>22} {:>22}",
+                name,
+                fmt_acc(&mid_a),
+                fmt_acc(&tail_a)
+            );
         }
-        println!();
+        println!("  pins F ulp vs this F_or:");
+        for &z in &PIN_Z {
+            let Some((_, expected)) = rows.iter().find(|(zz, _)| *zz == z) else {
+                continue;
+            };
+            let w = w_fn(z);
+            if w == 0.0 || !w.is_finite() {
+                println!("    z={z}: w=0/nonfinite");
+                continue;
+            }
+            let f_or = f64::from_bits(*expected) / w;
+            print!("    z={z}:");
+            for (name, eval) in f_graphs {
+                let d = ulp_distance(eval(z), f_or).unwrap_or(u64::MAX);
+                print!(" {name}={d}");
+            }
+            println!();
+        }
     }
+
+    println!();
+    println!("F_or disagreement (z>=0.5, finite w):");
+    let mut n = 0usize;
+    let mut n_nat_rn = 0usize;
+    let mut n_nat_sp = 0usize;
+    let mut max_nat_rn = 0u64;
+    let mut max_nat_sp = 0u64;
+    for &(z, qbits) in &rows {
+        if z < 0.5 {
+            continue;
+        }
+        let wn = excel_exp(-(z * z));
+        let wr = excel_exp(-x87_mul(z, z));
+        let ws = excel_exp(-z) * excel_exp(-z);
+        if wn == 0.0 || wr == 0.0 || !wn.is_finite() || !wr.is_finite() {
+            continue;
+        }
+        let q = f64::from_bits(qbits);
+        let fnat = q / wn;
+        let frn = q / wr;
+        n += 1;
+        if fnat.to_bits() != frn.to_bits() {
+            n_nat_rn += 1;
+            if let Some(d) = ulp_distance(fnat, frn) {
+                max_nat_rn = max_nat_rn.max(d);
+            }
+        }
+        if ws != 0.0 && ws.is_finite() {
+            let fsp = q / ws;
+            if fnat.to_bits() != fsp.to_bits() {
+                n_nat_sp += 1;
+                if let Some(d) = ulp_distance(fnat, fsp) {
+                    max_nat_sp = max_nat_sp.max(d);
+                }
+            }
+        }
+    }
+    println!("  rows compared: {n}");
+    println!("  native vs rn53  F_or bits differ: {n_nat_rn}  max ULP={max_nat_rn}");
+    println!("  native vs split F_or bits differ: {n_nat_sp}  max ULP={max_nat_sp}");
 }
 
 fn score_mid(mid: &[(f64, u64)], c: &[f64; 9], d: &[f64; 8]) -> usize {

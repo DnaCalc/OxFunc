@@ -144,5 +144,7 @@ finished. Best mid **3336**/7741 max 7 ULP (`R1m/z0/r0 mask=0x0048000`),
 Store-site / last-bit on NSWC and Cody F is exhausted. Implied-F race of
 Cephes, fdlibm, NSWC CC/DD, and A&S/Gautschi CF (2026-08-31): none is
 the body; NSWC still leads mid 2388/7741 max 7; CF A&S leads tail exact
-1283/5934 with the same 189 ULP ceiling. Still not an identification.
-Do not land.
+1283/5934 with the same 189 ULP ceiling. `F_or` rebuilt under identified
+w: native vs x87-DR square differs on 3/13687 rows (pins unchanged, mid
+ceiling still 7 ULP); split-exp `w` dies. Leftover is F, not w. Still
+not an identification. Do not land.
