@@ -149,6 +149,15 @@ will want; date every entry.
   (75% ≤1 ULP); one row at 7 ULP. Oscillatory comb (2142 sign switches).
   Piecewise NSWC/CF at 1.6 → 3699 exact. CF tail saturates at n=21.
   Next: CF x87 store-mask campaign on firehorse.
+- **2026-08-31 residual cluster + complementary Lentz:** the lone mid 7-ULP
+  row is `z=1.1842387490730035` (the G-F3 direct/implied conflict z).
+  Residual sign flips across the published NSWC x=2 cut (PQR high, AA/BB
+  low). ULP≥4 clusters in `[0.77,1.06]`. Sweep: the 7-ULP row is implied-Q
+  (`direct=0`); direct ERFC.PRECISE mid max is 4 ULP. x87 NSWC F with PQR
+  cut 1.5 / AABB to 4 is the new constraint (**2939**/7741 mid, 4182
+  all-exact), not an identity. CF `n*` is spread, not a truncation law.
+  Firehorse: backward-CF store-masks (12 vCPU) plus even-odd/Lentz C/D
+  store-masks (4 vCPU). No more NSWC PQR 26-bit cubes.
 
 ## Wall 4 — bgrat body op-graph
 

@@ -67,3 +67,8 @@ Monitor: `scp dna-firehorse:.../erfc-fbody-campaign/STATUS.md .`
 
 GitHub copy at cube/phase gates: `docs/function-lane/w109-erfc-fbody-campaign/`
 once that snapshot dir is created. `smart-fuzzer/work/` is gitignored.
+
+Complementary Lentz recurrence (same host, leftover 4 vCPU): see
+[`W109_ERFC_FSWEEP_20260831.md`](W109_ERFC_FSWEEP_20260831.md). Do not stop
+this 12-thread backward-CF campaign to make room; the Lentz launcher is
+sized for the spare cores.

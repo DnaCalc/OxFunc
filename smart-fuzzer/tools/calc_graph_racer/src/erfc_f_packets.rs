@@ -94,7 +94,14 @@ pub fn score_f(rows: &[(f64, u64)], eval: impl Fn(f64) -> f64) -> (Acc, Acc) {
     (mid, tail)
 }
 
-pub fn load_q_rows(dir: &str) -> Vec<(f64, u64)> {
+#[derive(Clone, Copy, Debug)]
+pub struct QRow {
+    pub z: f64,
+    pub qbits: u64,
+    pub direct: bool,
+}
+
+pub fn load_q_rows_tagged(dir: &str) -> Vec<QRow> {
     let mut rows = BTreeMap::new();
     for name in ERFC_BANKS {
         assert!(!name.contains("heldout"));
@@ -112,7 +119,7 @@ pub fn load_q_rows(dir: &str) -> Vec<(f64, u64)> {
                 continue;
             };
             if z.is_finite() && z >= 0.0 {
-                rows.entry(z.to_bits()).or_insert(q.to_bits());
+                rows.entry(z.to_bits()).or_insert((q.to_bits(), true));
             }
         }
     }
@@ -139,12 +146,24 @@ pub fn load_q_rows(dir: &str) -> Vec<(f64, u64)> {
             };
             let z = x.abs() * FRAC_1_SQRT_2;
             if z.is_finite() && z >= 0.0 {
-                rows.entry(z.to_bits()).or_insert((ns * 2.0).to_bits());
+                rows.entry(z.to_bits())
+                    .or_insert(((ns * 2.0).to_bits(), false));
             }
         }
     }
     rows.into_iter()
-        .map(|(zb, qb)| (f64::from_bits(zb), qb))
+        .map(|(zb, (qb, direct))| QRow {
+            z: f64::from_bits(zb),
+            qbits: qb,
+            direct,
+        })
+        .collect()
+}
+
+pub fn load_q_rows(dir: &str) -> Vec<(f64, u64)> {
+    load_q_rows_tagged(dir)
+        .into_iter()
+        .map(|r| (r.z, r.qbits))
         .collect()
 }
 
@@ -517,4 +536,149 @@ pub fn cf_as714_f(x: f64) -> f64 {
 }
 pub fn cf_gautschi_f(x: f64) -> f64 {
     cf_gautschi_n(x, 80)
+}
+
+const LENTZ_TINY: f64 = 1.0e-30;
+
+pub fn cf_lentz_as714_n(x: f64, nterms: u32) -> f64 {
+    let a_scale = 0.5 / (x * x);
+    let mut f = 1.0;
+    let mut c = 1.0;
+    let mut d = 0.0;
+    for j in 1..=nterms {
+        let a = j as f64 * a_scale;
+        d = 1.0 / (1.0 + a * d);
+        c = 1.0 + a / c;
+        f *= c * d;
+    }
+    RPINV / x / f
+}
+
+pub fn cf_lentz_gaut_n(x: f64, nterms: u32) -> f64 {
+    let mut f = x;
+    let mut c = x;
+    let mut d = 0.0;
+    for j in 1..=nterms {
+        let a = j as f64 * 0.5;
+        d = 1.0 / (x + a * d);
+        c = x + a / c;
+        f *= c * d;
+    }
+    RPINV / f
+}
+
+pub fn cf_mlentz_as714_n(x: f64, nterms: u32) -> f64 {
+    let a_scale = 0.5 / (x * x);
+    let mut f = 1.0;
+    let mut c = 1.0;
+    let mut d = 0.0;
+    for j in 1..=nterms {
+        let a = j as f64 * a_scale;
+        d = 1.0 + a * d;
+        if d.abs() < LENTZ_TINY {
+            d = LENTZ_TINY;
+        }
+        d = 1.0 / d;
+        c = 1.0 + a / c;
+        if c.abs() < LENTZ_TINY {
+            c = LENTZ_TINY;
+        }
+        f *= c * d;
+    }
+    RPINV / x / f
+}
+
+pub fn cf_mlentz_gaut_n(x: f64, nterms: u32) -> f64 {
+    let mut f = x;
+    let mut c = x;
+    let mut d = 0.0;
+    for j in 1..=nterms {
+        let a = j as f64 * 0.5;
+        d = x + a * d;
+        if d.abs() < LENTZ_TINY {
+            d = LENTZ_TINY;
+        }
+        d = 1.0 / d;
+        c = x + a / c;
+        if c.abs() < LENTZ_TINY {
+            c = LENTZ_TINY;
+        }
+        f *= c * d;
+    }
+    RPINV / f
+}
+
+pub fn cf_lentz_as714_stop(x: f64, maxn: u32) -> f64 {
+    let a_scale = 0.5 / (x * x);
+    let mut f = 1.0;
+    let mut c = 1.0;
+    let mut d = 0.0;
+    for j in 1..=maxn {
+        let a = j as f64 * a_scale;
+        d = 1.0 + a * d;
+        if d.abs() < LENTZ_TINY {
+            d = LENTZ_TINY;
+        }
+        d = 1.0 / d;
+        c = 1.0 + a / c;
+        if c.abs() < LENTZ_TINY {
+            c = LENTZ_TINY;
+        }
+        let delta = c * d;
+        f *= delta;
+        if (delta - 1.0).abs() <= 2.0f64.powi(-53) {
+            break;
+        }
+    }
+    RPINV / x / f
+}
+
+pub fn cf_lentz_gaut_stop(x: f64, maxn: u32) -> f64 {
+    let mut f = x;
+    let mut c = x;
+    let mut d = 0.0;
+    for j in 1..=maxn {
+        let a = j as f64 * 0.5;
+        d = x + a * d;
+        if d.abs() < LENTZ_TINY {
+            d = LENTZ_TINY;
+        }
+        d = 1.0 / d;
+        c = x + a / c;
+        if c.abs() < LENTZ_TINY {
+            c = LENTZ_TINY;
+        }
+        let delta = c * d;
+        f *= delta;
+        if (delta - 1.0).abs() <= 2.0f64.powi(-53) {
+            break;
+        }
+    }
+    RPINV / f
+}
+
+pub fn cf_evenodd_as714_n(x: f64, npairs: u32) -> f64 {
+    let a_scale = 0.5 / (x * x);
+    let mut den = 1.0;
+    for k in (1..=npairs).rev() {
+        let a_even = (2 * k) as f64 * a_scale;
+        let a_odd = (2 * k - 1) as f64 * a_scale;
+        den = 1.0 + a_odd / (1.0 + a_even / den);
+    }
+    RPINV / x / den
+}
+
+pub fn nswc_t_published(x: f64) -> f64 {
+    (x - 3.75) / (x + 3.75)
+}
+pub fn nswc_t_oneminus(x: f64) -> f64 {
+    1.0 - 7.5 / (x + 3.75)
+}
+pub fn nswc_t_divfirst(x: f64) -> f64 {
+    let r = 3.75 / x;
+    (1.0 - r) / (1.0 + r)
+}
+pub fn nswc_t_scaled(x: f64) -> f64 {
+    let u = x / 3.75;
+    (u - 1.0) / (u + 1.0)
 }
