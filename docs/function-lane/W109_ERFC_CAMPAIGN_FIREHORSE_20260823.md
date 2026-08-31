@@ -156,7 +156,7 @@ cut. After the in-flight `R1/z0/r0` cube finishes, skip the other five R1
 axes and R1p. Run:
 
 ```text
-ONLY=R4,R2 MAX_HOURS=300 ./run-erfc-campaign.sh
+ONLY=R4,R2,R0aabb MAX_HOURS=300 ./run-erfc-campaign.sh
 ```
 
 `--only` is a prefix filter (`R4` → all `R4/…` jobs). Then pivot off

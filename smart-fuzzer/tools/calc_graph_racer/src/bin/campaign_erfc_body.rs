@@ -445,6 +445,34 @@ fn nswc_pqr_native_coeffs(z: f64, p: &[f64], q: &[f64], r: &[f64], small_cut: f6
     flush(if z < 0.0 { 2.0 - qv } else { qv })
 }
 
+fn nswc_aabb_native_coeffs(z: f64, aa: &[f64], bb: &[f64], e: [f64; 3], mid_cut: f64) -> f64 {
+    let y = z.abs();
+    if y <= mid_cut {
+        return nswc_body(
+            z,
+            0,
+            Arith::Native,
+            false,
+            Ratio::Cont,
+            0.5,
+            mid_cut,
+            false,
+        );
+    }
+    let xx = y * y;
+    let zv = 1.0 / (2.5 + xx);
+    let t = 13.0 * zv - 1.0;
+    let u = horner_native(aa, zv);
+    let v = horner_native(bb, zv);
+    let mut acc = u / v;
+    acc = acc * t + e[2];
+    acc = acc * t + e[1];
+    acc = acc * t + e[0];
+    let f = acc / y;
+    let qv = flush(excel_exp(-xx) * f);
+    flush(if z < 0.0 { 2.0 - qv } else { qv })
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 struct Acc {
     exact: usize,
@@ -643,6 +671,11 @@ fn region_map_md(ck: &Checkpoint, jobs: &[CubeJob]) -> String {
     s.push_str(&format!(
         "| R1base | mask-insensitive arith | {} | Native/Every/Pc53/Stage |\n",
         if r1b >= 1 { "done" } else { "pending" }
+    ));
+    let r0aabb = ck.progress.get("R0aabb").copied().unwrap_or(0);
+    s.push_str(&format!(
+        "| R0aabb | NSWC AA/BB/E ±1 ULP | {} | high-band last-bit decimals |\n",
+        if r0aabb >= 1 { "done" } else { "pending" }
     ));
     for j in jobs {
         let v = ck.progress.get(&j.axis).copied().unwrap_or(0);
@@ -1352,17 +1385,91 @@ fn main() {
         }
     }
 
+    // ---- R0aabb NSWC AA/BB/E ±1 ULP (after store cubes; P/Q/R last-bit already noise) ----
+    if ck.progress.get("R0aabb").copied().unwrap_or(0) == 0
+        && job_selected("R0aabb", &only)
+        && !timed_out(&ck, max_hours)
+        && !stop_requested(&out)
+    {
+        let mut extra =
+            String::from("## R0aabb NSWC AA/BB/E ±1 ULP native unsplit exp, mid_cut=1.5\n\n");
+        let poke = |cs: &[f64], i: usize, up: bool| -> Vec<f64> {
+            let mut v = cs.to_vec();
+            v[i] = if up {
+                cs[i].next_up()
+            } else {
+                cs[i].next_down()
+            };
+            v
+        };
+        let e0 = [E0, E1, E2];
+        for (set, n) in [("AA", AA.len()), ("BB", BB.len()), ("E", 3usize)] {
+            for i in 0..n {
+                for up in [true, false] {
+                    let (aa, bb, e) = match set {
+                        "AA" => (poke(&AA, i, up), BB.to_vec(), e0),
+                        "BB" => (AA.to_vec(), poke(&BB, i, up), e0),
+                        _ => {
+                            let mut e = e0;
+                            e[i] = if up {
+                                e0[i].next_up()
+                            } else {
+                                e0[i].next_down()
+                            };
+                            (AA.to_vec(), BB.to_vec(), e)
+                        }
+                    };
+                    let label = format!("R0aabb/{set}[{i}]/{}", if up { "up" } else { "dn" });
+                    let (exact, maxu, pins) =
+                        score_mid(&mid, |z| nswc_aabb_native_coeffs(z, &aa, &bb, e, 1.5));
+                    extra.push_str(&format!(
+                        "- {label}: mid {exact}/{} max_ulp={maxu} pins={pins}\n",
+                        mid.len()
+                    ));
+                    consider_mid(&mut ck, &out, &label, exact, maxu, pins, mid.len(), "R0aabb");
+                    ck.configs_done += 1;
+                }
+            }
+        }
+        write_atomic(&out.join("R0aabb.md"), &extra);
+        ck.progress.insert("R0aabb".into(), 1);
+        write_status(
+            &out,
+            &ck,
+            &jobs,
+            "R0aabb",
+            "done",
+            wall_secs(&ck),
+            max_hours,
+            threads,
+            false,
+            &extra,
+        );
+    }
+
     let selected: Vec<&CubeJob> = jobs
         .iter()
         .filter(|j| job_selected(&j.axis, &only))
         .collect();
-    let exhausted = selected
+    let cubes_done = selected
         .iter()
         .all(|j| ck.progress.get(&j.axis).copied().unwrap_or(0) >= j.mask_lim);
+    let aabb_done = !job_selected("R0aabb", &only)
+        || ck.progress.get("R0aabb").copied().unwrap_or(0) >= 1;
+    let exhausted = cubes_done && aabb_done;
     let only_note = if only.is_empty() {
         String::new()
     } else {
         format!("--only {}.\n", only.join(","))
+    };
+    let extra = if exhausted {
+        format!(
+            "{only_note}selected cubes finished before max-hours. remaining unselected regions were not run."
+        )
+    } else {
+        format!(
+            "{only_note}campaign process exiting (time, STOP, or interrupt). resume = same command."
+        )
     };
     write_status(
         &out,
@@ -1374,14 +1481,6 @@ fn main() {
         max_hours,
         threads,
         stop_requested(&out),
-        if exhausted {
-            format!(
-                "{only_note}selected cubes finished before max-hours. remaining unselected regions were not run."
-            )
-        } else {
-            format!(
-                "{only_note}campaign process exiting (time, STOP, or interrupt). resume = same command."
-            )
-        },
+        &extra,
     );
 }
