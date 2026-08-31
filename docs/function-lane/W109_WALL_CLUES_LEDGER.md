@@ -137,6 +137,10 @@ will want; date every entry.
   six axes), R2 (Cody 16-bit, all six), and R0aabb (AA/BB/E ±1 ULP, best
   2924/7741) added **zero** leaders. NSWC/Cody store-site and last-bit
   are exhausted. Next object is F itself via implied `Q/excel_exp(−z²)`.
+- **2026-08-31 implied-F packets:** Cephes erfce, fdlibm F, NSWC CC/DD,
+  A&S 7.1.14 CF, Gautschi CF. None is the body. NSWC still leads mid
+  (2388/7741 max 7). CF A&S leads tail exact (1283/5934) with the same
+  189 ULP ceiling. fdlibm split-exp F ≈ libm on tail (wrong staging).
 
 ## Wall 4 — bgrat body op-graph
 

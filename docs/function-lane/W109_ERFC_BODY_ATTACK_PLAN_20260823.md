@@ -141,5 +141,8 @@ finished. Best mid **3336**/7741 max 7 ULP (`R1m/z0/r0 mask=0x0048000`),
 +4 over the named bar, pins still inexact. Remaining R1 26-bit axes skipped after `R1/z0/r0`. R4 (all six AA/BB
 19-bit), R2 (all six Cody 16-bit), and R0aabb (±1 ULP AA/BB/E) finished
 2026-08-31 with **no scoreboard move** (3336/7741, 7 ULP, 0 pins).
-Store-site / last-bit on NSWC and Cody F is exhausted. Pivot: implied-F
-form race. Still not an identification. Do not land.
+Store-site / last-bit on NSWC and Cody F is exhausted. Implied-F race of
+Cephes, fdlibm, NSWC CC/DD, and A&S/Gautschi CF (2026-08-31): none is
+the body; NSWC still leads mid 2388/7741 max 7; CF A&S leads tail exact
+1283/5934 with the same 189 ULP ceiling. Still not an identification.
+Do not land.

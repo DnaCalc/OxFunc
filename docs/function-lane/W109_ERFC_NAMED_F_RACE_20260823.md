@@ -74,6 +74,35 @@ NSWC is still the named F leader and still not an identity. Tail exact
 counts are not comparable until flush/subnormal rows are split out.
 This is the pivot instrument, not a landing.
 
+## Implied-F: Cephes, fdlibm, NSWC CC/DD, CF (2026-08-31)
+
+Sources: Cephes 2.9 `ndtr.c` `erfce` (netlib `cephes/cprob`); fdlibm
+`s_erf.c` (local G3-01-dist copy); NSWC DERFC0 CC/DD tail; A&S 7.1.14
+and Gautschi continued fractions (80 terms). `F_or = Q/excel_exp(−z²)`,
+z≥0.5, skip non-finite F and ULP > 2²⁰ (flush/asymptotic junk).
+
+| F graph | mid [0.5,4) | tail z≥4 |
+|---|---|---|
+| NSWC DERFC0 | **2388**/7741 max 7 | 1243/5934 max 189 |
+| Cody erfcx | 2188/7741 max 7 | 1269/5934 max 189 |
+| fdlibm F | 2170/7741 max 10 | 106/5934 max 399 |
+| `libm::erfc / w` | 2164/7741 max 10 | 105/5934 max 399 |
+| Cephes erfce | 1884/7741 max 11 | 1156/5934 max 188 |
+| CF Gautschi | 1390/6099 max huge | 1256/5934 max 189 |
+| CF A&S 7.1.14 | 1312/6099 max huge | **1283**/5934 max 189 |
+| NSWC CC/DD only | 651/4869 max huge | 1243/5934 max 189 |
+
+Pins: none exact. Closest new reading: CF A&S at z=2.125 is 3 ULP
+(NSWC 4); Cephes at z=1.28125 is 1 ULP (NSWC 2); z=5 CF Gautschi 4 ULP
+(NSWC 5). CC/DD matches DERFC0 on the tail (same branch) and is the
+wrong interval on mid.
+
+**Verdict:** none of these is the body. Cephes and fdlibm lose to NSWC
+on mid. fdlibm's split `exp(−x²−0.5625)` F is a poor match to unsplit
+`excel_exp(−z²)` (same class as libm on tail). The CF slightly leads
+named rationals on tail *exact count* but keeps a 189 ULP ceiling.
+Do not land.
+
 ## Test 1 — NSWC Horner association / store-site (2026-08-23)
 
 Racer: `race_erfc_nswc_assoc.rs`. Same 15,556-row corpus. Coefficients
