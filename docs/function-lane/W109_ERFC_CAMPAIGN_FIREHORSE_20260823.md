@@ -176,6 +176,25 @@ Cube done (`0x4000000`). Scoreboard **unchanged**: 3336/7741 max 7 ULP,
 `0x000f000` (61,440 configs); STOP aborted that axis. Remaining R1 and
 R1p are skipped. Next process: `ONLY=R4,R2,R0aabb MAX_HOURS=300`.
 
+### R4 + R2 + R0aabb finished 2026-08-31 ~10:02 UTC
+
+`exit-regions`. 473,432,210 configs. Scoreboard **unchanged**:
+
+| | |
+|---|---|
+| best mid | **3336**/7741 max 7 ULP `R1m/z0/r0 mask=0048000` |
+| HIT_ALL_MID / HIT_PIN | none |
+| new leaders.jsonl lines | none |
+
+All six R4 AA/BB 19-bit cubes and all six R2 Cody 16-bit cubes finished.
+R0aabb (48 native ±1 ULP pokes of AA/BB/E) peaked at **2924**/7741
+(`E[2]/up`), still 7 ULP, 0 pins. That is last-bit noise on the native
+graph, not a stored-decimal hit.
+
+**NSWC/Cody store-site and last-bit on this F are exhausted.** Do not
+resume leftover R1 or R1p. Pivot: implied-F form race
+`F = Q / excel_exp(−z²)` against other public rationals.
+
 ## Binary
 
 `smart-fuzzer/tools/calc_graph_racer` bin `campaign_erfc_body`

@@ -14,6 +14,10 @@ copy. Refresh at each cube or phase gate (not every chunk).
 | `checkpoint.json` | resume progress |
 | `leaders.jsonl` | configs that beat running best |
 | `pin-hits.jsonl` | any pin-exact cfg |
+| `R0aabb.md` | AA/BB/E ±1 ULP last-bit (2026-08-31) |
+
+Store-mask campaign reached `exit-regions` 2026-08-31 with no identity.
+Do not resume leftover R1/R1p.
 
 Do not treat a mid-band near-miss here as a production identity.
 Heldouts are not present.

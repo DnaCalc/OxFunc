@@ -138,7 +138,8 @@ Full note: [`W109_ERFC_CAMPAIGN_FIREHORSE_20260823.md`](W109_ERFC_CAMPAIGN_FIREH
 
 All six R1m 26-bit PQR+t cubes (mid_cut=1.5, every zz_dr × uv association)
 finished. Best mid **3336**/7741 max 7 ULP (`R1m/z0/r0 mask=0x0048000`),
-+4 over the named bar, pins still inexact. Remaining R1 26-bit axes (worse
-cut) are skipped after the in-flight `R1/z0/r0` cube. Next: `--only R4,R2`
-(AA/BB and Cody store-masks), then pivot to F-form / AA/BB last-bit.
-Still not an identification. Do not land.
++4 over the named bar, pins still inexact. Remaining R1 26-bit axes skipped after `R1/z0/r0`. R4 (all six AA/BB
+19-bit), R2 (all six Cody 16-bit), and R0aabb (±1 ULP AA/BB/E) finished
+2026-08-31 with **no scoreboard move** (3336/7741, 7 ULP, 0 pins).
+Store-site / last-bit on NSWC and Cody F is exhausted. Pivot: implied-F
+form race. Still not an identification. Do not land.

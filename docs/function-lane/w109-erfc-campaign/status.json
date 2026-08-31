@@ -1,7 +1,7 @@
 {
-  "region": "exit",
+  "region": "exit-regions",
   "chunk": "-",
-  "configs_done": 469823586,
+  "configs_done": 473432210,
   "best_exact": 6005,
   "best_mid_exact": 3336,
   "best_mid_max_ulp": 7,
@@ -9,8 +9,8 @@
   "best_label": "nswc_x87cont_zzdr_store_mid15",
   "best_mid_label": "R1m/z0/r0 /mask=0048000",
   "named_mid_bar": 3332,
-  "runtime_secs": 667532,
+  "runtime_secs": 670500,
   "max_hours": 300.0,
   "threads": 12,
-  "stop_requested": true
+  "stop_requested": false
 }

@@ -10,7 +10,11 @@ $files = @(
     "status.json",
     "checkpoint.json",
     "leaders.jsonl",
-    "pin-hits.jsonl"
+    "pin-hits.jsonl",
+    "R0.md",
+    "R0c.md",
+    "R0aabb.md",
+    "R1base.md"
 )
 $paths = $files | ForEach-Object { "$src/$_" }
 scp -o BatchMode=yes @paths $dest/

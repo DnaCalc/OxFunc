@@ -132,8 +132,11 @@ will want; date every entry.
   NSWC mid_cut=1.5 bar graph. Ceiling moved **3332 → 3336 / 7741**, still
   max 7 ULP, still 0 pin hits. Extra R-Horner spills (`mask=0x0048000`)
   are a +4-row wiggle, not the body. Constraint: missing per-stage stores
-  on published NSWC DERFC0 are not the identity. Remaining cubes (R1
-  mid_cut=4, R4 AA/BB, R2 Cody, R1p Pc53) were still in queue at the cap.
+  on published NSWC DERFC0 are not the identity.
+- **2026-08-31:** `R1/z0/r0` finished unchanged. R4 (AA/BB 19-bit, all
+  six axes), R2 (Cody 16-bit, all six), and R0aabb (AA/BB/E ±1 ULP, best
+  2924/7741) added **zero** leaders. NSWC/Cody store-site and last-bit
+  are exhausted. Next object is F itself via implied `Q/excel_exp(−z²)`.
 
 ## Wall 4 — bgrat body op-graph
 
