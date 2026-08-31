@@ -18,7 +18,9 @@ ONLY_ARGS=()
 if [[ -n "${ONLY:-}" ]]; then
   ONLY_ARGS+=(--only "$ONLY")
 fi
-exec ./target/release/campaign_erfc_body \
+# cargo may honor CARGO_TARGET_DIR (firehorse uses /tmp/cargo-target).
+# `cargo run` execs the artifact it just built, not a stale ./target copy.
+exec cargo run --release --offline --bin campaign_erfc_body -- \
   --dir "$DIR" \
   --out "$OUT" \
   --threads "$RAYON_NUM_THREADS" \
