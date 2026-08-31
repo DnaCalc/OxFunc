@@ -1,22 +1,20 @@
 # ERFC campaign STATUS
 
-- region: `R1/z0/r0`
-- chunk: `3d09000`
-- configs_done: 466653282
+- region: `exit`
+- chunk: `-`
+- configs_done: 469823586
 - best_exact: 6005  `nswc_x87cont_zzdr_store_mid15`
 - best_mid: 3336 / bar 3332  max_ulp=7  `R1m/z0/r0 /mask=0048000`
 - best_pins: 1
-- runtime_hours: 184.62 / 300
+- runtime_hours: 185.43 / 300
 - threads: 12
-- stop_requested: false
-- progress_keys: 10
+- stop_requested: true
+- progress_keys: 11
 
 Stop: `touch STOP` in this directory. Resume: same command.
 Alert files: `HIT_ALL_MID` (all mid rows exact), `HIT_PIN` (a pin went exact).
 
-NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvS
-last chunk next=0x3d09000 chunk_best_mid=2699
-
+campaign process exiting (time, STOP, or interrupt). resume = same command.
 
 # ERFC campaign REGION_MAP
 
@@ -35,8 +33,8 @@ First cube is R1m/z0/r0 = x87-DR + store uv + mid_cut 1.5 (assoc-race bar axes).
 | R1m/z1/r0 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=false uvS |
 | R1m/z1/r1 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=false uvC |
 | R1m/z1/r2 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=false uvR |
-| R1/z0/r0 | 0..0x4000000 | 0x3d09000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvS |
-| R1/z0/r1 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvC |
+| R1/z0/r0 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvS |
+| R1/z0/r1 | 0..0x4000000 | 0x000f000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvC |
 | R1/z0/r2 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvR |
 | R1/z1/r0 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=false uvS |
 | R1/z1/r1 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=false uvC |

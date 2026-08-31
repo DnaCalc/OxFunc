@@ -167,6 +167,14 @@ GitHub is the coordination/backup copy. At each cube or phase gate, copy
 the firehorse files into
 [`docs/function-lane/w109-erfc-campaign/`](w109-erfc-campaign/) and push.
 Do not rely on `smart-fuzzer/work/` (gitignored).
+Helper: `smart-fuzzer/tools/calc_graph_racer/snapshot-erfc-campaign.ps1`.
+
+### `R1/z0/r0` finished 2026-08-31 ~09:15 UTC
+
+Cube done (`0x4000000`). Scoreboard **unchanged**: 3336/7741 max 7 ULP,
+0 HIT_PIN / HIT_ALL_MID. The process had already opened `R1/z0/r1` at
+`0x000f000` (61,440 configs); STOP aborted that axis. Remaining R1 and
+R1p are skipped. Next process: `ONLY=R4,R2,R0aabb MAX_HOURS=300`.
 
 ## Binary
 

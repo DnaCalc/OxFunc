@@ -15,8 +15,8 @@ First cube is R1m/z0/r0 = x87-DR + store uv + mid_cut 1.5 (assoc-race bar axes).
 | R1m/z1/r0 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=false uvS |
 | R1m/z1/r1 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=false uvC |
 | R1m/z1/r2 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=false uvR |
-| R1/z0/r0 | 0..0x4000000 | 0x3d0a000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvS |
-| R1/z0/r1 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvC |
+| R1/z0/r0 | 0..0x4000000 | done | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvS |
+| R1/z0/r1 | 0..0x4000000 | 0x000f000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvC |
 | R1/z0/r2 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=true uvR |
 | R1/z1/r0 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=false uvS |
 | R1/z1/r1 | 0..0x4000000 | 0x0000000/0x4000000 | NSWC 26-bit PQR+t mask, PQR on [0.5,4), zz_dr=false uvC |

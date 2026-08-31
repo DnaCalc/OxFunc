@@ -2,7 +2,8 @@
   "progress": {
     "R0": 1,
     "R0c": 1,
-    "R1/z0/r0": 64016384,
+    "R1/z0/r0": 67108864,
+    "R1/z0/r1": 61440,
     "R1base": 1,
     "R1m/z0/r0": 67108864,
     "R1m/z0/r1": 67108864,
@@ -17,7 +18,7 @@
   "best_pins": 1,
   "best_label": "nswc_x87cont_zzdr_store_mid15",
   "best_mid_label": "R1m/z0/r0 /mask=0048000",
-  "configs_done": 466669666,
+  "configs_done": 469823586,
   "started_unix": 1787492954,
   "random_stream": 12648430
 }
