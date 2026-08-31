@@ -127,6 +127,13 @@ will want; date every entry.
   is cheap and exhaustive; the erf chain-floor question ("parked vs
   register-continuous") is exactly a mask question.
 - b9heldout (256 rows) remains the reserved unraced promotion gate.
+- **2026-08-30 (ERFC F-body firehorse):** the 96h store-mask campaign
+  exhausted all six R1m 26-bit PQR+t cubes (402,653,184 configs) on the
+  NSWC mid_cut=1.5 bar graph. Ceiling moved **3332 → 3336 / 7741**, still
+  max 7 ULP, still 0 pin hits. Extra R-Horner spills (`mask=0x0048000`)
+  are a +4-row wiggle, not the body. Constraint: missing per-stage stores
+  on published NSWC DERFC0 are not the identity. Remaining cubes (R1
+  mid_cut=4, R4 AA/BB, R2 Cody, R1p Pc53) were still in queue at the cap.
 
 ## Wall 4 — bgrat body op-graph
 

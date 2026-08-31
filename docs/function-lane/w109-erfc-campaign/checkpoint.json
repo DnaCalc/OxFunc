@@ -1,0 +1,23 @@
+{
+  "progress": {
+    "R0": 1,
+    "R0c": 1,
+    "R1/z0/r0": 64016384,
+    "R1base": 1,
+    "R1m/z0/r0": 67108864,
+    "R1m/z0/r1": 67108864,
+    "R1m/z0/r2": 67108864,
+    "R1m/z1/r0": 67108864,
+    "R1m/z1/r1": 67108864,
+    "R1m/z1/r2": 67108864
+  },
+  "best_exact": 6005,
+  "best_mid_exact": 3336,
+  "best_mid_max_ulp": 7,
+  "best_pins": 1,
+  "best_label": "nswc_x87cont_zzdr_store_mid15",
+  "best_mid_label": "R1m/z0/r0 /mask=0048000",
+  "configs_done": 466669666,
+  "started_unix": 1787492954,
+  "random_stream": 12648430
+}

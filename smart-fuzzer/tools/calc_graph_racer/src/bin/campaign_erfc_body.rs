@@ -4,6 +4,7 @@
 //!
 //! Usage:
 //!   campaign_erfc_body --dir G3-01-dist --out erfc-campaign --threads 12 --max-hours 96
+//!   campaign_erfc_body ... --only R4,R2
 
 use calc_graph_racer::eval::parse_bits_hex;
 use calc_graph_racer::score::{ulp_distance, WitnessArg, WitnessSet};
@@ -838,11 +839,27 @@ fn consider_mid(
     }
 }
 
-fn parse_args() -> (String, PathBuf, usize, f64) {
+fn parse_only(s: &str) -> Vec<String> {
+    s.split(',')
+        .map(|p| p.trim().to_string())
+        .filter(|p| !p.is_empty())
+        .collect()
+}
+
+fn job_selected(axis: &str, only: &[String]) -> bool {
+    if only.is_empty() {
+        return true;
+    }
+    only.iter()
+        .any(|p| axis == p || axis.starts_with(&format!("{p}/")))
+}
+
+fn parse_args() -> (String, PathBuf, usize, f64, Vec<String>) {
     let mut dir = "../../work/w109/G3-01-dist".to_string();
     let mut out = PathBuf::from("../../work/w109/erfc-campaign");
     let mut threads = 12usize;
     let mut max_hours = 96.0;
+    let mut only = Vec::new();
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         match a.as_str() {
@@ -850,11 +867,12 @@ fn parse_args() -> (String, PathBuf, usize, f64) {
             "--out" => out = PathBuf::from(it.next().expect("--out")),
             "--threads" => threads = it.next().unwrap().parse().unwrap(),
             "--max-hours" => max_hours = it.next().unwrap().parse().unwrap(),
+            "--only" => only = parse_only(&it.next().expect("--only")),
             _ => {}
         }
     }
     assert!(!dir.contains("heldout"));
-    (dir, out, threads, max_hours)
+    (dir, out, threads, max_hours, only)
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -1110,7 +1128,7 @@ fn implied_f_note(rows: &[(f64, u64)]) -> String {
 }
 
 fn main() {
-    let (dir, out, threads, max_hours) = parse_args();
+    let (dir, out, threads, max_hours, only) = parse_args();
     fs::create_dir_all(&out).unwrap();
     let _ = fs::write(out.join("MONITOR.md"), MONITOR);
     rayon::ThreadPoolBuilder::new()
@@ -1326,14 +1344,26 @@ fn main() {
         if timed_out(&ck, max_hours) || stop_requested(&out) {
             break;
         }
+        if !job_selected(&job.axis, &only) {
+            continue;
+        }
         if run_cube(&mut ck, &out, &jobs, job, &mid, max_hours, threads) {
             break;
         }
     }
 
-    let exhausted = jobs
+    let selected: Vec<&CubeJob> = jobs
+        .iter()
+        .filter(|j| job_selected(&j.axis, &only))
+        .collect();
+    let exhausted = selected
         .iter()
         .all(|j| ck.progress.get(&j.axis).copied().unwrap_or(0) >= j.mask_lim);
+    let only_note = if only.is_empty() {
+        String::new()
+    } else {
+        format!("--only {}.\n", only.join(","))
+    };
     write_status(
         &out,
         &ck,
@@ -1345,9 +1375,13 @@ fn main() {
         threads,
         stop_requested(&out),
         if exhausted {
-            "all named cubes finished before max-hours. not filling with random 16-bit (already enumerated). resume is a no-op unless you raise max-hours after adding regions."
+            format!(
+                "{only_note}selected cubes finished before max-hours. remaining unselected regions were not run."
+            )
         } else {
-            "campaign process exiting (time, STOP, or interrupt). resume = same command."
+            format!(
+                "{only_note}campaign process exiting (time, STOP, or interrupt). resume = same command."
+            )
         },
     );
 }

@@ -7,7 +7,12 @@ Lane: W109 ERFC.PRECISE body — store-site × arithmetic × staging tree
 
 ## Status axes
 
-- `execution_state`: `in_progress` (long run)
+- `execution_state`: `in_progress` (R1m exhausted; finishing `R1/z0/r0` then
+  `--only R4,R2`; remaining R1/R1p skipped; F-form pivot after that)
+- GitHub snapshot (coordination/backup):
+  [`w109-erfc-campaign/`](w109-erfc-campaign/) — copy STATUS, REGION_MAP,
+  checkpoint, leaders, pin-hits from firehorse at each cube/phase gate and
+  push. `smart-fuzzer/work/` is gitignored.
 - `scope_completeness`: `scope_partial`
 - `target_completeness`: `target_partial`
 - `integration_completeness`: `partial`
@@ -95,6 +100,74 @@ tmux session `oxfunc-erfc-campaign` (detached). Reattach:
 `ssh -t dna-firehorse tmux attach -t oxfunc-erfc-campaign`
 Detach: `Ctrl-b d`. Survives SSH drop. Reboot would kill it.
 
+A same-command resume after the 96h cap is a **no-op**: `started_unix` is
+frozen in `checkpoint.json`, so `timed_out` stays true at `--max-hours 96`.
+To continue remaining cubes, raise the cap (`MAX_HOURS=300` on 2026-08-30).
+Completed progress keys are still skipped.
+
+## 96-hour cap outcome (exited 2026-08-27 15:49 UTC)
+
+Recorded 2026-08-30 from the firehorse out dir. Snapshot copy:
+`smart-fuzzer/work/w109/erfc-campaign-96h-cap-20260827/` (gitignored).
+
+| | |
+|---|---|
+| wall clock | 96.00 / 96 |
+| configs | 432,595,042 |
+| HIT_ALL_MID / HIT_PIN | none |
+| best mid | **3336**/7741 max_ulp=7  `R1m/z0/r0 /mask=0048000` |
+| named mid bar | 3332/7741 `nswc_x87cont_zzdr_store_mid15` |
+| best all-band | 6005 `nswc_x87cont_zzdr_store_mid15` |
+| pins exact on leader | 0 (`best_pins=1` is the R0c fluke `R0c/R[1]/up` at 2850/7741) |
+
+Finished cubes: R0, R0c, R1base, and **all six** R1m 26-bit PQR+t axes
+(mid_cut=1.5 × zz_dr × {uvS,uvC,uvR}). The only masks that beat the bar
+appeared in the first minutes of `R1m/z0/r0`:
+
+| mask | bits | mid exact |
+|---|---|---|
+| `0x0020000` | bit 17, R Horner stage 3 | 3335 |
+| `0x0048000` | bits 15+18, R Horner stages 1 and 4 | **3336** |
+
+That is a **+4 row** store-site wiggle on the same 7 ULP ceiling, not a
+body. Exhausting the other five R1m cubes did not move the scoreboard.
+Do not land.
+
+Left at cap, still in the queue:
+
+| id | next at cap | note |
+|---|---|---|
+| R1/z0/r0 | 0x1c8e000 / 0x4000000 (~44.6%) | PQR on `[0.5,4)`, zz_dr uvS |
+| R1/z0/r1 … R1/z1/r2 | 0 | five untouched 26-bit cubes |
+| R4/* | 0 | six 19-bit AA/BB cubes |
+| R2/* | 0 | six 16-bit Cody cubes |
+| R1p/mid15 | 0 | one Pc53 26-bit cube |
+
+At the observed ~4.5e6 configs/h, the leftover is about 98 wall hours.
+2026-08-30 resume uses `MAX_HOURS=300` (~124 h remaining from then) so
+the leftover cubes can actually run. The process was not running after
+the cap; tmux session `oxfunc-erfc-campaign` had exited.
+
+## 2026-08-31 redirect: finish `R1/z0/r0`, then R4+R2 only
+
+R1m (all six 26-bit mid_cut=1.5 axes) is exhausted: +4 mid rows, still 7 ULP,
+0 pin identities. Remaining R1 26-bit cubes are the same PQR F on a worse
+cut. After the in-flight `R1/z0/r0` cube finishes, skip the other five R1
+axes and R1p. Run:
+
+```text
+ONLY=R4,R2 MAX_HOURS=300 ./run-erfc-campaign.sh
+```
+
+`--only` is a prefix filter (`R4` → all `R4/…` jobs). Then pivot off
+NSWC PQR store-masks: AA/BB±E last-bit poke, then F-form race against
+implied `Q/excel_exp(−z²)`.
+
+GitHub is the coordination/backup copy. At each cube or phase gate, copy
+the firehorse files into
+[`docs/function-lane/w109-erfc-campaign/`](w109-erfc-campaign/) and push.
+Do not rely on `smart-fuzzer/work/` (gitignored).
+
 ## Binary
 
 `smart-fuzzer/tools/calc_graph_racer` bin `campaign_erfc_body`
@@ -103,5 +176,9 @@ Detach: `Ctrl-b d`. Survives SSH drop. Reboot would kill it.
 cargo run --release --bin campaign_erfc_body -- \
   --dir ../../work/w109/G3-01-dist \
   --out ../../work/w109/erfc-campaign \
-  --threads 12 --max-hours 96
+  --threads 12 --max-hours 96 \
+  --only R4,R2
 ```
+
+`ONLY=R4,R2` is the env form used by `run-erfc-campaign.sh`. The script
+always rebuilds so a pulled `--only` binary is what runs.

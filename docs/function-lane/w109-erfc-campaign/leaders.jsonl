@@ -1,0 +1,9 @@
+{"exact":3406,"max_ulp":0,"pins":0,"label":"libm::erfc","detail":"## R0 named F (full discovery, not a landing)\n\n- libm::erfc: small 1318/1864 mid 1976/7741 tail 112/5951 pins 0 max_ulp mid/tail 12/492\n"}
+{"exact":1976,"max_ulp":12,"pins":0,"label":"libm::erfc","detail":"libm::erfc"}
+{"exact":5373,"max_ulp":0,"pins":0,"label":"nswc_derfc0_native","detail":"## R0 named F (full discovery, not a landing)\n\n- libm::erfc: small 1318/1864 mid 1976/7741 tail 112/5951 pins 0 max_ulp mid/tail 12/492\n- production: small 1318/1864 mid 1587/7741 tail 119/5951 pins 0 max_ulp mid/tail 37/488\n- nswc_derfc0_native: small 1370/1864 mid 2658/7741 tail 1345/5951 pins 0 max_ulp mid/tail 7/184\n"}
+{"exact":2658,"max_ulp":7,"pins":0,"label":"nswc_derfc0_native","detail":"nswc_derfc0_native"}
+{"exact":6005,"max_ulp":0,"pins":0,"label":"nswc_x87cont_zzdr_store_mid15","detail":"nswc_x87cont_zzdr_store_mid15"}
+{"exact":3332,"max_ulp":7,"pins":0,"label":"nswc_x87cont_zzdr_store_mid15","detail":"nswc_x87cont_zzdr_store_mid15"}
+{"exact":2850,"max_ulp":7,"pins":1,"label":"R0c/R[1]/up","detail":"pin-best"}
+{"exact":3335,"max_ulp":7,"pins":0,"label":"R1m/z0/r0 /mask=0020000","detail":"NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=true uvS"}
+{"exact":3336,"max_ulp":7,"pins":0,"label":"R1m/z0/r0 /mask=0048000","detail":"NSWC 26-bit PQR+t mask, mid_cut=1.5 AA/BB above, zz_dr=true uvS"}

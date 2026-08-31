@@ -131,3 +131,14 @@ tests 1–3 executed the same day; see
 | 3 branch-190 extra RN53 stores | `check_erf190` ceiling 850/1508 P-side; inner A vs B tied; leftover comb. No new constant. |
 
 Body remains unidentified. Do not land.
+
+### Firehorse store-mask cubes (96h cap, 2026-08-27)
+
+Full note: [`W109_ERFC_CAMPAIGN_FIREHORSE_20260823.md`](W109_ERFC_CAMPAIGN_FIREHORSE_20260823.md).
+
+All six R1m 26-bit PQR+t cubes (mid_cut=1.5, every zz_dr × uv association)
+finished. Best mid **3336**/7741 max 7 ULP (`R1m/z0/r0 mask=0x0048000`),
++4 over the named bar, pins still inexact. Remaining R1 26-bit axes (worse
+cut) are skipped after the in-flight `R1/z0/r0` cube. Next: `--only R4,R2`
+(AA/BB and Cody store-masks), then pivot to F-form / AA/BB last-bit.
+Still not an identification. Do not land.
