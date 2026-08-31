@@ -674,6 +674,55 @@ fn main() {
             d[i] = CODY_D[i];
         }
     }
+
+    println!();
+    println!("implied-F form race (z>=0.5): F_or = Q / excel_exp(-z^2)");
+    println!(
+        "{:<24} {:>22} {:>22}",
+        "F graph", "mid [0.5,4)", "tail z>=4"
+    );
+    let f_graphs: [(&str, fn(f64) -> f64); 4] = [
+        ("nswc_derfc0", nswc_derfc0),
+        ("cody_erfcx", cody_erfcx_large),
+        ("libm_erfc/w", |z| {
+            let w = excel_exp(-(z * z));
+            if w == 0.0 {
+                f64::NAN
+            } else {
+                libm::erfc(z) / w
+            }
+        }),
+        ("RPINV/z", |z| 0.5641895835477563 / z),
+    ];
+    for (name, eval) in f_graphs {
+        let mut mid_a = Acc::new();
+        let mut tail_a = Acc::new();
+        for &(z, qbits) in &rows {
+            if z < 0.5 {
+                continue;
+            }
+            let w = excel_exp(-(z * z));
+            if w == 0.0 {
+                continue;
+            }
+            let f_or = f64::from_bits(qbits) / w;
+            if !f_or.is_finite() {
+                continue;
+            }
+            let d = ulp_distance(eval(z), f_or).unwrap_or(u64::MAX);
+            if z < 4.0 {
+                mid_a.add(d);
+            } else {
+                tail_a.add(d);
+            }
+        }
+        println!(
+            "{:<24} {:>22} {:>22}",
+            name,
+            fmt_acc(&mid_a),
+            fmt_acc(&tail_a)
+        );
+    }
 }
 
 fn score_mid(mid: &[(f64, u64)], c: &[f64; 9], d: &[f64; 8]) -> usize {

@@ -58,6 +58,22 @@ Cody 1969 / SPECFUN CALERF (netlib specfun/erf). Unsplit means
    graph. Closest: NSWC at z=0.75 is 1 ULP; z=5 is 5 ULP for every
    unsplit family.
 
+## Implied-F form race (2026-08-31)
+
+After the firehorse store-mask cubes, `race_erfc_named_f` scores
+`F_or = Q / excel_exp(−z²)` on z≥0.5 against public F graphs (not Q).
+
+| F graph | mid [0.5,4) | tail z≥4 |
+|---|---|---|
+| NSWC DERFC0 | 2388/7741 max 7 | 1243/5946 (flush rows explode max ULP) |
+| Cody erfcx | 2188/7741 max 7 | 1269/5946 |
+| `libm::erfc / w` | 2164/7741 max 10 | 105/5946 |
+| `1/√π / z` | 0/7741 | 0/5946 |
+
+NSWC is still the named F leader and still not an identity. Tail exact
+counts are not comparable until flush/subnormal rows are split out.
+This is the pivot instrument, not a landing.
+
 ## Test 1 — NSWC Horner association / store-site (2026-08-23)
 
 Racer: `race_erfc_nswc_assoc.rs`. Same 15,556-row corpus. Coefficients
