@@ -186,6 +186,9 @@ will want; date every entry.
 - **2026-09-01 MATH77 F_or:** Chebyshev F leads named tail (1437/5946) and
   all-exact (4260), still not an identity. Mid still x87-NSWC (2939).
   n21 cube done; n24 Gautschi in progress at named-plateau chunk_best.
+- **2026-09-01 MATH77 F correction:** the 1437/4260 scores used MATH77 Q
+  over `w_rn53` (mixed exp). True F=`derfc1/y` is mid 2665 tail 1261, behind
+  x87 NSWC mid and x87 CF tail. Retract the Chebyshev-leader claim.
 - **2026-09-01 firehorse cube gate:** `CF/gaut/n12b2` finished 2^24 with
   no new HIT. Leaders still R0 piecewise (mid 2416 `piece/cut=1.6`, tail
   1294 `piece/cut=5.6`). Region now `CF/as714/n12b2` (~20%). Lentz still

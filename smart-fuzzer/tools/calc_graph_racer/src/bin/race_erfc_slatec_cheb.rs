@@ -9,7 +9,9 @@
 use calc_graph_racer::erfc_f_packets as fpk;
 use calc_graph_racer::eval::parse_bits_hex;
 use calc_graph_racer::score::{ulp_distance, WitnessArg, WitnessSet};
-use oxfunc_core::excel_numeric::research::excel_exp;
+use oxfunc_core::excel_numeric::research::{
+    excel_exp, ext_add, ext_from_f64, ext_mul, ext_sub, ext_to_f64, CW_PC64_RN,
+};
 use std::collections::BTreeMap;
 
 const FRAC_1_SQRT_2: f64 = f64::from_bits(0x3fe6a09e667f3bcd);
@@ -236,6 +238,62 @@ fn derfc1(y: f64, nterc2: usize, nterfc: usize) -> f64 {
 
 fn derfe1(y: f64) -> f64 {
     horner(&PS, y) / horner(&QS, y)
+}
+
+fn dcsevl_x87(x: f64, cs: &[f64], n: usize) -> f64 {
+    let twox = ext_add(&ext_from_f64(x), &ext_from_f64(x), CW_PC64_RN);
+    let mut b2 = ext_from_f64(0.0);
+    let mut b1 = ext_from_f64(0.0);
+    let mut b0 = ext_from_f64(0.0);
+    for i in (0..n).rev() {
+        b2 = b1;
+        b1 = b0;
+        b0 = ext_add(
+            &ext_sub(&ext_mul(&twox, &b1, CW_PC64_RN), &b2, CW_PC64_RN),
+            &ext_from_f64(cs[i]),
+            CW_PC64_RN,
+        );
+    }
+    ext_to_f64(
+        &ext_mul(
+            &ext_from_f64(0.5),
+            &ext_sub(&b0, &b2, CW_PC64_RN),
+            CW_PC64_RN,
+        ),
+        CW_PC64_RN,
+    )
+}
+
+fn derfc1_x87(y: f64, nterc2: usize, nterfc: usize) -> f64 {
+    let ysq = y * y;
+    if ysq <= 4.0 {
+        0.5 + dcsevl_x87((8.0 / ysq - 5.0) / 3.0, &ERC2CS, nterc2)
+    } else {
+        0.5 + dcsevl_x87(8.0 / ysq - 1.0, &ERFCCS, nterfc)
+    }
+}
+
+/// Implied Chebyshev F (no exp): MATH77 erfcx factor.
+fn math77_f(y: f64, nterc2: usize, nterfc: usize) -> f64 {
+    let y = y.abs();
+    if y <= 0.5 {
+        f64::NAN
+    } else if y <= 1.0 {
+        derfe1(y)
+    } else {
+        derfc1(y, nterc2, nterfc) / y
+    }
+}
+
+fn math77_f_x87(y: f64, nterc2: usize, nterfc: usize) -> f64 {
+    let y = y.abs();
+    if y <= 0.5 {
+        f64::NAN
+    } else if y <= 1.0 {
+        derfe1(y)
+    } else {
+        derfc1_x87(y, nterc2, nterfc) / y
+    }
 }
 
 fn slatec_erfc(z: f64, nterf: usize, nterc2: usize, nterfc: usize) -> f64 {
@@ -472,4 +530,14 @@ fn main() {
         }
     }
     println!("  best NSWC/MATH77 cut={:.1} all_exact={}", best.0, best.1);
+
+    println!("\n## direct Chebyshev F (derfc1/y, no exp in F)");
+    let (m, t) = fpk::score_f(&qrows, |z| math77_f(z, nterc2, nterfc));
+    println!("  {:<22} mid {} tail {}", "math77_f native", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let (m, t) = fpk::score_f(&qrows, |z| math77_f_x87(z, nterc2, nterfc));
+    println!("  {:<22} mid {} tail {}", "math77_f x87 dcsevl", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let (m, t) = fpk::score_f(&direct, |z| math77_f(z, nterc2, nterfc));
+    println!("  {:<22} mid {} tail {}", "direct math77_f", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let (m, t) = fpk::score_f(&direct, |z| math77_f_x87(z, nterc2, nterfc));
+    println!("  {:<22} mid {} tail {}", "direct math77_f x87", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
 }
