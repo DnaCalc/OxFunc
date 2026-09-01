@@ -174,6 +174,10 @@ will want; date every entry.
 - **2026-09-01 selector:** native-vs-x87 PQR union 1803/3475 is not a z/t
   LSB or z-cut rule; always-x87 (1318) beats every cheap predicate.
   AABB neither still 2304/4266. Do not land a per-row rounding pick.
+- **2026-09-01 direct leftover:** merged leftover is implied-Q. Direct mid
+  misses vs x87-cut are 144 rows, max 4 ULP; 63 have no named exact.
+  Pin z=2.125 is one of two 4-ULP direct rows. The 7-ULP merged ceiling
+  is not an ERFC.PRECISE wall.
 - **2026-09-01 firehorse cube gate:** `CF/gaut/n12b2` finished 2^24 with
   no new HIT. Leaders still R0 piecewise (mid 2416 `piece/cut=1.6`, tail
   1294 `piece/cut=5.6`). Region now `CF/as714/n12b2` (~20%). Lentz still
