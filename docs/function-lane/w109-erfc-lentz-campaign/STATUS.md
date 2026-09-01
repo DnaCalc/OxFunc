@@ -1,11 +1,11 @@
 # Lentz F campaign STATUS
 
 - region: `evenodd/as714/n12b2`
-- chunk: `0903000`
-- configs_done: 9449472
+- chunk: `0d65000`
+- configs_done: 14045184
 - best_mid: 2389 / bar 2389 `nswc_derfc0`
 - best_tail: 1288 / bar 1283 `evenodd/as714/n12b2 /mask=0000000`
-- runtime_hours: 16.06 / 96
+- runtime_hours: 24.07 / 96
 - threads: 4
 - stop_requested: false
 
@@ -16,7 +16,7 @@ chunk_best_tail=1288
 
 | id | space | next | note |
 |---|---|---|---|
-| evenodd/as714/n12b2 | 0..0x1000000 | 0x0903000/0x1000000 | x87 even-odd as714 n=12 pairs 24-bit store inner/outer |
+| evenodd/as714/n12b2 | 0..0x1000000 | 0x0d65000/0x1000000 | x87 even-odd as714 n=12 pairs 24-bit store inner/outer |
 | evenodd/as714/n16 | 0..0x0010000 | 0x0000000/0x0010000 | x87 even-odd as714 n=16 pairs 16-bit store inner/outer |
 | lentz/gaut/n12b2 | 0..0x1000000 | 0x0000000/0x1000000 | x87 lentz gaut n=12 24-bit store C/D after step |
 | mlentz/gaut/n12b2 | 0..0x1000000 | 0x0000000/0x1000000 | x87 mlentz gaut n=12 24-bit store C/D after step |
