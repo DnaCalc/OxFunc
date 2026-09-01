@@ -171,6 +171,9 @@ will want; date every entry.
   exact (rounding trade, union 3880/7741). 2164 leftover have no named
   exact. t-formula does not hit leftover PQR. `CF/gaut/n12b2` cube
   finished with no leader move.
+- **2026-09-01 selector:** native-vs-x87 PQR union 1803/3475 is not a z/t
+  LSB or z-cut rule; always-x87 (1318) beats every cheap predicate.
+  AABB neither still 2304/4266. Do not land a per-row rounding pick.
 - **2026-09-01 firehorse cube gate:** `CF/gaut/n12b2` finished 2^24 with
   no new HIT. Leaders still R0 piecewise (mid 2416 `piece/cut=1.6`, tail
   1294 `piece/cut=5.6`). Region now `CF/as714/n12b2` (~20%). Lentz still
