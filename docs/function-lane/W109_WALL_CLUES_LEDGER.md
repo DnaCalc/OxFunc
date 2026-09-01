@@ -163,6 +163,10 @@ will want; date every entry.
   Best constraint: x87 NSWC PQR@1.5/AABB@4 on mid (2939) plus x87 CCDD
   until 6.2 then x87 even-odd on tail (1298) → **4237** all-exact. Not an
   identity; pins still inexact. x87 CCDD-alone loses to native CCDD.
+- **2026-09-01 sites:** on that mid graph, every 1-ULP leftover is
+  `nextafter` of F. PQR named-site cube best is mask 0; AABB +3; R-step
+  +5. Direct pin z=2.125 still 4 ULP. Do not spend more named-store bits
+  on this graph.
 
 ## Wall 4 — bgrat body op-graph
 
