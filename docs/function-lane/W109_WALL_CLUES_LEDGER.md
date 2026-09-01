@@ -183,6 +183,9 @@ will want; date every entry.
 - **2026-09-01 AABB E0 ±1:** E0−1 improves pins 2.125/1.875 but loses 25
   direct mid exacts. 3.75 ±1 is the same trade. n20/n21 CF cubes finished
   on the named x87 plateau; no HIT.
+- **2026-09-01 MATH77 F_or:** Chebyshev F leads named tail (1437/5946) and
+  all-exact (4260), still not an identity. Mid still x87-NSWC (2939).
+  n21 cube done; n24 Gautschi in progress at named-plateau chunk_best.
 - **2026-09-01 firehorse cube gate:** `CF/gaut/n12b2` finished 2^24 with
   no new HIT. Leaders still R0 piecewise (mid 2416 `piece/cut=1.6`, tail
   1294 `piece/cut=5.6`). Region now `CF/as714/n12b2` (~20%). Lentz still
