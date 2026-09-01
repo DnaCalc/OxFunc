@@ -320,6 +320,60 @@ fn main() {
     }
     println!("  best Cody-then-x87NSWC cut={:.1} all_exact={}", best.0, best.1);
 
+    println!("\n## piecewise Cody x87 / x87-NSWC 1.5/4 on direct");
+    let mut best2 = (0.0, 0usize);
+    for k in 5..=40 {
+        let cut = k as f64 * 0.1;
+        let (m, t) = f::score_f(&direct, |z| {
+            if z < cut {
+                cody_x87(z)
+            } else {
+                nswc_x87_15_4(z)
+            }
+        });
+        let all = m.exact + t.exact;
+        if all > best2.1 {
+            best2 = (cut, all);
+            println!(
+                "  cut={cut:.1} mid {} tail {} all={all}",
+                f::fmt_acc(&m),
+                f::fmt_acc(&t)
+            );
+        }
+    }
+    println!(
+        "  best Codyx87-then-x87NSWC cut={:.1} all_exact={}",
+        best2.0, best2.1
+    );
+
+    println!("\n## union exact (per-row better of Cody x87 vs x87-NSWC) direct mid");
+    let mut u_both = 0usize;
+    let mut u_cody = 0usize;
+    let mut u_nswc = 0usize;
+    let mut u_neither = 0usize;
+    let mut n_mid = 0usize;
+    for &(z, q) in &direct {
+        if z < 0.5 || z >= 4.0 {
+            continue;
+        }
+        let Some(fo) = f::f_or(z, q) else {
+            continue;
+        };
+        n_mid += 1;
+        let dc = ulp_distance(cody_x87(z), fo).unwrap_or(u64::MAX);
+        let dn = ulp_distance(nswc_x87_15_4(z), fo).unwrap_or(u64::MAX);
+        match (dc == 0, dn == 0) {
+            (true, true) => u_both += 1,
+            (true, false) => u_cody += 1,
+            (false, true) => u_nswc += 1,
+            (false, false) => u_neither += 1,
+        }
+    }
+    println!(
+        "  both={u_both} cody-only={u_cody} nswc-only={u_nswc} neither={u_neither} n={n_mid} union={}",
+        u_both + u_cody + u_nswc
+    );
+
     println!("\n## hard direct mid misses vs x87-NSWC 1.5/4 with no named exact");
     let named: [(&str, fn(f64) -> f64); 6] = [
         ("nswc", f::nswc_derfc0),
