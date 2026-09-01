@@ -167,6 +167,12 @@ will want; date every entry.
   `nextafter` of F. PQR named-site cube best is mask 0; AABB +3; R-step
   +5. Direct pin z=2.125 still 4 ULP. Do not spend more named-store bits
   on this graph.
+- **2026-09-01 firehorse cube gate:** `CF/gaut/n12b2` finished 2^24 with
+  no new HIT. Leaders still R0 piecewise (mid 2416 `piece/cut=1.6`, tail
+  1294 `piece/cut=5.6`). Region now `CF/as714/n12b2` (~20%). Lentz still
+  `evenodd/as714/n12b2` (~22%), HIT_TAIL 1288 at mask=0. Constraint, not
+  an identity. Snapshots in `w109-erfc-fbody-campaign/` and
+  `w109-erfc-lentz-campaign/`.
 
 ## Wall 4 — bgrat body op-graph
 
