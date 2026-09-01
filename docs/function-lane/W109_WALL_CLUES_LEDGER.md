@@ -197,6 +197,10 @@ will want; date every entry.
   `CF/gaut/n21`. No new HIT; leaders still 2416/1294. Region now
   `CF/as714/n21` (~83%). Lentz still `evenodd/as714/n12b2` (~49%),
   HIT_TAIL 1288 at mask=0. Next fbody cubes are the two n24 2^24 stores.
+- **2026-09-01 firehorse cube gate 4:** finished `CF/as714/n21`. No new
+  HIT; leaders still 2416/1294. Region now `CF/gaut/n24` (~22%). Lentz
+  still `evenodd/as714/n12b2` (~56%), HIT_TAIL 1288 at mask=0. Remaining
+  fbody: `CF/gaut/n24` then `CF/as714/n24`.
 
 ## Wall 4 — bgrat body op-graph
 

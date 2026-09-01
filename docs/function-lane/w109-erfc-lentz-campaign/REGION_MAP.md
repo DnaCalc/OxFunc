@@ -2,7 +2,7 @@
 
 | id | space | next | note |
 |---|---|---|---|
-| evenodd/as714/n12b2 | 0..0x1000000 | 0x07e7000/0x1000000 | x87 even-odd as714 n=12 pairs 24-bit store inner/outer |
+| evenodd/as714/n12b2 | 0..0x1000000 | 0x0904000/0x1000000 | x87 even-odd as714 n=12 pairs 24-bit store inner/outer |
 | evenodd/as714/n16 | 0..0x0010000 | 0x0000000/0x0010000 | x87 even-odd as714 n=16 pairs 16-bit store inner/outer |
 | lentz/gaut/n12b2 | 0..0x1000000 | 0x0000000/0x1000000 | x87 lentz gaut n=12 24-bit store C/D after step |
 | mlentz/gaut/n12b2 | 0..0x1000000 | 0x0000000/0x1000000 | x87 mlentz gaut n=12 24-bit store C/D after step |

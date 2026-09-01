@@ -9,8 +9,8 @@
 | CF/gaut/n20 | 0..0x0100000 | done | x87 CF gaut n=20 20-bit store-after-step |
 | CF/as714/n20 | 0..0x0100000 | done | x87 CF as714 n=20 20-bit store-after-step |
 | CF/gaut/n21 | 0..0x0200000 | done | x87 CF gaut n=21 21-bit store-after-step |
-| CF/as714/n21 | 0..0x0200000 | 0x01ab000/0x0200000 | x87 CF as714 n=21 21-bit store-after-step |
-| CF/gaut/n24 | 0..0x1000000 | 0x0000000/0x1000000 | x87 CF gaut n=24 24-bit store-after-step |
+| CF/as714/n21 | 0..0x0200000 | done | x87 CF as714 n=21 21-bit store-after-step |
+| CF/gaut/n24 | 0..0x1000000 | 0x0397000/0x1000000 | x87 CF gaut n=24 24-bit store-after-step |
 | CF/as714/n24 | 0..0x1000000 | 0x0000000/0x1000000 | x87 CF as714 n=24 24-bit store-after-step |
 
 best_mid 2416 / bar 2389 `piece/cut=1.6`

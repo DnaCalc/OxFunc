@@ -1,16 +1,16 @@
 # F-body campaign STATUS
 
-- region: `CF/as714/n21`
-- chunk: `01aa000`
-- configs_done: 39624704
+- region: `CF/gaut/n24`
+- chunk: `0397000`
+- configs_done: 43741184
 - best_mid: 2416 / bar 2389 `piece/cut=1.6`
 - best_tail: 1294 / bar 1283 `piece/cut=5.6`
-- runtime_hours: 14.42 / 96
+- runtime_hours: 16.42 / 96
 - threads: 12
 - stop_requested: false
 
-x87 CF as714 n=21 21-bit store-after-step
-chunk_best_tail=1287
+x87 CF gaut n=24 24-bit store-after-step
+chunk_best_tail=1258
 
 # F-body campaign REGION_MAP
 
@@ -23,8 +23,8 @@ chunk_best_tail=1287
 | CF/gaut/n20 | 0..0x0100000 | done | x87 CF gaut n=20 20-bit store-after-step |
 | CF/as714/n20 | 0..0x0100000 | done | x87 CF as714 n=20 20-bit store-after-step |
 | CF/gaut/n21 | 0..0x0200000 | done | x87 CF gaut n=21 21-bit store-after-step |
-| CF/as714/n21 | 0..0x0200000 | 0x01aa000/0x0200000 | x87 CF as714 n=21 21-bit store-after-step |
-| CF/gaut/n24 | 0..0x1000000 | 0x0000000/0x1000000 | x87 CF gaut n=24 24-bit store-after-step |
+| CF/as714/n21 | 0..0x0200000 | done | x87 CF as714 n=21 21-bit store-after-step |
+| CF/gaut/n24 | 0..0x1000000 | 0x0397000/0x1000000 | x87 CF gaut n=24 24-bit store-after-step |
 | CF/as714/n24 | 0..0x1000000 | 0x0000000/0x1000000 | x87 CF as714 n=24 24-bit store-after-step |
 
 best_mid 2416 / bar 2389 `piece/cut=1.6`
