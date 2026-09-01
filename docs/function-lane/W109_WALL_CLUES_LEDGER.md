@@ -184,6 +184,10 @@ will want; date every entry.
   `evenodd/as714/n12b2` (~22%), HIT_TAIL 1288 at mask=0. Constraint, not
   an identity. Snapshots in `w109-erfc-fbody-campaign/` and
   `w109-erfc-lentz-campaign/`.
+- **2026-09-01 firehorse cube gate 2:** also finished `CF/as714/n12b2`,
+  `CF/gaut/n16`, `CF/as714/n16`, `CF/gaut/n20`. No new HIT; leaders still
+  2416/1294. Region now `CF/as714/n20` (~71%). Lentz still
+  `evenodd/as714/n12b2` (~43%), HIT_TAIL 1288 at mask=0.
 
 ## Wall 4 — bgrat body op-graph
 
