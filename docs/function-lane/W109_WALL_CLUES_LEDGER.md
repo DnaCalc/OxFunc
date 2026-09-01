@@ -158,6 +158,11 @@ will want; date every entry.
   all-exact), not an identity. CF `n*` is spread, not a truncation law.
   Firehorse: backward-CF store-masks (12 vCPU) plus even-odd/Lentz C/D
   store-masks (4 vCPU). No more NSWC PQR 26-bit cubes.
+- **2026-09-01 compose:** x87 A&S CF (backward or even-odd) is +5 tail vs
+  native at the n=24 plateau (1288). Extra exacts are implied-Q only.
+  Best constraint: x87 NSWC PQR@1.5/AABB@4 on mid (2939) plus x87 CCDD
+  until 6.2 then x87 even-odd on tail (1298) → **4237** all-exact. Not an
+  identity; pins still inexact. x87 CCDD-alone loses to native CCDD.
 
 ## Wall 4 — bgrat body op-graph
 

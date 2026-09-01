@@ -3,7 +3,9 @@
 
 use crate::eval::parse_bits_hex;
 use crate::score::{ulp_distance, WitnessArg, WitnessSet};
-use oxfunc_core::excel_numeric::research::{excel_exp, x87_mul};
+use oxfunc_core::excel_numeric::research::{
+    excel_exp, ext_add, ext_div, ext_from_f64, ext_mul, ext_to_f64, x87_mul, CW_PC64_RN,
+};
 use std::collections::BTreeMap;
 use std::fs;
 
@@ -681,4 +683,38 @@ pub fn nswc_t_divfirst(x: f64) -> f64 {
 pub fn nswc_t_scaled(x: f64) -> f64 {
     let u = x / 3.75;
     (u - 1.0) / (u + 1.0)
+}
+
+pub fn cf_as714_x87_n(x: f64, nterms: u32) -> f64 {
+    let one = ext_from_f64(1.0);
+    let a_scale = ext_from_f64(0.5 / (x * x));
+    let mut den = one;
+    for n in (1..=nterms).rev() {
+        let a = ext_mul(&ext_from_f64(n as f64), &a_scale, CW_PC64_RN);
+        den = ext_add(&one, &ext_div(&a, &den, CW_PC64_RN), CW_PC64_RN);
+    }
+    RPINV / x / ext_to_f64(&den, CW_PC64_RN)
+}
+
+pub fn cf_gautschi_x87_n(x: f64, nterms: u32) -> f64 {
+    let xe = ext_from_f64(x);
+    let mut acc = xe;
+    for k in (1..=nterms).rev() {
+        let hn = ext_from_f64(k as f64 * 0.5);
+        acc = ext_add(&xe, &ext_div(&hn, &acc, CW_PC64_RN), CW_PC64_RN);
+    }
+    RPINV / ext_to_f64(&acc, CW_PC64_RN)
+}
+
+pub fn cf_evenodd_as714_x87_n(x: f64, npairs: u32) -> f64 {
+    let one = ext_from_f64(1.0);
+    let a_scale = ext_from_f64(0.5 / (x * x));
+    let mut den = one;
+    for k in (1..=npairs).rev() {
+        let a_even = ext_mul(&ext_from_f64((2 * k) as f64), &a_scale, CW_PC64_RN);
+        let a_odd = ext_mul(&ext_from_f64((2 * k - 1) as f64), &a_scale, CW_PC64_RN);
+        let inner = ext_add(&one, &ext_div(&a_even, &den, CW_PC64_RN), CW_PC64_RN);
+        den = ext_add(&one, &ext_div(&a_odd, &inner, CW_PC64_RN), CW_PC64_RN);
+    }
+    RPINV / x / ext_to_f64(&den, CW_PC64_RN)
 }
