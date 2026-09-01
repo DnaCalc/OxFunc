@@ -6,6 +6,7 @@
 //! Usage (from this crate):
 //!   cargo run --release --bin race_erfc_slatec_cheb -- ../../work/w109/G3-01-dist
 
+use calc_graph_racer::erfc_f_packets as fpk;
 use calc_graph_racer::eval::parse_bits_hex;
 use calc_graph_racer::score::{ulp_distance, WitnessArg, WitnessSet};
 use oxfunc_core::excel_numeric::research::excel_exp;
@@ -421,4 +422,54 @@ fn main() {
             );
         }
     }
+
+    println!("\n## F_or = Q/w_rn53 (implied F, z>=0.5)");
+    let qrows = fpk::load_q_rows(&dir);
+    let f_of = |z: f64, q: f64| {
+        let w = fpk::w_rn53(z);
+        if w == 0.0 || !w.is_finite() {
+            f64::NAN
+        } else {
+            q / w
+        }
+    };
+    let (m, t) = fpk::score_f(&qrows, |z| f_of(z, slatec_erfc(z, nterf, nterc2, nterfc)));
+    println!("  {:<22} mid {} tail {}", "slatec_cheb F", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let (m, t) = fpk::score_f(&qrows, |z| f_of(z, math77_ieee_erfc(z, nterf, nterc2, nterfc)));
+    println!("  {:<22} mid {} tail {}", "math77_ieee F", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let (m, t) = fpk::score_f(&qrows, |z| f_of(z, slatec_erfc(z, 12, 24, 25)));
+    println!("  {:<22} mid {} tail {}", "slatec_12_24_25 F", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let direct: Vec<(f64, u64)> = fpk::load_q_rows_tagged(&dir)
+        .into_iter()
+        .filter(|r| r.direct)
+        .map(|r| (r.z, r.qbits))
+        .collect();
+    println!("direct-only:");
+    let (m, t) = fpk::score_f(&direct, |z| f_of(z, slatec_erfc(z, nterf, nterc2, nterfc)));
+    println!("  {:<22} mid {} tail {}", "slatec_cheb F", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+    let (m, t) = fpk::score_f(&direct, |z| f_of(z, math77_ieee_erfc(z, nterf, nterc2, nterfc)));
+    println!("  {:<22} mid {} tail {}", "math77_ieee F", fpk::fmt_acc(&m), fpk::fmt_acc(&t));
+
+    println!("\n## piecewise native NSWC / MATH77 F");
+    let mut best = (0.0, 0usize);
+    for k in 10..=80 {
+        let cut = k as f64 * 0.1;
+        let (m, t) = fpk::score_f(&qrows, |z| {
+            if z < cut {
+                fpk::nswc_derfc0(z)
+            } else {
+                f_of(z, math77_ieee_erfc(z, nterf, nterc2, nterfc))
+            }
+        });
+        let all = m.exact + t.exact;
+        if all > best.1 {
+            best = (cut, all);
+            println!(
+                "  cut={cut:.1} mid {} tail {} all={all}",
+                fpk::fmt_acc(&m),
+                fpk::fmt_acc(&t)
+            );
+        }
+    }
+    println!("  best NSWC/MATH77 cut={:.1} all_exact={}", best.0, best.1);
 }
