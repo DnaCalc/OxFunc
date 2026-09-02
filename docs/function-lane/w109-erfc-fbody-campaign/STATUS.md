@@ -1,11 +1,11 @@
 # F-body campaign STATUS
 
 - region: `CF/as714/n24`
-- chunk: `02a3000`
-- configs_done: 59518976
+- chunk: `0bf4000`
+- configs_done: 69287936
 - best_mid: 2416 / bar 2389 `piece/cut=1.6`
 - best_tail: 1294 / bar 1283 `piece/cut=5.6`
-- runtime_hours: 24.43 / 96
+- runtime_hours: 30.42 / 96
 - threads: 12
 - stop_requested: false
 
@@ -25,7 +25,7 @@ chunk_best_tail=1288
 | CF/gaut/n21 | 0..0x0200000 | done | x87 CF gaut n=21 21-bit store-after-step |
 | CF/as714/n21 | 0..0x0200000 | done | x87 CF as714 n=21 21-bit store-after-step |
 | CF/gaut/n24 | 0..0x1000000 | done | x87 CF gaut n=24 24-bit store-after-step |
-| CF/as714/n24 | 0..0x1000000 | 0x02a3000/0x1000000 | x87 CF as714 n=24 24-bit store-after-step |
+| CF/as714/n24 | 0..0x1000000 | 0x0bf4000/0x1000000 | x87 CF as714 n=24 24-bit store-after-step |
 
 best_mid 2416 / bar 2389 `piece/cut=1.6`
 best_tail 1294 / bar 1283 `piece/cut=5.6`

@@ -211,6 +211,10 @@ will want; date every entry.
   HIT; leaders still 2416/1294. Region now `CF/as714/n24` (~16%). Lentz
   still `evenodd/as714/n12b2` (~84%), HIT_TAIL 1288 at mask=0. Remaining
   fbody: `CF/as714/n24` (last cube).
+- **2026-09-02 firehorse cube gate 6:** finished `evenodd/as714/n12b2`
+  and `evenodd/as714/n16`. No new HIT; HIT_TAIL still 1288 at mask=0
+  (nonempty even-odd stores did not beat named x87). Lentz now
+  `lentz/gaut/n12b2` (~3%). fbody still `CF/as714/n24` (~75%).
 
 ## Wall 4 — bgrat body op-graph
 
