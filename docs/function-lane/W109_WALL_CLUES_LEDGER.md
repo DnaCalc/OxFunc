@@ -219,6 +219,11 @@ will want; date every entry.
   selected fbody CF cubes done (`exit-regions`). No new HIT; leaders
   still 2416/1294. Lentz still `lentz/gaut/n12b2` (~21%), HIT_TAIL 1288
   at mask=0. fbody not restarted (same launcher would re-exit).
+- **2026-09-02 firehorse cube gate 8:** finished `lentz/gaut/n12b2`. No new
+  HIT; HIT_TAIL still 1288 at mask=0 (nonempty Lentz gaut n=12 stores did
+  not beat named x87 even-odd). Lentz now `mlentz/gaut/n12b2` (~9%), 12
+  threads, 42.57/96h. fbody still `exit-regions`; not restarted (same
+  launcher would re-exit).
 
 ## Wall 4 — bgrat body op-graph
 
