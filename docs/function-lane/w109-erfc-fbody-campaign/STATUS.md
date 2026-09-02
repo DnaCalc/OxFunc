@@ -1,16 +1,15 @@
 # F-body campaign STATUS
 
-- region: `CF/as714/n24`
-- chunk: `0bf4000`
-- configs_done: 69287936
+- region: `exit-regions`
+- chunk: `-`
+- configs_done: 73531392
 - best_mid: 2416 / bar 2389 `piece/cut=1.6`
 - best_tail: 1294 / bar 1283 `piece/cut=5.6`
-- runtime_hours: 30.42 / 96
+- runtime_hours: 33.05 / 96
 - threads: 12
 - stop_requested: false
 
-x87 CF as714 n=24 24-bit store-after-step
-chunk_best_tail=1288
+selected CF cubes finished
 
 # F-body campaign REGION_MAP
 
@@ -25,7 +24,7 @@ chunk_best_tail=1288
 | CF/gaut/n21 | 0..0x0200000 | done | x87 CF gaut n=21 21-bit store-after-step |
 | CF/as714/n21 | 0..0x0200000 | done | x87 CF as714 n=21 21-bit store-after-step |
 | CF/gaut/n24 | 0..0x1000000 | done | x87 CF gaut n=24 24-bit store-after-step |
-| CF/as714/n24 | 0..0x1000000 | 0x0bf4000/0x1000000 | x87 CF as714 n=24 24-bit store-after-step |
+| CF/as714/n24 | 0..0x1000000 | done | x87 CF as714 n=24 24-bit store-after-step |
 
 best_mid 2416 / bar 2389 `piece/cut=1.6`
 best_tail 1294 / bar 1283 `piece/cut=5.6`

@@ -215,6 +215,10 @@ will want; date every entry.
   and `evenodd/as714/n16`. No new HIT; HIT_TAIL still 1288 at mask=0
   (nonempty even-odd stores did not beat named x87). Lentz now
   `lentz/gaut/n12b2` (~3%). fbody still `CF/as714/n24` (~75%).
+- **2026-09-02 firehorse cube gate 7:** finished `CF/as714/n24`; all
+  selected fbody CF cubes done (`exit-regions`). No new HIT; leaders
+  still 2416/1294. Lentz still `lentz/gaut/n12b2` (~21%), HIT_TAIL 1288
+  at mask=0. fbody not restarted (same launcher would re-exit).
 
 ## Wall 4 — bgrat body op-graph
 
