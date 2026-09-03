@@ -224,6 +224,11 @@ will want; date every entry.
   not beat named x87 even-odd). Lentz now `mlentz/gaut/n12b2` (~9%), 12
   threads, 42.57/96h. fbody still `exit-regions`; not restarted (same
   launcher would re-exit).
+- **2026-09-04 firehorse cube gate 9:** finished `mlentz/gaut/n12b2`. No new
+  HIT; HIT_TAIL still 1288 at mask=0 (nonempty modified-Lentz gaut n=12
+  stores did not beat named x87 even-odd). Lentz now `lentz/as714/n12b2`
+  (~13%), 12 threads, 52.55/96h. fbody still `exit-regions`; not restarted
+  (same launcher would re-exit).
 
 ## Wall 4 — bgrat body op-graph
 
