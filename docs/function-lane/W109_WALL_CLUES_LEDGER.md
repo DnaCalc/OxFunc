@@ -229,6 +229,13 @@ will want; date every entry.
   stores did not beat named x87 even-odd). Lentz now `lentz/as714/n12b2`
   (~13%), 12 threads, 52.55/96h. fbody still `exit-regions`; not restarted
   (same launcher would re-exit).
+- **2026-09-03 firehorse cube gate 10:** skipped duplicate `mlentz/as714/n12b2`;
+  leftover n16 cubes finished with no HIT. `lentz/gaut/n21` then moved
+  HIT_TAIL 1288 → 1298 (`mask=0002588`) → **1316** (`mask=0142180`). That
+  21-bit cube is done. Lentz now `lentz/as714/n21` (~3%), 12 threads,
+  62.59/96h, alive. Mid still 2389 `nswc_derfc0`. Constraint, not an
+  identity; do not land. fbody still `exit-regions`; not restarted (same
+  launcher would re-exit).
 
 ## Wall 4 — bgrat body op-graph
 
