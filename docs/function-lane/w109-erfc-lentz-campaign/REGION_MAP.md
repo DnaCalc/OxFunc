@@ -11,9 +11,9 @@
 | lentz/gaut/n16 | 0..0x0010000 | done | x87 lentz gaut n=16 16-bit store C/D after step |
 | mlentz/gaut/n16 | 0..0x0010000 | done | x87 mlentz gaut n=16 16-bit store C/D after step |
 | lentz/as714/n16 | 0..0x0010000 | done | x87 lentz as714 n=16 16-bit store C/D after step |
-| mlentz/as714/n16 | 0..0x0010000 | 0x0008000/0x0010000 | x87 mlentz as714 n=16 16-bit store C/D after step |
-| lentz/gaut/n21 | 0..0x0200000 | 0x0000000/0x0200000 | x87 lentz gaut n=21 21-bit store C/D after step |
+| mlentz/as714/n16 | 0..0x0010000 | done | x87 mlentz as714 n=16 16-bit store C/D after step |
+| lentz/gaut/n21 | 0..0x0200000 | 0x0006000/0x0200000 | x87 lentz gaut n=21 21-bit store C/D after step |
 | lentz/as714/n21 | 0..0x0200000 | 0x0000000/0x0200000 | x87 lentz as714 n=21 21-bit store C/D after step |
 
 best_mid 2389 / bar 2389 `nswc_derfc0`
-best_tail 1288 / bar 1283 `evenodd/as714/n12b2 /mask=0000000`
+best_tail 1298 / bar 1283 `lentz/gaut/n21 /mask=0002588`
