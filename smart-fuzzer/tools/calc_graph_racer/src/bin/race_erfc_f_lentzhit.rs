@@ -57,12 +57,15 @@ fn main() {
     });
     report("mask=0x22", &rows, |z| lentz_gaut_n21_mask(z, 0x22));
     report("mask=0xa", &rows, |z| lentz_gaut_n21_mask(z, 0xa));
-    report("mask=0x2588 HIT", &rows, |z| lentz_gaut_n21_mask(z, 0x2588));
+    report("mask=0x2588", &rows, |z| lentz_gaut_n21_mask(z, 0x2588));
+    report("mask=0x9000", &rows, |z| lentz_gaut_n21_mask(z, 0x9000));
+    report("mask=0x142180 HIT", &rows, |z| lentz_gaut_n21_mask(z, 0x142180));
     report("evenodd x87 n=12", &rows, |z| f::cf_evenodd_as714_x87_n(z, 12));
     report("as714 x87 n=24", &rows, |z| f::cf_as714_x87_n(z, 24));
     report("gaut x87 n=24", &rows, |z| f::cf_gautschi_x87_n(z, 24));
 
     println!("\n## direct-only tail/mid for mask=0x22");
+    report("mask=0x142180 direct", &direct, |z| lentz_gaut_n21_mask(z, 0x142180));
     report("mask=0x2588 direct", &direct, |z| lentz_gaut_n21_mask(z, 0x2588));
     report("mask=0x22 direct", &direct, |z| lentz_gaut_n21_mask(z, 0x22));
     report("mask=0 direct", &direct, |z| lentz_gaut_n21_mask(z, 0));
@@ -79,7 +82,7 @@ fn main() {
         let Some(fo) = f::f_or(z, r.qbits) else {
             continue;
         };
-        let fg = lentz_gaut_n21_mask(z, 0x22);
+        let fg = lentz_gaut_n21_mask(z, 0x142180);
         let d = ulp_distance(fg, fo).unwrap_or(u64::MAX);
         println!("  z={z} direct={} ulp={d}", r.direct as u8);
     }
@@ -95,7 +98,7 @@ fn main() {
         let Some(fo) = f::f_or(r.z, r.qbits) else {
             continue;
         };
-        let d22 = ulp_distance(lentz_gaut_n21_mask(r.z, 0x22), fo).unwrap_or(1);
+        let d22 = ulp_distance(lentz_gaut_n21_mask(r.z, 0x142180), fo).unwrap_or(1);
         let deo = ulp_distance(f::cf_evenodd_as714_x87_n(r.z, 12), fo).unwrap_or(1);
         if d22 == 0 && deo != 0 {
             if r.direct {
@@ -113,5 +116,5 @@ fn main() {
         }
     }
     println!("  extra exact vs evenodd n12: direct={extra_d} implied={extra_i}");
-    println!("mask 0x22 = spill Lentz C after steps j=2 and j=6 (0-based bits 1 and 5)");
+    println!("mask 0x142180 = spill Lentz C after steps j=8,9,14,19,21");
 }
