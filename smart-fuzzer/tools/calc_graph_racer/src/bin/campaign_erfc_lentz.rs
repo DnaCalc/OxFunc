@@ -50,7 +50,7 @@ fn cube_jobs() -> Vec<CubeJob> {
             note: format!("x87 even-odd as714 n={n} pairs {}-bit store inner/outer", bits),
         });
     }
-    for &(n, two_bit) in &[(12u32, true), (16, false), (21, false)] {
+    for &(n, two_bit) in &[(12u32, true), (16, false), (21, false), (24, false)] {
         let bits = if two_bit { n * 2 } else { n };
         for (kind, tag) in [(LentzKind::Gaut, "gaut"), (LentzKind::As714, "as714")] {
             for modified in [false, true] {
