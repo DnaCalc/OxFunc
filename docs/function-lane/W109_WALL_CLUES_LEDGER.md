@@ -236,6 +236,11 @@ will want; date every entry.
   62.59/96h, alive. Mid still 2389 `nswc_derfc0`. Constraint, not an
   identity; do not land. fbody still `exit-regions`; not restarted (same
   launcher would re-exit).
+- **2026-09-03 firehorse cube gate 11:** packed n24 is live. Lentz now
+  `lentz/gaut/n24` (~10% of 2^24, chunk `0x01a8000`), 12 threads,
+  66.63/120h. HIT_TAIL still 1316 at mask `0142180`. chunk_best_tail=1239.
+  Mid still 2389 `nswc_derfc0`. Constraint, not an identity; do not land.
+  fbody still `exit-regions`; not restarted (same launcher would re-exit).
 
 ## Wall 4 — bgrat body op-graph
 

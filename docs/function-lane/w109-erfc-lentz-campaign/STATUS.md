@@ -1,15 +1,16 @@
 # Lentz F campaign STATUS
 
-- region: `exit-regions`
-- chunk: `-`
-- configs_done: 71192576
+- region: `lentz/gaut/n24`
+- chunk: `01a8000`
+- configs_done: 72929280
 - best_mid: 2389 / bar 2389 `nswc_derfc0`
 - best_tail: 1316 / bar 1283 `lentz/gaut/n21 /mask=0142180`
-- runtime_hours: 64.46 / 96
+- runtime_hours: 66.63 / 120
 - threads: 12
 - stop_requested: false
 
-selected Lentz cubes finished
+x87 lentz gaut n=24 24-bit store C/D after step
+chunk_best_tail=1239
 
 # Lentz F campaign REGION_MAP
 
@@ -27,6 +28,8 @@ selected Lentz cubes finished
 | mlentz/as714/n16 | 0..0x0010000 | done | x87 mlentz as714 n=16 16-bit store C/D after step |
 | lentz/gaut/n21 | 0..0x0200000 | done | x87 lentz gaut n=21 21-bit store C/D after step |
 | lentz/as714/n21 | 0..0x0200000 | done | x87 lentz as714 n=21 21-bit store C/D after step |
+| lentz/gaut/n24 | 0..0x1000000 | 0x01a8000/0x1000000 | x87 lentz gaut n=24 24-bit store C/D after step |
+| lentz/as714/n24 | 0..0x1000000 | 0x0000000/0x1000000 | x87 lentz as714 n=24 24-bit store C/D after step |
 
 best_mid 2389 / bar 2389 `nswc_derfc0`
 best_tail 1316 / bar 1283 `lentz/gaut/n21 /mask=0142180`
