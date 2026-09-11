@@ -281,20 +281,18 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         return Ok(acc);
     }
 
-    // Live Excel 16.0 b20326: GAMMA(0.5) seed `0x3ffc5bf891b4ef6b`, then
-    // native Γ(x+1)=x·Γ(x) through 4.5. Breaks at 5.5 (1 ULP).
+    // Live Excel 16.0 b20326: GAMMA(n+0.5) for n=0..=15 is
+    // (2n-1)!! / 2^n * GAMMA(0.5) with reverse odd product and seed
+    // `0x3ffc5bf891b4ef6b`. Contiguous exact through 15.5; first miss 16.5.
     const GAMMA_HALF: f64 = f64::from_bits(0x3ffc5bf891b4ef6b);
-    if x == 0.5 {
-        return Ok(GAMMA_HALF);
-    }
-    if x == 1.5 || x == 2.5 || x == 3.5 || x == 4.5 {
-        let mut acc = GAMMA_HALF;
-        let mut t = 0.5;
-        while t < x {
-            acc *= t;
-            t += 1.0;
+    let twice = x * 2.0;
+    if twice.fract() == 0.0 && (1.0..=31.0).contains(&twice) {
+        let n = ((twice as u32) - 1) / 2;
+        let mut df = 1.0;
+        for k in (1..=n).rev() {
+            df *= (2 * k - 1) as f64;
         }
-        return Ok(acc);
+        return Ok(df / (2.0_f64).powi(n as i32) * GAMMA_HALF);
     }
 
     let ln_gamma = if x < 0.5 {
@@ -1074,7 +1072,9 @@ mod tests {
         assert_eq!(gamma_kernel(88.0).unwrap().to_bits(), 0x5b67c1863ed21d6f);
         assert_eq!(gamma_kernel(0.5).unwrap().to_bits(), 0x3ffc5bf891b4ef6b);
         assert_eq!(gamma_kernel(1.5).unwrap().to_bits(), 0x3fec5bf891b4ef6b);
-        assert_eq!(gamma_kernel(4.5).unwrap().to_bits(), 0x40274371e7866c66);
+        assert_eq!(gamma_kernel(5.5).unwrap().to_bits(), 0x404a2be0247739f2);
+        assert_eq!(gamma_kernel(8.5).unwrap().to_bits(), 0x40cb693422315f91);
+        assert_eq!(gamma_kernel(15.5).unwrap().to_bits(), 0x42537d7bedf4639d);
     }
 
     // BUG-FUNC-027 CLASS-A1: GAMMALN(1E-300) was +Inf (z+1 == 0 in Lanczos);
