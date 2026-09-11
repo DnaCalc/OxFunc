@@ -351,3 +351,11 @@ will want; date every entry.
     `n=1..=88` (build 20326). Forward product breaks at 26. Reverse first
     miss at 89. Landed `1..=88` only; `n>=89` and non-integers remain open.
     `GAMMA != EXP(published GAMMALN)` on high-band integers (e.g. 8, 10).
+    Half-integers `0.5..=15.5` match `(2n-1)!!/2^n * GAMMA(0.5)` seed
+    `0x3ffc5bf891b4ef6b`. First miss 16.5. Worksheet `GAMMA` reflection
+    `Γ(x)Γ(1-x)` vs `PI()/SIN(PI()*x)` is not bit-exact (typically 1–2 ULP).
+  - GAMMALN B1 `[0.7,1.5)` live 512-row grid build 20326: production 124/512
+    max 1182 (near-zero bit-distance at the Γ=1 zero). Still an op-graph wall.
+  - PMT `answers-pmt-em.json`: production 10801/13752; `|tau|<1` 9649/12402.
+    Invert-the-published-PMT implied `em` vs `excel_expm1_internal` is only
+    7721/12402 — combine rounding pollutes the implied helper. Not a decode.
