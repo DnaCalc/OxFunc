@@ -281,6 +281,22 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         return Ok(acc);
     }
 
+    // Live Excel 16.0 b20326: GAMMA(0.5) seed `0x3ffc5bf891b4ef6b`, then
+    // native Γ(x+1)=x·Γ(x) through 4.5. Breaks at 5.5 (1 ULP).
+    const GAMMA_HALF: f64 = f64::from_bits(0x3ffc5bf891b4ef6b);
+    if x == 0.5 {
+        return Ok(GAMMA_HALF);
+    }
+    if x == 1.5 || x == 2.5 || x == 3.5 || x == 4.5 {
+        let mut acc = GAMMA_HALF;
+        let mut t = 0.5;
+        while t < x {
+            acc *= t;
+            t += 1.0;
+        }
+        return Ok(acc);
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1056,6 +1072,9 @@ mod tests {
         assert_eq!(gamma_kernel(26.0).unwrap().to_bits(), 0x4529a940c33f6120);
         assert_eq!(gamma_kernel(50.0).unwrap().to_bits(), 0x4cf7a88e4484be3f);
         assert_eq!(gamma_kernel(88.0).unwrap().to_bits(), 0x5b67c1863ed21d6f);
+        assert_eq!(gamma_kernel(0.5).unwrap().to_bits(), 0x3ffc5bf891b4ef6b);
+        assert_eq!(gamma_kernel(1.5).unwrap().to_bits(), 0x3fec5bf891b4ef6b);
+        assert_eq!(gamma_kernel(4.5).unwrap().to_bits(), 0x40274371e7866c66);
     }
 
     // BUG-FUNC-027 CLASS-A1: GAMMALN(1E-300) was +Inf (z+1 == 0 in Lanczos);
