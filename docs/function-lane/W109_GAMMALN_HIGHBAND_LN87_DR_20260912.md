@@ -55,3 +55,11 @@ four pin bit-patterns as the 20228 discovery bank (`old-resid-00/08` now exact;
 This is not a function-phase-complete claim. The two 1-ULP rows sit between
 adjacent stored-log effects (bounded-negative 2026-08-09). B1/B2 and GAMMA
 composition stay open.
+
+## GAMMA integer slice (same session)
+
+Live Excel 16.0 build 20326: `GAMMA(n)` for positive integers `n=1..=88` is
+the reverse native product `(n-1)*(n-2)*...*2` (empty product 1 for `n=1,2`).
+The forward product diverges at `n=26`. Reverse first miss is `n=89`.
+`GAMMA(172)` remains `#NUM!`. Non-integers and `n>=89` stay on the open
+lgamma/exp kernel. Landed in `gamma_kernel`; G3-02 remains open.

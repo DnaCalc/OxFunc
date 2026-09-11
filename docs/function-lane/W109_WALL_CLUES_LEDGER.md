@@ -347,3 +347,7 @@ will want; date every entry.
     continuous), max 3 ULP. Not an identity. libm::erf 405/1033.
   - GAMMALN Stirling `x>=8`: worksheet LN + x87 DR q/final-add is 1709/1711
     (two known 1-ULP rows). Landed as in-progress kernel; G3-02 remains open.
+  - GAMMA positive integers: reverse native product matches live Excel
+    `n=1..=88` (build 20326). Forward product breaks at 26. Reverse first
+    miss at 89. Landed `1..=88` only; `n>=89` and non-integers remain open.
+    `GAMMA != EXP(published GAMMALN)` on high-band integers (e.g. 8, 10).

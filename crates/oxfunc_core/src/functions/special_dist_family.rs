@@ -267,6 +267,20 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         return Err(WorksheetErrorCode::Num);
     }
 
+    // Live Excel 16.0 build 20326/CV2 Value2: for positive integers n=1..=88,
+    // GAMMA(n) is the reverse native product (n-1)*(n-2)*...*2 (empty
+    // product 1 for n=1,2). Forward product diverges at n=26. n=89 and
+    // above are not this graph. G3-02 remains open for non-integers and
+    // n>=89.
+    if (1.0..=88.0).contains(&x) && x.fract() == 0.0 {
+        let n = x as u32;
+        let mut acc = 1.0;
+        for k in (2..n).rev() {
+            acc *= k as f64;
+        }
+        return Ok(acc);
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1032,6 +1046,16 @@ mod tests {
         assert_eq!(gamma_kernel(-1.0), Err(WorksheetErrorCode::Num));
         assert_eq!(gammaln_kernel(0.0), Err(WorksheetErrorCode::Num));
         assert_eq!(gamma_kernel(172.0), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn gamma_positive_integers_1_through_88_match_excel_reverse_product() {
+        assert_eq!(gamma_kernel(1.0).unwrap().to_bits(), 0x3ff0000000000000);
+        assert_eq!(gamma_kernel(8.0).unwrap().to_bits(), 0x40b3b00000000000);
+        assert_eq!(gamma_kernel(10.0).unwrap().to_bits(), 0x4116260000000000);
+        assert_eq!(gamma_kernel(26.0).unwrap().to_bits(), 0x4529a940c33f6120);
+        assert_eq!(gamma_kernel(50.0).unwrap().to_bits(), 0x4cf7a88e4484be3f);
+        assert_eq!(gamma_kernel(88.0).unwrap().to_bits(), 0x5b67c1863ed21d6f);
     }
 
     // BUG-FUNC-027 CLASS-A1: GAMMALN(1E-300) was +Inf (z+1 == 0 in Lanczos);
