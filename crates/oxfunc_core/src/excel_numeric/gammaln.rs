@@ -17,7 +17,7 @@
 //!   * `0.7 <= x < 1.5`  B1       : Cody-Hillstrom 1967 n=7 `(x-1)*N/D`, plain double.
 //!   * `1.5 <= x < 4.0`  B2       : anchored rational, x87 **continuous** (one final round).
 //!   * `4.0 <= x < 8.0`  B4       : SPECFUN P4/Q4, x87 **continuous** (one final round).
-//!   * `x >= 8.0`        STIRLING : fdlibm w-tail, plain double.
+//!   * `x >= 8.0`        STIRLING : fdlibm w-tail, worksheet LN + x87 DR q.
 //!
 //! The B2/B4 bands use the real x87 80-bit hardware ops (`super::x87::raw`) on
 //! `x86_64`; a plain-`f64` fallback keeps the crate building on other targets
@@ -122,11 +122,21 @@ fn b1(x: f64) -> f64 {
     (x - 1.0) * (n / d)
 }
 
-/// STIRLING band `x >= 8`: fdlibm w-tail composed with the Cephes-style q,
-/// every op plain double in the identified order.
+/// STIRLING band `x >= 8`: fdlibm w-tail with worksheet LN and x87
+/// PC64-to-binary64 stores on the q chain and the final add.
+///
+/// Identified (W109 G3-02 high-band, 2026-08-09 reconstructed graph, replayed
+/// 2026-09-12 on 1711 unique x>=8 rows): `ln = LN87(x)`, then
+/// `q = DR(DR(DR((x-0.5)*ln) - x) + LS2PI)`, native fdlibm `z*w` Horner,
+/// `out = DR(q + corr)`. Scores 1709/1711 (max 1 ULP) versus production
+/// native-ln 1701/1711 (max 2). The two remaining misses
+/// (`x=0x40215bf4d43f4d44`, `x=0x40234ce3244e3245`) sit between adjacent
+/// stored-log effects; they stay open.
 fn stirl8(x: f64) -> f64 {
-    let lg = x.ln();
-    let q = (x - 0.5) * lg - x + LS2PI; // ((x-0.5)*lg - x) + LS2PI, left-to-right
+    let lg = super::excel_log(x);
+    let q1 = super::excel_x87_mul(x - 0.5, lg);
+    let q2 = super::excel_x87_sub(q1, x);
+    let q = super::excel_x87_add(q2, LS2PI);
     let z = 1.0 / x;
     let y = z * z;
     let mut w = W6;
@@ -135,7 +145,7 @@ fn stirl8(x: f64) -> f64 {
     w = w * y + W3;
     w = w * y + W2;
     w = w * y + W1;
-    q + z * w
+    super::excel_x87_add(q, z * w)
 }
 
 // -------------------------------------------------------------------------
@@ -268,5 +278,29 @@ mod tests {
         close(gammaln_excel(5.0), 3.1780538303479458, 1e-12); // B4  (ln 24)
         close(gammaln_excel(10.0), 12.801827480081471, 1e-11); // Stirling (ln 362880)
         close(gammaln_excel(1e-300), 690.7755278982137, 1e-9); // composed, xp->1
+    }
+
+    #[test]
+    #[cfg(target_arch = "x86_64")]
+    fn stirling_ln87_dr_matches_current_build_hits_and_keeps_two_open() {
+        // Current-build discovery (build 20228, Value2). Native ln missed
+        // old-resid-00/08; LN87+DR matches Excel.
+        assert_eq!(
+            gammaln_excel(f64::from_bits(0x4020e83b9403b940)).to_bits(),
+            0x4022e7db126472c6
+        );
+        assert_eq!(
+            gammaln_excel(f64::from_bits(0x4029800000000000)).to_bits(),
+            0x40335bb50a8f4512
+        );
+        // Two remaining open rows: still exactly 1 ULP below Excel.
+        assert_eq!(
+            gammaln_excel(f64::from_bits(0x40215bf4d43f4d44)).to_bits(),
+            0x4023d98694477878
+        );
+        assert_eq!(
+            gammaln_excel(f64::from_bits(0x40234ce3244e3245)).to_bits(),
+            0x40280a8dd6771c99
+        );
     }
 }

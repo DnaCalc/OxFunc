@@ -327,3 +327,23 @@ will want; date every entry.
   mulex/mulee/pmfk ops + the b24/b31 banked corpora. Fractional-a b31F rows
   (1,000) additionally read the internal lgamma through stirlerr's
   non-integer branch if the dgamma road ever reopens.
+
+- **2026-09-12 (local 12h last-bit, live Excel 16.0 build 20326/CV2 Value2):**
+  - ERF/ERFC complement law on a fresh 2049-row signed grid: for `x>0`,
+    `x<0.5` ⇒ `ERFC=1-ERF` (256/256 and 1031/1031 dense); `x>=0.5` ⇒
+    `ERF=1-ERFC` (769/769). ERF is odd 100%. `ERFC(-x)=2-ERFC(x)` is exact
+    1024/1024. Worksheet `EXP(-z*z)` matches identified `excel_exp` 1065/1065.
+    Landing the wrapper against the current inexact bodies *regresses*
+    (ERFC wrap 1264/2049 vs production 1320/2049; ERF `1-erfc` 1361 vs 1499).
+    Do not land complement until the primary body is exact.
+  - Firehorse Lentz `lentz/as714/n24 /mask=0400000` tail **1324**/bar 1283.
+    Mid still `nswc_derfc0` 2389. Constraint, not identity. Pins inexact.
+  - PRICE: Excel PRICE is 1 ULP above a worksheet `POWER` reconstruction on
+    all 29 replica misses (private kernel, not worksheet POWER+SUM).
+    Kahan/Neumaier/pairwise/Horner/geom all worse than the 571/600 native
+    loop. `coup*(a/e)` is 571/600 vs production `(coup*a)/e` 564/600 on that
+    corpus but is a corpus trade, not a universal graph.
+  - Small-z ERF: 1800 NSWC/fdlibm store graphs, best 410/1031 (fdlibm x87
+    continuous), max 3 ULP. Not an identity. libm::erf 405/1033.
+  - GAMMALN Stirling `x>=8`: worksheet LN + x87 DR q/final-add is 1709/1711
+    (two known 1-ULP rows). Landed as in-progress kernel; G3-02 remains open.
