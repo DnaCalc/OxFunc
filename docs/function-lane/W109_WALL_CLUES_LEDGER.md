@@ -786,3 +786,8 @@ will want; date every entry.
   - GAMMALN two open Stirling rows: q-chain associations 0–1/2;
     nextup of production is 2/2 but is not a graph (would regress
     the 1709 exact high-band rows).
+  - BINOM k=n: worksheet POWER 12/35 mixed and 14/40 high-p, but
+    `excel_pow_chain(p,n)` is 35/35 and 40/40 including q<0.1.
+    Landed; k=0 bd0 branch unchanged (production 146/210 still
+    beats pow_chain 132/210 on k=0).
+  - CHIINV.RT df=2 vs -2*LN(p) 34/39 (1 ULP misses). Not a slice.

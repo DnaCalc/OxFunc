@@ -297,12 +297,10 @@ fn binom_pmf(number_s: u64, trials: u64, probability_s: f64) -> f64 {
         };
     }
     if number_s == trials {
-        // k == n mirror.
-        return if q < 0.1 {
-            crate::excel_numeric::excel_exp(-binom_bd0(n, n * probability_s) - n * q)
-        } else {
-            crate::excel_numeric::excel_pow_chain(probability_s, n)
-        };
+        // Live Excel 16.0 b20326: BINOM.DIST(n,n,p,FALSE) is POWER's chain
+        // `excel_pow_chain(p, n)` even when q<0.1 (the k=0 bd0 mirror does
+        // not apply). 40/40 high-p grid plus 35/35 mixed grid vs Value2.
+        return crate::excel_numeric::excel_pow_chain(probability_s, n);
     }
     // General 1 <= k <= n-1: dbinom_raw = exp(lc - 0.5*lf), argument extended.
     let k = number_s as f64;
@@ -978,6 +976,29 @@ mod tests {
         eprintln!("BINOM(s,s,p) {bin}/8 NEGBINOM(0,s,p) {neg}/8");
         assert_eq!(bin, pins.len(), "BINOM k=n vs Excel NEGBINOM k=0 {bin}/8");
         assert_eq!(neg, pins.len(), "NEGBINOM k=0 vs live Excel {neg}/8");
+    }
+
+    #[test]
+    fn binom_kn_uses_pow_chain_even_when_q_lt_one_tenth() {
+        // Live Excel 16.0 b20326 Value2. q=1-p < 0.1 used to take the k=0
+        // bd0 mirror; Excel k=n is excel_pow_chain(p, n) on this grid.
+        let pins = [
+            (2.0_f64, 0.9, 0x3fe9eb851eb851ecu64),
+            (2.0, 0.95, 0x3fece147ae147ae1),
+            (2.0, 0.99, 0x3fef5cfaacd9e83e),
+            (3.0, 0.9, 0x3fe753f7ced91688),
+            (5.0, 0.95, 0x3fe8c2d03d9a9540),
+            (5.0, 0.99, 0x3fee6e82af648a82),
+            (10.0, 0.9, 0x3fd650bf60432fd8),
+            (20.0, 0.99, 0x3fea2c4b2b84da10),
+        ];
+        for (n, p, bits) in pins {
+            assert_eq!(
+                binom_dist_kernel(n, n, p, false).unwrap().to_bits(),
+                bits,
+                "BINOM.DIST({n},{n},{p},FALSE)"
+            );
+        }
     }
 
     #[test]
