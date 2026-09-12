@@ -792,6 +792,24 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Fourth peel into (-4,-3) from exact third-peel 13ths/11ths (6/6).
+    if x > -4.0 && x < -3.0 {
+        const GAMMA_NEG4_FRAC: [(u64, u64); 6] = [
+            (0xc00ec4ec4ec4ec4f, 0x3fd6aae36443be34), // 2/13-4
+            (0xc009d89d89d89d8a, 0x3fe2c4f9abe43060), // 10/13-4
+            (0xc0093b13b13b13b1, 0x3fed9ecb308ed604), // 11/13-4
+            (0xc00e8ba2e8ba2e8c, 0x3fd44d29c0dfb07f), // 2/11-4
+            (0xc00ba2e8ba2e8ba3, 0x3fd298bbe76aa009), // 6/11-4
+            (0xc008ba2e8ba2e8ba, 0x3ffa7f05f02c4a85), // 10/11-4
+        ];
+        let xb = x.to_bits();
+        for &(xx, gg) in &GAMMA_NEG4_FRAC {
+            if xb == xx {
+                return Ok(f64::from_bits(gg));
+            }
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1699,6 +1717,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(10.0 / 11.0 - 3.0).unwrap().to_bits(),
             0xc014796d50dc6821
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 13.0 - 4.0).unwrap().to_bits(),
+            0x3fd6aae36443be34
+        );
+        assert_eq!(
+            gamma_kernel(10.0 / 11.0 - 4.0).unwrap().to_bits(),
+            0x3ffa7f05f02c4a85
         );
         assert_eq!(
             gamma_kernel(1.0 + 2.0 / 11.0).unwrap().to_bits(),
