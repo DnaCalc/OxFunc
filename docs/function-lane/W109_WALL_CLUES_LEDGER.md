@@ -562,3 +562,28 @@ will want; date every entry.
   - GAMMA 1/3 and 2/3 product-first miss n=1. 2/5,3/5,4/5 miss n=1.
   - PMT vs POWER annuity 0/6 max thousands of ULP on small-tau;
     vs EXP/LN 0/6. |tau|<1 helper still a wall.
+  - COSH=(EXP+EXP(-))/2 40/40 spilled and fused; libm 1 ULP off at
+    0.001, 0.01, 10. Landed. SECH follows 1/COSH.
+  - SINH worksheet EXP-pair 27/40. Internal Kahan expm1 pair
+    (expm1(x)-expm1(-x))/2 is 37/37 including those misses. Landed.
+    CSCH follows 1/SINH.
+  - TANH vs SINH/COSH 35/40 on the wider COSH grid (misses 0.001,
+    0.01, 0.4 and sign mirrors). Earlier 8/8 pin set still holds;
+    not a universal last-bit identity.
+  - TAN vs SIN/COS 9/17 max 1 ULP (wider grid). Not an identity.
+  - IPMT(per=1,type=0) vs worksheet -(pv*rate) 7/10 (the 7 are the
+    type=0 per=1 rows). PMT=IPMT+PPMT 10/10. IEEE and x87
+    -(pv*r) match Excel IPMT 4/7; 0.01*1000 stays 1 ULP
+    (Excel 0xc023ffffffffffff vs IEEE -10). First-period multiply
+    is not a full landing.
+  - T.DIST(x,1,TRUE) vs 0.5+ATAN(x)/PI() 13/13 in Excel including
+    ATAN2/ACOT/(PI/2+ATAN) forms. IEEE/x87 reconstructions of
+    spilled libm atan + add/div are 8/13 (x=-1 is 1 ULP). Excel
+    identity, rust reconstruction wall. T.DIST.RT vs 0.5-ATAN/PI
+    13/13 and vs 1-CDF 13/13 in Excel, same reconstruction wall.
+  - GAMMA(0.5)=SQRT(PI()) and GAMMALN(0.5)=LN(SQRT(PI()))=0.5*LN(PI())
+    in Excel. IEEE sqrt(pi) is 1 ULP below the published GAMMA(0.5)
+    seed; keep the seed.
+  - ERF.PRECISE tiny: 2x/SQRT(PI) 1/12; Taylor3 3/12;
+    2*NORMSDIST(x*SQRT(2))-1 9/12 (misses z<=1e-4, leftover
+    NORMSDIST/ERFC body). 1-ERFC 9/12.

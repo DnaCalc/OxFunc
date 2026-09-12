@@ -319,6 +319,12 @@ fn t_pdf(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
         // 1/PI()/(1+x*x) is 12/20; 1/(PI()+PI()*x*x) is 18/20.
         return Ok(1.0 / (std::f64::consts::PI * (1.0 + x * x)));
     }
+    if v == 2.0 {
+        // Live Excel 16.0 b20326: T.DIST(x,2,FALSE)=POWER(2+x*x,-1.5) 15/15.
+        // 1/EXP(1.5*LN) is 15/15 in Excel but only 10/15 via spilled excel_exp/log.
+        // excel_pow_chain is 15/15 including |x|=4,8.
+        return Ok(crate::excel_numeric::excel_pow_chain(2.0 + x * x, -1.5));
+    }
     let numerator = gamma((v + 1.0) / 2.0);
     let denominator = (v * std::f64::consts::PI).sqrt()
         * gamma(v / 2.0)
@@ -988,6 +994,34 @@ mod tests {
         assert!((f_dist_kernel(15.2069, 6.0, 4.0, false).unwrap() - 0.001_223_8).abs() < 5e-7);
         assert!((f_inv_rt_kernel(0.01, 6.0, 4.0).unwrap() - 15.20686).abs() < 1e-4);
         assert!((f_inv_kernel(0.99, 6.0, 4.0).unwrap() - 15.20686).abs() < 1e-4);
+    }
+
+    #[test]
+    fn t_dist_df2_pdf_matches_live_excel_pow_chain_pins() {
+        let pins = [
+            (-8.0_f64, 0x3f5e8e78c21b35f0u64),
+            (-4.0, 0x3f8ad1536fff177d),
+            (-2.0, 0x3fb16b28f55d72d3),
+            (-1.0, 0x3fc8a2345cc04426),
+            (-0.5, 0x3fd2f684bda12f68),
+            (0.0, 0x3fd6a09e667f3bcd),
+            (0.5, 0x3fd2f684bda12f68),
+            (1.0, 0x3fc8a2345cc04426),
+            (2.0, 0x3fb16b28f55d72d3),
+            (4.0, 0x3f8ad1536fff177d),
+            (8.0, 0x3f5e8e78c21b35f0),
+            (0.1, 0x3fd67571ae3ae506),
+            (3.0, 0x3f9c11662a4daec1),
+            (10.0, 0x3f4fcf18ff68ff16),
+            (0.25, 0x3fd59b52a2911afa),
+        ];
+        for (x, bits) in pins {
+            assert_eq!(
+                t_dist_kernel(x, 2.0, false).unwrap().to_bits(),
+                bits,
+                "x={x}"
+            );
+        }
     }
 
     #[test]
