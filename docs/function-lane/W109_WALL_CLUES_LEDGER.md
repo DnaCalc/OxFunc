@@ -736,3 +736,4 @@ will want; date every entry.
     20/25. Zero-coupon PRICE vs red/POWER(1+yld/freq,freq*YEARFRAC) is
     exact on two 30/360 rows and far off on actual/actual — not a
     general PRICE graph.
+  - BETA.INV(p,0.5,0.5) vs SIN(p*PI/2)^2 4/8; vs (1-COS(p*PI))/2 6/8.
