@@ -5,7 +5,6 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_number, prepare_arg_values_only};
 use crate::functions::chi_f_t_family::t_inv_2t_kernel;
-use crate::functions::normal_dist_common::erf_approx;
 use crate::functions::variance_common::{VarianceDivisor, stdev_from_values};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::WorksheetErrorCode;
@@ -65,10 +64,6 @@ fn scalar_number(
         CoreValue::Missing | CoreValue::Empty => Ok(0.0),
         _ => coerce_prepared_to_number(&prepared).map_err(ConfidenceTestEvalError::Coercion),
     }
-}
-
-fn standard_normal_cdf(x: f64) -> f64 {
-    0.5 * (1.0 + erf_approx(x / std::f64::consts::SQRT_2))
 }
 
 fn collect_numeric_values_from_eval(
@@ -149,8 +144,12 @@ pub fn z_test_kernel(
     if sigma <= 0.0 || !sigma.is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    let z = (mean - x) / (sigma / (values.len() as f64).sqrt());
-    Ok(1.0 - standard_normal_cdf(z))
+    // Live Excel 16.0 b20326: Z.TEST(array,x) with omitted sigma is
+    // NORMSDIST((x-AVERAGE)/(STDEV.S/SQRT(n))), not 1-NORMSDIST((mean-x)/se)
+    // and not STDEV.P. The two NORMSDIST complements are not bit-identical.
+    let se = sigma / (values.len() as f64).sqrt();
+    let z = (x - mean) / se;
+    crate::functions::normal_log_family::norm_s_dist_kernel(z, true)
 }
 
 pub fn eval_confidence_t_surface(
@@ -267,6 +266,23 @@ mod tests {
         let values = [3.0, 6.0, 7.0, 8.0, 6.0];
         let got = z_test_kernel(&values, 4.0, Some(1.5)).unwrap();
         assert!((got - 0.0014345563960383074).abs() < 1e-12);
+    }
+
+    #[test]
+    fn z_test_omitted_sigma_matches_normsdist_stdev_s_identity() {
+        // Live Excel 16.0 b20326 Value2: Z.TEST = NORMSDIST((x-mean)/(STDEV.S/√n)).
+        assert_eq!(
+            z_test_kernel(&[1.0, 2.0, 3.0, 4.0, 5.0], 4.0, None)
+                .unwrap()
+                .to_bits(),
+            0x3fed7bb3d3a08445
+        );
+        assert_eq!(
+            z_test_kernel(&[10.0, 12.0, 15.0, 11.0], 13.0, None)
+                .unwrap()
+                .to_bits(),
+            0x3fea53ce6913b61a
+        );
     }
 
     #[test]

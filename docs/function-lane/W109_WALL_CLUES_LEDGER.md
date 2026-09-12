@@ -423,3 +423,6 @@ will want; date every entry.
     from the generic path. Landed seeds only; recurrence not claimed.
   - F.DIST CDF vs worksheet BETA.DIST(d1*x/(d1*x+d2), d1/2, d2/2, TRUE) is
     2/3 with a 1 ULP miss. Argument construction rounding; not an identity.
+  - T.DIST.2T vs F.DIST.RT(t^2,1,df) is 2/3 (one 2 ULP miss). Not an identity.
+  - CONFIDENCE.T vs T.INV(1-α/2,n-1)*σ/√n associations: best `t*(σ/√n)` is
+    3/6. Private kernel.
