@@ -533,3 +533,9 @@ will want; date every entry.
     the identified a=0.5/df=1 ERF/ERFC dispatch; not a new body.
   - NORM.DIST vs NORMSDIST((x-m)/s) 9/9 (production already
     that compose; leftover NORMSDIST(-1) is the ERFC body).
+  - GAMMA(n+0.5) stepwise recurrence first miss 20.5 (1 ULP).
+    Product-first (0.5*...* (n-0.5))*GAMMA(0.5) is 172/172 through
+    171.5 including 20.5; GAMMA(172.5)=#NUM!. Landed.
+  - NEGBINOM PMF vs COMBIN*POWER 1/8; vs BINOM*p 2/8.
+  - SEC=1/COS 8/8 and CSC=1/SIN 8/8 (production already those
+    graphs).

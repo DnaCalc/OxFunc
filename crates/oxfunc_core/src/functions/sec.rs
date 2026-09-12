@@ -64,4 +64,11 @@ mod tests {
     fn sec_kernel_zero_is_one() {
         assert_eq!(sec_kernel(0.0), Ok(1.0));
     }
+
+    #[test]
+    fn sec_matches_live_excel_recip_cos_pins() {
+        // Live Excel 16.0 b20326: SEC(x)=1/COS(x) 8/8.
+        assert_eq!(sec_kernel(0.5).unwrap().to_bits(), 0x3ff23b5dfbfd97b6);
+        assert_eq!(sec_kernel(1.0).unwrap().to_bits(), 0x3ffd9cf0f125cc29);
+    }
 }

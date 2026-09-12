@@ -64,4 +64,12 @@ mod tests {
     fn csc_kernel_zero_is_div0() {
         assert_eq!(csc_kernel(0.0), Err(WorksheetErrorCode::Div0));
     }
+
+    #[test]
+    fn csc_matches_live_excel_recip_sin_pins() {
+        // Live Excel 16.0 b20326: CSC(x)=1/SIN(x) 8/8.
+        assert_eq!(csc_kernel(0.5).unwrap().to_bits(), 0x4000afc773ab69dc);
+        assert_eq!(csc_kernel(1.0).unwrap().to_bits(), 0x3ff303aa9620b224);
+        assert_eq!(csc_kernel(-0.5).unwrap().to_bits(), 0xc000afc773ab69dc);
+    }
 }
