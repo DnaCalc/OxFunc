@@ -15,3 +15,6 @@ Second peel into (-2,-1) from exact first-peel thirteenths is exact
 for k=2,10,11 (3/7). k=1,6,7,9 miss 1-2 ULP.
 
 Third peel into (-3,-2) from those three is exact 3/3.
+
+Further 11ths peels: k/11-4 3/3, k/11-5 3/3, k/11-6 2/3 (k=2 misses),
+k/11-7 1/2 (k=10 only). 10/11-8..10 miss; 10/11-11 is exact again.
