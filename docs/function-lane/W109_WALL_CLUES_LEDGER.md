@@ -482,3 +482,5 @@ will want; date every entry.
     F-body still a constraint, not an identity.
   - TANH=SINH/COSH 8/8. EXP form 5/8. libm tanh 1 ULP off TANH(0.5).
     Landed the worksheet ratio.
+  - SECH=1/COSH 5/5 and CSCH=1/SINH 5/5 (production already that
+    graph; pinned). COTH=COSH/SINH 3/5 max 1 ULP.

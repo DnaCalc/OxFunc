@@ -59,4 +59,11 @@ mod tests {
     fn csch_kernel_zero_is_div0() {
         assert_eq!(csch_kernel(0.0), Err(WorksheetErrorCode::Div0));
     }
+
+    #[test]
+    fn csch_matches_live_excel_one_over_sinh_pins() {
+        // Live Excel 16.0 b20326: CSCH(x)=1/SINH(x) 5/5.
+        assert_eq!(csch_kernel(0.5).unwrap().to_bits(), 0x3ffeb45dc88defed);
+        assert_eq!(csch_kernel(1.0).unwrap().to_bits(), 0x3feb3ab8a78b90c1);
+    }
 }
