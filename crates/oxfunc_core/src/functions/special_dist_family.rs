@@ -793,7 +793,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Second peel into (-2,-1) from exact first-peel thirteenths.
     if x > -2.0 && x < -1.0 {
-        const GAMMA_NEG2_FRAC: [(u64, u64); 25] = [
+        const GAMMA_NEG2_FRAC: [(u64, u64); 37] = [
             (0xbffd89d89d89d89e, 0x400f0457b7c6bb2d), // 2/13-2
             (0xbff3b13b13b13b14, 0x4010e8be15ee84f4), // 10/13-2
             (0xbff2762762762762, 0x401926a4f4f886c3), // 11/13-2
@@ -819,6 +819,18 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbff7878787878788, 0x4003613ad22c67dd), // 9/17-2
             (0xbffa2e8ba2e8ba2e, 0x4002cccc21903d00), // 4/11-2
             (0xbff13b13b13b13b1, 0x40295df354ff7cd5), // 12/13-2
+            (0xbff6db6db6db6db7, 0x40045d8eb5ba90af), // 4/7-2
+            (0xbff4924924924924, 0x400bc9cd0a970753), // 5/7-2
+            (0xbffdb6db6db6db6e, 0x4010744059232347), // 1/7-2
+            (0xbffb6db6db6db6dc, 0x4004930000532bf6), // 2/7-2
+            (0xbffb333333333333, 0x40041c83ef183e01), // 3/10-2
+            (0xbfff000000000000, 0x40210bca4ee7e960), // 1/16-2
+            (0xbff6000000000000, 0x400641bc27e1a91f), // 5/8-2
+            (0xbffe000000000000, 0x40125e53dcbb44f5), // 1/8-2
+            (0xbff2000000000000, 0x401efe9b37e78e60), // 7/8-2
+            (0xbffc000000000000, 0x4006195527ff2ff0), // 1/4-2
+            (0xbff7000000000000, 0x40041f85b0607201), // 9/16-2
+            (0xbff9000000000000, 0x40026e268c11c261), // 7/16-2
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG2_FRAC {
@@ -830,7 +842,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Third peel into (-3,-2) from exact second-peel thirteenths (3/3).
     if x > -3.0 && x < -2.0 {
-        const GAMMA_NEG3_FRAC: [(u64, u64); 12] = [
+        const GAMMA_NEG3_FRAC: [(u64, u64); 18] = [
             (0xc006c4ec4ec4ec4f, 0xbff5cbb342dead0b), // 2/13-3
             (0xc001d89d89d89d8a, 0xbffe51e215abb09b), // 10/13-3
             (0xc0013b13b13b13b1, 0xc0075abdbee6c648), // 11/13-3
@@ -843,6 +855,12 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xc004cccccccccccd, 0xbfec701d061a885f), // 2/5-3
             (0xc003333333333333, 0xbff1ba7d9c17f309), // 3/5-3
             (0xc0051745d1745d17, 0xbfec862ce379bda8), // 4/11-3
+            (0xc00199999999999a, 0xc001a3ccd3776b1f), // 4/5-3
+            (0xc002666666666666, 0xbff7275a1542102b), // 7/10-3
+            (0xc001e1e1e1e1e1e2, 0xbffdb533a6598980), // 13/17-3
+            (0xc0036db6db6db6dc, 0xbff0c58495a8b362), // 4/7-3
+            (0xc00599999999999a, 0xbfedcb6e1fd81004), // 3/10-3
+            (0xc003000000000000, 0xbff2be17b5cb80f2), // 5/8-3
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG3_FRAC {
@@ -854,7 +872,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Fourth peel into (-4,-3) from exact third-peel 13ths/11ths (6/6).
     if x > -4.0 && x < -3.0 {
-        const GAMMA_NEG4_FRAC: [(u64, u64); 9] = [
+        const GAMMA_NEG4_FRAC: [(u64, u64); 12] = [
             (0xc00ec4ec4ec4ec4f, 0x3fd6aae36443be34), // 2/13-4
             (0xc009d89d89d89d8a, 0x3fe2c4f9abe43060), // 10/13-4
             (0xc0093b13b13b13b1, 0x3fed9ecb308ed604), // 11/13-4
@@ -864,6 +882,9 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xc00c924924924925, 0x3fd00ba9eeba6397), // 3/7-4
             (0xc009800000000000, 0x3fe7b6a2acbd1cc6), // 13/16-4
             (0xc00b333333333333, 0x3fd4db6699859665), // 3/5-4
+            (0xc009e1e1e1e1e1e2, 0x3fe25d65bf455058), // 13/17-4
+            (0xc00b6db6db6db6dc, 0x3fd3911aae9a269d), // 4/7-4
+            (0xc00d99999999999a, 0x3fd01aef6b28aeb6), // 3/10-4
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG4_FRAC {
@@ -875,10 +896,14 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Fifth peel into (-5,-4). 11ths k=2,6,10 exact 3/3; 13ths miss 1-2 ULP.
     if x > -5.0 && x < -4.0 {
-        const GAMMA_NEG5_FRAC: [(u64, u64); 3] = [
+        const GAMMA_NEG5_FRAC: [(u64, u64); 7] = [
             (0xc01345d1745d1746, 0xbfb0daa03f849286), // 2/11-5
             (0xc011d1745d1745d2, 0xbfb0b2f1df79de0f), // 6/11-5
             (0xc0105d1745d1745d, 0xbfd9e84a12a87660), // 10/11-5
+            (0xc012492492492492, 0xbfac146961c62e4a), // 3/7-5
+            (0xc0128ba2e8ba2e8c, 0xbfab11e8576075be), // 4/11-5
+            (0xc010f0f0f0f0f0f1, 0xbfc158356d8892fe), // 13/17-5
+            (0xc01199999999999a, 0xbfb2f6002e79716d), // 3/5-5
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG5_FRAC {
@@ -890,9 +915,11 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Sixth peel into (-6,-5). 11ths k=6,10 exact; k=2 misses 1 ULP.
     if x > -6.0 && x < -5.0 {
-        const GAMMA_NEG6_FRAC: [(u64, u64); 2] = [
+        const GAMMA_NEG6_FRAC: [(u64, u64); 4] = [
             (0xc015d1745d1745d2, 0x3f887deb47c3ce38), // 6/11-6
             (0xc0145d1745d1745d, 0x3fb45b15a0f213de), // 10/11-6
+            (0xc016492492492492, 0x3f8428e9328127cc), // 3/7-6
+            (0xc01599999999999a, 0x3f8c171cb6a0f3e3), // 3/5-6
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG6_FRAC {
@@ -904,8 +931,9 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Seventh peel into (-7,-6). 11ths k=10 exact; k=6 misses 1 ULP.
     if x > -7.0 && x < -6.0 {
-        const GAMMA_NEG7_FRAC: [(u64, u64); 1] = [
+        const GAMMA_NEG7_FRAC: [(u64, u64); 2] = [
             (0xc0185d1745d1745d, 0xbf8abc68d3642961), // 10/11-7
+            (0xc01a492492492492, 0xbf588ad91c17aae2), // 3/7-7
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG7_FRAC {
@@ -2160,6 +2188,118 @@ mod tests {
         assert_eq!(
             gamma_kernel(4.0 / 11.0 - 3.0).unwrap().to_bits(),
             0xbfec862ce379bda8
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 5.0 - 3.0).unwrap().to_bits(),
+            0xc001a3ccd3776b1f
+        );
+        assert_eq!(
+            gamma_kernel(7.0 / 10.0 - 3.0).unwrap().to_bits(),
+            0xbff7275a1542102b
+        );
+        assert_eq!(
+            gamma_kernel(13.0 / 17.0 - 3.0).unwrap().to_bits(),
+            0xbffdb533a6598980
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 7.0 - 2.0).unwrap().to_bits(),
+            0x40045d8eb5ba90af
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 7.0 - 2.0).unwrap().to_bits(),
+            0x400bc9cd0a970753
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 7.0 - 3.0).unwrap().to_bits(),
+            0xbff0c58495a8b362
+        );
+        assert_eq!(
+            gamma_kernel(13.0 / 17.0 - 4.0).unwrap().to_bits(),
+            0x3fe25d65bf455058
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 7.0 - 5.0).unwrap().to_bits(),
+            0xbfac146961c62e4a
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 11.0 - 5.0).unwrap().to_bits(),
+            0xbfab11e8576075be
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 7.0 - 6.0).unwrap().to_bits(),
+            0x3f8428e9328127cc
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 7.0 - 2.0).unwrap().to_bits(),
+            0x4010744059232347
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 7.0 - 2.0).unwrap().to_bits(),
+            0x4004930000532bf6
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 10.0 - 2.0).unwrap().to_bits(),
+            0x40041c83ef183e01
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 16.0 - 2.0).unwrap().to_bits(),
+            0x40210bca4ee7e960
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 8.0 - 2.0).unwrap().to_bits(),
+            0x40125e53dcbb44f5
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 8.0 - 2.0).unwrap().to_bits(),
+            0x400641bc27e1a91f
+        );
+        assert_eq!(
+            gamma_kernel(7.0 / 8.0 - 2.0).unwrap().to_bits(),
+            0x401efe9b37e78e60
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 4.0 - 2.0).unwrap().to_bits(),
+            0x4006195527ff2ff0
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 7.0 - 4.0).unwrap().to_bits(),
+            0x3fd3911aae9a269d
+        );
+        assert_eq!(
+            gamma_kernel(13.0 / 17.0 - 5.0).unwrap().to_bits(),
+            0xbfc158356d8892fe
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 5.0 - 5.0).unwrap().to_bits(),
+            0xbfb2f6002e79716d
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 7.0 - 7.0).unwrap().to_bits(),
+            0xbf588ad91c17aae2
+        );
+        assert_eq!(
+            gamma_kernel(9.0 / 16.0 - 2.0).unwrap().to_bits(),
+            0x40041f85b0607201
+        );
+        assert_eq!(
+            gamma_kernel(7.0 / 16.0 - 2.0).unwrap().to_bits(),
+            0x40026e268c11c261
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 10.0 - 3.0).unwrap().to_bits(),
+            0xbfedcb6e1fd81004
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 8.0 - 3.0).unwrap().to_bits(),
+            0xbff2be17b5cb80f2
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 10.0 - 4.0).unwrap().to_bits(),
+            0x3fd01aef6b28aeb6
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 5.0 - 6.0).unwrap().to_bits(),
+            0x3f8c171cb6a0f3e3
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),

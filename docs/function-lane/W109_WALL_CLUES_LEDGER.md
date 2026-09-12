@@ -675,3 +675,16 @@ will want; date every entry.
   - BETA.DIST PDF a=1 b=2 vs 2*(1-x) 6/9 max 1 ULP. a=2 b=1 vs 2x 7/9.
     a=1 b=3 vs 3*(1-x)^2 3/9. CDF a=1 b=2 vs 1-(1-x)^2 8/9. Confirms
     no integer-shape beta closed form.
+  - T.DIST df=3 PDF worksheet POWER closed forms honest 1–4/20
+    (best POWER(-2)*2/(PI*SQRT3) 4/20). df=4 (3/8)*POWER 4/20.
+    Not identities.
+  - F.DIST.RT(x,2,d2) vs EXP((d2/2)*LN(d2/(d2+2x))) honest 56/81;
+    POWER 36/81; 1/POWER 28/81. CDF 1-POWER 49/81. PDF POWER 18/81.
+    Not identities.
+  - GAMMALN=LN(GAMMA) at product-first n>=1 points of landed (0,1)
+    seeds: 13/72, and those 13 are already in GAMMALN_LN_GAMMA_X.
+    No new LN(GAMMA) exacts in that sweep.
+  - 32nd first peels 1/32,3/32,15/32,17/32,31/32 are worksheet-exact
+    into (-1,0); skipped as a new unseeded family (same rule as
+    sixths/14ths/19ths). 1/6-2 is worksheet-exact but 1/6-1 misses
+    1 ULP; sixths stay unseeded.
