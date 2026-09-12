@@ -283,6 +283,12 @@ mod tests {
                 .to_bits(),
             0x3fea53ce6913b61a
         );
+        assert_eq!(
+            z_test_kernel(&[1.0, 2.0, 3.0, 4.0, 5.0], 4.0, Some(2.0))
+                .unwrap()
+                .to_bits(),
+            0x3febc87d3294a339
+        );
     }
 
     #[test]
