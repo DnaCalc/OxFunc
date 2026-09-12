@@ -695,11 +695,13 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
-    // Live Excel 16.0 b20326: selected x in (-1,0) where worksheet
-    // GAMMA(x)=GAMMA(x+1)/x is exact. Seed the published bits: IEEE
-    // complement-seed/x is 1 ULP off because 1+(-1/3) is not 2/3.
+    // Live Excel 16.0 b20326: selected x in (-1,0) as published-bit
+    // seeds. Many of these are exact worksheet GAMMA(x)=GAMMA(x+1)/x
+    // peels; others (3/7-1, 5/7-1, 5/16-1, 13/16-1, 5/9-1, 1/12-1,
+    // 7/12-1) are 1–4 ULP from that peel and still use the Excel bits.
+    // IEEE complement-seed/x is not the graph (1+(-1/3) is not 2/3).
     if x > -1.0 && x < 0.0 {
-        const GAMMA_NEG_FRAC: [(u64, u64); 41] = [
+        const GAMMA_NEG_FRAC: [(u64, u64); 48] = [
             (0xbfd5555555555555, 0xc0103fd9ade928da), // -1/3
             (0xbfe5555555555555, 0xc01012d97eaf6234), // -2/3
             (0xbfd0000000000000, 0xc0139b4e8b50f62d), // -1/4
@@ -745,6 +747,13 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbfce1e1e1e1e1e20, 0xc01481f52635d60f), // 13/17-1
             (0xbfae1e1e1e1e1e20, 0xc031a384fa1f7fe9), // 16/17-1
             (0xbfdb6db6db6db6dc, 0xc00d17f07153aa1f), // 4/7-1
+            (0xbfe2492492492492, 0xc00cf1f647776ae2), // 3/7-1
+            (0xbfd2492492492492, 0xc011dd28623c84b3), // 5/7-1
+            (0xbfe6000000000000, 0xc010ace9d2fd5a80), // 5/16-1
+            (0xbfc8000000000000, 0xc0188b2142750366), // 13/16-1
+            (0xbfdc71c71c71c71c, 0xc00cd0199151d380), // 5/9-1
+            (0xbfed555555555555, 0xc02916f40e4cd8ec), // 1/12-1
+            (0xbfdaaaaaaaaaaaaa, 0xc00d59e9547e6784), // 7/12-1 (distinct from -5/12)
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG_FRAC {
@@ -1933,6 +1942,34 @@ mod tests {
         assert_eq!(
             gamma_kernel(4.0 / 7.0 - 1.0).unwrap().to_bits(),
             0xc00d17f07153aa1f
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 7.0 - 1.0).unwrap().to_bits(),
+            0xc00cf1f647776ae2
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 7.0 - 1.0).unwrap().to_bits(),
+            0xc011dd28623c84b3
+        );
+        assert_eq!(
+            gamma_kernel(0.3125 - 1.0).unwrap().to_bits(),
+            0xc010ace9d2fd5a80
+        );
+        assert_eq!(
+            gamma_kernel(0.8125 - 1.0).unwrap().to_bits(),
+            0xc0188b2142750366
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 9.0 - 1.0).unwrap().to_bits(),
+            0xc00cd0199151d380
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 12.0 - 1.0).unwrap().to_bits(),
+            0xc02916f40e4cd8ec
+        );
+        assert_eq!(
+            gamma_kernel(7.0 / 12.0 - 1.0).unwrap().to_bits(),
+            0xc00d59e9547e6784
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
