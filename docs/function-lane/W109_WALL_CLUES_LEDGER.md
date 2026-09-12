@@ -697,3 +697,7 @@ will want; date every entry.
     leftover remains.
   - F.DIST.RT d1=2 excel_pow_chain and excel_exp*log 11/16 vs live
     bits; split POWER 3/16. Not identities.
+  - CHISQ.DIST(x,1,FALSE)=GAMMA.DIST(x,0.5,2,FALSE) 10/10. Closed
+    forms EXP/SQRT(2xPI) 2/10, 1/SQRT*EXP 4/10, PHI(SQRT)/SQRT 2/10.
+    3/5 peels stop after -8 ( -9 miss 1 ULP). 1/16 peels stop after
+    -6 ( -7 miss 1 ULP).
