@@ -414,20 +414,26 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     }
 
     // Live Excel 16.0 b20326: fifths in (0,1) are private seeds (GAMMA(1/5)
-    // is 2 ULP from the generic path). Recurrence n=1 already 1 ULP on all
-    // four; not a contiguous family.
-    const GAMMA_FIFTH: [(u32, u64); 4] = [
-        (1, 0x40125d0622505413),
-        (2, 0x4001beca6e4dff14),
-        (3, 0x3ff7d3bb4061b952),
-        (4, 0x3ff2a0af5617b4b9),
+    // is 2 ULP from the generic path). Product-first extends 1/5 through
+    // n=1; 2/5, 3/5, 4/5 miss at n=1.
+    const GAMMA_FIFTH: [(u32, u64, u32); 4] = [
+        (1, 0x40125d0622505413, 1),
+        (2, 0x4001beca6e4dff14, 0),
+        (3, 0x3ff7d3bb4061b952, 0),
+        (4, 0x3ff2a0af5617b4b9, 0),
     ];
-    let five = x * 5.0;
-    if five.fract() == 0.0 && (1.0..=4.0).contains(&five) {
-        let k = five as u32;
-        for &(kk, bits) in &GAMMA_FIFTH {
-            if kk == k {
-                return Ok(f64::from_bits(bits));
+    if x > 0.0 {
+        for &(kk, bits, nmax) in &GAMMA_FIFTH {
+            let frac = kk as f64 / 5.0;
+            let seed = f64::from_bits(bits);
+            for n in 0..=nmax {
+                if x.to_bits() == (n as f64 + frac).to_bits() {
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
+                }
             }
         }
     }
@@ -499,27 +505,34 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     }
 
     // Live Excel 16.0 b20326: thirteenths in (0,1) are private seeds
-    // (GAMMA(1/13) is 4 ULP from the generic path). Recurrence not claimed.
-    const GAMMA_THIRTEENTH: [(u32, u64); 12] = [
-        (1, 0x4028fce1e0ed23fb),
-        (2, 0x401839eca7c726a2),
-        (3, 0x400f91158829b3d6),
-        (4, 0x40074dfec9db3ae6),
-        (5, 0x4002798afcfe30c7),
-        (6, 0x3ffeb36ee50fd917),
-        (7, 0x3ffa637c934edca9),
-        (8, 0x3ff7476291fcce66),
-        (9, 0x3ff4f76b6a7bb3cb),
-        (10, 0x3ff335dc7fec23ed),
-        (11, 0x3ff1dbd18812ee11),
-        (12, 0x3ff0cfaee504346b),
+    // (GAMMA(1/13) is 4 ULP from the generic path). Product-first extends
+    // 1/13 through n=2; other residues not claimed here.
+    const GAMMA_THIRTEENTH: [(u32, u64, u32); 12] = [
+        (1, 0x4028fce1e0ed23fb, 2),
+        (2, 0x401839eca7c726a2, 0),
+        (3, 0x400f91158829b3d6, 0),
+        (4, 0x40074dfec9db3ae6, 0),
+        (5, 0x4002798afcfe30c7, 0),
+        (6, 0x3ffeb36ee50fd917, 0),
+        (7, 0x3ffa637c934edca9, 0),
+        (8, 0x3ff7476291fcce66, 0),
+        (9, 0x3ff4f76b6a7bb3cb, 0),
+        (10, 0x3ff335dc7fec23ed, 0),
+        (11, 0x3ff1dbd18812ee11, 0),
+        (12, 0x3ff0cfaee504346b, 0),
     ];
-    let thirteen = x * 13.0;
-    if thirteen.fract() == 0.0 && (1.0..=12.0).contains(&thirteen) {
-        let k = thirteen as u32;
-        for &(kk, bits) in &GAMMA_THIRTEENTH {
-            if kk == k {
-                return Ok(f64::from_bits(bits));
+    if x > 0.0 {
+        for &(kk, bits, nmax) in &GAMMA_THIRTEENTH {
+            let frac = kk as f64 / 13.0;
+            let seed = f64::from_bits(bits);
+            for n in 0..=nmax {
+                if x.to_bits() == (n as f64 + frac).to_bits() {
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
+                }
             }
         }
     }
@@ -559,16 +572,12 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         (5, 0x3ff46a774bb2e0cd, 0),
         (6, 0x3ff1b138d04a62f3, 0),
     ];
-    let seven = x * 7.0;
-    if x > 0.0 && seven.fract() == 0.0 {
-        let k = seven as u32;
-        if k % 7 != 0 {
-            let rem = k % 7;
-            let n = (k - rem) / 7;
-            for &(kk, bits, nmax) in &GAMMA_SEVENTH {
-                if kk == rem && n <= nmax {
-                    let seed = f64::from_bits(bits);
-                    let frac = rem as f64 / 7.0;
+    if x > 0.0 {
+        for &(kk, bits, nmax) in &GAMMA_SEVENTH {
+            let frac = kk as f64 / 7.0;
+            let seed = f64::from_bits(bits);
+            for n in 0..=nmax {
+                if x.to_bits() == (n as f64 + frac).to_bits() {
                     let mut prod = 1.0;
                     for i in 0..n {
                         prod *= frac + i as f64;
@@ -588,16 +597,12 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         (7, 0x3ff87597c6695642, 3),
         (11, 0x3ff0e384cb7476b6, 0),
     ];
-    let twelve = x * 12.0;
-    if x > 0.0 && twelve.fract() == 0.0 {
-        let k = twelve as u32;
-        if k % 12 != 0 {
-            let rem = k % 12;
-            let n = (k - rem) / 12;
-            for &(kk, bits, nmax) in &GAMMA_TWELFTH {
-                if kk == rem && n <= nmax {
-                    let seed = f64::from_bits(bits);
-                    let frac = rem as f64 / 12.0;
+    if x > 0.0 {
+        for &(kk, bits, nmax) in &GAMMA_TWELFTH {
+            let frac = kk as f64 / 12.0;
+            let seed = f64::from_bits(bits);
+            for n in 0..=nmax {
+                if x.to_bits() == (n as f64 + frac).to_bits() {
                     let mut prod = 1.0;
                     for i in 0..n {
                         prod *= frac + i as f64;
@@ -617,16 +622,12 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         (7, 0x3ff4c4d5ab21ea23, 0),
         (9, 0x3ff1191a68f2b5e1, 0),
     ];
-    let ten = x * 10.0;
-    if x > 0.0 && ten.fract() == 0.0 {
-        let k = ten as u32;
-        if k % 10 != 0 {
-            let rem = k % 10;
-            let n = (k - rem) / 10;
-            for &(kk, bits, nmax) in &GAMMA_ODD_TENTH {
-                if kk == rem && n <= nmax {
-                    let seed = f64::from_bits(bits);
-                    let frac = rem as f64 / 10.0;
+    if x > 0.0 {
+        for &(kk, bits, nmax) in &GAMMA_ODD_TENTH {
+            let frac = kk as f64 / 10.0;
+            let seed = f64::from_bits(bits);
+            for n in 0..=nmax {
+                if x.to_bits() == (n as f64 + frac).to_bits() {
                     let mut prod = 1.0;
                     for i in 0..n {
                         prod *= frac + i as f64;
@@ -1560,6 +1561,14 @@ mod tests {
         assert_eq!(gamma_kernel(5.0 / 11.0).unwrap().to_bits(), 0x3fff2c8ab61daf0f);
         assert_eq!(gamma_kernel(10.0 / 11.0).unwrap().to_bits(), 0x3ff0fb827c62f539);
         assert_eq!(gamma_kernel(1.0 / 13.0).unwrap().to_bits(), 0x4028fce1e0ed23fb);
+        assert_eq!(
+            gamma_kernel(1.0 + 1.0 / 13.0).unwrap().to_bits(),
+            0x3feec1160123dd84
+        );
+        assert_eq!(
+            gamma_kernel(2.0 + 1.0 / 13.0).unwrap().to_bits(),
+            0x3ff08f5a9e270120
+        );
         assert_eq!(gamma_kernel(6.0 / 13.0).unwrap().to_bits(), 0x3ffeb36ee50fd917);
         assert_eq!(gamma_kernel(12.0 / 13.0).unwrap().to_bits(), 0x3ff0cfaee504346b);
         assert_eq!(gamma_kernel(1.0 / 17.0).unwrap().to_bits(), 0x40307a5f0b4f6098);
@@ -1582,6 +1591,10 @@ mod tests {
         assert_eq!(gamma_kernel(5.8125).unwrap().to_bits(), 0x4055db68b6f3576c);
         // Live Excel 16.0 b20326 fifths in (0,1). Recurrence n=1 already 1 ULP.
         assert_eq!(gamma_kernel(1.0 / 5.0).unwrap().to_bits(), 0x40125d0622505413);
+        assert_eq!(
+            gamma_kernel(1.0 + 1.0 / 5.0).unwrap().to_bits(),
+            0x3fed61a36a1a201f
+        );
         assert_eq!(gamma_kernel(2.0 / 5.0).unwrap().to_bits(), 0x4001beca6e4dff14);
         assert_eq!(gamma_kernel(3.0 / 5.0).unwrap().to_bits(), 0x3ff7d3bb4061b952);
         assert_eq!(gamma_kernel(4.0 / 5.0).unwrap().to_bits(), 0x3ff2a0af5617b4b9);

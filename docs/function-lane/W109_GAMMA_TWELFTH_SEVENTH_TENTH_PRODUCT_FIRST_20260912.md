@@ -10,3 +10,6 @@ Product-first from existing (0,1) seeds:
 - `n+3/10` n=0..=1 (first miss n=2)
 
 `11/12` and the other odd tenths / sevenths miss at n=1 (seed only).
+
+Also: `n+1/13` n=0..=2 (first miss n=3) and `n+1/5` n=0..=1 (first miss n=2).
+`1/11`, `1/17`, `1/9` miss at n=1.

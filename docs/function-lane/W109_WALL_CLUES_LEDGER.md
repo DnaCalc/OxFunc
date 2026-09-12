@@ -549,3 +549,4 @@ will want; date every entry.
   - GAMMA product-first from remaining (0,1) seeds: 1/12 and 5/12
     n<=1, 7/12 n<=3, 1/7 n<=2, 3/10 n<=1. 11/12 and other tenths/
     sevenths miss at n=1.
+  - GAMMA 1/13 product-first n<=2; 1/5 n<=1. 1/11, 1/17, 1/9 miss n=1.
