@@ -701,3 +701,6 @@ will want; date every entry.
     forms EXP/SQRT(2xPI) 2/10, 1/SQRT*EXP 4/10, PHI(SQRT)/SQRT 2/10.
     3/5 peels stop after -8 ( -9 miss 1 ULP). 1/16 peels stop after
     -6 ( -7 miss 1 ULP).
+  - CHISQ PDF df=1 excel_exp/sqrt associations 2–3/10 vs live bits.
+    IMLOG10 vs IMLN/LN(10) 2/10 re and im; vs LOG10(IMABS) 2/10;
+    IMLOG2 vs IMLN/LN(2) 2/10. Not worksheet-log identities.
