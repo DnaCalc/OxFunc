@@ -1028,7 +1028,7 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 1/2 already matches via the piecewise kernel. Product-first
     // extensions are included only where GAMMA(x) is already a landed
     // special-case and worksheet LN(GAMMA) matches GAMMALN.
-    const GAMMALN_LN_GAMMA_X: [u64; 48] = [
+    const GAMMALN_LN_GAMMA_X: [u64; 50] = [
         0x3fc999999999999a, // 1/5
         0x3fd5555555555555, // 1/3
         0x3fc2492492492492, // 1/7
@@ -1077,6 +1077,8 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         0x400cb4b4b4b4b4b5, // 3+10/17
         0x400d2d2d2d2d2d2d, // 3+11/17
         0x400c71c71c71c71c, // 3+5/9
+        0x3fcc71c71c71c71c, // 2/9
+        0x3fd3333333333333, // 3/10
     ];
     if GAMMALN_LN_GAMMA_X.contains(&x.to_bits()) {
         return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
@@ -1903,6 +1905,14 @@ mod tests {
         assert_eq!(gammaln_kernel(0.5).unwrap().to_bits(), 0x3fe250d048e7a1bd);
         // Live Excel 16.0 b20326: GAMMALN=LN(GAMMA) at these seeds.
         assert_eq!(gammaln_kernel(0.2).unwrap().to_bits(), 0x3ff86290bf25b627);
+        assert_eq!(
+            gammaln_kernel(2.0 / 9.0).unwrap().to_bits(),
+            0x3ff699f87438534a
+        );
+        assert_eq!(
+            gammaln_kernel(3.0 / 10.0).unwrap().to_bits(),
+            0x3ff188637a6c4196
+        );
         assert_eq!(
             gammaln_kernel(1.0 / 3.0).unwrap().to_bits(),
             0x3fef8890e16b741b
