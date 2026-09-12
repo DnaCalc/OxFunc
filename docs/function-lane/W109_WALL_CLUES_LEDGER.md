@@ -672,3 +672,6 @@ will want; date every entry.
     worksheet elementary graph.
   - CUMIPMT vs sum of IPMT over the range honest 1/3 (15 and 7 ULP
     misses). CUMPRINC vs sum of PPMT 1/3 max 1 ULP. Not identities.
+  - BETA.DIST PDF a=1 b=2 vs 2*(1-x) 6/9 max 1 ULP. a=2 b=1 vs 2x 7/9.
+    a=1 b=3 vs 3*(1-x)^2 3/9. CDF a=1 b=2 vs 1-(1-x)^2 8/9. Confirms
+    no integer-shape beta closed form.
