@@ -22,13 +22,18 @@ pub fn factorial_of_int(n: i64) -> f64 {
 }
 
 pub fn double_factorial_of_int(n: i64) -> f64 {
+    // Live Excel 16.0 b20326: FACTDOUBLE is the reverse native odd/even
+    // product n*(n-2)*... (not the forward fold). Forward diverges by n=50.
     if n <= 1 {
         return 1.0;
     }
-    let start = if n % 2 == 0 { 2 } else { 1 };
-    (start..=n)
-        .step_by(2)
-        .fold(1.0, |acc, item| acc * item as f64)
+    let mut acc = 1.0;
+    let mut k = n;
+    while k >= 2 {
+        acc *= k as f64;
+        k -= 2;
+    }
+    acc
 }
 
 #[cfg(test)]

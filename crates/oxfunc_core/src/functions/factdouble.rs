@@ -77,4 +77,16 @@ mod tests {
         assert_bits(factdouble_kernel(9.0).expect("factdouble(9)"), 945.0_f64);
         assert_bits(factdouble_kernel(6.0).expect("factdouble(6)"), 48.0_f64);
     }
+
+    #[test]
+    fn factdouble_reverse_product_matches_live_excel_large_n() {
+        assert_eq!(
+            factdouble_kernel(50.0).unwrap().to_bits(),
+            0x46b9a940c33f6120
+        );
+        assert_eq!(
+            factdouble_kernel(200.0).unwrap().to_bits(),
+            0x66fb30964ec395de
+        );
+    }
 }
