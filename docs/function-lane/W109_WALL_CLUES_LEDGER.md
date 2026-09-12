@@ -480,3 +480,5 @@ will want; date every entry.
   - ERF.PRECISE small-z live 20326 capture: production/libm 405/1033
     max 3 ULP. ERFC production 746/1033 max 3. NSWC native 55/1033.
     F-body still a constraint, not an identity.
+  - TANH=SINH/COSH 8/8. EXP form 5/8. libm tanh 1 ULP off TANH(0.5).
+    Landed the worksheet ratio.

@@ -24,7 +24,9 @@ pub const TANH_META: FunctionMeta = function_spec! {
 };
 
 pub fn tanh_kernel(n: f64) -> f64 {
-    n.tanh()
+    // Live Excel 16.0 b20326: TANH(x)=SINH(x)/COSH(x) 8/8. libm tanh is
+    // 1 ULP off the first pin.
+    crate::functions::sinh::sinh_kernel(n) / crate::functions::cosh::cosh_kernel(n)
 }
 
 pub fn eval_tanh_surface(
@@ -49,6 +51,14 @@ mod tests {
     #[test]
     fn tanh_meta_function_id_is_stable() {
         assert_eq!(TANH_META.function_id, "FUNC.TANH");
+    }
+
+    #[test]
+    fn tanh_matches_live_excel_sinh_cosh_pins() {
+        // Live Excel 16.0 b20326: TANH(x)=SINH(x)/COSH(x) 8/8.
+        assert_eq!(tanh_kernel(0.5).to_bits(), 0x3fdd9353d7568af4);
+        assert_eq!(tanh_kernel(1.0).to_bits(), 0x3fe85efab514f394);
+        assert_eq!(tanh_kernel(-0.5).to_bits(), 0xbfdd9353d7568af4);
     }
 
     #[test]
