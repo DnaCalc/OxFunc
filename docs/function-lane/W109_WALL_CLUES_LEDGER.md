@@ -613,3 +613,6 @@ will want; date every entry.
   - T.DIST df=4 PDF POWER closed forms 0-3/15. Not identities.
   - F.DIST.RT d1=2 vs POWER(d2/(d2+2x),d2/2) honest 6/9 (1-2 ULP
     misses including (0.5,2)). Not an identity.
+  - BINOM k=1 vs n*p*POWER(1-p,n-1) honest 3/10; vs EXP/LN 2/10.
+  - F.DIST(x,2,2,FALSE) vs 1/(1+x)^2 honest 4/10. F.DIST.RT(x,2,2)
+    vs 1/(1+x) 6/10. CHISQ df=4 x87_mul(exp,1+h) still 7/9.
