@@ -587,7 +587,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Live Excel 16.0 b20326: sevenths in (0,1) are private seeds
     // (GAMMA(1/7) is 2 ULP from the generic path). Product-first extends
-    // 1/7 through n=2; other sevenths miss at n=1.
+    // 1/7 n<=2; 2/7,3/7,4/7,5/7,6/7 miss at n=1.
     const GAMMA_SEVENTH: [(u32, u64, u32); 6] = [
         (1, 0x401a313769520e5a, 2),
         (2, 0x400931634450f1e8, 0),
