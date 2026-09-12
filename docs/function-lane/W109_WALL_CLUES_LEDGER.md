@@ -421,3 +421,5 @@ will want; date every entry.
     Not an identity.
   - GAMMA odd sixteenths in (0,1): live-pinned seeds; `GAMMA(1/16)` is 1 ULP
     from the generic path. Landed seeds only; recurrence not claimed.
+  - F.DIST CDF vs worksheet BETA.DIST(d1*x/(d1*x+d2), d1/2, d2/2, TRUE) is
+    2/3 with a 1 ULP miss. Argument construction rounding; not an identity.
