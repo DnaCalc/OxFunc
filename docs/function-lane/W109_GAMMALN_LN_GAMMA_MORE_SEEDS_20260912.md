@@ -42,6 +42,9 @@ eighths n<=9, sixteenths within nmax): 4.25, 5.25, 6.25, 7.25, 4.125,
 6.125, 7.125, 9.125, 5.625, 7.625, 6.0625, 7.0625, 4.5625, 6.5625,
 8.5625, 10.5625, 5.8125. Neighboring n miss 1–43 ULP.
 
+Further nmax-bounded hits on 9/11, 10/11, 6/13, 7/13, 9/13, 7/17,
+9/17, 10/17, 11/17, 5/9 (12/88 of a remaining-nmax scan).
+
 Production publishes `excel_log(gamma_kernel(x))` at those x bits.
 `GAMMALN(x+1)=GAMMALN(x)+LN(x)` is 0/10 on the same seed set (max 27 ULP)
 and is not the graph.

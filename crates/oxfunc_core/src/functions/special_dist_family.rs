@@ -909,7 +909,7 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 1/2 already matches via the piecewise kernel. Product-first
     // extensions are included only where GAMMA(x) is already a landed
     // special-case and worksheet LN(GAMMA) matches GAMMALN.
-    const GAMMALN_LN_GAMMA_X: [u64; 36] = [
+    const GAMMALN_LN_GAMMA_X: [u64; 48] = [
         0x3fc999999999999a, // 1/5
         0x3fd5555555555555, // 1/3
         0x3fc2492492492492, // 1/7
@@ -946,6 +946,18 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         0x4021200000000000, // 8.5625
         0x4025200000000000, // 10.5625
         0x4017400000000000, // 5.8125
+        0x40068ba2e8ba2e8c, // 2+9/11
+        0x400e8ba2e8ba2e8c, // 3+9/11
+        0x400f45d1745d1746, // 3+10/11
+        0x400bb13b13b13b14, // 3+6/13
+        0x400c4ec4ec4ec4ec, // 3+7/13
+        0x400d89d89d89d89e, // 3+9/13
+        0x4012c4ec4ec4ec4f, // 4+9/13
+        0x400b4b4b4b4b4b4b, // 3+7/17
+        0x400c3c3c3c3c3c3c, // 3+9/17
+        0x400cb4b4b4b4b4b5, // 3+10/17
+        0x400d2d2d2d2d2d2d, // 3+11/17
+        0x400c71c71c71c71c, // 3+5/9
     ];
     if GAMMALN_LN_GAMMA_X.contains(&x.to_bits()) {
         return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
@@ -1876,6 +1888,30 @@ mod tests {
         assert_eq!(
             gammaln_kernel(5.8125).unwrap().to_bits(),
             0x4011e21e484a69c4
+        );
+        assert_eq!(
+            gammaln_kernel(2.0 + 9.0 / 11.0).unwrap().to_bits(),
+            0x3fe1069a7a544ca4
+        );
+        assert_eq!(
+            gammaln_kernel(3.0 + 10.0 / 11.0).unwrap().to_bits(),
+            0x3ffadc28e27d15b4
+        );
+        assert_eq!(
+            gammaln_kernel(3.0 + 9.0 / 13.0).unwrap().to_bits(),
+            0x3ff6b4a5c4f4a9fe
+        );
+        assert_eq!(
+            gammaln_kernel(4.0 + 9.0 / 13.0).unwrap().to_bits(),
+            0x4005cd86f3998423
+        );
+        assert_eq!(
+            gammaln_kernel(3.0 + 11.0 / 17.0).unwrap().to_bits(),
+            0x3ff5de146efd5ef9
+        );
+        assert_eq!(
+            gammaln_kernel(3.0 + 5.0 / 9.0).unwrap().to_bits(),
+            0x3ff4344afd96d888
         );
         assert_eq!(gamma_kernel(1.0 / 11.0).unwrap().to_bits(), 0x402503020775740e);
         assert_eq!(
