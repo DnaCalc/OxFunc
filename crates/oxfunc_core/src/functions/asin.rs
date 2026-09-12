@@ -163,4 +163,10 @@ mod tests {
             )
         );
     }
+
+    #[test]
+    fn asin_matches_live_excel_pins() {
+        assert_eq!(asin_kernel(0.5).unwrap().to_bits(), 0x3fe0c152382d7366);
+        assert_eq!(asin_kernel(1.0).unwrap().to_bits(), 0x3ff921fb54442d18);
+    }
 }
