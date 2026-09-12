@@ -477,3 +477,6 @@ will want; date every entry.
     ULP. B1 coefficient wall unchanged.
   - GAMMA.DIST(x,1,1,TRUE) vs 1-EXP(-x) 5/6 (x=0.1 is 4 ULP). Not an
     identity.
+  - ERF.PRECISE small-z live 20326 capture: production/libm 405/1033
+    max 3 ULP. ERFC production 746/1033 max 3. NSWC native 55/1033.
+    F-body still a constraint, not an identity.
