@@ -550,3 +550,5 @@ will want; date every entry.
     n<=1, 7/12 n<=3, 1/7 n<=2, 3/10 n<=1. 11/12 and other tenths/
     sevenths miss at n=1.
   - GAMMA 1/13 product-first n<=2; 1/5 n<=1. 1/11, 1/17, 1/9 miss n=1.
+  - GAMMA elevenths product-first: 2/11,3/11,6/11 n<=1; 4/11 n<=2;
+    7/11,9/11,10/11 n<=3. 1/11,5/11,8/11 miss n=1.
