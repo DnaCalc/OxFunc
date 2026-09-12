@@ -426,3 +426,5 @@ will want; date every entry.
   - T.DIST.2T vs F.DIST.RT(t^2,1,df) is 2/3 (one 2 ULP miss). Not an identity.
   - CONFIDENCE.T vs T.INV(1-α/2,n-1)*σ/√n associations: best `t*(σ/√n)` is
     3/6. Private kernel.
+  - PMT(fv=0,type=0) vs worksheet `-pv*rate/(1-POWER(1+rate,-nper))` is 0/4
+    max 4 ULP. Private kernel, not worksheet POWER annuity.
