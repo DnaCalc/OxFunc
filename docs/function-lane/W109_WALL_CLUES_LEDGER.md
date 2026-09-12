@@ -630,3 +630,13 @@ will want; date every entry.
     6/10 leftover ERFC body.
   - FISHERINV vs TANH honest 6/9. FISHER(TANH(y)) vs y 4/9. Not
     identities.
+  - CHISQ.INV.RT(p,2) / CHIINV(p,2) vs worksheet -2*LN(p) honest 17/18
+    (p=0.8 is 1 ULP). 2*LN(1/p), LN(1/p^2), -LN(p^2), LN/LN(EXP(-0.5))
+    do not recover the miss. CHISQ.INV(p,2)=GAMMA.INV(p,1,2) 18/18 but
+    neither is -2*LN(1-p) (11/18). Not landed.
+  - T.INV.2T(p,2) vs (1-p)*SQRT(2/(p*(2-p))) honest 7/18 max 18 ULP.
+    T.INV(p,2) vs (2p-1)*SQRT(...) 3/18. T.DIST.2T vs 1-|x|/SQRT(2+x^2)
+    2/11. Not identities.
+  - F.INV(p,2,2) vs p/(1-p) 9/18; F.INV.RT vs (1-p)/p 8/18. FINV =
+    F.INV.RT 18/18. F.INV(p,2,4) vs 2*(1/SQRT(1-p)-1) 2/18.
+  - GAMMALN(x+1) vs GAMMALN(x)+LN(x) 0/10 max 27 ULP on landed seeds.

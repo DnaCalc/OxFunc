@@ -903,14 +903,28 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     if !x.is_finite() || x < f64::MIN_POSITIVE {
         return Err(WorksheetErrorCode::Num);
     }
-    // Live Excel 16.0 b20326: GAMMALN=LN(GAMMA) at 1/5, 1/3, 1/7 (and
-    // already at 1/2 via the piecewise kernel). Other landed GAMMA seeds
-    // are 1–13 ULP from LN(GAMMA) and are not this graph.
+    // Live Excel 16.0 b20326: GAMMALN=LN(GAMMA) at these landed GAMMA
+    // seeds (honest uint64 ULP, per-cell formulas). Not a general
+    // composition: neighboring residues in the same families miss 1–40 ULP.
+    // 1/2 already matches via the piecewise kernel.
     if matches!(
         x.to_bits(),
         0x3fc999999999999a | // 1/5
         0x3fd5555555555555 | // 1/3
-        0x3fc2492492492492 // 1/7
+        0x3fc2492492492492 | // 1/7
+        0x3fd2492492492492 | // 2/7
+        0x3fdb6db6db6db6db | // 3/7
+        0x3fe6db6db6db6db7 | // 5/7
+        0x3fd8000000000000 | // 3/8
+        0x3fd4000000000000 | // 5/16
+        0x3fb745d1745d1746 | // 1/11
+        0x3fc745d1745d1746 | // 2/11
+        0x3fe1745d1745d174 | // 6/11
+        0x3fb3b13b13b13b14 | // 1/13
+        0x3fc3b13b13b13b14 | // 2/13
+        0x3ff13b13b13b13b1 | // 1+1/13
+        0x3fbe1e1e1e1e1e1e | // 2/17
+        0x4004000000000000 // 2.5
     ) {
         return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
     }
@@ -1716,6 +1730,49 @@ mod tests {
             gammaln_kernel(1.0 / 7.0).unwrap().to_bits(),
             0x3ffe1113cc526fa6
         );
+        assert_eq!(
+            gammaln_kernel(2.0 / 7.0).unwrap().to_bits(),
+            0x3ff25a9c12810ff0
+        );
+        assert_eq!(
+            gammaln_kernel(3.0 / 7.0).unwrap().to_bits(),
+            0x3fe73e3996add6b2
+        );
+        assert_eq!(
+            gammaln_kernel(5.0 / 7.0).unwrap().to_bits(),
+            0x3fcf325cd39aec45
+        );
+        assert_eq!(gammaln_kernel(0.375).unwrap().to_bits(), 0x3feb9e4d53fc3074);
+        assert_eq!(gammaln_kernel(0.3125).unwrap().to_bits(), 0x3ff0d8e1683cdcd1);
+        assert_eq!(
+            gammaln_kernel(1.0 / 11.0).unwrap().to_bits(),
+            0x4002d0c317ddb0c0
+        );
+        assert_eq!(
+            gammaln_kernel(2.0 / 11.0).unwrap().to_bits(),
+            0x3ff9ff587e1ad8ce
+        );
+        assert_eq!(
+            gammaln_kernel(6.0 / 11.0).unwrap().to_bits(),
+            0x3fdf3ad24caad6dc
+        );
+        assert_eq!(
+            gammaln_kernel(1.0 / 13.0).unwrap().to_bits(),
+            0x400433b1c2265eb7
+        );
+        assert_eq!(
+            gammaln_kernel(2.0 / 13.0).unwrap().to_bits(),
+            0x3ffcd17b700fc6c1
+        );
+        assert_eq!(
+            gammaln_kernel(1.0 + 1.0 / 13.0).unwrap().to_bits(),
+            0xbfa4549a42cb6665
+        );
+        assert_eq!(
+            gammaln_kernel(2.0 / 17.0).unwrap().to_bits(),
+            0x4000a9daf888fcc2
+        );
+        assert_eq!(gammaln_kernel(2.5).unwrap().to_bits(), 0x3fd2383e809a67e8);
         assert_eq!(gamma_kernel(1.0 / 11.0).unwrap().to_bits(), 0x402503020775740e);
         assert_eq!(
             gamma_kernel(2.0 / 11.0 - 1.0).unwrap().to_bits(),
