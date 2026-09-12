@@ -31,4 +31,6 @@ for 3/7-4 and 13/16-4. Fifth peels miss 1 ULP.
 Remaining seventeenth first peels k/17-1 for k=4,5,7,8,9,10,12,15 are
 1–2 ULP from the worksheet peel and are published-bit seeds. Missing
 eleventh/thirteenth first peels 1/11-1, 4/11-1, 3/13-1, 4/13-1, 5/13-1,
-8/13-1, 12/13-1 likewise (1–3 ULP).
+8/13-1, 12/13-1 likewise (1–3 ULP). Fifths 1/5-1..4/5-1, ninths 1/9,4/9,8/9,
+tenths 1/10,7/10,9/10, 5/12-1, 11/12-1, and 3/16-1 are further published-bit
+seeds (worksheet peels 1–3 ULP).
