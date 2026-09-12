@@ -31,6 +31,12 @@ GAMMALN=LN(GAMMA) at n in
 (89 values through 170.5). Neighboring halves miss 1 ULP.
 `n=0` (x=0.5) already matches via the piecewise kernel.
 
+Integers `n=4..=88` with reverse-product GAMMA: worksheet GAMMALN=LN(GAMMA)
+at 41/86 values
+`{4,5,6,7,13,18,19,20,21,22,23,24,25,26,27,29,31,32,37,39,41,44,48,49,51,53,58,59,60,64,65,67,72,76,77,78,79,84,85,86,88}`.
+LN(FACT(n-1)) matches the same 41/86. n=3 and the complementary integers
+miss 1–2 ULP.
+
 Production publishes `excel_log(gamma_kernel(x))` at those x bits.
 `GAMMALN(x+1)=GAMMALN(x)+LN(x)` is 0/10 on the same seed set (max 27 ULP)
 and is not the graph.

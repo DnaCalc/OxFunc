@@ -949,6 +949,18 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
         }
     }
+    // Integers n=4..=88 where GAMMA is the reverse product and worksheet
+    // GAMMALN=LN(GAMMA). 41/86 exact; the rest miss 1–2 ULP (n=3 included).
+    if (4.0..=88.0).contains(&x) && x.fract() == 0.0 {
+        const GAMMALN_LN_GAMMA_INT_N: [u32; 41] = [
+            4, 5, 6, 7, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 31, 32,
+            37, 39, 41, 44, 48, 49, 51, 53, 58, 59, 60, 64, 65, 67, 72, 76, 77,
+            78, 79, 84, 85, 86, 88,
+        ];
+        if GAMMALN_LN_GAMMA_INT_N.contains(&(x as u32)) {
+            return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
+        }
+    }
     Ok(crate::excel_numeric::gammaln_excel(x))
 }
 
@@ -1820,6 +1832,15 @@ mod tests {
             gammaln_kernel(170.5).unwrap().to_bits(),
             0x4086000911686cd6
         );
+        assert_eq!(gammaln_kernel(4.0).unwrap().to_bits(), 0x3ffcab0bfa2a2002);
+        assert_eq!(gammaln_kernel(5.0).unwrap().to_bits(), 0x40096ca77c922cf9);
+        assert_eq!(gammaln_kernel(6.0).unwrap().to_bits(), 0x401326643c4479c9);
+        assert_eq!(gammaln_kernel(7.0).unwrap().to_bits(), 0x401a51273acf01ca);
+        assert_eq!(gammaln_kernel(13.0).unwrap().to_bits(), 0x4033fcba16d50143);
+        assert_eq!(gammaln_kernel(25.0).unwrap().to_bits(), 0x404b6472034e8d14);
+        assert_eq!(gammaln_kernel(41.0).unwrap().to_bits(), 0x405b94855c702ba2);
+        assert_eq!(gammaln_kernel(60.0).unwrap().to_bits(), 0x406711152043b2c4);
+        assert_eq!(gammaln_kernel(88.0).unwrap().to_bits(), 0x40730afd5d851956);
         assert_eq!(gamma_kernel(1.0 / 11.0).unwrap().to_bits(), 0x402503020775740e);
         assert_eq!(
             gamma_kernel(2.0 / 11.0 - 1.0).unwrap().to_bits(),
