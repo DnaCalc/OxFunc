@@ -747,3 +747,5 @@ will want; date every entry.
     all miss 1–4 ULP. Contiguous nmax already tight; do not extend.
     7/13 was the exception (extended through n=6). IMSEC vs 1/IMCOS 0/5.
   - PMT type=1 vs type=0/(1+rate) 2/5 max 2 ULP. Not a last-bit identity.
+  - Odd-eighth product-first n=10 misses 1–2 ULP; n=9 remains the
+    contiguous nmax.
