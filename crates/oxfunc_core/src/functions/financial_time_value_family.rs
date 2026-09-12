@@ -955,7 +955,12 @@ pub fn pduration(
     if periodic_rate <= 0.0 || present_value <= 0.0 || future_value <= 0.0 {
         return Err(FinancialError::Num);
     }
-    let result = (future_value / present_value).ln() / (1.0 + periodic_rate).ln();
+    // Live Excel 16.0 b20326 Value2: PDURATION is the split worksheet-LN
+    // graph (LN(fv)-LN(pv))/LN(1+rate), not LN(fv/pv)/LN(1+rate).
+    // 80/80 exact on a fresh mixed grid; the fused-ratio LN form is 20/80.
+    use crate::excel_numeric::excel_log;
+    let result =
+        (excel_log(future_value) - excel_log(present_value)) / excel_log(1.0 + periodic_rate);
     if result.is_finite() {
         Ok(result)
     } else {
@@ -2317,6 +2322,15 @@ mod tests {
     fn pduration_and_rri_match_documented_examples() {
         let pd = pduration(0.025, 2000.0, 2200.0).expect("pduration");
         assert_close(pd, 3.859866162622662, 1e-9);
+        assert_eq!(pd.to_bits(), 0x400ee10182bb35e8);
+        assert_eq!(
+            pduration(0.04, 999.0, 1234.0).unwrap().to_bits(),
+            0x40158bc055fd3ec8
+        );
+        assert_eq!(
+            pduration(0.03, 12000.0, 15000.0).unwrap().to_bits(),
+            0x401e3251e38ae145
+        );
 
         let rr = rri(96.0, 10000.0, 11000.0).expect("rri");
         assert_close(rr, 0.0009933073762913303, 1e-12);

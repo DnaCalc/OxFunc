@@ -413,3 +413,5 @@ will want; date every entry.
   - GAMMA(n) vs EXP(LN(FACT(n-1))) for n=89..120 is 0/32 max 245 ULP,
     worse than reverse FACT (mean ~4.6 ULP). n>=89 is a product-rounding
     wall, not an exp/ln composition.
+  - PDURATION is split worksheet LN `(LN(fv)-LN(pv))/LN(1+rate)` 80/80, not
+    fused `LN(fv/pv)/LN(1+rate)` (20/80). Landed.
