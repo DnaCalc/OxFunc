@@ -652,10 +652,11 @@ will want; date every entry.
   - BETA.INV(p,1,1) vs p 12/17 max 2 ULP. (p,1,2) vs 1-SQRT(1-p) 6/17.
     (p,2,1) vs SQRT(p) 9/17. (p,5,1) vs POWER(p,1/5) 14/17 max 1 ULP.
     GAMMA.INV(p,1,1) vs -LN(1-p) 11/17. Not identities.
-  - CHISQ.DIST(x,2,FALSE)=GAMMA.DIST(x,1,2,FALSE) 13/13 x>0 (x=0 GAMMA PDF
-    is not 0.5). 0.5*RT / 0.5*EXP 8/12. EXPON.DIST(x,0.5,FALSE) 10/14.
-    Production GAMMA.DIST PDF misses Excel CHISQ bits (first pin 7 ULP),
-    so the Excel identity is not a production landing.
+  - CHISQ.DIST(x,k,FALSE)=GAMMA.DIST(x,k/2,2,FALSE) for df=2,4,6 (10/10).
+    df=2 x>0 also 13/13. 0.5*RT / 0.5*EXP 8/12 max 1 ULP. EXPON.DIST(x,0.5)
+    10/14. Production libm CHISQ PDF is 5–8 ULP vs Excel; production
+    GAMMA.DIST PDF is 4–7 ULP. Excel identity is real; neither production
+    kernel is the Excel last-bit graph.
   - T.DIST df=2 CDF vs 0.5+0.5x/SQRT 3/12 max 40 ULP. (SQRT+x)/(2*SQRT)
     4/12. Not identities. GAMMA.DIST a=2 PDF vs x*EXP(-x) 6/12.
   - NEGBINOM k=1 vs s*POWER(p,s)*(1-p) 4/10 max 4 ULP. vs
