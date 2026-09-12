@@ -466,3 +466,6 @@ will want; date every entry.
     is not NORMSINV (1/9).
   - GAMMA.INV(p,1,scale) vs -scale*LN(1-p) 5/7 max 5 ULP. Exponential
     inverse is not the published GAMMA.INV a=1 graph.
+  - GAMMA(n) vs (n-1)*GAMMA(n-1) for n=88..110 is 4/23 (scattered
+    exacts at 91,92,94,95). Not a peel extension of the n=1..88 reverse
+    product. FACT(n-1) 1/23.
