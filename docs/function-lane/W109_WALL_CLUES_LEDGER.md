@@ -598,5 +598,12 @@ will want; date every entry.
   - T.DIST df=3 PDF closed forms scored 15/15 only under the
     broken ulp helper; rust reconstructions 0-5/15. Not landed.
   - BINOM k=0 vs POWER(1-p,n) and POISSON k=1 vs lambda*EXP(-lambda)
-    scored 12/12 only under the broken ulp helper; rust
-    excel_pow_chain 6/12 and lambda*excel_exp 1/8. Not landed.
+    scored 12/12 only under the broken ulp helper. Honest uint64
+    distance: BINOM k=0 POWER 3/12 (only p=0.5); POISSON k=1
+    lambda*EXP 1/12; EXP(LN-lambda) 4/12. Not landed.
+  - TANH vs SINH/COSH honest 8/11 (misses 0.001, 0.01, 0.4 by 1 ULP).
+    Cubic only |x|<=1e-4. EXP form 3/11.
+  - CHISQ.DIST.RT df=4 vs EXP(-x/2)*(1+x/2) honest 7/9 (x=0.1 and
+    x=2 are 1 ULP). df=6 Poisson poly 7/9.
+  - GAMMA.DIST(x,1,1,TRUE)=EXPON.DIST(x,1,TRUE) 12/12 (already
+    production). PDF vs EXP 5/12; CDF vs 1-EXP 9/12.

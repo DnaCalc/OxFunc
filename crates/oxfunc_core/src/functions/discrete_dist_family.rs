@@ -515,6 +515,10 @@ pub fn negbinom_dist_kernel(
         Ok(0.0)
     } else if probability_s == 1.0 {
         Ok(if number_f == 0 { 1.0 } else { 0.0 })
+    } else if number_f == 0 {
+        // Live Excel 16.0 b20326: NEGBINOM.DIST(0,s,p,FALSE)=BINOM.DIST(s,s,p,FALSE)
+        // 8/8. Worksheet POWER(p,s) is 0/8 (1-16 ULP).
+        binom_dist_kernel(number_s as f64, number_s as f64, probability_s, false)
     } else if direct_combinatoric_lane(number_f + number_s - 1) {
         Ok(choose_direct(number_f + number_s - 1, number_f)
             * pow_u64(probability_s, number_s)
@@ -938,6 +942,42 @@ mod tests {
             negbinom_dist_kernel(5.0, 3.0, 0.4, true).unwrap(),
             0x3fe5_e849_aaee_d68d,
         );
+    }
+
+    #[test]
+    fn negbinom_k0_matches_binom_kn_live_excel() {
+        let pins = [
+            (3.0_f64, 0.5, 0x3fc0000000000001u64),
+            (5.0, 0.4, 0x3f84f8b588e368f5),
+            (8.0, 0.2, 0x3ec5798ee2308c3e),
+            (10.0, 0.1, 0x3ddb7cdfd9d7bdd3),
+            (2.0, 0.8, 0x3fe47ae147ae147b),
+            (4.0, 0.25, 0x3f70000000000001),
+            (6.0, 0.5, 0x3f90000000000002),
+            (7.0, 0.3, 0x3f2caa5ab1fd3da5),
+        ];
+        let mut bin = 0;
+        let mut neg = 0;
+        for (s, p, bits) in pins {
+            let b = binom_dist_kernel(s, s, p, false).unwrap();
+            let n = negbinom_dist_kernel(0.0, s, p, false).unwrap();
+            if b.to_bits() == bits {
+                bin += 1;
+            }
+            if n.to_bits() == bits {
+                neg += 1;
+            }
+            if b.to_bits() != bits {
+                eprintln!(
+                    "BINOM kn miss s={s} p={p} got={:x} want={bits:x} ulp={}",
+                    b.to_bits(),
+                    b.to_bits().abs_diff(bits)
+                );
+            }
+        }
+        eprintln!("BINOM(s,s,p) {bin}/8 NEGBINOM(0,s,p) {neg}/8");
+        assert_eq!(bin, pins.len(), "BINOM k=n vs Excel NEGBINOM k=0 {bin}/8");
+        assert_eq!(neg, pins.len(), "NEGBINOM k=0 vs live Excel {neg}/8");
     }
 
     #[test]
