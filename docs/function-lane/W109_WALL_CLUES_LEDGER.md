@@ -620,3 +620,5 @@ will want; date every entry.
     GAMMA.DIST(x,1,2,TRUE) 10/10 (already production). vs 1-EXP 7/10.
   - BETA.DIST(x,2,2,FALSE) vs 6x(1-x) honest 3/10. CDF vs x^2*(3-2x)
     6/10. Confirms no integer-shape beta fast path.
+  - T.DIST(x,1,TRUE) honest: 0.5+ATAN/PI 8/13; (PI/2+ATAN)/PI 8/13;
+    ACOT(-x)/PI 10/13. Not identities.
