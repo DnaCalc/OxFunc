@@ -55,4 +55,10 @@ mod tests {
     fn atan_kernel_matches_std() {
         assert_eq!(atan_kernel(1.0), 1.0f64.atan());
     }
+
+    #[test]
+    fn atan_matches_live_excel_pins() {
+        assert_eq!(atan_kernel(0.5).to_bits(), 0x3fddac670561bb4f);
+        assert_eq!(atan_kernel(1.0).to_bits(), 0x3fe921fb54442d18);
+    }
 }
