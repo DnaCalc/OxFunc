@@ -542,3 +542,5 @@ will want; date every entry.
   - GAMMA(n+1/4) product-first contiguous through 9.25 (n=0..=9);
     first miss 10.25. Landed. GAMMA(n+3/4) product-first misses
     2.75; keep recurrence n=0..=5.
+  - GAMMA odd eighths product-first: n+1/8, n+3/8, n+5/8 through
+    n=9; n+7/8 misses 1.875. Landed the three extending families.

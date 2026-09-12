@@ -361,45 +361,47 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
-    // Live Excel 16.0 b20326: odd eighths. Recurrence from seeds is exact
-    // for n+1/8 and n+3/8 through n=3, n+5/8 through n=2, and n+7/8 only
-    // at the seed. First misses 4.125 / 4.375 / 3.625 / 1.875.
+    // Live Excel 16.0 b20326: odd-eighth product-first
+    // (seed_frac * (1+seed_frac) * ... ) * GAMMA(seed) is contiguous
+    // exact for n+1/8, n+3/8, n+5/8 with n=0..=9 (through 9.125 / 9.375 /
+    // 9.625). First misses 10.125 / 10.375 / 10.625. n+7/8 product-first
+    // already misses 1.875; keep the seed only.
     const GAMMA_1_8: f64 = f64::from_bits(0x401e22c196233d23);
     const GAMMA_3_8: f64 = f64::from_bits(0x4002f6a73f0a9838);
     const GAMMA_5_8: f64 = f64::from_bits(0x3ff6f3ca0920b668);
     const GAMMA_7_8: f64 = f64::from_bits(0x3ff16f374f724016);
     let eight = x * 8.0;
-    if eight.fract() == 0.0 && (1.0..=27.0).contains(&eight) {
+    if eight.fract() == 0.0 {
         let k = eight as u32;
         match k % 8 {
             1 => {
                 let n = (k - 1) / 8;
-                if n <= 3 {
-                    let mut acc = GAMMA_1_8;
-                    for i in 1..=n {
-                        acc *= i as f64 - 0.875;
+                if n <= 9 {
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= 0.125 + i as f64;
                     }
-                    return Ok(acc);
+                    return Ok(prod * GAMMA_1_8);
                 }
             }
             3 => {
                 let n = (k - 3) / 8;
-                if n <= 3 {
-                    let mut acc = GAMMA_3_8;
-                    for i in 1..=n {
-                        acc *= i as f64 - 0.625;
+                if n <= 9 {
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= 0.375 + i as f64;
                     }
-                    return Ok(acc);
+                    return Ok(prod * GAMMA_3_8);
                 }
             }
             5 => {
                 let n = (k - 5) / 8;
-                if n <= 2 {
-                    let mut acc = GAMMA_5_8;
-                    for i in 1..=n {
-                        acc *= i as f64 - 0.375;
+                if n <= 9 {
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= 0.625 + i as f64;
                     }
-                    return Ok(acc);
+                    return Ok(prod * GAMMA_5_8);
                 }
             }
             7 => {
@@ -1485,13 +1487,19 @@ mod tests {
         assert_eq!(gamma_kernel(1.125).unwrap().to_bits(), 0x3fee22c196233d23);
         assert_eq!(gamma_kernel(2.125).unwrap().to_bits(), 0x3ff0f38ce473d264);
         assert_eq!(gamma_kernel(3.125).unwrap().to_bits(), 0x400202c5b2bb0f8a);
+        assert_eq!(gamma_kernel(4.125).unwrap().to_bits(), 0x401c2454e7444847);
+        assert_eq!(gamma_kernel(9.125).unwrap().to_bits(), 0x40e9c048b34aaea7);
         assert_eq!(gamma_kernel(0.375).unwrap().to_bits(), 0x4002f6a73f0a9838);
         assert_eq!(gamma_kernel(1.375).unwrap().to_bits(), 0x3fec71fade8fe454);
         assert_eq!(gamma_kernel(2.375).unwrap().to_bits(), 0x3ff38e5c7902ecfa);
         assert_eq!(gamma_kernel(3.375).unwrap().to_bits(), 0x4007390dcfb37969);
+        assert_eq!(gamma_kernel(4.375).unwrap().to_bits(), 0x40239823a73f6e70);
+        assert_eq!(gamma_kernel(9.375).unwrap().to_bits(), 0x40f625bd9ee3017b);
         assert_eq!(gamma_kernel(0.625).unwrap().to_bits(), 0x3ff6f3ca0920b668);
         assert_eq!(gamma_kernel(1.625).unwrap().to_bits(), 0x3fecb0bc8b68e402);
         assert_eq!(gamma_kernel(2.625).unwrap().to_bits(), 0x3ff74f9931453942);
+        assert_eq!(gamma_kernel(3.625).unwrap().to_bits(), 0x400e987910aadb26);
+        assert_eq!(gamma_kernel(9.625).unwrap().to_bits(), 0x41032ebaf2a910f7);
         assert_eq!(gamma_kernel(0.875).unwrap().to_bits(), 0x3ff16f374f724016);
         // Live Excel 16.0 b20326: GAMMALN(0.5)=LN(GAMMA(0.5)) bit-exact.
         assert_eq!(gammaln_kernel(0.5).unwrap().to_bits(), 0x3fe250d048e7a1bd);
