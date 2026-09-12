@@ -774,6 +774,21 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Third peel into (-3,-2) from exact second-peel thirteenths (3/3).
+    if x > -3.0 && x < -2.0 {
+        const GAMMA_NEG3_FRAC: [(u64, u64); 3] = [
+            (0xc006c4ec4ec4ec4f, 0xbff5cbb342dead0b), // 2/13-3
+            (0xc001d89d89d89d8a, 0xbffe51e215abb09b), // 10/13-3
+            (0xc0013b13b13b13b1, 0xc0075abdbee6c648), // 11/13-3
+        ];
+        let xb = x.to_bits();
+        for &(xx, gg) in &GAMMA_NEG3_FRAC {
+            if xb == xx {
+                return Ok(f64::from_bits(gg));
+            }
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1665,6 +1680,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(13.0 / 17.0 - 2.0).unwrap().to_bits(),
             0x401099f737502731
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 13.0 - 3.0).unwrap().to_bits(),
+            0xbff5cbb342dead0b
+        );
+        assert_eq!(
+            gamma_kernel(11.0 / 13.0 - 3.0).unwrap().to_bits(),
+            0xc0075abdbee6c648
         );
         assert_eq!(
             gamma_kernel(1.0 + 2.0 / 11.0).unwrap().to_bits(),

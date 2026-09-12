@@ -13,3 +13,5 @@ Those residues are published-bit seeds. Misses stay generic.
 
 Second peel into (-2,-1) from exact first-peel thirteenths is exact
 for k=2,10,11 (3/7). k=1,6,7,9 miss 1-2 ULP.
+
+Third peel into (-3,-2) from those three is exact 3/3.
