@@ -604,25 +604,34 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
-    // Live Excel 16.0 b20326: odd sixteenths in (0,1) are private seeds
-    // (GAMMA(1/16) is 1 ULP from the generic path). Recurrence not claimed.
-    const GAMMA_ODD_SIXTEENTH: [(u32, u64); 8] = [
-        (1, 0x402ef66a79533ee8),
-        (3, 0x4013a91381a8a4ee),
-        (5, 0x4006edc1821c5c71),
-        (7, 0x400032cfe11b9bd7),
-        (9, 0x3ff94fa627d94f66),
-        (11, 0x3ff517bf09b399f5),
-        (13, 0x3ff26858f1d7c28d),
-        (15, 0x3ff0a490a6519230),
+    // Live Excel 16.0 b20326: odd-sixteenth product-first from the (0,1)
+    // seeds. Contiguous exact nmax: 1/16 n<=9, 5/16 n<=4, 9/16 n<=10,
+    // 13/16 n<=5. The other four families miss at n=1 (seed only).
+    const GAMMA_ODD_SIXTEENTH: [(u32, u64, u32); 8] = [
+        (1, 0x402ef66a79533ee8, 9),
+        (3, 0x4013a91381a8a4ee, 0),
+        (5, 0x4006edc1821c5c71, 4),
+        (7, 0x400032cfe11b9bd7, 0),
+        (9, 0x3ff94fa627d94f66, 10),
+        (11, 0x3ff517bf09b399f5, 0),
+        (13, 0x3ff26858f1d7c28d, 5),
+        (15, 0x3ff0a490a6519230, 0),
     ];
     let sixteen = x * 16.0;
-    if sixteen.fract() == 0.0 && (1.0..=15.0).contains(&sixteen) {
+    if x > 0.0 && sixteen.fract() == 0.0 {
         let k = sixteen as u32;
         if k % 2 == 1 {
-            for &(kk, bits) in &GAMMA_ODD_SIXTEENTH {
-                if kk == k {
-                    return Ok(f64::from_bits(bits));
+            let rem = k % 16;
+            let n = (k - rem) / 16;
+            for &(kk, bits, nmax) in &GAMMA_ODD_SIXTEENTH {
+                if kk == rem && n <= nmax {
+                    let seed = f64::from_bits(bits);
+                    let frac = rem as f64 / 16.0;
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
                 }
             }
         }
@@ -1533,6 +1542,11 @@ mod tests {
         assert_eq!(gamma_kernel(11.0 / 16.0).unwrap().to_bits(), 0x3ff517bf09b399f5);
         assert_eq!(gamma_kernel(13.0 / 16.0).unwrap().to_bits(), 0x3ff26858f1d7c28d);
         assert_eq!(gamma_kernel(15.0 / 16.0).unwrap().to_bits(), 0x3ff0a490a6519230);
+        assert_eq!(gamma_kernel(1.0625).unwrap().to_bits(), 0x3feef66a79533ee8);
+        assert_eq!(gamma_kernel(9.0625).unwrap().to_bits(), 0x40e682cf40f15007);
+        assert_eq!(gamma_kernel(4.3125).unwrap().to_bits(), 0x4022027d3db6cf53);
+        assert_eq!(gamma_kernel(10.5625).unwrap().to_bits(), 0x4133f93261bf1bc0);
+        assert_eq!(gamma_kernel(5.8125).unwrap().to_bits(), 0x4055db68b6f3576c);
         // Live Excel 16.0 b20326 fifths in (0,1). Recurrence n=1 already 1 ULP.
         assert_eq!(gamma_kernel(1.0 / 5.0).unwrap().to_bits(), 0x40125d0622505413);
         assert_eq!(gamma_kernel(2.0 / 5.0).unwrap().to_bits(), 0x4001beca6e4dff14);

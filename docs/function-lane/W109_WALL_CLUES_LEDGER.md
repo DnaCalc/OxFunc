@@ -544,3 +544,5 @@ will want; date every entry.
     2.75; keep recurrence n=0..=5.
   - GAMMA odd eighths product-first: n+1/8, n+3/8, n+5/8 through
     n=9; n+7/8 misses 1.875. Landed the three extending families.
+  - GAMMA odd sixteenths product-first from (0,1) seeds: 1/16 n<=9,
+    5/16 n<=4, 9/16 n<=10, 13/16 n<=5. Other four miss at n=1.
