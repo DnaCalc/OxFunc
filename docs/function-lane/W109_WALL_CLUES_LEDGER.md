@@ -791,3 +791,11 @@ will want; date every entry.
     Landed; k=0 bd0 branch unchanged (production 146/210 still
     beats pow_chain 132/210 on k=0).
   - CHIINV.RT df=2 vs -2*LN(p) 34/39 (1 ULP misses). Not a slice.
+  - RATE(1,pmt,pv) vs -pmt/pv-1 21/24 live 20326 (production 2/24).
+    Misses include pmt=-pv (Excel tiny vs closed 0) and two 1-ULP
+    rows. type=1 vs -pmt/(pv+pmt)-1 0/24. Not a last-bit identity.
+  - IRR of two cashflows vs fv/(-pv)-1 5/6 (1 ULP at 1200/-1000).
+  - HYPGEOM modest 0/8 vs choose product (max 9 ULP); div-first
+    choose 1/8. Private PMF.
+  - T.DIST.2T==2*T.DIST.RT 20/20 (already production 2*0.5*bratio).
+  - NEGBINOM modest C*pow_chain 8–12/48 vs production 11/48.
