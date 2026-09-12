@@ -25,4 +25,5 @@ the worksheet peel is 1–4 ULP (not an identity): 3/7-1, 5/7-1, 5/16-1,
 
 Second peel into (−2,−1) from those is exact for 3/7-2, 5/16-2, 13/16-2,
 5/9-2, 7/12-2 (5/7). 5/7-2 and 1/12-2 miss. Third peel into (−3,−2) is
-exact for 3/7-3, 13/16-3, 5/9-3 (3/5).
+exact for 3/7-3, 13/16-3, 5/9-3 (3/5). Fourth peel into (−4,−3) is exact
+for 3/7-4 and 13/16-4. Fifth peels miss 1 ULP.
