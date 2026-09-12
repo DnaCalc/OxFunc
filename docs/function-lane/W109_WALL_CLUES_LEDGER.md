@@ -461,3 +461,6 @@ will want; date every entry.
     EXP(m+s*NORMSINV) 27/27; LOGINV alias 7/7. Production
     excel_exp(m+s*inv) is 1 ULP off the 0.1/0/1 pin (NORMSINV
     residual). Not landed.
+  - NORMSINV=NORM.S.INV=NORM.INV(p,0,1) 9/9. Oddness
+    NORMSINV(1-p)=-NORMSINV(p) 8/9 (p=0.05 is 5 ULP). T.INV(p,1e8)
+    is not NORMSINV (1/9).
