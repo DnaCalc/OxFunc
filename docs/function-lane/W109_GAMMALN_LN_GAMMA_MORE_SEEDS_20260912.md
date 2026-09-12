@@ -22,6 +22,14 @@ kernel):
 | 1+1/13 | `0xbfa4549a42cb6665` | product-first GAMMA(14/13) |
 | 2/17 | `0x4000a9daf888fcc2` | 1/17 is 1 ULP |
 | 2.5 | `0x3fd2383e809a67e8` | half-integer product-first |
+| 4.375 / 7.375 / 9.375 | see pins | 3/8 product-first, GAMMA n<=9 |
+| 2.3125 | `0x3fc4b3a46906fd4c` | 5/16 product-first, GAMMA n<=4 |
+
+Half-integers `n+0.5` with landed product-first GAMMA: worksheet
+GAMMALN=LN(GAMMA) at n in
+`{2,3,4,8,9,11,13,15,16,18,19,20,21,22,23,26,27,29,30,32,34,35,38,40,42,44,47,50,51,52,53,54,55,56,57,63,67,70,71,73,76,77,80,83,85,86,92,93,94,95,96,98,102,104,105,106,110,111,112,113,122,123,125,128,130,131,132,133,134,135,136,137,138,139,141,142,147,151,157,158,159,160,161,163,165,166,168,169,170}`
+(89 values through 170.5). Neighboring halves miss 1 ULP.
+`n=0` (x=0.5) already matches via the piecewise kernel.
 
 Production publishes `excel_log(gamma_kernel(x))` at those x bits.
 `GAMMALN(x+1)=GAMMALN(x)+LN(x)` is 0/10 on the same seed set (max 27 ULP)
