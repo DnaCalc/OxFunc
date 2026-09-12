@@ -283,16 +283,26 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Live Excel 16.0 b20326: GAMMA(n+0.5) for n=0..=15 is
     // (2n-1)!! / 2^n * GAMMA(0.5) with reverse odd product and seed
-    // `0x3ffc5bf891b4ef6b`. Contiguous exact through 15.5; first miss 16.5.
+    // `0x3ffc5bf891b4ef6b`. Contiguous exact through 15.5.
+    // For n=16..=19 (x=16.5..=19.5) Excel is the native recurrence
+    // GAMMA(x)=(x-1)*GAMMA(x-1) from that 15.5 value (4/4 live). First
+    // miss at 20.5 (1 ULP vs recurrence). G3-02 remains open past 19.5.
     const GAMMA_HALF: f64 = f64::from_bits(0x3ffc5bf891b4ef6b);
     let twice = x * 2.0;
-    if twice.fract() == 0.0 && (1.0..=31.0).contains(&twice) {
+    if twice.fract() == 0.0 && (1.0..=39.0).contains(&twice) {
         let n = ((twice as u32) - 1) / 2;
-        let mut df = 1.0;
-        for k in (1..=n).rev() {
-            df *= (2 * k - 1) as f64;
+        let closed_n = n.min(15);
+        let mut acc = {
+            let mut df = 1.0;
+            for k in (1..=closed_n).rev() {
+                df *= (2 * k - 1) as f64;
+            }
+            df / (2.0_f64).powi(closed_n as i32) * GAMMA_HALF
+        };
+        for k in 16..=n {
+            acc *= k as f64 - 0.5;
         }
-        return Ok(df / (2.0_f64).powi(n as i32) * GAMMA_HALF);
+        return Ok(acc);
     }
 
     let ln_gamma = if x < 0.5 {
@@ -1075,6 +1085,11 @@ mod tests {
         assert_eq!(gamma_kernel(5.5).unwrap().to_bits(), 0x404a2be0247739f2);
         assert_eq!(gamma_kernel(8.5).unwrap().to_bits(), 0x40cb693422315f91);
         assert_eq!(gamma_kernel(15.5).unwrap().to_bits(), 0x42537d7bedf4639d);
+        // Recurrence from 15.5: live Excel 16.0 b20326 Value2.
+        assert_eq!(gamma_kernel(16.5).unwrap().to_bits(), 0x4292e1900e84c080);
+        assert_eq!(gamma_kernel(17.5).unwrap().to_bits(), 0x42d3789c8ef8e684);
+        assert_eq!(gamma_kernel(18.5).unwrap().to_bits(), 0x43154beb3c603c20);
+        assert_eq!(gamma_kernel(19.5).unwrap().to_bits(), 0x43589fc7fdcf4585);
     }
 
     // BUG-FUNC-027 CLASS-A1: GAMMALN(1E-300) was +Inf (z+1 == 0 in Lanczos);

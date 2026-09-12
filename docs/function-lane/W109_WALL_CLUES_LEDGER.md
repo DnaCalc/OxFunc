@@ -363,3 +363,15 @@ will want; date every entry.
     Composed `x<0.7`: 208/256 max 2. Worksheet LN instead of CRT log is only
     +1 exact (209/256); not landed. NEGBINOM.DIST(f,s,p,FALSE) vs
     `BINOM.DIST(f,f+s-1,1-p,FALSE)*p` is 3/10 — not an identity.
+  - GAMMA half-integers: closed form through 15.5; live recurrence
+    `GAMMA(x)==(x-1)*GAMMA(x-1)` is exact for `16.5..=19.5` (4/4) and
+    first misses at 20.5 (1 ULP). Landed `16.5..=19.5` only.
+  - GAMMA integers `89..=170`: vs reverse `FACT(n-1)` 4/82 (n=117,120,122,124),
+    max 8 ULP, mean 4.6; vs worksheet `EXP(GAMMALN(n))` 0/82 max 979 ULP.
+    Native product variants: best `blk4_rev` 15/82, not an identity.
+  - HYPGEOM.DIST PMF is not worksheet COMBIN. Microsoft example
+    `HYPGEOM.DIST(1,5,4,10,FALSE)=0x3fce79e79e79e79b` vs COMBIN `(C*C)/C` and
+    `C*(C/C)` both `0x3fce79e79e79e79e` (3 ULP). Modest 20-row live grid
+    0/20 vs both associations. Private kernel. (An earlier 9/9 was invalid:
+    PowerShell `$n`/`$N` alias destroyed the population argument.)
+  - MULTINOMIAL(a,b) is not COMBIN(a+b,a) (0/19, typically 1–many ULP).
