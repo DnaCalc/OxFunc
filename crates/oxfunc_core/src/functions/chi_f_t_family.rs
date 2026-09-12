@@ -898,6 +898,23 @@ mod tests {
     }
 
     #[test]
+    fn chisq_dist_rt_df2_matches_live_excel_exp_pins() {
+        // Live Excel 16.0 b20326: CHISQ.DIST.RT(x,2)=EXP(-x/2) 7/7.
+        assert_eq!(
+            chisq_dist_rt_kernel(1.0, 2.0).unwrap().to_bits(),
+            0x3fe368b2fc6f960a
+        );
+        assert_eq!(
+            chisq_dist_rt_kernel(2.0, 2.0).unwrap().to_bits(),
+            0x3fd78b56362cef38
+        );
+        assert_eq!(
+            chisq_dist_rt_kernel(10.0, 2.0).unwrap().to_bits(),
+            0x3f7b993fe00d5376
+        );
+    }
+
+    #[test]
     fn t_inv_2t_df1_matches_live_excel_tan_pins() {
         // Live Excel 16.0 build 20326 / CV2, Value2 cell-ref injection.
         // T.INV.2T(p,1)=1/TAN(PI()*p/2), with p=0.5 published as exact 1.
