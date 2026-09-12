@@ -699,7 +699,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // GAMMA(x)=GAMMA(x+1)/x is exact. Seed the published bits: IEEE
     // complement-seed/x is 1 ULP off because 1+(-1/3) is not 2/3.
     if x > -1.0 && x < 0.0 {
-        const GAMMA_NEG_FRAC: [(u64, u64); 40] = [
+        const GAMMA_NEG_FRAC: [(u64, u64); 41] = [
             (0xbfd5555555555555, 0xc0103fd9ade928da), // -1/3
             (0xbfe5555555555555, 0xc01012d97eaf6234), // -2/3
             (0xbfd0000000000000, 0xc0139b4e8b50f62d), // -1/4
@@ -744,6 +744,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbfd6969696969696, 0xc00f841167c5700c), // 11/17-1
             (0xbfce1e1e1e1e1e20, 0xc01481f52635d60f), // 13/17-1
             (0xbfae1e1e1e1e1e20, 0xc031a384fa1f7fe9), // 16/17-1
+            (0xbfdb6db6db6db6dc, 0xc00d17f07153aa1f), // 4/7-1
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG_FRAC {
@@ -1620,6 +1621,10 @@ mod tests {
         assert_eq!(
             gamma_kernel(16.0 / 17.0 - 1.0).unwrap().to_bits(),
             0xc031a384fa1f7fe9
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 7.0 - 1.0).unwrap().to_bits(),
+            0xc00d17f07153aa1f
         );
         assert_eq!(
             gamma_kernel(1.0 + 2.0 / 11.0).unwrap().to_bits(),
