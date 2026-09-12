@@ -920,12 +920,13 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Sixth peel into (-6,-5). 11ths k=6,10 exact; k=2 misses 1 ULP.
     if x > -6.0 && x < -5.0 {
-        const GAMMA_NEG6_FRAC: [(u64, u64); 5] = [
+        const GAMMA_NEG6_FRAC: [(u64, u64); 6] = [
             (0xc015d1745d1745d2, 0x3f887deb47c3ce38), // 6/11-6
             (0xc0145d1745d1745d, 0x3fb45b15a0f213de), // 10/11-6
             (0xc016492492492492, 0x3f8428e9328127cc), // 3/7-6
             (0xc01599999999999a, 0x3f8c171cb6a0f3e3), // 3/5-6
             (0xc015800000000000, 0x3f8e3a5941c66955), // 5/8-6
+            (0xc017c00000000000, 0x3f99bd13fffdeb8d), // 1/16-6
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG6_FRAC {
@@ -944,6 +945,19 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG7_FRAC {
+            if xb == xx {
+                return Ok(f64::from_bits(gg));
+            }
+        }
+    }
+
+    // Eighth peel into (-8,-7). 3/5-8 exact; 5/8-8 misses 1 ULP.
+    if x > -8.0 && x < -7.0 {
+        const GAMMA_NEG8_FRAC: [(u64, u64); 1] = [
+            (0xc01d99999999999a, 0x3f32fadc0cb1f0e5), // 3/5-8
+        ];
+        let xb = x.to_bits();
+        for &(xx, gg) in &GAMMA_NEG8_FRAC {
             if xb == xx {
                 return Ok(f64::from_bits(gg));
             }
@@ -2335,6 +2349,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(5.0 / 8.0 - 6.0).unwrap().to_bits(),
             0x3f8e3a5941c66955
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 16.0 - 6.0).unwrap().to_bits(),
+            0x3f99bd13fffdeb8d
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 5.0 - 8.0).unwrap().to_bits(),
+            0x3f32fadc0cb1f0e5
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
