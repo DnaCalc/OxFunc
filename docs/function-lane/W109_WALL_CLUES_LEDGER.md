@@ -484,3 +484,5 @@ will want; date every entry.
     Landed the worksheet ratio.
   - SECH=1/COSH 5/5 and CSCH=1/SINH 5/5 (production already that
     graph; pinned). COTH=COSH/SINH 3/5 max 1 ULP.
+  - ACOT vs PI()/2-ATAN 5/6 (x=2 is 1 ULP). Production matches the
+    exact rows; x=2 remains 1 ULP.

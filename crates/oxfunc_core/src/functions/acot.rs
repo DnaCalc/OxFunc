@@ -55,4 +55,11 @@ mod tests {
     fn acot_kernel_zero_is_pi_over_two() {
         assert_eq!(acot_kernel(0.0), Ok(std::f64::consts::FRAC_PI_2));
     }
+
+    #[test]
+    fn acot_matches_live_excel_pins() {
+        // Live Excel 16.0 b20326. PI()/2-ATAN is 5/6 (x=2 is 1 ULP).
+        assert_eq!(acot_kernel(0.5).unwrap().to_bits(), 0x3ff1b6e192ebbe44);
+        assert_eq!(acot_kernel(1.0).unwrap().to_bits(), 0x3fe921fb54442d18);
+    }
 }
