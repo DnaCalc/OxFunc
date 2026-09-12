@@ -464,6 +464,32 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Live Excel 16.0 b20326: thirteenths in (0,1) are private seeds
+    // (GAMMA(1/13) is 4 ULP from the generic path). Recurrence not claimed.
+    const GAMMA_THIRTEENTH: [(u32, u64); 12] = [
+        (1, 0x4028fce1e0ed23fb),
+        (2, 0x401839eca7c726a2),
+        (3, 0x400f91158829b3d6),
+        (4, 0x40074dfec9db3ae6),
+        (5, 0x4002798afcfe30c7),
+        (6, 0x3ffeb36ee50fd917),
+        (7, 0x3ffa637c934edca9),
+        (8, 0x3ff7476291fcce66),
+        (9, 0x3ff4f76b6a7bb3cb),
+        (10, 0x3ff335dc7fec23ed),
+        (11, 0x3ff1dbd18812ee11),
+        (12, 0x3ff0cfaee504346b),
+    ];
+    let thirteen = x * 13.0;
+    if thirteen.fract() == 0.0 && (1.0..=12.0).contains(&thirteen) {
+        let k = thirteen as u32;
+        for &(kk, bits) in &GAMMA_THIRTEENTH {
+            if kk == k {
+                return Ok(f64::from_bits(bits));
+            }
+        }
+    }
+
     // Live Excel 16.0 b20326: elevenths in (0,1) are private seeds
     // (GAMMA(1/11) is 2 ULP from the generic path). Recurrence not claimed.
     const GAMMA_ELEVENTH: [(u32, u64); 10] = [
@@ -1440,6 +1466,9 @@ mod tests {
         assert_eq!(gamma_kernel(2.0 / 11.0).unwrap().to_bits(), 0x40144f786dca9448);
         assert_eq!(gamma_kernel(5.0 / 11.0).unwrap().to_bits(), 0x3fff2c8ab61daf0f);
         assert_eq!(gamma_kernel(10.0 / 11.0).unwrap().to_bits(), 0x3ff0fb827c62f539);
+        assert_eq!(gamma_kernel(1.0 / 13.0).unwrap().to_bits(), 0x4028fce1e0ed23fb);
+        assert_eq!(gamma_kernel(6.0 / 13.0).unwrap().to_bits(), 0x3ffeb36ee50fd917);
+        assert_eq!(gamma_kernel(12.0 / 13.0).unwrap().to_bits(), 0x3ff0cfaee504346b);
         assert_eq!(gamma_kernel(-0.5).unwrap().to_bits(), 0xc00c5bf891b4ef6a);
         assert_eq!(gamma_kernel(-1.5).unwrap().to_bits(), 0x4002e7fb0bcdf4f1);
         assert_eq!(gamma_kernel(1.0 / 16.0).unwrap().to_bits(), 0x402ef66a79533ee8);
