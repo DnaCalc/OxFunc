@@ -607,3 +607,9 @@ will want; date every entry.
     x=2 are 1 ULP). df=6 Poisson poly 7/9.
   - GAMMA.DIST(x,1,1,TRUE)=EXPON.DIST(x,1,TRUE) 12/12 (already
     production). PDF vs EXP 5/12; CDF vs 1-EXP 9/12.
+  - LOGNORM.DIST CDF vs NORMSDIST((LN-m)/s) 8/8 honest (already
+    production compose). PDF vs NORM.S.DIST/(x*s) 2/8.
+  - NEGBINOM vs BINOM(k,k+s-1,1-p)*p 4/8. vs COMBIN*POWER*POWER 1/8.
+  - T.DIST df=4 PDF POWER closed forms 0-3/15. Not identities.
+  - F.DIST.RT d1=2 vs POWER(d2/(d2+2x),d2/2) honest 6/9 (1-2 ULP
+    misses including (0.5,2)). Not an identity.
