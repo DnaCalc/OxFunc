@@ -24,7 +24,12 @@ pub const ACOT_META: FunctionMeta = function_spec! {
 };
 
 pub fn acot_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(std::f64::consts::FRAC_PI_2 - n.atan())
+    // Live Excel 16.0 b20326: ACOT(x)=ATAN2(x,1) 28/28 including
+    // subnormal x and 1e300. PI()/2-ATAN is 7/10 (x=2 is 1 ULP).
+    // Use C atan2(1, x) rather than atan2_kernel: that kernel's
+    // |y/x|-overflow #NUM! guard would reject subnormal x even though
+    // Excel ATAN2(x,1) and ACOT(x) both publish π/2 there.
+    Ok(1.0_f64.atan2(n))
 }
 
 pub fn eval_acot_surface(
@@ -58,8 +63,11 @@ mod tests {
 
     #[test]
     fn acot_matches_live_excel_pins() {
-        // Live Excel 16.0 b20326. PI()/2-ATAN is 5/6 (x=2 is 1 ULP).
+        // Live Excel 16.0 b20326 ATAN2(x,1) identity.
         assert_eq!(acot_kernel(0.5).unwrap().to_bits(), 0x3ff1b6e192ebbe44);
         assert_eq!(acot_kernel(1.0).unwrap().to_bits(), 0x3fe921fb54442d18);
+        assert_eq!(acot_kernel(2.0).unwrap().to_bits(), 0x3fddac670561bb4f);
+        assert_eq!(acot_kernel(-2.0).unwrap().to_bits(), 0x40056c6e7397f5ae);
+        assert_eq!(acot_kernel(4.0).unwrap().to_bits(), 0x3fcf5b75f92c80dd);
     }
 }

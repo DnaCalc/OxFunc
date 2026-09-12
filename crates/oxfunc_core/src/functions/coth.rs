@@ -27,12 +27,14 @@ pub const COTH_META: FunctionMeta = function_spec! {
 };
 
 pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    let sinh = n.sinh();
-    if sinh == 0.0 {
+    let t = crate::functions::tanh::tanh_kernel(n);
+    if t == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    // Non-finite cosh/sinh (large |n|) saturates to sign(n) under COTH's real policy.
-    COTH_META.real_result_policy.publish(n, n.cosh() / sinh)
+    // Live Excel 16.0 b20326: COTH(x)=1/TANH(x) 28/28 including
+    // COTH(800)=1. COSH/SINH is 5/9 max 1 ULP. Non-finite 1/TANH
+    // (large |n|) saturates to sign(n) under COTH's real policy.
+    COTH_META.real_result_policy.publish(n, 1.0 / t)
 }
 
 pub fn eval_coth_surface(
@@ -69,7 +71,8 @@ mod tests {
     fn coth_kernel_large_argument_saturates() {
         assert_eq!(coth_kernel(800.0), Ok(1.0));
         assert_eq!(coth_kernel(-800.0), Ok(-1.0));
-        // Interior values are unchanged.
-        assert_eq!(coth_kernel(1.0), Ok(1.0_f64.cosh() / 1.0_f64.sinh()));
+        assert_eq!(coth_kernel(1.0).unwrap().to_bits(), 0x3ff50231499b6b1e);
+        assert_eq!(coth_kernel(0.5).unwrap().to_bits(), 0x40014fc6ceb099bf);
+        assert_eq!(coth_kernel(-0.5).unwrap().to_bits(), 0xc0014fc6ceb099bf);
     }
 }

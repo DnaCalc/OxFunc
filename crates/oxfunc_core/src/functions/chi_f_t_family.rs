@@ -314,6 +314,11 @@ pub fn f_inv_rt_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, Wo
 
 fn t_pdf(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let v = truncate_positive_integer(deg_freedom)?;
+    if v == 1.0 {
+        // Live Excel 16.0 b20326: T.DIST(x,1,FALSE)=1/(PI()*(1+x*x)) 20/20.
+        // 1/PI()/(1+x*x) is 12/20; 1/(PI()+PI()*x*x) is 18/20.
+        return Ok(1.0 / (std::f64::consts::PI * (1.0 + x * x)));
+    }
     let numerator = gamma((v + 1.0) / 2.0);
     let denominator = (v * std::f64::consts::PI).sqrt()
         * gamma(v / 2.0)
@@ -983,6 +988,26 @@ mod tests {
         assert!((f_dist_kernel(15.2069, 6.0, 4.0, false).unwrap() - 0.001_223_8).abs() < 5e-7);
         assert!((f_inv_rt_kernel(0.01, 6.0, 4.0).unwrap() - 15.20686).abs() < 1e-4);
         assert!((f_inv_kernel(0.99, 6.0, 4.0).unwrap() - 15.20686).abs() < 1e-4);
+    }
+
+    #[test]
+    fn t_dist_df1_pdf_matches_live_excel_pins() {
+        assert_eq!(
+            t_dist_kernel(0.0, 1.0, false).unwrap().to_bits(),
+            0x3fd45f306dc9c883
+        );
+        assert_eq!(
+            t_dist_kernel(1.0, 1.0, false).unwrap().to_bits(),
+            0x3fc45f306dc9c883
+        );
+        assert_eq!(
+            t_dist_kernel(0.5, 1.0, false).unwrap().to_bits(),
+            0x3fd04c26be3b06cf
+        );
+        assert_eq!(
+            t_dist_kernel(-2.0, 1.0, false).unwrap().to_bits(),
+            0x3fb04c26be3b06cf
+        );
     }
 
     #[test]

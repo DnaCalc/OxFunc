@@ -483,12 +483,21 @@ will want; date every entry.
   - TANH=SINH/COSH 8/8. EXP form 5/8. libm tanh 1 ULP off TANH(0.5).
     Landed the worksheet ratio.
   - SECH=1/COSH 5/5 and CSCH=1/SINH 5/5 (production already that
-    graph; pinned). COTH=COSH/SINH 3/5 max 1 ULP.
-  - ACOT vs PI()/2-ATAN 5/6 (x=2 is 1 ULP). Production matches the
-    exact rows; x=2 remains 1 ULP.
+    graph; pinned). COTH vs COSH/SINH 5/9 max 1 ULP; COTH=1/TANH
+    28/28 including COTH(800)=1. Landed 1/TANH.
+  - ACOT vs PI()/2-ATAN 7/10 max 13 ULP (x=2 is 1 ULP). ACOT=ATAN2(x,1)
+    28/28 including subnormal x and 1e300. Landed C atan2(1,x).
   - NORMSDIST(-1) live 20326 is 1 ULP from production (catalog G3-07
     leftover ERFC body). Aliases NORM.S.DIST/NORM.DIST(*,0,1,TRUE) 6/6.
   - BINOM.DIST(n,n,p,FALSE) vs POWER(p,n) 3/9 (only p=0.5). Not an
     identity.
-  - ACOS(0.5) libm is 1 ULP from live Excel 20326. No excel_acos
-    graph landed.
+  - ACOS vs PI()-ASIN is the wrong complement (0/9). ACOS=PI()/2-ASIN
+    34/34 including the 0.75 ATAN2 miss. ATAN2 forms 11/14 max 1 ULP.
+    libm acos is 1 ULP off ACOS(0.5). Landed PI()/2-ASIN.
+  - T.DIST(x,1,FALSE)=1/(PI()*(1+x*x)) 20/20. Split 1/PI()/(1+x*x)
+    12/20; 1/(PI()+PI()*x*x) 18/20. T.DIST CDF Cauchy 0.5+ATAN/PI
+    6/9 max 4 ULP. T.DIST df=2 closed forms not identities.
+  - CHISQ.DIST.RT(x,4) vs EXP(-x/2)*(1+x/2) 7/9 max 1 ULP. df=6
+    Poisson polynomial 7/9. Not identities.
+  - BETA.DIST(x,1,2,TRUE) vs 1-(1-x)^2 5/5 on a tiny grid;
+    BETA.DIST(x,1,1,TRUE) vs x 4/5. Not landed without a wider grid.
