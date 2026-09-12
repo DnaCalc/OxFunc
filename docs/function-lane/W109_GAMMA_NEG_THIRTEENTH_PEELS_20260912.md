@@ -33,4 +33,5 @@ Remaining seventeenth first peels k/17-1 for k=4,5,7,8,9,10,12,15 are
 eleventh/thirteenth first peels 1/11-1, 4/11-1, 3/13-1, 4/13-1, 5/13-1,
 8/13-1, 12/13-1 likewise (1–3 ULP). Fifths 1/5-1..4/5-1, ninths 1/9,4/9,8/9,
 tenths 1/10,7/10,9/10, 5/12-1, 11/12-1, and 3/16-1 are further published-bit
-seeds (worksheet peels 1–3 ULP).
+seeds (worksheet peels 1–3 ULP). Second peels of 1/5,2/5,3/5,4/5,1/9,4/9,7/10
+into (−2,−1) are exact (7/12 of that batch).
