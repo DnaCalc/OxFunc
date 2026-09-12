@@ -442,3 +442,8 @@ will want; date every entry.
     landing that composition (first miss T.INV.2T(0.02,2) 2 ULP).
   - T.INV.2T(p,1)=1/TAN(PI()*p/2) 9/9. T.INV(p,1)=T.INV.2T(2*(1-p),1).
     Landed the Cauchy df=1 slice.
+  - T.INV.2T(p,2) closed forms best `SQRT(2*(1-p)*(1-p)/(p*(2-p)))` 6/9
+    max 2 ULP. BETA.INV(p,1,0.5) vs `1-(1-p)^2` 3/9. Not identities.
+  - GAMMA fifths recurrence n=1 already 1 ULP (2/11, 4/11, 6/11, 5/11).
+    Landed (0,1) seeds only. Odd tenths in (0,1) also seed-only
+    (`GAMMA(1/10)` 3 ULP from generic).
