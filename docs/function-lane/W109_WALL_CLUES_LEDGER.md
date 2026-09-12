@@ -402,3 +402,14 @@ will want; date every entry.
   - GAMMA negative halves: `GAMMA(-0.5)` is 1 ULP from `-2*GAMMA(0.5)`.
     Peel `GAMMA(-1.5)=GAMMA(-0.5)/(-1.5)` is exact; `-2.5` already misses.
     Landed `-0.5` and `-1.5` only.
+  - HYPGEOM.DIST PMF on a 20-row live modest grid: production choose_direct
+    1/20 max 16 ULP; COMBIN `(C*C)/C` and `C*(C/C)` native/x87 0/20 max 14.
+    Private kernel, close to COMBIN but not the worksheet graph.
+  - CUMIPMT vs worksheet SUM of IPMT over the range is 2/8 max 6 ULP on a
+    live 8-row grid (build 20326). Not an identity.
+  - CUMPRINC vs worksheet SUM of PPMT is 3/8 max 3 ULP. Not an identity.
+  - GAMMALN(n) vs LN(FACT(n-1)) for n=2..40 is 21/39 max 2 ULP. Not an
+    identity; integer GAMMALN is the piecewise kernel, not LN of FACT.
+  - GAMMA(n) vs EXP(LN(FACT(n-1))) for n=89..120 is 0/32 max 245 ULP,
+    worse than reverse FACT (mean ~4.6 ULP). n>=89 is a product-rounding
+    wall, not an exp/ln composition.
