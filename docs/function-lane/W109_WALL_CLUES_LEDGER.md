@@ -616,3 +616,5 @@ will want; date every entry.
   - BINOM k=1 vs n*p*POWER(1-p,n-1) honest 3/10; vs EXP/LN 2/10.
   - F.DIST(x,2,2,FALSE) vs 1/(1+x)^2 honest 4/10. F.DIST.RT(x,2,2)
     vs 1/(1+x) 6/10. CHISQ df=4 x87_mul(exp,1+h) still 7/9.
+  - CHISQ.DIST(x,2,FALSE) vs 0.5*EXP(-x/2) honest 6/10. CDF vs
+    GAMMA.DIST(x,1,2,TRUE) 10/10 (already production). vs 1-EXP 7/10.
