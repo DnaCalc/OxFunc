@@ -793,7 +793,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Second peel into (-2,-1) from exact first-peel thirteenths.
     if x > -2.0 && x < -1.0 {
-        const GAMMA_NEG2_FRAC: [(u64, u64); 23] = [
+        const GAMMA_NEG2_FRAC: [(u64, u64); 25] = [
             (0xbffd89d89d89d89e, 0x400f0457b7c6bb2d), // 2/13-2
             (0xbff3b13b13b13b14, 0x4010e8be15ee84f4), // 10/13-2
             (0xbff2762762762762, 0x401926a4f4f886c3), // 11/13-2
@@ -817,6 +817,8 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbffc3c3c3c3c3c3c, 0x4006ea8b8975c9d5), // 4/17-2
             (0xbff8787878787878, 0x40029837d82ca111), // 8/17-2
             (0xbff7878787878788, 0x4003613ad22c67dd), // 9/17-2
+            (0xbffa2e8ba2e8ba2e, 0x4002cccc21903d00), // 4/11-2
+            (0xbff13b13b13b13b1, 0x40295df354ff7cd5), // 12/13-2
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG2_FRAC {
@@ -2145,6 +2147,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(9.0 / 17.0 - 2.0).unwrap().to_bits(),
             0x4003613ad22c67dd
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 11.0 - 2.0).unwrap().to_bits(),
+            0x4002cccc21903d00
+        );
+        assert_eq!(
+            gamma_kernel(12.0 / 13.0 - 2.0).unwrap().to_bits(),
+            0x40295df354ff7cd5
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
