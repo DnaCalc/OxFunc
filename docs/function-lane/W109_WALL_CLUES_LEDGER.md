@@ -432,3 +432,13 @@ will want; date every entry.
     156 on two live rows). RATE does not invert the published NPER graph.
   - NPV(IRR(cf), cf[1:])+cf0 is exact 0 on 2/5 live streams; the other three
     leave tiny nonzero residuals. IRR does not invert worksheet NPV.
+  - F.INV vs worksheet `(d2/d1)*BETA.INV(p,d1/2,d2/2)/(1-BETA.INV)` is
+    27/105 max 6317 ULP on a 15×7 live grid (build 20326). Nearby
+    associations 25–29/105. Not an identity. FINV=F.INV.RT is 105/105
+    (legacy alias). F.INV.RT vs F.INV(1-p) is 79/105 max 16 ULP.
+  - T.INV.2T vs SQRT(F.INV.RT(p,1,df)) is 55/144. vs
+    SQRT(df*(1/BETA.INV(p,df/2,0.5)-1)) is 135/135 for integer df>=2
+    (worksheet BETA.INV) but production BETA.INV last-bit still blocks
+    landing that composition (first miss T.INV.2T(0.02,2) 2 ULP).
+  - T.INV.2T(p,1)=1/TAN(PI()*p/2) 9/9. T.INV(p,1)=T.INV.2T(2*(1-p),1).
+    Landed the Cauchy df=1 slice.

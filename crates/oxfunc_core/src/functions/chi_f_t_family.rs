@@ -5,9 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::functions::special_dist_family::erfc_of_sqrt_half_x;
-use crate::functions::special_math_common::{
-    bisect_inverse, bratio, gamma, regularized_gamma_q,
-};
+use crate::functions::special_math_common::{bisect_inverse, bratio, gamma, regularized_gamma_q};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -369,6 +367,10 @@ pub fn t_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, Worksheet
     if p < 0.5 {
         return Ok(-t_inv_kernel(1.0 - p, v)?);
     }
+    if v == 1.0 {
+        // Live Excel 16.0 b20326: T.INV(p,1)=T.INV.2T(2*(1-p),1) 56/56.
+        return t_inv_2t_kernel(2.0 * (1.0 - p), v);
+    }
     let hi = search_upper_bound(p, 1.0, |x| t_cdf(x, v).unwrap_or(1.0));
     Ok(bisect_inverse(p, 0.0, hi, |x| t_cdf(x, v).unwrap_or(1.0)))
 }
@@ -376,10 +378,21 @@ pub fn t_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, Worksheet
 pub fn t_inv_2t_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let p = validate_probability_open_unit(probability)?;
     let v = truncate_positive_integer(deg_freedom)?;
-    // Invert the published two-tail surface (t_dist_2t's staging) directly at
-    // p, not the one-tail CDF at 1-p/2 — same principle as CHIINV/FINV
-    // (W109 b19: residuals collapse from -4..-238 to mostly +-1..7).
-    // The surface is decreasing in x, so invert the negated forward at -p.
+    if v == 1.0 {
+        // Live Excel 16.0 b20326: T.INV.2T(p,1)=1/TAN(PI()*p/2) 9/9.
+        // Cauchy closed form; the BETA.INV sqrt graph misses 3/9 here.
+        // p=0.5 is the exact quartile 1; worksheet TAN(PI()/4) is 1, but
+        // excel_tan(π/4) is 1 ULP high so 1/tan would publish 1+1 ULP.
+        if p == 0.5 {
+            return Ok(1.0);
+        }
+        let arg = std::f64::consts::PI * p / 2.0;
+        return Ok(1.0 / crate::functions::tan::tan_kernel(arg));
+    }
+    // df>=2: Excel is SQRT(df*(1/BETA.INV(p,df/2,0.5)-1)) 135/135 vs the
+    // worksheet BETA.INV, but production BETA.INV is still a few ULP off
+    // Excel, so the composition is not landable yet. Keep the published
+    // two-tail bratio inverter (W109 b19).
     let f = move |x: f64| {
         let t2 = x * x;
         let den = v + t2;
@@ -802,8 +815,16 @@ mod tests {
         for x in [0.0, 0.25, 0.5, 1.0, 2.0, 3.841458820694124, 10.0, 20.0] {
             let rt = chisq_dist_rt_kernel(x, 1.0).unwrap();
             let cdf = chisq_dist_kernel(x, 1.0, true).unwrap();
-            assert_eq!(rt.to_bits(), erfc_of_sqrt_half_x(x).unwrap().to_bits(), "rt x={x}");
-            assert_eq!(cdf.to_bits(), erf_of_sqrt_half_x(x).unwrap().to_bits(), "cdf x={x}");
+            assert_eq!(
+                rt.to_bits(),
+                erfc_of_sqrt_half_x(x).unwrap().to_bits(),
+                "rt x={x}"
+            );
+            assert_eq!(
+                cdf.to_bits(),
+                erf_of_sqrt_half_x(x).unwrap().to_bits(),
+                "cdf x={x}"
+            );
         }
         // Exact publication at zero does not depend on the ERFC body.
         assert_eq!(
@@ -818,12 +839,9 @@ mod tests {
             let exp = crate::excel_numeric::excel_exp(-(x / 2.0));
             assert_eq!(rt.to_bits(), exp.to_bits(), "df=2 rt x={x}");
             let cdf = chisq_dist_kernel(x, 2.0, true).unwrap();
-            let expon = crate::functions::discrete_dist_family::expon_dist_kernel(
-                x / 2.0,
-                1.0,
-                true,
-            )
-            .unwrap();
+            let expon =
+                crate::functions::discrete_dist_family::expon_dist_kernel(x / 2.0, 1.0, true)
+                    .unwrap();
             assert_eq!(cdf.to_bits(), expon.to_bits(), "df=2 cdf x={x}");
         }
     }
@@ -835,16 +853,14 @@ mod tests {
         for i in 1..40 {
             let x = 0.5 * f64::from(i);
             let chi4 = chisq_dist_rt_kernel(x, 4.0).unwrap();
-            let pois1 = crate::functions::discrete_dist_family::poisson_dist_kernel(
-                1.0, x / 2.0, true,
-            )
-            .unwrap();
+            let pois1 =
+                crate::functions::discrete_dist_family::poisson_dist_kernel(1.0, x / 2.0, true)
+                    .unwrap();
             assert_eq!(chi4.to_bits(), pois1.to_bits(), "df=4 x={x}");
             let chi6 = chisq_dist_rt_kernel(x, 6.0).unwrap();
-            let pois2 = crate::functions::discrete_dist_family::poisson_dist_kernel(
-                2.0, x / 2.0, true,
-            )
-            .unwrap();
+            let pois2 =
+                crate::functions::discrete_dist_family::poisson_dist_kernel(2.0, x / 2.0, true)
+                    .unwrap();
             assert_eq!(chi6.to_bits(), pois2.to_bits(), "df=6 x={x}");
         }
     }
@@ -855,7 +871,10 @@ mod tests {
             for x in [0.0, 0.5, 1.0, 2.0, 8.0, 20.0] {
                 let chi = chisq_dist_kernel(x, df, true).unwrap();
                 let gam = crate::functions::beta_gamma_stats_family::gamma_dist_kernel(
-                    x, df / 2.0, 2.0, true,
+                    x,
+                    df / 2.0,
+                    2.0,
+                    true,
                 )
                 .unwrap();
                 assert_eq!(chi.to_bits(), gam.to_bits(), "df={df} x={x}");
@@ -868,17 +887,67 @@ mod tests {
         for df in [1.0, 2.0, 3.0, 4.0, 5.0, 10.0] {
             for p in [0.01, 0.05, 0.25, 0.5, 0.9, 0.99] {
                 let chi = chisq_inv_kernel(p, df).unwrap();
-                let gam = crate::functions::beta_gamma_stats_family::gamma_inv_kernel(
-                    p,
-                    df / 2.0,
-                    2.0,
-                )
-                .unwrap();
+                let gam =
+                    crate::functions::beta_gamma_stats_family::gamma_inv_kernel(p, df / 2.0, 2.0)
+                        .unwrap();
                 assert_eq!(chi.to_bits(), gam.to_bits(), "df={df} p={p}");
             }
         }
         assert_eq!(chisq_inv_kernel(0.0, 2.0), Ok(0.0));
         assert_eq!(chisq_inv_kernel(1.0, 2.0), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn t_inv_2t_df1_matches_live_excel_tan_pins() {
+        // Live Excel 16.0 build 20326 / CV2, Value2 cell-ref injection.
+        // T.INV.2T(p,1)=1/TAN(PI()*p/2), with p=0.5 published as exact 1.
+        let rows: [(f64, u64); 9] = [
+            (0.001_f64, 0x4083e4f438b2cde9),
+            (0.01_f64, 0x404fd410182c3c38),
+            (0.02_f64, 0x403fd20d55634e2e),
+            (0.05_f64, 0x40296993aacc4d25),
+            (0.1_f64, 0x4019414813ba662c),
+            (0.2_f64, 0x40089f188bdcd7b0),
+            (0.3_f64, 0x3fff66da45fee3f1),
+            (0.4_f64, 0x3ff605a90c73ab79),
+            (0.5_f64, 0x3ff0000000000000),
+        ];
+        for (p, bits) in rows {
+            assert_eq!(
+                t_inv_2t_kernel(p, 1.0).unwrap().to_bits(),
+                bits,
+                "T.INV.2T({p},1)"
+            );
+        }
+    }
+
+    #[test]
+    fn t_inv_df1_matches_two_tail_double_prob() {
+        for p in [0.6, 0.75, 0.9, 0.95, 0.99, 0.995] {
+            let one = t_inv_kernel(p, 1.0).unwrap();
+            let two = t_inv_2t_kernel(2.0 * (1.0 - p), 1.0).unwrap();
+            assert_eq!(one.to_bits(), two.to_bits(), "T.INV({p},1) vs 2T");
+            let neg = t_inv_kernel(1.0 - p, 1.0).unwrap();
+            assert_eq!(one.to_bits(), (-neg).to_bits(), "T.INV oddness p={p}");
+        }
+        // Live Excel 16.0 b20326 Value2 T.INV(p,1)
+        let pins: [(f64, u64); 8] = [
+            (0.55, 0x3fc445f0fbb1cf9c),
+            (0.6, 0x3fd4cb7bfb4961b0),
+            (0.75, 0x3ff0000000000000),
+            (0.9, 0x40089f188bdcd7b1),
+            (0.95, 0x4019414813ba6625),
+            (0.975, 0x40296993aacc4d1e),
+            (0.99, 0x403fd20d55634e26),
+            (0.995, 0x404fd410182c3c30),
+        ];
+        for (p, bits) in pins {
+            assert_eq!(
+                t_inv_kernel(p, 1.0).unwrap().to_bits(),
+                bits,
+                "T.INV({p},1)"
+            );
+        }
     }
 
     #[test]
