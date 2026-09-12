@@ -539,3 +539,6 @@ will want; date every entry.
   - NEGBINOM PMF vs COMBIN*POWER 1/8; vs BINOM*p 2/8.
   - SEC=1/COS 8/8 and CSC=1/SIN 8/8 (production already those
     graphs).
+  - GAMMA(n+1/4) product-first contiguous through 9.25 (n=0..=9);
+    first miss 10.25. Landed. GAMMA(n+3/4) product-first misses
+    2.75; keep recurrence n=0..=5.
