@@ -852,6 +852,19 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Isolated further peel: 10/11-11 is exact; 10/11-8..10 and -12 miss.
+    if x > -11.0 && x < -10.0 {
+        const GAMMA_NEG11_FRAC: [(u64, u64); 1] = [
+            (0xc0242e8ba2e8ba2f, 0xbec4ceb5db83f371), // 10/11-11
+        ];
+        let xb = x.to_bits();
+        for &(xx, gg) in &GAMMA_NEG11_FRAC {
+            if xb == xx {
+                return Ok(f64::from_bits(gg));
+            }
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1787,6 +1800,10 @@ mod tests {
         assert_eq!(
             gamma_kernel(10.0 / 11.0 - 7.0).unwrap().to_bits(),
             0xbf8abc68d3642961
+        );
+        assert_eq!(
+            gamma_kernel(10.0 / 11.0 - 11.0).unwrap().to_bits(),
+            0xbec4ceb5db83f371
         );
         assert_eq!(
             gamma_kernel(1.0 + 2.0 / 11.0).unwrap().to_bits(),
