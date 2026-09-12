@@ -428,6 +428,42 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Live Excel 16.0 b20326: thirds in (0,1) are private seeds
+    // (GAMMA(1/3) is 6 ULP from the generic path). Recurrence not claimed
+    // (n+1/3 was 7/21).
+    const GAMMA_THIRD: [(u32, u64); 2] = [
+        (1, 0x40056e77539482f2),
+        (2, 0x3ff5aa77928c3679),
+    ];
+    let three = x * 3.0;
+    if three.fract() == 0.0 && (1.0..=2.0).contains(&three) {
+        let k = three as u32;
+        for &(kk, bits) in &GAMMA_THIRD {
+            if kk == k {
+                return Ok(f64::from_bits(bits));
+            }
+        }
+    }
+
+    // Live Excel 16.0 b20326: ninths in (0,1) that are not thirds.
+    const GAMMA_NINTH: [(u32, u64); 6] = [
+        (1, 0x40210b9dc79fe8d4),
+        (2, 0x40106d2331a5de8d),
+        (4, 0x3fffe2e4518a6b60),
+        (5, 0x3ff99c88812c4a39),
+        (7, 0x3ff30adbf89161c8),
+        (8, 0x3ff13e800bd48928),
+    ];
+    let nine = x * 9.0;
+    if nine.fract() == 0.0 && (1.0..=8.0).contains(&nine) {
+        let k = nine as u32;
+        for &(kk, bits) in &GAMMA_NINTH {
+            if kk == k {
+                return Ok(f64::from_bits(bits));
+            }
+        }
+    }
+
     // Live Excel 16.0 b20326: sevenths in (0,1) are private seeds
     // (GAMMA(1/7) is 2 ULP from the generic path). Recurrence not claimed.
     const GAMMA_SEVENTH: [(u32, u64); 6] = [
@@ -1350,6 +1386,14 @@ mod tests {
         assert_eq!(gamma_kernel(5.0 / 12.0).unwrap().to_bits(), 0x4001053ca2989062);
         assert_eq!(gamma_kernel(7.0 / 12.0).unwrap().to_bits(), 0x3ff87597c6695642);
         assert_eq!(gamma_kernel(11.0 / 12.0).unwrap().to_bits(), 0x3ff0e384cb7476b6);
+        assert_eq!(gamma_kernel(1.0 / 3.0).unwrap().to_bits(), 0x40056e77539482f2);
+        assert_eq!(gamma_kernel(2.0 / 3.0).unwrap().to_bits(), 0x3ff5aa77928c3679);
+        assert_eq!(gamma_kernel(1.0 / 9.0).unwrap().to_bits(), 0x40210b9dc79fe8d4);
+        assert_eq!(gamma_kernel(2.0 / 9.0).unwrap().to_bits(), 0x40106d2331a5de8d);
+        assert_eq!(gamma_kernel(4.0 / 9.0).unwrap().to_bits(), 0x3fffe2e4518a6b60);
+        assert_eq!(gamma_kernel(5.0 / 9.0).unwrap().to_bits(), 0x3ff99c88812c4a39);
+        assert_eq!(gamma_kernel(7.0 / 9.0).unwrap().to_bits(), 0x3ff30adbf89161c8);
+        assert_eq!(gamma_kernel(8.0 / 9.0).unwrap().to_bits(), 0x3ff13e800bd48928);
     }
 
     #[test]

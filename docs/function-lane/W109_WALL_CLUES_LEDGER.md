@@ -447,4 +447,5 @@ will want; date every entry.
   - GAMMA fifths recurrence n=1 already 1 ULP (2/11, 4/11, 6/11, 5/11).
     Landed (0,1) seeds only. Odd tenths in (0,1) also seed-only
     (`GAMMA(1/10)` 3 ULP from generic). Sevenths and 1/12,5/12,7/12,11/12
-    likewise seed-only (`GAMMA(1/7)` 2 ULP from generic).
+    likewise seed-only (`GAMMA(1/7)` 2 ULP from generic). Thirds and
+    remaining ninths seed-only (`GAMMA(1/3)` 6 ULP from generic).
