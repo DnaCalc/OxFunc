@@ -35,4 +35,5 @@ eleventh/thirteenth first peels 1/11-1, 4/11-1, 3/13-1, 4/13-1, 5/13-1,
 tenths 1/10,7/10,9/10, 5/12-1, 11/12-1, and 3/16-1 are further published-bit
 seeds (worksheet peels 1–3 ULP). Second peels of 1/5,2/5,3/5,4/5,1/9,4/9,7/10
 into (−2,−1) are exact (7/12 of that batch). Third peels 2/5-3 and 3/5-3
-are exact; 3/5-4 is exact; 2/5-4 misses 1 ULP.
+are exact; 3/5-4 is exact; 2/5-4 misses 1 ULP. 4/17-2, 8/17-2, 9/17-2 are exact;
+those third peels miss 1 ULP.

@@ -670,3 +670,5 @@ will want; date every entry.
     IMABS vs SQRT(re^2+im^2) 9/10 max 1 ULP. IMEXP vs EXP*COS/SIN
     IMREAL 1/10 max 22 ULP, IMAGINARY 2/10 max 12 ULP. Not the
     worksheet elementary graph.
+  - CUMIPMT vs sum of IPMT over the range honest 1/3 (15 and 7 ULP
+    misses). Not an identity.
