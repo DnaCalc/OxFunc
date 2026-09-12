@@ -29,4 +29,6 @@ exact for 3/7-3, 13/16-3, 5/9-3 (3/5). Fourth peel into (−4,−3) is exact
 for 3/7-4 and 13/16-4. Fifth peels miss 1 ULP.
 
 Remaining seventeenth first peels k/17-1 for k=4,5,7,8,9,10,12,15 are
-1–2 ULP from the worksheet peel and are published-bit seeds.
+1–2 ULP from the worksheet peel and are published-bit seeds. Missing
+eleventh/thirteenth first peels 1/11-1, 4/11-1, 3/13-1, 4/13-1, 5/13-1,
+8/13-1, 12/13-1 likewise (1–3 ULP).

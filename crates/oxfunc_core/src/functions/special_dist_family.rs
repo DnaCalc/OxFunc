@@ -701,7 +701,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 7/12-1) are 1–4 ULP from that peel and still use the Excel bits.
     // IEEE complement-seed/x is not the graph (1+(-1/3) is not 2/3).
     if x > -1.0 && x < 0.0 {
-        const GAMMA_NEG_FRAC: [(u64, u64); 56] = [
+        const GAMMA_NEG_FRAC: [(u64, u64); 63] = [
             (0xbfd5555555555555, 0xc0103fd9ade928da), // -1/3
             (0xbfe5555555555555, 0xc01012d97eaf6234), // -2/3
             (0xbfd0000000000000, 0xc0139b4e8b50f62d), // -1/4
@@ -762,6 +762,13 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbfda5a5a5a5a5a5a, 0xc00d78352b10042a), // 10/17-1
             (0xbfd2d2d2d2d2d2d2, 0xc011873615bc34d5), // 12/17-1
             (0xbfbe1e1e1e1e1e20, 0xc0226a7819660d8a), // 15/17-1
+            (0xbfed1745d1745d17, 0xc0271ce8a1cdffa6), // 1/11-1
+            (0xbfe45d1745d1745d, 0xc00ec37c94034c8b), // 4/11-1
+            (0xbfe89d89d89d89d8, 0xc01484b4654e4e7d), // 3/13-1
+            (0xbfe6276276276276, 0xc010d4c63c73aa89), // 4/13-1
+            (0xbfe3b13b13b13b14, 0xc00e0581db1d0f46), // 5/13-1
+            (0xbfd89d89d89d89d8, 0xc00e433357623f84), // 8/13-1
+            (0xbfb3b13b13b13b10, 0xc02b517c3426d534), // 12/13-1
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG_FRAC {
@@ -2040,6 +2047,22 @@ mod tests {
         assert_eq!(
             gamma_kernel(15.0 / 17.0 - 1.0).unwrap().to_bits(),
             0xc0226a7819660d8a
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 11.0 - 1.0).unwrap().to_bits(),
+            0xc0271ce8a1cdffa6
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 11.0 - 1.0).unwrap().to_bits(),
+            0xc00ec37c94034c8b
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 13.0 - 1.0).unwrap().to_bits(),
+            0xc01484b4654e4e7d
+        );
+        assert_eq!(
+            gamma_kernel(12.0 / 13.0 - 1.0).unwrap().to_bits(),
+            0xc02b517c3426d534
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
