@@ -721,3 +721,10 @@ will want; date every entry.
     production compose). DEVSQ vs VAR.S*(n-1) 3/5.
   - BETA.DIST(x,0.5,0.5,TRUE) vs 2*ASIN(SQRT(x))/PI() 7/9. PDF vs
     1/(PI*SQRT(x(1-x))) 3/9. Not identities.
+  - F.DIST(x,4,4,FALSE) vs 6x/(1+x)^4 3/8. CDF/RT 1/(1+x)^2 forms
+    0/8 (wrong closed form). WEIBULL a=2 vs worksheet EXP/EXPM1 0/20
+    (private body already identified as x87 pow/exp, not worksheet).
+  - NEGBINOM.DIST(k,s,p,TRUE)=BETA.DIST(p,s,k+1,TRUE) 45/45 (already
+    production regularized_beta). vs 1-BINOM 30/45.
+  - ISPMT vs pv*rate*(per/nper-1) 4/6 max 1 ULP (production is that
+    IEEE formula).
