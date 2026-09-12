@@ -236,6 +236,13 @@ fn erfc_horner(coeffs: &[f64], u: f64) -> f64 {
 }
 
 fn excel_erfc(x: f64) -> f64 {
+    // Live Excel 16.0 b20326 Value2: ERFC.PRECISE(z) == 1-ERF.PRECISE(z)
+    // bit-exactly on 1033/1033 positive z in (0, 0.5] (1/2048 grid plus
+    // the 0.5 ulp neighborhood). Negatives are not this identity (237/256
+    // in [-0.5, 0)). Do not extend below 0 or above 0.5.
+    if x > 0.0 && x <= 0.5 {
+        return 1.0 - erf_approx(x);
+    }
     let libm_v = libm::erfc(x);
     if !x.is_finite() || x < 1.25 {
         return libm_v;
@@ -1599,6 +1606,35 @@ mod tests {
         assert_eq!(
             eval_erf_surface(&[txt2], &r),
             Ok(CalcValue::number(erf_approx(2.0)))
+        );
+    }
+
+    #[test]
+    fn erfc_positive_half_is_one_minus_erf() {
+        // Live Excel 16.0 b20326: ERFC.PRECISE(z)==1-ERF.PRECISE(z) on
+        // (0, 0.5]. Production publishes that composition through erf_approx.
+        for k in 1..=16 {
+            let z = f64::from(k) / 32.0;
+            let got = erfc_precise_kernel(z).unwrap();
+            let want = 1.0 - erf_precise_kernel(z).unwrap();
+            assert_eq!(got.to_bits(), want.to_bits(), "z={z}");
+        }
+        // Capture pins (cell Value2, build 20326) where 1-erf matches Excel.
+        assert_eq!(
+            erfc_precise_kernel(0.00048828125).unwrap().to_bits(),
+            0x3feffb7c8a31f3f6
+        );
+        assert_eq!(
+            erfc_precise_kernel(0.125).unwrap().to_bits(),
+            0x3feb82879728f11e
+        );
+        assert_eq!(
+            erfc_precise_kernel(0.4775390625).unwrap().to_bits(),
+            0x3fdff72039b2c25e
+        );
+        assert_eq!(
+            erfc_precise_kernel(0.5).unwrap().to_bits(),
+            0x3fdeb02147ce245c
         );
     }
 

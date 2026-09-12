@@ -1,10 +1,9 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-12` (GAMMA odd-eighths and quarter-integers use
-native recurrence from live seeds on short contiguous n-ranges. Tiny-x
-`<=1e-16` is `1/x`. G3-02 stays open. ERFC Lentz tail 1324 is a constraint,
-not an identity.)
+Last reconciled: `2026-09-12` (ERFC.PRECISE(z)=1-ERF.PRECISE(z) on positive
+z in (0, 0.5]; small-z capture 774/1033 vs Excel, leftover inherits the ERF
+body. G4-04 stays open. ERFC Lentz tail 1324 is a constraint, not an identity.)
 Previous reconcile: `2026-08-19` (NEGBINOM CDF = `BETA.DIST(p,s,f+1,TRUE)` 150/150;
 chi CDF = `GAMMA.DIST(x,df/2,2,TRUE)` 88/88. Poisson PMF is not a CDF
 difference. G3-01 still open for Poisson/Negbinom PMFs, remaining GRATIO, ERF.)
@@ -232,7 +231,7 @@ No current open rows.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G4-04 — COMBIN, COMBINA (closed); FACTDOUBLE control; ERF.PRECISE, ERFC.PRECISE (open) | **COMBIN and COMBINA current-reference sublanes closed_signed_off (2026-08-09):** COMBIN applies DAZ, rejects remaining raw negatives, truncates, admits `n<=2147483646`, reduces `k=min(k,n-k)`, then uses the cyclic stored-x87 quotient/product graph with `n` multiplied last. COMBINA applies DAZ and separate truncation, publishes one from the zero/zero pool before its asymmetric truncated-n/raw-DAZ-k guard, and delegates `tn+tk-1,tk` to COMBIN. The original COMBIN body is `22242/22242`; new COMBIN admission controls are `2195/2195`; COMBINA is `40330/40330`; combined replay is `64767/64767`. Candidate-frozen gates pass COMBINA `2048/2048` centrally and fresh paired admission `220/220` without refinement. The July GAMMALN/product-impossibility claim is retracted. FACTDOUBLE remains an exact control. **This mixed row remains open only for ERF/ERFC.PRECISE** on the incomplete-gamma staging lane described under G3-01. **2026-08-18:** live Excel publishes `CHIDIST(x,1)` as `ERFC.PRECISE(SQRT(x/2))` and `GAMMA.DIST(x,0.5,2,TRUE)` as `ERF.PRECISE(SQRT(x/2))` (154/154), so those surfaces are extra observations of this same open body. | NUM-S | M2 | BUG-FUNC-027 combinatorial group / W109_COMBIN_IDENTIFICATION_20260809.md / W109_COMBINA_IDENTIFICATION_20260809.md / W109_CHIDIST_DF1_ERFC_IDENTITY_20260818.md |
+| G4-04 — COMBIN, COMBINA (closed); FACTDOUBLE control; ERF.PRECISE, ERFC.PRECISE (open) | **COMBIN and COMBINA current-reference sublanes closed_signed_off (2026-08-09):** COMBIN applies DAZ, rejects remaining raw negatives, truncates, admits `n<=2147483646`, reduces `k=min(k,n-k)`, then uses the cyclic stored-x87 quotient/product graph with `n` multiplied last. COMBINA applies DAZ and separate truncation, publishes one from the zero/zero pool before its asymmetric truncated-n/raw-DAZ-k guard, and delegates `tn+tk-1,tk` to COMBIN. The original COMBIN body is `22242/22242`; new COMBIN admission controls are `2195/2195`; COMBINA is `40330/40330`; combined replay is `64767/64767`. Candidate-frozen gates pass COMBINA `2048/2048` centrally and fresh paired admission `220/220` without refinement. The July GAMMALN/product-impossibility claim is retracted. FACTDOUBLE remains an exact control. **This mixed row remains open only for ERF/ERFC.PRECISE** on the incomplete-gamma staging lane described under G3-01. **2026-09-12:** live Excel 16.0 b20326 publishes `ERFC.PRECISE(z)=1-ERF.PRECISE(z)` bit-exactly on 1033/1033 positive z in `(0, 0.5]` (1/2048 grid plus the 0.5 ulp neighborhood). That composition is now the production small-z ERFC slice. The same capture scores 774/1033 vs Excel ERFC (was 746/1033 via libm.erfc); remaining misses inherit the open ERF body. Negatives are not this identity (237/256 in `[-0.5, 0)`). Mid/tail F-body remains the firehorse constraint (mixed 2976/1370, Lentz 1324). **2026-08-18:** live Excel publishes `CHIDIST(x,1)` as `ERFC.PRECISE(SQRT(x/2))` and `GAMMA.DIST(x,0.5,2,TRUE)` as `ERF.PRECISE(SQRT(x/2))` (154/154), so those surfaces are extra observations of this same open body. | NUM-S | M2 | BUG-FUNC-027 combinatorial group / W109_COMBIN_IDENTIFICATION_20260809.md / W109_COMBINA_IDENTIFICATION_20260809.md / W109_CHIDIST_DF1_ERFC_IDENTITY_20260818.md |
 
 The former `G4-05` CONVERT row was signed off and removed on 2026-08-09 after
 `8ef5cac` landed the exact current-reference table, dispatch, and three-store

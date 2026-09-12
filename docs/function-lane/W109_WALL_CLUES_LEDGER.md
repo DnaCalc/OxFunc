@@ -749,3 +749,16 @@ will want; date every entry.
   - PMT type=1 vs type=0/(1+rate) 2/5 max 2 ULP. Not a last-bit identity.
   - Odd-eighth product-first n=10 misses 1–2 ULP; n=9 remains the
     contiguous nmax.
+  - GAMMALN B1 two-step `GAMMALN(x)==GAMMALN(x+1)-LN(x)` 35/181
+    (`[0.7,1)` 19/73; `(1,1.5)` 16/108). LN(GAMMA) 6/181. Not a
+    B1 reduction.
+  - NEGBINOM PMF vs BINOM identities: `BINOM(s,k+s-1,p)` 2/346;
+    `BINOM(k,k+s-1,1-p)*p` 107/346 then 61/180; `BINOM*(1-p)` 9/180;
+    COMBIN/POWER forms 37–39/180. k=1 vs `NB0*s*(1-p)` 19/72. Private
+    PMF leftover.
+  - BINOM k=0 vs worksheet POWER 14/72; vs EXP(n*LN(1-p)) 49/72.
+    Rust excel_exp/pow_chain 132/210; production 146/210 (p<0.1 bd0
+    17/30). Do not replace production k=0.
+  - ERFC.PRECISE vs 1-ERF.PRECISE is exact on positive `(0, 0.5]`
+    (1033/1033) and not on negatives (237/256 in `[-0.5,0)`). Positive
+    slice landed; remaining ERFC is the ERF body plus mid/tail F-body.
