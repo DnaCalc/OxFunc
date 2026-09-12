@@ -490,3 +490,5 @@ will want; date every entry.
     leftover ERFC body). Aliases NORM.S.DIST/NORM.DIST(*,0,1,TRUE) 6/6.
   - BINOM.DIST(n,n,p,FALSE) vs POWER(p,n) 3/9 (only p=0.5). Not an
     identity.
+  - ACOS(0.5) libm is 1 ULP from live Excel 20326. No excel_acos
+    graph landed.
