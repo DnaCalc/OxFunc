@@ -182,6 +182,12 @@ fn direct_combinatoric_lane(max_n: u64) -> bool {
 }
 
 fn binom_pmf_direct(number_s: u64, trials: u64, probability_s: f64) -> f64 {
+    // Live Excel: RANGE(n,p,k,k)==DIST(k,n,p). The k=0 and k=n closed
+    // forms in `binom_pmf` are the DIST graph; native powi is 1 ULP off
+    // DIST at k=n high-p (RANGE(10,0.9,10,10)).
+    if number_s == 0 || number_s == trials {
+        return binom_pmf(number_s, trials, probability_s);
+    }
     choose_direct(trials, number_s)
         * pow_u64(probability_s, number_s)
         * pow_u64(1.0 - probability_s, trials - number_s)
@@ -997,6 +1003,12 @@ mod tests {
                 binom_dist_kernel(n, n, p, false).unwrap().to_bits(),
                 bits,
                 "BINOM.DIST({n},{n},{p},FALSE)"
+            );
+            // Live Excel: RANGE(n,p,n,n)==DIST(n,n,p) 16/16.
+            assert_eq!(
+                binom_dist_range_kernel(n, p, n, Some(n)).unwrap().to_bits(),
+                bits,
+                "BINOM.DIST.RANGE({n},{p},{n},{n})"
             );
         }
     }
