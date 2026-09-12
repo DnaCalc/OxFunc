@@ -10,3 +10,6 @@ Worksheet `GAMMA(x)=GAMMA(x+1)/x` is exact for:
 - 5/16 of `x=k/17-1` (k=2,3,11,13,16).
 
 Those residues are published-bit seeds. Misses stay generic.
+
+Second peel into (-2,-1) from exact first-peel thirteenths is exact
+for k=2,10,11 (3/7). k=1,6,7,9 miss 1-2 ULP.
