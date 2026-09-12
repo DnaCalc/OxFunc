@@ -469,3 +469,6 @@ will want; date every entry.
   - GAMMA(n) vs (n-1)*GAMMA(n-1) for n=88..110 is 4/23 (scattered
     exacts at 91,92,94,95). Not a peel extension of the n=1..88 reverse
     product. FACT(n-1) 1/23.
+  - PMT small-tau live 20326 grid (rate 1e-4..0.05, nper 12/24/60,
+    pv=-1000, type=0): production is 1 ULP off the first pin
+    PMT(1e-4,12,-1000). |tau|<1 helper remains a wall.
