@@ -731,3 +731,8 @@ will want; date every entry.
   - T.DIST df=5 PDF POWER closed forms 1/8. IMPOWER vs IMEXP(n*IMLN)
     0/6. GAMMA.DIST a=0.5 b=1 PDF vs EXP(-x)/SQRT(PI*x) 2/8.
     LOG(x,EXP(1))=LN(x) 8/8 (already production ln/ln(base)).
+  - CHISQ.DIST.RT df=3 vs ERFC.PRECISE(SQRT(x/2))+SQRT(2x/PI)*EXP 4/7.
+    PDF vs SQRT(x/(2PI))*EXP 2/7. F.DIST.RT(x,1,d2) vs T.DIST.2T(SQRT(x),d2)
+    20/25. Zero-coupon PRICE vs red/POWER(1+yld/freq,freq*YEARFRAC) is
+    exact on two 30/360 rows and far off on actual/actual — not a
+    general PRICE graph.
