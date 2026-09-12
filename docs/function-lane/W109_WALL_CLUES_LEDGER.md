@@ -587,3 +587,10 @@ will want; date every entry.
   - ERF.PRECISE tiny: 2x/SQRT(PI) 1/12; Taylor3 3/12;
     2*NORMSDIST(x*SQRT(2))-1 9/12 (misses z<=1e-4, leftover
     NORMSDIST/ERFC body). 1-ERFC 9/12.
+  - T.DIST(x,2,FALSE)=POWER(2+x*x,-1.5) 15/15; excel_pow_chain
+    15/15. Landed.
+  - F.DIST.RT(x,2,d2)=POWER(d2/(d2+2x),d2/2) 49/49 in Excel.
+    excel_pow_chain on IEEE base is 14/15 (x=0.5,d2=2 is 1 ULP,
+    Excel 0x3fe5555555555556 vs 2/3). Not landed.
+  - CHISQ.DIST.RT(x,4)=EXP(-x/2)*(1+x/2) 7/7 in Excel on a 7-point
+    grid; spilled excel_exp form 5/7. Reconstruction wall.
