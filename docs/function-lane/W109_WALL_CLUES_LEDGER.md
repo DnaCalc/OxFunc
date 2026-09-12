@@ -762,3 +762,27 @@ will want; date every entry.
   - ERFC.PRECISE vs 1-ERF.PRECISE is exact on positive `(0, 0.5]`
     (1033/1033) and not on negatives (237/256 in `[-0.5,0)`). Positive
     slice landed; remaining ERFC is the ERF body plus mid/tail F-body.
+  - Small-z ERF body: libm/fdlibm 405/1033; x87-continuous fdlibm
+    411/1033; NSWC 55; nextafter+inf 463 (shifts the −1 ULP bin, not
+    a graph). Rational LS fits worse. Body remains open.
+  - PMT fv=0 type=0 live 330-row invert: production 156/330; `|tau|<1`
+    93/264; implied em vs Kahan 63/264. Alternate Kahan orderings do
+    not beat `(u-1)*t/ln u`. Combine still pollutes the helper.
+  - POISSON k=1 live 56-row: production log-compose 38/56; `λ*e^{-λ}`
+    29/56; excel_ln vs native ln tie. k=1 leftover is the exp chain.
+  - BINOM k=0 live 210-row: production 146/210 beats pow_chain/EXP/LN
+    132/210. Keep the p<0.1 bd0 branch.
+  - BINOM CDF vs BETA.DIST(1-p,n-k,k+1) 199/240 (1 ULP misses).
+    RANGE=CDF 246/246 already known. CDF is not published BETA.
+  - NEGBINOM large-n (k+s-1>200) 0/48 vs production and vs excel_log
+    / excel_exp / pow_chain composes. Private PMF.
+  - GAMMA.DIST a=2 CDF vs 1-EXP(-x)*(1+x) 12/55; vs 1-POISSON(1,x)
+    29/55. PDF vs x*EXP 22/55. Integer-a closed forms are not the
+    graph.
+  - T.DIST df=2 CDF closed form 0.5+x/(2*sqrt(2+x*x)) 46/75 rust
+    (worksheet 32/53); production 39/75. Not an identity.
+  - F(2,2) RT production already 32/32 on the live grid; 1/(1+x)
+    25/32. CDF closed forms 21–24/32 vs production 29/32.
+  - GAMMALN two open Stirling rows: q-chain associations 0–1/2;
+    nextup of production is 2/2 but is not a graph (would regress
+    the 1709 exact high-band rows).
