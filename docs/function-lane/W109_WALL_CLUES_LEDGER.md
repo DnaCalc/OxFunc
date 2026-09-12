@@ -546,3 +546,6 @@ will want; date every entry.
     n=9; n+7/8 misses 1.875. Landed the three extending families.
   - GAMMA odd sixteenths product-first from (0,1) seeds: 1/16 n<=9,
     5/16 n<=4, 9/16 n<=10, 13/16 n<=5. Other four miss at n=1.
+  - GAMMA product-first from remaining (0,1) seeds: 1/12 and 5/12
+    n<=1, 7/12 n<=3, 1/7 n<=2, 3/10 n<=1. 11/12 and other tenths/
+    sevenths miss at n=1.

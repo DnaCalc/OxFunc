@@ -549,57 +549,90 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     }
 
     // Live Excel 16.0 b20326: sevenths in (0,1) are private seeds
-    // (GAMMA(1/7) is 2 ULP from the generic path). Recurrence not claimed.
-    const GAMMA_SEVENTH: [(u32, u64); 6] = [
-        (1, 0x401a313769520e5a),
-        (2, 0x400931634450f1e8),
-        (3, 0x40008a43968d61a6),
-        (4, 0x3ff8eff2aa47b664),
-        (5, 0x3ff46a774bb2e0cd),
-        (6, 0x3ff1b138d04a62f3),
+    // (GAMMA(1/7) is 2 ULP from the generic path). Product-first extends
+    // 1/7 through n=2; other sevenths miss at n=1.
+    const GAMMA_SEVENTH: [(u32, u64, u32); 6] = [
+        (1, 0x401a313769520e5a, 2),
+        (2, 0x400931634450f1e8, 0),
+        (3, 0x40008a43968d61a6, 0),
+        (4, 0x3ff8eff2aa47b664, 0),
+        (5, 0x3ff46a774bb2e0cd, 0),
+        (6, 0x3ff1b138d04a62f3, 0),
     ];
     let seven = x * 7.0;
-    if seven.fract() == 0.0 && (1.0..=6.0).contains(&seven) {
+    if x > 0.0 && seven.fract() == 0.0 {
         let k = seven as u32;
-        for &(kk, bits) in &GAMMA_SEVENTH {
-            if kk == k {
-                return Ok(f64::from_bits(bits));
+        if k % 7 != 0 {
+            let rem = k % 7;
+            let n = (k - rem) / 7;
+            for &(kk, bits, nmax) in &GAMMA_SEVENTH {
+                if kk == rem && n <= nmax {
+                    let seed = f64::from_bits(bits);
+                    let frac = rem as f64 / 7.0;
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
+                }
             }
         }
     }
 
     // Live Excel 16.0 b20326: 1/12, 5/12, 7/12, 11/12 in (0,1) are private
     // seeds (other twelfths reduce to halves/thirds/quarters/sixths).
-    const GAMMA_TWELFTH: [(u32, u64); 4] = [
-        (1, 0x4026ffb50d1bc6dc),
-        (5, 0x4001053ca2989062),
-        (7, 0x3ff87597c6695642),
-        (11, 0x3ff0e384cb7476b6),
+    // Product-first extends 1/12 and 5/12 through n=1, 7/12 through n=3.
+    const GAMMA_TWELFTH: [(u32, u64, u32); 4] = [
+        (1, 0x4026ffb50d1bc6dc, 1),
+        (5, 0x4001053ca2989062, 1),
+        (7, 0x3ff87597c6695642, 3),
+        (11, 0x3ff0e384cb7476b6, 0),
     ];
     let twelve = x * 12.0;
-    if twelve.fract() == 0.0 && (1.0..=11.0).contains(&twelve) {
+    if x > 0.0 && twelve.fract() == 0.0 {
         let k = twelve as u32;
-        for &(kk, bits) in &GAMMA_TWELFTH {
-            if kk == k {
-                return Ok(f64::from_bits(bits));
+        if k % 12 != 0 {
+            let rem = k % 12;
+            let n = (k - rem) / 12;
+            for &(kk, bits, nmax) in &GAMMA_TWELFTH {
+                if kk == rem && n <= nmax {
+                    let seed = f64::from_bits(bits);
+                    let frac = rem as f64 / 12.0;
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
+                }
             }
         }
     }
 
     // Live Excel 16.0 b20326: odd tenths in (0,1) are private seeds
-    // (GAMMA(1/10) is 3 ULP from the generic path). Recurrence not claimed.
-    const GAMMA_ODD_TENTH: [(u32, u64); 4] = [
-        (1, 0x402306ea7b280d88),
-        (3, 0x4007eebbb8aec4ab),
-        (7, 0x3ff4c4d5ab21ea23),
-        (9, 0x3ff1191a68f2b5e1),
+    // (GAMMA(1/10) is 3 ULP from the generic path). Product-first extends
+    // 3/10 through n=1; other odd tenths miss at n=1.
+    const GAMMA_ODD_TENTH: [(u32, u64, u32); 4] = [
+        (1, 0x402306ea7b280d88, 0),
+        (3, 0x4007eebbb8aec4ab, 1),
+        (7, 0x3ff4c4d5ab21ea23, 0),
+        (9, 0x3ff1191a68f2b5e1, 0),
     ];
     let ten = x * 10.0;
-    if ten.fract() == 0.0 && (1.0..=9.0).contains(&ten) {
+    if x > 0.0 && ten.fract() == 0.0 {
         let k = ten as u32;
-        for &(kk, bits) in &GAMMA_ODD_TENTH {
-            if kk == k {
-                return Ok(f64::from_bits(bits));
+        if k % 10 != 0 {
+            let rem = k % 10;
+            let n = (k - rem) / 10;
+            for &(kk, bits, nmax) in &GAMMA_ODD_TENTH {
+                if kk == rem && n <= nmax {
+                    let seed = f64::from_bits(bits);
+                    let frac = rem as f64 / 10.0;
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
+                }
             }
         }
     }
@@ -1554,9 +1587,21 @@ mod tests {
         assert_eq!(gamma_kernel(4.0 / 5.0).unwrap().to_bits(), 0x3ff2a0af5617b4b9);
         assert_eq!(gamma_kernel(1.0 / 10.0).unwrap().to_bits(), 0x402306ea7b280d88);
         assert_eq!(gamma_kernel(3.0 / 10.0).unwrap().to_bits(), 0x4007eebbb8aec4ab);
+        assert_eq!(
+            gamma_kernel(1.0 + 3.0 / 10.0).unwrap().to_bits(),
+            0x3fecb81477381f33
+        );
         assert_eq!(gamma_kernel(7.0 / 10.0).unwrap().to_bits(), 0x3ff4c4d5ab21ea23);
         assert_eq!(gamma_kernel(9.0 / 10.0).unwrap().to_bits(), 0x3ff1191a68f2b5e1);
         assert_eq!(gamma_kernel(1.0 / 7.0).unwrap().to_bits(), 0x401a313769520e5a);
+        assert_eq!(
+            gamma_kernel(1.0 + 1.0 / 7.0).unwrap().to_bits(),
+            0x3fedef1ac182598b
+        );
+        assert_eq!(
+            gamma_kernel(2.0 + 1.0 / 7.0).unwrap().to_bits(),
+            0x3ff11aeab7b8332b
+        );
         assert_eq!(gamma_kernel(2.0 / 7.0).unwrap().to_bits(), 0x400931634450f1e8);
         assert_eq!(gamma_kernel(3.0 / 7.0).unwrap().to_bits(), 0x40008a43968d61a6);
         assert_eq!(gamma_kernel(4.0 / 7.0).unwrap().to_bits(), 0x3ff8eff2aa47b664);
@@ -1566,6 +1611,18 @@ mod tests {
         assert_eq!(gamma_kernel(5.0 / 12.0).unwrap().to_bits(), 0x4001053ca2989062);
         assert_eq!(gamma_kernel(7.0 / 12.0).unwrap().to_bits(), 0x3ff87597c6695642);
         assert_eq!(gamma_kernel(11.0 / 12.0).unwrap().to_bits(), 0x3ff0e384cb7476b6);
+        assert_eq!(
+            gamma_kernel(1.0 + 1.0 / 12.0).unwrap().to_bits(),
+            0x3feeaa46bc250925
+        );
+        assert_eq!(
+            gamma_kernel(1.0 + 5.0 / 12.0).unwrap().to_bits(),
+            0x3fec5e0fb9a8f0a4
+        );
+        assert_eq!(
+            gamma_kernel(3.0 + 7.0 / 12.0).unwrap().to_bits(),
+            0x400d2e10d85584c4
+        );
         assert_eq!(gamma_kernel(1.0 / 3.0).unwrap().to_bits(), 0x40056e77539482f2);
         assert_eq!(gamma_kernel(2.0 / 3.0).unwrap().to_bits(), 0x3ff5aa77928c3679);
         assert_eq!(gamma_kernel(1.0 / 9.0).unwrap().to_bits(), 0x40210b9dc79fe8d4);
