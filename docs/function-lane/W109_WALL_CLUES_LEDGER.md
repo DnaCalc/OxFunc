@@ -396,3 +396,9 @@ will want; date every entry.
     slice. Third-integer recurrence `n+1/3` was 7/21 max 8 ULP — not landed.
   - GAMMA odd eighths: `n+1/8` and `n+3/8` exact n=0..=3; `n+5/8` n=0..=2;
     `n+7/8` seed only. Landed those ranges.
+  - GAMMA sixths: `n+1/6` recurrence 2/7 with n=1 already 1 ULP; `n+5/6`
+    n=1 already 1 ULP (then scattered exacts). Not a contiguous seed
+    family. Not landed.
+  - GAMMA negative halves: `GAMMA(-0.5)` is 1 ULP from `-2*GAMMA(0.5)`.
+    Peel `GAMMA(-1.5)=GAMMA(-0.5)/(-1.5)` is exact; `-2.5` already misses.
+    Landed `-0.5` and `-1.5` only.

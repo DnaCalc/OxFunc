@@ -267,6 +267,16 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         return Err(WorksheetErrorCode::Num);
     }
 
+    // Live Excel 16.0 b20326: GAMMA(-0.5) is not -2*GAMMA(0.5) (1 ULP).
+    // Seed plus one peel step: GAMMA(-1.5)=GAMMA(-0.5)/(-1.5) is exact.
+    // Further negative halves are not a contiguous peel family.
+    if x == -0.5 {
+        return Ok(f64::from_bits(0xc00c5bf891b4ef6a));
+    }
+    if x == -1.5 {
+        return Ok(f64::from_bits(0xc00c5bf891b4ef6a) / -1.5);
+    }
+
     // Live Excel 16.0 b20326: positive subnormals are #NUM! (same admission
     // as published GAMMALN). Min-normal is admitted.
     if x.is_subnormal() {
@@ -1210,6 +1220,8 @@ mod tests {
         assert_eq!(gamma_kernel(1.625).unwrap().to_bits(), 0x3fecb0bc8b68e402);
         assert_eq!(gamma_kernel(2.625).unwrap().to_bits(), 0x3ff74f9931453942);
         assert_eq!(gamma_kernel(0.875).unwrap().to_bits(), 0x3ff16f374f724016);
+        assert_eq!(gamma_kernel(-0.5).unwrap().to_bits(), 0xc00c5bf891b4ef6a);
+        assert_eq!(gamma_kernel(-1.5).unwrap().to_bits(), 0x4002e7fb0bcdf4f1);
     }
 
     #[test]
