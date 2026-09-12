@@ -24,10 +24,11 @@ pub const CSCH_META: FunctionMeta = function_spec! {
 };
 
 pub fn csch_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    let sinh = n.sinh();
+    let sinh = crate::functions::sinh::sinh_kernel(n);
     if sinh == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
+    // Live Excel 16.0 b20326: CSCH(x)=1/SINH(x) 5/5; follows the SINH kernel.
     Ok(1.0 / sinh)
 }
 
