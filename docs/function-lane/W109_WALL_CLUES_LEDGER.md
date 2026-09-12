@@ -430,3 +430,5 @@ will want; date every entry.
     max 4 ULP. Private kernel, not worksheet POWER annuity.
   - NPER(RATE(nper,pmt,pv), pmt, pv) is hundreds of ULP from nper (536 and
     156 on two live rows). RATE does not invert the published NPER graph.
+  - NPV(IRR(cf), cf[1:])+cf0 is exact 0 on 2/5 live streams; the other three
+    leave tiny nonzero residuals. IRR does not invert worksheet NPV.
