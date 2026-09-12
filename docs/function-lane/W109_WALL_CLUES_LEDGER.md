@@ -576,11 +576,10 @@ will want; date every entry.
     -(pv*r) match Excel IPMT 4/7; 0.01*1000 stays 1 ULP
     (Excel 0xc023ffffffffffff vs IEEE -10). First-period multiply
     is not a full landing.
-  - T.DIST(x,1,TRUE) vs 0.5+ATAN(x)/PI() 13/13 in Excel including
-    ATAN2/ACOT/(PI/2+ATAN) forms. IEEE/x87 reconstructions of
-    spilled libm atan + add/div are 8/13 (x=-1 is 1 ULP). Excel
-    identity, rust reconstruction wall. T.DIST.RT vs 0.5-ATAN/PI
-    13/13 and vs 1-CDF 13/13 in Excel, same reconstruction wall.
+  - T.DIST(x,1,TRUE) vs 0.5+ATAN(x)/PI(): a COM ulp helper that
+    cast int64 bit patterns to double collapsed 1-ULP misses to 0
+    (false 13/13). IEEE/x87 reconstructions of spilled libm atan
+    are 8/13 vs live bits (x=-1 is 1 ULP). Not landed.
   - GAMMA(0.5)=SQRT(PI()) and GAMMALN(0.5)=LN(SQRT(PI()))=0.5*LN(PI())
     in Excel. IEEE sqrt(pi) is 1 ULP below the published GAMMA(0.5)
     seed; keep the seed.
@@ -589,8 +588,15 @@ will want; date every entry.
     NORMSDIST/ERFC body). 1-ERFC 9/12.
   - T.DIST(x,2,FALSE)=POWER(2+x*x,-1.5) 15/15; excel_pow_chain
     15/15. Landed.
-  - F.DIST.RT(x,2,d2)=POWER(d2/(d2+2x),d2/2) 49/49 in Excel.
-    excel_pow_chain on IEEE base is 14/15 (x=0.5,d2=2 is 1 ULP,
-    Excel 0x3fe5555555555556 vs 2/3). Not landed.
-  - CHISQ.DIST.RT(x,4)=EXP(-x/2)*(1+x/2) 7/7 in Excel on a 7-point
-    grid; spilled excel_exp form 5/7. Reconstruction wall.
+  - F.DIST.RT(x,2,d2) vs POWER(d2/(d2+2x),d2/2): dedicated
+    Value2 capture at (0.5,2,2) is 1 ULP (RT 0x3fe5555555555556,
+    POWER/2/3 0x3fe5555555555555). excel_pow_chain 14/15 on a
+    15-row subset. Not an identity.
+  - CHISQ.DIST.RT df=4 vs EXP(-x/2)*(1+x/2): spilled excel_exp
+    5/7. Not landed. The earlier 7/7 Excel score used the broken
+    ulp helper.
+  - T.DIST df=3 PDF closed forms scored 15/15 only under the
+    broken ulp helper; rust reconstructions 0-5/15. Not landed.
+  - BINOM k=0 vs POWER(1-p,n) and POISSON k=1 vs lambda*EXP(-lambda)
+    scored 12/12 only under the broken ulp helper; rust
+    excel_pow_chain 6/12 and lambda*excel_exp 1/8. Not landed.
