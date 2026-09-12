@@ -472,3 +472,4 @@ will want; date every entry.
   - PMT small-tau live 20326 grid (rate 1e-4..0.05, nper 12/24/60,
     pv=-1000, type=0): production is 1 ULP off the first pin
     PMT(1e-4,12,-1000). |tau|<1 helper remains a wall.
+  - BETA.INV(p,a,1) vs POWER(p,1/a) 19/28 max 6 ULP. Not an identity.
