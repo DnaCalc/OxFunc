@@ -368,7 +368,11 @@ will want; date every entry.
     first misses at 20.5 (1 ULP). Landed `16.5..=19.5` only.
   - GAMMA integers `89..=170`: vs reverse `FACT(n-1)` 4/82 (n=117,120,122,124),
     max 8 ULP, mean 4.6; vs worksheet `EXP(GAMMALN(n))` 0/82 max 979 ULP.
-    Native product variants: best `blk4_rev` 15/82, not an identity.
+    Native product variants: best `blk4_rev` 15/82; x87 block-4 PC64
+    store-between 16/82 max 27 ULP. Not an identity.
+  - GAMMA tiny-x: `GAMMA(x)==1/x` on admitted `0 < x <= 1e-16` (decade grid
+    plus 27-point neighborhood). Positive subnormals `#NUM!`. First miss
+    `2e-16` (1 ULP). Landed that slice only.
   - HYPGEOM.DIST PMF is not worksheet COMBIN. Microsoft example
     `HYPGEOM.DIST(1,5,4,10,FALSE)=0x3fce79e79e79e79b` vs COMBIN `(C*C)/C` and
     `C*(C/C)` both `0x3fce79e79e79e79e` (3 ULP). Modest 20-row live grid

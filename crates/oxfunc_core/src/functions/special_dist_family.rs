@@ -267,6 +267,20 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         return Err(WorksheetErrorCode::Num);
     }
 
+    // Live Excel 16.0 b20326: positive subnormals are #NUM! (same admission
+    // as published GAMMALN). Min-normal is admitted.
+    if x.is_subnormal() {
+        return Err(WorksheetErrorCode::Num);
+    }
+
+    // Live Excel 16.0 b20326 Value2: on (0, 1e-16] normals, GAMMA(x) is 1/x
+    // bit-exactly (decade grid 1e-307..=1e-16 plus a 27-point neighborhood of
+    // 1e-16). First probed miss is 2e-16 (1 ULP). G3-02 remains open above
+    // that cutoff.
+    if x > 0.0 && x <= 1e-16 {
+        return Ok(1.0 / x);
+    }
+
     // Live Excel 16.0 build 20326/CV2 Value2: for positive integers n=1..=88,
     // GAMMA(n) is the reverse native product (n-1)*(n-2)*...*2 (empty
     // product 1 for n=1,2). Forward product diverges at n=26. n=89 and
@@ -1090,6 +1104,27 @@ mod tests {
         assert_eq!(gamma_kernel(17.5).unwrap().to_bits(), 0x42d3789c8ef8e684);
         assert_eq!(gamma_kernel(18.5).unwrap().to_bits(), 0x43154beb3c603c20);
         assert_eq!(gamma_kernel(19.5).unwrap().to_bits(), 0x43589fc7fdcf4585);
+    }
+
+    #[test]
+    fn gamma_tiny_positive_is_reciprocal_and_subnormals_are_num() {
+        assert_eq!(gamma_kernel(1e-16).unwrap().to_bits(), 0x4341c37937e08000);
+        assert_eq!(
+            gamma_kernel(f64::MIN_POSITIVE).unwrap().to_bits(),
+            0x7fd0000000000000
+        );
+        assert_eq!(
+            gamma_kernel(1e-20).unwrap().to_bits(),
+            (1.0_f64 / 1e-20).to_bits()
+        );
+        assert_eq!(
+            gamma_kernel(f64::from_bits(1)),
+            Err(WorksheetErrorCode::Num)
+        );
+        assert_eq!(
+            gamma_kernel(f64::from_bits(0x000f_ffff_ffff_ffff)),
+            Err(WorksheetErrorCode::Num)
+        );
     }
 
     // BUG-FUNC-027 CLASS-A1: GAMMALN(1E-300) was +Inf (z+1 == 0 in Lanczos);
