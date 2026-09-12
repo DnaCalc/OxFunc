@@ -945,6 +945,15 @@ mod tests {
         assert!((poisson_dist_kernel(3.0, 2.0, false).unwrap() - 0.1804470443154836).abs() < 1e-12);
         assert!((poisson_dist_kernel(3.0, 2.0, true).unwrap() - 0.857123460498547).abs() < 1e-12);
         assert_eq!(poisson_dist_kernel(0.0, 0.0, false).unwrap(), 1.0);
+        // Live Excel 16.0 b20326: POISSON.DIST(0,λ,FALSE)=EXP(-λ) 8/8.
+        assert_eq!(
+            poisson_dist_kernel(0.0, 1.0, false).unwrap().to_bits(),
+            0x3fd78b56362cef38
+        );
+        assert_eq!(
+            poisson_dist_kernel(0.0, 10.0, false).unwrap().to_bits(),
+            0x3f07cd79b5647c9b
+        );
     }
 
     #[test]
