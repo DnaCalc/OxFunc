@@ -658,3 +658,10 @@ will want; date every entry.
     so the Excel identity is not a production landing.
   - T.DIST df=2 CDF vs 0.5+0.5x/SQRT 3/12 max 40 ULP. (SQRT+x)/(2*SQRT)
     4/12. Not identities. GAMMA.DIST a=2 PDF vs x*EXP(-x) 6/12.
+  - NEGBINOM k=1 vs s*POWER(p,s)*(1-p) 4/10 max 4 ULP. vs
+    NEGBINOM(0)*s*(1-p) 3/10. vs BINOM(s,s+1,p) 0/10. Not identities.
+  - FACTDOUBLE(2n)=POWER(2,n)*FACT(n) 11/11 (already-production even
+    double-factorial). FACTDOUBLE(2n-1) vs GAMMA(n+0.5)*2^n/SQRT(PI)
+    1/11 max 2 ULP.
+  - MULTINOMIAL(a,b) vs COMBIN(a+b,a) 1/10 max 22 ULP. vs FACT ratio
+    0/10. Excel MULTINOMIAL sits 1–21 ULP below COMBIN. Not identities.
