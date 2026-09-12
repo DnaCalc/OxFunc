@@ -521,7 +521,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Live Excel 16.0 b20326: thirteenths in (0,1) are private seeds
     // (GAMMA(1/13) is 4 ULP from the generic path). Product-first nmax:
-    // 1/13 n<=2, 2/13 n<=3, 3/13 n<=2, 4/13 n<=1, 6/13 n<=3, 7/13 n<=4,
+    // 1/13 n<=2, 2/13 n<=3, 3/13 n<=2, 4/13 n<=1, 6/13 n<=3, 7/13 n<=6,
     // 9/13 n<=4, 11/13 n<=1. 5/13,8/13,10/13,12/13 miss at n=1.
     const GAMMA_THIRTEENTH: [(u32, u64, u32); 12] = [
         (1, 0x4028fce1e0ed23fb, 2),
@@ -530,7 +530,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         (4, 0x40074dfec9db3ae6, 1),
         (5, 0x4002798afcfe30c7, 0),
         (6, 0x3ffeb36ee50fd917, 3),
-        (7, 0x3ffa637c934edca9, 4),
+        (7, 0x3ffa637c934edca9, 6),
         (8, 0x3ff7476291fcce66, 0),
         (9, 0x3ff4f76b6a7bb3cb, 4),
         (10, 0x3ff335dc7fec23ed, 0),
@@ -2412,6 +2412,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(2.0 / 3.0 - 1.0).unwrap().to_bits(),
             0xc0103fd9ade928db
+        );
+        assert_eq!(
+            gamma_kernel(5.0 + 7.0 / 13.0).unwrap().to_bits(),
+            0x404bd9370fcb65c6
+        );
+        assert_eq!(
+            gamma_kernel(6.0 + 7.0 / 13.0).unwrap().to_bits(),
+            0x4073479c4602f7b1
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
