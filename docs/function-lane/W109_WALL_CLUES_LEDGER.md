@@ -448,4 +448,6 @@ will want; date every entry.
     Landed (0,1) seeds only. Odd tenths in (0,1) also seed-only
     (`GAMMA(1/10)` 3 ULP from generic). Sevenths and 1/12,5/12,7/12,11/12
     likewise seed-only (`GAMMA(1/7)` 2 ULP from generic). Thirds and
-    remaining ninths seed-only (`GAMMA(1/3)` 6 ULP from generic).
+    remaining ninths seed-only (`GAMMA(1/3)` 6 ULP from generic). Selected
+    x in (-1,0) with exact worksheet peel are seed-only; IEEE
+    GAMMA(2/3)/(-1/3) is 1 ULP from GAMMA(-1/3).
