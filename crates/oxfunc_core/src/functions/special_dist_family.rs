@@ -428,6 +428,44 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Live Excel 16.0 b20326: sevenths in (0,1) are private seeds
+    // (GAMMA(1/7) is 2 ULP from the generic path). Recurrence not claimed.
+    const GAMMA_SEVENTH: [(u32, u64); 6] = [
+        (1, 0x401a313769520e5a),
+        (2, 0x400931634450f1e8),
+        (3, 0x40008a43968d61a6),
+        (4, 0x3ff8eff2aa47b664),
+        (5, 0x3ff46a774bb2e0cd),
+        (6, 0x3ff1b138d04a62f3),
+    ];
+    let seven = x * 7.0;
+    if seven.fract() == 0.0 && (1.0..=6.0).contains(&seven) {
+        let k = seven as u32;
+        for &(kk, bits) in &GAMMA_SEVENTH {
+            if kk == k {
+                return Ok(f64::from_bits(bits));
+            }
+        }
+    }
+
+    // Live Excel 16.0 b20326: 1/12, 5/12, 7/12, 11/12 in (0,1) are private
+    // seeds (other twelfths reduce to halves/thirds/quarters/sixths).
+    const GAMMA_TWELFTH: [(u32, u64); 4] = [
+        (1, 0x4026ffb50d1bc6dc),
+        (5, 0x4001053ca2989062),
+        (7, 0x3ff87597c6695642),
+        (11, 0x3ff0e384cb7476b6),
+    ];
+    let twelve = x * 12.0;
+    if twelve.fract() == 0.0 && (1.0..=11.0).contains(&twelve) {
+        let k = twelve as u32;
+        for &(kk, bits) in &GAMMA_TWELFTH {
+            if kk == k {
+                return Ok(f64::from_bits(bits));
+            }
+        }
+    }
+
     // Live Excel 16.0 b20326: odd tenths in (0,1) are private seeds
     // (GAMMA(1/10) is 3 ULP from the generic path). Recurrence not claimed.
     const GAMMA_ODD_TENTH: [(u32, u64); 4] = [
@@ -1302,6 +1340,16 @@ mod tests {
         assert_eq!(gamma_kernel(3.0 / 10.0).unwrap().to_bits(), 0x4007eebbb8aec4ab);
         assert_eq!(gamma_kernel(7.0 / 10.0).unwrap().to_bits(), 0x3ff4c4d5ab21ea23);
         assert_eq!(gamma_kernel(9.0 / 10.0).unwrap().to_bits(), 0x3ff1191a68f2b5e1);
+        assert_eq!(gamma_kernel(1.0 / 7.0).unwrap().to_bits(), 0x401a313769520e5a);
+        assert_eq!(gamma_kernel(2.0 / 7.0).unwrap().to_bits(), 0x400931634450f1e8);
+        assert_eq!(gamma_kernel(3.0 / 7.0).unwrap().to_bits(), 0x40008a43968d61a6);
+        assert_eq!(gamma_kernel(4.0 / 7.0).unwrap().to_bits(), 0x3ff8eff2aa47b664);
+        assert_eq!(gamma_kernel(5.0 / 7.0).unwrap().to_bits(), 0x3ff46a774bb2e0cd);
+        assert_eq!(gamma_kernel(6.0 / 7.0).unwrap().to_bits(), 0x3ff1b138d04a62f3);
+        assert_eq!(gamma_kernel(1.0 / 12.0).unwrap().to_bits(), 0x4026ffb50d1bc6dc);
+        assert_eq!(gamma_kernel(5.0 / 12.0).unwrap().to_bits(), 0x4001053ca2989062);
+        assert_eq!(gamma_kernel(7.0 / 12.0).unwrap().to_bits(), 0x3ff87597c6695642);
+        assert_eq!(gamma_kernel(11.0 / 12.0).unwrap().to_bits(), 0x3ff0e384cb7476b6);
     }
 
     #[test]

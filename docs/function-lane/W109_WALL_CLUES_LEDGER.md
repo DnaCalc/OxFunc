@@ -446,4 +446,5 @@ will want; date every entry.
     max 2 ULP. BETA.INV(p,1,0.5) vs `1-(1-p)^2` 3/9. Not identities.
   - GAMMA fifths recurrence n=1 already 1 ULP (2/11, 4/11, 6/11, 5/11).
     Landed (0,1) seeds only. Odd tenths in (0,1) also seed-only
-    (`GAMMA(1/10)` 3 ULP from generic).
+    (`GAMMA(1/10)` 3 ULP from generic). Sevenths and 1/12,5/12,7/12,11/12
+    likewise seed-only (`GAMMA(1/7)` 2 ULP from generic).
