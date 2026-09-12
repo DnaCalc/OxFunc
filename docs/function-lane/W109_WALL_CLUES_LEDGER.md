@@ -453,3 +453,11 @@ will want; date every entry.
     GAMMA(2/3)/(-1/3) is 1 ULP from GAMMA(-1/3). GAMMALN=LN(GAMMA) exact
     at 1/5, 1/3, 1/7 (4/14 of a seed grid including 1/2); other seeds
     1–13 ULP.
+  - ERF=ERF.PRECISE and ERFC=ERFC.PRECISE 16/16 on a signed z-grid
+    (build 20326). ERFC=1-ERF 6/16 (only small |z|).
+  - BETA.INV(p,1,b) vs 1-POWER(1-p,1/b) 23/42 max 96 ULP. Not an
+    integer-shape inverse fast path.
+  - LOGNORM.INV(p,m,s)=EXP(NORMSINV(p)*s+m) 27/27 and
+    EXP(m+s*NORMSINV) 27/27; LOGINV alias 7/7. Production
+    excel_exp(m+s*inv) is 1 ULP off the 0.1/0/1 pin (NORMSINV
+    residual). Not landed.
