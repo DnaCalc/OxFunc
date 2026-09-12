@@ -710,3 +710,7 @@ will want; date every entry.
     vs COS(y)*COSH(x) 0/10. Private complex kernels, not worksheet
     trig/hyperbolic products.
   - GAMMA.DIST(x,2,1,FALSE) vs x*excel_exp(-x) 4/10 including x87_mul.
+  - BINOM.DIST.RANGE(n,p,0,k)=BINOM.DIST(k,n,p,TRUE) 48/48 and
+    RANGE(n,p,k)=BINOM.DIST(k,n,p,FALSE) 48/48 live 20326. Production
+    BINOM CDF is 1 ULP off Excel at (10,0.3,4), so RANGE cannot inherit
+    the CDF graph until the BINOM body is exact.
