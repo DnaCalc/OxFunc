@@ -486,3 +486,5 @@ will want; date every entry.
     graph; pinned). COTH=COSH/SINH 3/5 max 1 ULP.
   - ACOT vs PI()/2-ATAN 5/6 (x=2 is 1 ULP). Production matches the
     exact rows; x=2 remains 1 ULP.
+  - NORMSDIST(-1) live 20326 is 1 ULP from production (catalog G3-07
+    leftover ERFC body). Aliases NORM.S.DIST/NORM.DIST(*,0,1,TRUE) 6/6.
