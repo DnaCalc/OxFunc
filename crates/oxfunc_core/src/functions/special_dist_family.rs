@@ -1244,6 +1244,8 @@ mod tests {
         assert_eq!(gamma_kernel(1.625).unwrap().to_bits(), 0x3fecb0bc8b68e402);
         assert_eq!(gamma_kernel(2.625).unwrap().to_bits(), 0x3ff74f9931453942);
         assert_eq!(gamma_kernel(0.875).unwrap().to_bits(), 0x3ff16f374f724016);
+        // Live Excel 16.0 b20326: GAMMALN(0.5)=LN(GAMMA(0.5)) bit-exact.
+        assert_eq!(gammaln_kernel(0.5).unwrap().to_bits(), 0x3fe250d048e7a1bd);
         assert_eq!(gamma_kernel(-0.5).unwrap().to_bits(), 0xc00c5bf891b4ef6a);
         assert_eq!(gamma_kernel(-1.5).unwrap().to_bits(), 0x4002e7fb0bcdf4f1);
         assert_eq!(gamma_kernel(1.0 / 16.0).unwrap().to_bits(), 0x402ef66a79533ee8);
