@@ -499,5 +499,37 @@ will want; date every entry.
     6/9 max 4 ULP. T.DIST df=2 closed forms not identities.
   - CHISQ.DIST.RT(x,4) vs EXP(-x/2)*(1+x/2) 7/9 max 1 ULP. df=6
     Poisson polynomial 7/9. Not identities.
-  - BETA.DIST(x,1,2,TRUE) vs 1-(1-x)^2 5/5 on a tiny grid;
-    BETA.DIST(x,1,1,TRUE) vs x 4/5. Not landed without a wider grid.
+  - BETA.DIST(x,1,2,TRUE) vs 1-(1-x)^2 15/18 max 8 ULP on a wider
+    grid (first miss x=0.01). BETA.DIST(x,2,1) vs x^2 12/18.
+    BETA.DIST(x,1,1) vs x 14/18. Not integer-shape fast paths.
+  - ATAN2 Range.Value2 inject flushes subnormals, 1e-308, and
+    double.Epsilon to +0 before the formula runs. Apparent ATAN2
+    DAZ evidence on those rows is an injection artifact. Overflow
+    #NUM! at ATAN2(1e-200,1e109) still holds on normals.
+  - F.DIST.RT(x,2,d2) vs POWER(d2/(d2+2x),d2/2) 3/9 max 2 ULP.
+  - CONFIDENCE.NORM vs NORMSINV(1-α/2)*σ/SQRT(n) 3/6 max 1 ULP.
+    CONFIDENCE alias 6/6.
+  - BINOM.DIST(0,n,p,FALSE) vs POWER(1-p,n) 1/9 max 5 ULP.
+  - T.DIST.RT(x,1) vs 0.5-ATAN(x)/PI() 4/9. vs ACOT/PI() 5/9.
+  - POISSON PMF recurrence P(k-1)*λ/k 9/20 max 3 ULP. k=1
+    EXP(LN(λ)-λ) 7/10. FACT/POWER forms 8/20.
+  - TAN vs SIN/COS 3/10 max 1 ULP. COT=1/TAN 10/10 (production
+    already x87 recip of TAN; pinned).
+  - BINOM vs COMBIN*POWER*POWER 1/8 max 9 ULP.
+  - T.DIST.2T vs 2*T.DIST.RT 15/15 across df=1..60. Production
+    already uses that association; leftover is the RT/bratio
+    body (T.DIST.2T(1,1) production 9 ULP from Excel).
+  - T.DIST.RT(x,1)=T.DIST(-x,1,TRUE) 8/8. CDF complement
+    1-T.DIST is 2/8. CHISQ.DIST.RT vs 1-CHISQ.DIST df=1 2/8.
+  - LOG10 vs LOG(x,10) 3/7. vs LN/LN(10) 3/7.
+  - RRI vs POWER(fv/pv,1/nper)-1 5/6 max 4 ULP.
+  - WEIBULL.DIST(x,1,b) vs EXPON.DIST(x,1/b) CDF 6/7 PDF 6/7.
+  - PERMUT vs FACT(n)/FACT(n-k) 6/8 max 1 ULP on a FACT-rounding
+    grid (known non-identity; production is the x87 product).
+  - GAMMA.DIST integer pdf vs EXP*POWER/FACT 0/6. CDF vs
+    1-POISSON.DIST(a-1,x,TRUE) 4/6.
+  - ERF.PRECISE(z)=GAMMA.DIST(z*z,0.5,1,TRUE) 7/7 and
+    ERFC.PRECISE(z)=CHISQ.DIST.RT(2*z*z,1) 7/7. Circular with
+    the identified a=0.5/df=1 ERF/ERFC dispatch; not a new body.
+  - NORM.DIST vs NORMSDIST((x-m)/s) 9/9 (production already
+    that compose; leftover NORMSDIST(-1) is the ERFC body).

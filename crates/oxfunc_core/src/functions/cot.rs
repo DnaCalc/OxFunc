@@ -73,4 +73,12 @@ mod tests {
         assert_eq!(cot_kernel(-134_217_728.0), Err(WorksheetErrorCode::Num));
         assert!(cot_kernel(1.0).is_ok());
     }
+
+    #[test]
+    fn cot_matches_live_excel_recip_tan_pins() {
+        // Live Excel 16.0 b20326: COT(x)=1/TAN(x) 10/10.
+        assert_eq!(cot_kernel(0.5).unwrap().to_bits(), 0x3ffd49ad7e47c0a3);
+        assert_eq!(cot_kernel(1.0).unwrap().to_bits(), 0x3fe48c05d04e1cfd);
+        assert_eq!(cot_kernel(-0.5).unwrap().to_bits(), 0xbffd49ad7e47c0a3);
+    }
 }
