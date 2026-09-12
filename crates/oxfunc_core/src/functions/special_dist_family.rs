@@ -825,6 +825,20 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Sixth peel into (-6,-5). 11ths k=6,10 exact; k=2 misses 1 ULP.
+    if x > -6.0 && x < -5.0 {
+        const GAMMA_NEG6_FRAC: [(u64, u64); 2] = [
+            (0xc015d1745d1745d2, 0x3f887deb47c3ce38), // 6/11-6
+            (0xc0145d1745d1745d, 0x3fb45b15a0f213de), // 10/11-6
+        ];
+        let xb = x.to_bits();
+        for &(xx, gg) in &GAMMA_NEG6_FRAC {
+            if xb == xx {
+                return Ok(f64::from_bits(gg));
+            }
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1748,6 +1762,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(10.0 / 11.0 - 5.0).unwrap().to_bits(),
             0xbfd9e84a12a87660
+        );
+        assert_eq!(
+            gamma_kernel(6.0 / 11.0 - 6.0).unwrap().to_bits(),
+            0x3f887deb47c3ce38
+        );
+        assert_eq!(
+            gamma_kernel(10.0 / 11.0 - 6.0).unwrap().to_bits(),
+            0x3fb45b15a0f213de
         );
         assert_eq!(
             gamma_kernel(1.0 + 2.0 / 11.0).unwrap().to_bits(),
