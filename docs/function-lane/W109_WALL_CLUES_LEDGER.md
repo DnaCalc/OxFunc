@@ -714,3 +714,10 @@ will want; date every entry.
     RANGE(n,p,k)=BINOM.DIST(k,n,p,FALSE) 48/48 live 20326. Production
     BINOM CDF is 1 ULP off Excel at (10,0.3,4), so RANGE cannot inherit
     the CDF graph until the BINOM body is exact.
+  - PERMUT vs COMBIN*FACT 19/20 (n=20 k=5 is 1 ULP). vs FACT/FACT 20/20
+    (already-known Excel identity; production is the x87 product).
+    PERMUTATIONA vs n^k 20/20 (production already powi).
+  - STDEV.S=SQRT(VAR.S) 5/5 and STDEV.P=SQRT(VAR.P) 5/5 (already the
+    production compose). DEVSQ vs VAR.S*(n-1) 3/5.
+  - BETA.DIST(x,0.5,0.5,TRUE) vs 2*ASIN(SQRT(x))/PI() 7/9. PDF vs
+    1/(PI*SQRT(x(1-x))) 3/9. Not identities.
