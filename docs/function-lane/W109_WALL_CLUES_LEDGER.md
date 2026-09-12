@@ -394,3 +394,5 @@ will want; date every entry.
   - GAMMA quarter-integers: recurrence from `GAMMA(0.25)` / `GAMMA(0.75)`
     is exact for `n=0..=5` (12/12 live). First miss 6.25/6.75. Landed that
     slice. Third-integer recurrence `n+1/3` was 7/21 max 8 ULP — not landed.
+  - GAMMA odd eighths: `n+1/8` and `n+3/8` exact n=0..=3; `n+5/8` n=0..=2;
+    `n+7/8` seed only. Landed those ranges.

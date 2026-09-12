@@ -349,6 +349,56 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Live Excel 16.0 b20326: odd eighths. Recurrence from seeds is exact
+    // for n+1/8 and n+3/8 through n=3, n+5/8 through n=2, and n+7/8 only
+    // at the seed. First misses 4.125 / 4.375 / 3.625 / 1.875.
+    const GAMMA_1_8: f64 = f64::from_bits(0x401e22c196233d23);
+    const GAMMA_3_8: f64 = f64::from_bits(0x4002f6a73f0a9838);
+    const GAMMA_5_8: f64 = f64::from_bits(0x3ff6f3ca0920b668);
+    const GAMMA_7_8: f64 = f64::from_bits(0x3ff16f374f724016);
+    let eight = x * 8.0;
+    if eight.fract() == 0.0 && (1.0..=27.0).contains(&eight) {
+        let k = eight as u32;
+        match k % 8 {
+            1 => {
+                let n = (k - 1) / 8;
+                if n <= 3 {
+                    let mut acc = GAMMA_1_8;
+                    for i in 1..=n {
+                        acc *= i as f64 - 0.875;
+                    }
+                    return Ok(acc);
+                }
+            }
+            3 => {
+                let n = (k - 3) / 8;
+                if n <= 3 {
+                    let mut acc = GAMMA_3_8;
+                    for i in 1..=n {
+                        acc *= i as f64 - 0.625;
+                    }
+                    return Ok(acc);
+                }
+            }
+            5 => {
+                let n = (k - 5) / 8;
+                if n <= 2 {
+                    let mut acc = GAMMA_5_8;
+                    for i in 1..=n {
+                        acc *= i as f64 - 0.375;
+                    }
+                    return Ok(acc);
+                }
+            }
+            7 => {
+                if k == 7 {
+                    return Ok(GAMMA_7_8);
+                }
+            }
+            _ => {}
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1147,6 +1197,19 @@ mod tests {
         assert_eq!(gamma_kernel(3.75).unwrap().to_bits(), 0x4011b123dfb60e23);
         assert_eq!(gamma_kernel(4.75).unwrap().to_bits(), 0x40309611a1baad41);
         assert_eq!(gamma_kernel(5.75).unwrap().to_bits(), 0x4053b234f00dadbd);
+        // Odd eighths, live Excel 16.0 b20326 Value2.
+        assert_eq!(gamma_kernel(0.125).unwrap().to_bits(), 0x401e22c196233d23);
+        assert_eq!(gamma_kernel(1.125).unwrap().to_bits(), 0x3fee22c196233d23);
+        assert_eq!(gamma_kernel(2.125).unwrap().to_bits(), 0x3ff0f38ce473d264);
+        assert_eq!(gamma_kernel(3.125).unwrap().to_bits(), 0x400202c5b2bb0f8a);
+        assert_eq!(gamma_kernel(0.375).unwrap().to_bits(), 0x4002f6a73f0a9838);
+        assert_eq!(gamma_kernel(1.375).unwrap().to_bits(), 0x3fec71fade8fe454);
+        assert_eq!(gamma_kernel(2.375).unwrap().to_bits(), 0x3ff38e5c7902ecfa);
+        assert_eq!(gamma_kernel(3.375).unwrap().to_bits(), 0x4007390dcfb37969);
+        assert_eq!(gamma_kernel(0.625).unwrap().to_bits(), 0x3ff6f3ca0920b668);
+        assert_eq!(gamma_kernel(1.625).unwrap().to_bits(), 0x3fecb0bc8b68e402);
+        assert_eq!(gamma_kernel(2.625).unwrap().to_bits(), 0x3ff74f9931453942);
+        assert_eq!(gamma_kernel(0.875).unwrap().to_bits(), 0x3ff16f374f724016);
     }
 
     #[test]
