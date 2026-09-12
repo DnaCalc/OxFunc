@@ -743,3 +743,5 @@ will want; date every entry.
   - POISSON k=0 PMF=EXP(-lam)=CDF 9/9 (already production excel_exp).
     k=1 vs lam*EXP 3/9.
   - RATE(1,pmt,pv) vs -pmt/pv-1 2/6 (iterative even at nper=1).
+  - Product-first nmax+1 for 1/7, 3/10, 7/11, 9/16, 1/16, 5/9, 7/12
+    all miss 1–4 ULP. Contiguous nmax already tight; do not extend.
