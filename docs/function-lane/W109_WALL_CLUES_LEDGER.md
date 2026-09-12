@@ -428,3 +428,5 @@ will want; date every entry.
     3/6. Private kernel.
   - PMT(fv=0,type=0) vs worksheet `-pv*rate/(1-POWER(1+rate,-nper))` is 0/4
     max 4 ULP. Private kernel, not worksheet POWER annuity.
+  - NPER(RATE(nper,pmt,pv), pmt, pv) is hundreds of ULP from nper (536 and
+    156 on two live rows). RATE does not invert the published NPER graph.
