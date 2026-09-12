@@ -740,3 +740,6 @@ will want; date every entry.
   - SQRTPI(x)=SQRT(PI()*x) 8/8 (already production n*π then pow 0.5).
     Split SQRT(PI())*SQRT(x) 5/8.
   - GAMMA.DIST(x,3,1,FALSE) vs x*x*EXP(-x)/2 1/7. CDF Poisson-poly 1/7.
+  - POISSON k=0 PMF=EXP(-lam)=CDF 9/9 (already production excel_exp).
+    k=1 vs lam*EXP 3/9.
+  - RATE(1,pmt,pv) vs -pmt/pv-1 2/6 (iterative even at nper=1).
