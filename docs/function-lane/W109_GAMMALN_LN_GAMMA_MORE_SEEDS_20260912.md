@@ -37,6 +37,11 @@ at 41/86 values
 LN(FACT(n-1)) matches the same 41/86. n=3 and the complementary integers
 miss 1–2 ULP.
 
+Further product-first extensions of landed GAMMA slices (quarters n<=9,
+eighths n<=9, sixteenths within nmax): 4.25, 5.25, 6.25, 7.25, 4.125,
+6.125, 7.125, 9.125, 5.625, 7.625, 6.0625, 7.0625, 4.5625, 6.5625,
+8.5625, 10.5625, 5.8125. Neighboring n miss 1–43 ULP.
+
 Production publishes `excel_log(gamma_kernel(x))` at those x bits.
 `GAMMALN(x+1)=GAMMALN(x)+LN(x)` is 0/10 on the same seed set (max 27 ULP)
 and is not the graph.

@@ -909,7 +909,7 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 1/2 already matches via the piecewise kernel. Product-first
     // extensions are included only where GAMMA(x) is already a landed
     // special-case and worksheet LN(GAMMA) matches GAMMALN.
-    const GAMMALN_LN_GAMMA_X: [u64; 19] = [
+    const GAMMALN_LN_GAMMA_X: [u64; 36] = [
         0x3fc999999999999a, // 1/5
         0x3fd5555555555555, // 1/3
         0x3fc2492492492492, // 1/7
@@ -929,6 +929,23 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         0x3fc3b13b13b13b14, // 2/13
         0x3ff13b13b13b13b1, // 1+1/13
         0x3fbe1e1e1e1e1e1e, // 2/17
+        0x4011000000000000, // 4.25
+        0x4015000000000000, // 5.25
+        0x4019000000000000, // 6.25
+        0x401d000000000000, // 7.25
+        0x4010800000000000, // 4.125
+        0x4018800000000000, // 6.125
+        0x401c800000000000, // 7.125
+        0x4022400000000000, // 9.125
+        0x4016800000000000, // 5.625
+        0x401e800000000000, // 7.625
+        0x4018400000000000, // 6.0625
+        0x401c400000000000, // 7.0625
+        0x4012400000000000, // 4.5625
+        0x401a400000000000, // 6.5625
+        0x4021200000000000, // 8.5625
+        0x4025200000000000, // 10.5625
+        0x4017400000000000, // 5.8125
     ];
     if GAMMALN_LN_GAMMA_X.contains(&x.to_bits()) {
         return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
@@ -1841,6 +1858,25 @@ mod tests {
         assert_eq!(gammaln_kernel(41.0).unwrap().to_bits(), 0x405b94855c702ba2);
         assert_eq!(gammaln_kernel(60.0).unwrap().to_bits(), 0x406711152043b2c4);
         assert_eq!(gammaln_kernel(88.0).unwrap().to_bits(), 0x40730afd5d851956);
+        assert_eq!(gammaln_kernel(4.25).unwrap().to_bits(), 0x4000ea6864c19995);
+        assert_eq!(gammaln_kernel(5.25).unwrap().to_bits(), 0x400c7db2a73efc17);
+        assert_eq!(gammaln_kernel(6.25).unwrap().to_bits(), 0x4014e0dfde18c6e8);
+        assert_eq!(gammaln_kernel(7.25).unwrap().to_bits(), 0x401c35701a50ff06);
+        assert_eq!(gammaln_kernel(4.125).unwrap().to_bits(), 0x3fff37280ef6ef35);
+        assert_eq!(gammaln_kernel(9.125).unwrap().to_bits(), 0x4025bf06879ad95b);
+        assert_eq!(gammaln_kernel(5.625).unwrap().to_bits(), 0x4010a49a664571a8);
+        assert_eq!(
+            gammaln_kernel(6.0625).unwrap().to_bits(),
+            0x401393f1c1c12ab5
+        );
+        assert_eq!(
+            gammaln_kernel(10.5625).unwrap().to_bits(),
+            0x402c2b6556c4802a
+        );
+        assert_eq!(
+            gammaln_kernel(5.8125).unwrap().to_bits(),
+            0x4011e21e484a69c4
+        );
         assert_eq!(gamma_kernel(1.0 / 11.0).unwrap().to_bits(), 0x402503020775740e);
         assert_eq!(
             gamma_kernel(2.0 / 11.0 - 1.0).unwrap().to_bits(),
