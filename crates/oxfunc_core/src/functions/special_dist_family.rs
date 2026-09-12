@@ -701,7 +701,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 7/12-1) are 1–4 ULP from that peel and still use the Excel bits.
     // IEEE complement-seed/x is not the graph (1+(-1/3) is not 2/3).
     if x > -1.0 && x < 0.0 {
-        const GAMMA_NEG_FRAC: [(u64, u64); 82] = [
+        const GAMMA_NEG_FRAC: [(u64, u64); 84] = [
             (0xbfd5555555555555, 0xc0103fd9ade928da), // -1/3
             (0xbfe5555555555555, 0xc01012d97eaf6234), // -2/3
             (0xbfd0000000000000, 0xc0139b4e8b50f62d), // -1/4
@@ -788,6 +788,8 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbfee1e1e1e1e1e1e, 0xc0318204fc0456a0), // 1/17-1
             (0xbfe4b4b4b4b4b4b4, 0xc00f34fd6869612f), // 6/17-1
             (0xbfc6969696969698, 0xc019d01d2ce313ac), // 14/17-1
+            (0xbfe5555555555556, 0xc01012d97eaf6235), // 1/3-1  (distinct from -2/3)
+            (0xbfd5555555555556, 0xc0103fd9ade928db), // 2/3-1  (distinct from -1/3)
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG_FRAC {
@@ -2402,6 +2404,14 @@ mod tests {
         assert_eq!(
             gamma_kernel(1.0 / 17.0 - 2.0).unwrap().to_bits(),
             0x402209d6970c3a38
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 3.0 - 1.0).unwrap().to_bits(),
+            0xc01012d97eaf6235
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 3.0 - 1.0).unwrap().to_bits(),
+            0xc0103fd9ade928db
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
