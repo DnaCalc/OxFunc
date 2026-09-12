@@ -641,3 +641,20 @@ will want; date every entry.
   - F.INV(p,2,2) vs p/(1-p) 9/18; F.INV.RT vs (1-p)/p 8/18. FINV =
     F.INV.RT 18/18. F.INV(p,2,4) vs 2*(1/SQRT(1-p)-1) 2/18.
   - GAMMALN(x+1) vs GAMMALN(x)+LN(x) 0/10 max 27 ULP on landed seeds.
+  - FACT(n)=GAMMA(n+1) honest 14/14 on n in 1..87 (already-production
+    reverse product; GAMMA integers stop at 88).
+  - POISSON k=1 vs EXP(LN(lam)-lam) honest 7/11 max 3 ULP; vs lam*EXP
+    4/11. k=2 closed forms 4-5/11. Not identities.
+  - ERF.PRECISE+ERFC.PRECISE vs 1 honest 8/10 max 1 ULP. ERF vs 1-ERFC
+    6/10. ERFC vs 1-ERF 5/10 max 15830 (cancellation). Not identities.
+  - BINOM.DIST CDF vs BETA.DIST(1-p,n-k,k+1) 7/10 max 3 ULP. vs
+    1-BETA.DIST(p,k+1,n-k) 7/10. Not identities.
+  - BETA.INV(p,1,1) vs p 12/17 max 2 ULP. (p,1,2) vs 1-SQRT(1-p) 6/17.
+    (p,2,1) vs SQRT(p) 9/17. (p,5,1) vs POWER(p,1/5) 14/17 max 1 ULP.
+    GAMMA.INV(p,1,1) vs -LN(1-p) 11/17. Not identities.
+  - CHISQ.DIST(x,2,FALSE)=GAMMA.DIST(x,1,2,FALSE) 13/13 x>0 (x=0 GAMMA PDF
+    is not 0.5). 0.5*RT / 0.5*EXP 8/12. EXPON.DIST(x,0.5,FALSE) 10/14.
+    Production GAMMA.DIST PDF misses Excel CHISQ bits (first pin 7 ULP),
+    so the Excel identity is not a production landing.
+  - T.DIST df=2 CDF vs 0.5+0.5x/SQRT 3/12 max 40 ULP. (SQRT+x)/(2*SQRT)
+    4/12. Not identities. GAMMA.DIST a=2 PDF vs x*EXP(-x) 6/12.
