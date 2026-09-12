@@ -359,3 +359,7 @@ will want; date every entry.
   - PMT `answers-pmt-em.json`: production 10801/13752; `|tau|<1` 9649/12402.
     Invert-the-published-PMT implied `em` vs `excel_expm1_internal` is only
     7721/12402 — combine rounding pollutes the implied helper. Not a decode.
+  - GAMMALN B2 `[1.5,4)` live 256-row build 20326: production 95/256 max 51.
+    Composed `x<0.7`: 208/256 max 2. Worksheet LN instead of CRT log is only
+    +1 exact (209/256); not landed. NEGBINOM.DIST(f,s,p,FALSE) vs
+    `BINOM.DIST(f,f+s-1,1-p,FALSE)*p` is 3/10 — not an identity.
