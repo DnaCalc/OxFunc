@@ -559,3 +559,6 @@ will want; date every entry.
     7/17..=12/17 and 15/17 n<=3. 1/17,2/17,6/17,13/17,14/17 miss n=1.
   - GAMMA ninths product-first: 5/9 n<=3, 7/9 n<=1. 1/9,2/9,4/9,8/9
     miss n=1.
+  - GAMMA 1/3 and 2/3 product-first miss n=1. 2/5,3/5,4/5 miss n=1.
+  - PMT vs POWER annuity 0/6 max thousands of ULP on small-tau;
+    vs EXP/LN 0/6. |tau|<1 helper still a wall.
