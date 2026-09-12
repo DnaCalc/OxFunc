@@ -473,3 +473,5 @@ will want; date every entry.
     pv=-1000, type=0): production is 1 ULP off the first pin
     PMT(1e-4,12,-1000). |tau|<1 helper remains a wall.
   - BETA.INV(p,a,1) vs POWER(p,1/a) 19/28 max 6 ULP. Not an identity.
+  - GAMMALN B1 band production vs live 20326 capture 124/512 max 1182
+    ULP. B1 coefficient wall unchanged.
