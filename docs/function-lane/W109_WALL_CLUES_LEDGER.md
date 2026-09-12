@@ -379,3 +379,18 @@ will want; date every entry.
     0/20 vs both associations. Private kernel. (An earlier 9/9 was invalid:
     PowerShell `$n`/`$N` alias destroyed the population argument.)
   - MULTINOMIAL(a,b) is not COMBIN(a+b,a) (0/19, typically 1–many ULP).
+  - POISSON k>=2 sqrt/div restage on b24 (k=1,2,3): production
+    `exp/sqrt(2πx)` 2377/7998; x87_div / excel_sqrt / split-sqrt all 2377/7998
+    (no gain); recip forms 1819/7998 worse. k=1 log-composed 1087/3999 still
+    leads `λ*e^{-λ}` 1027. Sqrt staging remains a wall.
+  - PRICE replica 29-miss accumulator race: worksheet-term native/Kahan/
+    Neumaier/pairwise/reverse all 0/29 vs Excel. `nextup(sum+red-accr)` is
+    only 16/29. Confirms private coupon-sum kernel, not a +1 ULP publication
+    bump of the worksheet POWER reconstruction.
+  - GAMMA peel-down `GAMMA(x)==GAMMA(x+1)/x` on a clean 128-row mixed grid
+    is 93/128 max 17 ULP (typical miss 1 ULP). Not an identity; do not land
+    a general peel.
+  - PPMT+IPMT vs PMT on 15 live rows is 9/15 max 1 ULP. Not an identity.
+  - GAMMA quarter-integers: recurrence from `GAMMA(0.25)` / `GAMMA(0.75)`
+    is exact for `n=0..=5` (12/12 live). First miss 6.25/6.75. Landed that
+    slice. Third-integer recurrence `n+1/3` was 7/21 max 8 ULP — not landed.

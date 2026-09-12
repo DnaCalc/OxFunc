@@ -319,6 +319,36 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         return Ok(acc);
     }
 
+    // Live Excel 16.0 b20326: GAMMA(n+1/4) and GAMMA(n+3/4) for n=0..=5
+    // are native recurrence from seeds GAMMA(0.25)=0x400d013fc47eeeec and
+    // GAMMA(0.75)=0x3ff39b4e8b50f62d. Contiguous exact through 5.25 / 5.75;
+    // first miss 6.25 / 6.75 (1 ULP vs recurrence).
+    const GAMMA_QUARTER: f64 = f64::from_bits(0x400d013fc47eeeec);
+    const GAMMA_THREE_QUARTER: f64 = f64::from_bits(0x3ff39b4e8b50f62d);
+    let four = x * 4.0;
+    if four.fract() == 0.0 && (1.0..=23.0).contains(&four) {
+        let k = four as u32;
+        if k % 4 == 1 {
+            let n = (k - 1) / 4;
+            if n <= 5 {
+                let mut acc = GAMMA_QUARTER;
+                for i in 1..=n {
+                    acc *= i as f64 - 0.75;
+                }
+                return Ok(acc);
+            }
+        } else if k % 4 == 3 {
+            let n = (k - 3) / 4;
+            if n <= 5 {
+                let mut acc = GAMMA_THREE_QUARTER;
+                for i in 1..=n {
+                    acc *= i as f64 - 0.25;
+                }
+                return Ok(acc);
+            }
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1104,6 +1134,19 @@ mod tests {
         assert_eq!(gamma_kernel(17.5).unwrap().to_bits(), 0x42d3789c8ef8e684);
         assert_eq!(gamma_kernel(18.5).unwrap().to_bits(), 0x43154beb3c603c20);
         assert_eq!(gamma_kernel(19.5).unwrap().to_bits(), 0x43589fc7fdcf4585);
+        // Quarter-integers n=0..=5, live Excel 16.0 b20326 Value2.
+        assert_eq!(gamma_kernel(0.25).unwrap().to_bits(), 0x400d013fc47eeeec);
+        assert_eq!(gamma_kernel(1.25).unwrap().to_bits(), 0x3fed013fc47eeeec);
+        assert_eq!(gamma_kernel(2.25).unwrap().to_bits(), 0x3ff220c7dacf5554);
+        assert_eq!(gamma_kernel(3.25).unwrap().to_bits(), 0x400464e0d6293ffe);
+        assert_eq!(gamma_kernel(4.25).unwrap().to_bits(), 0x402091f6ae0183fe);
+        assert_eq!(gamma_kernel(5.25).unwrap().to_bits(), 0x40419b1618e19c3e);
+        assert_eq!(gamma_kernel(0.75).unwrap().to_bits(), 0x3ff39b4e8b50f62d);
+        assert_eq!(gamma_kernel(1.75).unwrap().to_bits(), 0x3fed68f5d0f97144);
+        assert_eq!(gamma_kernel(2.75).unwrap().to_bits(), 0x3ff9bbd716da431c);
+        assert_eq!(gamma_kernel(3.75).unwrap().to_bits(), 0x4011b123dfb60e23);
+        assert_eq!(gamma_kernel(4.75).unwrap().to_bits(), 0x40309611a1baad41);
+        assert_eq!(gamma_kernel(5.75).unwrap().to_bits(), 0x4053b234f00dadbd);
     }
 
     #[test]
