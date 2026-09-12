@@ -728,3 +728,6 @@ will want; date every entry.
     production regularized_beta). vs 1-BINOM 30/45.
   - ISPMT vs pv*rate*(per/nper-1) 4/6 max 1 ULP (production is that
     IEEE formula).
+  - T.DIST df=5 PDF POWER closed forms 1/8. IMPOWER vs IMEXP(n*IMLN)
+    0/6. GAMMA.DIST a=0.5 b=1 PDF vs EXP(-x)/SQRT(PI*x) 2/8.
+    LOG(x,EXP(1))=LN(x) 8/8 (already production ln/ln(base)).
