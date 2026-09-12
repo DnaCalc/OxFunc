@@ -475,3 +475,5 @@ will want; date every entry.
   - BETA.INV(p,a,1) vs POWER(p,1/a) 19/28 max 6 ULP. Not an identity.
   - GAMMALN B1 band production vs live 20326 capture 124/512 max 1182
     ULP. B1 coefficient wall unchanged.
+  - GAMMA.DIST(x,1,1,TRUE) vs 1-EXP(-x) 5/6 (x=0.1 is 4 ULP). Not an
+    identity.
