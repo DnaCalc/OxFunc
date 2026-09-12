@@ -450,4 +450,6 @@ will want; date every entry.
     likewise seed-only (`GAMMA(1/7)` 2 ULP from generic). Thirds and
     remaining ninths seed-only (`GAMMA(1/3)` 6 ULP from generic). Selected
     x in (-1,0) with exact worksheet peel are seed-only; IEEE
-    GAMMA(2/3)/(-1/3) is 1 ULP from GAMMA(-1/3).
+    GAMMA(2/3)/(-1/3) is 1 ULP from GAMMA(-1/3). GAMMALN=LN(GAMMA) exact
+    at 1/5, 1/3, 1/7 (4/14 of a seed grid including 1/2); other seeds
+    1–13 ULP.

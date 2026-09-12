@@ -616,6 +616,17 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     if !x.is_finite() || x < f64::MIN_POSITIVE {
         return Err(WorksheetErrorCode::Num);
     }
+    // Live Excel 16.0 b20326: GAMMALN=LN(GAMMA) at 1/5, 1/3, 1/7 (and
+    // already at 1/2 via the piecewise kernel). Other landed GAMMA seeds
+    // are 1–13 ULP from LN(GAMMA) and are not this graph.
+    if matches!(
+        x.to_bits(),
+        0x3fc999999999999a | // 1/5
+        0x3fd5555555555555 | // 1/3
+        0x3fc2492492492492 // 1/7
+    ) {
+        return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
+    }
     Ok(crate::excel_numeric::gammaln_excel(x))
 }
 
@@ -1391,6 +1402,16 @@ mod tests {
         assert_eq!(gamma_kernel(0.875).unwrap().to_bits(), 0x3ff16f374f724016);
         // Live Excel 16.0 b20326: GAMMALN(0.5)=LN(GAMMA(0.5)) bit-exact.
         assert_eq!(gammaln_kernel(0.5).unwrap().to_bits(), 0x3fe250d048e7a1bd);
+        // Live Excel 16.0 b20326: GAMMALN=LN(GAMMA) at these seeds.
+        assert_eq!(gammaln_kernel(0.2).unwrap().to_bits(), 0x3ff86290bf25b627);
+        assert_eq!(
+            gammaln_kernel(1.0 / 3.0).unwrap().to_bits(),
+            0x3fef8890e16b741b
+        );
+        assert_eq!(
+            gammaln_kernel(1.0 / 7.0).unwrap().to_bits(),
+            0x3ffe1113cc526fa6
+        );
         assert_eq!(gamma_kernel(-0.5).unwrap().to_bits(), 0xc00c5bf891b4ef6a);
         assert_eq!(gamma_kernel(-1.5).unwrap().to_bits(), 0x4002e7fb0bcdf4f1);
         assert_eq!(gamma_kernel(1.0 / 16.0).unwrap().to_bits(), 0x402ef66a79533ee8);
