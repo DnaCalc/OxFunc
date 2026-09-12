@@ -622,3 +622,6 @@ will want; date every entry.
     6/10. Confirms no integer-shape beta fast path.
   - T.DIST(x,1,TRUE) honest: 0.5+ATAN/PI 8/13; (PI/2+ATAN)/PI 8/13;
     ACOT(-x)/PI 10/13. Not identities.
+  - WEIBULL.DIST(x,1,b) vs EXPON.DIST(x,1/b) honest CDF 8/8 PDF 7/8
+    (b=3 PDF is 1 ULP). Bodies already signed off; leftover last-bit
+    on inexact 1/b PDF.
