@@ -488,3 +488,5 @@ will want; date every entry.
     exact rows; x=2 remains 1 ULP.
   - NORMSDIST(-1) live 20326 is 1 ULP from production (catalog G3-07
     leftover ERFC body). Aliases NORM.S.DIST/NORM.DIST(*,0,1,TRUE) 6/6.
+  - BINOM.DIST(n,n,p,FALSE) vs POWER(p,n) 3/9 (only p=0.5). Not an
+    identity.
