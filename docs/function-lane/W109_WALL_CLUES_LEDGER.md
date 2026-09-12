@@ -464,3 +464,5 @@ will want; date every entry.
   - NORMSINV=NORM.S.INV=NORM.INV(p,0,1) 9/9. Oddness
     NORMSINV(1-p)=-NORMSINV(p) 8/9 (p=0.05 is 5 ULP). T.INV(p,1e8)
     is not NORMSINV (1/9).
+  - GAMMA.INV(p,1,scale) vs -scale*LN(1-p) 5/7 max 5 ULP. Exponential
+    inverse is not the published GAMMA.INV a=1 graph.
