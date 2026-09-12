@@ -618,3 +618,5 @@ will want; date every entry.
     vs 1/(1+x) 6/10. CHISQ df=4 x87_mul(exp,1+h) still 7/9.
   - CHISQ.DIST(x,2,FALSE) vs 0.5*EXP(-x/2) honest 6/10. CDF vs
     GAMMA.DIST(x,1,2,TRUE) 10/10 (already production). vs 1-EXP 7/10.
+  - BETA.DIST(x,2,2,FALSE) vs 6x(1-x) honest 3/10. CDF vs x^2*(3-2x)
+    6/10. Confirms no integer-shape beta fast path.
