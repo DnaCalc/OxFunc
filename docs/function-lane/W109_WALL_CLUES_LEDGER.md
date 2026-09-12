@@ -737,3 +737,6 @@ will want; date every entry.
     exact on two 30/360 rows and far off on actual/actual — not a
     general PRICE graph.
   - BETA.INV(p,0.5,0.5) vs SIN(p*PI/2)^2 4/8; vs (1-COS(p*PI))/2 6/8.
+  - SQRTPI(x)=SQRT(PI()*x) 8/8 (already production n*π then pow 0.5).
+    Split SQRT(PI())*SQRT(x) 5/8.
+  - GAMMA.DIST(x,3,1,FALSE) vs x*x*EXP(-x)/2 1/7. CDF Poisson-poly 1/7.
