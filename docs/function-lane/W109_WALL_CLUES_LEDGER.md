@@ -625,3 +625,6 @@ will want; date every entry.
   - WEIBULL.DIST(x,1,b) vs EXPON.DIST(x,1/b) honest CDF 8/8 PDF 7/8
     (b=3 PDF is 1 ULP). Bodies already signed off; leftover last-bit
     on inexact 1/b PDF.
+  - NORM.S.DIST pdf vs PHI 10/10 and vs EXP(-x^2/2)/SQRT(2PI) 10/10
+    (PHI already signed off). NORMSDIST vs 0.5*(1+ERF.PRECISE(x/SQRT2))
+    6/10 leftover ERFC body.
