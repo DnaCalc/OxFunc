@@ -628,3 +628,5 @@ will want; date every entry.
   - NORM.S.DIST pdf vs PHI 10/10 and vs EXP(-x^2/2)/SQRT(2PI) 10/10
     (PHI already signed off). NORMSDIST vs 0.5*(1+ERF.PRECISE(x/SQRT2))
     6/10 leftover ERFC body.
+  - FISHERINV vs TANH honest 6/9. FISHER(TANH(y)) vs y 4/9. Not
+    identities.
