@@ -555,3 +555,5 @@ will want; date every entry.
   - GAMMA thirteenths product-first: 2/13 n<=3, 3/13 n<=2, 4/13 n<=1,
     6/13 n<=3, 7/13 n<=4, 9/13 n<=4, 11/13 n<=1. 5/13,8/13,10/13,12/13
     miss n=1.
+  - GAMMA seventeenths product-first: 3/17,4/17,5/17,16/17 n<=1;
+    7/17..=12/17 and 15/17 n<=3. 1/17,2/17,6/17,13/17,14/17 miss n=1.
