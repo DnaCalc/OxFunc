@@ -409,6 +409,30 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
         }
     }
 
+    // Live Excel 16.0 b20326: odd sixteenths in (0,1) are private seeds
+    // (GAMMA(1/16) is 1 ULP from the generic path). Recurrence not claimed.
+    const GAMMA_ODD_SIXTEENTH: [(u32, u64); 8] = [
+        (1, 0x402ef66a79533ee8),
+        (3, 0x4013a91381a8a4ee),
+        (5, 0x4006edc1821c5c71),
+        (7, 0x400032cfe11b9bd7),
+        (9, 0x3ff94fa627d94f66),
+        (11, 0x3ff517bf09b399f5),
+        (13, 0x3ff26858f1d7c28d),
+        (15, 0x3ff0a490a6519230),
+    ];
+    let sixteen = x * 16.0;
+    if sixteen.fract() == 0.0 && (1.0..=15.0).contains(&sixteen) {
+        let k = sixteen as u32;
+        if k % 2 == 1 {
+            for &(kk, bits) in &GAMMA_ODD_SIXTEENTH {
+                if kk == k {
+                    return Ok(f64::from_bits(bits));
+                }
+            }
+        }
+    }
+
     let ln_gamma = if x < 0.5 {
         let reflected = 1.0 - x;
         let denom = (std::f64::consts::PI * x).sin();
@@ -1222,6 +1246,14 @@ mod tests {
         assert_eq!(gamma_kernel(0.875).unwrap().to_bits(), 0x3ff16f374f724016);
         assert_eq!(gamma_kernel(-0.5).unwrap().to_bits(), 0xc00c5bf891b4ef6a);
         assert_eq!(gamma_kernel(-1.5).unwrap().to_bits(), 0x4002e7fb0bcdf4f1);
+        assert_eq!(gamma_kernel(1.0 / 16.0).unwrap().to_bits(), 0x402ef66a79533ee8);
+        assert_eq!(gamma_kernel(3.0 / 16.0).unwrap().to_bits(), 0x4013a91381a8a4ee);
+        assert_eq!(gamma_kernel(5.0 / 16.0).unwrap().to_bits(), 0x4006edc1821c5c71);
+        assert_eq!(gamma_kernel(7.0 / 16.0).unwrap().to_bits(), 0x400032cfe11b9bd7);
+        assert_eq!(gamma_kernel(9.0 / 16.0).unwrap().to_bits(), 0x3ff94fa627d94f66);
+        assert_eq!(gamma_kernel(11.0 / 16.0).unwrap().to_bits(), 0x3ff517bf09b399f5);
+        assert_eq!(gamma_kernel(13.0 / 16.0).unwrap().to_bits(), 0x3ff26858f1d7c28d);
+        assert_eq!(gamma_kernel(15.0 / 16.0).unwrap().to_bits(), 0x3ff0a490a6519230);
     }
 
     #[test]

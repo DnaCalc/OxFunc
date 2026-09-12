@@ -415,3 +415,9 @@ will want; date every entry.
     wall, not an exp/ln composition.
   - PDURATION is split worksheet LN `(LN(fv)-LN(pv))/LN(1+rate)` 80/80, not
     fused `LN(fv/pv)/LN(1+rate)` (20/80). Landed.
+  - POISSON k=1 `excel_exp(-λ + excel_ln(λ))` is 1088/3999 vs native-ln
+    1087/3999 (+1 exact). Not landed.
+  - GEOMEAN vs EXP(AVERAGE(LN)) is 2/3 (third row 3 ULP). vs POWER 1/3.
+    Not an identity.
+  - GAMMA odd sixteenths in (0,1): live-pinned seeds; `GAMMA(1/16)` is 1 ULP
+    from the generic path. Landed seeds only; recurrence not claimed.
