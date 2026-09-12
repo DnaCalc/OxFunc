@@ -2,7 +2,7 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative_or_minus_one};
+use crate::functions::factorial_common::trunc_nonnegative_or_minus_one;
 use crate::functions::unary_numeric::{
     UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
     map_unary_numeric_error_to_ws,
@@ -26,6 +26,20 @@ pub const FACT_META: FunctionMeta = function_spec! {
     real_result_policy: ExcelRealPolicy::FINITE,
 };
 
+fn fact_reverse_product(n: i64) -> f64 {
+    // Live Excel 16.0 b20326: FACT(n) is the reverse native product
+    // n*(n-1)*...*2 (empty product 1 for n<=1). Forward product diverges
+    // (FACT(170) forward misses). FACT(171) still overflows to #NUM!.
+    if n <= 1 {
+        return 1.0;
+    }
+    let mut acc = 1.0;
+    for k in (2..=n).rev() {
+        acc *= k as f64;
+    }
+    acc
+}
+
 pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     let truncated = trunc_nonnegative_or_minus_one(n)?;
     if truncated < 0 {
@@ -33,7 +47,7 @@ pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     }
     FACT_META
         .real_result_policy
-        .publish(n, factorial_of_int(truncated))
+        .publish(n, fact_reverse_product(truncated))
 }
 
 pub fn eval_fact_surface(
@@ -85,5 +99,12 @@ mod tests {
     fn fact_exact_publication_controls_remain_exact() {
         assert_bits(fact_kernel(9.0).expect("fact(9)"), 362880.0_f64);
         assert_bits(fact_kernel(2.0).expect("fact(2)"), 2.0_f64);
+    }
+
+    #[test]
+    fn fact_reverse_product_matches_live_excel_large_n() {
+        assert_eq!(fact_kernel(25.0).unwrap().to_bits(), 0x4529a940c33f6120);
+        assert_eq!(fact_kernel(100.0).unwrap().to_bits(), 0x60bb30964ec395de);
+        assert_eq!(fact_kernel(170.0).unwrap().to_bits(), 0x7fa4ab786441863d);
     }
 }
