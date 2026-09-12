@@ -505,20 +505,21 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     }
 
     // Live Excel 16.0 b20326: thirteenths in (0,1) are private seeds
-    // (GAMMA(1/13) is 4 ULP from the generic path). Product-first extends
-    // 1/13 through n=2; other residues not claimed here.
+    // (GAMMA(1/13) is 4 ULP from the generic path). Product-first nmax:
+    // 1/13 n<=2, 2/13 n<=3, 3/13 n<=2, 4/13 n<=1, 6/13 n<=3, 7/13 n<=4,
+    // 9/13 n<=4, 11/13 n<=1. 5/13,8/13,10/13,12/13 miss at n=1.
     const GAMMA_THIRTEENTH: [(u32, u64, u32); 12] = [
         (1, 0x4028fce1e0ed23fb, 2),
-        (2, 0x401839eca7c726a2, 0),
-        (3, 0x400f91158829b3d6, 0),
-        (4, 0x40074dfec9db3ae6, 0),
+        (2, 0x401839eca7c726a2, 3),
+        (3, 0x400f91158829b3d6, 2),
+        (4, 0x40074dfec9db3ae6, 1),
         (5, 0x4002798afcfe30c7, 0),
-        (6, 0x3ffeb36ee50fd917, 0),
-        (7, 0x3ffa637c934edca9, 0),
+        (6, 0x3ffeb36ee50fd917, 3),
+        (7, 0x3ffa637c934edca9, 4),
         (8, 0x3ff7476291fcce66, 0),
-        (9, 0x3ff4f76b6a7bb3cb, 0),
+        (9, 0x3ff4f76b6a7bb3cb, 4),
         (10, 0x3ff335dc7fec23ed, 0),
-        (11, 0x3ff1dbd18812ee11, 0),
+        (11, 0x3ff1dbd18812ee11, 1),
         (12, 0x3ff0cfaee504346b, 0),
     ];
     if x > 0.0 {
@@ -1596,6 +1597,18 @@ mod tests {
         assert_eq!(
             gamma_kernel(2.0 + 1.0 / 13.0).unwrap().to_bits(),
             0x3ff08f5a9e270120
+        );
+        assert_eq!(
+            gamma_kernel(3.0 + 2.0 / 13.0).unwrap().to_bits(),
+            0x4002867b673e729a
+        );
+        assert_eq!(
+            gamma_kernel(4.0 + 7.0 / 13.0).unwrap().to_bits(),
+            0x40288b6041fd0743
+        );
+        assert_eq!(
+            gamma_kernel(4.0 + 9.0 / 13.0).unwrap().to_bits(),
+            0x402e860ed048074e
         );
         assert_eq!(gamma_kernel(6.0 / 13.0).unwrap().to_bits(), 0x3ffeb36ee50fd917);
         assert_eq!(gamma_kernel(12.0 / 13.0).unwrap().to_bits(), 0x3ff0cfaee504346b);
