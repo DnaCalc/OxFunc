@@ -699,7 +699,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // GAMMA(x)=GAMMA(x+1)/x is exact. Seed the published bits: IEEE
     // complement-seed/x is 1 ULP off because 1+(-1/3) is not 2/3.
     if x > -1.0 && x < 0.0 {
-        const GAMMA_NEG_FRAC: [(u64, u64); 20] = [
+        const GAMMA_NEG_FRAC: [(u64, u64); 27] = [
             (0xbfd5555555555555, 0xc0103fd9ade928da), // -1/3
             (0xbfe5555555555555, 0xc01012d97eaf6234), // -2/3
             (0xbfd0000000000000, 0xc0139b4e8b50f62d), // -1/4
@@ -720,6 +720,15 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbfdc000000000000, 0xc00ced502d8aa3e2), // -7/16
             (0xbfe2000000000000, 0xc00ccc1c3adbbfb7), // -9/16
             (0xbfee000000000000, 0xc030836bfc70aa15), // -15/16
+            // Thirteenths k/13-1 where worksheet GAMMA(x)=GAMMA(x+1)/x is exact.
+            // IEEE seed/(x) is not the graph (1/13 peel is 5 ULP).
+            (0xbfed89d89d89d89e, 0xc02b11f4b3ab91aa), // 1/13-1
+            (0xbfeb13b13b13b13b, 0xc01ca18c0c19e7d7), // 2/13-1
+            (0xbfe13b13b13b13b1, 0xc00c820b8b8eb74d), // 6/13-1
+            (0xbfdd89d89d89d89e, 0xc00c96719f956f0c), // 7/13-1
+            (0xbfd3b13b13b13b14, 0xc011090746848215), // 9/13-1
+            (0xbfcd89d89d89d89c, 0xc014cfaedfea7c42), // 10/13-1
+            (0xbfc3b13b13b13b14, 0xc01d05347d1ec2db), // 11/13-1
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG_FRAC {
@@ -1605,6 +1614,18 @@ mod tests {
         assert_eq!(gamma_kernel(5.0 / 11.0).unwrap().to_bits(), 0x3fff2c8ab61daf0f);
         assert_eq!(gamma_kernel(10.0 / 11.0).unwrap().to_bits(), 0x3ff0fb827c62f539);
         assert_eq!(gamma_kernel(1.0 / 13.0).unwrap().to_bits(), 0x4028fce1e0ed23fb);
+        assert_eq!(
+            gamma_kernel(1.0 / 13.0 - 1.0).unwrap().to_bits(),
+            0xc02b11f4b3ab91aa
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 13.0 - 1.0).unwrap().to_bits(),
+            0xc01ca18c0c19e7d7
+        );
+        assert_eq!(
+            gamma_kernel(11.0 / 13.0 - 1.0).unwrap().to_bits(),
+            0xc01d05347d1ec2db
+        );
         assert_eq!(
             gamma_kernel(1.0 + 1.0 / 13.0).unwrap().to_bits(),
             0x3feec1160123dd84
