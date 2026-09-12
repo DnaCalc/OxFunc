@@ -666,3 +666,7 @@ will want; date every entry.
     1/11 max 2 ULP.
   - MULTINOMIAL(a,b) vs COMBIN(a+b,a) 1/10 max 22 ULP. vs FACT ratio
     0/10. Excel MULTINOMIAL sits 1–21 ULP below COMBIN. Not identities.
+  - IMARGUMENT vs ATAN2(re,im) 10/10 (already-production atan2).
+    IMABS vs SQRT(re^2+im^2) 9/10 max 1 ULP. IMEXP vs EXP*COS/SIN
+    IMREAL 1/10 max 22 ULP, IMAGINARY 2/10 max 12 ULP. Not the
+    worksheet elementary graph.

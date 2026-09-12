@@ -701,7 +701,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 7/12-1) are 1–4 ULP from that peel and still use the Excel bits.
     // IEEE complement-seed/x is not the graph (1+(-1/3) is not 2/3).
     if x > -1.0 && x < 0.0 {
-        const GAMMA_NEG_FRAC: [(u64, u64); 48] = [
+        const GAMMA_NEG_FRAC: [(u64, u64); 56] = [
             (0xbfd5555555555555, 0xc0103fd9ade928da), // -1/3
             (0xbfe5555555555555, 0xc01012d97eaf6234), // -2/3
             (0xbfd0000000000000, 0xc0139b4e8b50f62d), // -1/4
@@ -754,6 +754,14 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xbfdc71c71c71c71c, 0xc00cd0199151d380), // 5/9-1
             (0xbfed555555555555, 0xc02916f40e4cd8ec), // 1/12-1
             (0xbfdaaaaaaaaaaaaa, 0xc00d59e9547e6784), // 7/12-1 (distinct from -5/12)
+            (0xbfe8787878787878, 0xc014385d00d157bc), // 4/17-1
+            (0xbfe6969696969696, 0xc0114f0f4378079b), // 5/17-1
+            (0xbfe2d2d2d2d2d2d3, 0xc00d4935647fbd65), // 7/17-1
+            (0xbfe0f0f0f0f0f0f1, 0xc00c705568bcba1a), // 8/17-1
+            (0xbfde1e1e1e1e1e1e, 0xc00c7fed16f60228), // 9/17-1
+            (0xbfda5a5a5a5a5a5a, 0xc00d78352b10042a), // 10/17-1
+            (0xbfd2d2d2d2d2d2d2, 0xc011873615bc34d5), // 12/17-1
+            (0xbfbe1e1e1e1e1e20, 0xc0226a7819660d8a), // 15/17-1
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG_FRAC {
@@ -2020,6 +2028,18 @@ mod tests {
         assert_eq!(
             gamma_kernel(0.8125 - 4.0).unwrap().to_bits(),
             0x3fe7b6a2acbd1cc6
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 17.0 - 1.0).unwrap().to_bits(),
+            0xc014385d00d157bc
+        );
+        assert_eq!(
+            gamma_kernel(8.0 / 17.0 - 1.0).unwrap().to_bits(),
+            0xc00c705568bcba1a
+        );
+        assert_eq!(
+            gamma_kernel(15.0 / 17.0 - 1.0).unwrap().to_bits(),
+            0xc0226a7819660d8a
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),
