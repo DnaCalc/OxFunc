@@ -704,3 +704,9 @@ will want; date every entry.
   - CHISQ PDF df=1 excel_exp/sqrt associations 2–3/10 vs live bits.
     IMLOG10 vs IMLN/LN(10) 2/10 re and im; vs LOG10(IMABS) 2/10;
     IMLOG2 vs IMLN/LN(2) 2/10. Not worksheet-log identities.
+  - T.DIST df=2 CDF vs 0.5+0.5x/SQRT(2+x*x) 8/16; vs
+    (SQRT+x)/(2*SQRT) 9/16. RT 0.5-0.5|x|/SQRT 5/16. Not identities.
+  - IMCOS re vs COS*COSH 0/10; IMSIN re vs SIN*COSH 1/10; IMCOSH re
+    vs COS(y)*COSH(x) 0/10. Private complex kernels, not worksheet
+    trig/hyperbolic products.
+  - GAMMA.DIST(x,2,1,FALSE) vs x*excel_exp(-x) 4/10 including x87_mul.
