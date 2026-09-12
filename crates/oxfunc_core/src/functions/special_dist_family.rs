@@ -842,7 +842,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Third peel into (-3,-2) from exact second-peel thirteenths (3/3).
     if x > -3.0 && x < -2.0 {
-        const GAMMA_NEG3_FRAC: [(u64, u64); 18] = [
+        const GAMMA_NEG3_FRAC: [(u64, u64); 19] = [
             (0xc006c4ec4ec4ec4f, 0xbff5cbb342dead0b), // 2/13-3
             (0xc001d89d89d89d8a, 0xbffe51e215abb09b), // 10/13-3
             (0xc0013b13b13b13b1, 0xc0075abdbee6c648), // 11/13-3
@@ -861,6 +861,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xc0036db6db6db6dc, 0xbff0c58495a8b362), // 4/7-3
             (0xc00599999999999a, 0xbfedcb6e1fd81004), // 3/10-3
             (0xc003000000000000, 0xbff2be17b5cb80f2), // 5/8-3
+            (0xc003800000000000, 0xbff082e3d8ecac50), // 9/16-3
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG3_FRAC {
@@ -872,7 +873,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Fourth peel into (-4,-3) from exact third-peel 13ths/11ths (6/6).
     if x > -4.0 && x < -3.0 {
-        const GAMMA_NEG4_FRAC: [(u64, u64); 12] = [
+        const GAMMA_NEG4_FRAC: [(u64, u64); 14] = [
             (0xc00ec4ec4ec4ec4f, 0x3fd6aae36443be34), // 2/13-4
             (0xc009d89d89d89d8a, 0x3fe2c4f9abe43060), // 10/13-4
             (0xc0093b13b13b13b1, 0x3fed9ecb308ed604), // 11/13-4
@@ -885,6 +886,8 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xc009e1e1e1e1e1e2, 0x3fe25d65bf455058), // 13/17-4
             (0xc00b6db6db6db6dc, 0x3fd3911aae9a269d), // 4/7-4
             (0xc00d99999999999a, 0x3fd01aef6b28aeb6), // 3/10-4
+            (0xc00b800000000000, 0x3fd336901d00c882), // 9/16-4
+            (0xc00e000000000000, 0x3fd124b7f9ca9e35), // 1/4-4
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG4_FRAC {
@@ -896,7 +899,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Fifth peel into (-5,-4). 11ths k=2,6,10 exact 3/3; 13ths miss 1-2 ULP.
     if x > -5.0 && x < -4.0 {
-        const GAMMA_NEG5_FRAC: [(u64, u64); 7] = [
+        const GAMMA_NEG5_FRAC: [(u64, u64); 9] = [
             (0xc01345d1745d1746, 0xbfb0daa03f849286), // 2/11-5
             (0xc011d1745d1745d2, 0xbfb0b2f1df79de0f), // 6/11-5
             (0xc0105d1745d1745d, 0xbfd9e84a12a87660), // 10/11-5
@@ -904,6 +907,8 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
             (0xc0128ba2e8ba2e8c, 0xbfab11e8576075be), // 4/11-5
             (0xc010f0f0f0f0f0f1, 0xbfc158356d8892fe), // 13/17-5
             (0xc01199999999999a, 0xbfb2f6002e79716d), // 3/5-5
+            (0xc011800000000000, 0xbfb44f33f8314ec5), // 5/8-5
+            (0xc013c00000000000, 0xbfc31a54d7fe74d3), // 1/16-5
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG5_FRAC {
@@ -915,11 +920,12 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Sixth peel into (-6,-5). 11ths k=6,10 exact; k=2 misses 1 ULP.
     if x > -6.0 && x < -5.0 {
-        const GAMMA_NEG6_FRAC: [(u64, u64); 4] = [
+        const GAMMA_NEG6_FRAC: [(u64, u64); 5] = [
             (0xc015d1745d1745d2, 0x3f887deb47c3ce38), // 6/11-6
             (0xc0145d1745d1745d, 0x3fb45b15a0f213de), // 10/11-6
             (0xc016492492492492, 0x3f8428e9328127cc), // 3/7-6
             (0xc01599999999999a, 0x3f8c171cb6a0f3e3), // 3/5-6
+            (0xc015800000000000, 0x3f8e3a5941c66955), // 5/8-6
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG6_FRAC {
@@ -931,9 +937,10 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
     // Seventh peel into (-7,-6). 11ths k=10 exact; k=6 misses 1 ULP.
     if x > -7.0 && x < -6.0 {
-        const GAMMA_NEG7_FRAC: [(u64, u64); 2] = [
+        const GAMMA_NEG7_FRAC: [(u64, u64); 3] = [
             (0xc0185d1745d1745d, 0xbf8abc68d3642961), // 10/11-7
             (0xc01a492492492492, 0xbf588ad91c17aae2), // 3/7-7
+            (0xc01999999999999a, 0xbf618e71f224986e), // 3/5-7
         ];
         let xb = x.to_bits();
         for &(xx, gg) in &GAMMA_NEG7_FRAC {
@@ -2300,6 +2307,34 @@ mod tests {
         assert_eq!(
             gamma_kernel(3.0 / 5.0 - 6.0).unwrap().to_bits(),
             0x3f8c171cb6a0f3e3
+        );
+        assert_eq!(
+            gamma_kernel(9.0 / 16.0 - 3.0).unwrap().to_bits(),
+            0xbff082e3d8ecac50
+        );
+        assert_eq!(
+            gamma_kernel(9.0 / 16.0 - 4.0).unwrap().to_bits(),
+            0x3fd336901d00c882
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 8.0 - 5.0).unwrap().to_bits(),
+            0xbfb44f33f8314ec5
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 5.0 - 7.0).unwrap().to_bits(),
+            0xbf618e71f224986e
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 4.0 - 4.0).unwrap().to_bits(),
+            0x3fd124b7f9ca9e35
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 16.0 - 5.0).unwrap().to_bits(),
+            0xbfc31a54d7fe74d3
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 8.0 - 6.0).unwrap().to_bits(),
+            0x3f8e3a5941c66955
         );
         assert_eq!(
             gamma_kernel(2.0 / 13.0 - 2.0).unwrap().to_bits(),

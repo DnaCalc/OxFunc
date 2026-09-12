@@ -688,3 +688,12 @@ will want; date every entry.
     into (-1,0); skipped as a new unseeded family (same rule as
     sixths/14ths/19ths). 1/6-2 is worksheet-exact but 1/6-1 misses
     1 ULP; sixths stay unseeded.
+  - T.DIST df=3 excel_pow_chain closed forms 2–7/20 vs live bits
+    (best 2/(PI*SQRT3)/POWER 7/20). Not an identity.
+  - CHISQ.DIST(x,2,FALSE)=GAMMA.DIST(x,1,2,FALSE) 9/9. vs
+    EXPON.DIST(x,0.5,FALSE) 7/10. vs 0.5*excel_exp(-x/2) 6/10
+    including x87_mul associations. GAMMA.DIST a=1 PDF vs
+    EXPON(x/b,1)/b 33/63. Excel identity is real; production PDF
+    leftover remains.
+  - F.DIST.RT d1=2 excel_pow_chain and excel_exp*log 11/16 vs live
+    bits; split POWER 3/16. Not identities.
