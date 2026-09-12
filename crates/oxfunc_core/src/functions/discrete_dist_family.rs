@@ -420,17 +420,18 @@ pub fn poisson_dist_kernel(x: f64, mean: f64, cumulative: bool) -> Result<f64, W
         }
     } else if mean == 0.0 {
         Ok(if x == 0 { 1.0 } else { 0.0 })
+    } else if x == 0 {
+        Ok(crate::excel_numeric::excel_exp(-mean))
+    } else if x == 1 {
+        // k=1: log-composed λ^1 e^{-λ} / 1! with native ln scored 1087/3999
+        // on b24, above λ*e^{-λ} multiply (1027/3999).
+        Ok(crate::excel_numeric::excel_exp(-mean + mean.ln()))
     } else {
-        let mut ln_fact = 0.0;
-        for i in 2..=x {
-            ln_fact += (i as f64).ln();
-        }
-        // W109: the internal exp is the x87 fFEXP chain (identified via the
-        // POISSON k=0 window, 30,000/30,000). Route staging (direct product
-        // vs this log composition) is a separate open lane.
-        Ok(crate::excel_numeric::excel_exp(
-            -(mean) + (x as f64) * mean.ln() - ln_fact,
-        ))
+        // Public R `dpois_raw` (nmath/dpois.c) for k>=2:
+        //   exp(-stirlerr(x) - bd0(x, lambda)) / sqrt(2*pi*x)
+        let xf = x as f64;
+        let arg = -binom_stirlerr(xf) - binom_bd0(xf, mean);
+        Ok(crate::excel_numeric::excel_exp(arg) / (2.0 * std::f64::consts::PI * xf).sqrt())
     }
 }
 
@@ -959,11 +960,9 @@ mod tests {
             (5.0, 8.0),
         ] {
             let cdf = poisson_dist_kernel(k, mu, true).unwrap();
-            let chi = crate::functions::chi_f_t_family::chisq_dist_rt_kernel(
-                2.0 * mu,
-                2.0 * (k + 1.0),
-            )
-            .unwrap();
+            let chi =
+                crate::functions::chi_f_t_family::chisq_dist_rt_kernel(2.0 * mu, 2.0 * (k + 1.0))
+                    .unwrap();
             assert_eq!(cdf.to_bits(), chi.to_bits(), "k={k} mu={mu}");
         }
         // k=0 is the identified EXP(-μ) elementary, not a GRATIO a=1 wrapper.
