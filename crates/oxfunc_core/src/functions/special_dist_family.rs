@@ -456,20 +456,27 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     }
 
     // Live Excel 16.0 b20326: ninths in (0,1) that are not thirds.
-    const GAMMA_NINTH: [(u32, u64); 6] = [
-        (1, 0x40210b9dc79fe8d4),
-        (2, 0x40106d2331a5de8d),
-        (4, 0x3fffe2e4518a6b60),
-        (5, 0x3ff99c88812c4a39),
-        (7, 0x3ff30adbf89161c8),
-        (8, 0x3ff13e800bd48928),
+    // Product-first: 5/9 n<=3, 7/9 n<=1; 1/9,2/9,4/9,8/9 miss at n=1.
+    const GAMMA_NINTH: [(u32, u64, u32); 6] = [
+        (1, 0x40210b9dc79fe8d4, 0),
+        (2, 0x40106d2331a5de8d, 0),
+        (4, 0x3fffe2e4518a6b60, 0),
+        (5, 0x3ff99c88812c4a39, 3),
+        (7, 0x3ff30adbf89161c8, 1),
+        (8, 0x3ff13e800bd48928, 0),
     ];
-    let nine = x * 9.0;
-    if nine.fract() == 0.0 && (1.0..=8.0).contains(&nine) {
-        let k = nine as u32;
-        for &(kk, bits) in &GAMMA_NINTH {
-            if kk == k {
-                return Ok(f64::from_bits(bits));
+    if x > 0.0 {
+        for &(kk, bits, nmax) in &GAMMA_NINTH {
+            let frac = kk as f64 / 9.0;
+            let seed = f64::from_bits(bits);
+            for n in 0..=nmax {
+                if x.to_bits() == (n as f64 + frac).to_bits() {
+                    let mut prod = 1.0;
+                    for i in 0..n {
+                        prod *= frac + i as f64;
+                    }
+                    return Ok(prod * seed);
+                }
             }
         }
     }
@@ -1703,6 +1710,14 @@ mod tests {
         assert_eq!(gamma_kernel(2.0 / 9.0).unwrap().to_bits(), 0x40106d2331a5de8d);
         assert_eq!(gamma_kernel(4.0 / 9.0).unwrap().to_bits(), 0x3fffe2e4518a6b60);
         assert_eq!(gamma_kernel(5.0 / 9.0).unwrap().to_bits(), 0x3ff99c88812c4a39);
+        assert_eq!(
+            gamma_kernel(3.0 + 5.0 / 9.0).unwrap().to_bits(),
+            0x400c48114add546c
+        );
+        assert_eq!(
+            gamma_kernel(1.0 + 7.0 / 9.0).unwrap().to_bits(),
+            0x3fed9f1d49c5b48d
+        );
         assert_eq!(gamma_kernel(7.0 / 9.0).unwrap().to_bits(), 0x3ff30adbf89161c8);
         assert_eq!(gamma_kernel(8.0 / 9.0).unwrap().to_bits(), 0x3ff13e800bd48928);
         assert_eq!(gamma_kernel(-1.0 / 3.0).unwrap().to_bits(), 0xc0103fd9ade928da);
