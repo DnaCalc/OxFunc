@@ -28,3 +28,4 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HANDOFF-OXFUNC-008","OxFml->OxFunc","TAKE omitted row count in complex helper lambda","filed","OxFml local direct investigation","W-TBD","2026-04-10",""
 "HANDOFF-DNACALC-001","DnaOneCalc->OxFunc","Signature seeds 244 placeholder parameter entries","filed","DnaOneCalc editor regression report","W-TBD","2026-05-05",""
 "HO-FN-018","OxFunc->OxFml","Explicit @ operand parser follow-up","filed","W100","OxFml formula parser/admission follow-up","2026-06-15",""
+"HO-FN-019","OxFunc->OxXlPlay/OxReplay/DnaTreeCalc","W110-3 wire-schema id constant and validator (HANDOFF_WIRE_SCHEMA_ID_CONSTANT.md)","filed","W110","OxXlPlay capture + script, OxReplay diff, DnaTreeCalc bench-host loaders","2026-09-14",""

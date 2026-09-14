@@ -895,6 +895,235 @@ impl ValueBoundary {
     }
 }
 
+/// Identifies the OxFunc-aligned JSON envelope that carries a typed worksheet
+/// value across a process or file boundary: retained observation artifacts,
+/// replay bundles, verification bundles, and the comparison-value views that
+/// OxXlPlay emits and OxReplay / DnaTreeCalc consume.
+///
+/// The envelope is a JSON object of the shape
+/// `{ "wire_schema": <this id>, "boundary": <snake-case ValueBoundary>, "value": { "kind": ..., ... } }`
+/// whose `value` is a tagged union aligned with [`CoreValue`] / [`ValueTag`]
+/// (`number`, `text` with `utf16_code_units`, `logical`, `error` with a
+/// `worksheet_error_code`, `array` with a shape and cells, `reference`,
+/// `empty_cell`).
+///
+/// This constant is the single definition of the id. Producers write it into
+/// `wire_schema`; loaders call [`validate_wire_schema_id`] on what they read
+/// instead of comparing against a hand-typed literal. Its value is pinned to
+/// the historical literal by a unit test so that every retained artifact
+/// written before the constant existed still loads unchanged. A schema bump
+/// changes this constant together with [`OXFUNC_VALUE_WIRE_SCHEMA_VERSION`];
+/// a unit test fails if the two disagree.
+pub const OXFUNC_VALUE_WIRE_SCHEMA_ID: &str = "oxfunc_value_types.aligned_json.v1";
+
+/// The version embedded in [`OXFUNC_VALUE_WIRE_SCHEMA_ID`] (its trailing
+/// `.v<N>` segment). Bump both together; a unit test pins their agreement.
+pub const OXFUNC_VALUE_WIRE_SCHEMA_VERSION: u32 = 1;
+
+/// A loader was handed a `wire_schema` that is not
+/// [`OXFUNC_VALUE_WIRE_SCHEMA_ID`]. Carries both sides so the rejection can be
+/// reported without re-deriving either.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct WireSchemaMismatch {
+    /// The id found in the artifact.
+    pub found: String,
+    /// The id this crate understands.
+    pub expected: &'static str,
+}
+
+impl std::fmt::Display for WireSchemaMismatch {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "unsupported oxfunc value wire schema `{}`; this crate understands `{}`",
+            self.found, self.expected
+        )
+    }
+}
+
+impl std::error::Error for WireSchemaMismatch {}
+
+/// Accepts exactly [`OXFUNC_VALUE_WIRE_SCHEMA_ID`]; anything else, including a
+/// different version of the same family, is a typed [`WireSchemaMismatch`].
+/// Downstream loaders call this on the `wire_schema` field before decoding the
+/// envelope so a version drift is a rejection, never a silent misread.
+pub fn validate_wire_schema_id(found: &str) -> Result<(), WireSchemaMismatch> {
+    if found == OXFUNC_VALUE_WIRE_SCHEMA_ID {
+        Ok(())
+    } else {
+        Err(WireSchemaMismatch {
+            found: found.to_string(),
+            expected: OXFUNC_VALUE_WIRE_SCHEMA_ID,
+        })
+    }
+}
+
+#[cfg(test)]
+mod wire_schema_tests {
+    use super::{
+        OXFUNC_VALUE_WIRE_SCHEMA_ID, OXFUNC_VALUE_WIRE_SCHEMA_VERSION, WireSchemaMismatch,
+        validate_wire_schema_id,
+    };
+    use std::path::{Path, PathBuf};
+
+    /// The id as it was hand-typed in retained artifacts and downstream
+    /// sources before this constant existed. This is the ONLY place outside
+    /// the constant's own definition where the bare literal may appear in the
+    /// workspace crates; `no_bare_wire_schema_literal_outside_the_constant`
+    /// enforces that.
+    const HISTORICAL_WIRE_SCHEMA_LITERAL: &str = "oxfunc_value_types.aligned_json.v1";
+
+    #[test]
+    fn constant_equals_the_historical_literal_so_retained_artifacts_still_load() {
+        assert_eq!(OXFUNC_VALUE_WIRE_SCHEMA_ID, HISTORICAL_WIRE_SCHEMA_LITERAL);
+    }
+
+    #[test]
+    fn version_constant_agrees_with_the_id_suffix() {
+        let expected_suffix = format!(".v{OXFUNC_VALUE_WIRE_SCHEMA_VERSION}");
+        assert!(
+            OXFUNC_VALUE_WIRE_SCHEMA_ID.ends_with(&expected_suffix),
+            "id `{OXFUNC_VALUE_WIRE_SCHEMA_ID}` does not end with `{expected_suffix}`"
+        );
+        let family = &OXFUNC_VALUE_WIRE_SCHEMA_ID
+            [..OXFUNC_VALUE_WIRE_SCHEMA_ID.len() - expected_suffix.len()];
+        assert_eq!(family, "oxfunc_value_types.aligned_json");
+    }
+
+    #[test]
+    fn validate_accepts_the_constant() {
+        assert_eq!(validate_wire_schema_id(OXFUNC_VALUE_WIRE_SCHEMA_ID), Ok(()));
+        assert_eq!(
+            validate_wire_schema_id(HISTORICAL_WIRE_SCHEMA_LITERAL),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn validate_rejects_a_different_id_with_a_typed_error() {
+        let cases = [
+            "oxfunc_value_types.aligned_json.v2",
+            "oxfunc_value_types.aligned_json",
+            "OXFUNC_VALUE_TYPES.ALIGNED_JSON.V1",
+            "oxxlplay.execution_outcome.v1",
+            "",
+        ];
+        for found in cases {
+            let err = validate_wire_schema_id(found).expect_err(found);
+            assert_eq!(
+                err,
+                WireSchemaMismatch {
+                    found: found.to_string(),
+                    expected: OXFUNC_VALUE_WIRE_SCHEMA_ID,
+                }
+            );
+            let rendered = err.to_string();
+            assert!(rendered.contains(found), "{rendered}");
+            assert!(rendered.contains(OXFUNC_VALUE_WIRE_SCHEMA_ID), "{rendered}");
+        }
+        let boxed: Box<dyn std::error::Error> =
+            Box::new(validate_wire_schema_id("other").unwrap_err());
+        assert!(
+            boxed
+                .to_string()
+                .starts_with("unsupported oxfunc value wire schema")
+        );
+    }
+
+    fn collect_rust_sources(dir: &Path, out: &mut Vec<PathBuf>) {
+        for entry in std::fs::read_dir(dir).unwrap_or_else(|err| panic!("{}: {err}", dir.display()))
+        {
+            let entry = entry.expect("readable directory entry");
+            let path = entry.path();
+            let file_type = entry.file_type().expect("readable file type");
+            if file_type.is_dir() {
+                let name = entry.file_name();
+                let name = name.to_string_lossy();
+                if name.starts_with("target") || name == ".git" {
+                    continue;
+                }
+                collect_rust_sources(&path, out);
+            } else if path.extension().is_some_and(|ext| ext == "rs") {
+                out.push(path);
+            }
+        }
+    }
+
+    /// The invariant is textual, so the test is textual: no `.rs` file under the
+    /// workspace `crates/` tree may spell the wire-schema id as a bare literal
+    /// except the constant's definition and the historical pin above. A
+    /// downstream loader that wants the id imports the constant.
+    #[test]
+    fn no_bare_wire_schema_literal_outside_the_constant() {
+        let crates_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("..")
+            .canonicalize()
+            .expect("workspace crates directory");
+        let mut sources = Vec::new();
+        collect_rust_sources(&crates_dir, &mut sources);
+        for crate_name in ["oxfunc_value_types", "oxfunc_core"] {
+            assert!(
+                sources.iter().any(|path| {
+                    path.components()
+                        .any(|component| component.as_os_str() == crate_name)
+                }),
+                "the sweep under {} did not reach crate `{crate_name}`",
+                crates_dir.display()
+            );
+        }
+
+        let this_file = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join("lib.rs")
+            .canonicalize()
+            .expect("this crate's lib.rs");
+        let allowed_definitions = [
+            "pub const OXFUNC_VALUE_WIRE_SCHEMA_ID: &str =",
+            "const HISTORICAL_WIRE_SCHEMA_LITERAL: &str =",
+        ];
+
+        let mut offenders = Vec::new();
+        let mut allowed_hits = 0usize;
+        for path in &sources {
+            let text = std::fs::read_to_string(path)
+                .unwrap_or_else(|err| panic!("{}: {err}", path.display()));
+            for (index, line) in text.lines().enumerate() {
+                if !line.contains(HISTORICAL_WIRE_SCHEMA_LITERAL) {
+                    continue;
+                }
+                let is_allowed = *path == this_file
+                    && allowed_definitions
+                        .iter()
+                        .any(|definition| line.contains(definition));
+                if is_allowed {
+                    allowed_hits += 1;
+                } else {
+                    let shown = path.strip_prefix(&crates_dir).unwrap_or(path);
+                    offenders.push(format!(
+                        "crates/{}:{}: {}",
+                        shown.display(),
+                        index + 1,
+                        line.trim()
+                    ));
+                }
+            }
+        }
+
+        assert_eq!(
+            allowed_hits,
+            allowed_definitions.len(),
+            "expected exactly the two allowed definition lines in {}",
+            this_file.display()
+        );
+        assert!(
+            offenders.is_empty(),
+            "bare wire-schema literal found outside the constant; use \
+             oxfunc_value_types::OXFUNC_VALUE_WIRE_SCHEMA_ID instead:\n{}",
+            offenders.join("\n")
+        );
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
