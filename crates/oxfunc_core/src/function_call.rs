@@ -687,9 +687,8 @@ mod tests {
     };
     use crate::value::{
         CalcArray, CalcValue, CallableArityShape, CallableValue, CoreValue, ExcelText,
-        OpaqueCallable, ReferenceKind, ReferenceLike,
+        OpaqueCallable, ReferenceKind, ReferenceLike, Shared,
     };
-    use std::rc::Rc;
 
     struct NoReferenceSystemProvider;
     #[derive(Debug)]
@@ -867,7 +866,7 @@ mod tests {
         CalcValue::callable(CallableValue {
             arity: CallableArityShape::exact(arity),
             summary: token.to_string(),
-            handle: Rc::new(TestCallableHandle),
+            handle: Shared::new(TestCallableHandle),
         })
     }
 

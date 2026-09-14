@@ -2972,6 +2972,7 @@ mod tests {
     use crate::value::{
         CalcArray, CallableArityShape, CallableValue, CellStyleHint, ExcelText, NumberFormatHint,
         OpaqueCallable, PresentationHint, ReferenceKind, ReferenceLike, RichValue, RichValueData,
+        Shared,
     };
 
     struct NoReferenceSystemProvider;
@@ -3001,7 +3002,7 @@ mod tests {
         CallableValue {
             arity: CallableArityShape::exact(arity),
             summary: token.to_string(),
-            handle: Rc::new(TestCallableHandle),
+            handle: Shared::new(TestCallableHandle),
         }
     }
 

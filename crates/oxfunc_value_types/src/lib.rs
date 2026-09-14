@@ -1,5 +1,23 @@
 use std::any::Any;
-use std::rc::Rc;
+
+/// The reference-counted pointer the value model uses for its shared payloads:
+/// [`CalcValue::rich`] and [`CallableValue::handle`].
+///
+/// `Rc` by default. With the `send-values` cargo feature it is `Arc`, and
+/// [`OpaqueCallable`] gains `Send + Sync` supertraits, so that `CalcValue`
+/// (and every value type that carries one) is `Send + Sync` — the property a
+/// parallel recalculation strategy needs before it can move a value table
+/// across threads. The module `send_values_audit` (present only with the
+/// feature) carries the compile-time proof.
+///
+/// Construct through `Shared::new(...)` and compare identity through
+/// `Shared::ptr_eq(...)`; never name `Rc`/`Arc` directly when building a
+/// `CallableValue`, so the same source compiles in both feature states.
+#[cfg(feature = "send-values")]
+pub type Shared<T> = std::sync::Arc<T>;
+/// See the `send-values` variant of this alias.
+#[cfg(not(feature = "send-values"))]
+pub type Shared<T> = std::rc::Rc<T>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EvalError {
@@ -385,7 +403,7 @@ pub enum CoreValue {
 #[derive(Debug, Clone)]
 pub struct CalcValue {
     pub core: CoreValue,
-    pub rich: Option<Rc<RichValue>>,
+    pub rich: Option<Shared<RichValue>>,
 }
 
 impl PartialEq for CalcValue {
@@ -407,7 +425,7 @@ impl CalcValue {
     pub fn with_rich(core: CoreValue, rich: RichValue) -> Self {
         Self {
             core,
-            rich: Some(Rc::new(rich)),
+            rich: Some(Shared::new(rich)),
         }
     }
 
@@ -713,6 +731,20 @@ impl CallableArityShape {
     }
 }
 
+/// The opaque host-side identity behind a [`CallableValue`]. The value model
+/// never inspects it; consumers downcast through `as_any`.
+///
+/// With the `send-values` feature the trait requires `Send + Sync`, so an
+/// implementer may not capture `Rc`, `RefCell`, or other thread-bound
+/// evaluation state — a callable value carries a token or a portable binding,
+/// and the evaluator that owns the live closure state resolves it.
+#[cfg(feature = "send-values")]
+pub trait OpaqueCallable: std::fmt::Debug + Send + Sync + 'static {
+    fn as_any(&self) -> &dyn Any;
+}
+
+/// See the `send-values` variant of this trait.
+#[cfg(not(feature = "send-values"))]
 pub trait OpaqueCallable: std::fmt::Debug + 'static {
     fn as_any(&self) -> &dyn Any;
 }
@@ -721,12 +753,12 @@ pub trait OpaqueCallable: std::fmt::Debug + 'static {
 pub struct CallableValue {
     pub arity: CallableArityShape,
     pub summary: String,
-    pub handle: Rc<dyn OpaqueCallable>,
+    pub handle: Shared<dyn OpaqueCallable>,
 }
 
 impl PartialEq for CallableValue {
     fn eq(&self, other: &Self) -> bool {
-        self.arity == other.arity && Rc::ptr_eq(&self.handle, &other.handle)
+        self.arity == other.arity && Shared::ptr_eq(&self.handle, &other.handle)
     }
 }
 
@@ -1124,6 +1156,73 @@ mod wire_schema_tests {
     }
 }
 
+/// Compile-time proof of what the `send-values` feature buys: every value type
+/// that can carry a [`Shared`] payload is `Send + Sync`. Each `const _` below
+/// fails to compile — in every crate that builds this one with the feature on —
+/// if the value model grows an `Rc`, a `RefCell`, or another thread-bound
+/// member. Without the feature the same bound is false (`Rc` is `!Send`), which
+/// is why this module does not exist in that state rather than asserting a
+/// weaker claim.
+#[cfg(feature = "send-values")]
+pub mod send_values_audit {
+    use super::{
+        CalcArray, CalcValue, CallableValue, CoreValue, ErrorMetadataValue, PresentationValue,
+        ReferenceLike, RichObjectValue, RichValue,
+    };
+
+    /// Only callable when `T: Send + Sync`; never invoked at run time. Binding
+    /// it in a `const` forces the bound to be checked during type-check.
+    pub const fn assert_send_sync<T: Send + Sync>() {}
+
+    const _: () = assert_send_sync::<CalcValue>();
+    const _: () = assert_send_sync::<CoreValue>();
+    const _: () = assert_send_sync::<CalcArray>();
+    const _: () = assert_send_sync::<ReferenceLike>();
+    const _: () = assert_send_sync::<RichValue>();
+    const _: () = assert_send_sync::<RichObjectValue>();
+    const _: () = assert_send_sync::<PresentationValue>();
+    const _: () = assert_send_sync::<ErrorMetadataValue>();
+    const _: () = assert_send_sync::<CallableValue>();
+
+    #[cfg(test)]
+    mod tests {
+        use super::assert_send_sync;
+        use crate::{CalcValue, CallableArityShape, CallableValue, OpaqueCallable, Shared};
+
+        /// A run-time-visible test so the audit shows up in the suite roster
+        /// when the feature is on; the enforcement is the `const _` assertions
+        /// above. Also exercises the one path that changes shape under the
+        /// feature: a callable value moved to, and compared on, another thread.
+        #[test]
+        fn calc_value_with_callable_handle_crosses_a_thread_boundary() {
+            #[derive(Debug)]
+            struct ThreadSafeHandle;
+            impl OpaqueCallable for ThreadSafeHandle {
+                fn as_any(&self) -> &dyn std::any::Any {
+                    self
+                }
+            }
+
+            assert_send_sync::<CalcValue>();
+
+            let callable = CallableValue {
+                arity: CallableArityShape::exact(1),
+                summary: "send-values.test".to_string(),
+                handle: Shared::new(ThreadSafeHandle),
+            };
+            let value = CalcValue::callable(callable.clone());
+            let moved = std::thread::spawn(move || value)
+                .join()
+                .expect("value thread joins");
+            assert_eq!(
+                moved.callable_value(),
+                Some(&callable),
+                "the moved value still carries the same handle identity"
+            );
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
@@ -1132,8 +1231,8 @@ mod tests {
         ErrorMetadataValue, ErrorSurface, ExcelText, NumberFormatHint, PresentationHint,
         PresentationValue, ReferenceDisplay, ReferenceHandle, ReferenceHandleId, ReferenceIdentity,
         ReferenceKind, ReferenceLike, ReferenceSystemId, RichObjectData, RichObjectKeyValue,
-        RichObjectType, RichObjectValue, RichValue, RichValueKeyFlag, TextualReferenceIdentity,
-        ValueBoundary, ValueTag, WorksheetErrorCode,
+        RichObjectType, RichObjectValue, RichValue, RichValueKeyFlag, Shared,
+        TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
     };
 
     #[test]
@@ -1303,7 +1402,7 @@ mod tests {
         let value = CalcValue::callable(super::CallableValue {
             arity: CallableArityShape::exact(1),
             summary: "test.callable".to_string(),
-            handle: std::rc::Rc::new(TestCallable),
+            handle: Shared::new(TestCallable),
         });
 
         assert_eq!(value.core, CoreValue::Error(WorksheetErrorCode::Calc));
@@ -1508,7 +1607,7 @@ mod tests {
         let callable = CalcValue::callable(super::CallableValue {
             arity: CallableArityShape::exact(1),
             summary: "LAMBDA(x, x)".to_string(),
-            handle: std::rc::Rc::new(TestCallable),
+            handle: Shared::new(TestCallable),
         });
 
         assert_eq!(callable.core, CoreValue::Error(WorksheetErrorCode::Calc));

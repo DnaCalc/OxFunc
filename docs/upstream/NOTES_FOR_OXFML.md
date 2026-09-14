@@ -434,3 +434,15 @@ current-state triage note; it is not a request for immediate action unless noted
   `=@OFFSET(A1,1,0,3,1)`). The request is to parse the explicit-`@` operand
   through the ordinary range/postfix/call expression path while preserving any
   needed structured-reference member special case.
+
+- `HO-FN-020` (W110-2 `OpaqueCallable: Send + Sync` behind the `send-values`
+  feature, filed 2026-09-15,
+  `docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md`): no
+  acknowledgement yet. `oxfunc_value_types::Shared<T>` is `Rc` by default and
+  `Arc` under `oxfunc_core/send-values`; both OxFml `OpaqueCallable`
+  implementers already satisfy `Send + Sync` (compiler-verified: no E0277). The
+  ask is four substitutions of `Rc::new(` -> `oxfunc_core::value::Shared::new(`
+  at the `handle:` field in `eval/mod.rs:548,1061,1088` and
+  `tests/authored_input_tests.rs:290`, which compile in both feature states.
+  Until they land the feature stays default-off and `CalcValue: Send` is not
+  claimed.

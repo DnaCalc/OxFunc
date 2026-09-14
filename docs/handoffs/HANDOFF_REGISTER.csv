@@ -29,3 +29,4 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HANDOFF-DNACALC-001","DnaOneCalc->OxFunc","Signature seeds 244 placeholder parameter entries","filed","DnaOneCalc editor regression report","W-TBD","2026-05-05",""
 "HO-FN-018","OxFunc->OxFml","Explicit @ operand parser follow-up","filed","W100","OxFml formula parser/admission follow-up","2026-06-15",""
 "HO-FN-019","OxFunc->OxXlPlay/OxReplay/DnaTreeCalc","W110-3 wire-schema id constant and validator (HANDOFF_WIRE_SCHEMA_ID_CONSTANT.md)","filed","W110","OxXlPlay capture + script, OxReplay diff, DnaTreeCalc bench-host loaders","2026-09-14",""
+"HO-FN-020","OxFunc->OxFml","W110-2 OpaqueCallable: Send + Sync behind the send-values feature; four Shared::new sites in eval/mod.rs (HANDOFF_OXFML_opaque_callable_send_sync.md)","filed","W110","OxFml eval callable construction; OxCalc Send audit note; DnaTreeCalc note","2026-09-15",""

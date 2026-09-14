@@ -7,3 +7,12 @@ license = "MIT"
 [lib]
 name = "oxfunc_value_types"
 path = "src/lib.rs"
+
+[features]
+# W110-2 (oxf-xvt5.2): share `CalcValue` payloads through `Arc` instead of
+# `Rc` and add `Send + Sync` supertraits to `OpaqueCallable`, so that
+# `CalcValue: Send + Sync`. Off by default until every downstream
+# `CallableValue` construction site builds its handle through
+# `oxfunc_value_types::Shared::new` instead of `Rc::new` — see
+# docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md for the exact sites.
+send-values = []

@@ -1,11 +1,10 @@
 use crate::value::CalcValue;
 use std::collections::{BTreeMap, BTreeSet};
-use std::rc::Rc;
 
 use crate::coercion::CoercionError;
 use crate::functions::adapters::coerce_prepared_to_number;
 use crate::value::{
-    CallableArityShape, CallableValue, CoreValue, OpaqueCallable, WorksheetErrorCode,
+    CallableArityShape, CallableValue, CoreValue, OpaqueCallable, Shared, WorksheetErrorCode,
 };
 
 #[cfg(test)]
@@ -239,7 +238,7 @@ pub fn eval_expr(
             let meta = CallableValue {
                 arity: CallableArityShape::exact(params.len()),
                 summary: format!("stage1.lambda.{}", params.len()),
-                handle: Rc::new(Stage1CallableHandle),
+                handle: Shared::new(Stage1CallableHandle),
             };
             Ok(Stage1Value::Lambda(Stage1LambdaClosure {
                 meta,

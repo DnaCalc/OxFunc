@@ -1118,9 +1118,8 @@ mod tests {
     use super::*;
     use crate::functions::adapters::coerce_prepared_to_number;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{CalcArray, CallableArityShape, ExcelText, OpaqueCallable};
+    use crate::value::{CalcArray, CallableArityShape, ExcelText, OpaqueCallable, Shared};
     use std::cell::Cell;
-    use std::rc::Rc;
 
     struct MockCallableInvoker;
 
@@ -1320,7 +1319,7 @@ mod tests {
         CallableValue {
             arity: CallableArityShape::exact(arity),
             summary: callable_token.to_string(),
-            handle: Rc::new(TestCallableHandle),
+            handle: Shared::new(TestCallableHandle),
         }
     }
 

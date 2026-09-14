@@ -627,10 +627,9 @@ mod tests {
     };
     use crate::value::{
         CalcArray, CallableArityShape, CallableValue, ExcelText, OpaqueCallable, ReferenceKind,
-        ReferenceLike, WorksheetErrorCode,
+        ReferenceLike, Shared, WorksheetErrorCode,
     };
     use std::collections::BTreeMap;
-    use std::rc::Rc;
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
@@ -801,7 +800,7 @@ mod tests {
         let arg = CalcValue::callable(CallableValue {
             arity: CallableArityShape::exact(1),
             summary: "helper.lambda".to_string(),
-            handle: Rc::new(TestCallableHandle),
+            handle: Shared::new(TestCallableHandle),
         });
 
         let prepared =

@@ -414,12 +414,11 @@ pub fn eval_groupby_surface_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::rc::Rc;
 
     use crate::functions::adapters::CalcValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{CallableArityShape, ExcelText, OpaqueCallable};
+    use crate::value::{CallableArityShape, ExcelText, OpaqueCallable, Shared};
 
     struct NoResolver;
     struct TestInvoker;
@@ -500,7 +499,7 @@ mod tests {
         CalcValue::callable(CallableValue {
             arity: CallableArityShape::exact(1),
             summary: "helper.sum_array".to_string(),
-            handle: Rc::new(TestCallableHandle),
+            handle: Shared::new(TestCallableHandle),
         })
     }
 
