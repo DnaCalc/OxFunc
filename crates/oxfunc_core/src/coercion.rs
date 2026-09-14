@@ -85,6 +85,29 @@ pub fn coerce_calc_scalar_to_number(value: &CalcValue) -> Result<f64, CoercionEr
     }
 }
 
+/// SCALAR-context numeric coercion of one prepared value: Excel reads a referenced BLANK cell
+/// as the number `0` wherever exactly one number is expected — the arithmetic operators
+/// (`=A1+1` is `1`, `=-A1` is `0`), and the single-value numeric functions (`=ABS(A1)`,
+/// `=ROUND(A1,2)` are `0`). Pinned end to end by the truth table in
+/// `functions::blank_cell_coercion_truth_table` (provenance recorded in its module header).
+///
+/// This is deliberately a SEPARATE helper from [`coerce_calc_scalar_to_number`] rather than a
+/// change to it. The aggregate lane IGNORES a blank — `=MAX(A1,-3)` is `-3`, `=AVERAGE(A1)`
+/// is `#DIV/0!`, `=COUNT(A1)` is `0` — and it must never see the scalar-zero rule: the
+/// production aggregate policies in `functions::aggregate_common` match `CoreValue::Empty`
+/// on each item before any coercion, and [`aggregate_scan_sum`] skips the distinct
+/// [`CoercionError::EmptyCell`] signal the low-level helpers keep raising. The scalar-zero
+/// rule and the aggregate-ignore rule are two different Excel behaviours and live on two
+/// different helpers; a consumer picks the one for its context. A MISSING (omitted) argument
+/// is still [`CoercionError::MissingArg`] here, so optional-argument defaulting stays the
+/// caller's decision. W110-1 (oxf-xvt5.1).
+pub fn coerce_scalar_calc_value_to_number(value: &CalcValue) -> Result<f64, CoercionError> {
+    match value.core() {
+        CoreValue::Empty => Ok(0.0),
+        _ => coerce_calc_scalar_to_number(value),
+    }
+}
+
 pub fn coerce_arg_to_number(
     arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -217,6 +240,53 @@ mod tests {
                 "A1"
             ))),
             Err(CoercionError::UnsupportedValueKind("reference"))
+        );
+    }
+
+    /// The scalar-context helper reads a blank as 0 but leaves every other outcome of the
+    /// low-level helper untouched — including the MissingArg signal an omitted argument
+    /// carries and the numeric-text / logical / error coercions.
+    #[test]
+    fn scalar_context_reads_blank_as_zero_and_delegates_everything_else() {
+        assert_eq!(
+            coerce_scalar_calc_value_to_number(&CalcValue::empty()),
+            Ok(0.0)
+        );
+        assert_eq!(
+            coerce_scalar_calc_value_to_number(&CalcValue::missing()),
+            Err(CoercionError::MissingArg)
+        );
+        for value in [
+            CalcValue::number(7.0),
+            CalcValue::logical(true),
+            CalcValue::text(ExcelText::from_utf16_code_units(
+                "2.5".encode_utf16().collect(),
+            )),
+            CalcValue::text(ExcelText::from_utf16_code_units(
+                "asd".encode_utf16().collect(),
+            )),
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1")),
+        ] {
+            assert_eq!(
+                coerce_scalar_calc_value_to_number(&value),
+                coerce_calc_scalar_to_number(&value),
+                "scalar-context helper diverged from the low-level helper on {value:?}"
+            );
+        }
+    }
+
+    /// The aggregate-facing helpers keep their distinct blank signal: the scalar-zero rule
+    /// must not leak into the helpers the ignore-blanks policies read.
+    #[test]
+    fn scalar_zero_rule_does_not_leak_into_the_aggregate_facing_helpers() {
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::empty()),
+            Err(CoercionError::EmptyCell)
+        );
+        assert_eq!(
+            coerce_arg_to_number(&CalcValue::empty(), &resolver()),
+            Err(CoercionError::EmptyCell)
         );
     }
 

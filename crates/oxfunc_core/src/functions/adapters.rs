@@ -1,4 +1,7 @@
-use crate::coercion::{CoercionError, coerce_eval_to_number, coercion_error_from_resolution};
+use crate::coercion::{
+    CoercionError, coerce_eval_to_number, coerce_scalar_calc_value_to_number,
+    coercion_error_from_resolution,
+};
 use crate::resolver::{
     ReferenceSystemCapabilities, ReferenceSystemProvider, ResolvedReferenceValues,
     enumerate_reference_values, materialize_resolved_reference_values, resolve_eval_value,
@@ -565,10 +568,16 @@ impl ReferenceSystemProvider for NoReferenceSystemProvider {
     }
 }
 
+/// Numeric coercion of one PREPARED scalar argument — the funnel every scalar adapter (the
+/// arithmetic operators, `ABS`, `ROUND`, `NOT`, the k / index / mode arguments of the lookup
+/// and statistical surfaces, …) reads a single number through. A blank cell is `0` here and a
+/// missing argument stays `MissingArg`; both arms are the one declared scalar rule in
+/// [`coerce_scalar_calc_value_to_number`]. The aggregate policies never come through this
+/// funnel (they match `CoreValue::Empty` on each item in `aggregate_common`), so blank-skipping
+/// in `SUM`/`COUNT`/`AVERAGE`/`MAX`/`PRODUCT` is unaffected by the scalar rule.
 pub fn coerce_prepared_to_number(arg: &CalcValue) -> Result<f64, CoercionError> {
     match arg.core() {
-        CoreValue::Missing => Err(CoercionError::MissingArg),
-        CoreValue::Empty => Err(CoercionError::EmptyCell),
+        CoreValue::Missing | CoreValue::Empty => coerce_scalar_calc_value_to_number(arg),
         _ => coerce_eval_to_number(arg, &NoReferenceSystemProvider),
     }
 }

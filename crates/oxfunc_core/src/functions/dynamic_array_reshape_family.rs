@@ -2,7 +2,7 @@ use crate::value::CalcValue;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
-use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
+use crate::coercion::{CoercionError, coerce_scalar_calc_value_to_number};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -191,8 +191,10 @@ fn parse_integer(prepared: &CalcValue) -> Result<isize, DynamicArrayReshapeEvalE
 }
 
 fn parse_integer_calc(value: &CalcValue) -> Result<isize, DynamicArrayReshapeEvalError> {
-    let raw =
-        coerce_calc_scalar_to_number(value).map_err(DynamicArrayReshapeEvalError::Preparation)?;
+    // The same scalar-context rule `parse_integer` reads through `coerce_prepared_to_number`
+    // (a blank count is 0), so the two prep helpers stay equivalent on a blank argument.
+    let raw = coerce_scalar_calc_value_to_number(value)
+        .map_err(DynamicArrayReshapeEvalError::Preparation)?;
     if !raw.is_finite() {
         return Err(DynamicArrayReshapeEvalError::InvalidCount);
     }

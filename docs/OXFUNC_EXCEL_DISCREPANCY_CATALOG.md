@@ -1,7 +1,20 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-12` (BINOM k=n is excel_pow_chain(p,n) even when
+Last reconciled: `2026-09-14` (W110-1 blank-cell scalar coercion, `BUG-FUNC-049`:
+a referenced blank cell in any scalar numeric position — the arithmetic
+operators, unary minus/percent, `ABS`, `ROUND`, `NOT`, the blank slot of a
+lifted range — published `#VALUE!` where Excel reads `0`, and `=2/A1`
+published `#VALUE!` for `#DIV/0!`. A G1-class structural gap that never had a
+catalog row: the program survey named it by code reading and the 32-row
+dispatch-level truth table `functions::blank_cell_coercion_truth_table`
+reproduced 12 red rows, now 32/32 green locally. Fixed at the scalar layer
+(`coercion::coerce_scalar_calc_value_to_number` routed into the scalar funnel
+only); aggregate blank-skipping is pinned unchanged. `validated_local`, not
+signed off against live Excel; the Lean substrate still models the old scalar
+rule — both filed as W110 follow-up beads. No open row added; open count
+stays 16.)
+Previous reconcile: `2026-09-12` (BINOM k=n is excel_pow_chain(p,n) even when
 q<0.1; ERFC.PRECISE(z)=1-ERF.PRECISE(z) on positive z in (0, 0.5]. G3-01
 and G4-04 stay open. ERFC Lentz tail 1324 is a constraint, not an identity.)
 Previous reconcile: `2026-08-19` (NEGBINOM CDF = `BETA.DIST(p,s,f+1,TRUE)` 150/150;

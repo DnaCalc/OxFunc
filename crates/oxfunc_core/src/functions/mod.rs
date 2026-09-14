@@ -28,6 +28,8 @@ pub mod bitlshift_fn;
 pub mod bitor_fn;
 pub mod bitrshift_fn;
 pub mod bitxor_fn;
+#[cfg(test)]
+mod blank_cell_coercion_truth_table;
 pub mod bond_core_family;
 pub mod call_register_id_family;
 pub mod callable_helpers;

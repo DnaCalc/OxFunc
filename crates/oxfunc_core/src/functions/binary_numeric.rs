@@ -341,6 +341,10 @@ mod tests {
         );
     }
 
+    /// A blank cell inside a lifted array operand is `0` in arithmetic (`=A1:A3*2` gives `0`
+    /// for the blank slot), not `#VALUE!`. Until W110-1 (oxf-xvt5.1) this test pinned the
+    /// `#VALUE!` — the wrong answer the blank-cell truth table
+    /// (`functions::blank_cell_coercion_truth_table`) now corrects.
     #[test]
     fn binary_numeric_surface_lifts_scalar_array_elementwise() {
         let got = eval_binary_numeric_surface(
@@ -364,10 +368,7 @@ mod tests {
             CalcValue::array(
                 CalcArray::from_rows(vec![
                     vec![CalcValue::number(6.0), CalcValue::number(2.0)],
-                    vec![
-                        CalcValue::error(WorksheetErrorCode::Value),
-                        CalcValue::number(8.0)
-                    ],
+                    vec![CalcValue::number(0.0), CalcValue::number(8.0)],
                 ])
                 .unwrap()
             )

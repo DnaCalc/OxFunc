@@ -1,4 +1,4 @@
-use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
+use crate::coercion::{CoercionError, coerce_scalar_calc_value_to_number};
 use crate::function::ExcelRealPolicy;
 use crate::functions::adapters::{
     apply_unary_numeric_scalar_prepared, expand_arg_values_only, prepare_arg_values_only,
@@ -202,7 +202,7 @@ pub fn eval_unary_numeric_calc_surface(
                 CalcArray::new(array.shape(), cells).expect("shape preserved"),
             ))
         }
-        _ => match coerce_calc_scalar_to_number(&prepared) {
+        _ => match coerce_scalar_calc_value_to_number(&prepared) {
             Ok(n) => kernel(n)
                 .map(CalcValue::number)
                 .map_err(UnaryNumericSurfaceError::Domain),
@@ -229,7 +229,7 @@ fn map_unary_numeric_calc_item(
     item: &CalcValue,
     kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
 ) -> CalcValue {
-    match coerce_calc_scalar_to_number(item) {
+    match coerce_scalar_calc_value_to_number(item) {
         Ok(n) => match kernel(n) {
             Ok(v) => CalcValue::number(v),
             Err(code) => CalcValue::error(code),
