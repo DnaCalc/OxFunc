@@ -4,12 +4,13 @@ Direction: `OxFunc -> OxFml` (primary; four source lines), with a note each for 
 Source repo/workset: `OxFunc/W110` (bead `oxf-xvt5.2`)
 Target repo/workset: `OxFml/crates/oxfml_core/src/eval/mod.rs` callable construction sites
 Filed: `2026-09-15`
-Status: `filed`
+Status: `acknowledged` — landed on both sides 2026-09-15 (OxFml `fml-kt8.10`, commit `1f19bf7`; OxFunc default flip `oxf-xvt5.10`). See "Default flip" at the end.
 
 ## What OxFunc now ships
 
 `crates/oxfunc_value_types` (re-exported as `oxfunc_core::value::*`) has a cargo
-feature `send-values`, **off by default**, and `oxfunc_core` passes it through
+feature `send-values`, **off by default as filed; on by default since
+2026-09-15** (see "Default flip"), and `oxfunc_core` passes it through
 (`oxfunc_core/send-values`). The feature changes exactly three things:
 
 ```rust
@@ -167,3 +168,121 @@ feature, default off; downstream handoff open* — not as `CalcValue: Send`.
 - Arc clone cost on the evaluation hot path: **not measured**, and this handoff
   makes no claim about it either way; the default-off feature keeps the `Rc`
   path in production until someone measures.
+
+## Default flip (2026-09-15, `oxf-xvt5.10`)
+
+### What landed on the OxFml side
+
+OxFml bead `fml-kt8.10` (commit `1f19bf7`, closed in `29b009d`) applied the
+four substitutions. Read on 2026-09-15 in `../OxFml` at that commit: the
+`handle:` field at `eval/mod.rs:548`, `:1061`, `:1088` (and a further
+test-side literal at `:7434`) and `tests/authored_input_tests.rs:290` build
+through `oxfunc_core::value::Shared::new`; no `Rc::new(` handle site remains
+in OxFml, OxCalc, or DnaTreeCalc (grep over `OxFml/crates`, `OxCalc/src`,
+`DnaTreeCalc/src` for `handle: Rc::new`, `Rc<dyn OpaqueCallable>`,
+`Rc<RichValue>`: the only hits are two comment lines in OxCalc's
+`grid/machine.rs` Send audit). OxFml also added an opt-in passthrough feature
+`oxfml_core/send-values` and a `#[cfg(all(test, feature = "send-values"))]`
+module `eval::send_values_audit`; making that audit run under OxFml's default
+test command is OxFml's `fml-kt8.17`.
+
+### What changed in OxFunc
+
+`crates/oxfunc_value_types/Cargo.toml` and `crates/oxfunc_core/Cargo.toml`
+now declare `default = ["send-values"]`. Nothing else changed shape: the
+`Shared<T>` alias, the `OpaqueCallable` supertraits, and `send_values_audit`
+are the same `cfg` seam as filed, so every consumer that builds `oxfunc_core`
+with default features now gets `Shared<T> = Arc<T>`, `OpaqueCallable: Send +
+Sync`, and the compile-time `CalcValue: Send + Sync` proof, without editing
+its own manifest.
+
+### The `Rc` arm is kept for one release; retirement condition
+
+`--no-default-features` on `oxfunc_value_types` / `oxfunc_core` still selects
+the `Rc` arm (verified: `cargo check -p oxfunc_value_types -p oxfunc_core
+--lib --no-default-features --offline` Finished; `cargo test -p
+oxfunc_value_types --no-default-features --offline` 26 passed). It is kept so
+a consumer that still needs a thread-bound value model has a named opt-out
+while it migrates, not because any consumer is known to use it.
+
+The `cfg` seam and the `Rc` arm are retired — `Shared<T> = Arc<T>`
+unconditionally, `OpaqueCallable: Send + Sync` unconditionally,
+`send_values_audit` unconditional, feature `send-values` deleted from both
+manifests and from `oxfml_core`'s passthrough — when **all** of these hold:
+
+1. OxFml `fml-kt8.17` has landed (its audit runs under the default test
+   command and its `send-values` passthrough feature is gone or a no-op).
+2. OxCalc has replaced the negative paragraph in
+   `grid/machine.rs` `concurrency_prep_send_audit` with the four live
+   `assert_send` lines named below and dropped the
+   `clippy::arc_with_non_send_sync` allowance in `OxCalc/Cargo.toml`.
+3. One `cargo check --offline` each in `../OxFml`, `../OxCalc`, and the six
+   DnaTreeCalc consumer crates has passed with default features **and** no
+   manifest in those repos names `oxfunc_core`/`oxfunc_value_types` with
+   `default-features = false` or `--no-default-features` in any script
+   (grep the manifests and `scripts/` directories at retirement time).
+
+The retirement is a separate OxFunc bead, `oxf-xvt5.12` (child of
+`oxf-xvt5`), not part of the flip commit.
+
+### Evidence for the flip (run 2026-09-15 in the OxFunc working tree, dirty with the owner's W109 WIP, unchanged by this bead)
+
+- Baseline before any edit, default OFF:
+  `cargo test -p oxfunc_value_types -p oxfunc_core --offline --no-fail-fast`
+  — value_types **26 passed**; core lib **1584 passed / 1 failed**
+  (`finite_combinatoric_witnesses_match_excel_bits`, the pre-existing 1-ULP
+  red); `oxfml_seam_integration` 37 / 1
+  (`oxfunc_function_corpus_passes_through_adapter`);
+  `unary_numeric_equivalence_law` 5 / 1
+  (`law3_overflowing_kernel_declares_non_pass_policy`); every other target
+  green. All three reds are the ones catalogued on `oxf-xvt5.2` /
+  `oxf-xvt5.8`.
+- After the flip, default ON, same command — value_types **27 passed** (adds
+  `send_values_audit::tests::calc_value_with_callable_handle_crosses_a_thread_boundary`);
+  core lib **1584 passed / 1 failed**; the same two integration reds; nothing
+  else changed. `oxfml_core` compiled as `oxfunc_core`'s dev-dependency with
+  the feature unified ON — the in-repo confirmation that HO-FN-020 landed.
+- Opt-out arm: `cargo check -p oxfunc_value_types -p oxfunc_core --lib
+  --no-default-features --offline` Finished; `cargo test -p
+  oxfunc_value_types --no-default-features --offline` 26 passed.
+- `rustfmt --edition 2024 --check crates/oxfunc_value_types/src/lib.rs` clean;
+  `cargo clippy -p oxfunc_value_types --offline` no findings (the one
+  `--all-targets` warning at a test line is pre-existing and untouched);
+  `oxfunc_core` lib clippy reds are the pre-existing W109/`oxf-xvt5.11` set,
+  none on a line this bead changed.
+- Downstream, read-only, one cargo at a time, default state (= ON), each run
+  only after `tasklist` showed no `cargo.exe`/`rustc.exe` anywhere:
+  - `../OxFml`: `cargo check --offline` Finished; `cargo check --offline
+    --all-targets` Finished.
+  - `../OxCalc`: `cargo check --offline` Finished and `cargo check --offline
+    --all-targets` Finished, every crate Fresh — OxCalc's own agent had
+    already rebuilt the workspace against the flipped manifests
+    (`target/debug/.fingerprint/oxfunc_value_types-*/lib-oxfunc_value_types.json`
+    records `features: ["default", "send-values"]`, and
+    `--message-format=json` reports `oxfunc_value_types` and `oxfunc_core`
+    resolved with `['default', 'send-values']`, `fresh: true`). That run is
+    the live check the note above anticipated; it did not need any OxCalc
+    source change.
+  - `../DnaTreeCalc`: `cargo check --offline -p dnacalc-host-core -p
+    dnacalc-formula-ux-core -p dnacalc-extension-host-core -p
+    dnatreecalc-host -p dnacalc-bench-host -p dnacalc-conform` Finished
+    (35.6 s), `oxfunc_value_types`/`oxfunc_core` resolved with
+    `['default', 'send-values']`.
+  - `../OxXlPlay` (a direct `oxfunc_value_types` consumer the bead did not
+    list; no `Rc`/`OpaqueCallable` use): `cargo check --offline` Finished.
+
+### Notes for the sibling repos now that the default is on
+
+- **OxCalc**: the four `assert_send::<GridCalcRefWorkbook>()`,
+  `::<GridCalcRefSheet>()`, `::<GridOptimizedValuation>()`,
+  `::<oxfunc_core::value::CalcValue>()` lines in
+  `grid/machine.rs` `concurrency_prep_send_audit` now compile under default
+  features (verified on a scratch copy 2026-09-15 with the feature on; the
+  default flip makes that the ordinary build). The
+  `clippy::arc_with_non_send_sync` allowance in `OxCalc/Cargo.toml` can go.
+- **DnaTreeCalc**: nothing to change for the feature. `OxCalcDocumentContext`
+  stays `!Sync` for its own `NodeRef<Owned, ..>` reason (see above).
+- **Arc clone cost on the evaluation hot path**: still **not measured**; this
+  flip makes no claim about it. If the program wants a number, OxFml's
+  `fml-kt8.17` names the W075 perf fixture as the instrument.
+

@@ -437,12 +437,16 @@ current-state triage note; it is not a request for immediate action unless noted
 
 - `HO-FN-020` (W110-2 `OpaqueCallable: Send + Sync` behind the `send-values`
   feature, filed 2026-09-15,
-  `docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md`): no
-  acknowledgement yet. `oxfunc_value_types::Shared<T>` is `Rc` by default and
-  `Arc` under `oxfunc_core/send-values`; both OxFml `OpaqueCallable`
-  implementers already satisfy `Send + Sync` (compiler-verified: no E0277). The
-  ask is four substitutions of `Rc::new(` -> `oxfunc_core::value::Shared::new(`
-  at the `handle:` field in `eval/mod.rs:548,1061,1088` and
-  `tests/authored_input_tests.rs:290`, which compile in both feature states.
-  Until they land the feature stays default-off and `CalcValue: Send` is not
-  claimed.
+  `docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md`): acknowledged
+  and landed 2026-09-15. OxFml `fml-kt8.10` (commit `1f19bf7`) moved the four
+  `handle:` sites (`eval/mod.rs:548,1061,1088`,
+  `tests/authored_input_tests.rs:290`) to `oxfunc_core::value::Shared::new`;
+  OxFunc `oxf-xvt5.10` then made `send-values` a default feature of
+  `oxfunc_value_types` and `oxfunc_core`, so `Shared<T>` is `Arc<T>` and
+  `OpaqueCallable: Send + Sync` for every default-features build, `CalcValue:
+  Send + Sync` is proven at compile time by `send_values_audit`, and
+  `../OxFml` `cargo check --offline --all-targets` Finished against the new
+  default. The `Rc` arm stays reachable through `--no-default-features` for
+  one release; its retirement condition (which includes OxFml `fml-kt8.17`,
+  the post-flip audit default) is recorded in the handoff's "Default flip"
+  section. No further ask of OxFml from this handoff.

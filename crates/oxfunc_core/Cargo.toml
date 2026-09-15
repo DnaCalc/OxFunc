@@ -13,10 +13,13 @@ path = "src/lib.rs"
 # Ext80 extended-precision temporary type (excel_numeric::research) to the
 # calculation-graph search tooling. Never enabled by production consumers.
 research-x87 = []
-# W110-2 (oxf-xvt5.2): pass-through of `oxfunc_value_types/send-values` —
-# `CalcValue: Send + Sync` via `Arc` payloads and `OpaqueCallable: Send + Sync`.
-# Off by default; see docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md
-# for what has to change downstream before it can default on.
+# W110-2 (oxf-xvt5.2, default flipped on in oxf-xvt5.10): pass-through of
+# `oxfunc_value_types/send-values` — `CalcValue: Send + Sync` via `Arc`
+# payloads and `OpaqueCallable: Send + Sync`. On by default since 2026-09-15;
+# `--no-default-features` selects the `Rc` arm, kept for one release only (see
+# docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md, "Default flip", for
+# the retirement condition). `research-x87` stays opt-in.
+default = ["send-values"]
 send-values = ["oxfunc_value_types/send-values"]
 
 [dependencies]

@@ -3,19 +3,24 @@ use std::any::Any;
 /// The reference-counted pointer the value model uses for its shared payloads:
 /// [`CalcValue::rich`] and [`CallableValue::handle`].
 ///
-/// `Rc` by default. With the `send-values` cargo feature it is `Arc`, and
-/// [`OpaqueCallable`] gains `Send + Sync` supertraits, so that `CalcValue`
-/// (and every value type that carries one) is `Send + Sync` — the property a
-/// parallel recalculation strategy needs before it can move a value table
-/// across threads. The module `send_values_audit` (present only with the
-/// feature) carries the compile-time proof.
+/// `Arc` under the `send-values` cargo feature, which is on by default (since
+/// oxf-xvt5.10, 2026-09-15); with it [`OpaqueCallable`] carries `Send + Sync`
+/// supertraits, so that `CalcValue` (and every value type that carries one) is
+/// `Send + Sync` — the property a parallel recalculation strategy needs before
+/// it can move a value table across threads. The module `send_values_audit`
+/// (present only with the feature) carries the compile-time proof.
+///
+/// `--no-default-features` selects the `Rc` arm. That arm is kept for one
+/// release only, so a consumer that still needs a thread-bound value model
+/// has a named opt-out while it migrates; its retirement condition is recorded
+/// in `docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md`.
 ///
 /// Construct through `Shared::new(...)` and compare identity through
 /// `Shared::ptr_eq(...)`; never name `Rc`/`Arc` directly when building a
 /// `CallableValue`, so the same source compiles in both feature states.
 #[cfg(feature = "send-values")]
 pub type Shared<T> = std::sync::Arc<T>;
-/// See the `send-values` variant of this alias.
+/// See the `send-values` variant of this alias; this is the opt-out `Rc` arm.
 #[cfg(not(feature = "send-values"))]
 pub type Shared<T> = std::rc::Rc<T>;
 
@@ -734,16 +739,18 @@ impl CallableArityShape {
 /// The opaque host-side identity behind a [`CallableValue`]. The value model
 /// never inspects it; consumers downcast through `as_any`.
 ///
-/// With the `send-values` feature the trait requires `Send + Sync`, so an
-/// implementer may not capture `Rc`, `RefCell`, or other thread-bound
-/// evaluation state — a callable value carries a token or a portable binding,
-/// and the evaluator that owns the live closure state resolves it.
+/// With the `send-values` feature (the default) the trait requires
+/// `Send + Sync`, so an implementer may not capture `Rc`, `RefCell`, or other
+/// thread-bound evaluation state — a callable value carries a token or a
+/// portable binding, and the evaluator that owns the live closure state
+/// resolves it.
 #[cfg(feature = "send-values")]
 pub trait OpaqueCallable: std::fmt::Debug + Send + Sync + 'static {
     fn as_any(&self) -> &dyn Any;
 }
 
-/// See the `send-values` variant of this trait.
+/// See the `send-values` variant of this trait; this is the opt-out `Rc` arm
+/// (`--no-default-features`).
 #[cfg(not(feature = "send-values"))]
 pub trait OpaqueCallable: std::fmt::Debug + 'static {
     fn as_any(&self) -> &dyn Any;
@@ -1156,13 +1163,13 @@ mod wire_schema_tests {
     }
 }
 
-/// Compile-time proof of what the `send-values` feature buys: every value type
-/// that can carry a [`Shared`] payload is `Send + Sync`. Each `const _` below
-/// fails to compile — in every crate that builds this one with the feature on —
-/// if the value model grows an `Rc`, a `RefCell`, or another thread-bound
-/// member. Without the feature the same bound is false (`Rc` is `!Send`), which
-/// is why this module does not exist in that state rather than asserting a
-/// weaker claim.
+/// Compile-time proof of what the `send-values` feature (the default) buys:
+/// every value type that can carry a [`Shared`] payload is `Send + Sync`. Each
+/// `const _` below fails to compile — in every crate that builds this one with
+/// the feature on — if the value model grows an `Rc`, a `RefCell`, or another
+/// thread-bound member. Under `--no-default-features` the same bound is false
+/// (`Rc` is `!Send`), which is why this module does not exist in that state
+/// rather than asserting a weaker claim.
 #[cfg(feature = "send-values")]
 pub mod send_values_audit {
     use super::{

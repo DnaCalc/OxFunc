@@ -9,10 +9,13 @@ name = "oxfunc_value_types"
 path = "src/lib.rs"
 
 [features]
-# W110-2 (oxf-xvt5.2): share `CalcValue` payloads through `Arc` instead of
-# `Rc` and add `Send + Sync` supertraits to `OpaqueCallable`, so that
-# `CalcValue: Send + Sync`. Off by default until every downstream
-# `CallableValue` construction site builds its handle through
-# `oxfunc_value_types::Shared::new` instead of `Rc::new` — see
-# docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md for the exact sites.
+# W110-2 (oxf-xvt5.2, default flipped on in oxf-xvt5.10): share `CalcValue`
+# payloads through `Arc` instead of `Rc` and add `Send + Sync` supertraits to
+# `OpaqueCallable`, so that `CalcValue: Send + Sync`. On by default since
+# 2026-09-15, after every downstream `CallableValue` construction site moved to
+# `oxfunc_value_types::Shared::new` (HO-FN-020, OxFml commit 1f19bf7). The
+# `Rc` arm behind `--no-default-features` is kept for one release only; its
+# retirement condition is named in docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md
+# (section "Default flip") and tracked by the retirement bead oxf-xvt5.12.
+default = ["send-values"]
 send-values = []

@@ -99,7 +99,39 @@ not treat metadata reservations as runtime execution claims.
 | generic rich producer protocol beyond `IMAGE` / `_webimage` | successor work, with proposed workset/lane | Successor lane: `W050-RICH-GENERIC-PRODUCER-PROTOCOL`; current code claims only `IMAGE` / `_webimage` |
 | sparse range reader admission and replay semantics | successor work, with proposed workset/lane | Successor lane: `W050-SPARSE-RANGE-READER-ADMISSION-REPLAY`; blocked until OxFunc defines sparse reader API, runtime boundary, and replay-visible fields |
 
-## 5. Status
+## 5. W110-2 `send-values` default flip (HO-FN-020, 2026-09-15)
+
+Outbound note from OxFunc bead `oxf-xvt5.10`; the full record is
+`docs/handoffs/HANDOFF_OXFML_opaque_callable_send_sync.md` ("Default flip").
+
+1. `oxfunc_value_types` and `oxfunc_core` now declare
+   `default = ["send-values"]`. For every default-features build,
+   `oxfunc_core::value::Shared<T>` is `Arc<T>`, `OpaqueCallable: Send + Sync`,
+   and `oxfunc_value_types::send_values_audit` proves `CalcValue`, `CoreValue`,
+   `CalcArray`, `ReferenceLike`, `RichValue`, `RichObjectValue`,
+   `PresentationValue`, `ErrorMetadataValue` and `CallableValue` are
+   `Send + Sync` at compile time. OxCalc did not have to change anything for
+   this: its only `Rc` is the engine-internal `TreecalcInvocationHostSlot`.
+2. The four lines `assert_send::<GridCalcRefWorkbook>()`,
+   `assert_send::<GridCalcRefSheet>()`, `assert_send::<GridOptimizedValuation>()`
+   and `assert_send::<oxfunc_core::value::CalcValue>()` in
+   `src/oxcalc-core/src/grid/machine.rs` `concurrency_prep_send_audit`
+   (`#[cfg(test)]`) compile now — verified 2026-09-15 on a scratch copy of
+   `oxcalc-core` with the feature on, which the default flip makes the ordinary
+   build; a control `assert_send::<std::rc::Rc<u8>>()` in the same module
+   fails with E0277 as the only error. The audit's "recorded upstream blocker"
+   paragraph, which names `Option<Rc<RichValue>>` and `Rc<dyn OpaqueCallable>`,
+   is stale as of this flip.
+3. The `clippy::arc_with_non_send_sync` allowance in `OxCalc/Cargo.toml`
+   ("until the W053 Rc->Arc value-model migration") is removable at the same
+   time.
+4. The `Rc` arm stays reachable through `--no-default-features` for one
+   release. Item 2 landing in OxCalc is one of the three retirement conditions
+   named in the handoff; until then OxFunc keeps the seam.
+5. Arc clone cost on the evaluation hot path is not measured and no claim is
+   made about it.
+
+## 6. Status
 
 - execution_state: in_progress
 - scope_completeness: scope_partial
