@@ -7,6 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::aggregate_common::and_argument_truth;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
+use crate::value::CoreValue;
 use crate::value::WorksheetErrorCode;
 
 pub const OR_META: FunctionMeta = function_spec! {
@@ -45,15 +46,38 @@ pub fn eval_or_surface(
         });
     }
 
+    // Excel evaluates every argument of OR; it does not short-circuit on the first TRUE. An
+    // error value anywhere among the arguments surfaces, and when several arguments are errors
+    // the FIRST one in argument order wins — a positional rule, not an error-code ranking
+    // (live Excel 16.0 build 20326, COM probe 2026-09-15, bead `oxf-xvt5.14`: `=OR(TRUE,1/0)`
+    // -> `#DIV/0!`, `=OR(TRUE,NA())` -> `#N/A`, `=OR(1/0,NA())` -> `#DIV/0!`, `=OR(NA(),1/0)`
+    // -> `#N/A`, `=OR(TRUE,NA(),1/0)` -> `#N/A`, `=OR({TRUE,#N/A,#DIV/0!})` -> `#N/A`, and the
+    // same for `#NUM!`/`#VALUE!`/`#REF!` pairs in both orders). So once an item has decided
+    // the result the scan continues, looking only for error VALUES in the remaining items — not
+    // for direct-text coercion failures: Excel ignores non-`"TRUE"`/`"FALSE"` direct text in
+    // these folds altogether (`=OR(TRUE,"x")` -> `TRUE`, `=OR(FALSE,"x")` -> `FALSE`), a
+    // pre-existing gap `and_argument_truth` still carries for the items before the decision
+    // (catalog G1-02, bead `oxf-xvt5.15`); this loop neither widens nor narrows it.
     let mut saw_value = false;
+    let mut decided = false;
     for arg in args {
         for item in expand_aggregate_arg(arg, resolver).map_err(OrEvalError::Coercion)? {
+            if decided {
+                if let CoreValue::Error(code) = item.0.core() {
+                    return Err(OrEvalError::Coercion(CoercionError::WorksheetError(*code)));
+                }
+                continue;
+            }
             match and_argument_truth(&item).map_err(OrEvalError::Coercion)? {
-                Some(true) => return Ok(CalcValue::logical(true)),
+                Some(true) => decided = true,
                 Some(false) => saw_value = true,
                 None => {}
             }
         }
+    }
+
+    if decided {
+        return Ok(CalcValue::logical(true));
     }
 
     if !saw_value {
@@ -165,5 +189,94 @@ mod tests {
             },
         );
         assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Value)));
+    }
+
+    /// `=OR(TRUE,1/0)` -> `#DIV/0!` (live Excel 16.0 build 20326, `oxf-xvt5.14`): OR evaluates every
+    /// argument, so an error AFTER the deciding TRUE still surfaces.
+    #[test]
+    fn eval_or_surfaces_an_error_after_the_deciding_true() {
+        let got = eval_or_surface(
+            &[
+                CalcValue::logical(true),
+                CalcValue::error(WorksheetErrorCode::Div0),
+            ],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Err(OrEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::Div0
+            )))
+        );
+    }
+
+    /// `=OR(TRUE,NA(),1/0)` -> `#N/A` and `=OR(TRUE,1/0,NA())` -> `#DIV/0!`: with several error
+    /// arguments the first in argument order wins, even after the deciding value.
+    #[test]
+    fn eval_or_first_error_in_argument_order_wins_after_the_deciding_true() {
+        for (second, third, expected) in [
+            (
+                WorksheetErrorCode::NA,
+                WorksheetErrorCode::Div0,
+                WorksheetErrorCode::NA,
+            ),
+            (
+                WorksheetErrorCode::Div0,
+                WorksheetErrorCode::NA,
+                WorksheetErrorCode::Div0,
+            ),
+        ] {
+            let got = eval_or_surface(
+                &[
+                    CalcValue::logical(true),
+                    CalcValue::error(second),
+                    CalcValue::error(third),
+                ],
+                &MockResolver { resolved: None },
+            );
+            assert_eq!(
+                got,
+                Err(OrEvalError::Coercion(CoercionError::WorksheetError(
+                    expected
+                )))
+            );
+        }
+    }
+
+    /// `=OR({TRUE,#N/A,#DIV/0!})` -> `#N/A`: the same in-order rule inside a single array argument.
+    #[test]
+    fn eval_or_scans_an_array_argument_past_the_deciding_true_for_errors() {
+        let got = eval_or_surface(
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(true),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::error(WorksheetErrorCode::Div0),
+                ]])
+                .unwrap(),
+            )],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Err(OrEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::NA
+            )))
+        );
+    }
+
+    /// `=OR(TRUE,FALSE,0)` is still TRUE: continuing the scan past the deciding value changes
+    /// nothing when no later argument is an error.
+    #[test]
+    fn eval_or_still_returns_true_when_later_arguments_are_not_errors() {
+        let got = eval_or_surface(
+            &[
+                CalcValue::logical(true),
+                CalcValue::logical(false),
+                CalcValue::number(0.0),
+            ],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 }

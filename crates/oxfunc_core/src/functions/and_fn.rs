@@ -7,6 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::aggregate_common::and_argument_truth;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
+use crate::value::CoreValue;
 use crate::value::WorksheetErrorCode;
 
 pub const AND_META: FunctionMeta = function_spec! {
@@ -45,15 +46,38 @@ pub fn eval_and_surface(
         });
     }
 
+    // Excel evaluates every argument of AND; it does not short-circuit on the first FALSE. An
+    // error value anywhere among the arguments surfaces, and when several arguments are errors
+    // the FIRST one in argument order wins — a positional rule, not an error-code ranking
+    // (live Excel 16.0 build 20326, COM probe 2026-09-15, bead `oxf-xvt5.14`: `=AND(FALSE,1/0)`
+    // -> `#DIV/0!`, `=AND(1/0,NA())` -> `#DIV/0!`, `=AND(NA(),1/0)` -> `#N/A`,
+    // `=AND(FALSE,NA(),1/0)` -> `#N/A`, `=AND({FALSE,#N/A,#DIV/0!})` -> `#N/A`, and the same
+    // for `#NUM!`/`#VALUE!`/`#REF!` pairs in both orders). So once an item has decided the
+    // result the scan continues, looking only for error VALUES in the remaining items — not
+    // for direct-text coercion failures: Excel ignores non-`"TRUE"`/`"FALSE"` direct text in
+    // these folds altogether (`=AND(FALSE,"x")` -> `FALSE`, `=AND(TRUE,"x")` -> `TRUE`), a
+    // pre-existing gap `and_argument_truth` still carries for the items before the decision
+    // (catalog G1-02, bead `oxf-xvt5.15`); this loop neither widens nor narrows it.
     let mut saw_value = false;
+    let mut decided = false;
     for arg in args {
         for item in expand_aggregate_arg(arg, resolver).map_err(AndEvalError::Coercion)? {
+            if decided {
+                if let CoreValue::Error(code) = item.0.core() {
+                    return Err(AndEvalError::Coercion(CoercionError::WorksheetError(*code)));
+                }
+                continue;
+            }
             match and_argument_truth(&item).map_err(AndEvalError::Coercion)? {
-                Some(false) => return Ok(CalcValue::logical(false)),
+                Some(false) => decided = true,
                 Some(true) => saw_value = true,
                 None => {}
             }
         }
+    }
+
+    if decided {
+        return Ok(CalcValue::logical(false));
     }
 
     if !saw_value {
@@ -219,6 +243,96 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
+            ],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(got, Ok(CalcValue::logical(false)));
+    }
+
+    /// `=AND(FALSE,1/0)` -> `#DIV/0!` (live Excel 16.0 build 20326, `oxf-xvt5.14`): AND evaluates
+    /// every argument, so an error AFTER the deciding FALSE still surfaces.
+    #[test]
+    fn eval_and_surfaces_an_error_after_the_deciding_false() {
+        let got = eval_and_surface(
+            &[
+                CalcValue::logical(false),
+                CalcValue::error(WorksheetErrorCode::Div0),
+            ],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Err(AndEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::Div0
+            )))
+        );
+    }
+
+    /// `=AND(FALSE,NA(),1/0)` -> `#N/A` and `=AND(FALSE,1/0,NA())` -> `#DIV/0!`: with several error
+    /// arguments the first in argument order wins, even after the deciding value.
+    #[test]
+    fn eval_and_first_error_in_argument_order_wins_after_the_deciding_false() {
+        for (second, third, expected) in [
+            (
+                WorksheetErrorCode::NA,
+                WorksheetErrorCode::Div0,
+                WorksheetErrorCode::NA,
+            ),
+            (
+                WorksheetErrorCode::Div0,
+                WorksheetErrorCode::NA,
+                WorksheetErrorCode::Div0,
+            ),
+        ] {
+            let got = eval_and_surface(
+                &[
+                    CalcValue::logical(false),
+                    CalcValue::error(second),
+                    CalcValue::error(third),
+                ],
+                &MockResolver { resolved: None },
+            );
+            assert_eq!(
+                got,
+                Err(AndEvalError::Coercion(CoercionError::WorksheetError(
+                    expected
+                )))
+            );
+        }
+    }
+
+    /// `=AND({FALSE,#N/A,#DIV/0!})` -> `#N/A`: the same in-order rule inside a single array
+    /// argument.
+    #[test]
+    fn eval_and_scans_an_array_argument_past_the_deciding_false_for_errors() {
+        let got = eval_and_surface(
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(false),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::error(WorksheetErrorCode::Div0),
+                ]])
+                .unwrap(),
+            )],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Err(AndEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::NA
+            )))
+        );
+    }
+
+    /// `=AND(FALSE,TRUE,1)` is still FALSE: continuing the scan past the deciding value changes
+    /// nothing when no later argument is an error.
+    #[test]
+    fn eval_and_still_returns_false_when_later_arguments_are_not_errors() {
+        let got = eval_and_surface(
+            &[
+                CalcValue::logical(false),
+                CalcValue::logical(true),
+                CalcValue::number(1.0),
             ],
             &MockResolver { resolved: None },
         );

@@ -1,7 +1,22 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-15` (W110-4 argument-laziness axis, `oxf-xvt5.13`:
+Last reconciled: `2026-09-15` (W110 `oxf-xvt5.14`, G1-01 closed: the `OR`/`AND`
+kernels now scan every argument, so `=OR(TRUE,1/0)` / `=AND(FALSE,1/0)` /
+`=OR(TRUE,NA())` publish `#DIV/0!` / `#DIV/0!` / `#N/A` through real dispatch,
+and a fresh live COM probe (Excel 16.0 build 20326, 111 rows, script
+`tools/w110-probe/run-w110-and-or-error-precedence-probe.ps1`) settled the
+multi-error rule: the FIRST error in argument order wins, not an error-code
+ranking (`=OR(1/0,NA())` -> `#DIV/0!`, `=OR(NA(),1/0)` -> `#N/A`, every
+`#NUM!`/`#VALUE!`/`#REF!` pairing likewise in both orders, arrays and ranges
+included). Lean `evalAndPrepared` aligned and an `evalOrPrepared` model
+added. Open count 17 -> 16. The same probe found a SEPARATE pre-existing gap:
+Excel coerces only `"TRUE"`/`"FALSE"` direct text (case-insensitively) and
+IGNORES any other direct text in `AND`/`OR`/`XOR` (`=OR(FALSE,"x")` -> `FALSE`,
+`=OR("x",TRUE)` -> `TRUE`, `=OR(FALSE,"1")` -> `FALSE`) where OxFunc raises
+`#VALUE!` for every direct text. New G1-02 row, `M1 tested`, filed as
+`oxf-xvt5.15`. Open count 16 -> 17.)
+Previous reconcile: `2026-09-15` (W110-4 argument-laziness axis, `oxf-xvt5.13`:
 while declaring `AND`/`OR`/`XOR` eager, a live COM probe (Excel 16.0 build
 20326) showed `=OR(TRUE,1/0)` and `=AND(FALSE,1/0)` publish `#DIV/0!` in Excel
 while OxFunc's `OR`/`AND` kernels return on the first deciding value and
@@ -230,7 +245,7 @@ accumulation, table-constant, and solver-schedule alternatives for future search
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G1-01 — AND, OR | **2026-09-15:** an error in a LATER argument is dropped once an earlier argument decides the result: `FUNC.OR(TRUE, #DIV/0!)` publishes `TRUE`, `FUNC.AND(FALSE, #DIV/0!)` publishes `FALSE`; Excel evaluates every argument and publishes the error (`=OR(TRUE,1/0)`, `=AND(FALSE,1/0)`, `=OR(TRUE,NA())` -> `#DIV/0!`/`#DIV/0!`/`#N/A`). Cause: `eval_or_surface` / `eval_and_surface` (`functions/or_fn.rs`, `and_fn.rs`) `return` on the first TRUE / first FALSE before the remaining arguments are scanned. Error-FIRST positions are right for all three folds, and `XOR` (which must fold every argument) is right in both positions. Fix owner: bead `oxf-xvt5.14` (scan every remaining argument for errors; probe Excel's precedence when several arguments are errors before choosing a rule; check the Lean `AndFn`/`OrFn` models). | STR | M1 tested | Live Excel 16.0 build 20326 COM probe 2026-09-15, rows retained locally in `.tmp/w110-argument-laziness-probe-results.csv` (script shape: `tools/w24-probe/run-w24-batch01-switch-baseline.ps1`); OxFunc values observed through `eval_surface_value_call` in the `oxf-xvt5.13` session; the error-first half and the `XOR` later-argument row are pinned green in `functions::argument_laziness_golden`. |
+| G1-02 — AND, OR, XOR | **2026-09-15:** a DIRECT text argument raises `#VALUE!` in OxFunc whatever it spells (`and_argument_truth`: `CoreValue::Text` with `AggregateArgOrigin::DirectScalar` -> `Err(NonNumericText)`), where Excel coerces only the logical spellings `"TRUE"`/`"FALSE"` (case-insensitively: `=OR(FALSE,"true")` -> `TRUE`, `=AND(TRUE,"FALSE")` -> `FALSE`) and IGNORES any other direct text, numeric text included: `=OR(FALSE,"x")` -> `FALSE`, `=OR("x",TRUE)` -> `TRUE`, `=AND(TRUE,"x")` -> `TRUE`, `=XOR(TRUE,"x")` -> `TRUE`, `=OR(FALSE,"1")` -> `FALSE`, `=AND(TRUE,"0")` -> `TRUE`, `=OR(FALSE,"1.5")` / `" 1 "` / `"1e0"` / `"$1"` / `""` -> `FALSE`, `=OR("x",1/0)` -> `#DIV/0!`. `#VALUE!` only when no logical/number is seen at all (`=OR("x")`, `=OR("1")`, `=OR("x","1")`, `=OR("")`), which is why the single-text rows agree today. OxFunc through `eval_surface_value_call`: `FUNC.OR(FALSE, "x")` -> `#VALUE!`, `FUNC.OR("TRUE")` -> `#VALUE!`, `FUNC.OR(FALSE, "1")` -> `#VALUE!`, `FUNC.XOR(TRUE, "x")` -> `#VALUE!`, `FUNC.OR("x", #DIV/0!)` -> `#VALUE!`. The `oxf-xvt5.14` fold fix neither widened nor narrowed this (`=OR(TRUE,"x")` -> `TRUE` and `=AND(FALSE,"x")` -> `FALSE` stay right). Fix owner: bead `oxf-xvt5.15`. | STR | M1 tested | Live Excel 16.0 build 20326 COM probe 2026-09-15, 60 direct-text rows of the 111 retained locally in `.tmp/w110-and-or-error-precedence-probe-results.csv` (script `tools/w110-probe/run-w110-and-or-error-precedence-probe.ps1`, groups `direct-text-*`); OxFunc values observed through `eval_surface_value_call` in the `oxf-xvt5.14` session. |
 
 ## G2 — Structural Kind, Shape, And Admission
 

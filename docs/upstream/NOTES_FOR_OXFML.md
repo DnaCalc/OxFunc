@@ -471,3 +471,8 @@ current-state triage note; it is not a request for immediate action unless noted
   surface names, then acknowledge. Side finding for OxFml's awareness only: OxFunc's
   `OR`/`AND` kernels drop a later argument's error (`oxf-xvt5.14`, catalog G1-01) — Excel
   16.0 build 20326 publishes `#DIV/0!` for `=OR(TRUE,1/0)`; nothing for OxFml to change.
+  Resolution 2026-09-15 (`oxf-xvt5.14`): both kernels now scan every argument, and a
+  fresh live probe settled the multi-error rule — the FIRST error in argument order wins
+  (`=OR(1/0,NA())` -> `#DIV/0!`, `=OR(NA(),1/0)` -> `#N/A`), so an evaluator that hands
+  OxFunc every evaluated argument in call order gets Excel's error; still nothing for
+  OxFml to change.
