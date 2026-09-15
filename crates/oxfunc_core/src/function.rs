@@ -282,6 +282,93 @@ impl PrecisionRoundingProfile {
     }
 }
 
+/// Whether — and in which shape — Excel evaluates a function's arguments ON DEMAND rather than
+/// all of them before the function runs: the argument-laziness behavioural axis (ODR-FN-004
+/// Layer 2, widened under W110 oxf-xvt5.13 on OxFml's `HANDOFF-OXFUNC-007`). A CLOSED
+/// `Copy`/`Eq` enum carried on [`FunctionMeta`] and read by the evaluator through the dispatch
+/// target ([`crate::function_call::FunctionCallTarget::argument_laziness_profile`]) and by the
+/// registry projection, so the set of lazy functions is declared ONCE here and never restated
+/// as a name-keyed list in an evaluator (the interim `CompiledFunctionSpecialForm` list in OxFml
+/// that this axis replaces).
+///
+/// WHAT IS DECLARED HERE, AND WHAT IS NOT: this axis declares the *evaluation shape* — which
+/// argument is the discriminator and which arguments are evaluated only when selected. The
+/// *decision* (which branch is taken, which errors `IFERROR`/`IFNA` catch, how `SWITCH`
+/// compares) stays with the function's own dispatch target; an evaluator probes it through
+/// ordinary dispatch. `LET`, `LAMBDA` and `_XLFN.SINGLE` are NOT functions on this axis: they
+/// are formula-language forms (binding scopes / implicit intersection) owned by OxFml, carry no
+/// `FunctionMeta` in the catalog, and are out of scope by the handoff's own terms.
+///
+/// GROWTH DISCIPLINE (same shape as [`ArgPreparationProfile`] / [`LiftBroadcastProfile`] /
+/// [`ErrorCollapseProfile`] / [`PrecisionRoundingProfile`]): a [`FunctionMeta`] field with a
+/// `DEFAULT_*` associated const for the value the overwhelming majority carry, variants that
+/// name a real observed Excel behaviour, no free data on the meta, [`FunctionMeta`] stays
+/// `Copy`/`Eq`. A variant is added only for a laziness shape some real function exhibits.
+///
+/// RECONCILIATION (why this is a distinct field, not derived from
+/// [`ErrorCollapseProfile::SelectorBranch`]): the six branch-selector functions are exactly the
+/// lazy functions today, so the two axes agree on WHICH functions — and a registry consistency
+/// test pins that agreement — but they name different facts (error-collapse algebra vs.
+/// evaluation order) and the laziness axis additionally names the per-function SHAPE, which the
+/// evaluator needs to know which argument positions to hold back. Deriving one from the other
+/// would silently couple two rules that can legitimately diverge for a future function.
+///
+/// DELIBERATE DIFFERENCE FROM THE HANDOFF'S SKETCH: the handoff proposed
+/// `MatchedCase { has_trailing_default: bool }`. Whether a `SWITCH` call carries a trailing
+/// default is a property of the CALL's argument count (`SWITCH(expr, v1, r1, …, [default])`:
+/// a default is present iff the count after `expr` is odd), not of the function, so a static
+/// per-function declaration cannot carry it. The variant is therefore payload-free; the
+/// per-call arity rule lives with the `SWITCH` surface and the evaluator, as it does today.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArgumentLazinessProfile {
+    /// The majority shape: every argument is evaluated before the function runs. This includes
+    /// `AND` / `OR` / `XOR`, which Excel does NOT short-circuit — an error in any argument
+    /// surfaces even when an earlier argument already decides the result.
+    Eager,
+    /// `IF`-shaped: argument 0 (`logical_test`) decides; then exactly one of the remaining
+    /// branches (`value_if_true` / `value_if_false`) is evaluated.
+    BranchOnCondition,
+    /// `IFS`-shaped: `(logical_test, value_if_true)` pairs are taken left to right; each
+    /// condition is evaluated until the first TRUE one, whose paired value is the only value
+    /// argument evaluated.
+    ConditionValuePairs,
+    /// `CHOOSE`-shaped: argument 0 (`index_num`) is a 1-based index into the remaining
+    /// arguments; only the selected `value` argument is evaluated.
+    IndexedChoice,
+    /// `SWITCH`-shaped: argument 0 (`expression`) is compared against the `value` arguments at
+    /// odd positions left to right; the `result` after the first equal `value` — or the
+    /// trailing `default`, when the call supplies one and nothing matched — is the only result
+    /// argument evaluated.
+    MatchedCase,
+    /// `IFERROR` / `IFNA`-shaped: argument 0 (`value`) is always evaluated; argument 1
+    /// (`value_if_error` / `value_if_na`) only when argument 0 is an error the function
+    /// catches (which errors are caught is the function's own semantics, not this axis's).
+    FallbackOnError,
+}
+
+impl ArgumentLazinessProfile {
+    /// Whether this profile holds any argument back from evaluation — the SINGLE accessor an
+    /// evaluator reads to decide whether a call needs a lazy evaluation path at all, so no
+    /// second site can decide a function's laziness by name.
+    pub const fn is_lazy(self) -> bool {
+        !matches!(self, Self::Eager)
+    }
+
+    /// The argument position an evaluator must evaluate FIRST because it selects what else is
+    /// evaluated (the discriminator), or `None` for an eager function. Every lazy shape Excel
+    /// has today discriminates on argument 0.
+    pub const fn discriminator_index(self) -> Option<usize> {
+        match self {
+            Self::Eager => None,
+            Self::BranchOnCondition
+            | Self::ConditionValuePairs
+            | Self::IndexedChoice
+            | Self::MatchedCase
+            | Self::FallbackOnError => Some(0),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum KernelSignatureClass {
     NullaryConst,
@@ -365,6 +452,15 @@ pub struct FunctionMeta {
     /// [`FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE`]; only a genuine separable precision
     /// deviation (today: `POWER`/`^` integer-exponent publication) names a non-default variant.
     pub precision_rounding_profile: PrecisionRoundingProfile,
+    /// Whether, and in which shape, Excel evaluates this function's arguments on demand rather
+    /// than all before the call (see [`ArgumentLazinessProfile`]). The SINGLE declared source an
+    /// evaluator reads — through the dispatch target — to know which functions hold arguments
+    /// back and which position discriminates, so the lazy set is never a name-keyed list in an
+    /// evaluator. Functions Excel evaluates eagerly (the overwhelming majority, including
+    /// `AND`/`OR`/`XOR`) carry [`FunctionMeta::DEFAULT_ARGUMENT_LAZINESS_PROFILE`]; only the six
+    /// branch selectors (`IF`, `IFS`, `CHOOSE`, `SWITCH`, `IFERROR`, `IFNA`) name a non-default
+    /// variant.
+    pub argument_laziness_profile: ArgumentLazinessProfile,
 }
 
 impl FunctionMeta {
@@ -425,8 +521,18 @@ impl FunctionMeta {
     pub const DEFAULT_PRECISION_ROUNDING_PROFILE: PrecisionRoundingProfile =
         PrecisionRoundingProfile::Default;
 
+    /// Eager argument evaluation: every argument is evaluated before the function runs. This is
+    /// the value the overwhelming majority of functions carry (including `AND`/`OR`/`XOR`, which
+    /// Excel does not short-circuit); only the six branch selectors (`IF`, `IFS`, `CHOOSE`,
+    /// `SWITCH`, `IFERROR`, `IFNA`) override it with a non-default [`ArgumentLazinessProfile`].
+    /// Referenced by name (rather than spelled `ArgumentLazinessProfile::Eager`) so a default
+    /// literal needs no extra import beyond `FunctionMeta` itself — the same growth-discipline
+    /// shape as the `DEFAULT_*` consts above.
+    pub const DEFAULT_ARGUMENT_LAZINESS_PROFILE: ArgumentLazinessProfile =
+        ArgumentLazinessProfile::Eager;
+
     /// The default-fill base the [`function_spec!`] macro draws every *omitted* DEFAULTABLE axis
-    /// from. Each of the five defaultable axes is set to its `DEFAULT_*` here; the ten intrinsic
+    /// from. Each of the six defaultable axes is set to its `DEFAULT_*` here; the ten intrinsic
     /// per-function fields carry placeholder values that the macro caller ALWAYS shadows (every
     /// `function_spec!` invocation states all ten intrinsic fields by name, so the placeholders
     /// are never observed in a generated meta — they exist only so this is a complete, valid
@@ -456,6 +562,7 @@ impl FunctionMeta {
         real_result_policy: Self::DEFAULT_REAL_RESULT_POLICY,
         error_collapse_profile: Self::DEFAULT_ERROR_COLLAPSE_PROFILE,
         precision_rounding_profile: Self::DEFAULT_PRECISION_ROUNDING_PROFILE,
+        argument_laziness_profile: Self::DEFAULT_ARGUMENT_LAZINESS_PROFILE,
     };
 }
 
@@ -465,9 +572,10 @@ impl FunctionMeta {
 /// Usage — state the ten intrinsic per-function fields (which have no single default:
 /// `function_id`, `arity`, `determinism`, `volatility`, `host_interaction`, `thread_safety`,
 /// `coercion_lift_profile`, `kernel_signature_class`, `fec_dependency_profile`,
-/// `surface_fec_dependency_profile`) and, optionally, any of the five DEFAULTABLE axes that
+/// `surface_fec_dependency_profile`) and, optionally, any of the six DEFAULTABLE axes that
 /// deviate from the default (`arg_preparation_profile`, `lift_broadcast_profile`,
-/// `real_result_policy`, `error_collapse_profile`, `precision_rounding_profile`). Fields may be
+/// `real_result_policy`, `error_collapse_profile`, `precision_rounding_profile`,
+/// `argument_laziness_profile`). Fields may be
 /// written in any order; any defaultable axis NOT named is filled from
 /// [`FunctionMeta::DEFAULTS_BASE`]:
 ///
@@ -484,7 +592,8 @@ impl FunctionMeta {
 ///     fec_dependency_profile: FecDependencyProfile::None,
 ///     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 ///     // arg_preparation_profile / lift_broadcast_profile / real_result_policy /
-///     // error_collapse_profile / precision_rounding_profile all OMITTED → default.
+///     // error_collapse_profile / precision_rounding_profile / argument_laziness_profile
+///     // all OMITTED → default.
 /// };
 /// ```
 ///
@@ -560,6 +669,11 @@ mod function_spec_macro_tests {
             M.precision_rounding_profile,
             FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE
         );
+        assert_eq!(
+            M.argument_laziness_profile,
+            FunctionMeta::DEFAULT_ARGUMENT_LAZINESS_PROFILE
+        );
+        assert_eq!(M.argument_laziness_profile, ArgumentLazinessProfile::Eager);
         // Intrinsic fields come through verbatim — the placeholders in DEFAULTS_BASE are shadowed.
         assert_eq!(M.function_id, "TEST.FUNC");
         assert_eq!(M.arity, Arity::exact(1));

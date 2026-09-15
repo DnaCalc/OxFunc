@@ -1,6 +1,7 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, ArgumentLazinessProfile, Arity, CoercionLiftProfile, DeterminismClass,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::call_register_id_family::RegisteredExternalProvider;
 use crate::functions::callable_helpers::CallableInvoker;
@@ -289,6 +290,15 @@ impl FunctionCallTarget {
 
     pub fn surface_fec_dependency_profile(&self) -> FecDependencyProfile {
         self.meta.surface_fec_dependency_profile
+    }
+
+    /// Whether, and in which shape, Excel evaluates this function's arguments on demand — the
+    /// declared [`ArgumentLazinessProfile`] read off the dispatch target's `FunctionMeta`. This
+    /// is the query an evaluator makes INSTEAD of keeping a name-keyed list of lazy functions
+    /// (W110 oxf-xvt5.13, OxFml `HANDOFF-OXFUNC-007`): resolve the call target, ask it. The
+    /// decision of which branch is taken stays with the function's own dispatch.
+    pub fn argument_laziness_profile(&self) -> ArgumentLazinessProfile {
+        self.meta.argument_laziness_profile
     }
 
     pub fn callable_argument_specs(&self) -> &'static [CallableArgumentSpec] {

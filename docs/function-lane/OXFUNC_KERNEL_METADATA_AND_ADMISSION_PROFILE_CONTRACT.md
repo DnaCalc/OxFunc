@@ -2,7 +2,7 @@
 
 Status: `canonical_contract_seed`
 Owner: OxFunc
-Last updated: 2026-05-23
+Last updated: 2026-09-15
 
 ## 1. Purpose
 
@@ -337,6 +337,8 @@ Newly-exported columns (appended, in this order):
 2. `lift_broadcast_profile`
 3. `precision_rounding_profile`
 4. `real_result_policy`
+5. `argument_laziness_profile` (W110 oxf-xvt5.13, appended after the four
+   above on 2026-09-15; the row is now 19 columns)
 
 Deliberately-chosen projected axes (per ODR-FN-004 "Cross-repo impact" and W105
 Open Lanes item 5: an internal axis becomes an exported field only deliberately
@@ -348,6 +350,25 @@ and additively):
    (today: `POWER`/`^`).
 3. `real_result_policy` — the argument-domain guard plus non-finite publication
    rule, e.g. `real_result_policy.v1;arg_domain_guard=none;non_finite=allow`.
+4. `argument_laziness_profile` — whether, and in which shape, Excel evaluates
+   the function's arguments on demand rather than all before the call
+   (`FunctionMeta::argument_laziness_profile`, `ArgumentLazinessProfile`;
+   W110 oxf-xvt5.13 on OxFml `HANDOFF-OXFUNC-007`). Keys: `eager` (the
+   default, carried by every function that is not a branch selector —
+   including `AND`/`OR`/`XOR`, which Excel does not short-circuit, and every
+   UDF), `branch_on_condition` (`IF`), `condition_value_pairs` (`IFS`),
+   `indexed_choice` (`CHOOSE`), `matched_case` (`SWITCH`), `fallback_on_error`
+   (`IFERROR`, `IFNA`). The axis declares the evaluation SHAPE (which argument
+   discriminates, which arguments are held back); the decision of which branch
+   is taken stays with the function's own dispatch. `LET`, `LAMBDA` and
+   `_XLFN.SINGLE` are OxFml language forms, carry no catalog `FunctionMeta`,
+   and are not on this axis. The same fact is exposed typed, by dispatch
+   target, through `FunctionCallTarget::argument_laziness_profile()` — the
+   query OxFml makes instead of keeping a name-keyed list of lazy functions.
+   Documented-behaviour golden: `functions::argument_laziness_golden`;
+   registry cross-check (every `SelectorBranch` is lazy and vice versa,
+   projection mirrors the meta):
+   `registry::tests::argument_laziness_axis_agrees_with_selector_branch_over_the_catalog`.
 
 Deliberately NOT re-exported (already reflected in existing columns, to avoid a
 second projection of the same fact):
@@ -369,8 +390,12 @@ new sign-off ceremony or pack-validation gate is introduced):
 1. The signal is `RegistryFunctionMeta::function_spec_axes_metadata_version`,
    published through `render_registry_metadata_csv(...)`.
 2. Any change to a projected axis value advances the signal.
-3. The `function_spec_axes_metadata.v1` token versions the projected-axes SET
-   itself: projecting a further axis bumps it to `v2`.
+3. The `function_spec_axes_metadata.v2` token versions the projected-axes SET
+   itself: `v1` carried three axes; `v2` (2026-09-15, W110 oxf-xvt5.13)
+   appended `argument_laziness_profile`; projecting a further axis bumps it to
+   `v3`. Every row's `function_spec_axes_metadata_version` value changed at
+   the `v1` -> `v2` bump (the token and the appended `;argument_laziness_profile=`
+   segment), which is the conservative invalidation the rule below intends.
 4. Until narrower per-axis fingerprints exist, OxFml/OxCalc may conservatively
    invalidate prepared packages that rely on these axes.
 5. `RegistryFunctionMeta` remains the sole curated projection — raw

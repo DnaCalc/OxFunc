@@ -1,7 +1,13 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-14` (W110-1 blank-cell scalar coercion, `BUG-FUNC-049`:
+Last reconciled: `2026-09-15` (W110-4 argument-laziness axis, `oxf-xvt5.13`:
+while declaring `AND`/`OR`/`XOR` eager, a live COM probe (Excel 16.0 build
+20326) showed `=OR(TRUE,1/0)` and `=AND(FALSE,1/0)` publish `#DIV/0!` in Excel
+while OxFunc's `OR`/`AND` kernels return on the first deciding value and
+publish `TRUE`/`FALSE`; `XOR` is right. New G1-01 row, `M1 tested`, filed as
+`oxf-xvt5.14`. Open count 16 -> 17.)
+Previous reconcile: `2026-09-14` (W110-1 blank-cell scalar coercion, `BUG-FUNC-049`:
 a referenced blank cell in any scalar numeric position — the arithmetic
 operators, unary minus/percent, `ABS`, `ROUND`, `NOT`, the blank slot of a
 lifted range — published `#VALUE!` where Excel reads `0`, and `=2/A1`
@@ -183,11 +189,11 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `16`
+Open Category-2 rows: `17`
 
 | Group | Current rows |
 |-------|--------------|
-| G1 error-code/domain guards | 0 |
+| G1 error-code/domain guards | 1 |
 | G2 structural kind/shape/admission | 0 |
 | G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 1 |
@@ -222,7 +228,9 @@ accumulation, table-constant, and solver-schedule alternatives for future search
 
 ## G1 — Error-Code And Argument-Domain Guards
 
-No current open rows.
+| Function(s) | Discrepancy | Sev | Mat | Evidence |
+|-------------|-------------|-----|-----|----------|
+| G1-01 — AND, OR | **2026-09-15:** an error in a LATER argument is dropped once an earlier argument decides the result: `FUNC.OR(TRUE, #DIV/0!)` publishes `TRUE`, `FUNC.AND(FALSE, #DIV/0!)` publishes `FALSE`; Excel evaluates every argument and publishes the error (`=OR(TRUE,1/0)`, `=AND(FALSE,1/0)`, `=OR(TRUE,NA())` -> `#DIV/0!`/`#DIV/0!`/`#N/A`). Cause: `eval_or_surface` / `eval_and_surface` (`functions/or_fn.rs`, `and_fn.rs`) `return` on the first TRUE / first FALSE before the remaining arguments are scanned. Error-FIRST positions are right for all three folds, and `XOR` (which must fold every argument) is right in both positions. Fix owner: bead `oxf-xvt5.14` (scan every remaining argument for errors; probe Excel's precedence when several arguments are errors before choosing a rule; check the Lean `AndFn`/`OrFn` models). | STR | M1 tested | Live Excel 16.0 build 20326 COM probe 2026-09-15, rows retained locally in `.tmp/w110-argument-laziness-probe-results.csv` (script shape: `tools/w24-probe/run-w24-batch01-switch-baseline.ps1`); OxFunc values observed through `eval_surface_value_call` in the `oxf-xvt5.13` session; the error-first half and the `XOR` later-argument row are pinned green in `functions::argument_laziness_golden`. |
 
 ## G2 — Structural Kind, Shape, And Admission
 

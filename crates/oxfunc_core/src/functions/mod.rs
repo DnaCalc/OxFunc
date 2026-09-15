@@ -9,6 +9,8 @@ pub mod aggregate_common;
 pub mod amor_depreciation_family;
 pub mod and_fn;
 pub mod arabic_fn;
+#[cfg(test)]
+mod argument_laziness_golden;
 pub mod array_text_split_family;
 pub mod asin;
 pub mod asinh;

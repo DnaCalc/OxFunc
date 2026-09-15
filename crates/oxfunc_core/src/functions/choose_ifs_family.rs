@@ -1,8 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
-    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
-    ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, ArgumentLazinessProfile, Arity, CoercionLiftProfile, DeterminismClass,
+    ErrorCollapseProfile, FecDependencyProfile, FunctionMeta, HostInteractionClass,
+    KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, prepare_arg_values_only};
 use crate::resolver::ReferenceSystemProvider;
@@ -22,14 +22,18 @@ pub const CHOOSE_META: FunctionMeta = function_spec! {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
+    argument_laziness_profile: ArgumentLazinessProfile::IndexedChoice,
 };
 
 // IFS broadcasts its first condition/value pair plus the second condition (`[0,1,2]`) over an
 // array; CHOOSE lifts natively (default). Verified live Excel 16.0 build 20026.
+// IFS shares CHOOSE's base but NOT its laziness shape: CHOOSE indexes into its values, IFS
+// walks (condition, value) pairs — so the axis is overridden here rather than inherited.
 pub const IFS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IFS",
     arity: Arity { min: 2, max: 254 },
     lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
+    argument_laziness_profile: ArgumentLazinessProfile::ConditionValuePairs,
     ..CHOOSE_META
 };
 

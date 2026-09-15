@@ -1,8 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
-    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
-    ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, ArgumentLazinessProfile, Arity, CoercionLiftProfile, DeterminismClass,
+    ErrorCollapseProfile, FecDependencyProfile, FunctionMeta, HostInteractionClass,
+    KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::ReferenceSystemProvider;
@@ -25,6 +25,7 @@ pub const SWITCH_META: FunctionMeta = function_spec! {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
+    argument_laziness_profile: ArgumentLazinessProfile::MatchedCase,
 };
 
 #[derive(Debug, Clone, PartialEq)]

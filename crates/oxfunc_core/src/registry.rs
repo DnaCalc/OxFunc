@@ -6,10 +6,10 @@ use crate::capability::{
     webimage_producer_capability_set_keys,
 };
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
-    ExcelRealPolicy, FecDependencyProfile, FunctionMeta, HostInteractionClass,
-    KernelSignatureClass, LiftBroadcastProfile, NonFinite, PrecisionRoundingProfile,
-    ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, ArgumentLazinessProfile, Arity, CoercionLiftProfile, DeterminismClass,
+    ErrorCollapseProfile, ExcelRealPolicy, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, LiftBroadcastProfile, NonFinite,
+    PrecisionRoundingProfile, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::excel_numeric::ArgDomainGuard;
 use crate::registry_context_seed::registry_metadata_for_id;
@@ -146,7 +146,13 @@ impl RichValueUsage {
 ///   kernel over (or surface-native), the per-function lift structure;
 /// - `precision_rounding_profile` — Excel's separable publication-time precision quirk
 ///   (today: `POWER`/`^` integer-exponent publication);
-/// - `real_result_policy` — Excel's argument-domain guard + non-finite publication rule.
+/// - `real_result_policy` — Excel's argument-domain guard + non-finite publication rule;
+/// - `argument_laziness_profile` — whether, and in which shape, Excel evaluates the function's
+///   arguments on demand (W110 oxf-xvt5.13, OxFml `HANDOFF-OXFUNC-007`): `eager`, or one of the
+///   six-selector shapes `branch_on_condition` / `condition_value_pairs` / `indexed_choice` /
+///   `matched_case` / `fallback_on_error`. Projected so a registry consumer (a UDF host, an
+///   evaluator that keys on registry entries rather than `FunctionCallTarget`) reads the same
+///   declared fact the dispatch target exposes; a UDF carries the default (`eager`).
 ///
 /// NOT projected here (deliberately, to avoid double-export): `arg_preparation_profile` is already
 /// published via the `arg_admission_profile` column (it is the `ArgAdmissionMetadata` source), and
@@ -158,6 +164,7 @@ pub struct FunctionSpecAxesMetadata {
     pub lift_broadcast_profile: String,
     pub precision_rounding_profile: String,
     pub real_result_policy: String,
+    pub argument_laziness_profile: String,
 }
 
 impl FunctionSpecAxesMetadata {
@@ -171,6 +178,10 @@ impl FunctionSpecAxesMetadata {
             )
             .to_string(),
             real_result_policy: real_result_policy_key(meta.real_result_policy),
+            argument_laziness_profile: argument_laziness_profile_key(
+                meta.argument_laziness_profile,
+            )
+            .to_string(),
         }
     }
 
@@ -187,18 +198,27 @@ impl FunctionSpecAxesMetadata {
             )
             .to_string(),
             real_result_policy: real_result_policy_key(FunctionMeta::DEFAULT_REAL_RESULT_POLICY),
+            argument_laziness_profile: argument_laziness_profile_key(
+                FunctionMeta::DEFAULT_ARGUMENT_LAZINESS_PROFILE,
+            )
+            .to_string(),
         }
     }
 
     /// Version key for the projected `FunctionSpec` axes, in the EXISTING `*_version` /
     /// `version_key()` convention OxFml already consumes (cf. `SemanticKernelMetadata::version_key`
     /// / `ArgAdmissionMetadata::version_key`). Any change to a projected axis value changes the key,
-    /// so a downstream consumer invalidates on it conservatively. The `v1` token is the additive
-    /// version of the projected-axes set itself: projecting a further axis bumps it to `v2`.
+    /// so a downstream consumer invalidates on it conservatively. The `v2` token is the additive
+    /// version of the projected-axes set itself: `v1` carried three axes; `v2` (W110
+    /// oxf-xvt5.13) appended `argument_laziness_profile`; projecting a further axis bumps it
+    /// to `v3`.
     pub fn version_key(&self) -> String {
         format!(
-            "function_spec_axes_metadata.v1;lift_broadcast_profile={};precision_rounding_profile={};real_result_policy={}",
-            self.lift_broadcast_profile, self.precision_rounding_profile, self.real_result_policy,
+            "function_spec_axes_metadata.v2;lift_broadcast_profile={};precision_rounding_profile={};real_result_policy={};argument_laziness_profile={}",
+            self.lift_broadcast_profile,
+            self.precision_rounding_profile,
+            self.real_result_policy,
+            self.argument_laziness_profile,
         )
     }
 }
@@ -312,6 +332,19 @@ fn precision_rounding_profile_key(profile: PrecisionRoundingProfile) -> &'static
     match profile {
         PrecisionRoundingProfile::Default => "default",
         PrecisionRoundingProfile::IntegerExponentPublication => "integer_exponent_publication",
+    }
+}
+
+/// Stable key for the projected `argument_laziness_profile` axis (one key per named Excel
+/// evaluation shape; see `ArgumentLazinessProfile`).
+fn argument_laziness_profile_key(profile: ArgumentLazinessProfile) -> &'static str {
+    match profile {
+        ArgumentLazinessProfile::Eager => "eager",
+        ArgumentLazinessProfile::BranchOnCondition => "branch_on_condition",
+        ArgumentLazinessProfile::ConditionValuePairs => "condition_value_pairs",
+        ArgumentLazinessProfile::IndexedChoice => "indexed_choice",
+        ArgumentLazinessProfile::MatchedCase => "matched_case",
+        ArgumentLazinessProfile::FallbackOnError => "fallback_on_error",
     }
 }
 
@@ -1116,9 +1149,10 @@ pub fn builtin_registry() -> &'static FunctionRegistry {
 pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
     // The leading 14 columns are the FROZEN contract every existing OxFml/OxCalc consumer reads;
     // their order and per-row values are byte-identical and MUST NOT change. The W105
-    // `function_spec_axes` columns are appended ADDITIVELY at the END (oxf-y2uw.11).
+    // `function_spec_axes` columns are appended ADDITIVELY at the END (oxf-y2uw.11); the W110
+    // `argument_laziness_profile` column is appended after them, the same way (oxf-xvt5.13).
     let mut out = String::from(
-        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys,function_spec_axes_metadata_version,lift_broadcast_profile,precision_rounding_profile,real_result_policy\n",
+        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys,function_spec_axes_metadata_version,lift_broadcast_profile,precision_rounding_profile,real_result_policy,argument_laziness_profile\n",
     );
 
     for entry in registry.iter() {
@@ -1129,7 +1163,7 @@ pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
             sparse_cardinality_class,
         ) = arg_admission_export_fields(&entry.meta.arg_admission_metadata);
         out.push_str(&format!(
-            "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
             // --- FROZEN: the existing 14 columns (byte-identical, never reordered) ---
             csv_escape(&entry.meta.function_id),
             csv_escape(&entry.surface_name),
@@ -1174,6 +1208,13 @@ pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
                     .precision_rounding_profile
             ),
             csv_escape(&entry.meta.function_spec_axes_metadata.real_result_policy),
+            // --- ADDITIVE: W110 argument-laziness axis (oxf-xvt5.13) ---
+            csv_escape(
+                &entry
+                    .meta
+                    .function_spec_axes_metadata
+                    .argument_laziness_profile
+            ),
         ));
     }
 
@@ -1788,7 +1829,7 @@ mod tests {
         let header = csv.lines().next().expect("csv header");
         assert_eq!(
             header,
-            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys,function_spec_axes_metadata_version,lift_broadcast_profile,precision_rounding_profile,real_result_policy"
+            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys,function_spec_axes_metadata_version,lift_broadcast_profile,precision_rounding_profile,real_result_policy,argument_laziness_profile"
         );
         assert!(
             csv.contains("FUNC.SUM,SUM,semantic_kernel_metadata.v1;reduction_sensitive=true;error_collapse_sensitive=true;numerical_reduction_policy=SequentialLeftFold;error_algebra=CanonicalExcelLegacy,true,true,SequentialLeftFold,CanonicalExcelLegacy,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter"),
@@ -1813,19 +1854,21 @@ mod tests {
     }
 
     /// W105 oxf-y2uw.11 schema check for the ADDITIVELY-appended `FunctionSpec` axes columns:
-    /// the four new columns sit at the END of the header in the declared order, every row has the
-    /// full 18-column count, and the projected axis values are the chosen (deliberate) ones —
+    /// the appended columns sit at the END of the header in the declared order, every row has the
+    /// full 19-column count, and the projected axis values are the chosen (deliberate) ones —
     /// `lift_broadcast_profile`, `precision_rounding_profile`, `real_result_policy`, plus the
-    /// version key in the existing `*_version` convention. The leading 14 columns are pinned by
-    /// `registry_metadata_csv_exports_version_and_capability_columns`; this guards the new tail.
+    /// version key in the existing `*_version` convention, plus (W110 oxf-xvt5.13) the
+    /// `argument_laziness_profile` column appended after them. The leading 14 columns are pinned
+    /// by `registry_metadata_csv_exports_version_and_capability_columns`; this guards the tail.
     #[test]
     fn registry_metadata_csv_appends_function_spec_axes_columns() {
         const FROZEN_LEADING_COLUMNS: usize = 14;
-        const NEW_COLUMNS: [&str; 4] = [
+        const NEW_COLUMNS: [&str; 5] = [
             "function_spec_axes_metadata_version",
             "lift_broadcast_profile",
             "precision_rounding_profile",
             "real_result_policy",
+            "argument_laziness_profile",
         ];
         let total_columns = FROZEN_LEADING_COLUMNS + NEW_COLUMNS.len();
 
@@ -1835,7 +1878,7 @@ mod tests {
         assert_eq!(
             header_cols.len(),
             total_columns,
-            "header must carry the 14 frozen columns plus the 4 appended axis columns"
+            "header must carry the 14 frozen columns plus the 5 appended axis columns"
         );
         // The new columns are appended at the END, in order.
         assert_eq!(
@@ -1861,7 +1904,7 @@ mod tests {
         // The chosen axes are projected with distinguishing, version-keyed values.
         assert!(
             csv.contains(
-                ",function_spec_axes_metadata.v1;lift_broadcast_profile=surface_native;precision_rounding_profile=integer_exponent_publication;real_result_policy=real_result_policy.v1;arg_domain_guard=none;non_finite=allow,surface_native,integer_exponent_publication,"
+                ",function_spec_axes_metadata.v2;lift_broadcast_profile=surface_native;precision_rounding_profile=integer_exponent_publication;real_result_policy=real_result_policy.v1;arg_domain_guard=none;non_finite=allow;argument_laziness_profile=eager,surface_native,integer_exponent_publication,"
             ),
             "POWER must publish its integer-exponent precision-rounding axis"
         );
@@ -1871,10 +1914,37 @@ mod tests {
         );
         assert!(
             csv.contains(
-                ",real_result_policy.v1;arg_domain_guard=circular_trig_overflow;non_finite=num"
+                ",real_result_policy.v1;arg_domain_guard=circular_trig_overflow;non_finite=num,eager\n"
             ),
-            "SIN must publish its circular-trig real-result policy"
+            "SIN must publish its circular-trig real-result policy and eager laziness"
         );
+        // W110 oxf-xvt5.13: the laziness column is the LAST column and carries the named shape.
+        let if_row = csv
+            .lines()
+            .find(|line| line.starts_with("FUNC.IF,IF,"))
+            .expect("IF row must be exported");
+        assert!(
+            if_row.ends_with(
+                ";argument_laziness_profile=branch_on_condition,surface_native,default,real_result_policy.v1;arg_domain_guard=none;non_finite=allow,branch_on_condition"
+            ),
+            "IF must publish its branch_on_condition laziness axis as the last column: {if_row}"
+        );
+        for (function_id, key) in [
+            ("FUNC.IFS", "condition_value_pairs"),
+            ("FUNC.CHOOSE", "indexed_choice"),
+            ("FUNC.SWITCH", "matched_case"),
+            ("FUNC.IFERROR", "fallback_on_error"),
+            ("FUNC.IFNA", "fallback_on_error"),
+        ] {
+            let row = csv
+                .lines()
+                .find(|line| line.starts_with(&format!("{function_id},")))
+                .unwrap_or_else(|| panic!("{function_id} row must be exported"));
+            assert!(
+                row.ends_with(&format!(",{key}")),
+                "{function_id} must publish `{key}` as its last column: {row}"
+            );
+        }
     }
 
     /// Count CSV fields in a row, honouring double-quoted fields that may contain commas
@@ -1911,9 +1981,23 @@ mod tests {
         assert!(
             baseline
                 .version_key()
-                .starts_with("function_spec_axes_metadata.v1;"),
-            "version key must carry the additive v1 token in the existing convention"
+                .starts_with("function_spec_axes_metadata.v2;"),
+            "version key must carry the additive v2 token (v1 + argument_laziness_profile) in the existing convention"
         );
+        // W110 oxf-xvt5.13: the laziness axis is part of the key, so IF's projection differs
+        // from the default projection by that axis alone.
+        let if_meta = xll_export_specs::function_catalog()
+            .iter()
+            .find(|m| m.function_id == "FUNC.IF")
+            .expect("IF must be in the catalog");
+        let if_axes = FunctionSpecAxesMetadata::from_meta(if_meta);
+        assert_ne!(
+            if_axes.version_key(),
+            baseline.version_key(),
+            "IF's branch_on_condition laziness axis must change the version key vs the default projection"
+        );
+        assert_eq!(if_axes.argument_laziness_profile, "branch_on_condition");
+        assert_eq!(baseline.argument_laziness_profile, "eager");
     }
 
     #[test]
@@ -1976,6 +2060,53 @@ mod tests {
                 ),
             }
         }
+    }
+
+    /// W110 oxf-xvt5.13 (OxFml `HANDOFF-OXFUNC-007`): the registry consistency cross-check the
+    /// handoff asked for. Over the WHOLE catalog: every `ErrorCollapseProfile::SelectorBranch`
+    /// meta declares a non-`Eager` `argument_laziness_profile`, every non-`Eager` meta is a
+    /// `SelectorBranch`, and the registry's projected `function_spec_axes_metadata` carries the
+    /// same declared shape as the meta (so an evaluator keyed on registry entries and one keyed
+    /// on `FunctionCallTarget` read one fact). The per-function documented-shape assertions live
+    /// in `functions::argument_laziness_golden`.
+    #[test]
+    fn argument_laziness_axis_agrees_with_selector_branch_over_the_catalog() {
+        let mut lazy_count = 0usize;
+        for meta in xll_export_specs::function_catalog().iter() {
+            let is_selector = matches!(
+                meta.error_collapse_profile,
+                ErrorCollapseProfile::SelectorBranch
+            );
+            let is_lazy = meta.argument_laziness_profile.is_lazy();
+            assert_eq!(
+                is_selector, is_lazy,
+                "{}: SelectorBranch ({is_selector}) and non-Eager laziness ({is_lazy}) must coincide",
+                meta.function_id
+            );
+            lazy_count += usize::from(is_lazy);
+
+            let entry = builtin_registry()
+                .lookup_by_id(meta.function_id)
+                .unwrap_or_else(|| panic!("{} must have a registry entry", meta.function_id));
+            assert_eq!(
+                entry
+                    .meta
+                    .function_spec_axes_metadata
+                    .argument_laziness_profile,
+                argument_laziness_profile_key(meta.argument_laziness_profile),
+                "{}: the registry projection must carry the meta's declared laziness shape",
+                meta.function_id
+            );
+        }
+        assert_eq!(
+            lazy_count, 6,
+            "exactly six catalog functions are lazy (IF, IFS, CHOOSE, SWITCH, IFERROR, IFNA)"
+        );
+        // A UDF registration carries the default projection: eager.
+        assert_eq!(
+            FunctionSpecAxesMetadata::default_axes().argument_laziness_profile,
+            "eager"
+        );
     }
 
     #[test]

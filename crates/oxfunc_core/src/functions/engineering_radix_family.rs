@@ -55,6 +55,7 @@ macro_rules! engineering_meta {
             real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
             error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
             precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
+            argument_laziness_profile: FunctionMeta::DEFAULT_ARGUMENT_LAZINESS_PROFILE,
         }
     };
 }

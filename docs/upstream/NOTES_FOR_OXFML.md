@@ -450,3 +450,24 @@ current-state triage note; it is not a request for immediate action unless noted
   one release; its retirement condition (which includes OxFml `fml-kt8.17`,
   the post-flip audit default) is recorded in the handoff's "Default flip"
   section. No further ask of OxFml from this handoff.
+
+- `HO-FN-021` (W110-4 `argument_laziness_profile` axis on `FunctionMeta`, filed
+  2026-09-15, `docs/handoffs/HO-FN-021_W110_ARGUMENT_LAZINESS_PROFILE_ON_FUNCTION_META.md`):
+  the reply to OxFml's `HANDOFF-OXFUNC-007_W079_LAZY_ARGUMENT_PROFILE_ON_FUNCTION_META.md`
+  (registered here as `HANDOFF-OXFUNC-007-W079`, acknowledged 2026-09-15; the suffix
+  only avoids the DnaOneCalc `HANDOFF-OXFUNC-007` id OxFunc already carried — OxFml
+  is asked to note the cross-reference the way section 14.1 asked for
+  `HANDOFF-OXFUNC-004`/`-008`). `ArgumentLazinessProfile::{Eager, BranchOnCondition,
+  ConditionValuePairs, IndexedChoice, MatchedCase, FallbackOnError}` is declared on
+  `FunctionMeta`, populated for `IF`/`IFS`/`CHOOSE`/`SWITCH`/`IFERROR`/`IFNA`
+  (`AND`/`OR`/`XOR` are `Eager`; `LET`/`LAMBDA`/`_XLFN.SINGLE` are OxFml language forms
+  and carry no meta), readable by dispatch target through
+  `FunctionCallTarget::argument_laziness_profile()`, and projected into the registry
+  as the `argument_laziness_profile` key / CSV column (`function_spec_axes_metadata.v2`).
+  `MatchedCase` carries no `has_trailing_default` payload: that is a per-call arity fact,
+  not a per-function one. No public signature OxFml calls today changed
+  (`RegistryFunctionMeta` was deliberately left alone because OxFml's tests construct it
+  literally). The ask: key `CompiledFunctionSpecialForm` on the axis instead of the six
+  surface names, then acknowledge. Side finding for OxFml's awareness only: OxFunc's
+  `OR`/`AND` kernels drop a later argument's error (`oxf-xvt5.14`, catalog G1-01) — Excel
+  16.0 build 20326 publishes `#DIV/0!` for `=OR(TRUE,1/0)`; nothing for OxFml to change.
