@@ -1,0 +1,24 @@
+{
+  "progress": {
+    "R0": 1,
+    "evenodd/as714/n12b2": 16777216,
+    "evenodd/as714/n16": 65536,
+    "lentz/as714/n12b2": 16777216,
+    "lentz/as714/n16": 65536,
+    "lentz/as714/n21": 2097152,
+    "lentz/as714/n24": 16777216,
+    "lentz/gaut/n12b2": 16777216,
+    "lentz/gaut/n16": 65536,
+    "lentz/gaut/n21": 2097152,
+    "lentz/gaut/n24": 16777216,
+    "mlentz/as714/n16": 65536,
+    "mlentz/gaut/n12b2": 16777216,
+    "mlentz/gaut/n16": 65536
+  },
+  "best_mid_exact": 2389,
+  "best_tail_exact": 1324,
+  "best_mid_label": "nswc_derfc0",
+  "best_tail_label": "lentz/as714/n24 /mask=0400000",
+  "configs_done": 105185280,
+  "started_unix": 1788213759
+}

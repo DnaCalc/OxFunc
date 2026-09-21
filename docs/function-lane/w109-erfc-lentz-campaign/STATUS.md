@@ -1,16 +1,15 @@
 # Lentz F campaign STATUS
 
-- region: `lentz/gaut/n24`
-- chunk: `01a8000`
-- configs_done: 72929280
+- region: `exit-regions`
+- chunk: `-`
+- configs_done: 105185280
 - best_mid: 2389 / bar 2389 `nswc_derfc0`
-- best_tail: 1316 / bar 1283 `lentz/gaut/n21 /mask=0142180`
-- runtime_hours: 66.63 / 120
-- threads: 12
+- best_tail: 1324 / bar 1283 `lentz/as714/n24 /mask=0400000`
+- runtime_hours: 265.83 / 400
+- threads: 4
 - stop_requested: false
 
-x87 lentz gaut n=24 24-bit store C/D after step
-chunk_best_tail=1239
+selected Lentz cubes finished
 
 # Lentz F campaign REGION_MAP
 
@@ -20,7 +19,7 @@ chunk_best_tail=1239
 | evenodd/as714/n16 | 0..0x0010000 | done | x87 even-odd as714 n=16 pairs 16-bit store inner/outer |
 | lentz/gaut/n12b2 | 0..0x1000000 | done | x87 lentz gaut n=12 24-bit store C/D after step |
 | mlentz/gaut/n12b2 | 0..0x1000000 | done | x87 mlentz gaut n=12 24-bit store C/D after step |
-| lentz/as714/n12b2 | 0..0x1000000 | 0x0f95000/0x1000000 | x87 lentz as714 n=12 24-bit store C/D after step |
+| lentz/as714/n12b2 | 0..0x1000000 | done | x87 lentz as714 n=12 24-bit store C/D after step |
 | mlentz/as714/n12b2 | 0..0x1000000 | 0x0000000/0x1000000 | x87 mlentz as714 n=12 24-bit store C/D after step |
 | lentz/gaut/n16 | 0..0x0010000 | done | x87 lentz gaut n=16 16-bit store C/D after step |
 | mlentz/gaut/n16 | 0..0x0010000 | done | x87 mlentz gaut n=16 16-bit store C/D after step |
@@ -28,9 +27,9 @@ chunk_best_tail=1239
 | mlentz/as714/n16 | 0..0x0010000 | done | x87 mlentz as714 n=16 16-bit store C/D after step |
 | lentz/gaut/n21 | 0..0x0200000 | done | x87 lentz gaut n=21 21-bit store C/D after step |
 | lentz/as714/n21 | 0..0x0200000 | done | x87 lentz as714 n=21 21-bit store C/D after step |
-| lentz/gaut/n24 | 0..0x1000000 | 0x01a8000/0x1000000 | x87 lentz gaut n=24 24-bit store C/D after step |
-| lentz/as714/n24 | 0..0x1000000 | 0x0000000/0x1000000 | x87 lentz as714 n=24 24-bit store C/D after step |
+| lentz/gaut/n24 | 0..0x1000000 | done | x87 lentz gaut n=24 24-bit store C/D after step |
+| lentz/as714/n24 | 0..0x1000000 | done | x87 lentz as714 n=24 24-bit store C/D after step |
 
 best_mid 2389 / bar 2389 `nswc_derfc0`
-best_tail 1316 / bar 1283 `lentz/gaut/n21 /mask=0142180`
+best_tail 1324 / bar 1283 `lentz/as714/n24 /mask=0400000`
 

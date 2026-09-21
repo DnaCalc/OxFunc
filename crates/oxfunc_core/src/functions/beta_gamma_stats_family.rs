@@ -225,7 +225,11 @@ pub fn gamma_dist_kernel(
     }
 }
 
-pub fn gamma_inv_kernel(probability: f64, alpha: f64, beta: f64) -> Result<f64, BetaGammaStatsError> {
+pub fn gamma_inv_kernel(
+    probability: f64,
+    alpha: f64,
+    beta: f64,
+) -> Result<f64, BetaGammaStatsError> {
     validate_gamma_shape(alpha, beta)?;
     if !probability.is_finite() {
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Value));
@@ -574,12 +578,9 @@ mod tests {
         }
         for (x, beta) in [(1e-12, 3.0), (3.0, 5.0), (1.0, 3.0), (8.0, 5.0)] {
             let got = gamma_dist_kernel(x, 1.0, beta, true).unwrap();
-            let expect = crate::functions::discrete_dist_family::expon_dist_kernel(
-                x / beta,
-                1.0,
-                true,
-            )
-            .unwrap();
+            let expect =
+                crate::functions::discrete_dist_family::expon_dist_kernel(x / beta, 1.0, true)
+                    .unwrap();
             assert_eq!(got.to_bits(), expect.to_bits(), "shape1 x={x} beta={beta}");
         }
     }

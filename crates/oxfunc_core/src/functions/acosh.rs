@@ -74,10 +74,7 @@ mod tests {
         // Range.Value2 on Excel 16.0 b20228 publishes the LN identity at
         // 1+1ulp (0x3e56a09e67ffffff) and at 1+1e-15 (0x3e694c5839fffffe).
         let one_ulp = f64::from_bits(0x3ff0000000000001);
-        assert_eq!(
-            acosh_kernel(one_ulp).unwrap().to_bits(),
-            0x3e56a09e67ffffff
-        );
+        assert_eq!(acosh_kernel(one_ulp).unwrap().to_bits(), 0x3e56a09e67ffffff);
         let y = acosh_kernel(1.0 + 1e-15).expect("non-zero just above 1");
         assert_eq!(y.to_bits(), 0x3e694c5839fffffe);
     }

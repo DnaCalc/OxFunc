@@ -141,18 +141,71 @@ mod tests {
         assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
+    fn direct_text(text: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_utf16_code_units(
+            text.encode_utf16().collect(),
+        ))
+    }
+
+    /// `=XOR("x")` -> `#VALUE!` (live Excel 16.0 build 20326, `oxf-xvt5.15`). The worksheet value
+    /// is unchanged from before that bead; the ROUTE is not: a direct text other than a
+    /// `TRUE`/`FALSE` spelling is now IGNORED (`=XOR(TRUE,"x")` -> `TRUE` on the same build) and
+    /// the `#VALUE!` comes from the no-value rule, no longer from an `Err(NonNumericText)`
+    /// coercion failure. Re-pinned to the observed route, a correction rather than a weakening.
     #[test]
     fn eval_xor_direct_text_is_value_error() {
+        let got = eval_xor_surface(&[direct_text("x")], &MockResolver { resolved: None });
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Value)));
+    }
+
+    /// `=XOR("TRUE")` -> `TRUE`, `=XOR("true")` -> `TRUE`, `=XOR("FALSE")` -> `FALSE`,
+    /// `=XOR("TRUE","TRUE")` -> `FALSE`, `=XOR("TRUE","TRUE","TRUE")` -> `TRUE`, `=XOR("TRUE","x")`
+    /// -> `TRUE`, `=XOR("FALSE","x")` -> `FALSE`: a coerced spelling takes part in the parity and
+    /// counts as a seen value; other direct text is ignored.
+    #[test]
+    fn eval_xor_coerces_direct_logical_spellings_and_ignores_other_direct_text() {
+        let resolver = MockResolver { resolved: None };
+        for (args, expected) in [
+            (vec![direct_text("TRUE")], true),
+            (vec![direct_text("true")], true),
+            (vec![direct_text("FALSE")], false),
+            (vec![direct_text("TRUE"), direct_text("TRUE")], false),
+            (
+                vec![direct_text("TRUE"), direct_text("TRUE"), direct_text("TRUE")],
+                true,
+            ),
+            (vec![direct_text("TRUE"), direct_text("x")], true),
+            (vec![direct_text("FALSE"), direct_text("x")], false),
+            (vec![CalcValue::logical(true), direct_text("x")], true),
+            (vec![direct_text("x"), CalcValue::logical(true)], true),
+            (vec![CalcValue::logical(false), direct_text("x")], false),
+            (vec![CalcValue::logical(true), direct_text("1")], true),
+        ] {
+            let got = eval_xor_surface(&args, &resolver);
+            assert_eq!(got, Ok(CalcValue::logical(expected)), "{args:?}");
+        }
+        for args in [
+            vec![direct_text("1")],
+            vec![direct_text("x"), direct_text("1")],
+        ] {
+            let got = eval_xor_surface(&args, &resolver);
+            assert_eq!(
+                got,
+                Ok(CalcValue::error(WorksheetErrorCode::Value)),
+                "{args:?}"
+            );
+        }
+        // `=XOR("TRUE",1/0)` -> `#DIV/0!`: a coerced spelling never masks an error.
         let got = eval_xor_surface(
-            &[(CalcValue::text(ExcelText::from_utf16_code_units(
-                "x".encode_utf16().collect(),
-            )))],
-            &MockResolver { resolved: None },
+            &[direct_text("TRUE"), CalcValue::error(WorksheetErrorCode::Div0)],
+            &resolver,
         );
-        assert!(matches!(
+        assert_eq!(
             got,
-            Err(XorEvalError::Coercion(CoercionError::NonNumericText(_)))
-        ));
+            Err(XorEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::Div0
+            )))
+        );
     }
 
     #[test]

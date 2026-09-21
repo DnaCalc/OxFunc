@@ -53,11 +53,11 @@ pub fn eval_or_surface(
     // -> `#DIV/0!`, `=OR(TRUE,NA())` -> `#N/A`, `=OR(1/0,NA())` -> `#DIV/0!`, `=OR(NA(),1/0)`
     // -> `#N/A`, `=OR(TRUE,NA(),1/0)` -> `#N/A`, `=OR({TRUE,#N/A,#DIV/0!})` -> `#N/A`, and the
     // same for `#NUM!`/`#VALUE!`/`#REF!` pairs in both orders). So once an item has decided
-    // the result the scan continues, looking only for error VALUES in the remaining items — not
-    // for direct-text coercion failures: Excel ignores non-`"TRUE"`/`"FALSE"` direct text in
-    // these folds altogether (`=OR(TRUE,"x")` -> `TRUE`, `=OR(FALSE,"x")` -> `FALSE`), a
-    // pre-existing gap `and_argument_truth` still carries for the items before the decision
-    // (catalog G1-02, bead `oxf-xvt5.15`); this loop neither widens nor narrows it.
+    // the result the scan continues, looking only for error VALUES in the remaining items. A
+    // direct text item is a value only when it spells `TRUE`/`FALSE` and is otherwise ignored
+    // (`and_argument_truth`, bead `oxf-xvt5.15`: `=OR(FALSE,"TRUE")` -> `TRUE`, `=OR(FALSE,"x")`
+    // -> `FALSE`, `=OR("x")` -> `#VALUE!` by the no-value rule below), so nothing text-shaped
+    // can surface from the post-decision scan either.
     let mut saw_value = false;
     let mut decided = false;
     for arg in args {
@@ -155,18 +155,163 @@ mod tests {
         assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
+    fn direct_text(text: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_utf16_code_units(
+            text.encode_utf16().collect(),
+        ))
+    }
+
+    /// `=OR("x")` -> `#VALUE!` (live Excel 16.0 build 20326, `oxf-xvt5.15`). The worksheet value
+    /// is unchanged from before that bead; the ROUTE is not: a direct text other than a
+    /// `TRUE`/`FALSE` spelling is now IGNORED (`=OR(FALSE,"x")` -> `FALSE` on the same build) and
+    /// the `#VALUE!` comes from the no-value rule, no longer from an `Err(NonNumericText)`
+    /// coercion failure. Re-pinned to the observed route, a correction rather than a weakening.
     #[test]
     fn eval_or_direct_text_is_value_error() {
-        let got = eval_or_surface(
-            &[(CalcValue::text(ExcelText::from_utf16_code_units(
-                "x".encode_utf16().collect(),
-            )))],
-            &MockResolver { resolved: None },
+        let got = eval_or_surface(&[direct_text("x")], &MockResolver { resolved: None });
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Value)));
+    }
+
+    /// `=OR("TRUE")` -> `TRUE`, `=OR("FALSE")` -> `FALSE`, `=OR(FALSE,"TRUE")` / `"true"` /
+    /// `"TrUe"` / `"tRUE"` -> `TRUE`, `=OR("FALSE","FALSE")` -> `FALSE`, `=OR("TRUE",0)` ->
+    /// `TRUE`: a direct text spelling `TRUE`/`FALSE` coerces, ASCII-case-insensitively, and
+    /// counts as a seen value.
+    #[test]
+    fn eval_or_coerces_direct_logical_spellings() {
+        let resolver = MockResolver { resolved: None };
+        for (args, expected) in [
+            (vec![direct_text("TRUE")], true),
+            (vec![direct_text("FALSE")], false),
+            (vec![CalcValue::logical(false), direct_text("TRUE")], true),
+            (vec![CalcValue::logical(false), direct_text("true")], true),
+            (vec![CalcValue::logical(false), direct_text("TrUe")], true),
+            (vec![CalcValue::logical(false), direct_text("tRUE")], true),
+            (vec![direct_text("FALSE"), direct_text("FALSE")], false),
+            (vec![direct_text("TRUE"), CalcValue::number(0.0)], true),
+            (vec![direct_text("x"), direct_text("FALSE")], false),
+        ] {
+            let got = eval_or_surface(&args, &resolver);
+            assert_eq!(got, Ok(CalcValue::logical(expected)), "{args:?}");
+        }
+    }
+
+    /// `=OR(FALSE,"x")` / `"1"` / `"2"` / `"1.5"` / `" 1 "` / `"1e0"` / `"$1"` / `"1/2"` /
+    /// `"12/31/2020"` / `""` / `" TRUE"` / `"TRUE "` / `" TRUE "` / `CHAR(9)&"TRUE"` /
+    /// `"TRUE"&CHAR(10)` / `CHAR(160)&"TRUE"` / `"TRUE."` / `"Yes"` -> `FALSE`, `=OR(0,"x")` ->
+    /// `FALSE`, `=OR("x",TRUE)` -> `TRUE`: any other direct text is ignored, never `#VALUE!`, and
+    /// whitespace around a spelling is not trimmed.
+    #[test]
+    fn eval_or_ignores_direct_text_that_is_not_a_logical_spelling() {
+        let resolver = MockResolver { resolved: None };
+        for ignored in [
+            "x",
+            "1",
+            "2",
+            "1.5",
+            " 1 ",
+            "1e0",
+            "$1",
+            "1/2",
+            "12/31/2020",
+            "",
+            " TRUE",
+            "TRUE ",
+            " TRUE ",
+            "\tTRUE",
+            "TRUE\n",
+            "\u{a0}TRUE",
+            "TRUE.",
+            "Yes",
+        ] {
+            let got = eval_or_surface(
+                &[CalcValue::logical(false), direct_text(ignored)],
+                &resolver,
+            );
+            assert_eq!(got, Ok(CalcValue::logical(false)), "{ignored:?}");
+        }
+        let got = eval_or_surface(&[CalcValue::number(0.0), direct_text("x")], &resolver);
+        assert_eq!(got, Ok(CalcValue::logical(false)));
+        let got = eval_or_surface(&[direct_text("x"), CalcValue::logical(true)], &resolver);
+        assert_eq!(got, Ok(CalcValue::logical(true)));
+    }
+
+    /// `=OR("x","y")`, `=OR("1")`, `=OR("0")`, `=OR("")`, `=OR(" TRUE")`, `=OR("x","1")` ->
+    /// `#VALUE!`: ignored direct text alone leaves nothing seen.
+    #[test]
+    fn eval_or_returns_value_when_only_ignored_direct_text_is_given() {
+        let resolver = MockResolver { resolved: None };
+        for args in [
+            vec![direct_text("x"), direct_text("y")],
+            vec![direct_text("1")],
+            vec![direct_text("0")],
+            vec![direct_text("")],
+            vec![direct_text(" TRUE")],
+            vec![direct_text("x"), direct_text("1")],
+        ] {
+            let got = eval_or_surface(&args, &resolver);
+            assert_eq!(
+                got,
+                Ok(CalcValue::error(WorksheetErrorCode::Value)),
+                "{args:?}"
+            );
+        }
+    }
+
+    /// `=OR({"TRUE"})` -> `#VALUE!`, `=OR(FALSE,{"TRUE"})` -> `FALSE`, `=OR(E1)` with the TEXT
+    /// `TRUE` in `E1` -> `#VALUE!`, `=OR(FALSE,E1)` -> `FALSE`: the spelling coerces only as a
+    /// DIRECT text; inside an array constant or a cell it is reference-like text and stays
+    /// ignored.
+    #[test]
+    fn eval_or_still_ignores_a_logical_spelling_inside_an_array_or_reference() {
+        let resolver = MockResolver { resolved: None };
+        let array_true =
+            || CalcValue::array(CalcArray::from_rows(vec![vec![direct_text("TRUE")]]).unwrap());
+        assert_eq!(
+            eval_or_surface(&[array_true()], &resolver),
+            Ok(CalcValue::error(WorksheetErrorCode::Value))
         );
-        assert!(matches!(
-            got,
-            Err(OrEvalError::Coercion(CoercionError::NonNumericText(_)))
-        ));
+        assert_eq!(
+            eval_or_surface(&[CalcValue::logical(false), array_true()], &resolver),
+            Ok(CalcValue::logical(false))
+        );
+
+        let resolver = MockResolver {
+            resolved: Some(direct_text("TRUE")),
+        };
+        let e1 = || CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "E1".to_string()));
+        assert_eq!(
+            eval_or_surface(&[e1()], &resolver),
+            Ok(CalcValue::error(WorksheetErrorCode::Value))
+        );
+        assert_eq!(
+            eval_or_surface(&[CalcValue::logical(false), e1()], &resolver),
+            Ok(CalcValue::logical(false))
+        );
+    }
+
+    /// `=OR("x",1/0)` -> `#DIV/0!`, `=OR("TRUE",1/0)` -> `#DIV/0!`, `=OR("x",TRUE,1/0)` ->
+    /// `#DIV/0!`: neither an ignored nor a coerced direct text masks an error.
+    #[test]
+    fn eval_or_direct_text_never_masks_an_error() {
+        let resolver = MockResolver { resolved: None };
+        for args in [
+            vec![direct_text("x"), CalcValue::error(WorksheetErrorCode::Div0)],
+            vec![direct_text("TRUE"), CalcValue::error(WorksheetErrorCode::Div0)],
+            vec![
+                direct_text("x"),
+                CalcValue::logical(true),
+                CalcValue::error(WorksheetErrorCode::Div0),
+            ],
+        ] {
+            let got = eval_or_surface(&args, &resolver);
+            assert_eq!(
+                got,
+                Err(OrEvalError::Coercion(CoercionError::WorksheetError(
+                    WorksheetErrorCode::Div0
+                ))),
+                "{args:?}"
+            );
+        }
     }
 
     #[test]

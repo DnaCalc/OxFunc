@@ -157,8 +157,9 @@ Raw agent/Claude Code session transcripts for OxFunc work are archived to a
    (`<session-uuid>.jsonl.gz`), plus `manifest.txt` and `archive-transcripts.sh`.
 3. To refresh, run in `../OxFunc-History`:
    `bash archive-transcripts.sh && git add -A && git commit -m "Refresh session archives" && git push`.
-   The script reads from `~/.claude/projects/C--Work-DnaCalc-OxFunc/` and uses
-   `gzip -n` so an unchanged session stays a byte-identical blob (no history bloat).
+   The script reads Claude JSONL from `~/.claude/projects/C--Work-DnaCalc-OxFunc/`
+   and Grok `chat_history.jsonl` from `~/.grok/sessions/` (urlencoded OxFunc cwd),
+   and uses `gzip -n` so an unchanged session stays a byte-identical blob.
 4. Prefer archiving a session **once at its end** rather than re-committing a
    growing blob repeatedly. If the archive grows large, migrate it to `git-lfs`.
 5. `DnaCalc/OxFunc-History` is and must remain **private**.

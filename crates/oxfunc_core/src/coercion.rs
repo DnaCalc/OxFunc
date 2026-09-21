@@ -39,6 +39,37 @@ fn parse_excel_number(text: &str) -> Option<f64> {
     Some(parsed)
 }
 
+/// Text -> logical coercion as Excel applies it to a text VALUE in a logical position: exactly
+/// the spellings `TRUE` and `FALSE`, ASCII-case-insensitively, with NO surrounding-whitespace
+/// tolerance and no Unicode case folding. Anything else — numeric text included — is `None`,
+/// and what `None` means (ignored, `#VALUE!`, ...) is the caller's rule, not this helper's.
+///
+/// Pinned on live Excel 16.0 build 20326 (COM probes 2026-09-15, beads `oxf-xvt5.14` /
+/// `oxf-xvt5.15`, scripts `tools/w110-probe/run-w110-and-or-error-precedence-probe.ps1` and
+/// `tools/w110-probe/run-w110-logical-text-spelling-probe.ps1`) through the `AND`/`OR`/`XOR`
+/// folds, where a coerced spelling is a seen value and an unrecognised direct text is ignored:
+/// `=OR(FALSE,"true")` / `"TrUe"` / `"tRUE"` -> `TRUE`, `=AND(TRUE,"fAlSe")` -> `FALSE`;
+/// `=OR(FALSE," TRUE")` / `"TRUE "` / `" TRUE "` / `CHAR(9)&"TRUE"` / `"TRUE"&CHAR(10)` /
+/// `CHAR(160)&"TRUE"` -> `FALSE` and `=OR(" TRUE")` -> `#VALUE!` (whitespace is not trimmed;
+/// `=OR(FALSE,TRIM(" TRUE "))` -> `TRUE`); `=AND(TRUE,"FAL"&UNICHAR(383)&"E")` (long s) ->
+/// `TRUE` and the full-width `ＴＲＵＥ` -> ignored (ASCII fold only); `"TRUE."`, `"TRUE1"`,
+/// `"T"`, `"Yes"`, `"On"`, `"=TRUE"`, `"TRUE()"`, `"1"`, `"0"`, `"1.5"`, `""` -> ignored.
+///
+/// Locale: these are the en-US spellings. Formula text in the file format is stored in the
+/// en-US canonical form, so a `"TRUE"` string literal reaching OxFunc is this spelling; the
+/// display-language localisation of formula text at entry time is OxFml's concern, and whether
+/// a localised Excel runtime also coerces a localised spelling of a text VALUE is an orthogonal
+/// locale-sweep question (AGENTS.md) that this helper does not decide.
+pub fn parse_excel_logical_text(text: &str) -> Option<bool> {
+    if text.eq_ignore_ascii_case("TRUE") {
+        Some(true)
+    } else if text.eq_ignore_ascii_case("FALSE") {
+        Some(false)
+    } else {
+        None
+    }
+}
+
 pub fn coerce_eval_to_number(
     value: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -369,5 +400,60 @@ mod tests {
         let relaxed =
             aggregate_scan_sum(&args, &resolver(), AggregateScanPolicy::IgnoreTextAndEmpty);
         assert_eq!(relaxed, Ok(3.0));
+    }
+
+    /// Live Excel 16.0 build 20326 (2026-09-15, `oxf-xvt5.15`): the logical spellings coerce
+    /// ASCII-case-insensitively — `"TRUE"`, `"true"`, `"TrUe"`, `"tRUE"`, `"FALSE"`, `"false"`,
+    /// `"fAlSe"` all reached the fold as a logical.
+    #[test]
+    fn parse_excel_logical_text_accepts_the_two_spellings_ascii_case_insensitively() {
+        for spelling in ["TRUE", "true", "True", "TrUe", "tRUE"] {
+            assert_eq!(parse_excel_logical_text(spelling), Some(true), "{spelling:?}");
+        }
+        for spelling in ["FALSE", "false", "False", "fAlSe"] {
+            assert_eq!(parse_excel_logical_text(spelling), Some(false), "{spelling:?}");
+        }
+    }
+
+    /// Surrounding whitespace is NOT trimmed: `=OR(" TRUE")` is `#VALUE!` and `=OR(FALSE," TRUE")`
+    /// / `"TRUE "` / `" TRUE "` / `CHAR(9)&"TRUE"` / `"TRUE"&CHAR(10)` / `CHAR(160)&"TRUE"` are
+    /// all `FALSE` on the same build, while `TRIM(" TRUE ")` coerces.
+    #[test]
+    fn parse_excel_logical_text_does_not_trim_whitespace() {
+        for spelling in [" TRUE", "TRUE ", " TRUE ", " FALSE ", "\tTRUE", "TRUE\n", "\u{a0}TRUE"] {
+            assert_eq!(parse_excel_logical_text(spelling), None, "{spelling:?}");
+        }
+        assert_eq!(parse_excel_logical_text(" TRUE ".trim()), Some(true));
+    }
+
+    /// Only an ASCII fold: the long-s look-alike `FALſE` (`=AND(TRUE,"FAL"&UNICHAR(383)&"E")` ->
+    /// `TRUE`, i.e. ignored) and full-width `ＴＲＵＥ` are not the spellings; neither are numeric
+    /// text, the empty string, or any decoration of the word.
+    #[test]
+    fn parse_excel_logical_text_rejects_everything_else() {
+        for spelling in [
+            "FAL\u{17f}E",
+            "\u{ff34}\u{ff32}\u{ff35}\u{ff25}",
+            "TRUE.",
+            "TRUE1",
+            "T",
+            "Yes",
+            "On",
+            "=TRUE",
+            "TRUE()",
+            "1",
+            "0",
+            "2",
+            "1.5",
+            " 1 ",
+            "1e0",
+            "$1",
+            "1/2",
+            "12/31/2020",
+            "",
+            "x",
+        ] {
+            assert_eq!(parse_excel_logical_text(spelling), None, "{spelling:?}");
+        }
     }
 }

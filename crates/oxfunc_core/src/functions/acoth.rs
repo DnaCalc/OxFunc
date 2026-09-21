@@ -3,8 +3,8 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
-    eval_unary_numeric_via_executor, map_unary_numeric_error_to_ws, UnaryNumericExecSpec,
-    UnaryNumericSurfaceError,
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;

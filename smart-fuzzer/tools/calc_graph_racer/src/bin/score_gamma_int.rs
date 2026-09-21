@@ -138,6 +138,29 @@ fn main() {
         "GAMMA(25)*25 = 0x{rec26:016x} excel26=0x4529a940c33f6120 match={}",
         rec26 == 0x4529a940c33f6120
     );
+    println!("\n== reverse x87 vs Excel GAMMA(89)=0x5bd0550c4b307440");
+    let want89 = 0x5bd0550c4b307440u64;
+    let n = 89u32;
+    let mut rev = 1.0;
+    for k in (2..n).rev() {
+        rev *= k as f64;
+    }
+    let mut a = rx::ext_from_f64(1.0);
+    for k in (2..n).rev() {
+        a = rx::ext_mul(&a, &rx::ext_from_f64(k as f64), rx::CW_PC64_RN);
+    }
+    let cont = rx::ext_to_f64(&a, rx::CW_PC64_RN);
+    println!(
+        "  native rev {:016x} match={}",
+        rev.to_bits(),
+        rev.to_bits() == want89
+    );
+    println!(
+        "  x87cont rev {:016x} match={}",
+        cont.to_bits(),
+        cont.to_bits() == want89
+    );
+
     println!("\n== reverse factorial bits");
     for n in [
         26u32, 27, 28, 29, 30, 40, 50, 55, 60, 65, 70, 75, 80, 85, 86, 87, 88, 89, 90, 95, 99, 100, 110, 120,

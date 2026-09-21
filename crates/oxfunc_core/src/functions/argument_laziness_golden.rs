@@ -74,12 +74,28 @@
 //!   `#DIV/0!`, `=OR({TRUE,#N/A,#DIV/0!})` -> `#N/A`, `=AND(D1,D3,D2)` (FALSE, `#N/A`,
 //!   `#DIV/0!` cells) -> `#N/A`, and every `#NUM!`/`#VALUE!`/`#REF!` pairing likewise in both
 //!   orders (28 two-error rows, 3 three-error rows, 0 exceptions). The same probe found a
-//!   SEPARATE pre-existing gap not fixed here: Excel ignores a direct text argument other
-//!   than `"TRUE"`/`"FALSE"` in these folds (`=OR(FALSE,"x")` -> `FALSE`, `=OR("x",TRUE)` ->
-//!   `TRUE`, `=OR(FALSE,"1")` -> `FALSE`, `=OR("x")` -> `#VALUE!` only because no logical was
-//!   seen) and coerces `"TRUE"`/`"FALSE"` case-insensitively (`=OR(FALSE,"true")` -> `TRUE`),
-//!   where OxFunc's `and_argument_truth` raises `#VALUE!` for any direct text — catalog row
-//!   G1-02.
+//!   SEPARATE gap, fixed in bead `oxf-xvt5.15` (catalog row G1-02): Excel ignores a direct
+//!   text argument other than `"TRUE"`/`"FALSE"` in these folds (`=OR(FALSE,"x")` -> `FALSE`,
+//!   `=OR("x",TRUE)` -> `TRUE`, `=OR(FALSE,"1")` -> `FALSE`, `=OR("x")` -> `#VALUE!` only
+//!   because no logical was seen) and coerces `"TRUE"`/`"FALSE"` case-insensitively
+//!   (`=OR(FALSE,"true")` -> `TRUE`), where OxFunc's `and_argument_truth` raised `#VALUE!` for
+//!   any direct text. A third live probe on the same build (2026-09-15, 75 rows, retained
+//!   locally as `.tmp/w110-logical-text-spelling-probe-results.csv`, script
+//!   `tools/w110-probe/run-w110-logical-text-spelling-probe.ps1`) settled the rest of the
+//!   rule: the fold is ASCII-case-insensitive only (`"tRUE"`, `"fAlSe"` coerce; the long-s
+//!   `"FAL"&UNICHAR(383)&"E"` and full-width `ＴＲＵＥ` are ignored), surrounding whitespace is
+//!   NOT trimmed (`=OR(" TRUE")` -> `#VALUE!`, `=OR(FALSE," TRUE")` / `"TRUE "` / `CHAR(9)&"TRUE"`
+//!   / `"TRUE"&CHAR(10)` / `CHAR(160)&"TRUE"` -> `FALSE`, `=OR(FALSE,TRIM(" TRUE "))` -> `TRUE`),
+//!   text COMPUTED by an expression is direct (`=OR(FALSE,"TR"&"UE")` / `LOWER("TRUE")` /
+//!   `LEFT("TRUEx",4)` / `IF(TRUE,"TRUE")` / `INDEX({"TRUE"},1)` / `E1&""` / `T(E1)` -> `TRUE`),
+//!   the same spelling in a cell or an array constant stays ignored (`=OR(E1)` with the text
+//!   `TRUE` in `E1` -> `#VALUE!`, `=OR({"TRUE"})` -> `#VALUE!`, `=OR({"TRUE",FALSE})` ->
+//!   `FALSE`), a coerced spelling is a seen value (`=OR("FALSE","FALSE")` -> `FALSE`,
+//!   `=XOR("TRUE","TRUE")` -> `FALSE`), and neither an ignored nor a coerced text masks an
+//!   error (`=OR("TRUE",1/0)` -> `#DIV/0!`). Both probes' rows are pinned through real
+//!   dispatch below (`logical_folds_coerce_only_direct_true_false_spellings_and_ignore_other_direct_text`,
+//!   `logical_folds_direct_text_rule_whitespace_case_computed_reference_and_error_rows`); the
+//!   shared primitive is `coercion::parse_excel_logical_text`.
 //! * `LET`, `LAMBDA`, `_XLFN.SINGLE` — NOT on this axis. They are formula-language forms
 //!   (binding scopes, implicit intersection) owned by OxFml's evaluator, carry no `FunctionMeta`
 //!   in OxFunc's catalog, and are out of scope by the handoff's own terms. The test below pins

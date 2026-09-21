@@ -29,8 +29,7 @@ pub fn sinh_kernel(n: f64) -> f64 {
     // Live Excel 16.0 b20326 Range.Value2: SINH(x)=(expm1(x)-expm1(-x))/2
     // using Excel's internal Kahan expm1, 37/37 including the worksheet
     // EXP-pair misses at |x|<~0.25. libm sinh is 1 ULP off at 0.01 and 2.
-    (crate::excel_numeric::excel_expm1_internal(n)
-        - crate::excel_numeric::excel_expm1_internal(-n))
+    (crate::excel_numeric::excel_expm1_internal(n) - crate::excel_numeric::excel_expm1_internal(-n))
         / 2.0
 }
 

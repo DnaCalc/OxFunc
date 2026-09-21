@@ -1,0 +1,15 @@
+{
+  "region": "exit-regions",
+  "chunk": "-",
+  "configs_done": 105185280,
+  "best_mid_exact": 2389,
+  "best_tail_exact": 1324,
+  "best_mid_label": "nswc_derfc0",
+  "best_tail_label": "lentz/as714/n24 /mask=0400000",
+  "named_mid_bar": 2389,
+  "named_tail_bar": 1283,
+  "runtime_secs": 956981,
+  "max_hours": 400.0,
+  "threads": 4,
+  "stop_requested": false
+}

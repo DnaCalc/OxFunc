@@ -448,10 +448,7 @@ pub fn gamma_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // Live Excel 16.0 b20326: thirds in (0,1) are private seeds
     // (GAMMA(1/3) is 6 ULP from the generic path). Recurrence not claimed
     // (n+1/3 was 7/21).
-    const GAMMA_THIRD: [(u32, u64); 2] = [
-        (1, 0x40056e77539482f2),
-        (2, 0x3ff5aa77928c3679),
-    ];
+    const GAMMA_THIRD: [(u32, u64); 2] = [(1, 0x40056e77539482f2), (2, 0x3ff5aa77928c3679)];
     let three = x * 3.0;
     if three.fract() == 0.0 && (1.0..=2.0).contains(&three) {
         let k = three as u32;
@@ -1102,12 +1099,11 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 0.5 already matches via the piecewise kernel.
     if x > 0.0 && x.fract() == 0.5 {
         const GAMMALN_LN_GAMMA_HALF_N: [u32; 89] = [
-            2, 3, 4, 8, 9, 11, 13, 15, 16, 18, 19, 20, 21, 22, 23, 26, 27, 29,
-            30, 32, 34, 35, 38, 40, 42, 44, 47, 50, 51, 52, 53, 54, 55, 56, 57,
-            63, 67, 70, 71, 73, 76, 77, 80, 83, 85, 86, 92, 93, 94, 95, 96, 98,
-            102, 104, 105, 106, 110, 111, 112, 113, 122, 123, 125, 128, 130,
-            131, 132, 133, 134, 135, 136, 137, 138, 139, 141, 142, 147, 151,
-            157, 158, 159, 160, 161, 163, 165, 166, 168, 169, 170,
+            2, 3, 4, 8, 9, 11, 13, 15, 16, 18, 19, 20, 21, 22, 23, 26, 27, 29, 30, 32, 34, 35, 38,
+            40, 42, 44, 47, 50, 51, 52, 53, 54, 55, 56, 57, 63, 67, 70, 71, 73, 76, 77, 80, 83, 85,
+            86, 92, 93, 94, 95, 96, 98, 102, 104, 105, 106, 110, 111, 112, 113, 122, 123, 125, 128,
+            130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 141, 142, 147, 151, 157, 158, 159,
+            160, 161, 163, 165, 166, 168, 169, 170,
         ];
         if GAMMALN_LN_GAMMA_HALF_N.contains(&(x as u32)) {
             return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
@@ -1117,9 +1113,8 @@ pub fn gammaln_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // GAMMALN=LN(GAMMA). 41/86 exact; the rest miss 1–2 ULP (n=3 included).
     if (4.0..=88.0).contains(&x) && x.fract() == 0.0 {
         const GAMMALN_LN_GAMMA_INT_N: [u32; 41] = [
-            4, 5, 6, 7, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 31, 32,
-            37, 39, 41, 44, 48, 49, 51, 53, 58, 59, 60, 64, 65, 67, 72, 76, 77,
-            78, 79, 84, 85, 86, 88,
+            4, 5, 6, 7, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 31, 32, 37, 39, 41, 44, 48,
+            49, 51, 53, 58, 59, 60, 64, 65, 67, 72, 76, 77, 78, 79, 84, 85, 86, 88,
         ];
         if GAMMALN_LN_GAMMA_INT_N.contains(&(x as u32)) {
             return Ok(crate::excel_numeric::excel_log(gamma_kernel(x)?));
@@ -1993,7 +1988,10 @@ mod tests {
             0x3fcf325cd39aec45
         );
         assert_eq!(gammaln_kernel(0.375).unwrap().to_bits(), 0x3feb9e4d53fc3074);
-        assert_eq!(gammaln_kernel(0.3125).unwrap().to_bits(), 0x3ff0d8e1683cdcd1);
+        assert_eq!(
+            gammaln_kernel(0.3125).unwrap().to_bits(),
+            0x3ff0d8e1683cdcd1
+        );
         assert_eq!(
             gammaln_kernel(1.0 / 11.0).unwrap().to_bits(),
             0x4002d0c317ddb0c0
@@ -2041,14 +2039,8 @@ mod tests {
         assert_eq!(gammaln_kernel(55.5).unwrap().to_bits(), 0x4064ca49c7493f43);
         assert_eq!(gammaln_kernel(80.5).unwrap().to_bits(), 0x4070f7b05399f6c8);
         assert_eq!(gammaln_kernel(96.5).unwrap().to_bits(), 0x40757188eed3f4d4);
-        assert_eq!(
-            gammaln_kernel(136.5).unwrap().to_bits(),
-            0x4080a8514c766090
-        );
-        assert_eq!(
-            gammaln_kernel(170.5).unwrap().to_bits(),
-            0x4086000911686cd6
-        );
+        assert_eq!(gammaln_kernel(136.5).unwrap().to_bits(), 0x4080a8514c766090);
+        assert_eq!(gammaln_kernel(170.5).unwrap().to_bits(), 0x4086000911686cd6);
         assert_eq!(gammaln_kernel(4.0).unwrap().to_bits(), 0x3ffcab0bfa2a2002);
         assert_eq!(gammaln_kernel(5.0).unwrap().to_bits(), 0x40096ca77c922cf9);
         assert_eq!(gammaln_kernel(6.0).unwrap().to_bits(), 0x401326643c4479c9);
@@ -2101,7 +2093,10 @@ mod tests {
             gammaln_kernel(3.0 + 5.0 / 9.0).unwrap().to_bits(),
             0x3ff4344afd96d888
         );
-        assert_eq!(gamma_kernel(1.0 / 11.0).unwrap().to_bits(), 0x402503020775740e);
+        assert_eq!(
+            gamma_kernel(1.0 / 11.0).unwrap().to_bits(),
+            0x402503020775740e
+        );
         assert_eq!(
             gamma_kernel(2.0 / 11.0 - 1.0).unwrap().to_bits(),
             0xc018d2e886307c56
@@ -2574,10 +2569,22 @@ mod tests {
             gamma_kernel(3.0 + 10.0 / 11.0).unwrap().to_bits(),
             0x40156f771dde0918
         );
-        assert_eq!(gamma_kernel(2.0 / 11.0).unwrap().to_bits(), 0x40144f786dca9448);
-        assert_eq!(gamma_kernel(5.0 / 11.0).unwrap().to_bits(), 0x3fff2c8ab61daf0f);
-        assert_eq!(gamma_kernel(10.0 / 11.0).unwrap().to_bits(), 0x3ff0fb827c62f539);
-        assert_eq!(gamma_kernel(1.0 / 13.0).unwrap().to_bits(), 0x4028fce1e0ed23fb);
+        assert_eq!(
+            gamma_kernel(2.0 / 11.0).unwrap().to_bits(),
+            0x40144f786dca9448
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 11.0).unwrap().to_bits(),
+            0x3fff2c8ab61daf0f
+        );
+        assert_eq!(
+            gamma_kernel(10.0 / 11.0).unwrap().to_bits(),
+            0x3ff0fb827c62f539
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 13.0).unwrap().to_bits(),
+            0x4028fce1e0ed23fb
+        );
         assert_eq!(
             gamma_kernel(1.0 / 13.0 - 1.0).unwrap().to_bits(),
             0xc02b11f4b3ab91aa
@@ -2610,9 +2617,18 @@ mod tests {
             gamma_kernel(4.0 + 9.0 / 13.0).unwrap().to_bits(),
             0x402e860ed048074e
         );
-        assert_eq!(gamma_kernel(6.0 / 13.0).unwrap().to_bits(), 0x3ffeb36ee50fd917);
-        assert_eq!(gamma_kernel(12.0 / 13.0).unwrap().to_bits(), 0x3ff0cfaee504346b);
-        assert_eq!(gamma_kernel(1.0 / 17.0).unwrap().to_bits(), 0x40307a5f0b4f6098);
+        assert_eq!(
+            gamma_kernel(6.0 / 13.0).unwrap().to_bits(),
+            0x3ffeb36ee50fd917
+        );
+        assert_eq!(
+            gamma_kernel(12.0 / 13.0).unwrap().to_bits(),
+            0x3ff0cfaee504346b
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 17.0).unwrap().to_bits(),
+            0x40307a5f0b4f6098
+        );
         assert_eq!(
             gamma_kernel(1.0 + 3.0 / 17.0).unwrap().to_bits(),
             0x3fed97a61860c048
@@ -2625,41 +2641,98 @@ mod tests {
             gamma_kernel(3.0 + 15.0 / 17.0).unwrap().to_bits(),
             0x4014be7ce451b13d
         );
-        assert_eq!(gamma_kernel(8.0 / 17.0).unwrap().to_bits(), 0x3ffe1c96ab222e75);
-        assert_eq!(gamma_kernel(16.0 / 17.0).unwrap().to_bits(), 0x3ff099e6910e9682);
+        assert_eq!(
+            gamma_kernel(8.0 / 17.0).unwrap().to_bits(),
+            0x3ffe1c96ab222e75
+        );
+        assert_eq!(
+            gamma_kernel(16.0 / 17.0).unwrap().to_bits(),
+            0x3ff099e6910e9682
+        );
         assert_eq!(gamma_kernel(-0.5).unwrap().to_bits(), 0xc00c5bf891b4ef6a);
         assert_eq!(gamma_kernel(-1.5).unwrap().to_bits(), 0x4002e7fb0bcdf4f1);
-        assert_eq!(gamma_kernel(1.0 / 16.0).unwrap().to_bits(), 0x402ef66a79533ee8);
-        assert_eq!(gamma_kernel(3.0 / 16.0).unwrap().to_bits(), 0x4013a91381a8a4ee);
-        assert_eq!(gamma_kernel(5.0 / 16.0).unwrap().to_bits(), 0x4006edc1821c5c71);
-        assert_eq!(gamma_kernel(7.0 / 16.0).unwrap().to_bits(), 0x400032cfe11b9bd7);
-        assert_eq!(gamma_kernel(9.0 / 16.0).unwrap().to_bits(), 0x3ff94fa627d94f66);
-        assert_eq!(gamma_kernel(11.0 / 16.0).unwrap().to_bits(), 0x3ff517bf09b399f5);
-        assert_eq!(gamma_kernel(13.0 / 16.0).unwrap().to_bits(), 0x3ff26858f1d7c28d);
-        assert_eq!(gamma_kernel(15.0 / 16.0).unwrap().to_bits(), 0x3ff0a490a6519230);
+        assert_eq!(
+            gamma_kernel(1.0 / 16.0).unwrap().to_bits(),
+            0x402ef66a79533ee8
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 16.0).unwrap().to_bits(),
+            0x4013a91381a8a4ee
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 16.0).unwrap().to_bits(),
+            0x4006edc1821c5c71
+        );
+        assert_eq!(
+            gamma_kernel(7.0 / 16.0).unwrap().to_bits(),
+            0x400032cfe11b9bd7
+        );
+        assert_eq!(
+            gamma_kernel(9.0 / 16.0).unwrap().to_bits(),
+            0x3ff94fa627d94f66
+        );
+        assert_eq!(
+            gamma_kernel(11.0 / 16.0).unwrap().to_bits(),
+            0x3ff517bf09b399f5
+        );
+        assert_eq!(
+            gamma_kernel(13.0 / 16.0).unwrap().to_bits(),
+            0x3ff26858f1d7c28d
+        );
+        assert_eq!(
+            gamma_kernel(15.0 / 16.0).unwrap().to_bits(),
+            0x3ff0a490a6519230
+        );
         assert_eq!(gamma_kernel(1.0625).unwrap().to_bits(), 0x3feef66a79533ee8);
         assert_eq!(gamma_kernel(9.0625).unwrap().to_bits(), 0x40e682cf40f15007);
         assert_eq!(gamma_kernel(4.3125).unwrap().to_bits(), 0x4022027d3db6cf53);
         assert_eq!(gamma_kernel(10.5625).unwrap().to_bits(), 0x4133f93261bf1bc0);
         assert_eq!(gamma_kernel(5.8125).unwrap().to_bits(), 0x4055db68b6f3576c);
         // Live Excel 16.0 b20326 fifths in (0,1). Recurrence n=1 already 1 ULP.
-        assert_eq!(gamma_kernel(1.0 / 5.0).unwrap().to_bits(), 0x40125d0622505413);
+        assert_eq!(
+            gamma_kernel(1.0 / 5.0).unwrap().to_bits(),
+            0x40125d0622505413
+        );
         assert_eq!(
             gamma_kernel(1.0 + 1.0 / 5.0).unwrap().to_bits(),
             0x3fed61a36a1a201f
         );
-        assert_eq!(gamma_kernel(2.0 / 5.0).unwrap().to_bits(), 0x4001beca6e4dff14);
-        assert_eq!(gamma_kernel(3.0 / 5.0).unwrap().to_bits(), 0x3ff7d3bb4061b952);
-        assert_eq!(gamma_kernel(4.0 / 5.0).unwrap().to_bits(), 0x3ff2a0af5617b4b9);
-        assert_eq!(gamma_kernel(1.0 / 10.0).unwrap().to_bits(), 0x402306ea7b280d88);
-        assert_eq!(gamma_kernel(3.0 / 10.0).unwrap().to_bits(), 0x4007eebbb8aec4ab);
+        assert_eq!(
+            gamma_kernel(2.0 / 5.0).unwrap().to_bits(),
+            0x4001beca6e4dff14
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 5.0).unwrap().to_bits(),
+            0x3ff7d3bb4061b952
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 5.0).unwrap().to_bits(),
+            0x3ff2a0af5617b4b9
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 10.0).unwrap().to_bits(),
+            0x402306ea7b280d88
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 10.0).unwrap().to_bits(),
+            0x4007eebbb8aec4ab
+        );
         assert_eq!(
             gamma_kernel(1.0 + 3.0 / 10.0).unwrap().to_bits(),
             0x3fecb81477381f33
         );
-        assert_eq!(gamma_kernel(7.0 / 10.0).unwrap().to_bits(), 0x3ff4c4d5ab21ea23);
-        assert_eq!(gamma_kernel(9.0 / 10.0).unwrap().to_bits(), 0x3ff1191a68f2b5e1);
-        assert_eq!(gamma_kernel(1.0 / 7.0).unwrap().to_bits(), 0x401a313769520e5a);
+        assert_eq!(
+            gamma_kernel(7.0 / 10.0).unwrap().to_bits(),
+            0x3ff4c4d5ab21ea23
+        );
+        assert_eq!(
+            gamma_kernel(9.0 / 10.0).unwrap().to_bits(),
+            0x3ff1191a68f2b5e1
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 7.0).unwrap().to_bits(),
+            0x401a313769520e5a
+        );
         assert_eq!(
             gamma_kernel(1.0 + 1.0 / 7.0).unwrap().to_bits(),
             0x3fedef1ac182598b
@@ -2668,15 +2741,42 @@ mod tests {
             gamma_kernel(2.0 + 1.0 / 7.0).unwrap().to_bits(),
             0x3ff11aeab7b8332b
         );
-        assert_eq!(gamma_kernel(2.0 / 7.0).unwrap().to_bits(), 0x400931634450f1e8);
-        assert_eq!(gamma_kernel(3.0 / 7.0).unwrap().to_bits(), 0x40008a43968d61a6);
-        assert_eq!(gamma_kernel(4.0 / 7.0).unwrap().to_bits(), 0x3ff8eff2aa47b664);
-        assert_eq!(gamma_kernel(5.0 / 7.0).unwrap().to_bits(), 0x3ff46a774bb2e0cd);
-        assert_eq!(gamma_kernel(6.0 / 7.0).unwrap().to_bits(), 0x3ff1b138d04a62f3);
-        assert_eq!(gamma_kernel(1.0 / 12.0).unwrap().to_bits(), 0x4026ffb50d1bc6dc);
-        assert_eq!(gamma_kernel(5.0 / 12.0).unwrap().to_bits(), 0x4001053ca2989062);
-        assert_eq!(gamma_kernel(7.0 / 12.0).unwrap().to_bits(), 0x3ff87597c6695642);
-        assert_eq!(gamma_kernel(11.0 / 12.0).unwrap().to_bits(), 0x3ff0e384cb7476b6);
+        assert_eq!(
+            gamma_kernel(2.0 / 7.0).unwrap().to_bits(),
+            0x400931634450f1e8
+        );
+        assert_eq!(
+            gamma_kernel(3.0 / 7.0).unwrap().to_bits(),
+            0x40008a43968d61a6
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 7.0).unwrap().to_bits(),
+            0x3ff8eff2aa47b664
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 7.0).unwrap().to_bits(),
+            0x3ff46a774bb2e0cd
+        );
+        assert_eq!(
+            gamma_kernel(6.0 / 7.0).unwrap().to_bits(),
+            0x3ff1b138d04a62f3
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 12.0).unwrap().to_bits(),
+            0x4026ffb50d1bc6dc
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 12.0).unwrap().to_bits(),
+            0x4001053ca2989062
+        );
+        assert_eq!(
+            gamma_kernel(7.0 / 12.0).unwrap().to_bits(),
+            0x3ff87597c6695642
+        );
+        assert_eq!(
+            gamma_kernel(11.0 / 12.0).unwrap().to_bits(),
+            0x3ff0e384cb7476b6
+        );
         assert_eq!(
             gamma_kernel(1.0 + 1.0 / 12.0).unwrap().to_bits(),
             0x3feeaa46bc250925
@@ -2689,12 +2789,30 @@ mod tests {
             gamma_kernel(3.0 + 7.0 / 12.0).unwrap().to_bits(),
             0x400d2e10d85584c4
         );
-        assert_eq!(gamma_kernel(1.0 / 3.0).unwrap().to_bits(), 0x40056e77539482f2);
-        assert_eq!(gamma_kernel(2.0 / 3.0).unwrap().to_bits(), 0x3ff5aa77928c3679);
-        assert_eq!(gamma_kernel(1.0 / 9.0).unwrap().to_bits(), 0x40210b9dc79fe8d4);
-        assert_eq!(gamma_kernel(2.0 / 9.0).unwrap().to_bits(), 0x40106d2331a5de8d);
-        assert_eq!(gamma_kernel(4.0 / 9.0).unwrap().to_bits(), 0x3fffe2e4518a6b60);
-        assert_eq!(gamma_kernel(5.0 / 9.0).unwrap().to_bits(), 0x3ff99c88812c4a39);
+        assert_eq!(
+            gamma_kernel(1.0 / 3.0).unwrap().to_bits(),
+            0x40056e77539482f2
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 3.0).unwrap().to_bits(),
+            0x3ff5aa77928c3679
+        );
+        assert_eq!(
+            gamma_kernel(1.0 / 9.0).unwrap().to_bits(),
+            0x40210b9dc79fe8d4
+        );
+        assert_eq!(
+            gamma_kernel(2.0 / 9.0).unwrap().to_bits(),
+            0x40106d2331a5de8d
+        );
+        assert_eq!(
+            gamma_kernel(4.0 / 9.0).unwrap().to_bits(),
+            0x3fffe2e4518a6b60
+        );
+        assert_eq!(
+            gamma_kernel(5.0 / 9.0).unwrap().to_bits(),
+            0x3ff99c88812c4a39
+        );
         assert_eq!(
             gamma_kernel(3.0 + 5.0 / 9.0).unwrap().to_bits(),
             0x400c48114add546c
@@ -2703,28 +2821,76 @@ mod tests {
             gamma_kernel(1.0 + 7.0 / 9.0).unwrap().to_bits(),
             0x3fed9f1d49c5b48d
         );
-        assert_eq!(gamma_kernel(7.0 / 9.0).unwrap().to_bits(), 0x3ff30adbf89161c8);
-        assert_eq!(gamma_kernel(8.0 / 9.0).unwrap().to_bits(), 0x3ff13e800bd48928);
-        assert_eq!(gamma_kernel(-1.0 / 3.0).unwrap().to_bits(), 0xc0103fd9ade928da);
-        assert_eq!(gamma_kernel(-2.0 / 3.0).unwrap().to_bits(), 0xc01012d97eaf6234);
+        assert_eq!(
+            gamma_kernel(7.0 / 9.0).unwrap().to_bits(),
+            0x3ff30adbf89161c8
+        );
+        assert_eq!(
+            gamma_kernel(8.0 / 9.0).unwrap().to_bits(),
+            0x3ff13e800bd48928
+        );
+        assert_eq!(
+            gamma_kernel(-1.0 / 3.0).unwrap().to_bits(),
+            0xc0103fd9ade928da
+        );
+        assert_eq!(
+            gamma_kernel(-2.0 / 3.0).unwrap().to_bits(),
+            0xc01012d97eaf6234
+        );
         assert_eq!(gamma_kernel(-0.25).unwrap().to_bits(), 0xc0139b4e8b50f62d);
         assert_eq!(gamma_kernel(-0.2).unwrap().to_bits(), 0xc01748db2b9da1e7);
         assert_eq!(gamma_kernel(-0.125).unwrap().to_bits(), 0xc0216f374f724016);
         assert_eq!(gamma_kernel(-0.375).unwrap().to_bits(), 0xc00e9a62b6d6488b);
         assert_eq!(gamma_kernel(-0.625).unwrap().to_bits(), 0xc00e5771fe7759f3);
         assert_eq!(gamma_kernel(-0.875).unwrap().to_bits(), 0xc021386e9eef90a6);
-        assert_eq!(gamma_kernel(-5.0 / 7.0).unwrap().to_bits(), 0xc011a292496bdc89);
-        assert_eq!(gamma_kernel(-6.0 / 7.0).unwrap().to_bits(), 0xc01e8ec0a58a6611);
-        assert_eq!(gamma_kernel(-2.0 / 9.0).unwrap().to_bits(), 0xc0156c3777a38e01);
-        assert_eq!(gamma_kernel(-7.0 / 9.0).unwrap().to_bits(), 0xc0151e9af6b0b06c);
-        assert_eq!(gamma_kernel(-7.0 / 10.0).unwrap().to_bits(), 0xc011183cf1a167e7);
-        assert_eq!(gamma_kernel(-5.0 / 12.0).unwrap().to_bits(), 0xc00d59e9547e6786);
-        assert_eq!(gamma_kernel(-7.0 / 12.0).unwrap().to_bits(), 0xc00d2d8c847340a9);
-        assert_eq!(gamma_kernel(-1.0 / 16.0).unwrap().to_bits(), 0xc030a490a6519230);
-        assert_eq!(gamma_kernel(-5.0 / 16.0).unwrap().to_bits(), 0xc010dfcc07c2e191);
-        assert_eq!(gamma_kernel(-7.0 / 16.0).unwrap().to_bits(), 0xc00ced502d8aa3e2);
-        assert_eq!(gamma_kernel(-9.0 / 16.0).unwrap().to_bits(), 0xc00ccc1c3adbbfb7);
-        assert_eq!(gamma_kernel(-15.0 / 16.0).unwrap().to_bits(), 0xc030836bfc70aa15);
+        assert_eq!(
+            gamma_kernel(-5.0 / 7.0).unwrap().to_bits(),
+            0xc011a292496bdc89
+        );
+        assert_eq!(
+            gamma_kernel(-6.0 / 7.0).unwrap().to_bits(),
+            0xc01e8ec0a58a6611
+        );
+        assert_eq!(
+            gamma_kernel(-2.0 / 9.0).unwrap().to_bits(),
+            0xc0156c3777a38e01
+        );
+        assert_eq!(
+            gamma_kernel(-7.0 / 9.0).unwrap().to_bits(),
+            0xc0151e9af6b0b06c
+        );
+        assert_eq!(
+            gamma_kernel(-7.0 / 10.0).unwrap().to_bits(),
+            0xc011183cf1a167e7
+        );
+        assert_eq!(
+            gamma_kernel(-5.0 / 12.0).unwrap().to_bits(),
+            0xc00d59e9547e6786
+        );
+        assert_eq!(
+            gamma_kernel(-7.0 / 12.0).unwrap().to_bits(),
+            0xc00d2d8c847340a9
+        );
+        assert_eq!(
+            gamma_kernel(-1.0 / 16.0).unwrap().to_bits(),
+            0xc030a490a6519230
+        );
+        assert_eq!(
+            gamma_kernel(-5.0 / 16.0).unwrap().to_bits(),
+            0xc010dfcc07c2e191
+        );
+        assert_eq!(
+            gamma_kernel(-7.0 / 16.0).unwrap().to_bits(),
+            0xc00ced502d8aa3e2
+        );
+        assert_eq!(
+            gamma_kernel(-9.0 / 16.0).unwrap().to_bits(),
+            0xc00ccc1c3adbbfb7
+        );
+        assert_eq!(
+            gamma_kernel(-15.0 / 16.0).unwrap().to_bits(),
+            0xc030836bfc70aa15
+        );
     }
 
     #[test]
