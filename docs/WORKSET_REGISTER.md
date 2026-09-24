@@ -1509,6 +1509,11 @@ Current checkpoint (2026-09-24):
 
 Status: `planned`
 
+Priority (2026-09-24): this is OxFunc's core campaign. The goal is a bit-exact
+match with Excel for every implemented function, and the stock take shows the
+campaign is near its start. Entry points, in parallel: W111-1 (field), W111-2
+(ledger; the hub every closure bead now depends on), W112-P1 (`sf ask`).
+
 Execution target:
 make the Excel-parity picture for every function a declared, compiler-visible axis
 on `FunctionMeta` backed by a per-function evidence ledger, then work the broad set
