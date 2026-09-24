@@ -154,7 +154,9 @@ Each active entry should record:
   1. `=BESSELY(2.5,1)` (now bit-exact)
 
 ### KED-MATRIX-001: MINVERSE Matrix Numeric Exactness Residual
-- **Status**: `open`
+- **Status**: `closed` (2026-09-24 note: `BUG-FUNC-025` closed_signed_off, Doolittle LU
+  1599/1599 across three corpora, commit `bce3558`; the record below is kept as history.
+  The per-function picture now lives in `docs/function-lane/EXCEL_PARITY_LEDGER.csv`.)
 - **Owner**: `BUG-FUNC-025`, bead `oxf-dzfk`
 - **Functions**: `MINVERSE`
 - **Mismatch class**: matrix inversion low-bit numeric exactness
