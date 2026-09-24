@@ -1,7 +1,12 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-15` (W110 `oxf-xvt5.14`, G1-01 closed: the `OR`/`AND`
+Last reconciled: `2026-09-24` (W111-5 `oxf-mwue.5`: first live judging, on Excel
+16.0 build 20430, of 24 functions the parity ledger had as Unverified. 5 agree on every
+fresh-corpus row (ACOSH, NETWORKDAYS, NETWORKDAYS.INTL, PRICEMAT, WORKDAY.INTL); the rest
+diverge and land in the G8 inbox as rows G8-01..G8-12 pending triage. The COUPDAYSNC
+basis-0 settlement-on-the-31st rule landed and holds 65/65 held-out. Open count 17 -> 29.)
+Previous reconcile: `2026-09-15` (W110 `oxf-xvt5.14`, G1-01 closed: the `OR`/`AND`
 kernels now scan every argument, so `=OR(TRUE,1/0)` / `=AND(FALSE,1/0)` /
 `=OR(TRUE,NA())` publish `#DIV/0!` / `#DIV/0!` / `#N/A` through real dispatch,
 and a fresh live COM probe (Excel 16.0 build 20326, 111 rows, script
@@ -215,7 +220,7 @@ Open Category-2 rows: `17`
 | G5 matrix numeric/shape | 0 |
 | G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
-| G8 untriaged inbox | 0 |
+| G8 untriaged inbox | 12 |
 
 W108 resolved (bit-exact via the x87 backend, removed from tracking): `EXP`, `LN`, `LOG10`,
 `LOG(x, base)`, and `POWER` — 64-bit Excel computes these with the legacy x87 CRT
@@ -397,7 +402,24 @@ No current open rows.
 
 ## G8 — Untriaged Inbox
 
-No current open rows.
+W111-5 first live judging of previously Unverified functions (2026-09-24). Each row still
+needs triage into G1-G7 and a fix bead; the ledger (`docs/function-lane/EXCEL_PARITY_LEDGER.csv`)
+carries the per-function counts and severities.
+
+| Function(s) | Discrepancy | Sev | Mat | Evidence |
+|-------------|-------------|-----|-----|----------|
+| G8-01 — DOLLARDE | 358/1206 gross: non-power-of-ten fractions are wrong, e.g. `DOLLARDE(3.690026,10)` Excel 3.6900263 vs OxFunc 9.9002630; `DOLLARDE(1.5,1e10)` Excel 1.5 vs 3.328; `DOLLARDE(8.963035,1)` Excel 8.963035 vs 17.63. Likely digit-count/scaling rule for the fraction argument. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-02 — TBILLEQ | 367/1200 gross: e.g. 365-day bill at discount 0.49231: Excel 0.82602 vs OxFunc 0.99660. Excel switches to the quadratic (long-bill) formula beyond half a year; OxFunc uses the short-bill formula throughout. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-03 — TBILLPRICE | 14/1200 structural: Excel publishes `#NUM!` when the price would be <= 0 (discount 1-2 over a long bill); OxFunc returns the negative price. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-04 — WORKDAY | 198/1200 gross: fractional `days` (e.g. -32.5) land 3 days apart (Excel 54557 vs OxFunc 54560): the days argument is truncated differently. WORKDAY.INTL with integer days agrees 1200/1200. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-05 — YEARFRAC | 320/1503: 16 structural (negative serial: Excel `#NUM!`, OxFunc `#VALUE!`), 295 gross, 9 last-bit; gross rows not yet triaged. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-06 — ACCRINTM | 204/1206: equal issue/settlement Excel 0 vs OxFunc `#NUM!`; rate 0 Excel `#NUM!` vs OxFunc 0; basis 1 values differ (e.g. 3.77978 vs 3.77368): the Actual/actual year basis differs. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-07 — BAHTTEXT | 303/609 structural: negatives are `ลบ...` text in Excel, `#NUM!` in OxFunc; `BAHTTEXT(0.25)` omits the zero-baht prefix in Excel. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-08 — COUPDAYBS, COUPDAYS, COUPDAYSNC, COUPNCD, COUPPCD, COUPNUM | 8/48/9/12/16/1 of 1512: quarterly/semiannual schedules stepping back through February from a maturity on the 28th-30th land 1-3 days apart (e.g. COUPNCD Excel 53110 vs OxFunc 53113); COUPDAYS basis 1 quarterly Excel 89 vs 92; settlement serial 0 (COUPNUM `#NUM!` in Excel, 3 in OxFunc; COUPDAYSNC 33 vs 180). The basis-0 settlement-on-the-31st COUPDAYSNC rule (COUPDAYS - COUPDAYBS) landed 2026-09-24 and holds 65/65 on this held-out corpus. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-09 — DAYS360 | 1/1503: `DAYS360(60,61,0)` Excel 1 vs OxFunc 2; serial 60 is Excel's fictitious 1900-02-29. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-10 — ASINH | 341/1517: 339 last-bit on small |x| (Excel appears to use ln(x+sqrt(x^2+1)) directly), 2 gross; `ASINH(-0)` Excel 0 vs OxFunc -0. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-11 — KURT, SKEW | KURT 442/1504 (max 512 ULP), SKEW 444/1504 (max 3 ULP): moment-sum order or formula differs. | NUM | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-12 — NORMDIST, LOGNORM.DIST | NORMDIST 287/1505 (max 355 ULP), LOGNORM.DIST 613/1505 (max 1894 ULP), concentrated in deep tails and the PDF mode; CDF mode inherits the ERFC wall, PDF mode is independent. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
 
 New smart-fuzzer `mixed_or_open` findings land here first, then move to G1-G7
 or the context-sensitive catalog after triage.

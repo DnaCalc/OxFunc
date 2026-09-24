@@ -340,6 +340,17 @@ pub fn coupdaysnc_kernel(
 ) -> Result<f64, WorksheetErrorCode> {
     let ctx = parse_coupon_context(settlement, maturity, frequency, basis)?;
     let period = locate_coupon_period(ctx)?;
+    if ctx.basis == CouponBasis::Us30_360 {
+        // Excel publishes COUPDAYSNC on basis 0 as COUPDAYS - COUPDAYBS (E - A), not as a
+        // direct 30/360 count from settlement to the next coupon. The US 30/360 day-31 rule
+        // depends on the start date, so the direct count is one day high when settlement
+        // falls on the 31st (2020-07-31 -> 2020-10-01: Excel 60 = 90 - 30, direct count 61).
+        // The other bases are additive, so their direct counts already equal E - A.
+        // Oracle: W109 b37 battery, 1,060 COUPDAYSNC rows (W111-5, 2026-09-24).
+        let coupon_days = coupon_day_count(period.previous, period.next, ctx.basis, ctx.frequency)?;
+        let accrued = accrued_or_remaining_days(period.previous, ctx.settlement, ctx.basis)?;
+        return Ok(coupon_days - accrued);
+    }
     accrued_or_remaining_days(ctx.settlement, period.next, ctx.basis)
 }
 
@@ -538,6 +549,26 @@ mod tests {
             coupnum_kernel(settlement, maturity, 2.0, Some(1.0)),
             Ok(2.0)
         );
+    }
+
+    /// W111-5 (2026-09-24): the three b37-battery rows where a direct basis-0 count was one
+    /// day high. Excel publishes COUPDAYSNC = COUPDAYS - COUPDAYBS on basis 0.
+    #[test]
+    fn coupdaysnc_basis_zero_settlement_on_the_31st_is_coupdays_minus_coupdaybs() {
+        let cases = [
+            (serial(2020, 7, 31), serial(2025, 1, 1), 4.0, 60.0),
+            (serial(2023, 10, 31), serial(2025, 3, 1), 2.0, 120.0),
+            (serial(2020, 7, 31), serial(2025, 1, 1), 2.0, 150.0),
+        ];
+        for (settlement, maturity, frequency, excel) in cases {
+            assert_eq!(
+                coupdaysnc_kernel(settlement, maturity, frequency, Some(0.0)),
+                Ok(excel)
+            );
+            let e = coupdays_kernel(settlement, maturity, frequency, Some(0.0)).unwrap();
+            let a = coupdaybs_kernel(settlement, maturity, frequency, Some(0.0)).unwrap();
+            assert_eq!(e - a, excel);
+        }
     }
 
     #[test]

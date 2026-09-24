@@ -1,0 +1,24 @@
+FUNC.ACCRINTM              1002/1206   worst=structural worst_ulp=13731498992116 {"gross": 198, "last_bit": 4, "structural": 2}
+FUNC.ACOSH                 1510/1510   worst=none       worst_ulp=-        {}
+FUNC.ASINH                 1176/1517   worst=gross      worst_ulp=16777215 {"gross": 2, "last_bit": 339}
+FUNC.BAHTTEXT               306/609    worst=structural worst_ulp=-        {"structural": 303}
+FUNC.COUPDAYBS             1504/1512   worst=gross      worst_ulp=422212465065984 {"gross": 8}
+FUNC.COUPDAYS              1464/1512   worst=gross      worst_ulp=211106232532992 {"gross": 48}
+FUNC.COUPDAYSNC            1503/1512   worst=gross      worst_ulp=10696049115004928 {"gross": 9}
+FUNC.COUPNCD               1500/1512   worst=gross      worst_ulp=412316860416 {"gross": 12}
+FUNC.COUPNUM               1511/1512   worst=structural worst_ulp=-        {"structural": 1}
+FUNC.COUPPCD               1496/1512   worst=gross      worst_ulp=412316860416 {"gross": 16}
+FUNC.DAYS360               1502/1503   worst=gross      worst_ulp=4503599627370496 {"gross": 1}
+FUNC.DOLLARDE               848/1206   worst=gross      worst_ulp=6271351326978368 {"gross": 358}
+FUNC.KURT                  1062/1504   worst=numeric    worst_ulp=512      {"last_bit": 240, "numeric": 202}
+FUNC.LOGNORM.DIST           892/1505   worst=gross      worst_ulp=1894     {"gross": 7, "last_bit": 202, "numeric": 404}
+FUNC.NETWORKDAYS.INTL      1200/1200   worst=none       worst_ulp=-        {}
+FUNC.NETWORKDAYS           1200/1200   worst=none       worst_ulp=-        {}
+FUNC.NORMDIST              1218/1505   worst=numeric    worst_ulp=355      {"last_bit": 184, "numeric": 103}
+FUNC.PRICEMAT              1204/1204   worst=none       worst_ulp=-        {}
+FUNC.SKEW                  1060/1504   worst=last_bit   worst_ulp=3        {"last_bit": 444}
+FUNC.TBILLEQ                833/1200   worst=gross      worst_ulp=1919716914380946 {"gross": 367}
+FUNC.TBILLPRICE            1186/1200   worst=structural worst_ulp=-        {"structural": 14}
+FUNC.WORKDAY.INTL          1200/1200   worst=none       worst_ulp=-        {}
+FUNC.WORKDAY               1002/1200   worst=gross      worst_ulp=412316860416 {"gross": 198}
+FUNC.YEARFRAC              1183/1503   worst=structural worst_ulp=17193171719133 {"gross": 295, "last_bit": 9, "structural": 16}
