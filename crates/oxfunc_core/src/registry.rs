@@ -84,6 +84,16 @@ pub struct RegistryFunctionMeta {
     /// `version_key()` convention OxFml already consumes. Any change to a projected axis value
     /// advances this key, so a downstream consumer invalidates on it like the other signals.
     pub function_spec_axes_metadata_version: String,
+    /// Projected `FunctionMeta::excel_parity` status key (`unverified`, `consistent`,
+    /// `characterized`, `divergent`, `deferred`; ODR-FN-005). An evidence fact, deliberately
+    /// kept OUT of [`FunctionSpecAxesMetadata`] so a parity-ledger update never advances the
+    /// `function_spec_axes_metadata` version key OxFml invalidates on.
+    pub excel_parity_status: String,
+    /// Projected severity key when the status is `divergent` (`last_bit`, `numeric`, `gross`,
+    /// `structural`), else `None`.
+    pub excel_parity_severity: Option<String>,
+    /// Projected `as_of` of the parity evidence; empty for `unverified`.
+    pub excel_parity_as_of: String,
 }
 
 impl From<FunctionMeta> for RegistryFunctionMeta {
@@ -112,6 +122,13 @@ impl From<FunctionMeta> for RegistryFunctionMeta {
             producer_capability_set_keys: producer_capability_set_keys_for_id(meta.function_id),
             function_spec_axes_metadata_version: function_spec_axes_metadata.version_key(),
             function_spec_axes_metadata,
+            excel_parity_status: meta.excel_parity.status.key().to_string(),
+            excel_parity_severity: meta
+                .excel_parity
+                .status
+                .severity()
+                .map(|severity| severity.key().to_string()),
+            excel_parity_as_of: meta.excel_parity.as_of.to_string(),
         }
     }
 }
@@ -1337,6 +1354,9 @@ fn udf_entry_from_request(request: UdfRegistrationRequest) -> FunctionEntry {
             producer_capability_set_keys: capability_keys,
             function_spec_axes_metadata_version: function_spec_axes_metadata.version_key(),
             function_spec_axes_metadata,
+            excel_parity_status: FunctionMeta::DEFAULT_EXCEL_PARITY.status.key().to_string(),
+            excel_parity_severity: None,
+            excel_parity_as_of: String::new(),
         },
         surface_name: surface_name.clone(),
         display_signature: SignatureForm {
@@ -2520,6 +2540,58 @@ mod tests {
         assert!(change_set.removed_function_ids.is_empty());
     }
 
+    /// W111-1 (oxf-mwue.1, ODR-FN-005): the parity picture is exported as three columns on
+    /// `RegistryFunctionMeta`, every catalog spec starts `Unverified`, and the columns sit OUTSIDE
+    /// the projected axes, so a parity change can never move the `function_spec_axes_metadata`
+    /// version key OxFml invalidates on.
+    #[test]
+    fn excel_parity_is_exported_outside_the_axes_version_key() {
+        use crate::function::{DivergenceSeverity, ExcelParity, ExcelParityStatus};
+
+        for meta in xll_export_specs::function_catalog() {
+            assert_eq!(
+                meta.excel_parity,
+                FunctionMeta::DEFAULT_EXCEL_PARITY,
+                "{}: no spec is populated before W111-3",
+                meta.function_id
+            );
+        }
+        let abs = xll_export_specs::function_catalog()
+            .iter()
+            .find(|m| m.function_id == "FUNC.ABS")
+            .expect("ABS must be in the catalog");
+        let exported = RegistryFunctionMeta::from(*abs);
+        assert_eq!(exported.excel_parity_status, "unverified");
+        assert_eq!(exported.excel_parity_severity, None);
+        assert_eq!(exported.excel_parity_as_of, "");
+
+        let mut divergent = *abs;
+        divergent.excel_parity = ExcelParity {
+            status: ExcelParityStatus::Divergent {
+                severity: DivergenceSeverity::LastBit,
+            },
+            as_of: "2026-09-24",
+        };
+        let exported_divergent = RegistryFunctionMeta::from(divergent);
+        assert_eq!(exported_divergent.excel_parity_status, "divergent");
+        assert_eq!(
+            exported_divergent.excel_parity_severity.as_deref(),
+            Some("last_bit")
+        );
+        assert_eq!(exported_divergent.excel_parity_as_of, "2026-09-24");
+        assert_eq!(
+            exported_divergent.function_spec_axes_metadata_version,
+            exported.function_spec_axes_metadata_version,
+            "a parity change must not move the function_spec_axes_metadata version key"
+        );
+        assert!(
+            exported
+                .function_spec_axes_metadata_version
+                .starts_with("function_spec_axes_metadata.v2;")
+        );
+        assert!(DivergenceSeverity::LastBit < DivergenceSeverity::Structural);
+    }
+
     fn test_udf_entry(function_id: &str, surface_name: &str) -> FunctionEntry {
         FunctionEntry {
             meta: RegistryFunctionMeta {
@@ -2559,6 +2631,9 @@ mod tests {
                 function_spec_axes_metadata: FunctionSpecAxesMetadata::default_axes(),
                 function_spec_axes_metadata_version: FunctionSpecAxesMetadata::default_axes()
                     .version_key(),
+                excel_parity_status: "unverified".to_string(),
+                excel_parity_severity: None,
+                excel_parity_as_of: String::new(),
             },
             surface_name: surface_name.to_string(),
             display_signature: SignatureForm {

@@ -369,6 +369,83 @@ impl ArgumentLazinessProfile {
     }
 }
 
+/// Current Excel-parity picture for a function (ODR-FN-005). Provisional: it says what the
+/// evidence in `docs/function-lane/EXCEL_PARITY_LEDGER.csv` supports as of `as_of`, on the
+/// Excel builds judged so far. An evidence fact, not a semantic one: it is exported on
+/// `RegistryFunctionMeta` directly and never enters the `function_spec_axes_metadata` version
+/// key OxFml invalidates on, so a ledger update does not look like a semantic change downstream.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ExcelParity {
+    pub status: ExcelParityStatus,
+    /// Date or snapshot key of the evidence this value was set from; empty for `Unverified`.
+    pub as_of: &'static str,
+}
+
+/// Evidence strength for a function's match with Excel (ODR-FN-005 section 2). One known
+/// differing row makes a function `Divergent`, however many rows agree elsewhere.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExcelParityStatus {
+    /// No oracle evidence for this surface. The default for every spec.
+    Unverified,
+    /// Every judged row agrees with Excel, but the rows are a fitted or local suite and there is
+    /// no identified kernel story. "We have not yet seen a miss."
+    Consistent,
+    /// Every judged row agrees with Excel, the kernel (or exact-by-construction nature) is
+    /// written down, and at least one fresh held-out sweep (ODR-FN-005 section 4) exists.
+    Characterized,
+    /// At least one known row differs from Excel. Confidence of exactness is zero.
+    Divergent { severity: DivergenceSeverity },
+    /// Outside the campaign by policy. Only `CUBE*`, `WEBSERVICE`, `STOCKHISTORY`.
+    Deferred,
+}
+
+/// Size of the worst known divergence; a function carries its worst class. Orders the campaign
+/// and never softens a `Divergent` verdict.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum DivergenceSeverity {
+    /// At most 4 ULP on every known miss, same sign, magnitude and type.
+    LastBit,
+    /// 5 to 1024 ULP. Right algorithm, wrong op-graph or coefficients.
+    Numeric,
+    /// More than 1024 ULP, wrong magnitude or sign. Wrong algorithm or solver.
+    Gross,
+    /// Wrong type, error code, shape, text, or error-vs-value.
+    Structural,
+}
+
+impl ExcelParityStatus {
+    /// Stable export key for the status (registry export column `excel_parity_status`).
+    pub const fn key(self) -> &'static str {
+        match self {
+            Self::Unverified => "unverified",
+            Self::Consistent => "consistent",
+            Self::Characterized => "characterized",
+            Self::Divergent { .. } => "divergent",
+            Self::Deferred => "deferred",
+        }
+    }
+
+    /// The severity when `Divergent`, else `None`.
+    pub const fn severity(self) -> Option<DivergenceSeverity> {
+        match self {
+            Self::Divergent { severity } => Some(severity),
+            _ => None,
+        }
+    }
+}
+
+impl DivergenceSeverity {
+    /// Stable export key for the severity (registry export column `excel_parity_severity`).
+    pub const fn key(self) -> &'static str {
+        match self {
+            Self::LastBit => "last_bit",
+            Self::Numeric => "numeric",
+            Self::Gross => "gross",
+            Self::Structural => "structural",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum KernelSignatureClass {
     NullaryConst,
@@ -461,6 +538,11 @@ pub struct FunctionMeta {
     /// branch selectors (`IF`, `IFS`, `CHOOSE`, `SWITCH`, `IFERROR`, `IFNA`) name a non-default
     /// variant.
     pub argument_laziness_profile: ArgumentLazinessProfile,
+    /// The current Excel-parity picture for this function (see [`ExcelParity`], ODR-FN-005),
+    /// set from `docs/function-lane/EXCEL_PARITY_LEDGER.csv`. An evidence fact, not a
+    /// behavioural axis: no evaluator reads it. Functions with no oracle evidence carry
+    /// [`FunctionMeta::DEFAULT_EXCEL_PARITY`].
+    pub excel_parity: ExcelParity,
 }
 
 impl FunctionMeta {
@@ -531,8 +613,16 @@ impl FunctionMeta {
     pub const DEFAULT_ARGUMENT_LAZINESS_PROFILE: ArgumentLazinessProfile =
         ArgumentLazinessProfile::Eager;
 
+    /// No oracle evidence yet: `Unverified`, empty `as_of`. Every spec starts here; W111-3
+    /// populates the specs from the parity ledger.
+    pub const DEFAULT_EXCEL_PARITY: ExcelParity = ExcelParity {
+        status: ExcelParityStatus::Unverified,
+        as_of: "",
+    };
+
     /// The default-fill base the [`function_spec!`] macro draws every *omitted* DEFAULTABLE axis
-    /// from. Each of the six defaultable axes is set to its `DEFAULT_*` here; the ten intrinsic
+    /// from. Each of the seven defaultable fields (six behavioural axes plus the `excel_parity` evidence
+    /// fact) is set to its `DEFAULT_*` here; the ten intrinsic
     /// per-function fields carry placeholder values that the macro caller ALWAYS shadows (every
     /// `function_spec!` invocation states all ten intrinsic fields by name, so the placeholders
     /// are never observed in a generated meta — they exist only so this is a complete, valid
@@ -563,6 +653,7 @@ impl FunctionMeta {
         error_collapse_profile: Self::DEFAULT_ERROR_COLLAPSE_PROFILE,
         precision_rounding_profile: Self::DEFAULT_PRECISION_ROUNDING_PROFILE,
         argument_laziness_profile: Self::DEFAULT_ARGUMENT_LAZINESS_PROFILE,
+        excel_parity: Self::DEFAULT_EXCEL_PARITY,
     };
 }
 
@@ -572,10 +663,10 @@ impl FunctionMeta {
 /// Usage — state the ten intrinsic per-function fields (which have no single default:
 /// `function_id`, `arity`, `determinism`, `volatility`, `host_interaction`, `thread_safety`,
 /// `coercion_lift_profile`, `kernel_signature_class`, `fec_dependency_profile`,
-/// `surface_fec_dependency_profile`) and, optionally, any of the six DEFAULTABLE axes that
+/// `surface_fec_dependency_profile`) and, optionally, any of the seven DEFAULTABLE fields that
 /// deviate from the default (`arg_preparation_profile`, `lift_broadcast_profile`,
 /// `real_result_policy`, `error_collapse_profile`, `precision_rounding_profile`,
-/// `argument_laziness_profile`). Fields may be
+/// `argument_laziness_profile`, `excel_parity`). Fields may be
 /// written in any order; any defaultable axis NOT named is filled from
 /// [`FunctionMeta::DEFAULTS_BASE`]:
 ///
