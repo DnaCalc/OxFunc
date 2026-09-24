@@ -968,7 +968,9 @@ Notes:
 
 ## W098 Unified Value Model — CalcValue And Callable Rich
 
-Status: `planned`
+Status: `landed`
+
+Sweep 2026-09-24: CalcValue {core, rich}, CallableValue and RichValue::Callable are native; EvalValue has 0 matches. Execution ran under W099; epic `oxf-51fn` closed.
 
 Execution target:
 replace OxFunc's evaluation value type `EvalValue` with a single uniform
@@ -1011,7 +1013,9 @@ Notes:
 
 ## W099 CalcValue End-To-End Migration
 
-Status: `planned`
+Status: `in_progress`
+
+Sweep 2026-09-24: 23 of 25 children closed plus `.15` (legacy deletion: every listed type has 0 matches). Only `oxf-im4m.16` remains: run the OxFunc/OxFml/OxCalc suites and record the audit.
 
 Execution target:
 execute the full OxFunc migration from the legacy `EvalValue` / `CallArgValue` /
@@ -1064,6 +1068,8 @@ Notes:
 
 Status: `in_progress`
 
+Sweep 2026-09-24: the checkpoint below is stale. Explicit `@` parses since OxFml `b1dab42` (`oxf-acdw.1.1` closed). The known reds are now FN-CHOOSE-01/FN-SWITCH-01/FN-IFS-01 after OxFml `5526154` (lazy branches), tracked by W110 `oxf-xvt5.9`; `oxf-acdw.1` closes with it.
+
 Execution target:
 restore the OxFunc/OxFml evidence seam enough that W100 integration failures are
 either green or represented by concrete blockers and registered handoffs.
@@ -1086,7 +1092,9 @@ Current checkpoint:
 
 ## W102 Structural Fix Batch And Probe Queue
 
-Status: `in_progress`
+Status: `closed`
+
+Sweep 2026-09-24: W102A landed (`7a0003f`); BUG-FUNC-034/036-041 closed; W102B lanes closed (`oxf-acdw.3`) with the GAMMA.INV tail moved to W111-9.
 
 Execution target:
 turn the current W102A review-derived structural cleanup work into a reviewable
@@ -1149,7 +1157,9 @@ Supersession note:
 
 ## W104 Invocation Test Category Split And Context-Sensitive Catalog
 
-Status: `in_progress`
+Status: `closed`
+
+Sweep 2026-09-24: Cat-1 catalog published (`catalog-v0.json`, CSC-0001..0025) and the Cat-2 probe lane built; Excel-side comparison superseded by W112-P2/P3 and W111-6; the downstream runner (`oxf-oyrz.5`) moved under W112-P5.
 
 Execution target:
 operationalize `ODR-FN-002` by splitting in-scope invocations under test into
@@ -1269,7 +1279,9 @@ Notes:
 
 ## W108 Excel Numeric Core And Financial/POWER Exactness
 
-Status: `in_progress`
+Status: `closed_superseded_by_W109`
+
+Sweep 2026-09-24: EXP/LN/LOG10/LOG (x87 CRT chain) and POWER landed; PMT, RATE/IRR and the expm1 remainder moved into W109, with `oxf-fckb` carrying `wall:pmt-expm1` under `oxf-jwh5`.
 
 Execution target:
 make Excel's elementary numeric model explicit and bit-exact on the declared
