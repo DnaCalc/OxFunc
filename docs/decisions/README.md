@@ -27,3 +27,4 @@ Each decision is a separate file: `ODR-FN-NNN-<SLUG>.md`
 | ODR-FN-002 | Invocation Test Category Split — Context-Sensitive vs Locally-Evaluable | accepted | 2026-06-18 | `ODR-FN-002-invocation-test-category-split.md` |
 | ODR-FN-003 | Single OxFunc↔Excel Discrepancy Catalog | accepted | 2026-06-19 | `ODR-FN-003-single-discrepancy-catalog.md` |
 | ODR-FN-004 | Declarative Function-Behaviour Spec and Single Generic Executor | accepted | 2026-06-19 | `ODR-FN-004-declarative-function-spec-and-generic-executor.md` |
+| ODR-FN-005 | Excel Parity Status Axis on FunctionMeta | proposed | 2026-09-22 | `ODR-FN-005-excel-parity-status-axis.md` |

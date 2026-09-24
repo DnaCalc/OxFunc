@@ -1223,7 +1223,7 @@ Notes:
 
 ## W107 Smart-Fuzzer Testing Infrastructure Roadmap
 
-Status: `planned`
+Status: `absorbed_into_W112` (2026-09-22; bead-by-bead mapping in `docs/worksets/W112_PARITY_DRIVER_CONSOLIDATION.md` section 9)
 
 Execution target:
 turn the existing smart-fuzzer explorers, run guides, and planning contracts
@@ -1455,3 +1455,64 @@ Current checkpoint (2026-08-09):
 13. The campaign exit gate is `GLOBAL_OXFUNC_EXCEL_BIT_IDENTITY`; catalog-zero
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.
+
+## W111 Excel Parity Status Axis And Broad Closure
+
+Status: `planned`
+
+Execution target:
+make the Excel-parity picture for every function a declared, compiler-visible axis
+on `FunctionMeta` backed by a per-function evidence ledger, then work the broad set
+of non-exact surfaces in severity/breadth order rather than depth-first into the
+hardest walls. Only `CUBE*`, `WEBSERVICE`, `STOCKHISTORY` stay deferred; every
+other function is in scope for a bit-exact match with Excel, and any status is
+provisional.
+
+Canonical surfaces:
+1. `docs/decisions/ODR-FN-005-excel-parity-status-axis.md`
+2. `docs/function-lane/EXCEL_PARITY_LEDGER.csv` (to be created)
+3. `docs/function-lane/BIT_EXACT_STOCK_TAKE_20260922.md`
+4. `docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md`
+5. `smart-fuzzer/planning/FUNCTION_STATUS_MAP.md` (regenerated from the ledger)
+6. `crates/oxfunc_core/src/function.rs` (`ExcelParity`, `ExcelParityStatus`)
+7. `.beads/` epic `oxf-mwue` and child lanes
+
+Depends on:
+`W109` (walls stay there), `W110` (FunctionMeta axis pattern), the W107 oracle
+plumbing.
+
+Rules:
+1. any known differing row = `Divergent`, confidence zero, whatever the agreement
+   count elsewhere,
+2. severity (`LastBit`, `Numeric`, `Gross`, `Structural`) orders the campaign and
+   never softens a verdict,
+3. partial-domain agreement is evidence to build on, never a tick,
+4. `Characterized` needs a held-out sweep under ODR-FN-005 §4 and a kernel story,
+   and stays provisional.
+
+## W112 Parity Driver: Smart-Fuzzer As The One Engine
+
+Status: `planned`
+
+Execution target:
+one CLI (`sf`) that reads the W111 ExcelParity ledger, says what is worth
+doing next, runs it, and writes the answer back as a proposal. The racer, the
+oracle, the generators and the fixture lanes are the tools it calls. The
+split that matters: `sf ask` is the only thing that touches Excel; everything
+else is offline.
+
+Canonical surfaces:
+1. `docs/worksets/W112_PARITY_DRIVER_CONSOLIDATION.md`
+2. `docs/decisions/ODR-FN-005-excel-parity-status-axis.md`
+3. `docs/SMART_SEARCH_AND_ACTIVE_LEARNING_LOOP.md` (how to drive `sf race`)
+4. `smart-fuzzer/engine/` (to be created), `smart-fuzzer/tools/calc_graph_racer/`
+5. `.beads/` epic `oxf-irnl`
+
+Depends on:
+`W111` (.1 to .3), `W109` tooling. Absorbs W107.
+
+Rules:
+1. the engine never changes production semantics,
+2. only typed-bit comparison against live Excel through Value2 is evidence,
+3. black-box only,
+4. the engine proposes ledger updates; a human accepts them.
