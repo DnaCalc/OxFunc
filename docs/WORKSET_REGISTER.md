@@ -1456,6 +1456,43 @@ Current checkpoint (2026-08-09):
    alone is insufficient without a fresh broad discovery sweep and the
    OPERATIONS Sections 12 and 14 global audits.
 
+## W110 Measured Excel Value Slice
+
+Status: `in_progress`
+
+Execution target:
+OxFunc's slice of the Measured Excel campaign
+(`../Foundation/notes/PROGRAM_INVESTIGATION_2026-09-10.md` section 3 W3/W4):
+blank-cell coercion across the scalar numeric/text/logical surfaces, a
+Send-safe value model (`Rc` -> `Arc` in `oxfunc_value_types`, `OpaqueCallable:
+Send + Sync`), the wire-schema id as one exported constant with a validator,
+and the per-function `argument_laziness_profile` axis on `FunctionMeta`
+(HANDOFF-OXFUNC-007). Runs beside, never blocking, the W109 last-bit lane.
+
+Canonical surfaces:
+1. `.beads/` epic `oxf-xvt5` and child lanes
+2. `crates/oxfunc_value_types/src/lib.rs`
+3. `crates/oxfunc_core/src/function.rs` (`argument_laziness_profile`)
+4. `docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md` G1 rows
+
+Depends on:
+`W105` (FunctionMeta axis pattern), OxFml acknowledgement for seam items
+(HO-FN-020, HO-FN-021).
+
+Current checkpoint (2026-09-24):
+1. landed: blank-cell coercion reproduce/fix (`.1`), Rc -> Arc (`.2`),
+   wire-schema constant (`.3`), send-values default ON (`.10`), laziness
+   profile axis (`.13`), AND/OR later-argument error scan (`.14`, G1-01 closed).
+2. in progress: AND/OR/XOR direct-text route (`.15`, catalog G1-02 still open;
+   W111-6 re-judges and retires the row after it lands).
+3. open: Lean blank-as-zero alignment (`.4`), blank-handling axis (`.5`),
+   off-funnel blank oracle checks (`.6`), live sign-off of the 32 blank-cell
+   truth-table rows (`.7`), hygiene reds (`.8`, `.9`, `.11`), Rc-arm
+   retirement (`.12`).
+4. carried: `oxf-v8ui` LET/LAMBDA/SINGLE ownership review (ODR-FN-006). It
+   reverses the W110-4 test that keeps LET/LAMBDA out of the catalog, so it
+   sits under this epic.
+
 ## W111 Excel Parity Status Axis And Broad Closure
 
 Status: `planned`
