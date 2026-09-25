@@ -234,28 +234,6 @@ fn d360eu(s: i64, e: i64) -> Result<f64, BondCoreEvalError> {
     }
     Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
 }
-fn actact(s: i64, e: i64) -> Result<f64, BondCoreEvalError> {
-    if e <= s {
-        return Ok(0.0);
-    }
-    let (sy, _, _) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
-        .ok_or(derr(WorksheetErrorCode::Value))?;
-    let (ey, _, _) = ymd_from_excel_serial(WorkbookDateSystem::System1900, e as f64)
-        .ok_or(derr(WorksheetErrorCode::Value))?;
-    if sy == ey {
-        return Ok(act(s, e) / dyear(sy));
-    }
-    let sny = excel_serial_from_ymd(WorkbookDateSystem::System1900, sy + 1, 1, 1)
-        .ok_or(derr(WorksheetErrorCode::Value))? as i64;
-    let eys = excel_serial_from_ymd(WorkbookDateSystem::System1900, ey, 1, 1)
-        .ok_or(derr(WorksheetErrorCode::Value))? as i64;
-    let mut t = act(s, sny) / dyear(sy);
-    for _ in (sy + 1)..ey {
-        t += 1.0;
-    }
-    t += act(eys, e) / dyear(ey);
-    Ok(t)
-}
 fn less_or_equal_to_a_year_apart(s: i64, e: i64) -> Result<bool, BondCoreEvalError> {
     let (sy, sm, sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
         .ok_or(derr(WorksheetErrorCode::Value))?;
@@ -316,7 +294,10 @@ fn days_in_year_for_mat(s: i64, e: i64, b: DayCountBasis) -> Result<f64, BondCor
 fn yf(s: i64, e: i64, b: DayCountBasis) -> Result<f64, BondCoreEvalError> {
     match b {
         DayCountBasis::Us30_360 => Ok(d360us(s, e)? / 360.0),
-        DayCountBasis::ActualActual => actact(s, e),
+        // Excel's actual/actual rule, shared with YEARFRAC basis 1 (W111-5 G8-06).
+        DayCountBasis::ActualActual => {
+            crate::functions::day_count_common::excel_actual_actual_fraction(s, e).map_err(derr)
+        }
         DayCountBasis::Actual360 => Ok(act(s, e) / 360.0),
         DayCountBasis::Actual365 => Ok(act(s, e) / 365.0),
         DayCountBasis::European30_360 => Ok(d360eu(s, e)? / 360.0),
@@ -523,10 +504,12 @@ pub fn accrintm_kernel(
 ) -> Result<f64, BondCoreEvalError> {
     let issue = dser(issue)?;
     let settlement = dser(settlement)?;
-    let rate_ = rate(rate_)?;
+    // ACCRINTM needs a strictly positive rate (rate 0 is #NUM!), and equal issue and
+    // settlement dates accrue 0 rather than #NUM! (live Excel 20430, W111-5 G8-06).
+    let rate_ = pos(rate_)?;
     let par = pos(par.unwrap_or(1000.0))?;
     let basis_ = basis(basis_.unwrap_or(0.0))?;
-    if issue >= settlement {
+    if issue > settlement {
         return Err(derr(WorksheetErrorCode::Num));
     }
     Ok(par * rate_ * yf(issue, settlement, basis_)?)
@@ -1975,4 +1958,17 @@ mod tests {
             "yield-par must be unchanged"
         );
     }
+
+    /// W111-5 G8-06, live Excel 20430: ACCRINTM basis 1 uses Excel's actual/actual rule,
+    /// equal dates accrue 0, and a zero rate is #NUM!.
+    #[test]
+    fn accrintm_actual_actual_and_edges_match_excel() {
+        // 2036-10-31 .. 2037-02-13: 105 days over a 365-day year
+        let v = accrintm_kernel(49979.0, 50084.0, 0.13139245608065744, Some(100.0), Some(1.0)).unwrap();
+        assert_eq!(v, 100.0 * 0.13139245608065744 * (105.0 / 365.0));
+        assert_eq!(accrintm_kernel(40000.0, 40000.0, 0.05, Some(1000.0), Some(0.0)).unwrap(), 0.0);
+        assert!(accrintm_kernel(40001.0, 40000.0, 0.05, Some(1000.0), Some(0.0)).is_err());
+        assert!(accrintm_kernel(40000.0, 40100.0, 0.0, Some(1000.0), Some(0.0)).is_err());
+    }
+
 }

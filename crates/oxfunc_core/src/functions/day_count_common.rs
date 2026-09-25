@@ -1,4 +1,4 @@
-use crate::locale_format::{WorkbookDateSystem, ymd_from_excel_serial};
+use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::value::WorksheetErrorCode;
 
 fn days_in_month(year: i64, month: i64) -> i64 {
@@ -114,4 +114,56 @@ mod tests {
             Ok(46.0)
         );
     }
+}
+
+fn real_days_in_year(year: i64) -> f64 {
+    if (year % 4 == 0 && year % 100 != 0) || year % 400 == 0 {
+        366.0
+    } else {
+        365.0
+    }
+}
+
+/// Excel's actual/actual year fraction (YEARFRAC basis 1, and ACCRINTM basis 1), for
+/// `start <= end` serials. Not the ISDA per-year split:
+///
+/// * if the dates are at most a year apart (same year, or the next year on an earlier or
+///   equal month/day), the year length is 366 when both dates are in one leap year or a Feb 29
+///   lies in the span (start before 1 March of a leap start year, or end on/after 1 March of a
+///   leap end year, or the end is a Feb 29), else 365, and the fraction is days / year length;
+/// * otherwise days / (days in the whole years start..=end / number of years), the year total
+///   on the real calendar while `days` is the serial difference (so it includes Excel's
+///   fictitious 1900-02-29).
+///
+/// The rule is David Wheeler's YEARFRAC analysis (used by Gnumeric and LibreOffice);
+/// reproduced on live Excel 20430 on two fresh corpora (W111-5 G8-05, G8-06).
+pub fn excel_actual_actual_fraction(start: i64, end: i64) -> Result<f64, WorksheetErrorCode> {
+    let ymd = |serial: i64| {
+        ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64)
+            .ok_or(WorksheetErrorCode::Value)
+    };
+    let serial_of = |y: i64, m: i64, d: i64| {
+        excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d)
+            .map(|v| v as i64)
+            .ok_or(WorksheetErrorCode::Value)
+    };
+    let is_leap = |y: i64| real_days_in_year(y) == 366.0;
+    let (sy, sm, sd) = ymd(start)?;
+    let (ey, em, ed) = ymd(end)?;
+    let days = (end - start) as f64;
+    let within_a_year = sy == ey || (ey == sy + 1 && (sm > em || (sm == em && sd >= ed)));
+    if within_a_year {
+        let feb29_in_span = (is_leap(sy) && start < serial_of(sy, 3, 1)?)
+            || (is_leap(ey) && end >= serial_of(ey, 3, 1)?)
+            || (em == 2 && ed == 29);
+        let year_length = if (sy == ey && is_leap(sy)) || feb29_in_span {
+            366.0
+        } else {
+            365.0
+        };
+        return Ok(days / year_length);
+    }
+    let years = (ey - sy + 1) as f64;
+    let days_in_years: f64 = (sy..=ey).map(real_days_in_year).sum();
+    Ok(days / (days_in_years / years))
 }

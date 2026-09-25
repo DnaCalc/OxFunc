@@ -1,0 +1,10 @@
+{
+ "FUNC.ACCRINTM": {
+  "rows_judged": 2412,
+  "rows_agree": 2412,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ }
+}

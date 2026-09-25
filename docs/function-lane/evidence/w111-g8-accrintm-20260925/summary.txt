@@ -1,0 +1,1 @@
+FUNC.ACCRINTM              2412/2412   worst=none       worst_ulp=- {}

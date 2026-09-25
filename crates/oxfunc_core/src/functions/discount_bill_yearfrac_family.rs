@@ -138,14 +138,6 @@ fn parse_date_serial(value: f64) -> Result<i64, DiscountBillYearfracEvalError> {
     Ok(serial)
 }
 
-fn days_in_year(year: i64) -> f64 {
-    if (year % 4 == 0 && year % 100 != 0) || year % 400 == 0 {
-        366.0
-    } else {
-        365.0
-    }
-}
-
 fn actual_days(start: i64, end: i64) -> f64 {
     (end - start) as f64
 }
@@ -173,48 +165,11 @@ fn days360_eu(start: i64, end: i64) -> Result<f64, DiscountBillYearfracEvalError
     Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
 }
 
-/// Excel's YEARFRAC basis 1 (actual/actual), which is not the ISDA per-year split:
-///
-/// * if the dates are at most a year apart (same year, or the next year on an earlier or
-///   equal month/day), the year length is 366 when both dates are in one leap year or a Feb 29
-///   lies in the span (start before 1 March of a leap start year, or end on/after 29 February of
-///   a leap end year), else 365, and the fraction is days / year length;
-/// * otherwise the fraction is days / (days in the whole years start..=end / number of years).
-///
-/// This is the rule documented by David Wheeler's YEARFRAC analysis and used by Gnumeric and
-/// LibreOffice; it reproduces live Excel 20430 on two fresh corpora (W111-5 G8-05).
+/// Excel's actual/actual (YEARFRAC basis 1): see
+/// [`crate::functions::day_count_common::excel_actual_actual_fraction`].
 fn actual_actual_positive(start: i64, end: i64) -> Result<f64, DiscountBillYearfracEvalError> {
-    let value_err = || DiscountBillYearfracEvalError::Domain(WorksheetErrorCode::Value);
-    let ymd = |serial: i64| {
-        ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64).ok_or_else(value_err)
-    };
-    let serial_of = |y: i64, m: i64, d: i64| {
-        excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d)
-            .map(|v| v as i64)
-            .ok_or_else(value_err)
-    };
-    let is_leap = |y: i64| days_in_year(y) == 366.0;
-    let (sy, sm, sd) = ymd(start)?;
-    let (ey, em, ed) = ymd(end)?;
-    let days = actual_days(start, end);
-    let within_a_year = sy == ey || (ey == sy + 1 && (sm > em || (sm == em && sd >= ed)));
-    if within_a_year {
-        let feb29_in_span = (is_leap(sy) && start < serial_of(sy, 3, 1)?)
-            || (is_leap(ey) && end >= serial_of(ey, 3, 1)?)
-            || (em == 2 && ed == 29);
-        let year_length = if (sy == ey && is_leap(sy)) || feb29_in_span {
-            366.0
-        } else {
-            365.0
-        };
-        return Ok(days / year_length);
-    }
-    // The year total uses the real calendar (1900 has 365 days), while `days` is the serial
-    // difference and so includes Excel's fictitious 1900-02-29: a span starting in 1900 differs
-    // from a serial-based total (live Excel 20430, G8-05).
-    let years = (ey - sy + 1) as f64;
-    let days_in_years: f64 = (sy..=ey).map(days_in_year).sum();
-    Ok(days / (days_in_years / years))
+    crate::functions::day_count_common::excel_actual_actual_fraction(start, end)
+        .map_err(DiscountBillYearfracEvalError::Domain)
 }
 
 fn yearfrac_positive(
