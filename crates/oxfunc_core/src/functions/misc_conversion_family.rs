@@ -84,7 +84,7 @@ const THAI_DIGITS: [&str; 10] = [
 ];
 const THAI_PLACES: [&str; 6] = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน"];
 
-fn render_thai_under_million(mut value: u32) -> String {
+fn render_thai_under_million(mut value: u32, has_higher_digits: bool) -> String {
     if value == 0 {
         return String::new();
     }
@@ -106,7 +106,11 @@ fn render_thai_under_million(mut value: u32) -> String {
                 out.push_str(THAI_DIGITS[digit as usize]);
                 out.push_str("สิบ");
             }
-            0 if digit == 1 && digits[1..].iter().any(|d| *d != 0) => out.push_str("เอ็ด"),
+            // "เอ็ด" for a final 1 after any higher digit, including a higher million group:
+            // 1,000,001 is "หนึ่งล้านเอ็ด" (live Excel 20430, W111-5 G8-07).
+            0 if digit == 1 && (has_higher_digits || digits[1..].iter().any(|d| *d != 0)) => {
+                out.push_str("เอ็ด")
+            }
             0 => out.push_str(THAI_DIGITS[digit as usize]),
             _ => {
                 out.push_str(THAI_DIGITS[digit as usize]);
@@ -131,7 +135,8 @@ fn render_thai_integer(mut value: u128) -> String {
         if *group == 0 {
             continue;
         }
-        out.push_str(&render_thai_under_million(*group));
+        let has_higher_groups = groups[idx + 1..].iter().any(|g| *g != 0);
+        out.push_str(&render_thai_under_million(*group, has_higher_groups));
         for _ in 0..idx {
             out.push_str("ล้าน");
         }
@@ -139,22 +144,55 @@ fn render_thai_integer(mut value: u128) -> String {
     out
 }
 
+/// The amount in satang (hundredths): the value is first rounded to 15 significant digits,
+/// then to two decimals half away from zero in decimal, so 1.005 is 1 baht 1 satang, 0.995 is
+/// one baht, and 9,999,999,999,999,998 reads as 10^16 (live Excel 20430, W111-5 G8-07).
+fn bahttext_satang(magnitude: f64) -> u128 {
+    if magnitude == 0.0 {
+        return 0;
+    }
+    // 15 significant digits: d.dddddddddddddd e X
+    let text = format!("{magnitude:.14e}");
+    let (mantissa, exponent) = text.split_once('e').expect("exponent form");
+    let digits: u128 = mantissa.replace('.', "").parse().expect("15 digits");
+    let exponent: i32 = exponent.parse().expect("exponent");
+    // value = digits * 10^(exponent - 14); satang = value * 100 = digits * 10^(exponent - 12)
+    let shift = exponent - 12;
+    if shift >= 0 {
+        return digits * 10u128.pow(shift as u32);
+    }
+    let divisor = 10u128.pow((-shift) as u32);
+    let (quotient, remainder) = (digits / divisor, digits % divisor);
+    if remainder * 2 >= divisor { quotient + 1 } else { quotient }
+}
+
 pub fn bahttext_kernel(value: f64) -> Result<ExcelText, WorksheetErrorCode> {
     if !value.is_finite() {
         return Err(WorksheetErrorCode::Value);
     }
-    if value < 0.0 || value > 9_999_999_999_999_999.0 {
+    // Negative amounts are spelled with a leading "ลบ" (minus), and an amount under one baht
+    // omits the "ศูนย์บาท" (zero baht) part: BAHTTEXT(-5) is "ลบห้าบาทถ้วน", BAHTTEXT(0.25) is
+    // "ยี่สิบห้าสตางค์" (live Excel 20430, W111-5 G8-07).
+    let magnitude = value.abs();
+    if magnitude > 9_999_999_999_999_999.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    let satang_total = (value * 100.0).round() as u128;
+    let satang_total = bahttext_satang(magnitude);
     let baht = satang_total / 100;
     let satang = (satang_total % 100) as u32;
-    let mut rendered = render_thai_integer(baht);
-    rendered.push_str("บาท");
+    let mut rendered = String::new();
+    // Any negative value is prefixed, even one that rounds to zero ("ลบศูนย์บาทถ้วน").
+    if value < 0.0 {
+        rendered.push_str("ลบ");
+    }
+    if baht > 0 || satang == 0 {
+        rendered.push_str(&render_thai_integer(baht));
+        rendered.push_str("บาท");
+    }
     if satang == 0 {
         rendered.push_str("ถ้วน");
     } else {
-        rendered.push_str(&render_thai_under_million(satang));
+        rendered.push_str(&render_thai_under_million(satang, false));
         rendered.push_str("สตางค์");
     }
     Ok(ExcelText::from_utf16_code_units(
@@ -831,7 +869,12 @@ mod tests {
             bahttext_kernel(21.01).unwrap().to_string_lossy(),
             "ยี่สิบเอ็ดบาทหนึ่งสตางค์"
         );
-        assert_eq!(bahttext_kernel(-1.0), Err(WorksheetErrorCode::Num));
+        // Excel spells negatives with a leading "ลบ" (live Excel 20430, W111-5 G8-07); this
+        // assertion used to expect #NUM!.
+        assert_eq!(
+            bahttext_kernel(-1.0).unwrap().to_string_lossy(),
+            "ลบหนึ่งบาทถ้วน"
+        );
     }
 
     #[test]
@@ -985,4 +1028,22 @@ mod tests {
             Err(MiscConversionError::Domain(WorksheetErrorCode::Num))
         );
     }
+
+    /// W111-5 G8-07, live Excel 20430 strings: negatives, amounts under one baht, decimal
+    /// half-up satang after 15-digit rounding, and "เอ็ด" across million groups.
+    #[test]
+    fn bahttext_matches_excel_edge_strings() {
+        let t = |v: f64| bahttext_kernel(v).unwrap().to_string_lossy();
+        assert_eq!(t(-5.0), "ลบห้าบาทถ้วน");
+        assert_eq!(t(-0.001), "ลบศูนย์บาทถ้วน");
+        assert_eq!(t(-0.0), "ศูนย์บาทถ้วน");
+        assert_eq!(t(0.25), "ยี่สิบห้าสตางค์");
+        assert_eq!(t(1.005), "หนึ่งบาทหนึ่งสตางค์");
+        assert_eq!(t(2.675), "สองบาทหกสิบแปดสตางค์");
+        assert_eq!(t(0.995), "หนึ่งบาทถ้วน");
+        assert_eq!(t(9999999999999998.0), "หนึ่งหมื่นล้านล้านบาทถ้วน");
+        assert_eq!(t(1000001.0), "หนึ่งล้านเอ็ดบาทถ้วน");
+        assert_eq!(t(21.0), "ยี่สิบเอ็ดบาทถ้วน");
+    }
+
 }
