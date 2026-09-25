@@ -26,8 +26,10 @@ pub fn us_30_360(start: i64, end: i64) -> Result<f64, WorksheetErrorCode> {
     let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, end as f64)
         .ok_or(WorksheetErrorCode::Value)?;
 
-    let start_last_feb = sm == 2 && sd == days_in_month(sy, sm);
-    let end_last_feb = em == 2 && ed == days_in_month(ey, em);
+    // Excel's 1900 calendar has a Feb 29 (serial 60), so in 1900 the 29th is the month end.
+    let feb_end = |y: i64, m: i64| if y == 1900 { 29 } else { days_in_month(y, m) };
+    let start_last_feb = sm == 2 && sd == feb_end(sy, sm);
+    let end_last_feb = em == 2 && ed == feb_end(ey, em);
 
     if sd == 31 || start_last_feb {
         sd = 30;

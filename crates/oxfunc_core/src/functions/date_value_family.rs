@@ -166,8 +166,12 @@ fn last_day_of_previous_month(year: i64, month: i64) -> i64 {
     days_in_month(prev_year, prev_month)
 }
 
+/// Last day of February in Excel's 1900 calendar, where 1900-02-29 exists (serial 60): in 1900
+/// the 29th is the month end and the 28th is not. DAYS360(59,60,0) is 1 and DAYS360(60,61,0)
+/// is 1 in Excel (live Excel 20430, W111-5 G8-09).
 fn is_last_day_of_february(year: i64, month: i64, day: i64) -> bool {
-    month == 2 && day == days_in_month(year, month)
+    let last = if year == 1900 { 29 } else { days_in_month(year, month) };
+    month == 2 && day == last
 }
 
 fn parse_iso_ymd(text: &str) -> Option<(i64, i64, i64)> {
@@ -866,4 +870,14 @@ mod tests {
         );
         assert_eq!(got, Err(DateValueFamilyError::Value));
     }
+
+    /// W111-5 G8-09, live Excel 20430: in Excel's 1900 calendar Feb 29 (serial 60) is the last
+    /// day of February and Feb 28 (serial 59) is not.
+    #[test]
+    fn days360_us_follows_excels_1900_february() {
+        assert_eq!(days360_kernel(60.0, 61.0, false).unwrap(), 1.0);
+        assert_eq!(days360_kernel(59.0, 60.0, false).unwrap(), 1.0);
+        assert_eq!(days360_kernel(59.0, 61.0, false).unwrap(), 3.0);
+    }
+
 }
