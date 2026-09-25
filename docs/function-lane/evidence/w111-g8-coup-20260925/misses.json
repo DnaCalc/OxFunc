@@ -1,0 +1,1423 @@
+{
+ "FUNC.COUPDAYBS": {
+  "rows_judged": 4084,
+  "rows_agree": 4084,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.COUPDAYS": {
+  "rows_judged": 4084,
+  "rows_agree": 4034,
+  "severity": "gross",
+  "worst_ulp": 211106232532992,
+  "misses_by_severity": {
+   "gross": 50
+  },
+  "misses": [
+   {
+    "id": "w1115-COUPDAYS-00209",
+    "args": [
+     "0x40e7c3a000000000",
+     "0x40e80fc000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 211106232532992
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00910",
+    "args": [
+     "0x40e48dc000000000",
+     "0x40e9faa000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 211106232532992
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01211",
+    "args": [
+     "0x40e2f6a000000000",
+     "0x40e34a6000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 211106232532992
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01379",
+    "args": [
+     "0x40e37f6000000000",
+     "0x40e3b12000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 211106232532992
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00785",
+    "args": [
+     "0x40e51e6000000000",
+     "0x40e5408000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 105553116266496
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00129",
+    "args": [
+     "0x40e5604000000000",
+     "0x40eaee2000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00398",
+    "args": [
+     "0x40e645a000000000",
+     "0x40e6d02000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00612",
+    "args": [
+     "0x40e8458000000000",
+     "0x40e88d6000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00641",
+    "args": [
+     "0x40e4a4bfff2e48e9",
+     "0x40e4d26000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00651",
+    "args": [
+     "0x40e671c000000000",
+     "0x40e6b94000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00671",
+    "args": [
+     "0x40e4064000000000",
+     "0x40e42ea000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00979",
+    "args": [
+     "0x40e8664000000000",
+     "0x40e89ca000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01014",
+    "args": [
+     "0x40e2938000000000",
+     "0x40e2c16000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01122",
+    "args": [
+     "0x40e3426000000000",
+     "0x40e370a000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01268",
+    "args": [
+     "0x40e1f98000000000",
+     "0x40e7646000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01274",
+    "args": [
+     "0x40e6069000000000",
+     "0x40e6438000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01472",
+    "args": [
+     "0x40e93fa000000000",
+     "0x40e96dc000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00007",
+    "args": [
+     "0x40e8a60000000000",
+     "0x40e8d58000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00013",
+    "args": [
+     "0x40e7b3a000000000",
+     "0x40e7f14000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00126",
+    "args": [
+     "0x40e9e36000000000",
+     "0x40e9fe6000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00151",
+    "args": [
+     "0x40e97ac000000000",
+     "0x40e9978000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00381",
+    "args": [
+     "0x40e6960800000000",
+     "0x40e6d40000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00410",
+    "args": [
+     "0x40e7db0000000000",
+     "0x40e9a6e000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00468",
+    "args": [
+     "0x40e28fe800000000",
+     "0x40e2cce000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00524",
+    "args": [
+     "0x40e34e4000000000",
+     "0x40e3838000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00601",
+    "args": [
+     "0x40e6474000000000",
+     "0x40e6eac000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00869",
+    "args": [
+     "0x40e503e000000000",
+     "0x40e52da000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01002",
+    "args": [
+     "0x40e7e9e000000000",
+     "0x40e80fc000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01102",
+    "args": [
+     "0x40e4210000000000",
+     "0x40e454e000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01510",
+    "args": [
+     "0x40e5816000000000",
+     "0x4146924080000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00475",
+    "args": [
+     "0x40e8e0c000000000",
+     "0x40e9884000000000",
+     "0x3ff0000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4645128764097822720
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4645146356283867136
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 17592186044416
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00584",
+    "args": [
+     "0x40e77b6000000000",
+     "0x40e7bfc000000000",
+     "0x3ff0000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4645128764097822720
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4645146356283867136
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 17592186044416
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00709",
+    "args": [
+     "0x40e212e000000000",
+     "0x40e29f2000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 140737488355328
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00821",
+    "args": [
+     "0x40e62c8000000000",
+     "0x40e6698000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636033603912859648
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 140737488355328
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01474",
+    "args": [
+     "0x40e7ee0000000000",
+     "0x40ed5e2000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 105553116266496
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00399",
+    "args": [
+     "0x40e6d4e000000000",
+     "0x40e714a000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00489",
+    "args": [
+     "0x40e75d0000000000",
+     "0x40e8042000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00703",
+    "args": [
+     "0x40e1ff8000000000",
+     "0x40e28c4000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00853",
+    "args": [
+     "0x40e22d0000000000",
+     "0x40e41bc000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00972",
+    "args": [
+     "0x40e58aa000000000",
+     "0x40e5b2a000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01010",
+    "args": [
+     "0x40e1cc8000000000",
+     "0x40e2036000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01492",
+    "args": [
+     "0x40e589c000000000",
+     "0x40e5d50000000000",
+     "0x4010000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636174341401214976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636103972657037312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00409",
+    "args": [
+     "0x40e5f91fff2e48e9",
+     "0x40e7da8000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-00723",
+    "args": [
+     "0x40e4828000000000",
+     "0x40e4ac4000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01181",
+    "args": [
+     "0x40e9c18000000000",
+     "0x40ea024000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01328",
+    "args": [
+     "0x40e1748000000000",
+     "0x40e1910000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01342",
+    "args": [
+     "0x40e53f8000000000",
+     "0x40e5722000000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01390",
+    "args": [
+     "0x40e2b73fff2e48e9",
+     "0x40e30d9fff2e48e9",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640572387912318976
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640607572284407808
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01510",
+    "args": [
+     "0x40e5816000000000",
+     "0x4146924080000000",
+     "0x4000000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4640642756656496640
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640677941028585472
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 35184372088832
+    }
+   },
+   {
+    "id": "w1115-COUPDAYS-01391",
+    "args": [
+     "0x40e489e000000000",
+     "0x40ea114000000000",
+     "0x3ff0000000000000",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4645128764097822720
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4645146356283867136
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 17592186044416
+    }
+   }
+  ]
+ },
+ "FUNC.COUPDAYSNC": {
+  "rows_judged": 4084,
+  "rows_agree": 4074,
+  "severity": "gross",
+  "worst_ulp": 10696049115004928,
+  "misses_by_severity": {
+   "gross": 10
+  },
+  "misses": [
+   {
+    "id": "w1115-COUPDAYSNC-01508",
+    "args": [
+     "0x0000000000000000",
+     "0x4079000000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4629841154425225216
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640537203540230144
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 10696049115004928
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-01173",
+    "args": [
+     "0x40e37e6000000000",
+     "0x40e8dce000000000",
+     "0x4010000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4630685579355357184
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4630826316843712512
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 140737488355328
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-00984",
+    "args": [
+     "0x40e95d8000000000",
+     "0x40e99ee000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4639657594238009344
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4639727962982187008
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-01508",
+    "args": [
+     "0x0000000000000000",
+     "0x4079000000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4629841154425225216
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4640537203540230144
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 10696049115004928
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-00965",
+    "args": [
+     "0x40e6b38000000000",
+     "0x40e6c46000000000",
+     "0x4010000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4631248529308778496
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4631530004285489152
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 281474976710656
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-01086",
+    "args": [
+     "0x40e2902000000000",
+     "0x40e489e000000000",
+     "0x3ff0000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4628855992006737920
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4629137466983448576
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 281474976710656
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-00010",
+    "args": [
+     "0x40e6744000000000",
+     "0x40ebd9c000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4636385447633747968
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636244710145392640
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 140737488355328
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-01234",
+    "args": [
+     "0x40e98c2000000000",
+     "0x40e9c18000000000",
+     "0x4010000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4633500329122463744
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4633641066610819072
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 140737488355328
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-00218",
+    "args": [
+     "0x40e18d4000000000",
+     "0x40e1c66000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636033603912859648
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   },
+   {
+    "id": "w1115-COUPDAYSNC-01462",
+    "args": [
+     "0x40e467c800000000",
+     "0x40e4b7a000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4635963235168681984
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4636033603912859648
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 70368744177664
+    }
+   }
+  ]
+ },
+ "FUNC.COUPNCD": {
+  "rows_judged": 4084,
+  "rows_agree": 4084,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.COUPNUM": {
+  "rows_judged": 4084,
+  "rows_agree": 4082,
+  "severity": "structural",
+  "worst_ulp": null,
+  "misses_by_severity": {
+   "structural": 2
+  },
+  "misses": [
+   {
+    "id": "w1115-COUPNUM-01508",
+    "args": [
+     "0x0000000000000000",
+     "0x4079000000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4613937818241073152
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "w1115-COUPNUM-01508",
+    "args": [
+     "0x0000000000000000",
+     "0x4079000000000000",
+     "0x4000000000000000",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4613937818241073152
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   }
+  ]
+ },
+ "FUNC.COUPPCD": {
+  "rows_judged": 4084,
+  "rows_agree": 4084,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ }
+}

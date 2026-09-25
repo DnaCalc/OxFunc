@@ -124,43 +124,6 @@ fn excel_serial_from_ymd_unbounded_1900(year: i64, month: i64, day: i64) -> i64 
     if days >= 60 { days + 1 } else { days }
 }
 
-fn add_months_clamped(serial: i64, months: i64) -> Option<i64> {
-    let (year, month, day) = ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64)?;
-    let month_index = year
-        .checked_mul(12)?
-        .checked_add(month - 1)?
-        .checked_add(months)?;
-    let target_year = month_index.div_euclid(12);
-    let target_month = month_index.rem_euclid(12) + 1;
-    let source_is_month_end = day == days_in_month(year, month);
-    let target_day = if source_is_month_end {
-        days_in_month(target_year, target_month)
-    } else {
-        day.min(days_in_month(target_year, target_month))
-    };
-    Some(excel_serial_from_ymd_unbounded_1900(
-        target_year,
-        target_month,
-        target_day,
-    ))
-}
-
-fn add_months_with_anchor_day(serial: i64, months: i64, anchor_day: i64) -> Option<i64> {
-    let (year, month, _day) = ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64)?;
-    let month_index = year
-        .checked_mul(12)?
-        .checked_add(month - 1)?
-        .checked_add(months)?;
-    let target_year = month_index.div_euclid(12);
-    let target_month = month_index.rem_euclid(12) + 1;
-    let target_day = anchor_day.min(days_in_month(target_year, target_month));
-    Some(excel_serial_from_ymd_unbounded_1900(
-        target_year,
-        target_month,
-        target_day,
-    ))
-}
-
 fn days360_us(start: i64, end: i64) -> Result<f64, WorksheetErrorCode> {
     crate::functions::day_count_common::us_30_360(start, end)
 }
@@ -274,32 +237,49 @@ fn parse_coupon_context(
     })
 }
 
-fn locate_coupon_period(ctx: CouponContext) -> Result<CouponPeriod, WorksheetErrorCode> {
+/// Coupon date `k` periods before maturity, computed from maturity itself rather than by
+/// chaining one period at a time: a maturity on the 28th-30th keeps that day of month in every
+/// month long enough for it (clamped only in shorter months), and only a month-end maturity
+/// gives month-end coupons. Chaining off an already-clamped date drifted to month ends after
+/// the first short month (maturity 2046-08-28 quarterly gave a next coupon of 2045-05-31
+/// where Excel gives 2045-05-28). Live Excel 20430, W111-5 G8-08.
+fn coupon_date_before_maturity(ctx: CouponContext, periods: i64) -> Option<i64> {
     let months_per_coupon = 12 / ctx.frequency;
+    let (year, month, day) =
+        ymd_from_excel_serial(WorkbookDateSystem::System1900, ctx.maturity as f64)?;
+    let month_index = year
+        .checked_mul(12)?
+        .checked_add(month - 1)?
+        .checked_sub(periods.checked_mul(months_per_coupon)?)?;
+    let target_year = month_index.div_euclid(12);
+    let target_month = month_index.rem_euclid(12) + 1;
+    let month_end = days_in_month(target_year, target_month);
+    let maturity_is_month_end = day == days_in_month(year, month);
+    let target_day = if maturity_is_month_end {
+        month_end
+    } else {
+        ctx.maturity_anchor_day.min(month_end)
+    };
+    Some(excel_serial_from_ymd_unbounded_1900(
+        target_year,
+        target_month,
+        target_day,
+    ))
+}
+
+fn locate_coupon_period(ctx: CouponContext) -> Result<CouponPeriod, WorksheetErrorCode> {
     let mut next = ctx.maturity;
     let mut coupons = 1i64;
     loop {
         let previous =
-            add_months_clamped(next, -months_per_coupon).ok_or(WorksheetErrorCode::Num)?;
+            coupon_date_before_maturity(ctx, coupons).ok_or(WorksheetErrorCode::Num)?;
         if previous <= ctx.settlement {
-            let raw_previous =
-                add_months_with_anchor_day(next, -months_per_coupon, ctx.maturity_anchor_day)
-                    .ok_or(WorksheetErrorCode::Num)?;
-            let mut period = CouponPeriod {
+            return Ok(CouponPeriod {
                 previous: previous.max(0),
                 next,
                 remaining_coupons: coupons,
-                raw_previous,
-            };
-            if ctx.settlement == period.next {
-                let forward_next = add_months_clamped(period.next, months_per_coupon)
-                    .ok_or(WorksheetErrorCode::Num)?;
-                period.previous = period.next;
-                period.raw_previous = period.next;
-                period.next = forward_next;
-                period.remaining_coupons -= 1;
-            }
-            return Ok(period);
+                raw_previous: previous,
+            });
         }
         next = previous;
         coupons += 1;
@@ -569,6 +549,25 @@ mod tests {
             let a = coupdaybs_kernel(settlement, maturity, frequency, Some(0.0)).unwrap();
             assert_eq!(e - a, excel);
         }
+    }
+
+    /// W111-5 G8-08, live Excel 20430: coupon dates are computed from maturity, keeping a
+    /// 28th-30th maturity day in every month long enough for it; only a month-end maturity
+    /// gives month-end coupons.
+    #[test]
+    fn coupon_schedule_keeps_the_maturity_day_across_february() {
+        assert_eq!(
+            coupncd_kernel(serial(2045, 2, 28), serial(2046, 8, 28), 4.0, Some(2.0)),
+            Ok(serial(2045, 5, 28))
+        );
+        assert_eq!(
+            couppcd_kernel(serial(2018, 1, 17), serial(2018, 8, 28), 4.0, Some(4.0)),
+            Ok(serial(2017, 11, 28))
+        );
+        assert_eq!(
+            couppcd_kernel(serial(2028, 7, 31), serial(2029, 7, 30), 4.0, Some(4.0)),
+            Ok(serial(2028, 7, 30))
+        );
     }
 
     #[test]

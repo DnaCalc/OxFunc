@@ -1,0 +1,6 @@
+FUNC.COUPDAYBS             4084/4084   worst=none       worst_ulp=- {}
+FUNC.COUPDAYS              4034/4084   worst=gross      worst_ulp=211106232532992 {'gross': 50}
+FUNC.COUPDAYSNC            4074/4084   worst=gross      worst_ulp=10696049115004928 {'gross': 10}
+FUNC.COUPNCD               4084/4084   worst=none       worst_ulp=- {}
+FUNC.COUPNUM               4082/4084   worst=structural worst_ulp=- {'structural': 2}
+FUNC.COUPPCD               4084/4084   worst=none       worst_ulp=- {}
