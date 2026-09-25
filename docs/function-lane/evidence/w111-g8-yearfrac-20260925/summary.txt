@@ -1,0 +1,5 @@
+FUNC.DISC                  1555/2400   worst=numeric    worst_ulp=10 {'last_bit': 844, 'numeric': 1}
+FUNC.INTRATE               1562/2400   worst=last_bit   worst_ulp=2 {'last_bit': 838}
+FUNC.PRICEDISC             1586/2400   worst=numeric    worst_ulp=111 {'last_bit': 766, 'numeric': 48}
+FUNC.RECEIVED              2234/2400   worst=numeric    worst_ulp=53 {'last_bit': 155, 'numeric': 11}
+FUNC.YEARFRAC              3006/3006   worst=none       worst_ulp=- {}

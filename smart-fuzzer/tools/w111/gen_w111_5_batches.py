@@ -198,6 +198,24 @@ def main():
                      wf.r.choice([1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17])))
     batches["WORKDAY.INTL#frac"] = rows
 
+    # DISC / INTRATE / RECEIVED / PRICEDISC share YEARFRAC's day-count fraction (added
+    # 2026-09-25 with the basis-1 fix; own generators, earlier batches unchanged).
+    for fn in ["DISC", "INTRATE", "RECEIVED", "PRICEDISC"]:
+        sg, rows = Gen(seed + zlib.crc32(fn.encode()) % 1000), []
+        for _ in range(1200):
+            st = sg.serial(1900, 2060)
+            mt = st + sg.r.choice([1, 30, 180, 365, 366, 400, 800, 2000, 10000]) + sg.r.randint(0, 400)
+            b = sg.r.choice([0, 1, 1, 2, 3, 4])
+            if fn == "DISC":
+                rows.append((st, mt, sg.num(1, 200), sg.num(1, 200), b))
+            elif fn == "INTRATE":
+                rows.append((st, mt, sg.num(1, 1e6, log=True), sg.num(1, 1e6, log=True), b))
+            elif fn == "RECEIVED":
+                rows.append((st, mt, sg.num(1, 1e6, log=True), sg.num(0.0001, 0.2), b))
+            else:
+                rows.append((st, mt, sg.num(0.0001, 0.2), sg.num(1, 200), b))
+        batches[fn] = rows
+
     for fn in ["KURT", "SKEW"]:
         rows = []
         for _ in range(1500):
