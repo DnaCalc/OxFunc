@@ -40,26 +40,14 @@ impl From<BinaryNumericSurfaceError> for RoundUpEvalError {
     }
 }
 
+/// Excel's ROUNDUP: decimal rounding on the 15-significant-digit value (see
+/// [`crate::functions::round_fn::excel_decimal_round`]).
 pub fn roundup_kernel(n: f64, digits: i32) -> f64 {
-    if n == 0.0 {
-        return 0.0;
-    }
-    if digits >= 308 {
-        return n;
-    }
-    if digits <= -308 {
-        return if n.is_sign_negative() { -0.0 } else { 0.0 };
-    }
-
-    let sign = if n.is_sign_negative() { -1.0 } else { 1.0 };
-    let abs_n = n.abs();
-    if digits >= 0 {
-        let factor = 10f64.powi(digits);
-        sign * ((abs_n * factor).ceil() / factor)
-    } else {
-        let factor = 10f64.powi(-digits);
-        sign * ((abs_n / factor).ceil() * factor)
-    }
+    crate::functions::round_fn::excel_decimal_round(
+        n,
+        digits,
+        crate::functions::round_fn::DecimalRoundMode::AwayFromZero,
+    )
 }
 
 pub fn eval_roundup_surface(

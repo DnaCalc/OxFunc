@@ -1,0 +1,963 @@
+{
+ "FUNC.MROUND": {
+  "rows_judged": 2000,
+  "rows_agree": 2000,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.ROUND": {
+  "rows_judged": 4435,
+  "rows_agree": 4419,
+  "severity": "gross",
+  "worst_ulp": null,
+  "misses_by_severity": {
+   "gross": 16
+  },
+  "misses": [
+   {
+    "id": "r20260925-ROUND-01688",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01689",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01690",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01691",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x402e000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01692",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4030000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01693",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xbff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01694",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4073400000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUND-01695",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xc073400000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9219375258500057248
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01688",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01689",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01690",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01691",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x402e000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01692",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4030000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01693",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xbff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01694",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4073400000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUND-01695",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xc073400000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9219375258500057248
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   }
+  ]
+ },
+ "FUNC.ROUNDDOWN": {
+  "rows_judged": 3824,
+  "rows_agree": 3810,
+  "severity": "gross",
+  "worst_ulp": null,
+  "misses_by_severity": {
+   "gross": 14
+  },
+  "misses": [
+   {
+    "id": "r20260925-ROUNDDOWN-01688",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDDOWN-01689",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDDOWN-01690",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDDOWN-01691",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x402e000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDDOWN-01692",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4030000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDDOWN-01693",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xbff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDDOWN-01694",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4073400000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01688",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01689",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01690",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01691",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x402e000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01692",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4030000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01693",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xbff0000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDDOWN-01694",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4073400000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 9218868437227405322
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": null
+    }
+   }
+  ]
+ },
+ "FUNC.ROUNDUP": {
+  "rows_judged": 3824,
+  "rows_agree": 3808,
+  "severity": "structural",
+  "worst_ulp": null,
+  "misses_by_severity": {
+   "structural": 16
+  },
+  "misses": [
+   {
+    "id": "r20260925-ROUNDUP-01688",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01689",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01690",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01691",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x402e000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01692",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4030000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01693",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xbff0000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01694",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4073400000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260925-ROUNDUP-01695",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xc073400000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01688",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x0000000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01689",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x3ff0000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01690",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01691",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x402e000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01692",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4030000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01693",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xbff0000000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01694",
+    "args": [
+     "0x7fefffffffffffff",
+     "0x4073400000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   },
+   {
+    "id": "r20260926-ROUNDUP-01695",
+    "args": [
+     "0x7fefffffffffffff",
+     "0xc073400000000000"
+    ],
+    "expected": {
+     "kind": "error",
+     "code": "Num"
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 9218868437227405312
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "structural",
+     "ulp": null
+    }
+   }
+  ]
+ }
+}

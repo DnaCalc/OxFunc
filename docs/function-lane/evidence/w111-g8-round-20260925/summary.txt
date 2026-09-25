@@ -1,0 +1,4 @@
+FUNC.MROUND                2000/2000   worst=none       worst_ulp=- {}
+FUNC.ROUND                 4419/4435   worst=gross      worst_ulp=- {'gross': 16}
+FUNC.ROUNDDOWN             3810/3824   worst=gross      worst_ulp=- {'gross': 14}
+FUNC.ROUNDUP               3808/3824   worst=structural worst_ulp=- {'structural': 16}

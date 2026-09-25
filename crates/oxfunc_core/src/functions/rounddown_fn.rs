@@ -40,21 +40,14 @@ impl From<BinaryNumericSurfaceError> for RoundDownEvalError {
     }
 }
 
+/// Excel's ROUNDDOWN: decimal rounding on the 15-significant-digit value (see
+/// [`crate::functions::round_fn::excel_decimal_round`]).
 pub fn rounddown_kernel(n: f64, digits: i32) -> f64 {
-    if digits >= 308 {
-        return n;
-    }
-    if digits <= -308 {
-        return if n.is_sign_negative() { -0.0 } else { 0.0 };
-    }
-
-    if digits >= 0 {
-        let factor = 10f64.powi(digits);
-        (n * factor).trunc() / factor
-    } else {
-        let factor = 10f64.powi(-digits);
-        (n / factor).trunc() * factor
-    }
+    crate::functions::round_fn::excel_decimal_round(
+        n,
+        digits,
+        crate::functions::round_fn::DecimalRoundMode::TowardZero,
+    )
 }
 
 pub fn eval_rounddown_surface(
