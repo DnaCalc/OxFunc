@@ -204,6 +204,25 @@ fn scalar_serial_arg(prepared: &CalcValue) -> Result<i64, WorkdayNetworkdaysEval
     serial_from_number(value).map_err(WorkdayNetworkdaysEvalError::Domain)
 }
 
+/// The WORKDAY / WORKDAY.INTL `days` argument: Excel floors it (INT), so -32.5 is -33, where
+/// the weekend code and other integer arguments truncate toward zero. Live Excel 20430,
+/// W111-5 G8-04 (394/394 negative fractional rows disagreed under trunc).
+fn scalar_floored_days_arg(prepared: &CalcValue) -> Result<i64, WorkdayNetworkdaysEvalError> {
+    let value = match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty => {
+            return Err(WorkdayNetworkdaysEvalError::Domain(
+                WorksheetErrorCode::Value,
+            ));
+        }
+        _ => crate::functions::adapters::coerce_prepared_to_number(prepared)
+            .map_err(WorkdayNetworkdaysEvalError::Coercion)?,
+    };
+    if !value.is_finite() {
+        return Err(WorkdayNetworkdaysEvalError::Domain(WorksheetErrorCode::Num));
+    }
+    Ok(value.floor() as i64)
+}
+
 fn scalar_truncated_i64_arg(prepared: &CalcValue) -> Result<i64, WorkdayNetworkdaysEvalError> {
     let value = match prepared.core() {
         CoreValue::Missing | CoreValue::Empty => {
@@ -290,7 +309,10 @@ pub fn workday_intl_kernel(
     if !days.is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    let mut remaining = days.trunc() as i64;
+    // Excel floors the day count (INT), it does not truncate toward zero: WORKDAY(d, -32.5)
+    // moves 33 business days back. Every negative fractional row of two fresh corpora
+    // disagreed under trunc (394/394); live Excel 20430, W111-5 G8-04.
+    let mut remaining = days.floor() as i64;
     if remaining == 0 {
         return Ok(start as f64);
     }
@@ -412,7 +434,7 @@ pub fn eval_workday_surface(
     let start_p = start_prepared.as_ref().unwrap();
     let days_p = days_prepared.as_ref().unwrap();
     let holidays_for_lift = holidays_result.clone();
-    if let Some(array) = lift_date_pair(start_p, days_p, scalar_truncated_i64_arg, |s, d| {
+    if let Some(array) = lift_date_pair(start_p, days_p, scalar_floored_days_arg, |s, d| {
         let holidays = holidays_for_lift.as_ref().map_err(Clone::clone)?;
         workday_kernel(s, d, holidays).map_err(WorkdayNetworkdaysEvalError::Domain)
     }) {
@@ -420,7 +442,7 @@ pub fn eval_workday_surface(
     }
     let holidays = holidays_result?;
     let start = scalar_serial_arg(&start_p.prepared)?;
-    let days = scalar_truncated_i64_arg(&days_p.prepared)?;
+    let days = scalar_floored_days_arg(&days_p.prepared)?;
     workday_kernel(start as f64, days as f64, &holidays)
         .map(CalcValue::number)
         .map_err(WorkdayNetworkdaysEvalError::Domain)
@@ -441,7 +463,7 @@ pub fn eval_workday_intl_surface(
     let days_p = days_prepared.as_ref().unwrap();
     let weekend_for_lift = weekend_result.clone();
     let holidays_for_lift = holidays_result.clone();
-    if let Some(array) = lift_date_pair(start_p, days_p, scalar_truncated_i64_arg, |s, d| {
+    if let Some(array) = lift_date_pair(start_p, days_p, scalar_floored_days_arg, |s, d| {
         let weekend = *weekend_for_lift.as_ref().map_err(Clone::clone)?;
         let holidays = holidays_for_lift.as_ref().map_err(Clone::clone)?;
         workday_intl_kernel(s, d, weekend, holidays).map_err(WorkdayNetworkdaysEvalError::Domain)
@@ -451,7 +473,7 @@ pub fn eval_workday_intl_surface(
     let weekend = weekend_result?;
     let holidays = holidays_result?;
     let start = scalar_serial_arg(&start_p.prepared)?;
-    let days = scalar_truncated_i64_arg(&days_p.prepared)?;
+    let days = scalar_floored_days_arg(&days_p.prepared)?;
     workday_intl_kernel(start as f64, days as f64, weekend, &holidays)
         .map(CalcValue::number)
         .map_err(WorkdayNetworkdaysEvalError::Domain)
@@ -952,4 +974,21 @@ mod tests {
             WorksheetErrorCode::Value
         );
     }
+
+    /// W111-5 G8-04, live Excel 20430: the days argument is floored, not truncated.
+    #[test]
+    fn workday_floors_negative_fractional_days_like_excel() {
+        let start = f64::from_bits(0x40ea_a980_0000_0000); // 54604
+        let holidays = BTreeSet::new();
+        assert_eq!(workday_kernel(start, -32.5, &holidays), Ok(54557.0));
+        assert_eq!(
+            workday_kernel(start, -32.5, &holidays),
+            workday_kernel(start, -33.0, &holidays)
+        );
+        assert_eq!(
+            workday_kernel(start, 32.5, &holidays),
+            workday_kernel(start, 32.0, &holidays)
+        );
+    }
+
 }

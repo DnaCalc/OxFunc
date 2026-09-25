@@ -62,8 +62,11 @@ class Gen:
         return r.uniform(lo, hi)
 
 
-def batch(fn, rows):
-    return {"function": fn, "probes": [{"probe": {"id": f"w1115-{fn}-{i:05d}", "args": [bits(a) for a in args]}}
+def batch(key, rows):
+    """key is the function name, optionally with a '#variant' suffix for a second batch."""
+    fn = key.split("#")[0]
+    tag = key.replace("#", "-")
+    return {"function": fn, "probes": [{"probe": {"id": f"w1115-{tag}-{i:05d}", "args": [bits(a) for a in args]}}
                                        for i, args in enumerate(rows)]}
 
 
@@ -188,6 +191,12 @@ def main():
     for _ in range(1200):
         rows.append((g.serial(1990, 2060), g.r.randint(-600, 600), g.r.choice([1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17, 9])))
     batches["WORKDAY.INTL"] = rows
+    # fractional days for WORKDAY.INTL (added 2026-09-25; own generator, earlier batches unchanged)
+    wf, rows = Gen(seed + zlib.crc32(b"WORKDAY.INTL#frac") % 1000), []
+    for _ in range(1200):
+        rows.append((wf.serial(1990, 2060), wf.r.randint(-600, 600) + wf.r.choice([0.5, 0.25, 0.999, -0.0]),
+                     wf.r.choice([1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17])))
+    batches["WORKDAY.INTL#frac"] = rows
 
     for fn in ["KURT", "SKEW"]:
         rows = []
@@ -204,7 +213,8 @@ def main():
     batches["BAHTTEXT"] = rows
 
     for fn, rows in batches.items():
-        (out / f"batch-w1115-{fn.lower()}.json").write_text(json.dumps(batch(fn, rows)), encoding="utf-8")
+        name = fn.lower().replace("#", "-")
+        (out / f"batch-w1115-{name}.json").write_text(json.dumps(batch(fn, rows)), encoding="utf-8")
         print(fn, len(rows))
 
 

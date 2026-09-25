@@ -1,0 +1,18 @@
+{
+ "FUNC.WORKDAY": {
+  "rows_judged": 2400,
+  "rows_agree": 2400,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.WORKDAY.INTL": {
+  "rows_judged": 4800,
+  "rows_agree": 4800,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ }
+}
