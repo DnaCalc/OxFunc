@@ -1,0 +1,26 @@
+{
+ "captured_utc": "2026-09-25T06:30:58.2219799Z",
+ "environment": {
+  "cpu_id": "AMD Ryzen 7 4800H with Radeon Graphics",
+  "environment_schema": "oracle-environment-v2",
+  "excel_bitness": "64-bit",
+  "excel_build": "20430",
+  "excel_input_plumbing": "cell_value2_bulk",
+  "excel_operating_system": "Windows (64-bit) NT 10.00",
+  "excel_version": "16.0",
+  "workbook_compatibility": "2"
+ },
+ "oracle_cache": {
+  "hits": 6,
+  "misses": 1200,
+  "mode": "cache",
+  "root": "smart-fuzzer/cache/oracle-20430"
+ },
+ "runner": {
+  "name": "Run-W109BulkBatch.ps1",
+  "powershell_version": "7.6.6",
+  "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+  "version": "w109-bulk-batch-v2"
+ },
+ "schema_version": "w109-capture-provenance-v1"
+}

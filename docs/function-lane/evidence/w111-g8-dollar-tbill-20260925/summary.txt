@@ -1,0 +1,5 @@
+FUNC.DOLLARDE              2412/2412   worst=none       worst_ulp=- {}
+FUNC.DOLLARFR              2412/2412   worst=none       worst_ulp=- {}
+FUNC.TBILLEQ               2399/2400   worst=numeric    worst_ulp=71 {'numeric': 1}
+FUNC.TBILLPRICE            2400/2400   worst=none       worst_ulp=- {}
+FUNC.TBILLYIELD            2399/2400   worst=last_bit   worst_ulp=2 {'last_bit': 1}

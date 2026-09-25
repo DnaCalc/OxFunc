@@ -1,0 +1,90 @@
+{
+ "FUNC.DOLLARDE": {
+  "rows_judged": 2412,
+  "rows_agree": 2412,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.DOLLARFR": {
+  "rows_judged": 2412,
+  "rows_agree": 2412,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.TBILLEQ": {
+  "rows_judged": 2400,
+  "rows_agree": 2399,
+  "severity": "numeric",
+  "worst_ulp": 71,
+  "misses_by_severity": {
+   "numeric": 1
+  },
+  "misses": [
+   {
+    "id": "w1115-TBILLEQ-01109",
+    "args": [
+     "0x40e3d72800000000",
+     "0x40e3f08800000000",
+     "0x3fcb208e2511f676"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4597854680856448705
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4597854680856448776
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "numeric",
+     "ulp": 71
+    }
+   }
+  ]
+ },
+ "FUNC.TBILLPRICE": {
+  "rows_judged": 2400,
+  "rows_agree": 2400,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": []
+ },
+ "FUNC.TBILLYIELD": {
+  "rows_judged": 2400,
+  "rows_agree": 2399,
+  "severity": "last_bit",
+  "worst_ulp": 2,
+  "misses_by_severity": {
+   "last_bit": 1
+  },
+  "misses": [
+   {
+    "id": "w1115-TBILLYIELD-00412",
+    "args": [
+     "0x40e74aa000000000",
+     "0x40e74ac000000000",
+     "0x40023cff95ff2def"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4669708878223462778
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4669708878223462776
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "last_bit",
+     "ulp": 2
+    }
+   }
+  ]
+ }
+}

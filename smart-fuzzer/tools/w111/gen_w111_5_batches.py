@@ -124,11 +124,21 @@ def main():
                          g.num(0.0001, 0.5) if g.r.random() < 0.9 else g.r.choice([0, -0.01, 1, 1.5, 2])))
         batches[fn] = rows
 
+    # TBILLYIELD shares the T-bill one-year limit. Added after the first capture, so it
+    # draws from its own generator and leaves every earlier batch byte-identical.
+    ty, rows = Gen(seed + zlib.crc32(b"TBILLYIELD") % 1000), []
+    for _ in range(1200):
+        st = ty.serial(1990, 2050)
+        rows.append((st, st + ty.r.choice([1, 30, 91, 182, 183, 364, 365, 366, 367]) + ty.r.randint(0, 2),
+                     ty.num(1, 99.99) if ty.r.random() < 0.95 else ty.r.choice([0, -1, 100, 150])))
+    batches["TBILLYIELD"] = rows
+
     rows = []
     for _ in range(1200):
         rows.append((g.num(-500, 500), g.r.choice([1, 2, 4, 8, 16, 32, 3, 10, 12, 100, 0.5, 1.9, 0, -2])))
     rows += [(1.02, 16), (1.1, 32), (0, 16), (-0.0, 16), (1e15, 16), (1.5, 1e10)]
     batches["DOLLARDE"] = rows
+    batches["DOLLARFR"] = list(rows)  # same kernel shape, mirror function
 
     rows = []
     for _ in range(1500):

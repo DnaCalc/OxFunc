@@ -146,46 +146,8 @@ fn days_in_year(year: i64) -> f64 {
     }
 }
 
-fn days_in_month(year: i64, month: i64) -> i64 {
-    match month {
-        1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
-        4 | 6 | 9 | 11 => 30,
-        2 => {
-            if days_in_year(year) == 366.0 {
-                29
-            } else {
-                28
-            }
-        }
-        _ => 30,
-    }
-}
-
 fn actual_days(start: i64, end: i64) -> f64 {
     (end - start) as f64
-}
-
-fn add_months_clamped(serial: i64, months: i64) -> Option<i64> {
-    let (year, month, day) = ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64)?;
-    let month_index = year
-        .checked_mul(12)?
-        .checked_add(month - 1)?
-        .checked_add(months)?;
-    let target_year = month_index.div_euclid(12);
-    let target_month = month_index.rem_euclid(12) + 1;
-    let source_is_month_end = day == days_in_month(year, month);
-    let target_day = if source_is_month_end {
-        days_in_month(target_year, target_month)
-    } else {
-        day.min(days_in_month(target_year, target_month))
-    };
-    excel_serial_from_ymd(
-        WorkbookDateSystem::System1900,
-        target_year,
-        target_month,
-        target_day,
-    )
-    .map(|v| v as i64)
 }
 
 fn days360_us(start: i64, end: i64) -> Result<f64, DiscountBillYearfracEvalError> {
@@ -386,9 +348,14 @@ fn tbill_days(settlement: f64, maturity: f64) -> Result<f64, DiscountBillYearfra
             WorksheetErrorCode::Num,
         ));
     }
-    let one_year_out = add_months_clamped(settlement, 12).ok_or(
-        DiscountBillYearfracEvalError::Domain(WorksheetErrorCode::Num),
-    )?;
+    // "More than one year after settlement" is DATE(year+1, month, day) with Excel's day
+    // rollover, not a month-end-clamped add: from 2044-02-29 the limit is 2045-03-01, and from
+    // 1991-02-28 it is 1992-02-28 (live Excel 20430, W111-5 G8-02/G8-03).
+    let num = || DiscountBillYearfracEvalError::Domain(WorksheetErrorCode::Num);
+    let (year, month, day) =
+        ymd_from_excel_serial(WorkbookDateSystem::System1900, settlement as f64).ok_or_else(num)?;
+    let one_year_out = excel_serial_from_ymd(WorkbookDateSystem::System1900, year + 1, month, day)
+        .ok_or_else(num)? as i64;
     if maturity > one_year_out {
         return Err(DiscountBillYearfracEvalError::Domain(
             WorksheetErrorCode::Num,
@@ -413,7 +380,14 @@ pub fn tbillprice_kernel(
         ));
     }
     let dsm = tbill_days(settlement, maturity)?;
-    Ok(100.0 * (1.0 - discount * dsm / 360.0))
+    let price = 100.0 * (1.0 - discount * dsm / 360.0);
+    // Excel publishes #NUM! rather than a non-positive price (live Excel 20430, W111-5 G8-03).
+    if price <= 0.0 {
+        return Err(DiscountBillYearfracEvalError::Domain(
+            WorksheetErrorCode::Num,
+        ));
+    }
+    Ok(price)
 }
 
 pub fn tbillyield_kernel(
@@ -454,6 +428,9 @@ pub fn tbilleq_kernel(
         ));
     }
     let dsm = tbill_days(settlement, maturity)?;
+    if dsm > 182.0 {
+        return tbilleq_long_bill(dsm, discount);
+    }
     let denom = 360.0 - discount * dsm;
     if denom <= 0.0 {
         return Err(DiscountBillYearfracEvalError::Domain(
@@ -461,6 +438,32 @@ pub fn tbilleq_kernel(
         ));
     }
     Ok(365.0 * discount / denom)
+}
+
+/// TBILLEQ for bills of more than 182 days: Excel switches to the bond-equivalent yield of a
+/// bill longer than one coupon period, the root of a quadratic in the price. With
+/// t = dsm / year and p = price / 100:
+///
+///   TBILLEQ = (-t + sqrt(t*t - (2t - 1) * (1 - 1/p))) / (t - 0.5)
+///
+/// `year` is 365, except that a 366-day bill (possible only across a Feb 29) uses 366, so t = 1.
+/// The operation order below reproduces 711 of 712 live long-bill rows bit-exactly on Excel
+/// 20430 (two fresh corpora, W111-5 G8-02); the one residual is a 1-2 ULP row
+/// (dsm 203, discount 0.21193) that no pure-double ordering reaches.
+fn tbilleq_long_bill(dsm: f64, discount: f64) -> Result<f64, DiscountBillYearfracEvalError> {
+    let num = || DiscountBillYearfracEvalError::Domain(WorksheetErrorCode::Num);
+    let price = 100.0 - discount * 100.0 * dsm / 360.0;
+    if price <= 0.0 {
+        return Err(num());
+    }
+    let year = if dsm == 366.0 { 366.0 } else { 365.0 };
+    let t = dsm / year;
+    let term = 1.0 - 1.0 / (price / 100.0);
+    let disc = t * t - (2.0 * t - 1.0) * term;
+    if disc < 0.0 {
+        return Err(num());
+    }
+    Ok((-t + disc.sqrt()) / (t - 0.5))
 }
 
 fn eval_numeric(
@@ -780,6 +783,26 @@ mod tests {
             0.094_151_493_565_943,
             1.0e-12,
         );
+    }
+
+    /// W111-5 G8-02/G8-03, live Excel 20430 bits: the long-bill (> 182 days) TBILLEQ branch,
+    /// the 366-day year for a 366-day bill, the DATE-rollover one-year limit, and TBILLPRICE's
+    /// #NUM! for a non-positive price.
+    #[test]
+    fn tbill_long_bills_and_one_year_limit_match_excel() {
+        let b = f64::from_bits;
+        // 365-day bill, long-bill quadratic
+        let v = tbilleq_kernel(b(0x40e7_fa00_0000_0000), b(0x40e8_27a0_0000_0000), b(0x3fda_d9e2_b7ff_ac42));
+        assert_eq!(v.unwrap().to_bits(), 0x3fe4_6da4_7a35_0f90);
+        // 366-day bill across a Feb 29: t = 366/366
+        let v = tbilleq_kernel(b(0x40ea_4fc0_0000_0000), b(0x40ea_7d80_0000_0000), b(0x3fdc_f1bb_1a5c_75f4));
+        assert_eq!(v.unwrap().to_bits(), 0x3fe7_137f_fe33_28bc);
+        let serial = |y, m, d| excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d).unwrap();
+        // from 2044-02-29 the limit rolls over to 2045-03-01; from 1991-02-28 it is 1992-02-28
+        assert!(tbillprice_kernel(serial(2044, 2, 29), serial(2045, 3, 1), 0.1).is_ok());
+        assert!(tbillprice_kernel(serial(1991, 2, 28), serial(1992, 2, 29), 0.1).is_err());
+        // a discount large enough to price the bill at or below zero is #NUM!
+        assert!(tbillprice_kernel(serial(2020, 1, 1), serial(2020, 12, 1), 2.0).is_err());
     }
 
     #[test]

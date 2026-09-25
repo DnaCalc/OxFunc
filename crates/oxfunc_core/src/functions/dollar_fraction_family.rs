@@ -71,7 +71,9 @@ fn coerce_arg_number(arg: &CalcValue) -> Result<f64, DollarFractionEvalError> {
     }
 }
 
-fn normalized_fraction_denominator(fraction: f64) -> Result<i32, WorksheetErrorCode> {
+/// The fraction argument truncated to an integer, kept as a double: an `i32` saturates at
+/// 2^31-1 and made `DOLLARDE(1.5, 1e10)` 3.328 where Excel gives 1.5.
+fn normalized_fraction_denominator(fraction: f64) -> Result<f64, WorksheetErrorCode> {
     if fraction < 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
@@ -79,12 +81,20 @@ fn normalized_fraction_denominator(fraction: f64) -> Result<i32, WorksheetErrorC
     if truncated == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    Ok(truncated as i32)
+    Ok(truncated)
 }
 
-fn decimal_scale(denominator: i32) -> f64 {
-    let digits = denominator.abs().to_string().len() as i32;
-    10f64.powi(digits)
+/// The smallest power of ten that is at least the denominator: 10^ceil(log10(d)). Excel uses
+/// this, not 10^(digit count): the two differ exactly when d is a power of ten
+/// (`DOLLARDE(3.69, 10)` is 3.69, not 9.9; `DOLLARDE(x, 1)` is x). Live Excel 20430, W111-5
+/// G8-01.
+fn decimal_scale(denominator: f64) -> f64 {
+    let d = denominator.abs();
+    let mut scale = 1.0;
+    while scale < d {
+        scale *= 10.0;
+    }
+    scale
 }
 
 pub fn dollarde_kernel(number: f64, fraction: f64) -> Result<f64, WorksheetErrorCode> {
@@ -92,7 +102,7 @@ pub fn dollarde_kernel(number: f64, fraction: f64) -> Result<f64, WorksheetError
     let scale = decimal_scale(denominator);
     let whole = number.trunc();
     let fractional = number - whole;
-    Ok(whole + fractional * scale / denominator as f64)
+    Ok(whole + fractional * scale / denominator)
 }
 
 pub fn dollarfr_kernel(number: f64, fraction: f64) -> Result<f64, WorksheetErrorCode> {
@@ -100,7 +110,7 @@ pub fn dollarfr_kernel(number: f64, fraction: f64) -> Result<f64, WorksheetError
     let scale = decimal_scale(denominator);
     let whole = number.trunc();
     let fractional = number - whole;
-    Ok(whole + fractional * denominator as f64 / scale)
+    Ok(whole + fractional * denominator / scale)
 }
 
 fn eval_family_prepared(
@@ -206,6 +216,25 @@ mod tests {
         assert_eq!(dollarde_kernel(1.02, 0.0), Err(WorksheetErrorCode::Div0));
         assert_eq!(dollarde_kernel(1.02, 0.9), Err(WorksheetErrorCode::Div0));
         assert_eq!(dollarde_kernel(1.02, -0.1), Err(WorksheetErrorCode::Num));
+    }
+
+    /// W111-5 G8-01 live Excel 20430 bits: the decimal scale is 10^ceil(log10(d)), so a
+    /// power-of-ten or unit denominator leaves the number unchanged, and a huge denominator
+    /// must not saturate.
+    #[test]
+    fn dollarde_power_of_ten_and_huge_denominators_match_excel_bits() {
+        let b = |h: u64| f64::from_bits(h);
+        for (number, fraction) in [
+            (0x400d_852c_82bc_cb80, 0x4024_0000_0000_0000), // DOLLARDE(3.690026.., 10)
+            (0x4021_ed12_f088_5a20, 0x3ff0_0000_0000_0000), // DOLLARDE(8.963035.., 1)
+            (0x3ff8_0000_0000_0000, 0x4202_a05f_2000_0000), // DOLLARDE(1.5, 1e10)
+        ] {
+            assert_eq!(
+                dollarde_kernel(b(number), b(fraction)).unwrap().to_bits(),
+                number,
+                "Excel returns the number unchanged"
+            );
+        }
     }
 
     #[test]

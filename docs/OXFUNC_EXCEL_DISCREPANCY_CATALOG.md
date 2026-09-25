@@ -1,7 +1,8 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-24` (W111-5 `oxf-mwue.5`: first live judging, on Excel
+Last reconciled: `2026-09-25` (W111 G8 fixes: DOLLARDE/DOLLARFR fraction scale 10^ceil(log10 d) and f64 denominator -> 2412/2412 each, G8-01 retired; TBILLPRICE non-positive-price #NUM! and DATE-rollover one-year limit -> 2400/2400, G8-03 retired; TBILLEQ long-bill branch -> 2399/2400. Open count 29 -> 27.)
+Previous reconcile: `2026-09-24` (W111-5 `oxf-mwue.5`: first live judging, on Excel
 16.0 build 20430, of 24 functions the parity ledger had as Unverified. 5 agree on every
 fresh-corpus row (ACOSH, NETWORKDAYS, NETWORKDAYS.INTL, PRICEMAT, WORKDAY.INTL); the rest
 diverge and land in the G8 inbox as rows G8-01..G8-12 pending triage. The COUPDAYSNC
@@ -220,7 +221,7 @@ Open Category-2 rows: `17`
 | G5 matrix numeric/shape | 0 |
 | G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
-| G8 untriaged inbox | 12 |
+| G8 untriaged inbox | 10 |
 
 W108 resolved (bit-exact via the x87 backend, removed from tracking): `EXP`, `LN`, `LOG10`,
 `LOG(x, base)`, and `POWER` — 64-bit Excel computes these with the legacy x87 CRT
@@ -408,9 +409,7 @@ carries the per-function counts and severities.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G8-01 — DOLLARDE | 358/1206 gross: non-power-of-ten fractions are wrong, e.g. `DOLLARDE(3.690026,10)` Excel 3.6900263 vs OxFunc 9.9002630; `DOLLARDE(1.5,1e10)` Excel 1.5 vs 3.328; `DOLLARDE(8.963035,1)` Excel 8.963035 vs 17.63. Likely digit-count/scaling rule for the fraction argument. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
-| G8-02 — TBILLEQ | 367/1200 gross: e.g. 365-day bill at discount 0.49231: Excel 0.82602 vs OxFunc 0.99660. Excel switches to the quadratic (long-bill) formula beyond half a year; OxFunc uses the short-bill formula throughout. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
-| G8-03 — TBILLPRICE | 14/1200 structural: Excel publishes `#NUM!` when the price would be <= 0 (discount 1-2 over a long bill); OxFunc returns the negative price. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-02 — TBILLEQ, TBILLYIELD | **2026-09-25:** long-bill branch (> 182 days, quadratic in the price, 366-day year for a 366-day bill) and the DATE-rollover one-year limit landed: TBILLEQ 2399/2400, TBILLYIELD 2399/2400, TBILLPRICE 2400/2400 (row G8-03 retired). Residuals: TBILLEQ dsm 203, discount 0.21193, 71 ULP (no pure-double ordering reaches it); TBILLYIELD 1-day bill at price 2.28, 2 ULP. | NUM | M1 tested | Live Excel 16.0 build 20430 CV2, two fresh corpora (seeds 20260924, 20260925), `docs/function-lane/evidence/w111-g8-dollar-tbill-20260925/misses.json`. |
 | G8-04 — WORKDAY | 198/1200 gross: fractional `days` (e.g. -32.5) land 3 days apart (Excel 54557 vs OxFunc 54560): the days argument is truncated differently. WORKDAY.INTL with integer days agrees 1200/1200. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
 | G8-05 — YEARFRAC | 320/1503: 16 structural (negative serial: Excel `#NUM!`, OxFunc `#VALUE!`), 295 gross, 9 last-bit; gross rows not yet triaged. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
 | G8-06 — ACCRINTM | 204/1206: equal issue/settlement Excel 0 vs OxFunc `#NUM!`; rate 0 Excel `#NUM!` vs OxFunc 0; basis 1 values differ (e.g. 3.77978 vs 3.77368): the Actual/actual year basis differs. | STR | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
