@@ -1,0 +1,153 @@
+{
+ "FUNC.ROUND": {
+  "rows_judged": 611,
+  "rows_agree": 604,
+  "severity": "gross",
+  "worst_ulp": 180143985094819,
+  "misses_by_severity": {
+   "gross": 7
+  },
+  "misses": [
+   {
+    "id": "rnd-2",
+    "args": [
+     "0x3fd23d70a3d70a3d",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4598895795485655695
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4598715651500560876
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 180143985094819
+    }
+   },
+   {
+    "id": "rnd-0",
+    "args": [
+     "0x3ff0147ae147ae14",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4607227454796291113
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4607182418800017408
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 45035996273705
+    }
+   },
+   {
+    "id": "rnd-3",
+    "args": [
+     "0x3ff03d70a3d70a3d",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4607272490792564818
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4607227454796291113
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 45035996273705
+    }
+   },
+   {
+    "id": "rnd-4",
+    "args": [
+     "0xbff0147ae147ae14",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 13830599491651066921
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 13830554455654793216
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 45035996273705
+    }
+   },
+   {
+    "id": "rnd-496",
+    "args": [
+     "0x40605b5c28f5c28f",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4638808243495784940
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4638807891652064051
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 351843720889
+    }
+   },
+   {
+    "id": "rnd-113",
+    "args": [
+     "0xc074486666666666",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 13867788845183381012
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 13867788669261520568
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 175921860444
+    }
+   },
+   {
+    "id": "rnd-187",
+    "args": [
+     "0x4083fc70a3d70a3d",
+     "0x4000000000000000"
+    ],
+    "expected": {
+     "kind": "number",
+     "bits": 4648836845072264724
+    },
+    "actual": {
+     "kind": "number",
+     "bits": 4648836757111334502
+    },
+    "verdict": {
+     "agree": false,
+     "severity": "gross",
+     "ulp": 87960930222
+    }
+   }
+  ]
+ }
+}

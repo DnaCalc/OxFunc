@@ -1,7 +1,8 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-09-25` (W111 G8-07: BAHTTEXT negatives ("ลบ" prefix, even when rounding to zero), under-one-baht amounts, decimal half-up satang after 15-digit rounding, and "เอ็ด" across million groups: 2040/2040 incl. an 800-row held-out batch, row retired, open count 24 -> 23.)
+Last reconciled: `2026-09-25` (W111 ROUND probe: new row G8-14, open count 23 -> 24.)
+Previous reconcile: `2026-09-25` (W111 G8-07: BAHTTEXT negatives ("ลบ" prefix, even when rounding to zero), under-one-baht amounts, decimal half-up satang after 15-digit rounding, and "เอ็ด" across million groups: 2040/2040 incl. an 800-row held-out batch, row retired, open count 24 -> 23.)
 Previous reconcile: `2026-09-25` (W111 G8-08: coupon schedule computed from maturity; COUPPCD/COUPNCD/COUPDAYBS 4084/4084; COUPDAYS basis 1, COUPDAYSNC basis 0 and the serial-0 edge stay open in G8-08. Open count 24 -> 24.)
 Previous reconcile: `2026-09-25` (W111 G8-09: DAYS360 and the shared US 30/360 routine treat Excel's 1900-02-29 as the month end: 3066/3066 incl. a 60-row 1900 probe, row retired, open count 25 -> 24.)
 Previous reconcile: `2026-09-25` (W111 G8-06: ACCRINTM basis 1 now uses the shared Excel actual/actual rule (day_count_common), equal dates accrue 0, rate 0 is #NUM!: 2412/2412, row retired, open count 26 -> 25.)
@@ -227,7 +228,7 @@ Open Category-2 rows: `17`
 | G5 matrix numeric/shape | 0 |
 | G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
-| G8 untriaged inbox | 6 |
+| G8 untriaged inbox | 7 |
 
 W108 resolved (bit-exact via the x87 backend, removed from tracking): `EXP`, `LN`, `LOG10`,
 `LOG(x, base)`, and `POWER` — 64-bit Excel computes these with the legacy x87 CRT
@@ -421,6 +422,7 @@ carries the per-function counts and severities.
 | G8-10 — ASINH | 341/1517: 339 last-bit on small |x| (Excel appears to use ln(x+sqrt(x^2+1)) directly), 2 gross; `ASINH(-0)` Excel 0 vs OxFunc -0. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
 | G8-11 — KURT, SKEW | KURT 442/1504 (max 512 ULP), SKEW 444/1504 (max 3 ULP): moment-sum order or formula differs. | NUM | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
 | G8-12 — NORMDIST, LOGNORM.DIST | NORMDIST 287/1505 (max 355 ULP), LOGNORM.DIST 613/1505 (max 1894 ULP), concentrated in deep tails and the PDF mode; CDF mode inherits the ERFC wall, PDF mode is independent. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, fresh W111-5 corpus 2026-09-24 (`smart-fuzzer/tools/w111/gen_w111_5_batches.py`, seed 20260924), judged by `sf judge-witnesses`; full misses in `docs/function-lane/evidence/w111-5-20260924/misses.json`. |
+| G8-14 — ROUND (check ROUNDUP, ROUNDDOWN, MROUND, FIXED, DOLLAR) | **2026-09-25 probe:** half-way decimals round in decimal in Excel: `ROUND(1.005,2)` 1.01 vs OxFunc 1.00, `ROUND(0.285,2)` 0.29 vs 0.28, `ROUND(-1.005,2)` -1.01 vs -1.00; 7/611 money-style rows. OxFunc rounds `n*10^d` in binary. Fix bead `oxf-mwue.27`. | GRS | M1 tested | Live Excel 16.0 build 20430 CV2, 611-row probe, `docs/function-lane/evidence/w111-round-probe-20260925/misses.json`. |
 
 New smart-fuzzer `mixed_or_open` findings land here first, then move to G1-G7
 or the context-sensitive catalog after triage.
