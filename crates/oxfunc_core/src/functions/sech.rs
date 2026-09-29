@@ -25,7 +25,8 @@ pub const SECH_META: FunctionMeta = function_spec! {
 
 pub fn sech_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     // Live Excel 16.0 b20326: SECH(x)=1/COSH(x) 40/40 on the COSH EXP-pair grid.
-    Ok(1.0 / crate::functions::cosh::cosh_kernel(n))
+    let result = crate::excel_numeric::excel_x87_recip(crate::functions::cosh::cosh_kernel(n));
+    Ok(if result.abs() < f64::MIN_POSITIVE { 0.0 } else { result })
 }
 
 pub fn eval_sech_surface(

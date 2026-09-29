@@ -1,0 +1,12 @@
+{
+  "authority": "shared_ASIN_caller_impact_assessment",
+  "source": "smart-fuzzer\\runs\\w111-asin-signed-20260929\\batch-asin.json",
+  "batches": [
+    {
+      "function": "ACOS",
+      "path": "batch-acos.json",
+      "rows": 6180,
+      "sha256": "6844cdd34371acd4a55695deddb9971f52817f63a35858706053371c6cfc2e2a"
+    }
+  ]
+}

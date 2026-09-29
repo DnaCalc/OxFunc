@@ -31,7 +31,7 @@ pub fn cosh_kernel(n: f64) -> f64 {
     // 1 ULP off Excel at 0.001, 0.01, and 10.
     let e = crate::excel_numeric::excel_exp(n);
     let em = crate::excel_numeric::excel_exp(-n);
-    (e + em) / 2.0
+    crate::excel_numeric::excel_x87_add(e, em) / 2.0
 }
 
 pub fn eval_cosh_surface(

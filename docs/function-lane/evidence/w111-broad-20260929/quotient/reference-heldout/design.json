@@ -1,0 +1,9 @@
+{
+  "seed": 202609293040,
+  "rows": 512,
+  "candidate_frozen_before_generation": true,
+  "paired_reference_and_materialized_rows": 256,
+  "unit_reference_rows": 128,
+  "competing_error_origin_rows": 128,
+  "scope": "Finite prepared values, direct arrays and single rectangular references; caller positions varied."
+}

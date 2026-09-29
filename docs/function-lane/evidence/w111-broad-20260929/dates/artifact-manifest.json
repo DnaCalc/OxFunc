@@ -1,0 +1,419 @@
+{
+  "schema_version": "w111.date_artifacts.v1",
+  "files": [
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/capture_manifest.json",
+      "source_sha256": "68af40ab293aea2dd001e5a1b50e5c4dd0b1c6edd395871dfb1176df2fd1a9b9",
+      "retained": "boundaries/capture_manifest.json",
+      "sha256": "1500e149955c401e469dfa4e041601d77c3860091a5ac235180a1657b8411c12"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-date.json",
+      "source_sha256": "83548c256819328a23748510627cd68b445f8ca1eaa330ba72613997c4e576d6",
+      "retained": "boundaries/answers-date.json",
+      "sha256": "fea50a9e43d41aed3fb84a713a7f3ba22c8fdbdce50ea80bd99e1ad195338493"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-day.json",
+      "source_sha256": "acc456c8a4e4d56a3f86d5293d5d66e29fce1a7c41008b5022b7a389bb14ea85",
+      "retained": "boundaries/answers-day.json",
+      "sha256": "b45081b9a430879d2efe7af0e0872ab07e733048054628c75e3a52f5a446d372"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-days.json",
+      "source_sha256": "bfc033f7c369b88c8ce51e76ebcaba5a361cc7f670d69dd8b252704a75587564",
+      "retained": "boundaries/answers-days.json",
+      "sha256": "ebd8d896d4caa0c4d7f0078abd965f6f1c11b2a35452f6b43993b5e1459f06a7"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-edate.json",
+      "source_sha256": "10b06db4a56b3c752d4a5911678a04fc49f21019eb1fbfbc5ad3f6198bdb09fc",
+      "retained": "boundaries/answers-edate.json",
+      "sha256": "f0a0c5d04882141b28da58afd2ef6cc8cfb4b78072f17f2845a1d56302cc5b1f"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-eomonth.json",
+      "source_sha256": "e0bbfdb76ec5b9bce9334430876f2caca4df17edcf7d0953e370cd24cf996ca6",
+      "retained": "boundaries/answers-eomonth.json",
+      "sha256": "8326ced0e107e65db0391e7b1102bf34111bf152b24076f786d26dcf4b1db557"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-hour.json",
+      "source_sha256": "aacb76dcda33237859fcc54702b7a25c1705cb4d681869726a72532416e47e9f",
+      "retained": "boundaries/answers-hour.json",
+      "sha256": "8523ee4e84d4717c1993808c5cbcfd63540bc7cbbcf9afff40f5b1e57aeb7342"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-isoweeknum.json",
+      "source_sha256": "5cc0b9fdc5aa1951bf865b3b11f6f1d7cb5333ece07aab513d7539883d2a48eb",
+      "retained": "boundaries/answers-isoweeknum.json",
+      "sha256": "47d971ab1480a8da327d9b4a27e67d504bf04e4e440f22a510be523e11bd0f1a"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-minute.json",
+      "source_sha256": "0daaf1bfbea0cf6d12e504a725ab9073ef4a13b3674bfe6e480e02ae093e5c16",
+      "retained": "boundaries/answers-minute.json",
+      "sha256": "13a15735ef4880407cdbdd5a606f768aed00fd8e4877d0e6d3c9427bc6e41485"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-month.json",
+      "source_sha256": "719807e9735771e2bb8ebb38aed00f38864c328813d71f30eff00d9a3a27ffda",
+      "retained": "boundaries/answers-month.json",
+      "sha256": "840652d9bdfcee084039d502408349a7fcc2d07f77c9d2ce61d024256a847604"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-second.json",
+      "source_sha256": "34a14c229372f0eb37e5494bfa390b432967636e24d9d37613a8aa3becd3792c",
+      "retained": "boundaries/answers-second.json",
+      "sha256": "798603a424a23fe1250f9fad0855666a7770a9b3367e71bd2778d4fe403f732e"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-weekday.json",
+      "source_sha256": "aebbe5219a4005980a8c668b99a453abfe7df58c84aecb6e534ec90b68357912",
+      "retained": "boundaries/answers-weekday.json",
+      "sha256": "5c651795e2fa3d057014f56fbf2ce65516dc41ebf3b7f364b50f60309d154d90"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-weeknum.json",
+      "source_sha256": "373370544d73ce79140df4b066bb2e4b5dd5c89f62d5f21283fd4158c8e7328a",
+      "retained": "boundaries/answers-weeknum.json",
+      "sha256": "53758c2c89b31bf4692ab0060d9955f28544110438e416a9aca3df756bc7ff68"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-boundaries-20260929/answers/answers-year.json",
+      "source_sha256": "6cb440ceb597d24d667362a506e3cecaca598bb4f488563bc66aae5216bd2505",
+      "retained": "boundaries/answers-year.json",
+      "sha256": "cee9895601b7fe1e11cd5e0abe81474d47a2de068bb52b12222248926807d249"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/capture_manifest.json",
+      "source_sha256": "27da5682faa633978ef5cdad55903bcbe6d10cc04a2bebc636a2013cd6c53641",
+      "retained": "conversion/capture_manifest.json",
+      "sha256": "3222c8601e273c5d57d93a6af50d9dfd1ff2bb472dce9b65bb765dec9a619809"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-date.json",
+      "source_sha256": "abfc3e2e578777849f07697f68cb347acc6091f6a8d04bc402ac51263c048f64",
+      "retained": "conversion/answers-date.json",
+      "sha256": "23b53e449c2c07b1d7ce877b221d8890059b43b651a635d37cde9cf207c8fcd4"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-day.json",
+      "source_sha256": "1bd3309dfeb8021c66523ff03080fe1e76365d3ce84e0806c7de8c6a6d1c7410",
+      "retained": "conversion/answers-day.json",
+      "sha256": "ee543c199bf3bca163ccc2424c282feb946ce833fb8261a57bd8febd37c3118f"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-hour.json",
+      "source_sha256": "258b49451d810a081b21c90b693a3026f1083d8e4b24db382e1d39b7709c12a4",
+      "retained": "conversion/answers-hour.json",
+      "sha256": "c89692ebaa1cf3df78f2c62a7ca75436b3e167f066c929f7cb12a36c88af8fd0"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-isoweeknum.json",
+      "source_sha256": "c5200cfed3af746b138fb8893e8a0ee88d27d1f728269bb9ffe83735a1eaf10a",
+      "retained": "conversion/answers-isoweeknum.json",
+      "sha256": "f8ab0a2b3d749118e375dc3401f06fa43025f934c9a64e8720d655ac6ba81b9d"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-minute.json",
+      "source_sha256": "ed7e7abbcc547756ebca71c8127179e71a935e2beabb754b34f66c90093528bd",
+      "retained": "conversion/answers-minute.json",
+      "sha256": "cc9f1583b5bb47e7cdb92e357bf1d741fd86f565236b562af0680535c1b0c1c4"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-month.json",
+      "source_sha256": "234d0a1c865212f1bb09b0fcc0adaf0c09899d6e1dc06c1a2b8f1e9a8e521dce",
+      "retained": "conversion/answers-month.json",
+      "sha256": "5d4f1d6e9ba8057cbec82f77d39b8f814030ae2efda3f2bef4c85d74561363dd"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-second.json",
+      "source_sha256": "7d68659e95599d30d1e2ee1f10b28a896c5d4ab121df719a143d1e16ece35336",
+      "retained": "conversion/answers-second.json",
+      "sha256": "f94aaf78d61362da0f9dac8a01cf6ff6f813cf2f9d27d1ab1d7aabd78b8861a4"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-weekday.json",
+      "source_sha256": "2f76256b3513002102c5964bd20090fb8f639b4f0d951f5a72604f083a48bd9c",
+      "retained": "conversion/answers-weekday.json",
+      "sha256": "b6b62e9286026fcbe6c04e23bdacca6be9da33569579c301f6c1678b6cc28176"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-weeknum.json",
+      "source_sha256": "7290d783ee32d04e16cec46b18efe8c29ec993cd3fd0b083cfcf30e42a6b2dc3",
+      "retained": "conversion/answers-weeknum.json",
+      "sha256": "ab920f4daaca6d5ead7db0e942dc3005d371af61fccb60ee6fc988af41e5b464"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-conversion-20260929/answers/answers-year.json",
+      "source_sha256": "15b9f699b965e45440d312cf04f2b91e7392dd39d0ce4c9ec8181a2cbb93297c",
+      "retained": "conversion/answers-year.json",
+      "sha256": "7fee789a3f8e43363ba91ff9c99c91cec5e95d2caf8e3145cc463da5c2c11e26"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-integer-20260929/capture_manifest.json",
+      "source_sha256": "98979542deb52109901e5a8f6c56846c66c126af94c61082feabc0b5cf8cafa7",
+      "retained": "integer/capture_manifest.json",
+      "sha256": "05c2a30ce0c7fffac29fb023c8159a4094c59378affad2f9f824a57aa1ca521f"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-integer-20260929/answers/answers-date.json",
+      "source_sha256": "27fa280503ff5e16e4da741974776653e66e98c3ec6d9a64a0b15b726a8e4b8b",
+      "retained": "integer/answers-date.json",
+      "sha256": "4e6a2596890e001c71cc8724bfb92cec072ff6fa5d40d6310f876555cbf759a8"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-integer-20260929/answers/answers-weekday.json",
+      "source_sha256": "caee183ad0df84c6e90fb9dd705277db778e5af25ba6ce920c010eec4a715ad3",
+      "retained": "integer/answers-weekday.json",
+      "sha256": "76fa18795dde5e43dc26086f81a912c7b060ccb32db0ee82b3ef697a1b41b9b3"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-integer-20260929/answers/answers-weeknum.json",
+      "source_sha256": "c1dc62285a4b74fcfb5e55c68fc5c5138263cbc8d91a1b5cb385556713f89f96",
+      "retained": "integer/answers-weeknum.json",
+      "sha256": "94fd527f70b0ab90647c306db2b44c1abf76c7a61fca5495c4baeb3610386906"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/capture_manifest.json",
+      "source_sha256": "6d930602d26262644d02e692114691719bdc7daa381d192189928bd004449db2",
+      "retained": "heldout/capture_manifest.json",
+      "sha256": "57aff6072aa448a83f845ad26d3cd251f1766d03a4bd94185d15a6860770e079"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-date.json",
+      "source_sha256": "cf6293d5540383b77f0b33b04bbf36b3e9194131b0bd28f8a215e443c893d0b2",
+      "retained": "heldout/answers-date.json",
+      "sha256": "3c1ad8d070f925d3e624aa8e80134c681e60888c941aed4c032e0eaf37c5aedb"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-day.json",
+      "source_sha256": "a2fbe50d45b005722bc3b1483813e8556ca4e2e86055b28fed50cf0212baf352",
+      "retained": "heldout/answers-day.json",
+      "sha256": "c119dc06512f4685304f9b60db88f6d3fb252f3aef2f85770dfb6573fbab8127"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-days.json",
+      "source_sha256": "7884ab7985fc81177b488b4f3c57da72098b31901c7fd2bc0350f635ca89a158",
+      "retained": "heldout/answers-days.json",
+      "sha256": "ff3cbeda5b7fde3d4a1e7a94aa7bd840dbfdaeebab66518726f13d3f9c271a50"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-edate.json",
+      "source_sha256": "0f26bf87453e955430b9d772bebd80a97f37917171da108bf7c271117f95ea7a",
+      "retained": "heldout/answers-edate.json",
+      "sha256": "9b86e59ea9df8d5441bf6b245ec706f227c9e6191ed84232be941060744b8e3d"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-eomonth.json",
+      "source_sha256": "954044e6a531df85fc0938be52011bed9acfd5c288cffc67c44eaea68bc1dec3",
+      "retained": "heldout/answers-eomonth.json",
+      "sha256": "65c89afc1b01a0070fa2929aff6ad10755036996f36b729956c1cab8b60d2c8d"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-hour.json",
+      "source_sha256": "047f54de39ae561a4f304e4a89f0f0a4bacd6bcb5cc9a189073689b5362f7d3d",
+      "retained": "heldout/answers-hour.json",
+      "sha256": "7cbac506423257cfe6f65d8484c1c16f614912be8263a8e0009beef70eab87ce"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-isoweeknum.json",
+      "source_sha256": "8564f51404c91358dc759fdb89bfc58f217c6b4dd0c9ea27ac0e21cdb47cf198",
+      "retained": "heldout/answers-isoweeknum.json",
+      "sha256": "f032fe6a38ca7a875b828fc563ad44e2011bb0b5a71f0a258f2cfafcfaa0b034"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-minute.json",
+      "source_sha256": "c1bcd5f4bf6549738b5f8afcf652bd35ea974ceb77de4967434aca789cdabc6d",
+      "retained": "heldout/answers-minute.json",
+      "sha256": "80104b390cbd633d8babd9e3b2caea02196ce2bda45807115d3c545956e70d26"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-month.json",
+      "source_sha256": "6b30fdd900910e1cc8a4d5cd861f3619130b6d14f8858171005ea397544cc183",
+      "retained": "heldout/answers-month.json",
+      "sha256": "e5c1ca53bd4b8826199d6f70af41c4630ddb5ae8f99af965eb1c29d5efea723a"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-second.json",
+      "source_sha256": "258c1de0628d194a6b0c130d4aa5a14cc7fd4e7965c15ff2d2a9ec65c958aeca",
+      "retained": "heldout/answers-second.json",
+      "sha256": "3a39497fe596bd64d50bdb67ee30753d306c5a8a252e881245b1f4cb092b8baf"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-weekday.json",
+      "source_sha256": "5b1c29a9f70913d7cbe597e1826a40f0eb4b76ecdf5db37aebf2099641314087",
+      "retained": "heldout/answers-weekday.json",
+      "sha256": "301a5b4951dd8074886b43ab5a9d2b742332e6ea1b424adb5dd6fdcb138e380b"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-weeknum.json",
+      "source_sha256": "36de8c0a3783e9689c2fab1b458259de3d70a9433eeba237215b2817c8418e0f",
+      "retained": "heldout/answers-weeknum.json",
+      "sha256": "c221f7127569b1e24e62688a6a886293c045fac393f1a9a1be51233f7b31c99b"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/answers/answers-year.json",
+      "source_sha256": "9ba7181fb6e8a52a5993d9436e28bc4813466e66ffb4139ba25d46c8f7b809eb",
+      "retained": "heldout/answers-year.json",
+      "sha256": "de9a15bf7138602d1d4986e13c395adae2c4d9ea0604ea5b9b660c5bdfb07e0f"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout-20260929/candidate-freeze.json",
+      "source_sha256": "369c2d61099706915d443426d3f7a54765635fbf79c2f1438cdb948baf5e7712",
+      "retained": "heldout/candidate-freeze.json",
+      "sha256": "61d4eeff8e1e06563cd81028d6ac35b99678345bb317831ed2dc350ea67ada4e"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-refinement-20260929/capture_manifest.json",
+      "source_sha256": "bfb25f25e4b26f0c8728ad20ec4a56faae411107c528772e45d78e845acc81a2",
+      "retained": "refinement/capture_manifest.json",
+      "sha256": "df09fd5aab12d367ee4687fe80c2bc6cfab166f40feec074bb907df8b11c691c"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-refinement-20260929/answers/answers-date.json",
+      "source_sha256": "45982eeb5d69ea225d10ce5579a85a25a50fd5aca84f74699de036de7ec645fd",
+      "retained": "refinement/answers-date.json",
+      "sha256": "5144c6a4487fd036a4b347b6320d4a72811e9c32f0b8b88eafda0a91a0ff35e2"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-refinement-20260929/answers/answers-hour.json",
+      "source_sha256": "3a7dbd4e8421468193dd46a49e6c7efbcd6ecd8b5acd9aba21f4f77b96aafaa1",
+      "retained": "refinement/answers-hour.json",
+      "sha256": "65fdd42ab79625759b2189b6aaa15b38c869a390470c907bd8f8903f7543f292"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-refinement-20260929/answers/answers-minute.json",
+      "source_sha256": "f3d538b95083d553038a2e2b763515746918eb935ad08a65875193060f830ab0",
+      "retained": "refinement/answers-minute.json",
+      "sha256": "5ce7ab9884e532f8e1142722c804a1202c01f7c255a0186c1c0ff0172ab64444"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-refinement-20260929/answers/answers-second.json",
+      "source_sha256": "7f829c7adeb48ed1e8a92d08c876306b4c6dabd2389fa96d51219097863a95a1",
+      "retained": "refinement/answers-second.json",
+      "sha256": "b938fd641eae82e17b545e583cebd7e155270c085084e9514d6328df1fd19ed6"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/capture_manifest.json",
+      "source_sha256": "24e4ba07163383ddf343867a05b240b8cee9c46538e23881bc26fa1c7413ea19",
+      "retained": "heldout2/capture_manifest.json",
+      "sha256": "d954e516e06c3a9580b147f9bacdb6a9c3d2c1b51a7b3347318a7a51d2aeb2d0"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-date.json",
+      "source_sha256": "e272e5755c0d26da872ad871de213c81a6239747d704efa3c84253716ba02cc2",
+      "retained": "heldout2/answers-date.json",
+      "sha256": "0aee5d8de925a6496c34cc153724e2df2d3f22693637e300e7838a239864f1fe"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-day.json",
+      "source_sha256": "5794111cd4ffad9bb8d48e9c064f596b5c711e703beca0978020b5383380ab2a",
+      "retained": "heldout2/answers-day.json",
+      "sha256": "b2173d1ad0f78d61080cb4070180cdf9394968367800f3858a2f6f81fb214fe7"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-days.json",
+      "source_sha256": "cb2da9a58f71b1c374a3fffff2144f36ec5bb3d225f2eb4da80a80d1b98702d7",
+      "retained": "heldout2/answers-days.json",
+      "sha256": "2fa76075f8e8546e5237c676270f2143480864f0aaefce2665600f270b99008e"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-edate.json",
+      "source_sha256": "a4b09a47cb49ec95c0032880c1b7dc3fb395364f99460a688edc3547975f8b43",
+      "retained": "heldout2/answers-edate.json",
+      "sha256": "e339829d1d1b17e4a9e4e08bec3c7d226a8e03efa833970454793eac1dfc8a91"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-eomonth.json",
+      "source_sha256": "111de72c6535ad5e6e852bde6b9e4a345849105dd6197c4d126e7c948d375c74",
+      "retained": "heldout2/answers-eomonth.json",
+      "sha256": "6c1afa2498fb1b43da8bb051a7ee2a43f6c0a16f20180d408375909dcb79d617"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-hour.json",
+      "source_sha256": "7ec23d6144bd34c723d98f2d92262ed6859b0906e5701a675ee466b28d3d8853",
+      "retained": "heldout2/answers-hour.json",
+      "sha256": "94e403e6afe19e13301b4df09a2e58d5dd361d16029d56cb9ba90173b5f1348c"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-isoweeknum.json",
+      "source_sha256": "82dfe2269fbcc394c0064557d51846ed5b35a0a224dd40359b2f0df0916c770b",
+      "retained": "heldout2/answers-isoweeknum.json",
+      "sha256": "8044491fdbec618a39e261db3a4a5c4cc679ae07c42bef80f084d1e2559d6f96"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-minute.json",
+      "source_sha256": "668185a47bc1fff5820efa8a660aca03fd5992b29ba4976b75913c21290fbd32",
+      "retained": "heldout2/answers-minute.json",
+      "sha256": "6ad2ebb3f34d5fda905a8550a8a48b8c9bf2c1e10e32fc09261fea2c64e3a66b"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-month.json",
+      "source_sha256": "2dab45c5549f7d60f4bfbf57f580b228e6c443d1b9b548fde9ccbdcb144677cd",
+      "retained": "heldout2/answers-month.json",
+      "sha256": "105b93dc714b1e0550edf8e22fcb98defabd4c9af30ffbb5b31d8fdd80994c91"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-second.json",
+      "source_sha256": "e6d6370c4783bdeaddf124001f187acd58370781068a73fb70cc36b2c6c52944",
+      "retained": "heldout2/answers-second.json",
+      "sha256": "5ad7863168e8c1610a438d374195cf8c14cc6ec361fc0b86b72f2a2f5303ffc8"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-weekday.json",
+      "source_sha256": "7a1df5f698d647879d2f12cade6d281389cb846be8ffdb312d53b683d65c0109",
+      "retained": "heldout2/answers-weekday.json",
+      "sha256": "61eb19a676dffb5c4372fe9bc4502fffdc6472f27ca076be705f2ac8e5ac2a67"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-weeknum.json",
+      "source_sha256": "befd1514f12d91e5ae32a7e3c98c85f1339551c24b8a71efd5b2d30ec718599a",
+      "retained": "heldout2/answers-weeknum.json",
+      "sha256": "343e2cd535019f48549e49b2f66a813ac955556d13b9e2bc3b32abe19dddf916"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/answers/answers-year.json",
+      "source_sha256": "dd6ba0f78379967adb77d5d0b56ec2a976d7cfc65df5e68d6c106da87f752dd5",
+      "retained": "heldout2/answers-year.json",
+      "sha256": "634c626eeed19cc09a0363f721b33198448022300a7d295a954434d781762a49"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-heldout2-20260929/candidate-freeze.json",
+      "source_sha256": "4f371c938099444468ac0b4591d578f2c4b175258baf2964b46a53a63d8eb90c",
+      "retained": "heldout2/candidate-freeze.json",
+      "sha256": "5550adb096476bf21b07a45141898f44ac2ee70a3fafc9847d315b2f17984fb5"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-typed-20260929/cases/cases.jsonl",
+      "retained": "typed-first/cases/cases.jsonl",
+      "sha256": "78332c244997466a7cf6bb40ff64e0eda22ffa28660f4ba31492c324498085c1"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-typed-20260929/outcomes/excel.jsonl",
+      "retained": "typed-first/outcomes/excel.jsonl",
+      "sha256": "5944cb39bcbe518a3225bddc0bf0e3145eba9e77ad1954a85d2b99c0af0f24f0"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-typed-20260929/outcomes/local.jsonl",
+      "retained": "typed-first/outcomes/local.jsonl",
+      "sha256": "9077de37c7fcb71e317ae1bd3017bcdbe093b78c868097a3d69e0836186668e0"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-typed-20260929/manifest.json",
+      "retained": "typed-first/manifest.json",
+      "sha256": "4d0ad708f9cf175340760fa8f187b94cd10c0642c48e85c2dc94a457d10297ec"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-typed-20260929/rollup.json",
+      "retained": "typed-first/rollup.json",
+      "sha256": "c3057cad2b55a083bfdea4a188d62590eaf85d99d1889b28f2b03b5783ccde76"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-date-typed-20260929/comparisons/comparisons.jsonl",
+      "retained": "typed-first/comparisons/comparisons.jsonl",
+      "sha256": "ddf21f103653ad1026aaa2835db34f3f4fbfdd1dd6db9f47e34f3d04cd866ace"
+    }
+  ]
+}

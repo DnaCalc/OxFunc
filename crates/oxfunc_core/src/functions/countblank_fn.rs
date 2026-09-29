@@ -36,19 +36,25 @@ pub enum CountBlankEvalError {
 fn value_error_array_like(array: &CalcArray) -> CalcValue {
     let shape = array.shape();
     let rows: Vec<Vec<CalcValue>> = (0..shape.rows)
-        .map(|_| {
+        .map(|row| {
             (0..shape.cols)
-                .map(|_| CalcValue::error(WorksheetErrorCode::Value))
+                .map(
+                    |col| match array.get(row, col).expect("valid coordinate").core() {
+                        CoreValue::Error(code) => CalcValue::error(*code),
+                        _ => CalcValue::error(WorksheetErrorCode::Value),
+                    },
+                )
                 .collect()
         })
         .collect();
     CalcValue::array(CalcArray::from_rows(rows).expect("countblank error array shape"))
 }
 
-fn calc_value_counts_as_blank(value: &CalcValue) -> Result<bool, CoercionError> {
+fn calc_value_counts_as_blank(value: &CalcValue, referenced: bool) -> Result<bool, CoercionError> {
     match value.core() {
         CoreValue::Empty => Ok(true),
         CoreValue::Text(t) => Ok(t.utf16_code_units().is_empty()),
+        CoreValue::Error(_) if referenced => Ok(false),
         CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         CoreValue::Missing => Ok(false),
         _ => Ok(false),
@@ -69,7 +75,9 @@ fn count_sparse_reference_blanks(
         .declared_cell_count()
         .saturating_sub(values.defined_cells.len()) as f64;
     for cell in &values.defined_cells {
-        if calc_value_counts_as_blank(&cell.value).map_err(CountBlankEvalError::Preparation)? {
+        if calc_value_counts_as_blank(&cell.value, true)
+            .map_err(CountBlankEvalError::Preparation)?
+        {
             count += 1.0;
         }
     }
@@ -93,6 +101,17 @@ pub fn eval_countblank_surface(
         if let CoreValue::Array(array) = args[0].core() {
             return Ok(value_error_array_like(array));
         }
+        if matches!(
+            args[0].core(),
+            CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_)
+        ) {
+            // A computed scalar value is not a range. Literal values may be
+            // rejected earlier by Excel's formula parser; IF/CHOOSE controls
+            // establish this function result independently of that boundary.
+            return Err(CountBlankEvalError::Preparation(
+                CoercionError::UnsupportedValueKind("countblank_non_reference"),
+            ));
+        }
     }
 
     let mut count = 0.0;
@@ -111,7 +130,13 @@ pub fn eval_countblank_surface(
                     CoercionError::UnsupportedValueKind("countblank_array_substitute"),
                 ));
             }
-            if calc_value_counts_as_blank(&item.0).map_err(CountBlankEvalError::Preparation)? {
+            let referenced = matches!(
+                item.1,
+                AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)
+            );
+            if calc_value_counts_as_blank(&item.0, referenced)
+                .map_err(CountBlankEvalError::Preparation)?
+            {
                 count += 1.0;
             }
         }
@@ -238,7 +263,7 @@ mod tests {
     }
 
     #[test]
-    fn countblank_propagates_errors() {
+    fn countblank_ignores_referenced_error_cells() {
         let got = eval_countblank_surface(
             &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
@@ -251,12 +276,7 @@ mod tests {
                 )),
             },
         );
-        assert_eq!(
-            got,
-            Err(CountBlankEvalError::Preparation(
-                CoercionError::WorksheetError(WorksheetErrorCode::NA,)
-            ))
-        );
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]

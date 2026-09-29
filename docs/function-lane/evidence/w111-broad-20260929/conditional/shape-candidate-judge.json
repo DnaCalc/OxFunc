@@ -1,0 +1,19 @@
+{
+  "rows": 96,
+  "matches": 96,
+  "by_function": {
+    "FUNC.IF": {
+      "rows": 64,
+      "matches": 64
+    },
+    "FUNC.IFERROR": {
+      "rows": 16,
+      "matches": 16
+    },
+    "FUNC.IFNA": {
+      "rows": 16,
+      "matches": 16
+    }
+  },
+  "misses": []
+}

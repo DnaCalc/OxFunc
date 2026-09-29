@@ -1,0 +1,10 @@
+{
+  "numeric_rows": 29573,
+  "typed_rows": 297,
+  "excluded_discovery_values": 1224,
+  "seed": 202609291803,
+  "generator_sha256": "c8031dbe0d90d7811bf4efd1e5ccfc186e734267612d168aaceff3fbe6b4b8b1",
+  "batch_sha256": "bbd0e8075374c05ff00221dff43180556f3e35c901670a3c09281dbed09f2bf1",
+  "typed_sha256": "50427afb6d15b4c3985f344a2d7754cd40e5750cca72112ef10cf2e412dfdb7b",
+  "ingress": "normal binary64 and positive zero; Value2 exact readback; prior discovery excluded"
+}

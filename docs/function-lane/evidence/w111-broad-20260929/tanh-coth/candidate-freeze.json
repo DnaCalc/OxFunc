@@ -1,0 +1,35 @@
+{
+  "authority": "source_frozen_before_independent_composition_holdout_generation",
+  "files": [
+    {
+      "path": "crates/oxfunc_core/src/functions/tanh.rs",
+      "sha256": "5137750eb6e335edb093546a4751a650de555771b440e04d6433b9c7c877cabf",
+      "retained_source": "candidate-functions-tanh.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/coth.rs",
+      "sha256": "b70cf9f579b0df27221be35f0def186c038becb2cb970e97c8e3ca8c6ab81364",
+      "retained_source": "candidate-functions-coth.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/sinh.rs",
+      "sha256": "6127a1dab578083071a22909a47aa9435248399b583bc5bee427fcb569e4acc3",
+      "retained_source": "candidate-functions-sinh.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/cosh.rs",
+      "sha256": "1ed217c482395d6e10c28a32940de99faace61ab8c54df84cd57a8b5f67423a5",
+      "retained_source": "candidate-functions-cosh.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/excel_numeric/mod.rs",
+      "sha256": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+      "retained_source": "candidate-excel_numeric-mod.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/excel_numeric/x87.rs",
+      "sha256": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd",
+      "retained_source": "candidate-excel_numeric-x87.rs"
+    }
+  ]
+}

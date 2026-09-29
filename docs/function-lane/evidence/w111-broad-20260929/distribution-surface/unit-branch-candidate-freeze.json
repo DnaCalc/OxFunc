@@ -1,0 +1,20 @@
+{
+  "authority": "candidate_frozen_before_independent_unit_metadata_and_poisson_branch_generation",
+  "files": [
+    {
+      "path": "crates/oxfunc_core/src/functions/normal_log_family.rs",
+      "sha256": "e5bf9fcbf1fd60f24b1cdbc427816bc9129ede45c4df7d9bf179313126bb2c9b",
+      "retained_source": "unit-branch-frozen-normal_log_family.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/discrete_dist_family.rs",
+      "sha256": "d71ebb3462620123cbc2a903b995dc688fdb7f1096757939aa081fd4fd602d12",
+      "retained_source": "unit-branch-frozen-discrete_dist_family.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/distribution_common.rs",
+      "sha256": "20c45413d25e8aaea096e3650f2dfbc4ef307391ff9a5c1380de6cf6b08a22d8",
+      "retained_source": "unit-branch-frozen-distribution_common.rs"
+    }
+  ]
+}

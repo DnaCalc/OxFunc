@@ -1,0 +1,2 @@
+answered 23100 probes for COTH (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-hyperbolic-heldout-20260929\answers\answers-coth.json
+BULK throughput: 23100 live probes | compute 2.45s (9424.1/s) | +excel startup 2.27s (4889.1/s incl startup) | total wall 6.25s

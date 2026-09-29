@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::WorksheetErrorCode;
 
 pub const STANDARDIZE_META: FunctionMeta = function_spec! {
@@ -31,7 +31,12 @@ pub fn standardize_kernel(x: f64, mean: f64, stdev: f64) -> Result<f64, Workshee
     if stdev <= 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok((x - mean) / stdev)
+    let difference = x - mean;
+    let result = difference / stdev;
+    if !difference.is_finite() || !result.is_finite() {
+        return Err(WorksheetErrorCode::Num);
+    }
+    Ok(if result.abs() < f64::MIN_POSITIVE { 0.0 } else { result })
 }
 
 fn eval_standardize_prepared(args: &[CalcValue]) -> Result<CalcValue, StandardizeEvalError> {
@@ -41,9 +46,13 @@ fn eval_standardize_prepared(args: &[CalcValue]) -> Result<CalcValue, Standardiz
             actual: args.len(),
         });
     }
-    let x = coerce_prepared_to_number(&args[0]).map_err(StandardizeEvalError::Coercion)?;
-    let mean = coerce_prepared_to_number(&args[1]).map_err(StandardizeEvalError::Coercion)?;
-    let stdev = coerce_prepared_to_number(&args[2]).map_err(StandardizeEvalError::Coercion)?;
+    let number = |value: &CalcValue| {
+        if matches!(value.core(), CoreValue::Missing) { Ok(0.0) }
+        else { coerce_prepared_to_number(value) }
+    };
+    let x = number(&args[0]).map_err(StandardizeEvalError::Coercion)?;
+    let mean = number(&args[1]).map_err(StandardizeEvalError::Coercion)?;
+    let stdev = number(&args[2]).map_err(StandardizeEvalError::Coercion)?;
     match standardize_kernel(x, mean, stdev) {
         Ok(value) => Ok(CalcValue::number(value)),
         Err(code) => Ok(CalcValue::error(code)),

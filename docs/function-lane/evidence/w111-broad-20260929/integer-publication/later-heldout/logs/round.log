@@ -1,0 +1,2 @@
+answered 12000 probes for ROUND (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-hyperbolic-heldout-20260929\answers\answers-round.json
+BULK throughput: 12000 live probes | compute 2.25s (5340.3/s) | +excel startup 2.16s (2722.1/s incl startup) | total wall 5.48s

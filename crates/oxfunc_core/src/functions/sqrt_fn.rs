@@ -27,7 +27,7 @@ pub fn sqrt_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if n < 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(n.sqrt())
+    Ok(crate::excel_numeric::excel_sqrt_staged(n))
 }
 
 pub fn eval_sqrt_surface(

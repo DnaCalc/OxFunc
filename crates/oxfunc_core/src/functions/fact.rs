@@ -2,7 +2,7 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::factorial_common::trunc_nonnegative_or_minus_one;
+use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::unary_numeric::{
     UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
     map_unary_numeric_error_to_ws,
@@ -41,10 +41,13 @@ fn fact_reverse_product(n: i64) -> f64 {
 }
 
 pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    let truncated = trunc_nonnegative_or_minus_one(n)?;
-    if truncated < 0 {
+    // Excel checks the original sign before truncation: FACT(-0.1) is #NUM!,
+    // while FACTDOUBLE deliberately has a different negative-domain rule.
+    // Bound the product before converting to an integer, including huge inputs.
+    if !n.is_finite() || n >= 171.0 {
         return Err(WorksheetErrorCode::Num);
     }
+    let truncated = trunc_nonnegative(n)?;
     FACT_META
         .real_result_policy
         .publish(n, fact_reverse_product(truncated))
@@ -86,13 +89,32 @@ mod tests {
     fn fact_kernel_truncates_and_rejects_negative() {
         assert_eq!(fact_kernel(5.9), Ok(120.0));
         assert_eq!(fact_kernel(-1.0), Err(WorksheetErrorCode::Num));
+        assert_eq!(fact_kernel(-0.1), Err(WorksheetErrorCode::Num));
+        assert_eq!(fact_kernel(-f64::MIN_POSITIVE), Err(WorksheetErrorCode::Num));
+        assert_eq!(fact_kernel(-0.0), Ok(1.0));
     }
 
     // BUG-FUNC-027 / oxf-vgxs: live Excel FACT(171)=#NUM!, FACT(170) finite.
     #[test]
     fn fact_kernel_overflow_maps_to_num() {
         assert_eq!(fact_kernel(171.0), Err(WorksheetErrorCode::Num));
+        assert_eq!(fact_kernel(f64::MAX), Err(WorksheetErrorCode::Num));
         assert!(fact_kernel(170.0).is_ok());
+    }
+
+    #[test]
+    fn fact_dispatch_rejects_live_excel_negative_fractional_witnesses() {
+        use crate::functions::surface_dispatch::eval_surface_value_call;
+        use crate::resolver::NULL_REFERENCE_SYSTEM_PROVIDER;
+        // Fresh Value2 capture on Excel 16.0 build 20430, CV2, 2026-09-29.
+        for n in [-0.1, -0.9779766716445271, -0.7677355627232552,
+                  -0.636805342021372, -0.3311997745275834] {
+            let actual = eval_surface_value_call(
+                "FUNC.FACT", &[CalcValue::number(n)],
+                &NULL_REFERENCE_SYSTEM_PROVIDER, None, None, None, None,
+            );
+            assert_eq!(actual, Err(WorksheetErrorCode::Num));
+        }
     }
 
     #[test]

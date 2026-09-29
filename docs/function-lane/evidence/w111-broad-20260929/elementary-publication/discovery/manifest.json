@@ -1,0 +1,31 @@
+{
+  "seed": 202609293100,
+  "purpose": "discovery_after_broad_sweep_mismatches",
+  "generated_utc": "2026-09-29T18:02:31.189850+00:00",
+  "batches": [
+    {
+      "function": "POWER",
+      "rows": 20206,
+      "path": "batch-power.json",
+      "sha256": "5bfe2d1de0ec137bc78d85d3cbd25a65e2a92f284882dd0492691d13d46e2181"
+    },
+    {
+      "function": "LOG",
+      "rows": 8035,
+      "path": "batch-log.json",
+      "sha256": "5c166baed12defe7bdc08d584e023eb3b48ee0efe2ca9f6edc92b8e1f2aff348"
+    },
+    {
+      "function": "FISHER",
+      "rows": 8350,
+      "path": "batch-fisher.json",
+      "sha256": "ec83c90fe4c35f4238523d3e46da9f15f778b6841dc2bd5815812b18e455c530"
+    },
+    {
+      "function": "MEDIAN",
+      "rows": 10590,
+      "path": "batch-median.json",
+      "sha256": "e3992a6c82f4a7e7df9bded49b4fe43f54cba96ef1f1d0fa801dd8147d8b2aea"
+    }
+  ]
+}

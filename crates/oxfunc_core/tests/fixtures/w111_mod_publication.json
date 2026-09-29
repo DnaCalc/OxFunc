@@ -1,0 +1,1058 @@
+{
+  "function": "MOD",
+  "witnesses": [
+    {
+      "id": "w111mod-tiny-refinement-00000",
+      "args": [
+        "0x0010400000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00001",
+      "args": [
+        "0x8010400000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0010400000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00002",
+      "args": [
+        "0x0010400000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x8010400000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00003",
+      "args": [
+        "0x8010400000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00004",
+      "args": [
+        "0x0011000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00005",
+      "args": [
+        "0x8011000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00006",
+      "args": [
+        "0x0011000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00007",
+      "args": [
+        "0x8011000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00008",
+      "args": [
+        "0x0012000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00009",
+      "args": [
+        "0x8012000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00010",
+      "args": [
+        "0x0012000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00011",
+      "args": [
+        "0x8012000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00020",
+      "args": [
+        "0x0020000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00021",
+      "args": [
+        "0x8020000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00022",
+      "args": [
+        "0x0020000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00023",
+      "args": [
+        "0x8020000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00104",
+      "args": [
+        "0x01b0000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00105",
+      "args": [
+        "0x81b0000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00106",
+      "args": [
+        "0x01b0000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00107",
+      "args": [
+        "0x81b0000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00108",
+      "args": [
+        "0x01b0000002000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00109",
+      "args": [
+        "0x81b0000002000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00110",
+      "args": [
+        "0x01b0000002000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00111",
+      "args": [
+        "0x81b0000002000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00112",
+      "args": [
+        "0x01b0000000100000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00113",
+      "args": [
+        "0x81b0000000100000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00114",
+      "args": [
+        "0x01b0000000100000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00115",
+      "args": [
+        "0x81b0000000100000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00116",
+      "args": [
+        "0x01b0000000400000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00117",
+      "args": [
+        "0x81b0000000400000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00118",
+      "args": [
+        "0x01b0000000400000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00119",
+      "args": [
+        "0x81b0000000400000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00128",
+      "args": [
+        "0x01b0000004000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00129",
+      "args": [
+        "0x81b0000004000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00130",
+      "args": [
+        "0x01b0000004000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00131",
+      "args": [
+        "0x81b0000004000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00132",
+      "args": [
+        "0x01b0000006000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00133",
+      "args": [
+        "0x81b0000006000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00134",
+      "args": [
+        "0x01b0000006000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00135",
+      "args": [
+        "0x81b0000006000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00136",
+      "args": [
+        "0x01b0000004100000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00137",
+      "args": [
+        "0x81b0000004100000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00138",
+      "args": [
+        "0x01b0000004100000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00139",
+      "args": [
+        "0x81b0000004100000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00140",
+      "args": [
+        "0x01b0000004400000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00141",
+      "args": [
+        "0x81b0000004400000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00142",
+      "args": [
+        "0x01b0000004400000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00143",
+      "args": [
+        "0x81b0000004400000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00221",
+      "args": [
+        "0x8020800000000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x001f000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00222",
+      "args": [
+        "0x0020800000000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x801f000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00225",
+      "args": [
+        "0x8021000000000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x001e000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00226",
+      "args": [
+        "0x0021000000000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x801e000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00236",
+      "args": [
+        "0x0028000000000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00237",
+      "args": [
+        "0x8028000000000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00238",
+      "args": [
+        "0x0028000000000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00239",
+      "args": [
+        "0x8028000000000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00241",
+      "args": [
+        "0x802c000000000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00242",
+      "args": [
+        "0x002c000000000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00348",
+      "args": [
+        "0x01c0000002000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00349",
+      "args": [
+        "0x81c0000002000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00350",
+      "args": [
+        "0x01c0000002000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00351",
+      "args": [
+        "0x81c0000002000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00353",
+      "args": [
+        "0x81c0000003000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00354",
+      "args": [
+        "0x01c0000003000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00376",
+      "args": [
+        "0x01c0000006000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00377",
+      "args": [
+        "0x81c0000006000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00378",
+      "args": [
+        "0x01c0000006000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00379",
+      "args": [
+        "0x81c0000006000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00381",
+      "args": [
+        "0x81c0000007000000",
+        "0x0020000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-refinement-00382",
+      "args": [
+        "0x01c0000007000000",
+        "0x8020000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-refinement-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-00002",
+      "args": [
+        "0x8280000000000000",
+        "0x0280000000000001"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-00003",
+      "args": [
+        "0x8280000000000000",
+        "0x8280000000000001"
+      ],
+      "expected_bits": "0x8280000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-00006",
+      "args": [
+        "0x0280000000000000",
+        "0x0280000000000001"
+      ],
+      "expected_bits": "0x0280000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-00007",
+      "args": [
+        "0x0280000000000000",
+        "0x8280000000000001"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-07210",
+      "args": [
+        "0x82e0000000000000",
+        "0x02e0000000000080"
+      ],
+      "expected_bits": "0x0010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-07215",
+      "args": [
+        "0x02e0000000000000",
+        "0x82e0000000000080"
+      ],
+      "expected_bits": "0x8010000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12400",
+      "args": [
+        "0x80f9397bf354870f",
+        "0x802bc5fc497e3d15"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12401",
+      "args": [
+        "0x80f9397bf354870f",
+        "0x002bc5fc497e3d15"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12402",
+      "args": [
+        "0x00f9397bf354870f",
+        "0x802bc5fc497e3d15"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12403",
+      "args": [
+        "0x00f9397bf354870f",
+        "0x002bc5fc497e3d15"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12408",
+      "args": [
+        "0x81dd29190eedebff",
+        "0x802a5afcc5dda222"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12409",
+      "args": [
+        "0x81dd29190eedebff",
+        "0x002a5afcc5dda222"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12410",
+      "args": [
+        "0x01dd29190eedebff",
+        "0x802a5afcc5dda222"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12411",
+      "args": [
+        "0x01dd29190eedebff",
+        "0x002a5afcc5dda222"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12468",
+      "args": [
+        "0x80e4e67e1de63428",
+        "0x80127c5db603c5e0"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12469",
+      "args": [
+        "0x80e4e67e1de63428",
+        "0x00127c5db603c5e0"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12470",
+      "args": [
+        "0x00e4e67e1de63428",
+        "0x80127c5db603c5e0"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12471",
+      "args": [
+        "0x00e4e67e1de63428",
+        "0x00127c5db603c5e0"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12844",
+      "args": [
+        "0x8202916877845752",
+        "0x80133e59c8ae094a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12845",
+      "args": [
+        "0x8202916877845752",
+        "0x00133e59c8ae094a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12846",
+      "args": [
+        "0x0202916877845752",
+        "0x80133e59c8ae094a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-discriminator-12847",
+      "args": [
+        "0x0202916877845752",
+        "0x00133e59c8ae094a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-discriminator-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00002",
+      "args": [
+        "0x83cfe6cf445e729c",
+        "0x015ffffffffffe0e"
+      ],
+      "expected_bits": "0x0136e7100cd002b0",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00008",
+      "args": [
+        "0x030266a477fead4d",
+        "0x009ffffffffffb98"
+      ],
+      "expected_bits": "0x0097ead112c2e590",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00009",
+      "args": [
+        "0x0591dda73e1a5773",
+        "0x83900000000002e8"
+      ],
+      "expected_bits": "0x8376af2f0b832340",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00034",
+      "args": [
+        "0x83af7a68dcdea864",
+        "0x011fffffffffff5e"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00057",
+      "args": [
+        "0x83d7271649a71dcc",
+        "0x82300000000007dc"
+      ],
+      "expected_bits": "0x821a7126c8cce220",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00062",
+      "args": [
+        "0x062c8dc555e76784",
+        "0x839ffffffffff540"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00069",
+      "args": [
+        "0x042a0e25b655bc77",
+        "0x019ffffffffff4a7"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00082",
+      "args": [
+        "0x83cf4ec728831ffa",
+        "0x813ffffffffff240"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00290",
+      "args": [
+        "0x84915eccc7eade5c",
+        "0x8210000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-tiny-second-heldout-00502",
+      "args": [
+        "0x04fec1d4c7ab0553",
+        "0x0270000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-tiny-second-heldout-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-18048",
+      "args": [
+        "0x338a3487f41562e0",
+        "0xb2d8c9fdd3db0000"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-18141",
+      "args": [
+        "0x6e4f24929aec7a23",
+        "0x6da3b5aebdd0d600"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-18831",
+      "args": [
+        "0xc89d2fd2dd005d6b",
+        "0x487d2fd2dd005d6b"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21020",
+      "args": [
+        "0xc270624de9b00000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21061",
+      "args": [
+        "0x4270624de9b00000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21266",
+      "args": [
+        "0x4270624de9b00000",
+        "0xbff0000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21307",
+      "args": [
+        "0xc270624de9b00000",
+        "0xbff0000000000000"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21594",
+      "args": [
+        "0xc23999999999999a",
+        "0x3fb999999999999a"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21635",
+      "args": [
+        "0x423999999999999a",
+        "0x3fb999999999999a"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21676",
+      "args": [
+        "0xc24999999999999a",
+        "0x3fb999999999999a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21717",
+      "args": [
+        "0x424999999999999a",
+        "0x3fb999999999999a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21840",
+      "args": [
+        "0x423999999999999a",
+        "0xbfb999999999999a"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21881",
+      "args": [
+        "0xc23999999999999a",
+        "0xbfb999999999999a"
+      ],
+      "expected_bits": "0x0000000000000000",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21922",
+      "args": [
+        "0x424999999999999a",
+        "0xbfb999999999999a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    },
+    {
+      "id": "w111mod-discovery-21963",
+      "args": [
+        "0xc24999999999999a",
+        "0xbfb999999999999a"
+      ],
+      "expected_bits": "error:Num",
+      "source": "smart-fuzzer/runs/w111-mod-publication-discovery-20260929/answers-mod.json"
+    }
+  ]
+}

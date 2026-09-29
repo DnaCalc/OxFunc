@@ -1,0 +1,3313 @@
+{
+  "api": "documented VarBstrFromR8, LCID1033 flags0",
+  "signature_source": "https://learn.microsoft.com/en-us/windows/win32/api/oleauto/nf-oleauto-varbstrfromr8",
+  "excel_source": "smart-fuzzer\\runs\\w111-complex-scaling-heldout-20260929\\answers\\answers-complex.json",
+  "rows": 472,
+  "decimal_value_misses": 22,
+  "witnesses": [
+    {
+      "id": "complex-scaling-heldout-2026092905-0000",
+      "bits": "0x10e561894bbe3361",
+      "excel": "2.82046893450867E-227",
+      "public_api": "2.82046893450867E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0002",
+      "bits": "0x90e561894bbe3361",
+      "excel": "-2.82046893450867E-227",
+      "public_api": "-2.82046893450867E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0004",
+      "bits": "0x10e561894bbe3362",
+      "excel": "2.82046893450867E-227",
+      "public_api": "2.82046893450867E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0006",
+      "bits": "0x90e561894bbe3362",
+      "excel": "-2.82046893450867E-227",
+      "public_api": "-2.82046893450867E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0008",
+      "bits": "0x10e561894bbe3363",
+      "excel": "2.82046893450868E-227",
+      "public_api": "2.82046893450867E-227",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0010",
+      "bits": "0x90e561894bbe3363",
+      "excel": "-2.82046893450868E-227",
+      "public_api": "-2.82046893450867E-227",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0012",
+      "bits": "0x10e561894bbe3364",
+      "excel": "2.82046893450868E-227",
+      "public_api": "2.82046893450868E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0014",
+      "bits": "0x90e561894bbe3364",
+      "excel": "-2.82046893450868E-227",
+      "public_api": "-2.82046893450868E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0016",
+      "bits": "0x10e561894bbe3365",
+      "excel": "2.82046893450868E-227",
+      "public_api": "2.82046893450868E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0018",
+      "bits": "0x90e561894bbe3365",
+      "excel": "-2.82046893450868E-227",
+      "public_api": "-2.82046893450868E-227",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0020",
+      "bits": "0x4dc14fc36c3805eb",
+      "excel": "3.64624341118373E+66",
+      "public_api": "3.64624341118373E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0022",
+      "bits": "0xcdc14fc36c3805eb",
+      "excel": "-3.64624341118373E+66",
+      "public_api": "-3.64624341118373E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0024",
+      "bits": "0x4dc14fc36c3805ec",
+      "excel": "3.64624341118373E+66",
+      "public_api": "3.64624341118373E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0026",
+      "bits": "0xcdc14fc36c3805ec",
+      "excel": "-3.64624341118373E+66",
+      "public_api": "-3.64624341118373E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0028",
+      "bits": "0x4dc14fc36c3805ed",
+      "excel": "3.64624341118373E+66",
+      "public_api": "3.64624341118373E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0030",
+      "bits": "0xcdc14fc36c3805ed",
+      "excel": "-3.64624341118373E+66",
+      "public_api": "-3.64624341118373E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0032",
+      "bits": "0x4dc14fc36c3805ee",
+      "excel": "3.64624341118374E+66",
+      "public_api": "3.64624341118374E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0034",
+      "bits": "0xcdc14fc36c3805ee",
+      "excel": "-3.64624341118374E+66",
+      "public_api": "-3.64624341118374E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0036",
+      "bits": "0x4dc14fc36c3805ef",
+      "excel": "3.64624341118374E+66",
+      "public_api": "3.64624341118374E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0038",
+      "bits": "0xcdc14fc36c3805ef",
+      "excel": "-3.64624341118374E+66",
+      "public_api": "-3.64624341118374E+66",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0040",
+      "bits": "0x7e02b4e3d0f16253",
+      "excel": "9.7872481425881E+298",
+      "public_api": "9.7872481425881E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0042",
+      "bits": "0xfe02b4e3d0f16253",
+      "excel": "-9.7872481425881E+298",
+      "public_api": "-9.7872481425881E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0044",
+      "bits": "0x7e02b4e3d0f16254",
+      "excel": "9.7872481425881E+298",
+      "public_api": "9.7872481425881E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0046",
+      "bits": "0xfe02b4e3d0f16254",
+      "excel": "-9.7872481425881E+298",
+      "public_api": "-9.7872481425881E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0048",
+      "bits": "0x7e02b4e3d0f16255",
+      "excel": "9.7872481425881E+298",
+      "public_api": "9.7872481425881E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0050",
+      "bits": "0xfe02b4e3d0f16255",
+      "excel": "-9.7872481425881E+298",
+      "public_api": "-9.7872481425881E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0052",
+      "bits": "0x7e02b4e3d0f16256",
+      "excel": "9.78724814258811E+298",
+      "public_api": "9.78724814258811E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0054",
+      "bits": "0xfe02b4e3d0f16256",
+      "excel": "-9.78724814258811E+298",
+      "public_api": "-9.78724814258811E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0056",
+      "bits": "0x7e02b4e3d0f16257",
+      "excel": "9.78724814258811E+298",
+      "public_api": "9.78724814258811E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0058",
+      "bits": "0xfe02b4e3d0f16257",
+      "excel": "-9.78724814258811E+298",
+      "public_api": "-9.78724814258811E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0060",
+      "bits": "0x2301bfce8c26d859",
+      "excel": "4.6577043631124E-140",
+      "public_api": "4.6577043631124E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0062",
+      "bits": "0xa301bfce8c26d859",
+      "excel": "-4.6577043631124E-140",
+      "public_api": "-4.6577043631124E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0064",
+      "bits": "0x2301bfce8c26d85a",
+      "excel": "4.6577043631124E-140",
+      "public_api": "4.6577043631124E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0066",
+      "bits": "0xa301bfce8c26d85a",
+      "excel": "-4.6577043631124E-140",
+      "public_api": "-4.6577043631124E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0068",
+      "bits": "0x2301bfce8c26d85b",
+      "excel": "4.6577043631124E-140",
+      "public_api": "4.6577043631124E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0070",
+      "bits": "0xa301bfce8c26d85b",
+      "excel": "-4.6577043631124E-140",
+      "public_api": "-4.6577043631124E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0072",
+      "bits": "0x2301bfce8c26d85c",
+      "excel": "4.65770436311241E-140",
+      "public_api": "4.65770436311241E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0074",
+      "bits": "0xa301bfce8c26d85c",
+      "excel": "-4.65770436311241E-140",
+      "public_api": "-4.65770436311241E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0076",
+      "bits": "0x2301bfce8c26d85d",
+      "excel": "4.65770436311241E-140",
+      "public_api": "4.65770436311241E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0078",
+      "bits": "0xa301bfce8c26d85d",
+      "excel": "-4.65770436311241E-140",
+      "public_api": "-4.65770436311241E-140",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0080",
+      "bits": "0x7c5507d81c76016d",
+      "excel": "8.19800815066501E+290",
+      "public_api": "8.19800815066501E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0082",
+      "bits": "0xfc5507d81c76016d",
+      "excel": "-8.19800815066501E+290",
+      "public_api": "-8.19800815066501E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0084",
+      "bits": "0x7c5507d81c76016e",
+      "excel": "8.19800815066501E+290",
+      "public_api": "8.19800815066501E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0086",
+      "bits": "0xfc5507d81c76016e",
+      "excel": "-8.19800815066501E+290",
+      "public_api": "-8.19800815066501E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0088",
+      "bits": "0x7c5507d81c76016f",
+      "excel": "8.19800815066501E+290",
+      "public_api": "8.19800815066501E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0090",
+      "bits": "0xfc5507d81c76016f",
+      "excel": "-8.19800815066501E+290",
+      "public_api": "-8.19800815066501E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0092",
+      "bits": "0x7c5507d81c760170",
+      "excel": "8.19800815066502E+290",
+      "public_api": "8.19800815066502E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0094",
+      "bits": "0xfc5507d81c760170",
+      "excel": "-8.19800815066502E+290",
+      "public_api": "-8.19800815066502E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0096",
+      "bits": "0x7c5507d81c760171",
+      "excel": "8.19800815066502E+290",
+      "public_api": "8.19800815066502E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0098",
+      "bits": "0xfc5507d81c760171",
+      "excel": "-8.19800815066502E+290",
+      "public_api": "-8.19800815066502E+290",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0100",
+      "bits": "0x29467cda51e616a1",
+      "excel": "7.48060549288466E-110",
+      "public_api": "7.48060549288466E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0102",
+      "bits": "0xa9467cda51e616a1",
+      "excel": "-7.48060549288466E-110",
+      "public_api": "-7.48060549288466E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0104",
+      "bits": "0x29467cda51e616a2",
+      "excel": "7.48060549288466E-110",
+      "public_api": "7.48060549288466E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0106",
+      "bits": "0xa9467cda51e616a2",
+      "excel": "-7.48060549288466E-110",
+      "public_api": "-7.48060549288466E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0108",
+      "bits": "0x29467cda51e616a3",
+      "excel": "7.48060549288466E-110",
+      "public_api": "7.48060549288466E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0110",
+      "bits": "0xa9467cda51e616a3",
+      "excel": "-7.48060549288466E-110",
+      "public_api": "-7.48060549288466E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0112",
+      "bits": "0x29467cda51e616a4",
+      "excel": "7.48060549288467E-110",
+      "public_api": "7.48060549288467E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0114",
+      "bits": "0xa9467cda51e616a4",
+      "excel": "-7.48060549288467E-110",
+      "public_api": "-7.48060549288467E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0116",
+      "bits": "0x29467cda51e616a5",
+      "excel": "7.48060549288467E-110",
+      "public_api": "7.48060549288467E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0118",
+      "bits": "0xa9467cda51e616a5",
+      "excel": "-7.48060549288467E-110",
+      "public_api": "-7.48060549288467E-110",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0120",
+      "bits": "0x2c38257f8809565d",
+      "excel": "1.13045991471601E-95",
+      "public_api": "1.13045991471601E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0122",
+      "bits": "0xac38257f8809565d",
+      "excel": "-1.13045991471601E-95",
+      "public_api": "-1.13045991471601E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0124",
+      "bits": "0x2c38257f8809565e",
+      "excel": "1.13045991471601E-95",
+      "public_api": "1.13045991471601E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0126",
+      "bits": "0xac38257f8809565e",
+      "excel": "-1.13045991471601E-95",
+      "public_api": "-1.13045991471601E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0128",
+      "bits": "0x2c38257f8809565f",
+      "excel": "1.13045991471601E-95",
+      "public_api": "1.13045991471601E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0130",
+      "bits": "0xac38257f8809565f",
+      "excel": "-1.13045991471601E-95",
+      "public_api": "-1.13045991471601E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0132",
+      "bits": "0x2c38257f88095660",
+      "excel": "1.13045991471602E-95",
+      "public_api": "1.13045991471602E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0134",
+      "bits": "0xac38257f88095660",
+      "excel": "-1.13045991471602E-95",
+      "public_api": "-1.13045991471602E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0136",
+      "bits": "0x2c38257f88095661",
+      "excel": "1.13045991471602E-95",
+      "public_api": "1.13045991471602E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0138",
+      "bits": "0xac38257f88095661",
+      "excel": "-1.13045991471602E-95",
+      "public_api": "-1.13045991471602E-95",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0140",
+      "bits": "0x46f71c76690ef33a",
+      "excel": "7.50000729077372E+33",
+      "public_api": "7.50000729077372E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0142",
+      "bits": "0xc6f71c76690ef33a",
+      "excel": "-7.50000729077372E+33",
+      "public_api": "-7.50000729077372E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0144",
+      "bits": "0x46f71c76690ef33b",
+      "excel": "7.50000729077372E+33",
+      "public_api": "7.50000729077372E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0146",
+      "bits": "0xc6f71c76690ef33b",
+      "excel": "-7.50000729077372E+33",
+      "public_api": "-7.50000729077372E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0148",
+      "bits": "0x46f71c76690ef33c",
+      "excel": "7.50000729077372E+33",
+      "public_api": "7.50000729077372E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0150",
+      "bits": "0xc6f71c76690ef33c",
+      "excel": "-7.50000729077372E+33",
+      "public_api": "-7.50000729077372E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0152",
+      "bits": "0x46f71c76690ef33d",
+      "excel": "7.50000729077373E+33",
+      "public_api": "7.50000729077373E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0154",
+      "bits": "0xc6f71c76690ef33d",
+      "excel": "-7.50000729077373E+33",
+      "public_api": "-7.50000729077373E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0156",
+      "bits": "0x46f71c76690ef33e",
+      "excel": "7.50000729077373E+33",
+      "public_api": "7.50000729077373E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0158",
+      "bits": "0xc6f71c76690ef33e",
+      "excel": "-7.50000729077373E+33",
+      "public_api": "-7.50000729077373E+33",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0160",
+      "bits": "0x46bd8fa6beb20c91",
+      "excel": "5.99571110793787E+32",
+      "public_api": "5.99571110793787E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0162",
+      "bits": "0xc6bd8fa6beb20c91",
+      "excel": "-5.99571110793787E+32",
+      "public_api": "-5.99571110793787E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0164",
+      "bits": "0x46bd8fa6beb20c92",
+      "excel": "5.99571110793787E+32",
+      "public_api": "5.99571110793787E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0166",
+      "bits": "0xc6bd8fa6beb20c92",
+      "excel": "-5.99571110793787E+32",
+      "public_api": "-5.99571110793787E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0168",
+      "bits": "0x46bd8fa6beb20c93",
+      "excel": "5.99571110793787E+32",
+      "public_api": "5.99571110793787E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0170",
+      "bits": "0xc6bd8fa6beb20c93",
+      "excel": "-5.99571110793787E+32",
+      "public_api": "-5.99571110793787E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0172",
+      "bits": "0x46bd8fa6beb20c94",
+      "excel": "5.99571110793788E+32",
+      "public_api": "5.99571110793788E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0174",
+      "bits": "0xc6bd8fa6beb20c94",
+      "excel": "-5.99571110793788E+32",
+      "public_api": "-5.99571110793788E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0176",
+      "bits": "0x46bd8fa6beb20c95",
+      "excel": "5.99571110793788E+32",
+      "public_api": "5.99571110793788E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0178",
+      "bits": "0xc6bd8fa6beb20c95",
+      "excel": "-5.99571110793788E+32",
+      "public_api": "-5.99571110793788E+32",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0180",
+      "bits": "0x6182648921dcda53",
+      "excel": "5.17170314725366E+161",
+      "public_api": "5.17170314725366E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0182",
+      "bits": "0xe182648921dcda53",
+      "excel": "-5.17170314725366E+161",
+      "public_api": "-5.17170314725366E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0184",
+      "bits": "0x6182648921dcda54",
+      "excel": "5.17170314725366E+161",
+      "public_api": "5.17170314725366E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0186",
+      "bits": "0xe182648921dcda54",
+      "excel": "-5.17170314725366E+161",
+      "public_api": "-5.17170314725366E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0188",
+      "bits": "0x6182648921dcda55",
+      "excel": "5.17170314725366E+161",
+      "public_api": "5.17170314725366E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0190",
+      "bits": "0xe182648921dcda55",
+      "excel": "-5.17170314725366E+161",
+      "public_api": "-5.17170314725366E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0192",
+      "bits": "0x6182648921dcda56",
+      "excel": "5.17170314725367E+161",
+      "public_api": "5.17170314725367E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0194",
+      "bits": "0xe182648921dcda56",
+      "excel": "-5.17170314725367E+161",
+      "public_api": "-5.17170314725367E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0196",
+      "bits": "0x6182648921dcda57",
+      "excel": "5.17170314725367E+161",
+      "public_api": "5.17170314725367E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0198",
+      "bits": "0xe182648921dcda57",
+      "excel": "-5.17170314725367E+161",
+      "public_api": "-5.17170314725367E+161",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0200",
+      "bits": "0x4858e7f00ff9a9da",
+      "excel": "3.39002997935656E+40",
+      "public_api": "3.39002997935656E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0202",
+      "bits": "0xc858e7f00ff9a9da",
+      "excel": "-3.39002997935656E+40",
+      "public_api": "-3.39002997935656E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0204",
+      "bits": "0x4858e7f00ff9a9db",
+      "excel": "3.39002997935656E+40",
+      "public_api": "3.39002997935656E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0206",
+      "bits": "0xc858e7f00ff9a9db",
+      "excel": "-3.39002997935656E+40",
+      "public_api": "-3.39002997935656E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0208",
+      "bits": "0x4858e7f00ff9a9dc",
+      "excel": "3.39002997935657E+40",
+      "public_api": "3.39002997935656E+40",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0210",
+      "bits": "0xc858e7f00ff9a9dc",
+      "excel": "-3.39002997935657E+40",
+      "public_api": "-3.39002997935656E+40",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0212",
+      "bits": "0x4858e7f00ff9a9dd",
+      "excel": "3.39002997935657E+40",
+      "public_api": "3.39002997935657E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0214",
+      "bits": "0xc858e7f00ff9a9dd",
+      "excel": "-3.39002997935657E+40",
+      "public_api": "-3.39002997935657E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0216",
+      "bits": "0x4858e7f00ff9a9de",
+      "excel": "3.39002997935657E+40",
+      "public_api": "3.39002997935657E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0218",
+      "bits": "0xc858e7f00ff9a9de",
+      "excel": "-3.39002997935657E+40",
+      "public_api": "-3.39002997935657E+40",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0220",
+      "bits": "0x36d3a68217ecae0c",
+      "excel": "1.37680534843503E-44",
+      "public_api": "1.37680534843503E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0222",
+      "bits": "0xb6d3a68217ecae0c",
+      "excel": "-1.37680534843503E-44",
+      "public_api": "-1.37680534843503E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0224",
+      "bits": "0x36d3a68217ecae0d",
+      "excel": "1.37680534843503E-44",
+      "public_api": "1.37680534843503E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0226",
+      "bits": "0xb6d3a68217ecae0d",
+      "excel": "-1.37680534843503E-44",
+      "public_api": "-1.37680534843503E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0228",
+      "bits": "0x36d3a68217ecae0e",
+      "excel": "1.37680534843503E-44",
+      "public_api": "1.37680534843503E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0230",
+      "bits": "0xb6d3a68217ecae0e",
+      "excel": "-1.37680534843503E-44",
+      "public_api": "-1.37680534843503E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0232",
+      "bits": "0x36d3a68217ecae0f",
+      "excel": "1.37680534843504E-44",
+      "public_api": "1.37680534843504E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0234",
+      "bits": "0xb6d3a68217ecae0f",
+      "excel": "-1.37680534843504E-44",
+      "public_api": "-1.37680534843504E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0236",
+      "bits": "0x36d3a68217ecae10",
+      "excel": "1.37680534843504E-44",
+      "public_api": "1.37680534843504E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0238",
+      "bits": "0xb6d3a68217ecae10",
+      "excel": "-1.37680534843504E-44",
+      "public_api": "-1.37680534843504E-44",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0240",
+      "bits": "0x5bad6e3af0b4afb4",
+      "excel": "4.17798636843288E+133",
+      "public_api": "4.17798636843288E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0242",
+      "bits": "0xdbad6e3af0b4afb4",
+      "excel": "-4.17798636843288E+133",
+      "public_api": "-4.17798636843288E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0244",
+      "bits": "0x5bad6e3af0b4afb5",
+      "excel": "4.17798636843288E+133",
+      "public_api": "4.17798636843288E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0246",
+      "bits": "0xdbad6e3af0b4afb5",
+      "excel": "-4.17798636843288E+133",
+      "public_api": "-4.17798636843288E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0248",
+      "bits": "0x5bad6e3af0b4afb6",
+      "excel": "4.17798636843288E+133",
+      "public_api": "4.17798636843288E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0250",
+      "bits": "0xdbad6e3af0b4afb6",
+      "excel": "-4.17798636843288E+133",
+      "public_api": "-4.17798636843288E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0252",
+      "bits": "0x5bad6e3af0b4afb7",
+      "excel": "4.17798636843289E+133",
+      "public_api": "4.17798636843289E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0254",
+      "bits": "0xdbad6e3af0b4afb7",
+      "excel": "-4.17798636843289E+133",
+      "public_api": "-4.17798636843289E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0256",
+      "bits": "0x5bad6e3af0b4afb8",
+      "excel": "4.17798636843289E+133",
+      "public_api": "4.17798636843289E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0258",
+      "bits": "0xdbad6e3af0b4afb8",
+      "excel": "-4.17798636843289E+133",
+      "public_api": "-4.17798636843289E+133",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0260",
+      "bits": "0x7ddb5f17747fe3ec",
+      "excel": "1.79008459655397E+298",
+      "public_api": "1.79008459655397E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0262",
+      "bits": "0xfddb5f17747fe3ec",
+      "excel": "-1.79008459655397E+298",
+      "public_api": "-1.79008459655397E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0264",
+      "bits": "0x7ddb5f17747fe3ed",
+      "excel": "1.79008459655397E+298",
+      "public_api": "1.79008459655397E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0266",
+      "bits": "0xfddb5f17747fe3ed",
+      "excel": "-1.79008459655397E+298",
+      "public_api": "-1.79008459655397E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0268",
+      "bits": "0x7ddb5f17747fe3ee",
+      "excel": "1.79008459655397E+298",
+      "public_api": "1.79008459655397E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0270",
+      "bits": "0xfddb5f17747fe3ee",
+      "excel": "-1.79008459655397E+298",
+      "public_api": "-1.79008459655397E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0272",
+      "bits": "0x7ddb5f17747fe3ef",
+      "excel": "1.79008459655398E+298",
+      "public_api": "1.79008459655398E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0274",
+      "bits": "0xfddb5f17747fe3ef",
+      "excel": "-1.79008459655398E+298",
+      "public_api": "-1.79008459655398E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0276",
+      "bits": "0x7ddb5f17747fe3f0",
+      "excel": "1.79008459655398E+298",
+      "public_api": "1.79008459655398E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0278",
+      "bits": "0xfddb5f17747fe3f0",
+      "excel": "-1.79008459655398E+298",
+      "public_api": "-1.79008459655398E+298",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0280",
+      "bits": "0x5f44951e131e24db",
+      "excel": "8.42181624431619E+150",
+      "public_api": "8.42181624431619E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0282",
+      "bits": "0xdf44951e131e24db",
+      "excel": "-8.42181624431619E+150",
+      "public_api": "-8.42181624431619E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0284",
+      "bits": "0x5f44951e131e24dc",
+      "excel": "8.42181624431619E+150",
+      "public_api": "8.42181624431619E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0286",
+      "bits": "0xdf44951e131e24dc",
+      "excel": "-8.42181624431619E+150",
+      "public_api": "-8.42181624431619E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0288",
+      "bits": "0x5f44951e131e24dd",
+      "excel": "8.4218162443162E+150",
+      "public_api": "8.42181624431619E+150",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0290",
+      "bits": "0xdf44951e131e24dd",
+      "excel": "-8.4218162443162E+150",
+      "public_api": "-8.42181624431619E+150",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0292",
+      "bits": "0x5f44951e131e24de",
+      "excel": "8.4218162443162E+150",
+      "public_api": "8.4218162443162E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0294",
+      "bits": "0xdf44951e131e24de",
+      "excel": "-8.4218162443162E+150",
+      "public_api": "-8.4218162443162E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0296",
+      "bits": "0x5f44951e131e24df",
+      "excel": "8.4218162443162E+150",
+      "public_api": "8.4218162443162E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0298",
+      "bits": "0xdf44951e131e24df",
+      "excel": "-8.4218162443162E+150",
+      "public_api": "-8.4218162443162E+150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0300",
+      "bits": "0x24c33321c8ec5be6",
+      "excel": "1.35246838337053E-131",
+      "public_api": "1.35246838337053E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0302",
+      "bits": "0xa4c33321c8ec5be6",
+      "excel": "-1.35246838337053E-131",
+      "public_api": "-1.35246838337053E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0304",
+      "bits": "0x24c33321c8ec5be7",
+      "excel": "1.35246838337053E-131",
+      "public_api": "1.35246838337053E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0306",
+      "bits": "0xa4c33321c8ec5be7",
+      "excel": "-1.35246838337053E-131",
+      "public_api": "-1.35246838337053E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0308",
+      "bits": "0x24c33321c8ec5be8",
+      "excel": "1.35246838337053E-131",
+      "public_api": "1.35246838337053E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0310",
+      "bits": "0xa4c33321c8ec5be8",
+      "excel": "-1.35246838337053E-131",
+      "public_api": "-1.35246838337053E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0312",
+      "bits": "0x24c33321c8ec5be9",
+      "excel": "1.35246838337054E-131",
+      "public_api": "1.35246838337054E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0314",
+      "bits": "0xa4c33321c8ec5be9",
+      "excel": "-1.35246838337054E-131",
+      "public_api": "-1.35246838337054E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0316",
+      "bits": "0x24c33321c8ec5bea",
+      "excel": "1.35246838337054E-131",
+      "public_api": "1.35246838337054E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0318",
+      "bits": "0xa4c33321c8ec5bea",
+      "excel": "-1.35246838337054E-131",
+      "public_api": "-1.35246838337054E-131",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0320",
+      "bits": "0x25af26b12615d4fd",
+      "excel": "3.59522268569118E-127",
+      "public_api": "3.59522268569118E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0322",
+      "bits": "0xa5af26b12615d4fd",
+      "excel": "-3.59522268569118E-127",
+      "public_api": "-3.59522268569118E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0324",
+      "bits": "0x25af26b12615d4fe",
+      "excel": "3.59522268569118E-127",
+      "public_api": "3.59522268569118E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0326",
+      "bits": "0xa5af26b12615d4fe",
+      "excel": "-3.59522268569118E-127",
+      "public_api": "-3.59522268569118E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0328",
+      "bits": "0x25af26b12615d4ff",
+      "excel": "3.59522268569119E-127",
+      "public_api": "3.59522268569118E-127",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0330",
+      "bits": "0xa5af26b12615d4ff",
+      "excel": "-3.59522268569119E-127",
+      "public_api": "-3.59522268569118E-127",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0332",
+      "bits": "0x25af26b12615d500",
+      "excel": "3.59522268569119E-127",
+      "public_api": "3.59522268569119E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0334",
+      "bits": "0xa5af26b12615d500",
+      "excel": "-3.59522268569119E-127",
+      "public_api": "-3.59522268569119E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0336",
+      "bits": "0x25af26b12615d501",
+      "excel": "3.59522268569119E-127",
+      "public_api": "3.59522268569119E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0338",
+      "bits": "0xa5af26b12615d501",
+      "excel": "-3.59522268569119E-127",
+      "public_api": "-3.59522268569119E-127",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0340",
+      "bits": "0x58b58653fed4db25",
+      "excel": "2.17117982222864E+119",
+      "public_api": "2.17117982222864E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0342",
+      "bits": "0xd8b58653fed4db25",
+      "excel": "-2.17117982222864E+119",
+      "public_api": "-2.17117982222864E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0344",
+      "bits": "0x58b58653fed4db26",
+      "excel": "2.17117982222864E+119",
+      "public_api": "2.17117982222864E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0346",
+      "bits": "0xd8b58653fed4db26",
+      "excel": "-2.17117982222864E+119",
+      "public_api": "-2.17117982222864E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0348",
+      "bits": "0x58b58653fed4db27",
+      "excel": "2.17117982222864E+119",
+      "public_api": "2.17117982222864E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0350",
+      "bits": "0xd8b58653fed4db27",
+      "excel": "-2.17117982222864E+119",
+      "public_api": "-2.17117982222864E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0352",
+      "bits": "0x58b58653fed4db28",
+      "excel": "2.17117982222865E+119",
+      "public_api": "2.17117982222865E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0354",
+      "bits": "0xd8b58653fed4db28",
+      "excel": "-2.17117982222865E+119",
+      "public_api": "-2.17117982222865E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0356",
+      "bits": "0x58b58653fed4db29",
+      "excel": "2.17117982222865E+119",
+      "public_api": "2.17117982222865E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0358",
+      "bits": "0xd8b58653fed4db29",
+      "excel": "-2.17117982222865E+119",
+      "public_api": "-2.17117982222865E+119",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0360",
+      "bits": "0x78f9ebbaaacb57dd",
+      "excel": "5.60899108780219E+274",
+      "public_api": "5.60899108780219E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0362",
+      "bits": "0xf8f9ebbaaacb57dd",
+      "excel": "-5.60899108780219E+274",
+      "public_api": "-5.60899108780219E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0364",
+      "bits": "0x78f9ebbaaacb57de",
+      "excel": "5.60899108780219E+274",
+      "public_api": "5.60899108780219E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0366",
+      "bits": "0xf8f9ebbaaacb57de",
+      "excel": "-5.60899108780219E+274",
+      "public_api": "-5.60899108780219E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0368",
+      "bits": "0x78f9ebbaaacb57df",
+      "excel": "5.60899108780219E+274",
+      "public_api": "5.60899108780219E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0370",
+      "bits": "0xf8f9ebbaaacb57df",
+      "excel": "-5.60899108780219E+274",
+      "public_api": "-5.60899108780219E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0372",
+      "bits": "0x78f9ebbaaacb57e0",
+      "excel": "5.6089910878022E+274",
+      "public_api": "5.6089910878022E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0374",
+      "bits": "0xf8f9ebbaaacb57e0",
+      "excel": "-5.6089910878022E+274",
+      "public_api": "-5.6089910878022E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0376",
+      "bits": "0x78f9ebbaaacb57e1",
+      "excel": "5.6089910878022E+274",
+      "public_api": "5.6089910878022E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0378",
+      "bits": "0xf8f9ebbaaacb57e1",
+      "excel": "-5.6089910878022E+274",
+      "public_api": "-5.6089910878022E+274",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0380",
+      "bits": "0x41b0b7c429731019",
+      "excel": "280478761.449464",
+      "public_api": "280478761.449464",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0382",
+      "bits": "0xc1b0b7c429731019",
+      "excel": "-280478761.449464",
+      "public_api": "-280478761.449464",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0384",
+      "bits": "0x41b0b7c42973101a",
+      "excel": "280478761.449464",
+      "public_api": "280478761.449464",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0386",
+      "bits": "0xc1b0b7c42973101a",
+      "excel": "-280478761.449464",
+      "public_api": "-280478761.449464",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0388",
+      "bits": "0x41b0b7c42973101b",
+      "excel": "280478761.449464",
+      "public_api": "280478761.449464",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0390",
+      "bits": "0xc1b0b7c42973101b",
+      "excel": "-280478761.449464",
+      "public_api": "-280478761.449464",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0392",
+      "bits": "0x41b0b7c42973101c",
+      "excel": "280478761.449465",
+      "public_api": "280478761.449465",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0394",
+      "bits": "0xc1b0b7c42973101c",
+      "excel": "-280478761.449465",
+      "public_api": "-280478761.449465",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0396",
+      "bits": "0x41b0b7c42973101d",
+      "excel": "280478761.449465",
+      "public_api": "280478761.449465",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0398",
+      "bits": "0xc1b0b7c42973101d",
+      "excel": "-280478761.449465",
+      "public_api": "-280478761.449465",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0400",
+      "bits": "0x40be3bea713a0619",
+      "excel": "7739.91579020165",
+      "public_api": "7739.91579020165",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0402",
+      "bits": "0xc0be3bea713a0619",
+      "excel": "-7739.91579020165",
+      "public_api": "-7739.91579020165",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0404",
+      "bits": "0x40be3bea713a061a",
+      "excel": "7739.91579020165",
+      "public_api": "7739.91579020165",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0406",
+      "bits": "0xc0be3bea713a061a",
+      "excel": "-7739.91579020165",
+      "public_api": "-7739.91579020165",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0408",
+      "bits": "0x40be3bea713a061b",
+      "excel": "7739.91579020165",
+      "public_api": "7739.91579020165",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0410",
+      "bits": "0xc0be3bea713a061b",
+      "excel": "-7739.91579020165",
+      "public_api": "-7739.91579020165",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0412",
+      "bits": "0x40be3bea713a061c",
+      "excel": "7739.91579020166",
+      "public_api": "7739.91579020166",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0414",
+      "bits": "0xc0be3bea713a061c",
+      "excel": "-7739.91579020166",
+      "public_api": "-7739.91579020166",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0416",
+      "bits": "0x40be3bea713a061d",
+      "excel": "7739.91579020166",
+      "public_api": "7739.91579020166",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0418",
+      "bits": "0xc0be3bea713a061d",
+      "excel": "-7739.91579020166",
+      "public_api": "-7739.91579020166",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0420",
+      "bits": "0x722ef0c3c6975cb6",
+      "excel": "1.0315580794113E+242",
+      "public_api": "1.0315580794113E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0422",
+      "bits": "0xf22ef0c3c6975cb6",
+      "excel": "-1.0315580794113E+242",
+      "public_api": "-1.0315580794113E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0424",
+      "bits": "0x722ef0c3c6975cb7",
+      "excel": "1.0315580794113E+242",
+      "public_api": "1.0315580794113E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0426",
+      "bits": "0xf22ef0c3c6975cb7",
+      "excel": "-1.0315580794113E+242",
+      "public_api": "-1.0315580794113E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0428",
+      "bits": "0x722ef0c3c6975cb8",
+      "excel": "1.0315580794113E+242",
+      "public_api": "1.0315580794113E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0430",
+      "bits": "0xf22ef0c3c6975cb8",
+      "excel": "-1.0315580794113E+242",
+      "public_api": "-1.0315580794113E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0432",
+      "bits": "0x722ef0c3c6975cb9",
+      "excel": "1.03155807941131E+242",
+      "public_api": "1.03155807941131E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0434",
+      "bits": "0xf22ef0c3c6975cb9",
+      "excel": "-1.03155807941131E+242",
+      "public_api": "-1.03155807941131E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0436",
+      "bits": "0x722ef0c3c6975cba",
+      "excel": "1.03155807941131E+242",
+      "public_api": "1.03155807941131E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0438",
+      "bits": "0xf22ef0c3c6975cba",
+      "excel": "-1.03155807941131E+242",
+      "public_api": "-1.03155807941131E+242",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0440",
+      "bits": "0x39c35c69cea2e436",
+      "excel": "1.90914096181636E-30",
+      "public_api": "1.90914096181636E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0442",
+      "bits": "0xb9c35c69cea2e436",
+      "excel": "-1.90914096181636E-30",
+      "public_api": "-1.90914096181636E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0444",
+      "bits": "0x39c35c69cea2e437",
+      "excel": "1.90914096181636E-30",
+      "public_api": "1.90914096181636E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0446",
+      "bits": "0xb9c35c69cea2e437",
+      "excel": "-1.90914096181636E-30",
+      "public_api": "-1.90914096181636E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0448",
+      "bits": "0x39c35c69cea2e438",
+      "excel": "1.90914096181636E-30",
+      "public_api": "1.90914096181636E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0450",
+      "bits": "0xb9c35c69cea2e438",
+      "excel": "-1.90914096181636E-30",
+      "public_api": "-1.90914096181636E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0452",
+      "bits": "0x39c35c69cea2e439",
+      "excel": "1.90914096181637E-30",
+      "public_api": "1.90914096181637E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0454",
+      "bits": "0xb9c35c69cea2e439",
+      "excel": "-1.90914096181637E-30",
+      "public_api": "-1.90914096181637E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0456",
+      "bits": "0x39c35c69cea2e43a",
+      "excel": "1.90914096181637E-30",
+      "public_api": "1.90914096181637E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0458",
+      "bits": "0xb9c35c69cea2e43a",
+      "excel": "-1.90914096181637E-30",
+      "public_api": "-1.90914096181637E-30",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0460",
+      "bits": "0x3856eef7669dbb34",
+      "excel": "2.6958155657387E-37",
+      "public_api": "2.6958155657387E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0462",
+      "bits": "0xb856eef7669dbb34",
+      "excel": "-2.6958155657387E-37",
+      "public_api": "-2.6958155657387E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0464",
+      "bits": "0x3856eef7669dbb35",
+      "excel": "2.6958155657387E-37",
+      "public_api": "2.6958155657387E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0466",
+      "bits": "0xb856eef7669dbb35",
+      "excel": "-2.6958155657387E-37",
+      "public_api": "-2.6958155657387E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0468",
+      "bits": "0x3856eef7669dbb36",
+      "excel": "2.6958155657387E-37",
+      "public_api": "2.6958155657387E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0470",
+      "bits": "0xb856eef7669dbb36",
+      "excel": "-2.6958155657387E-37",
+      "public_api": "-2.6958155657387E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0472",
+      "bits": "0x3856eef7669dbb37",
+      "excel": "2.69581556573871E-37",
+      "public_api": "2.69581556573871E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0474",
+      "bits": "0xb856eef7669dbb37",
+      "excel": "-2.69581556573871E-37",
+      "public_api": "-2.69581556573871E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0476",
+      "bits": "0x3856eef7669dbb38",
+      "excel": "2.69581556573871E-37",
+      "public_api": "2.69581556573871E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0478",
+      "bits": "0xb856eef7669dbb38",
+      "excel": "-2.69581556573871E-37",
+      "public_api": "-2.69581556573871E-37",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0480",
+      "bits": "0x4f68477730f84d1a",
+      "excel": "3.43180535488735E+74",
+      "public_api": "3.43180535488735E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0482",
+      "bits": "0xcf68477730f84d1a",
+      "excel": "-3.43180535488735E+74",
+      "public_api": "-3.43180535488735E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0484",
+      "bits": "0x4f68477730f84d1b",
+      "excel": "3.43180535488735E+74",
+      "public_api": "3.43180535488735E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0486",
+      "bits": "0xcf68477730f84d1b",
+      "excel": "-3.43180535488735E+74",
+      "public_api": "-3.43180535488735E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0488",
+      "bits": "0x4f68477730f84d1c",
+      "excel": "3.43180535488736E+74",
+      "public_api": "3.43180535488735E+74",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0490",
+      "bits": "0xcf68477730f84d1c",
+      "excel": "-3.43180535488736E+74",
+      "public_api": "-3.43180535488735E+74",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0492",
+      "bits": "0x4f68477730f84d1d",
+      "excel": "3.43180535488736E+74",
+      "public_api": "3.43180535488736E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0494",
+      "bits": "0xcf68477730f84d1d",
+      "excel": "-3.43180535488736E+74",
+      "public_api": "-3.43180535488736E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0496",
+      "bits": "0x4f68477730f84d1e",
+      "excel": "3.43180535488736E+74",
+      "public_api": "3.43180535488736E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0498",
+      "bits": "0xcf68477730f84d1e",
+      "excel": "-3.43180535488736E+74",
+      "public_api": "-3.43180535488736E+74",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0500",
+      "bits": "0x20d0dc81cc19e00b",
+      "excel": "1.2877592051257E-150",
+      "public_api": "1.2877592051257E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0502",
+      "bits": "0xa0d0dc81cc19e00b",
+      "excel": "-1.2877592051257E-150",
+      "public_api": "-1.2877592051257E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0504",
+      "bits": "0x20d0dc81cc19e00c",
+      "excel": "1.2877592051257E-150",
+      "public_api": "1.2877592051257E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0506",
+      "bits": "0xa0d0dc81cc19e00c",
+      "excel": "-1.2877592051257E-150",
+      "public_api": "-1.2877592051257E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0508",
+      "bits": "0x20d0dc81cc19e00d",
+      "excel": "1.2877592051257E-150",
+      "public_api": "1.2877592051257E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0510",
+      "bits": "0xa0d0dc81cc19e00d",
+      "excel": "-1.2877592051257E-150",
+      "public_api": "-1.2877592051257E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0512",
+      "bits": "0x20d0dc81cc19e00e",
+      "excel": "1.28775920512571E-150",
+      "public_api": "1.28775920512571E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0514",
+      "bits": "0xa0d0dc81cc19e00e",
+      "excel": "-1.28775920512571E-150",
+      "public_api": "-1.28775920512571E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0516",
+      "bits": "0x20d0dc81cc19e00f",
+      "excel": "1.28775920512571E-150",
+      "public_api": "1.28775920512571E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0518",
+      "bits": "0xa0d0dc81cc19e00f",
+      "excel": "-1.28775920512571E-150",
+      "public_api": "-1.28775920512571E-150",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0520",
+      "bits": "0x7c86d60c9167382c",
+      "excel": "7.12144801799256E+291",
+      "public_api": "7.12144801799256E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0522",
+      "bits": "0xfc86d60c9167382c",
+      "excel": "-7.12144801799256E+291",
+      "public_api": "-7.12144801799256E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0524",
+      "bits": "0x7c86d60c9167382d",
+      "excel": "7.12144801799256E+291",
+      "public_api": "7.12144801799256E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0526",
+      "bits": "0xfc86d60c9167382d",
+      "excel": "-7.12144801799256E+291",
+      "public_api": "-7.12144801799256E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0528",
+      "bits": "0x7c86d60c9167382e",
+      "excel": "7.12144801799257E+291",
+      "public_api": "7.12144801799256E+291",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0530",
+      "bits": "0xfc86d60c9167382e",
+      "excel": "-7.12144801799257E+291",
+      "public_api": "-7.12144801799256E+291",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0532",
+      "bits": "0x7c86d60c9167382f",
+      "excel": "7.12144801799257E+291",
+      "public_api": "7.12144801799257E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0534",
+      "bits": "0xfc86d60c9167382f",
+      "excel": "-7.12144801799257E+291",
+      "public_api": "-7.12144801799257E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0536",
+      "bits": "0x7c86d60c91673830",
+      "excel": "7.12144801799257E+291",
+      "public_api": "7.12144801799257E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0538",
+      "bits": "0xfc86d60c91673830",
+      "excel": "-7.12144801799257E+291",
+      "public_api": "-7.12144801799257E+291",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0540",
+      "bits": "0x63bd9bf4b5fc2663",
+      "excel": "2.86064687554621E+172",
+      "public_api": "2.86064687554621E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0542",
+      "bits": "0xe3bd9bf4b5fc2663",
+      "excel": "-2.86064687554621E+172",
+      "public_api": "-2.86064687554621E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0544",
+      "bits": "0x63bd9bf4b5fc2664",
+      "excel": "2.86064687554621E+172",
+      "public_api": "2.86064687554621E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0546",
+      "bits": "0xe3bd9bf4b5fc2664",
+      "excel": "-2.86064687554621E+172",
+      "public_api": "-2.86064687554621E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0548",
+      "bits": "0x63bd9bf4b5fc2665",
+      "excel": "2.86064687554621E+172",
+      "public_api": "2.86064687554621E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0550",
+      "bits": "0xe3bd9bf4b5fc2665",
+      "excel": "-2.86064687554621E+172",
+      "public_api": "-2.86064687554621E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0552",
+      "bits": "0x63bd9bf4b5fc2666",
+      "excel": "2.86064687554622E+172",
+      "public_api": "2.86064687554622E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0554",
+      "bits": "0xe3bd9bf4b5fc2666",
+      "excel": "-2.86064687554622E+172",
+      "public_api": "-2.86064687554622E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0556",
+      "bits": "0x63bd9bf4b5fc2667",
+      "excel": "2.86064687554622E+172",
+      "public_api": "2.86064687554622E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0558",
+      "bits": "0xe3bd9bf4b5fc2667",
+      "excel": "-2.86064687554622E+172",
+      "public_api": "-2.86064687554622E+172",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0560",
+      "bits": "0x328dc8797dd35d08",
+      "excel": "3.53509349922366E-65",
+      "public_api": "3.53509349922366E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0562",
+      "bits": "0xb28dc8797dd35d08",
+      "excel": "-3.53509349922366E-65",
+      "public_api": "-3.53509349922366E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0564",
+      "bits": "0x328dc8797dd35d09",
+      "excel": "3.53509349922366E-65",
+      "public_api": "3.53509349922366E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0566",
+      "bits": "0xb28dc8797dd35d09",
+      "excel": "-3.53509349922366E-65",
+      "public_api": "-3.53509349922366E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0568",
+      "bits": "0x328dc8797dd35d0a",
+      "excel": "3.53509349922367E-65",
+      "public_api": "3.53509349922366E-65",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0570",
+      "bits": "0xb28dc8797dd35d0a",
+      "excel": "-3.53509349922367E-65",
+      "public_api": "-3.53509349922366E-65",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0572",
+      "bits": "0x328dc8797dd35d0b",
+      "excel": "3.53509349922367E-65",
+      "public_api": "3.53509349922367E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0574",
+      "bits": "0xb28dc8797dd35d0b",
+      "excel": "-3.53509349922367E-65",
+      "public_api": "-3.53509349922367E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0576",
+      "bits": "0x328dc8797dd35d0c",
+      "excel": "3.53509349922367E-65",
+      "public_api": "3.53509349922367E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0578",
+      "bits": "0xb28dc8797dd35d0c",
+      "excel": "-3.53509349922367E-65",
+      "public_api": "-3.53509349922367E-65",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0580",
+      "bits": "0x36394f0f52a0f6ef",
+      "excel": "1.73170025338562E-47",
+      "public_api": "1.73170025338562E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0582",
+      "bits": "0xb6394f0f52a0f6ef",
+      "excel": "-1.73170025338562E-47",
+      "public_api": "-1.73170025338562E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0584",
+      "bits": "0x36394f0f52a0f6f0",
+      "excel": "1.73170025338562E-47",
+      "public_api": "1.73170025338562E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0586",
+      "bits": "0xb6394f0f52a0f6f0",
+      "excel": "-1.73170025338562E-47",
+      "public_api": "-1.73170025338562E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0588",
+      "bits": "0x36394f0f52a0f6f1",
+      "excel": "1.73170025338562E-47",
+      "public_api": "1.73170025338562E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0590",
+      "bits": "0xb6394f0f52a0f6f1",
+      "excel": "-1.73170025338562E-47",
+      "public_api": "-1.73170025338562E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0592",
+      "bits": "0x36394f0f52a0f6f2",
+      "excel": "1.73170025338563E-47",
+      "public_api": "1.73170025338563E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0594",
+      "bits": "0xb6394f0f52a0f6f2",
+      "excel": "-1.73170025338563E-47",
+      "public_api": "-1.73170025338563E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0596",
+      "bits": "0x36394f0f52a0f6f3",
+      "excel": "1.73170025338563E-47",
+      "public_api": "1.73170025338563E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0598",
+      "bits": "0xb6394f0f52a0f6f3",
+      "excel": "-1.73170025338563E-47",
+      "public_api": "-1.73170025338563E-47",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0600",
+      "bits": "0x7feffffffffffffd",
+      "excel": "1.79769313486232E+308",
+      "public_api": "1.79769313486232E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0602",
+      "bits": "0xffeffffffffffffd",
+      "excel": "-1.79769313486232E+308",
+      "public_api": "-1.79769313486232E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0604",
+      "bits": "0x7feffffffffffffe",
+      "excel": "1.79769313486232E+308",
+      "public_api": "1.79769313486232E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0606",
+      "bits": "0xffeffffffffffffe",
+      "excel": "-1.79769313486232E+308",
+      "public_api": "-1.79769313486232E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0608",
+      "bits": "0x7fefffffffffffff",
+      "excel": "error:Num",
+      "public_api": "1.79769313486232E+308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0610",
+      "bits": "0xffefffffffffffff",
+      "excel": "error:Num",
+      "public_api": "-1.79769313486232E+308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0612",
+      "bits": "0x0010000000000000",
+      "excel": "0",
+      "public_api": "2.2250738585072E-308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0614",
+      "bits": "0x8010000000000000",
+      "excel": "-0",
+      "public_api": "-2.2250738585072E-308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0616",
+      "bits": "0x0010000000000001",
+      "excel": "0",
+      "public_api": "2.2250738585072E-308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0618",
+      "bits": "0x8010000000000001",
+      "excel": "-0",
+      "public_api": "-2.2250738585072E-308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0620",
+      "bits": "0x0010000000000002",
+      "excel": "0",
+      "public_api": "2.2250738585072E-308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0622",
+      "bits": "0x8010000000000002",
+      "excel": "-0",
+      "public_api": "-2.2250738585072E-308",
+      "decimal_value_match": false
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0624",
+      "bits": "0x7feffffffffc89e7",
+      "excel": "1.79769313481704E+308",
+      "public_api": "1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0626",
+      "bits": "0xffeffffffffc89e7",
+      "excel": "-1.79769313481704E+308",
+      "public_api": "-1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0628",
+      "bits": "0x7feffffffffc89e8",
+      "excel": "1.79769313481704E+308",
+      "public_api": "1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0630",
+      "bits": "0xffeffffffffc89e8",
+      "excel": "-1.79769313481704E+308",
+      "public_api": "-1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0632",
+      "bits": "0x7feffffffffc89e9",
+      "excel": "1.79769313481704E+308",
+      "public_api": "1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0634",
+      "bits": "0xffeffffffffc89e9",
+      "excel": "-1.79769313481704E+308",
+      "public_api": "-1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0636",
+      "bits": "0x7feffffffffc89ea",
+      "excel": "1.79769313481704E+308",
+      "public_api": "1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0638",
+      "bits": "0xffeffffffffc89ea",
+      "excel": "-1.79769313481704E+308",
+      "public_api": "-1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0640",
+      "bits": "0x7feffffffffc89eb",
+      "excel": "1.79769313481704E+308",
+      "public_api": "1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0642",
+      "bits": "0xffeffffffffc89eb",
+      "excel": "-1.79769313481704E+308",
+      "public_api": "-1.79769313481704E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0644",
+      "bits": "0x7feffffffff7a879",
+      "excel": "1.7976931347532E+308",
+      "public_api": "1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0646",
+      "bits": "0xffeffffffff7a879",
+      "excel": "-1.7976931347532E+308",
+      "public_api": "-1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0648",
+      "bits": "0x7feffffffff7a87a",
+      "excel": "1.7976931347532E+308",
+      "public_api": "1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0650",
+      "bits": "0xffeffffffff7a87a",
+      "excel": "-1.7976931347532E+308",
+      "public_api": "-1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0652",
+      "bits": "0x7feffffffff7a87b",
+      "excel": "1.7976931347532E+308",
+      "public_api": "1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0654",
+      "bits": "0xffeffffffff7a87b",
+      "excel": "-1.7976931347532E+308",
+      "public_api": "-1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0656",
+      "bits": "0x7feffffffff7a87c",
+      "excel": "1.7976931347532E+308",
+      "public_api": "1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0658",
+      "bits": "0xffeffffffff7a87c",
+      "excel": "-1.7976931347532E+308",
+      "public_api": "-1.7976931347532E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0660",
+      "bits": "0x7feffffffff7a87d",
+      "excel": "1.79769313475321E+308",
+      "public_api": "1.79769313475321E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0662",
+      "bits": "0xffeffffffff7a87d",
+      "excel": "-1.79769313475321E+308",
+      "public_api": "-1.79769313475321E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0664",
+      "bits": "0x7feffffffff11102",
+      "excel": "1.79769313466699E+308",
+      "public_api": "1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0666",
+      "bits": "0xffeffffffff11102",
+      "excel": "-1.79769313466699E+308",
+      "public_api": "-1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0668",
+      "bits": "0x7feffffffff11103",
+      "excel": "1.79769313466699E+308",
+      "public_api": "1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0670",
+      "bits": "0xffeffffffff11103",
+      "excel": "-1.79769313466699E+308",
+      "public_api": "-1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0672",
+      "bits": "0x7feffffffff11104",
+      "excel": "1.79769313466699E+308",
+      "public_api": "1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0674",
+      "bits": "0xffeffffffff11104",
+      "excel": "-1.79769313466699E+308",
+      "public_api": "-1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0676",
+      "bits": "0x7feffffffff11105",
+      "excel": "1.79769313466699E+308",
+      "public_api": "1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0678",
+      "bits": "0xffeffffffff11105",
+      "excel": "-1.79769313466699E+308",
+      "public_api": "-1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0680",
+      "bits": "0x7feffffffff11106",
+      "excel": "1.79769313466699E+308",
+      "public_api": "1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0682",
+      "bits": "0xffeffffffff11106",
+      "excel": "-1.79769313466699E+308",
+      "public_api": "-1.79769313466699E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0684",
+      "bits": "0x7feffffffffd03dc",
+      "excel": "1.79769313482327E+308",
+      "public_api": "1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0686",
+      "bits": "0xffeffffffffd03dc",
+      "excel": "-1.79769313482327E+308",
+      "public_api": "-1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0688",
+      "bits": "0x7feffffffffd03dd",
+      "excel": "1.79769313482327E+308",
+      "public_api": "1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0690",
+      "bits": "0xffeffffffffd03dd",
+      "excel": "-1.79769313482327E+308",
+      "public_api": "-1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0692",
+      "bits": "0x7feffffffffd03de",
+      "excel": "1.79769313482327E+308",
+      "public_api": "1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0694",
+      "bits": "0xffeffffffffd03de",
+      "excel": "-1.79769313482327E+308",
+      "public_api": "-1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0696",
+      "bits": "0x7feffffffffd03df",
+      "excel": "1.79769313482327E+308",
+      "public_api": "1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0698",
+      "bits": "0xffeffffffffd03df",
+      "excel": "-1.79769313482327E+308",
+      "public_api": "-1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0700",
+      "bits": "0x7feffffffffd03e0",
+      "excel": "1.79769313482327E+308",
+      "public_api": "1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0702",
+      "bits": "0xffeffffffffd03e0",
+      "excel": "-1.79769313482327E+308",
+      "public_api": "-1.79769313482327E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0704",
+      "bits": "0x7feffffffff2b8a7",
+      "excel": "1.79769313468863E+308",
+      "public_api": "1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0706",
+      "bits": "0xffeffffffff2b8a7",
+      "excel": "-1.79769313468863E+308",
+      "public_api": "-1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0708",
+      "bits": "0x7feffffffff2b8a8",
+      "excel": "1.79769313468863E+308",
+      "public_api": "1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0710",
+      "bits": "0xffeffffffff2b8a8",
+      "excel": "-1.79769313468863E+308",
+      "public_api": "-1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0712",
+      "bits": "0x7feffffffff2b8a9",
+      "excel": "1.79769313468863E+308",
+      "public_api": "1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0714",
+      "bits": "0xffeffffffff2b8a9",
+      "excel": "-1.79769313468863E+308",
+      "public_api": "-1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0716",
+      "bits": "0x7feffffffff2b8aa",
+      "excel": "1.79769313468863E+308",
+      "public_api": "1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0718",
+      "bits": "0xffeffffffff2b8aa",
+      "excel": "-1.79769313468863E+308",
+      "public_api": "-1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0720",
+      "bits": "0x7feffffffff2b8ab",
+      "excel": "1.79769313468863E+308",
+      "public_api": "1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0722",
+      "bits": "0xffeffffffff2b8ab",
+      "excel": "-1.79769313468863E+308",
+      "public_api": "-1.79769313468863E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0724",
+      "bits": "0x7feffffffffb90b7",
+      "excel": "1.79769313480431E+308",
+      "public_api": "1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0726",
+      "bits": "0xffeffffffffb90b7",
+      "excel": "-1.79769313480431E+308",
+      "public_api": "-1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0728",
+      "bits": "0x7feffffffffb90b8",
+      "excel": "1.79769313480431E+308",
+      "public_api": "1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0730",
+      "bits": "0xffeffffffffb90b8",
+      "excel": "-1.79769313480431E+308",
+      "public_api": "-1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0732",
+      "bits": "0x7feffffffffb90b9",
+      "excel": "1.79769313480431E+308",
+      "public_api": "1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0734",
+      "bits": "0xffeffffffffb90b9",
+      "excel": "-1.79769313480431E+308",
+      "public_api": "-1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0736",
+      "bits": "0x7feffffffffb90ba",
+      "excel": "1.79769313480431E+308",
+      "public_api": "1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0738",
+      "bits": "0xffeffffffffb90ba",
+      "excel": "-1.79769313480431E+308",
+      "public_api": "-1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0740",
+      "bits": "0x7feffffffffb90bb",
+      "excel": "1.79769313480431E+308",
+      "public_api": "1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0742",
+      "bits": "0xffeffffffffb90bb",
+      "excel": "-1.79769313480431E+308",
+      "public_api": "-1.79769313480431E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0744",
+      "bits": "0x7feffffffff5c23f",
+      "excel": "1.79769313472836E+308",
+      "public_api": "1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0746",
+      "bits": "0xffeffffffff5c23f",
+      "excel": "-1.79769313472836E+308",
+      "public_api": "-1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0748",
+      "bits": "0x7feffffffff5c240",
+      "excel": "1.79769313472836E+308",
+      "public_api": "1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0750",
+      "bits": "0xffeffffffff5c240",
+      "excel": "-1.79769313472836E+308",
+      "public_api": "-1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0752",
+      "bits": "0x7feffffffff5c241",
+      "excel": "1.79769313472836E+308",
+      "public_api": "1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0754",
+      "bits": "0xffeffffffff5c241",
+      "excel": "-1.79769313472836E+308",
+      "public_api": "-1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0756",
+      "bits": "0x7feffffffff5c242",
+      "excel": "1.79769313472836E+308",
+      "public_api": "1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0758",
+      "bits": "0xffeffffffff5c242",
+      "excel": "-1.79769313472836E+308",
+      "public_api": "-1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0760",
+      "bits": "0x7feffffffff5c243",
+      "excel": "1.79769313472836E+308",
+      "public_api": "1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0762",
+      "bits": "0xffeffffffff5c243",
+      "excel": "-1.79769313472836E+308",
+      "public_api": "-1.79769313472836E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0764",
+      "bits": "0x7feffffffff76a36",
+      "excel": "1.79769313475002E+308",
+      "public_api": "1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0766",
+      "bits": "0xffeffffffff76a36",
+      "excel": "-1.79769313475002E+308",
+      "public_api": "-1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0768",
+      "bits": "0x7feffffffff76a37",
+      "excel": "1.79769313475002E+308",
+      "public_api": "1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0770",
+      "bits": "0xffeffffffff76a37",
+      "excel": "-1.79769313475002E+308",
+      "public_api": "-1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0772",
+      "bits": "0x7feffffffff76a38",
+      "excel": "1.79769313475002E+308",
+      "public_api": "1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0774",
+      "bits": "0xffeffffffff76a38",
+      "excel": "-1.79769313475002E+308",
+      "public_api": "-1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0776",
+      "bits": "0x7feffffffff76a39",
+      "excel": "1.79769313475002E+308",
+      "public_api": "1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0778",
+      "bits": "0xffeffffffff76a39",
+      "excel": "-1.79769313475002E+308",
+      "public_api": "-1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0780",
+      "bits": "0x7feffffffff76a3a",
+      "excel": "1.79769313475002E+308",
+      "public_api": "1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0782",
+      "bits": "0xffeffffffff76a3a",
+      "excel": "-1.79769313475002E+308",
+      "public_api": "-1.79769313475002E+308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0784",
+      "bits": "0x00100000000019db",
+      "excel": "2.22507385851047E-308",
+      "public_api": "2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0786",
+      "bits": "0x80100000000019db",
+      "excel": "-2.22507385851047E-308",
+      "public_api": "-2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0788",
+      "bits": "0x00100000000019dc",
+      "excel": "2.22507385851047E-308",
+      "public_api": "2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0790",
+      "bits": "0x80100000000019dc",
+      "excel": "-2.22507385851047E-308",
+      "public_api": "-2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0792",
+      "bits": "0x00100000000019dd",
+      "excel": "2.22507385851047E-308",
+      "public_api": "2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0794",
+      "bits": "0x80100000000019dd",
+      "excel": "-2.22507385851047E-308",
+      "public_api": "-2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0796",
+      "bits": "0x00100000000019de",
+      "excel": "2.22507385851047E-308",
+      "public_api": "2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0798",
+      "bits": "0x80100000000019de",
+      "excel": "-2.22507385851047E-308",
+      "public_api": "-2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0800",
+      "bits": "0x00100000000019df",
+      "excel": "2.22507385851047E-308",
+      "public_api": "2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0802",
+      "bits": "0x80100000000019df",
+      "excel": "-2.22507385851047E-308",
+      "public_api": "-2.22507385851047E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0804",
+      "bits": "0x0010000000030e93",
+      "excel": "2.22507385860618E-308",
+      "public_api": "2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0806",
+      "bits": "0x8010000000030e93",
+      "excel": "-2.22507385860618E-308",
+      "public_api": "-2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0808",
+      "bits": "0x0010000000030e94",
+      "excel": "2.22507385860618E-308",
+      "public_api": "2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0810",
+      "bits": "0x8010000000030e94",
+      "excel": "-2.22507385860618E-308",
+      "public_api": "-2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0812",
+      "bits": "0x0010000000030e95",
+      "excel": "2.22507385860618E-308",
+      "public_api": "2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0814",
+      "bits": "0x8010000000030e95",
+      "excel": "-2.22507385860618E-308",
+      "public_api": "-2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0816",
+      "bits": "0x0010000000030e96",
+      "excel": "2.22507385860618E-308",
+      "public_api": "2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0818",
+      "bits": "0x8010000000030e96",
+      "excel": "-2.22507385860618E-308",
+      "public_api": "-2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0820",
+      "bits": "0x0010000000030e97",
+      "excel": "2.22507385860618E-308",
+      "public_api": "2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0822",
+      "bits": "0x8010000000030e97",
+      "excel": "-2.22507385860618E-308",
+      "public_api": "-2.22507385860618E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0824",
+      "bits": "0x0010000000034f86",
+      "excel": "2.2250738586144E-308",
+      "public_api": "2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0826",
+      "bits": "0x8010000000034f86",
+      "excel": "-2.2250738586144E-308",
+      "public_api": "-2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0828",
+      "bits": "0x0010000000034f87",
+      "excel": "2.2250738586144E-308",
+      "public_api": "2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0830",
+      "bits": "0x8010000000034f87",
+      "excel": "-2.2250738586144E-308",
+      "public_api": "-2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0832",
+      "bits": "0x0010000000034f88",
+      "excel": "2.2250738586144E-308",
+      "public_api": "2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0834",
+      "bits": "0x8010000000034f88",
+      "excel": "-2.2250738586144E-308",
+      "public_api": "-2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0836",
+      "bits": "0x0010000000034f89",
+      "excel": "2.2250738586144E-308",
+      "public_api": "2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0838",
+      "bits": "0x8010000000034f89",
+      "excel": "-2.2250738586144E-308",
+      "public_api": "-2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0840",
+      "bits": "0x0010000000034f8a",
+      "excel": "2.2250738586144E-308",
+      "public_api": "2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0842",
+      "bits": "0x8010000000034f8a",
+      "excel": "-2.2250738586144E-308",
+      "public_api": "-2.2250738586144E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0844",
+      "bits": "0x00100000000efd0d",
+      "excel": "2.22507385899251E-308",
+      "public_api": "2.22507385899251E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0846",
+      "bits": "0x80100000000efd0d",
+      "excel": "-2.22507385899251E-308",
+      "public_api": "-2.22507385899251E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0848",
+      "bits": "0x00100000000efd0e",
+      "excel": "2.22507385899252E-308",
+      "public_api": "2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0850",
+      "bits": "0x80100000000efd0e",
+      "excel": "-2.22507385899252E-308",
+      "public_api": "-2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0852",
+      "bits": "0x00100000000efd0f",
+      "excel": "2.22507385899252E-308",
+      "public_api": "2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0854",
+      "bits": "0x80100000000efd0f",
+      "excel": "-2.22507385899252E-308",
+      "public_api": "-2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0856",
+      "bits": "0x00100000000efd10",
+      "excel": "2.22507385899252E-308",
+      "public_api": "2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0858",
+      "bits": "0x80100000000efd10",
+      "excel": "-2.22507385899252E-308",
+      "public_api": "-2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0860",
+      "bits": "0x00100000000efd11",
+      "excel": "2.22507385899252E-308",
+      "public_api": "2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0862",
+      "bits": "0x80100000000efd11",
+      "excel": "-2.22507385899252E-308",
+      "public_api": "-2.22507385899252E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0864",
+      "bits": "0x00100000000b7045",
+      "excel": "2.22507385887757E-308",
+      "public_api": "2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0866",
+      "bits": "0x80100000000b7045",
+      "excel": "-2.22507385887757E-308",
+      "public_api": "-2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0868",
+      "bits": "0x00100000000b7046",
+      "excel": "2.22507385887757E-308",
+      "public_api": "2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0870",
+      "bits": "0x80100000000b7046",
+      "excel": "-2.22507385887757E-308",
+      "public_api": "-2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0872",
+      "bits": "0x00100000000b7047",
+      "excel": "2.22507385887757E-308",
+      "public_api": "2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0874",
+      "bits": "0x80100000000b7047",
+      "excel": "-2.22507385887757E-308",
+      "public_api": "-2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0876",
+      "bits": "0x00100000000b7048",
+      "excel": "2.22507385887757E-308",
+      "public_api": "2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0878",
+      "bits": "0x80100000000b7048",
+      "excel": "-2.22507385887757E-308",
+      "public_api": "-2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0880",
+      "bits": "0x00100000000b7049",
+      "excel": "2.22507385887757E-308",
+      "public_api": "2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0882",
+      "bits": "0x80100000000b7049",
+      "excel": "-2.22507385887757E-308",
+      "public_api": "-2.22507385887757E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0884",
+      "bits": "0x0010000000093f73",
+      "excel": "2.22507385880664E-308",
+      "public_api": "2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0886",
+      "bits": "0x8010000000093f73",
+      "excel": "-2.22507385880664E-308",
+      "public_api": "-2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0888",
+      "bits": "0x0010000000093f74",
+      "excel": "2.22507385880664E-308",
+      "public_api": "2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0890",
+      "bits": "0x8010000000093f74",
+      "excel": "-2.22507385880664E-308",
+      "public_api": "-2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0892",
+      "bits": "0x0010000000093f75",
+      "excel": "2.22507385880664E-308",
+      "public_api": "2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0894",
+      "bits": "0x8010000000093f75",
+      "excel": "-2.22507385880664E-308",
+      "public_api": "-2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0896",
+      "bits": "0x0010000000093f76",
+      "excel": "2.22507385880664E-308",
+      "public_api": "2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0898",
+      "bits": "0x8010000000093f76",
+      "excel": "-2.22507385880664E-308",
+      "public_api": "-2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0900",
+      "bits": "0x0010000000093f77",
+      "excel": "2.22507385880664E-308",
+      "public_api": "2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0902",
+      "bits": "0x8010000000093f77",
+      "excel": "-2.22507385880664E-308",
+      "public_api": "-2.22507385880664E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0904",
+      "bits": "0x00100000000243c4",
+      "excel": "2.22507385858053E-308",
+      "public_api": "2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0906",
+      "bits": "0x80100000000243c4",
+      "excel": "-2.22507385858053E-308",
+      "public_api": "-2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0908",
+      "bits": "0x00100000000243c5",
+      "excel": "2.22507385858053E-308",
+      "public_api": "2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0910",
+      "bits": "0x80100000000243c5",
+      "excel": "-2.22507385858053E-308",
+      "public_api": "-2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0912",
+      "bits": "0x00100000000243c6",
+      "excel": "2.22507385858053E-308",
+      "public_api": "2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0914",
+      "bits": "0x80100000000243c6",
+      "excel": "-2.22507385858053E-308",
+      "public_api": "-2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0916",
+      "bits": "0x00100000000243c7",
+      "excel": "2.22507385858053E-308",
+      "public_api": "2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0918",
+      "bits": "0x80100000000243c7",
+      "excel": "-2.22507385858053E-308",
+      "public_api": "-2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0920",
+      "bits": "0x00100000000243c8",
+      "excel": "2.22507385858053E-308",
+      "public_api": "2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0922",
+      "bits": "0x80100000000243c8",
+      "excel": "-2.22507385858053E-308",
+      "public_api": "-2.22507385858053E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0924",
+      "bits": "0x0010000000098def",
+      "excel": "2.22507385881657E-308",
+      "public_api": "2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0926",
+      "bits": "0x8010000000098def",
+      "excel": "-2.22507385881657E-308",
+      "public_api": "-2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0928",
+      "bits": "0x0010000000098df0",
+      "excel": "2.22507385881657E-308",
+      "public_api": "2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0930",
+      "bits": "0x8010000000098df0",
+      "excel": "-2.22507385881657E-308",
+      "public_api": "-2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0932",
+      "bits": "0x0010000000098df1",
+      "excel": "2.22507385881657E-308",
+      "public_api": "2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0934",
+      "bits": "0x8010000000098df1",
+      "excel": "-2.22507385881657E-308",
+      "public_api": "-2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0936",
+      "bits": "0x0010000000098df2",
+      "excel": "2.22507385881657E-308",
+      "public_api": "2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0938",
+      "bits": "0x8010000000098df2",
+      "excel": "-2.22507385881657E-308",
+      "public_api": "-2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0940",
+      "bits": "0x0010000000098df3",
+      "excel": "2.22507385881657E-308",
+      "public_api": "2.22507385881657E-308",
+      "decimal_value_match": true
+    },
+    {
+      "id": "complex-scaling-heldout-2026092905-0942",
+      "bits": "0x8010000000098df3",
+      "excel": "-2.22507385881657E-308",
+      "public_api": "-2.22507385881657E-308",
+      "decimal_value_match": true
+    }
+  ]
+}

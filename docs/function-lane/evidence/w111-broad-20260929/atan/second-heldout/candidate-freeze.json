@@ -1,0 +1,13 @@
+{
+  "frozen_utc": "2026-09-29T15:15:36.490203+00:00",
+  "source_sha256": {
+    "functions/atan.rs": "1e5aff8d4cb42dff11393fe0d7926b2d46a965864ec899084e085a993bb5cc15",
+    "excel_numeric/mod.rs": "5590d962371a15b8eac10bf0ea09496ae5b7465997da695d19c7d6511ae48262",
+    "excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd",
+    "coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "functions/adapters.rs": "f17be16760d6efdaf750d0fd4e7f1ab65f0ce5a6a262244112861f88240d3fe7"
+  },
+  "seed": 202609292011,
+  "phase": "independent_after_extended_inverse_reduction"
+}

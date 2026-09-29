@@ -1,0 +1,45 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "COUNT locale-dependent numeric-text context",
+    "COUNTBLANK declared arity and Empty/Missing scalar-carrier admission",
+    "Evaluator reference-returning expression boundary and handoff acknowledgement"
+  ],
+  "banks": {
+    "discovery": 458,
+    "computed": 57,
+    "heldout": 1647,
+    "origin-refinement": 76
+  },
+  "total_admitted_rows": 2238,
+  "by_function": {
+    "COUNT": 737,
+    "COUNTA": 737,
+    "COUNTBLANK": 764
+  },
+  "withheld": {
+    "formula_assignment": 18,
+    "IF_reference_result_misdeclared_Number": 17
+  },
+  "validation": {
+    "production_dispatch_replay": "5 count-filtered tests passed",
+    "count_unit_tests": "18 passed",
+    "lean_modules": [
+      "OxFunc.Functions.Count",
+      "OxFunc.Functions.CountA",
+      "OxFunc.Functions.CountBlankFn"
+    ]
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/aggregate_common.rs": "1de9451040ed1d07d9ba0da3413cf903966dedb4cff79d959d8248cb39ebdc17",
+    "crates/oxfunc_core/src/functions/count.rs": "b1ce7192cde18900b0c83a45dc94a67fc351cf3ab4180cf083c97ac95433fd4b",
+    "crates/oxfunc_core/src/functions/counta.rs": "20ebff0c0f26f62c9ba2931ce1f3e51a66d817b20e709bc35d98cab08c6c7de4",
+    "crates/oxfunc_core/src/functions/countblank_fn.rs": "279308b866fbd78c8d91da43860100116964c2f130937fa8c6c6f51d19716cb3",
+    "crates/oxfunc_core/tests/w111_numeric_text_live_replay.rs": "db0717e968f3aae2e28f0328c409dffb554a3501dfd41860af23d7d0073bcbad",
+    "formal/lean/OxFunc/Functions/Count.lean": "3eb52a7c97a7723cb487af260e5d3950aad3968a38fd73ca664c0049e0cca375",
+    "formal/lean/OxFunc/Functions/CountA.lean": "4ba96c77939a83f25545d7e350691b509ac926e10f80b409c838641cde2fdf68",
+    "formal/lean/OxFunc/Functions/CountBlankFn.lean": "995e54094f6b68682511da9778a2f4eedc23e271486df2abba2abd20aab08e9e"
+  }
+}

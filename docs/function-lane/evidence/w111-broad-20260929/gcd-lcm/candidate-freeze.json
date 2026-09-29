@@ -1,0 +1,24 @@
+{
+  "frozen_utc": "2026-09-29T16:43:30.463660+00:00",
+  "seed": 202609292701,
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/gcd_fn.rs": "e24970321a08493d67b50979a32ebab8c39efdb1e3f67c750720a3a17a93ef87",
+    "crates/oxfunc_core/src/functions/lcm_fn.rs": "b03c1960f66dc2cd7aeec9970826dd7a9a32cb149a17a7b3f3bcb43bb7e471bc",
+    "crates/oxfunc_core/src/functions/gcd_lcm_common.rs": "f5831b4537fa3087ae9a262468be8f8e6eece26fda71acc2b82c55db019bb633",
+    "formal/lean/OxFunc/GcdLcmReduction.lean": "516dae5ff3e9e4369cd80f3037b8c46bed0a7e3dfb9b3ae1086b7293d6f445ce",
+    "formal/lean/OxFunc/Functions/GcdFn.lean": "e3d7909279821637bd058cd0434c70171574059a78ba1041f49924bc8a40e487",
+    "formal/lean/OxFunc/Functions/LcmFn.lean": "6ba930f01c90b6fb7fe09c8b9df80a293dac3c4bba2dd67435bdea050c136756"
+  },
+  "numeric_rows_per_function": 3552,
+  "typed_rows": 1160,
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "independent capture pending",
+    "shared contextual numeric-text grammar",
+    "HO-FN-027 acknowledgement"
+  ],
+  "design": "Independent full-bit normals, factors/common multiples, normal integer neighbors, 255-argument controls, fresh product-boundary factors and reverse grouped-array reduction; paired typed origins, blank shape and error order.",
+  "unit_test_source_correction": "Removed ambiguous .into() in sparse fixture constructor; runtime unchanged"
+}

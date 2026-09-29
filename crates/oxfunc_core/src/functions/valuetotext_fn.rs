@@ -3,7 +3,9 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::{
+    coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
+};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::{CalcArray, CoreValue, ExcelText, WorksheetErrorCode};
@@ -71,7 +73,9 @@ fn parse_format_flag(prepared: Option<&CalcValue>) -> Result<bool, ValueToTextEv
 
 fn cell_concise(cell: &CalcValue) -> String {
     match cell.core() {
-        CoreValue::Number(n) => format!("{n}"),
+        CoreValue::Number(_) => coerce_prepared_to_text(cell)
+            .expect("number text coercion")
+            .to_string_lossy(),
         CoreValue::Text(t) => t.to_string_lossy(),
         CoreValue::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
         CoreValue::Error(code) => worksheet_error_literal(*code).to_string(),
@@ -82,7 +86,9 @@ fn cell_concise(cell: &CalcValue) -> String {
 
 fn cell_strict(cell: &CalcValue) -> String {
     match cell.core() {
-        CoreValue::Number(n) => format!("{n}"),
+        CoreValue::Number(_) => coerce_prepared_to_text(cell)
+            .expect("number text coercion")
+            .to_string_lossy(),
         CoreValue::Text(t) => {
             let escaped = t.to_string_lossy().replace('"', "\"\"");
             format!("\"{escaped}\"")
@@ -96,7 +102,9 @@ fn cell_strict(cell: &CalcValue) -> String {
 
 fn value_concise(value: &CalcValue) -> String {
     match value.core() {
-        CoreValue::Number(n) => format!("{n}"),
+        CoreValue::Number(_) => coerce_prepared_to_text(value)
+            .expect("number text coercion")
+            .to_string_lossy(),
         CoreValue::Text(t) => t.to_string_lossy(),
         CoreValue::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
         CoreValue::Error(code) => worksheet_error_literal(*code).to_string(),
@@ -107,7 +115,9 @@ fn value_concise(value: &CalcValue) -> String {
 
 fn value_strict(value: &CalcValue) -> String {
     match value.core() {
-        CoreValue::Number(n) => format!("{n}"),
+        CoreValue::Number(_) => coerce_prepared_to_text(value)
+            .expect("number text coercion")
+            .to_string_lossy(),
         CoreValue::Text(t) => {
             let escaped = t.to_string_lossy().replace('"', "\"\"");
             format!("\"{escaped}\"")

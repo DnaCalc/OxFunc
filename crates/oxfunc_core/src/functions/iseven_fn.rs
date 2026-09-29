@@ -39,7 +39,10 @@ fn coerce_iseven_number(arg: &CalcValue) -> Result<f64, CoercionError> {
 }
 
 pub fn iseven_kernel(n: f64) -> bool {
-    (n.trunc() as i64).rem_euclid(2) == 0
+    // Add before floor: testing distance to ceil gives a different answer
+    // at the represented 1e-10 boundary. Floating parity also avoids i64
+    // saturation for finite binary64 integers above the signed integer range.
+    (n.abs() + 1e-10).floor() % 2.0 == 0.0
 }
 
 pub fn eval_iseven_surface(

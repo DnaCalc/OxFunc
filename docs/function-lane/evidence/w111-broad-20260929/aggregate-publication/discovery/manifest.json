@@ -1,0 +1,33 @@
+{
+  "seed": 202609293201,
+  "stage": "discovery",
+  "generated_utc": "2026-09-29T18:29:25.937965+00:00",
+  "batches": [
+    {
+      "function": "HARMEAN",
+      "rows": 9004,
+      "path": "batch-harmean.json",
+      "sha256": "2d1e07f234848eed24a7c2da215eda0b630b7a67afe7cbecebaf9917e1909424",
+      "prior_tuples": 0
+    },
+    {
+      "function": "DEVSQ",
+      "rows": 10951,
+      "path": "batch-devsq.json",
+      "sha256": "d1f72a7b195cd2b7f1061ea29bbd8fa0e0cb6c3db100c05610995fb45a0c66b8",
+      "prior_tuples": 0
+    },
+    {
+      "function": "MROUND",
+      "rows": 16018,
+      "path": "batch-mround.json",
+      "sha256": "889ce9d0817fdedbe699914e746b52d51701242678b279bb8da8a46ae7f3c50a",
+      "prior_tuples": 0
+    }
+  ],
+  "source_sha256": {
+    "harmean_fn.rs": "954d471b15162c220eeb5096e16394a476dbb76f724b8a350e548d71bb6bfcb0",
+    "devsq_fn.rs": "e2315a77594ed44455e4b0f148b979287bc813fb4e19bcc98ea01a79d15b0746",
+    "mround.rs": "820a0ee489c67820cf800f2af77bdb80b2fd591f2a25c00b602944345b101890"
+  }
+}

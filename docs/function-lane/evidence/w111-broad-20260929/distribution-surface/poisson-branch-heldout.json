@@ -1,0 +1,6725 @@
+{
+  "function": "POISSON.DIST",
+  "witnesses": [
+    {
+      "id": "poisson-branch-heldout-00000-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00001-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00002-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00003-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00004-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00005-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00006-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00007-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00008-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00009-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00010-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00011-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00012-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00013-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00014-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00015-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00016-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00017-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00018-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00019-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00020-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00021-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00022-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00023-count-domain",
+      "args": [
+        "0xbfefffffffffffff",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00024-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00025-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00026-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00027-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00028-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00029-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00030-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00031-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00032-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00033-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00034-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00035-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00036-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00037-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00038-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00039-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00040-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00041-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00042-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00043-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00044-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00045-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00046-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00047-count-domain",
+      "args": [
+        "0xbd30000000000000",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00048-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fd6c95af3fc9eff"
+    },
+    {
+      "id": "poisson-branch-heldout-00049-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fd6c95af3fc9eff"
+    },
+    {
+      "id": "poisson-branch-heldout-00050-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4106834ab893cd16"
+    },
+    {
+      "id": "poisson-branch-heldout-00051-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4106834ab893cd16"
+    },
+    {
+      "id": "poisson-branch-heldout-00052-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x402f49070bdbe8fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00053-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x402f49070bdbe8fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00054-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000400"
+    },
+    {
+      "id": "poisson-branch-heldout-00055-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000400"
+    },
+    {
+      "id": "poisson-branch-heldout-00056-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00057-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00058-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fefffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00059-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00060-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fe5fe4615e98e8f"
+    },
+    {
+      "id": "poisson-branch-heldout-00061-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5fe4615e98e8f"
+    },
+    {
+      "id": "poisson-branch-heldout-00062-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f61eb805a03296c"
+    },
+    {
+      "id": "poisson-branch-heldout-00063-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f61eb805a03296c"
+    },
+    {
+      "id": "poisson-branch-heldout-00064-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000e6cf6d08897ac"
+    },
+    {
+      "id": "poisson-branch-heldout-00065-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000e6cf6d08897ac"
+    },
+    {
+      "id": "poisson-branch-heldout-00066-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000ec1552ff03f4"
+    },
+    {
+      "id": "poisson-branch-heldout-00067-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000ec1552ff03f4"
+    },
+    {
+      "id": "poisson-branch-heldout-00068-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00069-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00070-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00071-count-domain",
+      "args": [
+        "0x0000000000000000",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00072-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fd6c95af3fc9eff"
+    },
+    {
+      "id": "poisson-branch-heldout-00073-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fd6c95af3fc9eff"
+    },
+    {
+      "id": "poisson-branch-heldout-00074-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4106834ab893cd16"
+    },
+    {
+      "id": "poisson-branch-heldout-00075-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4106834ab893cd16"
+    },
+    {
+      "id": "poisson-branch-heldout-00076-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x402f49070bdbe8fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00077-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x402f49070bdbe8fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00078-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000400"
+    },
+    {
+      "id": "poisson-branch-heldout-00079-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000400"
+    },
+    {
+      "id": "poisson-branch-heldout-00080-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00081-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00082-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fefffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00083-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00084-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fe5fe4615e98e8f"
+    },
+    {
+      "id": "poisson-branch-heldout-00085-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5fe4615e98e8f"
+    },
+    {
+      "id": "poisson-branch-heldout-00086-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f61eb805a03296c"
+    },
+    {
+      "id": "poisson-branch-heldout-00087-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f61eb805a03296c"
+    },
+    {
+      "id": "poisson-branch-heldout-00088-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000e6cf6d08897ac"
+    },
+    {
+      "id": "poisson-branch-heldout-00089-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000e6cf6d08897ac"
+    },
+    {
+      "id": "poisson-branch-heldout-00090-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000ec1552ff03f4"
+    },
+    {
+      "id": "poisson-branch-heldout-00091-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000ec1552ff03f4"
+    },
+    {
+      "id": "poisson-branch-heldout-00092-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00093-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00094-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00095-count-domain",
+      "args": [
+        "0x3d50000000000000",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00096-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fd6c95af3fc9eff"
+    },
+    {
+      "id": "poisson-branch-heldout-00097-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fd6c95af3fc9eff"
+    },
+    {
+      "id": "poisson-branch-heldout-00098-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4106834ab893cd16"
+    },
+    {
+      "id": "poisson-branch-heldout-00099-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4106834ab893cd16"
+    },
+    {
+      "id": "poisson-branch-heldout-00100-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x402f49070bdbe8fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00101-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x402f49070bdbe8fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00102-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000400"
+    },
+    {
+      "id": "poisson-branch-heldout-00103-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000400"
+    },
+    {
+      "id": "poisson-branch-heldout-00104-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00105-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00106-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fefffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00107-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00108-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fe5fe4615e98e8f"
+    },
+    {
+      "id": "poisson-branch-heldout-00109-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5fe4615e98e8f"
+    },
+    {
+      "id": "poisson-branch-heldout-00110-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f61eb805a03296c"
+    },
+    {
+      "id": "poisson-branch-heldout-00111-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f61eb805a03296c"
+    },
+    {
+      "id": "poisson-branch-heldout-00112-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000e6cf6d08897ac"
+    },
+    {
+      "id": "poisson-branch-heldout-00113-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000e6cf6d08897ac"
+    },
+    {
+      "id": "poisson-branch-heldout-00114-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000ec1552ff03f4"
+    },
+    {
+      "id": "poisson-branch-heldout-00115-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000ec1552ff03f4"
+    },
+    {
+      "id": "poisson-branch-heldout-00116-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00117-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00118-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00119-count-domain",
+      "args": [
+        "0x3fefffffffffffff",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00120-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00121-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00122-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00123-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00124-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00125-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00126-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00127-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00128-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00129-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00130-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3d6fffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00131-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00132-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd07eb4906f2aeb"
+    },
+    {
+      "id": "poisson-branch-heldout-00133-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fee3da05e212404"
+    },
+    {
+      "id": "poisson-branch-heldout-00134-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f8b709c89d4d76e"
+    },
+    {
+      "id": "poisson-branch-heldout-00135-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f8feb7ca055a1c8"
+    },
+    {
+      "id": "poisson-branch-heldout-00136-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00a3f6488a1103e2"
+    },
+    {
+      "id": "poisson-branch-heldout-00137-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00a3fd7f057947af"
+    },
+    {
+      "id": "poisson-branch-heldout-00138-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00647f51f6b81de1"
+    },
+    {
+      "id": "poisson-branch-heldout-00139-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x006486b2a1501453"
+    },
+    {
+      "id": "poisson-branch-heldout-00140-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00141-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00142-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00143-count-domain",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00144-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00145-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00146-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00147-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00148-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00149-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00150-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00151-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00152-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00153-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00154-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3d6fffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00155-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00156-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd07eb4906f2aeb"
+    },
+    {
+      "id": "poisson-branch-heldout-00157-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fee3da05e212404"
+    },
+    {
+      "id": "poisson-branch-heldout-00158-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f8b709c89d4d76e"
+    },
+    {
+      "id": "poisson-branch-heldout-00159-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f8feb7ca055a1c8"
+    },
+    {
+      "id": "poisson-branch-heldout-00160-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00a3f6488a1103e2"
+    },
+    {
+      "id": "poisson-branch-heldout-00161-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00a3fd7f057947af"
+    },
+    {
+      "id": "poisson-branch-heldout-00162-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00647f51f6b81de1"
+    },
+    {
+      "id": "poisson-branch-heldout-00163-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x006486b2a1501453"
+    },
+    {
+      "id": "poisson-branch-heldout-00164-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00165-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00166-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00167-count-domain",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00168-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00169-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00170-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00171-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00172-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00173-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00174-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00175-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00176-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00177-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00178-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3d6fffffffffe000"
+    },
+    {
+      "id": "poisson-branch-heldout-00179-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00180-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd07eb4906f2aeb"
+    },
+    {
+      "id": "poisson-branch-heldout-00181-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fee3da05e212404"
+    },
+    {
+      "id": "poisson-branch-heldout-00182-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f8b709c89d4d76e"
+    },
+    {
+      "id": "poisson-branch-heldout-00183-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f8feb7ca055a1c8"
+    },
+    {
+      "id": "poisson-branch-heldout-00184-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00a3f6488a1103e2"
+    },
+    {
+      "id": "poisson-branch-heldout-00185-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00a3fd7f057947af"
+    },
+    {
+      "id": "poisson-branch-heldout-00186-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00647f51f6b81de1"
+    },
+    {
+      "id": "poisson-branch-heldout-00187-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x006486b2a1501453"
+    },
+    {
+      "id": "poisson-branch-heldout-00188-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00189-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00190-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00191-count-domain",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00192-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xc086260000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00193-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xc086260000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00194-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xc028400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00195-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xc028400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00196-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xc006000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00197-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xc006000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00198-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xbd50000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00199-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0xbd50000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00200-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00201-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00202-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x35a5555555554000"
+    },
+    {
+      "id": "poisson-branch-heldout-00203-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x3d70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00204-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f428e8b227d1049"
+    },
+    {
+      "id": "poisson-branch-heldout-00205-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffa10c257ccf"
+    },
+    {
+      "id": "poisson-branch-heldout-00206-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4018800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc06b7bd1438ff2"
+    },
+    {
+      "id": "poisson-branch-heldout-00207-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd131f1b4591a27"
+    },
+    {
+      "id": "poisson-branch-heldout-00208-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0221a1b51bb4735d"
+    },
+    {
+      "id": "poisson-branch-heldout-00209-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0221bb4c80a2ef79"
+    },
+    {
+      "id": "poisson-branch-heldout-00210-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x01e250ecbd75ae2c"
+    },
+    {
+      "id": "poisson-branch-heldout-00211-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x01e26b68070b0229"
+    },
+    {
+      "id": "poisson-branch-heldout-00212-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4087460000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00213-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4087460000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00214-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4087700000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00215-count-domain",
+      "args": [
+        "0x4011000000000000",
+        "0x4087700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson-branch-heldout-00216-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00217-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00218-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00219-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00220-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00221-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00222-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00223-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00224-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00225-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00226-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00227-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00228-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00229-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00230-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00231-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00232-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00233-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00234-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00235-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00236-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00237-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00238-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00239-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00240-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00241-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39f6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00242-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00243-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39f6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00244-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ee",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7feffffffffffb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00245-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7feffffffffffb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00246-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ee",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7feffffffffffb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00247-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7feffffffffffb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00248-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ed",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00249-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ed",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00250-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ed",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00251-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ed",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00252-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ec",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00253-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00254-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ec",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00255-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7feffffffffff32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00256-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39eb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffef2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00257-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39eb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffef2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00258-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39eb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffef2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00259-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39eb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffef2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00260-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ea",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffeb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00261-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39ea",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffeb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00262-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ea",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffeb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00263-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39ea",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffeb2a"
+    },
+    {
+      "id": "poisson-branch-heldout-00264-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39e9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00265-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39e9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00266-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39e9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00267-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39e9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00268-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39e8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00269-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0xc0862e42fefa39e8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00270-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39e8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00271-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0xc0862e42fefa39e8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fefffffffffe32a"
+    },
+    {
+      "id": "poisson-branch-heldout-00272-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000027c"
+    },
+    {
+      "id": "poisson-branch-heldout-00273-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000027c"
+    },
+    {
+      "id": "poisson-branch-heldout-00274-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000027c"
+    },
+    {
+      "id": "poisson-branch-heldout-00275-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000027c"
+    },
+    {
+      "id": "poisson-branch-heldout-00276-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000047c"
+    },
+    {
+      "id": "poisson-branch-heldout-00277-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000047c"
+    },
+    {
+      "id": "poisson-branch-heldout-00278-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000047c"
+    },
+    {
+      "id": "poisson-branch-heldout-00279-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000047c"
+    },
+    {
+      "id": "poisson-branch-heldout-00280-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccf",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000067c"
+    },
+    {
+      "id": "poisson-branch-heldout-00281-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000067c"
+    },
+    {
+      "id": "poisson-branch-heldout-00282-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccf",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000067c"
+    },
+    {
+      "id": "poisson-branch-heldout-00283-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000067c"
+    },
+    {
+      "id": "poisson-branch-heldout-00284-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcce",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000087c"
+    },
+    {
+      "id": "poisson-branch-heldout-00285-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcce",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000087c"
+    },
+    {
+      "id": "poisson-branch-heldout-00286-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcce",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x001000000000087c"
+    },
+    {
+      "id": "poisson-branch-heldout-00287-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcce",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x001000000000087c"
+    },
+    {
+      "id": "poisson-branch-heldout-00288-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0010000000000a7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00289-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0010000000000a7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00290-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0010000000000a7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00291-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0010000000000a7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00292-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0010000000000c7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00293-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0010000000000c7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00294-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0010000000000c7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00295-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0010000000000c7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00296-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0010000000000e7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00297-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abccb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0010000000000e7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00298-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0010000000000e7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00299-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abccb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0010000000000e7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00300-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffe7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00301-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffe7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00302-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffe7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00303-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffe7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00304-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffc7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00305-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffc7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00306-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffc7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00307-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffc7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00308-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffa7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00309-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffa7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00310-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffa7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00311-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffffa7c"
+    },
+    {
+      "id": "poisson-branch-heldout-00312-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff87c"
+    },
+    {
+      "id": "poisson-branch-heldout-00313-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff87c"
+    },
+    {
+      "id": "poisson-branch-heldout-00314-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff87c"
+    },
+    {
+      "id": "poisson-branch-heldout-00315-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff87c"
+    },
+    {
+      "id": "poisson-branch-heldout-00316-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff67c"
+    },
+    {
+      "id": "poisson-branch-heldout-00317-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff67c"
+    },
+    {
+      "id": "poisson-branch-heldout-00318-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff67c"
+    },
+    {
+      "id": "poisson-branch-heldout-00319-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff67c"
+    },
+    {
+      "id": "poisson-branch-heldout-00320-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff47c"
+    },
+    {
+      "id": "poisson-branch-heldout-00321-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff47c"
+    },
+    {
+      "id": "poisson-branch-heldout-00322-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff47c"
+    },
+    {
+      "id": "poisson-branch-heldout-00323-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff47c"
+    },
+    {
+      "id": "poisson-branch-heldout-00324-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff27c"
+    },
+    {
+      "id": "poisson-branch-heldout-00325-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4086232bdd7abcd9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff27c"
+    },
+    {
+      "id": "poisson-branch-heldout-00326-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff27c"
+    },
+    {
+      "id": "poisson-branch-heldout-00327-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4086232bdd7abcd9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000ffffffffff27c"
+    },
+    {
+      "id": "poisson-branch-heldout-00328-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747ffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00329-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747ffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00330-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747ffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00331-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747ffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00332-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffe",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00333-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00334-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffe",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00335-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00336-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00337-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00338-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00339-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00340-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00341-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00342-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00343-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00344-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00345-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00346-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00347-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00348-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffa",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00349-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffffa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00350-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffa",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00351-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffffa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00352-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffff9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00353-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x408747fffffffff9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00354-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffff9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00355-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x408747fffffffff9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00356-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00357-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00358-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00359-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00360-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000002",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00361-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000002",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00362-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000002",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00363-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000002",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00364-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000003",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00365-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000003",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00366-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000003",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00367-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000003",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00368-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000004",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00369-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000004",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00370-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000004",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00371-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000004",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00372-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000005",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00373-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000005",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00374-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000005",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00375-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000005",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00376-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000006",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00377-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000006",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00378-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000006",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00379-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000006",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00380-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000007",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00381-exponential-boundary",
+      "args": [
+        "0x0000000000000000",
+        "0x4087480000000007",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00382-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000007",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00383-exponential-boundary",
+      "args": [
+        "0x3fe4000000000000",
+        "0x4087480000000007",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00384-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40475590ce918310",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3bb97c533785b592"
+    },
+    {
+      "id": "poisson-branch-heldout-00385-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40475590ce918310",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3bb97c533785b592"
+    },
+    {
+      "id": "poisson-branch-heldout-00386-fresh-random",
+      "args": [
+        "0x3feada3d2de573de",
+        "0xc07a6a2e5602f6fc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x660aa2d8e0d9d549"
+    },
+    {
+      "id": "poisson-branch-heldout-00387-fresh-random",
+      "args": [
+        "0x3fe519bc27b62359",
+        "0xc07a6a2e5602f6fc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x660aa2d8e0d9d549"
+    },
+    {
+      "id": "poisson-branch-heldout-00388-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07b1c1f0a65f3b2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x670b78ea50f1de88"
+    },
+    {
+      "id": "poisson-branch-heldout-00389-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07b1c1f0a65f3b2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x670b78ea50f1de88"
+    },
+    {
+      "id": "poisson-branch-heldout-00390-fresh-random",
+      "args": [
+        "0x3fd7394566651482",
+        "0xc07896b3513f42da",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6367f9035d809000"
+    },
+    {
+      "id": "poisson-branch-heldout-00391-fresh-random",
+      "args": [
+        "0x3fe8405d71a620f4",
+        "0xc07896b3513f42da",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6367f9035d809000"
+    },
+    {
+      "id": "poisson-branch-heldout-00392-fresh-random",
+      "args": [
+        "0x3feae5f4a5320470",
+        "0x4057d7f9d009b8a8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x375529da2535f1af"
+    },
+    {
+      "id": "poisson-branch-heldout-00393-fresh-random",
+      "args": [
+        "0x3fe119fe5a996859",
+        "0x4057d7f9d009b8a8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x375529da2535f1af"
+    },
+    {
+      "id": "poisson-branch-heldout-00394-fresh-random",
+      "args": [
+        "0x3fd8a4dde063e1a4",
+        "0xc04b19bdc3c4d1f0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x44d252f2694907ee"
+    },
+    {
+      "id": "poisson-branch-heldout-00395-fresh-random",
+      "args": [
+        "0xbfe1a33f7f0b4b14",
+        "0xc04b19bdc3c4d1f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00396-fresh-random",
+      "args": [
+        "0xbfd69688896f5ca6",
+        "0x404c63694f9e8e90",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00397-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x404c63694f9e8e90",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ad10373abafb649"
+    },
+    {
+      "id": "poisson-branch-heldout-00398-fresh-random",
+      "args": [
+        "0x3fd1ad4be3cd3212",
+        "0x4069ae0ebc28d8a0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x2d687bcbd32f4aaa"
+    },
+    {
+      "id": "poisson-branch-heldout-00399-fresh-random",
+      "args": [
+        "0xbfd1a4d329e596d4",
+        "0x4069ae0ebc28d8a0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00400-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc01a5d7933eafd00",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4086c5b840e53424"
+    },
+    {
+      "id": "poisson-branch-heldout-00401-fresh-random",
+      "args": [
+        "0x3fdfef8accc07268",
+        "0xc01a5d7933eafd00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4086c5b840e53424"
+    },
+    {
+      "id": "poisson-branch-heldout-00402-fresh-random",
+      "args": [
+        "0x3fe04f9940e7f799",
+        "0x40702b2cacaa0242",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x289b6b33c3249580"
+    },
+    {
+      "id": "poisson-branch-heldout-00403-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40702b2cacaa0242",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x289b6b33c3249580"
+    },
+    {
+      "id": "poisson-branch-heldout-00404-fresh-random",
+      "args": [
+        "0x3fe96bbf6a9e4a70",
+        "0x40800f4632dacf7a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x119802dd697f4a37"
+    },
+    {
+      "id": "poisson-branch-heldout-00405-fresh-random",
+      "args": [
+        "0x3fe724a569cab6d5",
+        "0x40800f4632dacf7a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x119802dd697f4a37"
+    },
+    {
+      "id": "poisson-branch-heldout-00406-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc06083bf13563630",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4bd85469322adb50"
+    },
+    {
+      "id": "poisson-branch-heldout-00407-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc06083bf13563630",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4bd85469322adb50"
+    },
+    {
+      "id": "poisson-branch-heldout-00408-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x405fb9ce301209a8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x347e37fb58594f40"
+    },
+    {
+      "id": "poisson-branch-heldout-00409-fresh-random",
+      "args": [
+        "0x3fe294d17dcb37be",
+        "0x405fb9ce301209a8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x347e37fb58594f40"
+    },
+    {
+      "id": "poisson-branch-heldout-00410-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x402afc214dcc4240",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3eb72ce6101f69a0"
+    },
+    {
+      "id": "poisson-branch-heldout-00411-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x402afc214dcc4240",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3eb72ce6101f69a0"
+    },
+    {
+      "id": "poisson-branch-heldout-00412-fresh-random",
+      "args": [
+        "0x3fa1f672f3818930",
+        "0xc01362c72f257180",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x405fd284f10e184f"
+    },
+    {
+      "id": "poisson-branch-heldout-00413-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc01362c72f257180",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x405fd284f10e184f"
+    },
+    {
+      "id": "poisson-branch-heldout-00414-fresh-random",
+      "args": [
+        "0x3fd68eac19d0a282",
+        "0x3fc6b599af3fc000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3feacc3b0cf5e772"
+    },
+    {
+      "id": "poisson-branch-heldout-00415-fresh-random",
+      "args": [
+        "0x3fabfbe3977ef070",
+        "0x3fc6b599af3fc000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feacc3b0cf5e772"
+    },
+    {
+      "id": "poisson-branch-heldout-00416-fresh-random",
+      "args": [
+        "0xbfe80f2934631fa5",
+        "0xc072fae376716722",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00417-fresh-random",
+      "args": [
+        "0x3fe3b96b3bb07c54",
+        "0xc072fae376716722",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x5b515e541305080c"
+    },
+    {
+      "id": "poisson-branch-heldout-00418-fresh-random",
+      "args": [
+        "0x3fe5bf2ecc0569a8",
+        "0xc06f996c598d0302",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x56ba16a246799903"
+    },
+    {
+      "id": "poisson-branch-heldout-00419-fresh-random",
+      "args": [
+        "0xbfd09eac22766364",
+        "0xc06f996c598d0302",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00420-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc085b9b019aefc36",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7e9f80e8c1ef0437"
+    },
+    {
+      "id": "poisson-branch-heldout-00421-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc085b9b019aefc36",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7e9f80e8c1ef0437"
+    },
+    {
+      "id": "poisson-branch-heldout-00422-fresh-random",
+      "args": [
+        "0xbfed0bfecda30c69",
+        "0xc0743bf008a75bdc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00423-fresh-random",
+      "args": [
+        "0xbfd97d93c4c78ee8",
+        "0xc0743bf008a75bdc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00424-fresh-random",
+      "args": [
+        "0xbfb68ed6f503bb70",
+        "0xc07102a4a556a21d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00425-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07102a4a556a21d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x5879217657a1cb22"
+    },
+    {
+      "id": "poisson-branch-heldout-00426-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07dc48d8aac70a6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6ae18cb345d64567"
+    },
+    {
+      "id": "poisson-branch-heldout-00427-fresh-random",
+      "args": [
+        "0x3fe35aab2dd238fd",
+        "0xc07dc48d8aac70a6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6ae18cb345d64567"
+    },
+    {
+      "id": "poisson-branch-heldout-00428-fresh-random",
+      "args": [
+        "0xbfc249375ca1aab0",
+        "0xc07dec2c925d1411",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00429-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07dec2c925d1411",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6b1a1978674f6de0"
+    },
+    {
+      "id": "poisson-branch-heldout-00430-fresh-random",
+      "args": [
+        "0x3fd4632f3ae9d0e2",
+        "0x4079dc95146aeb18",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1aa05d149b30d112"
+    },
+    {
+      "id": "poisson-branch-heldout-00431-fresh-random",
+      "args": [
+        "0xbfdba7cca960e594",
+        "0x4079dc95146aeb18",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00432-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07816bf95d3f143",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x62b084f1958efd42"
+    },
+    {
+      "id": "poisson-branch-heldout-00433-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07816bf95d3f143",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x62b084f1958efd42"
+    },
+    {
+      "id": "poisson-branch-heldout-00434-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0419078b4a78df0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4319a243507467fc"
+    },
+    {
+      "id": "poisson-branch-heldout-00435-fresh-random",
+      "args": [
+        "0xbfe442258bc0c55c",
+        "0xc0419078b4a78df0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00436-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc071d939e1306217",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x59affff00612edfe"
+    },
+    {
+      "id": "poisson-branch-heldout-00437-fresh-random",
+      "args": [
+        "0x3feec60c214949a3",
+        "0xc071d939e1306217",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x59affff00612edfe"
+    },
+    {
+      "id": "poisson-branch-heldout-00438-fresh-random",
+      "args": [
+        "0xbfd595743cc83cc4",
+        "0xc056f1704be62148",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00439-fresh-random",
+      "args": [
+        "0x3fac028f93dc4100",
+        "0xc056f1704be62148",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x48351b95050d3197"
+    },
+    {
+      "id": "poisson-branch-heldout-00440-fresh-random",
+      "args": [
+        "0xbfe44bb5908ef97f",
+        "0x407719d705249d44",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00441-fresh-random",
+      "args": [
+        "0xbfe6f6c2a7abfcdf",
+        "0x407719d705249d44",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00442-fresh-random",
+      "args": [
+        "0x3fe400800aa86a8e",
+        "0x405ed3f13e02d4c8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x34d122d7bc7f7c70"
+    },
+    {
+      "id": "poisson-branch-heldout-00443-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x405ed3f13e02d4c8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x34d122d7bc7f7c70"
+    },
+    {
+      "id": "poisson-branch-heldout-00444-fresh-random",
+      "args": [
+        "0xbfd4962355010bbc",
+        "0xc073389b2763bcfe",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00445-fresh-random",
+      "args": [
+        "0xbfd05f78f4438168",
+        "0xc073389b2763bcfe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00446-fresh-random",
+      "args": [
+        "0xbfe673e36b75668d",
+        "0xc084aeb365dc0829",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00447-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc084aeb365dc0829",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7b9c707bbf0a40ce"
+    },
+    {
+      "id": "poisson-branch-heldout-00448-fresh-random",
+      "args": [
+        "0x3fd378e8d57e1c38",
+        "0xc05acdefe70149e0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4999adef5016f2a4"
+    },
+    {
+      "id": "poisson-branch-heldout-00449-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc05acdefe70149e0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4999adef5016f2a4"
+    },
+    {
+      "id": "poisson-branch-heldout-00450-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x3fe47d14f8a0f000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fe0de6b2be7e13c"
+    },
+    {
+      "id": "poisson-branch-heldout-00451-fresh-random",
+      "args": [
+        "0xbfc43598bbbac670",
+        "0x3fe47d14f8a0f000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00452-fresh-random",
+      "args": [
+        "0xbfe38291a244c428",
+        "0x406051fa3b91c330",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00453-fresh-random",
+      "args": [
+        "0xbfe946c49d14545e",
+        "0x406051fa3b91c330",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00454-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407dc189c322c3ac",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x15019c9e160b5ab8"
+    },
+    {
+      "id": "poisson-branch-heldout-00455-fresh-random",
+      "args": [
+        "0xbfc63d5473418de0",
+        "0x407dc189c322c3ac",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00456-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc06f597be73f7710",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x568c4c9483b04dbc"
+    },
+    {
+      "id": "poisson-branch-heldout-00457-fresh-random",
+      "args": [
+        "0xbfe0cb7720040259",
+        "0xc06f597be73f7710",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00458-fresh-random",
+      "args": [
+        "0xbf981d1b27be2880",
+        "0x40840ef644e1a07a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00459-fresh-random",
+      "args": [
+        "0xbfecb6cca8a8636c",
+        "0x40840ef644e1a07a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00460-fresh-random",
+      "args": [
+        "0xbfd2d2e9789e4a4c",
+        "0xc0698f2ff63bc7aa",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00461-fresh-random",
+      "args": [
+        "0x3f8f4d54739d4cc0",
+        "0xc0698f2ff63bc7aa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x525fe0d1a45ed3a3"
+    },
+    {
+      "id": "poisson-branch-heldout-00462-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc066d4e845ebd338",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x5066d567efc55a2b"
+    },
+    {
+      "id": "poisson-branch-heldout-00463-fresh-random",
+      "args": [
+        "0xbfe02c39d99925fe",
+        "0xc066d4e845ebd338",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00464-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x405ceaf330336dd0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3581691816d90ed0"
+    },
+    {
+      "id": "poisson-branch-heldout-00465-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x405ceaf330336dd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3581691816d90ed0"
+    },
+    {
+      "id": "poisson-branch-heldout-00466-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc05dc02a9c24f488",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4aa9b6b10b53293f"
+    },
+    {
+      "id": "poisson-branch-heldout-00467-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc05dc02a9c24f488",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4aa9b6b10b53293f"
+    },
+    {
+      "id": "poisson-branch-heldout-00468-fresh-random",
+      "args": [
+        "0x3fd102e90ea46170",
+        "0xc0824887ce21a242",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x74b0d265ac249934"
+    },
+    {
+      "id": "poisson-branch-heldout-00469-fresh-random",
+      "args": [
+        "0xbfe580515c87610d",
+        "0xc0824887ce21a242",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00470-fresh-random",
+      "args": [
+        "0x3fe852ed3da1fc0f",
+        "0x40795b85ecb49bc0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1b5972b504ef6c09"
+    },
+    {
+      "id": "poisson-branch-heldout-00471-fresh-random",
+      "args": [
+        "0xbfd44bab4a01224c",
+        "0x40795b85ecb49bc0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00472-fresh-random",
+      "args": [
+        "0xbfe1c43564d518ab",
+        "0xc054739b16423ff8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00473-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc054739b16423ff8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x47503dcaefd4b187"
+    },
+    {
+      "id": "poisson-branch-heldout-00474-fresh-random",
+      "args": [
+        "0x3fec2cf6430e930b",
+        "0xc0707c16f7564cc0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x57b6ed077dd7cfd7"
+    },
+    {
+      "id": "poisson-branch-heldout-00475-fresh-random",
+      "args": [
+        "0x3f89ab7098c082c0",
+        "0xc0707c16f7564cc0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x57b6ed077dd7cfd7"
+    },
+    {
+      "id": "poisson-branch-heldout-00476-fresh-random",
+      "args": [
+        "0xbfea66d35b9940ba",
+        "0x4071d1f9fe64c88c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00477-fresh-random",
+      "args": [
+        "0x3fcd523eb3cc4618",
+        "0x4071d1f9fe64c88c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26392bc839496256"
+    },
+    {
+      "id": "poisson-branch-heldout-00478-fresh-random",
+      "args": [
+        "0x3fdc3d9437c203ba",
+        "0x4085808f772f6c4e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x01e40a053968d7b7"
+    },
+    {
+      "id": "poisson-branch-heldout-00479-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4085808f772f6c4e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x01e40a053968d7b7"
+    },
+    {
+      "id": "poisson-branch-heldout-00480-fresh-random",
+      "args": [
+        "0xbfe08ffced14e63d",
+        "0xc0640ef77e9ff29c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00481-fresh-random",
+      "args": [
+        "0xbfefb8402d145e9f",
+        "0xc0640ef77e9ff29c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00482-fresh-random",
+      "args": [
+        "0xbfec76bb8de50e49",
+        "0x407206b02f3ec86e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00483-fresh-random",
+      "args": [
+        "0xbfe42b7bbe2a1886",
+        "0x407206b02f3ec86e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00484-fresh-random",
+      "args": [
+        "0x3fe497f284357159",
+        "0xc0826b7d2eabbcbd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7514c5a68c7265af"
+    },
+    {
+      "id": "poisson-branch-heldout-00485-fresh-random",
+      "args": [
+        "0x3fd112e6a2bf77d0",
+        "0xc0826b7d2eabbcbd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7514c5a68c7265af"
+    },
+    {
+      "id": "poisson-branch-heldout-00486-fresh-random",
+      "args": [
+        "0x3fee21980b5869fd",
+        "0xc06c421bee588eee",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x5451ae75103635ea"
+    },
+    {
+      "id": "poisson-branch-heldout-00487-fresh-random",
+      "args": [
+        "0xbfd2447894dbebe2",
+        "0xc06c421bee588eee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00488-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0691f04897464ec",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x520ea43d7e15e153"
+    },
+    {
+      "id": "poisson-branch-heldout-00489-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0691f04897464ec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x520ea43d7e15e153"
+    },
+    {
+      "id": "poisson-branch-heldout-00490-fresh-random",
+      "args": [
+        "0x3fee5b003f69715c",
+        "0xc080b8d4bebedc3b",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x702fd1149865b765"
+    },
+    {
+      "id": "poisson-branch-heldout-00491-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc080b8d4bebedc3b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x702fd1149865b765"
+    },
+    {
+      "id": "poisson-branch-heldout-00492-fresh-random",
+      "args": [
+        "0xbfe696476b75be53",
+        "0x40092e8bb1915800",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00493-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40092e8bb1915800",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fa5fd7e3e05c760"
+    },
+    {
+      "id": "poisson-branch-heldout-00494-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407688c48e6be67c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1f6ca003a681e432"
+    },
+    {
+      "id": "poisson-branch-heldout-00495-fresh-random",
+      "args": [
+        "0xbf8b347c773cb600",
+        "0x407688c48e6be67c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00496-fresh-random",
+      "args": [
+        "0x3fd0fdf5447ffefe",
+        "0xc077589e38f0e333",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x619de7be912deea6"
+    },
+    {
+      "id": "poisson-branch-heldout-00497-fresh-random",
+      "args": [
+        "0xbfe6982b6cd1cfa0",
+        "0xc077589e38f0e333",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00498-fresh-random",
+      "args": [
+        "0x3fd9d9082855f6c6",
+        "0xc0843f7376997d78",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7a5b3c24e549feb7"
+    },
+    {
+      "id": "poisson-branch-heldout-00499-fresh-random",
+      "args": [
+        "0x3fcc760a1bb4d22c",
+        "0xc0843f7376997d78",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7a5b3c24e549feb7"
+    },
+    {
+      "id": "poisson-branch-heldout-00500-fresh-random",
+      "args": [
+        "0x3fc9bbce96c459d4",
+        "0x4078240611d7f1c8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1d1b09a93bbc7b23"
+    },
+    {
+      "id": "poisson-branch-heldout-00501-fresh-random",
+      "args": [
+        "0x3fe53d0f4dc9f184",
+        "0x4078240611d7f1c8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1d1b09a93bbc7b23"
+    },
+    {
+      "id": "poisson-branch-heldout-00502-fresh-random",
+      "args": [
+        "0xbfeef0798e60ba03",
+        "0xc081eb1bff47551e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00503-fresh-random",
+      "args": [
+        "0x3feff9f1bd4ba3bc",
+        "0xc081eb1bff47551e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x73a2b3487e31a559"
+    },
+    {
+      "id": "poisson-branch-heldout-00504-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40824fb7c2b51d0e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0b18c9d5ee6c9235"
+    },
+    {
+      "id": "poisson-branch-heldout-00505-fresh-random",
+      "args": [
+        "0xbfe011890549cd86",
+        "0x40824fb7c2b51d0e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00506-fresh-random",
+      "args": [
+        "0xbfd7a45e3d2e3732",
+        "0xc075edab2a9dded2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00507-fresh-random",
+      "args": [
+        "0xbfdde8fba3c18652",
+        "0xc075edab2a9dded2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00508-fresh-random",
+      "args": [
+        "0xbf651f166d994400",
+        "0xc07e2b561e89df05",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00509-fresh-random",
+      "args": [
+        "0xbfe4520a1fb61756",
+        "0xc07e2b561e89df05",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00510-fresh-random",
+      "args": [
+        "0xbfe1775ab4d1d707",
+        "0x404495e0266059d0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00511-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x404495e0266059d0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3c384d0ccf560a36"
+    },
+    {
+      "id": "poisson-branch-heldout-00512-fresh-random",
+      "args": [
+        "0x3f89fd0b24752300",
+        "0x4081b8f0fd863578",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0ccc49e10814d80e"
+    },
+    {
+      "id": "poisson-branch-heldout-00513-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4081b8f0fd863578",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0ccc49e10814d80e"
+    },
+    {
+      "id": "poisson-branch-heldout-00514-fresh-random",
+      "args": [
+        "0x3fd4655fce1fc0d2",
+        "0x407d9697ab1c28f4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x15401ed18f058cb7"
+    },
+    {
+      "id": "poisson-branch-heldout-00515-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407d9697ab1c28f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x15401ed18f058cb7"
+    },
+    {
+      "id": "poisson-branch-heldout-00516-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc079ebd9ae7d15cd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x65544fe9a5a153fe"
+    },
+    {
+      "id": "poisson-branch-heldout-00517-fresh-random",
+      "args": [
+        "0x3fe0cd3fe728b7b3",
+        "0xc079ebd9ae7d15cd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x65544fe9a5a153fe"
+    },
+    {
+      "id": "poisson-branch-heldout-00518-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40826806f84a6132",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0ad2ff452e24ee4b"
+    },
+    {
+      "id": "poisson-branch-heldout-00519-fresh-random",
+      "args": [
+        "0xbfdbd4bdafe7a758",
+        "0x40826806f84a6132",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00520-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4082a445ff026a7c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0a24ddc30f24a25c"
+    },
+    {
+      "id": "poisson-branch-heldout-00521-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4082a445ff026a7c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0a24ddc30f24a25c"
+    },
+    {
+      "id": "poisson-branch-heldout-00522-fresh-random",
+      "args": [
+        "0xbfcda9677500c638",
+        "0x407349faebd7e702",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00523-fresh-random",
+      "args": [
+        "0x3fe535c3538892ea",
+        "0x407349faebd7e702",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x241ae8c6852a417f"
+    },
+    {
+      "id": "poisson-branch-heldout-00524-fresh-random",
+      "args": [
+        "0xbfd7ad9042ab1092",
+        "0x403b4125f5f1f2e0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00525-fresh-random",
+      "args": [
+        "0xbfd093660d127172",
+        "0x403b4125f5f1f2e0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00526-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07f1e09ef989d5e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6cd37f9f5c6c3715"
+    },
+    {
+      "id": "poisson-branch-heldout-00527-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07f1e09ef989d5e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6cd37f9f5c6c3715"
+    },
+    {
+      "id": "poisson-branch-heldout-00528-fresh-random",
+      "args": [
+        "0x3fe8eed77f344159",
+        "0x40810af5700b4410",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0ec2595aa0e3966a"
+    },
+    {
+      "id": "poisson-branch-heldout-00529-fresh-random",
+      "args": [
+        "0xbfdf0fc208dbfd2a",
+        "0x40810af5700b4410",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00530-fresh-random",
+      "args": [
+        "0xbfeab7b6f406b851",
+        "0x40547f991011c1f8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00531-fresh-random",
+      "args": [
+        "0xbfe7c68301a3f198",
+        "0x40547f991011c1f8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00532-fresh-random",
+      "args": [
+        "0xbfeb653590730fa4",
+        "0xc042b577829f1490",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00533-fresh-random",
+      "args": [
+        "0x3fa9654c1aacaa40",
+        "0xc042b577829f1490",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x434f9c5b4745036d"
+    },
+    {
+      "id": "poisson-branch-heldout-00534-fresh-random",
+      "args": [
+        "0x3fe05708075f74cc",
+        "0x4064c46d87513794",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x30f3e0672ca38cd9"
+    },
+    {
+      "id": "poisson-branch-heldout-00535-fresh-random",
+      "args": [
+        "0x3fee13f1406b24ac",
+        "0x4064c46d87513794",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x30f3e0672ca38cd9"
+    },
+    {
+      "id": "poisson-branch-heldout-00536-fresh-random",
+      "args": [
+        "0x3fe002877882eb0e",
+        "0x405b4baa3ae2efe8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x36165de75d335ba8"
+    },
+    {
+      "id": "poisson-branch-heldout-00537-fresh-random",
+      "args": [
+        "0x3fefba238a2789fa",
+        "0x405b4baa3ae2efe8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x36165de75d335ba8"
+    },
+    {
+      "id": "poisson-branch-heldout-00538-fresh-random",
+      "args": [
+        "0xbfd443ec55fd0028",
+        "0x3ffb4b3767d2dc00",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00539-fresh-random",
+      "args": [
+        "0xbfd9405defe323d8",
+        "0x3ffb4b3767d2dc00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00540-fresh-random",
+      "args": [
+        "0xbfebeb14b3d27c55",
+        "0x408014f7b2872116",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00541-fresh-random",
+      "args": [
+        "0xbfac4c49392550f0",
+        "0x408014f7b2872116",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00542-fresh-random",
+      "args": [
+        "0xbfb71ce467732930",
+        "0xc078e59437de7e6a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00543-fresh-random",
+      "args": [
+        "0x3fe87a20982a028e",
+        "0xc078e59437de7e6a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x63d9ea0c90f368ca"
+    },
+    {
+      "id": "poisson-branch-heldout-00544-fresh-random",
+      "args": [
+        "0xbf7d636a95fbfd00",
+        "0xc073629b1c34ecca",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00545-fresh-random",
+      "args": [
+        "0x3fed552c5c97e981",
+        "0xc073629b1c34ecca",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x5be62b1c0e26ba31"
+    },
+    {
+      "id": "poisson-branch-heldout-00546-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0805092908e3cae",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6f0240c120cdf11e"
+    },
+    {
+      "id": "poisson-branch-heldout-00547-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0805092908e3cae",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6f0240c120cdf11e"
+    },
+    {
+      "id": "poisson-branch-heldout-00548-fresh-random",
+      "args": [
+        "0x3fda931b2d6a50f0",
+        "0xc0830d36aa0072a4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x76e7498cf45d9a3e"
+    },
+    {
+      "id": "poisson-branch-heldout-00549-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0830d36aa0072a4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x76e7498cf45d9a3e"
+    },
+    {
+      "id": "poisson-branch-heldout-00550-fresh-random",
+      "args": [
+        "0x3feebf81ac26596d",
+        "0x40812740b6b8f09c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0e7117519a0bba4b"
+    },
+    {
+      "id": "poisson-branch-heldout-00551-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40812740b6b8f09c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0e7117519a0bba4b"
+    },
+    {
+      "id": "poisson-branch-heldout-00552-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x406bb7053944be4c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x2bf1777ca9b74a41"
+    },
+    {
+      "id": "poisson-branch-heldout-00553-fresh-random",
+      "args": [
+        "0x3fe4d52aa24798a7",
+        "0x406bb7053944be4c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2bf1777ca9b74a41"
+    },
+    {
+      "id": "poisson-branch-heldout-00554-fresh-random",
+      "args": [
+        "0x3fab1306ded9ac80",
+        "0xc080d163f32b8358",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x70756ab9dcb35c7b"
+    },
+    {
+      "id": "poisson-branch-heldout-00555-fresh-random",
+      "args": [
+        "0x3feb4e213c2b7bf2",
+        "0xc080d163f32b8358",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x70756ab9dcb35c7b"
+    },
+    {
+      "id": "poisson-branch-heldout-00556-fresh-random",
+      "args": [
+        "0x3febc6ff3c7b09d4",
+        "0xc08213393913d668",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7415fe8722becc5f"
+    },
+    {
+      "id": "poisson-branch-heldout-00557-fresh-random",
+      "args": [
+        "0x3fd8b801b2b0f10a",
+        "0xc08213393913d668",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7415fe8722becc5f"
+    },
+    {
+      "id": "poisson-branch-heldout-00558-fresh-random",
+      "args": [
+        "0xbfde43663a42c1e2",
+        "0x3fc462d298115000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00559-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x3fc462d298115000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feb49e38df7e4ef"
+    },
+    {
+      "id": "poisson-branch-heldout-00560-fresh-random",
+      "args": [
+        "0x3feb508eeaff4dae",
+        "0x407fe1cd524be200",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x11f0b6f417d8f083"
+    },
+    {
+      "id": "poisson-branch-heldout-00561-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407fe1cd524be200",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x11f0b6f417d8f083"
+    },
+    {
+      "id": "poisson-branch-heldout-00562-fresh-random",
+      "args": [
+        "0xbfec3c2721d3aa4d",
+        "0x408640b64d45c4e0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00563-fresh-random",
+      "args": [
+        "0xbfdaab9f900d1c2e",
+        "0x408640b64d45c4e0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00564-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40813fbb141b14b8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0e29a66845f8402d"
+    },
+    {
+      "id": "poisson-branch-heldout-00565-fresh-random",
+      "args": [
+        "0xbfeb2cbbc1284d81",
+        "0x40813fbb141b14b8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00566-fresh-random",
+      "args": [
+        "0xbfa415dfeeb02ab0",
+        "0xc08465a8e0e5ccb3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00567-fresh-random",
+      "args": [
+        "0x3fe52ec81e0ac1ce",
+        "0xc08465a8e0e5ccb3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7ac93e3a6ec33476"
+    },
+    {
+      "id": "poisson-branch-heldout-00568-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc085c27bcfa360d4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7eb7a5dc65817f70"
+    },
+    {
+      "id": "poisson-branch-heldout-00569-fresh-random",
+      "args": [
+        "0x3fe9d7ac3b49363d",
+        "0xc085c27bcfa360d4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7eb7a5dc65817f70"
+    },
+    {
+      "id": "poisson-branch-heldout-00570-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40865ea43f10ae02",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000026ba7d0fdc0"
+    },
+    {
+      "id": "poisson-branch-heldout-00571-fresh-random",
+      "args": [
+        "0x3fe445bfff31c4e7",
+        "0x40865ea43f10ae02",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000026ba7d0fdc0"
+    },
+    {
+      "id": "poisson-branch-heldout-00572-fresh-random",
+      "args": [
+        "0xbfe068b3e55e5743",
+        "0x4045da4f900f3990",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00573-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4045da4f900f3990",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3bfed43827494d03"
+    },
+    {
+      "id": "poisson-branch-heldout-00574-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4081d34a334e9110",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0c80cd448e6455b2"
+    },
+    {
+      "id": "poisson-branch-heldout-00575-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4081d34a334e9110",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0c80cd448e6455b2"
+    },
+    {
+      "id": "poisson-branch-heldout-00576-fresh-random",
+      "args": [
+        "0x3fd4b2a0066c336a",
+        "0xc07f57c32bc231a6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6d267927d25b284c"
+    },
+    {
+      "id": "poisson-branch-heldout-00577-fresh-random",
+      "args": [
+        "0x3fd6d5a777f60c62",
+        "0xc07f57c32bc231a6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6d267927d25b284c"
+    },
+    {
+      "id": "poisson-branch-heldout-00578-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc070efa252aae57d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x585ea3ee4a1422ba"
+    },
+    {
+      "id": "poisson-branch-heldout-00579-fresh-random",
+      "args": [
+        "0xbfb16d96af93e268",
+        "0xc070efa252aae57d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00580-fresh-random",
+      "args": [
+        "0xbfeffe7424589509",
+        "0x408667e6195f1210",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00581-fresh-random",
+      "args": [
+        "0x3fe3c9c4190ceb78",
+        "0x408667e6195f1210",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x000000c2ce94387c"
+    },
+    {
+      "id": "poisson-branch-heldout-00582-fresh-random",
+      "args": [
+        "0xbfca0320d61255d8",
+        "0xc085bf8f279d466a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00583-fresh-random",
+      "args": [
+        "0xbfe94e6909a0ca46",
+        "0xc085bf8f279d466a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00584-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4076620203b707bc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1fa42b7bbaa47060"
+    },
+    {
+      "id": "poisson-branch-heldout-00585-fresh-random",
+      "args": [
+        "0xbfe7b42936aba48a",
+        "0x4076620203b707bc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00586-fresh-random",
+      "args": [
+        "0x3fe05d06f9c56bff",
+        "0xc083f186678f5416",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x797a40f773b6dac9"
+    },
+    {
+      "id": "poisson-branch-heldout-00587-fresh-random",
+      "args": [
+        "0x3fcc6f725836f05c",
+        "0xc083f186678f5416",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x797a40f773b6dac9"
+    },
+    {
+      "id": "poisson-branch-heldout-00588-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40282964246e1180",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ed7c4f2631c1866"
+    },
+    {
+      "id": "poisson-branch-heldout-00589-fresh-random",
+      "args": [
+        "0xbfee72affdf282bd",
+        "0x40282964246e1180",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00590-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0740acd07cb3554",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x5cd8dea05f259fc3"
+    },
+    {
+      "id": "poisson-branch-heldout-00591-fresh-random",
+      "args": [
+        "0x3fef1af0be8b653b",
+        "0xc0740acd07cb3554",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x5cd8dea05f259fc3"
+    },
+    {
+      "id": "poisson-branch-heldout-00592-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc04c62d92bced4b0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x450df631730f7d36"
+    },
+    {
+      "id": "poisson-branch-heldout-00593-fresh-random",
+      "args": [
+        "0xbfe6f0ba12ac08fc",
+        "0xc04c62d92bced4b0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00594-fresh-random",
+      "args": [
+        "0x3fe50bcc3f509655",
+        "0xc085469a0dfa92e7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7d52ad3f6e0dda54"
+    },
+    {
+      "id": "poisson-branch-heldout-00595-fresh-random",
+      "args": [
+        "0x3fe9977d678cde49",
+        "0xc085469a0dfa92e7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7d52ad3f6e0dda54"
+    },
+    {
+      "id": "poisson-branch-heldout-00596-fresh-random",
+      "args": [
+        "0xbfee0826ad11596b",
+        "0x407c329651591a4c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00597-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407c329651591a4c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1741485d6eca551c"
+    },
+    {
+      "id": "poisson-branch-heldout-00598-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc063785c73250c28",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4dfa4855eff98c9e"
+    },
+    {
+      "id": "poisson-branch-heldout-00599-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc063785c73250c28",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4dfa4855eff98c9e"
+    },
+    {
+      "id": "poisson-branch-heldout-00600-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc063ddbce20ffab0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4e4383e141486f94"
+    },
+    {
+      "id": "poisson-branch-heldout-00601-fresh-random",
+      "args": [
+        "0xbfdef422b3cbbae4",
+        "0xc063ddbce20ffab0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00602-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407de62191ddd24c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x14cc9ea39f79f86e"
+    },
+    {
+      "id": "poisson-branch-heldout-00603-fresh-random",
+      "args": [
+        "0x3fe5d89641dc9945",
+        "0x407de62191ddd24c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x14cc9ea39f79f86e"
+    },
+    {
+      "id": "poisson-branch-heldout-00604-fresh-random",
+      "args": [
+        "0x3fd13d6475aa8cbc",
+        "0xc06d69bed1fc9e38",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x55263407365b1cb1"
+    },
+    {
+      "id": "poisson-branch-heldout-00605-fresh-random",
+      "args": [
+        "0x3fe9af611e4f022b",
+        "0xc06d69bed1fc9e38",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x55263407365b1cb1"
+    },
+    {
+      "id": "poisson-branch-heldout-00606-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc06e4b739fcc7b5a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x55c91495a166533c"
+    },
+    {
+      "id": "poisson-branch-heldout-00607-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc06e4b739fcc7b5a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x55c91495a166533c"
+    },
+    {
+      "id": "poisson-branch-heldout-00608-fresh-random",
+      "args": [
+        "0xbfc81f5868197f24",
+        "0xc0844d44d6e319e5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00609-fresh-random",
+      "args": [
+        "0xbfa0ebe7236a8280",
+        "0xc0844d44d6e319e5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00610-fresh-random",
+      "args": [
+        "0x3fcb3f5485a1c238",
+        "0x40774d9d67931a84",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1e5107191c01e6b6"
+    },
+    {
+      "id": "poisson-branch-heldout-00611-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40774d9d67931a84",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1e5107191c01e6b6"
+    },
+    {
+      "id": "poisson-branch-heldout-00612-fresh-random",
+      "args": [
+        "0xbfe3e2de7f035904",
+        "0xc0606f41fa998884",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00613-fresh-random",
+      "args": [
+        "0xbfc5708d74e76b3c",
+        "0xc0606f41fa998884",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00614-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07edb86f835707e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6c738928f4f827ee"
+    },
+    {
+      "id": "poisson-branch-heldout-00615-fresh-random",
+      "args": [
+        "0x3febe5985a6832dd",
+        "0xc07edb86f835707e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6c738928f4f827ee"
+    },
+    {
+      "id": "poisson-branch-heldout-00616-fresh-random",
+      "args": [
+        "0x3fe51c310b59efa1",
+        "0xc08579d8cc35d868",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7de6140568b52e74"
+    },
+    {
+      "id": "poisson-branch-heldout-00617-fresh-random",
+      "args": [
+        "0x3fb4fb718fbe3bd0",
+        "0xc08579d8cc35d868",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7de6140568b52e74"
+    },
+    {
+      "id": "poisson-branch-heldout-00618-fresh-random",
+      "args": [
+        "0xbfcdff1a1ee72fac",
+        "0x40816529be106bec",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00619-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40816529be106bec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0dbe7e8a916e7bd8"
+    },
+    {
+      "id": "poisson-branch-heldout-00620-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x408296cc970fbba8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0a4c1c1dca272d44"
+    },
+    {
+      "id": "poisson-branch-heldout-00621-fresh-random",
+      "args": [
+        "0xbfd199c0774ac540",
+        "0x408296cc970fbba8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00622-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc058f114a59f8b88",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x48ee8d49c04bf2e1"
+    },
+    {
+      "id": "poisson-branch-heldout-00623-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc058f114a59f8b88",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x48ee8d49c04bf2e1"
+    },
+    {
+      "id": "poisson-branch-heldout-00624-fresh-random",
+      "args": [
+        "0xbfe888402c9a32d3",
+        "0xc076f057cb782a06",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00625-fresh-random",
+      "args": [
+        "0x3fe7bc9edc1996b0",
+        "0xc076f057cb782a06",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6106a0a19ed2716f"
+    },
+    {
+      "id": "poisson-branch-heldout-00626-fresh-random",
+      "args": [
+        "0x3fe3419fe1f51a37",
+        "0xc03d2974b722f320",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4290d0f443c5e1c3"
+    },
+    {
+      "id": "poisson-branch-heldout-00627-fresh-random",
+      "args": [
+        "0xbfe98cd523696da3",
+        "0xc03d2974b722f320",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00628-fresh-random",
+      "args": [
+        "0xbfc91e505c650280",
+        "0x4081f665a7625aa4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00629-fresh-random",
+      "args": [
+        "0xbfec2612c195e140",
+        "0x4081f665a7625aa4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00630-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40691b40e2196048",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x2dd2cb914ef2efeb"
+    },
+    {
+      "id": "poisson-branch-heldout-00631-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40691b40e2196048",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2dd2cb914ef2efeb"
+    },
+    {
+      "id": "poisson-branch-heldout-00632-fresh-random",
+      "args": [
+        "0x3fe37c14b57d3669",
+        "0x4082e5f12c3b7904",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x09674606e2c8944d"
+    },
+    {
+      "id": "poisson-branch-heldout-00633-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4082e5f12c3b7904",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x09674606e2c8944d"
+    },
+    {
+      "id": "poisson-branch-heldout-00634-fresh-random",
+      "args": [
+        "0xbfed74c458e54cb5",
+        "0x4061ea7905911474",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00635-fresh-random",
+      "args": [
+        "0xbfef38b99c53704a",
+        "0x4061ea7905911474",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00636-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4066432afa1ca9fc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x2fe0a66ecba1924e"
+    },
+    {
+      "id": "poisson-branch-heldout-00637-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4066432afa1ca9fc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2fe0a66ecba1924e"
+    },
+    {
+      "id": "poisson-branch-heldout-00638-fresh-random",
+      "args": [
+        "0x3fca88151b0399b4",
+        "0x4074e1b679e843e8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x21cfad9b0d5e1b49"
+    },
+    {
+      "id": "poisson-branch-heldout-00639-fresh-random",
+      "args": [
+        "0xbfd453ccda175c86",
+        "0x4074e1b679e843e8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00640-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc077ba0df6d239a1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6229c6f639cfb427"
+    },
+    {
+      "id": "poisson-branch-heldout-00641-fresh-random",
+      "args": [
+        "0xbfe938e8c1ca8316",
+        "0xc077ba0df6d239a1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00642-fresh-random",
+      "args": [
+        "0xbfe90f2dab42585e",
+        "0x4068657411343c04",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00643-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4068657411343c04",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2e5588efc755da9c"
+    },
+    {
+      "id": "poisson-branch-heldout-00644-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc02f3e56b8389400",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x415738de24927fd3"
+    },
+    {
+      "id": "poisson-branch-heldout-00645-fresh-random",
+      "args": [
+        "0x3fe0dc2867b2dbf1",
+        "0xc02f3e56b8389400",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x415738de24927fd3"
+    },
+    {
+      "id": "poisson-branch-heldout-00646-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc064f64881b62d24",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4f0e95713d3ddb6b"
+    },
+    {
+      "id": "poisson-branch-heldout-00647-fresh-random",
+      "args": [
+        "0xbfdd557e507d9f0e",
+        "0xc064f64881b62d24",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00648-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc01d0ccb4a93fe00",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4096473bd2b8f65a"
+    },
+    {
+      "id": "poisson-branch-heldout-00649-fresh-random",
+      "args": [
+        "0x3fc295429004ac8c",
+        "0xc01d0ccb4a93fe00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4096473bd2b8f65a"
+    },
+    {
+      "id": "poisson-branch-heldout-00650-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4080c6f664b1b7e4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0f8601b36c8c575c"
+    },
+    {
+      "id": "poisson-branch-heldout-00651-fresh-random",
+      "args": [
+        "0xbfe1f4393aa7155e",
+        "0x4080c6f664b1b7e4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00652-fresh-random",
+      "args": [
+        "0x3fe09718bab38b5d",
+        "0x40792fb58a48021c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1b989795d7a677c4"
+    },
+    {
+      "id": "poisson-branch-heldout-00653-fresh-random",
+      "args": [
+        "0xbfa9a09301927b00",
+        "0x40792fb58a48021c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00654-fresh-random",
+      "args": [
+        "0xbfe2f02ff4816e41",
+        "0xc078cf570c7135ae",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00655-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc078cf570c7135ae",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x63b9d1f28dc58f91"
+    },
+    {
+      "id": "poisson-branch-heldout-00656-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0817f03ecf562e2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x726a9191130224e9"
+    },
+    {
+      "id": "poisson-branch-heldout-00657-fresh-random",
+      "args": [
+        "0x3fe0af810babef76",
+        "0xc0817f03ecf562e2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x726a9191130224e9"
+    },
+    {
+      "id": "poisson-branch-heldout-00658-fresh-random",
+      "args": [
+        "0xbfe816721cb86210",
+        "0xc07fcf70e8924776",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00659-fresh-random",
+      "args": [
+        "0x3f8e2387cff1e300",
+        "0xc07fcf70e8924776",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6dd372168e857bec"
+    },
+    {
+      "id": "poisson-branch-heldout-00660-fresh-random",
+      "args": [
+        "0xbfe7a22253af2570",
+        "0x4084b2a174c5f5bc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00661-fresh-random",
+      "args": [
+        "0xbfea1020ff70abcf",
+        "0x4084b2a174c5f5bc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00662-fresh-random",
+      "args": [
+        "0xbfe4c4859403b157",
+        "0x40826fc58bb88646",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00663-fresh-random",
+      "args": [
+        "0x3fd315c0ea3504de",
+        "0x40826fc58bb88646",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0abcdcb156d13da2"
+    },
+    {
+      "id": "poisson-branch-heldout-00664-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4053ab5ef45b7878",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x38d6810b8ed288b7"
+    },
+    {
+      "id": "poisson-branch-heldout-00665-fresh-random",
+      "args": [
+        "0xbfe60ce61f83d875",
+        "0x4053ab5ef45b7878",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00666-fresh-random",
+      "args": [
+        "0xbfc7fc5e5d4bba00",
+        "0x40810e6df8db5064",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00667-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40810e6df8db5064",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0eb7c7d4baa90332"
+    },
+    {
+      "id": "poisson-branch-heldout-00668-fresh-random",
+      "args": [
+        "0x3fd1a894eff4bdb0",
+        "0x40693fb48891c258",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x2db810c21104cb3f"
+    },
+    {
+      "id": "poisson-branch-heldout-00669-fresh-random",
+      "args": [
+        "0x3fe36107d0d29f5d",
+        "0x40693fb48891c258",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2db810c21104cb3f"
+    },
+    {
+      "id": "poisson-branch-heldout-00670-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc084708a3bc38163",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7ae896c0c1ca669b"
+    },
+    {
+      "id": "poisson-branch-heldout-00671-fresh-random",
+      "args": [
+        "0x3fdf98f373c79c16",
+        "0xc084708a3bc38163",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7ae896c0c1ca669b"
+    },
+    {
+      "id": "poisson-branch-heldout-00672-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x405db1c6aebad4d8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3538ee979df94b5a"
+    },
+    {
+      "id": "poisson-branch-heldout-00673-fresh-random",
+      "args": [
+        "0xbfdfc35562a75cc2",
+        "0x405db1c6aebad4d8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00674-fresh-random",
+      "args": [
+        "0xbfe14e7c94ebe0a0",
+        "0x40838d0509edc750",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00675-fresh-random",
+      "args": [
+        "0x3fe713306b2c093a",
+        "0x40838d0509edc750",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x078543ad15fbc4c1"
+    },
+    {
+      "id": "poisson-branch-heldout-00676-fresh-random",
+      "args": [
+        "0xbfd91d964a3fb7ae",
+        "0xc06eb366c48f1c5a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00677-fresh-random",
+      "args": [
+        "0xbfbf2af9f22dd830",
+        "0xc06eb366c48f1c5a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00678-fresh-random",
+      "args": [
+        "0x3fefc2305dbfbf42",
+        "0x4081a2ca418710e8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0d0c2f4f86d7d42c"
+    },
+    {
+      "id": "poisson-branch-heldout-00679-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4081a2ca418710e8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0d0c2f4f86d7d42c"
+    },
+    {
+      "id": "poisson-branch-heldout-00680-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07798b39fe8604b",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x61f9a54d054b0775"
+    },
+    {
+      "id": "poisson-branch-heldout-00681-fresh-random",
+      "args": [
+        "0x3fef8739241c761a",
+        "0xc07798b39fe8604b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x61f9a54d054b0775"
+    },
+    {
+      "id": "poisson-branch-heldout-00682-fresh-random",
+      "args": [
+        "0x3fb35bbd97952c90",
+        "0xc079c6805e06cac7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x651f7c183e40d78a"
+    },
+    {
+      "id": "poisson-branch-heldout-00683-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc079c6805e06cac7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x651f7c183e40d78a"
+    },
+    {
+      "id": "poisson-branch-heldout-00684-fresh-random",
+      "args": [
+        "0xbfe3f7b2024bcfca",
+        "0xc08410b5c26e2d9a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00685-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc08410b5c26e2d9a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x79d43a45acb1355e"
+    },
+    {
+      "id": "poisson-branch-heldout-00686-fresh-random",
+      "args": [
+        "0xbfe445a3e23723ed",
+        "0xc07823deccea9cd7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00687-fresh-random",
+      "args": [
+        "0xbef3183fab2a8000",
+        "0xc07823deccea9cd7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00688-fresh-random",
+      "args": [
+        "0x3febc639464131f4",
+        "0x40825ee548cbab20",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0aedbe2d5cd74f40"
+    },
+    {
+      "id": "poisson-branch-heldout-00689-fresh-random",
+      "args": [
+        "0xbfd7cf0e295e9f3e",
+        "0x40825ee548cbab20",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00690-fresh-random",
+      "args": [
+        "0x3fe3f451c328fdea",
+        "0x4080e4f779a69574",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0f308d80d108960d"
+    },
+    {
+      "id": "poisson-branch-heldout-00691-fresh-random",
+      "args": [
+        "0xbfea13cdf83f0af0",
+        "0x4080e4f779a69574",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00692-fresh-random",
+      "args": [
+        "0xbfe13a8aaadf902b",
+        "0xc081e7dcedc0f904",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00693-fresh-random",
+      "args": [
+        "0x3fe59ed598c8fcb9",
+        "0xc081e7dcedc0f904",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7398ecf01d0d45e9"
+    },
+    {
+      "id": "poisson-branch-heldout-00694-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4053cd15c9ffacc0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x38ca93cda02422b4"
+    },
+    {
+      "id": "poisson-branch-heldout-00695-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4053cd15c9ffacc0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x38ca93cda02422b4"
+    },
+    {
+      "id": "poisson-branch-heldout-00696-fresh-random",
+      "args": [
+        "0xbfe630f6eb16d490",
+        "0x4081d14999eb6428",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00697-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4081d14999eb6428",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0c85948d9fe65f9f"
+    },
+    {
+      "id": "poisson-branch-heldout-00698-fresh-random",
+      "args": [
+        "0x3fdb484173eb5a24",
+        "0xc0739a39ee62c624",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x5c36673c05d26770"
+    },
+    {
+      "id": "poisson-branch-heldout-00699-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc0739a39ee62c624",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x5c36673c05d26770"
+    },
+    {
+      "id": "poisson-branch-heldout-00700-fresh-random",
+      "args": [
+        "0x3fe7f4a9bf100ae6",
+        "0xc080e7f5727825f2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x70b67aeeafa2c075"
+    },
+    {
+      "id": "poisson-branch-heldout-00701-fresh-random",
+      "args": [
+        "0xbfe406b4d5e48d5b",
+        "0xc080e7f5727825f2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00702-fresh-random",
+      "args": [
+        "0xbfed0e3949da439e",
+        "0x4083d9c442cea4c4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00703-fresh-random",
+      "args": [
+        "0xbfeba78cf61863b7",
+        "0x4083d9c442cea4c4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00704-fresh-random",
+      "args": [
+        "0x3febe0373e33cba6",
+        "0x408740a861a82b52",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00705-fresh-random",
+      "args": [
+        "0x3fcf6455692add5c",
+        "0x408740a861a82b52",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000001"
+    },
+    {
+      "id": "poisson-branch-heldout-00706-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4079d065be8dc8d0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1ab185ae9f17b487"
+    },
+    {
+      "id": "poisson-branch-heldout-00707-fresh-random",
+      "args": [
+        "0x3fe35cbc68b9646f",
+        "0x4079d065be8dc8d0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1ab185ae9f17b487"
+    },
+    {
+      "id": "poisson-branch-heldout-00708-fresh-random",
+      "args": [
+        "0x3fd8a052ae54e312",
+        "0x408353e01c5cc510",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x082a46398a847d08"
+    },
+    {
+      "id": "poisson-branch-heldout-00709-fresh-random",
+      "args": [
+        "0xbfef75e7895de740",
+        "0x408353e01c5cc510",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00710-fresh-random",
+      "args": [
+        "0x3fe0d7f1d42ab742",
+        "0x4078a20cb73795e4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1c6503ce311cc72a"
+    },
+    {
+      "id": "poisson-branch-heldout-00711-fresh-random",
+      "args": [
+        "0xbfb3f1e9be820220",
+        "0x4078a20cb73795e4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00712-fresh-random",
+      "args": [
+        "0x3fe6e24af7367b4d",
+        "0xc08622db54a1c320",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fcec41d046635fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00713-fresh-random",
+      "args": [
+        "0x3feee212b63f5f05",
+        "0xc08622db54a1c320",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fcec41d046635fd"
+    },
+    {
+      "id": "poisson-branch-heldout-00714-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07890f31072bd4d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6360bc0f973157ec"
+    },
+    {
+      "id": "poisson-branch-heldout-00715-fresh-random",
+      "args": [
+        "0xbfba41000ffed3d8",
+        "0xc07890f31072bd4d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00716-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407385baed2c9fa4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x23c491e79f01861f"
+    },
+    {
+      "id": "poisson-branch-heldout-00717-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407385baed2c9fa4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x23c491e79f01861f"
+    },
+    {
+      "id": "poisson-branch-heldout-00718-fresh-random",
+      "args": [
+        "0x3fe172f1657c23dd",
+        "0x406ba1c3ca6ad5bc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x2c00f8116dde1573"
+    },
+    {
+      "id": "poisson-branch-heldout-00719-fresh-random",
+      "args": [
+        "0xbfedaf2d36ee4805",
+        "0x406ba1c3ca6ad5bc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00720-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407ccc617ec8fd28",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x1662f282017df09a"
+    },
+    {
+      "id": "poisson-branch-heldout-00721-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x407ccc617ec8fd28",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1662f282017df09a"
+    },
+    {
+      "id": "poisson-branch-heldout-00722-fresh-random",
+      "args": [
+        "0xbfd654bcecddaaee",
+        "0xc07bb69c8eed3950",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00723-fresh-random",
+      "args": [
+        "0x3f9dc79ce9460c00",
+        "0xc07bb69c8eed3950",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x67ea2c8476caff57"
+    },
+    {
+      "id": "poisson-branch-heldout-00724-fresh-random",
+      "args": [
+        "0x3fd830aa5d93f896",
+        "0x40716da712417e1a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x26c9fcc94abdf71e"
+    },
+    {
+      "id": "poisson-branch-heldout-00725-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x40716da712417e1a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26c9fcc94abdf71e"
+    },
+    {
+      "id": "poisson-branch-heldout-00726-fresh-random",
+      "args": [
+        "0x3fe0d6cffc194fb3",
+        "0x40808ce06fe0e15a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x102e966a7878d716"
+    },
+    {
+      "id": "poisson-branch-heldout-00727-fresh-random",
+      "args": [
+        "0xbfda80468bc6f476",
+        "0x40808ce06fe0e15a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00728-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc07b2da2e4b670af",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6724860a9aafc458"
+    },
+    {
+      "id": "poisson-branch-heldout-00729-fresh-random",
+      "args": [
+        "0xbfc79fb7dd5fe554",
+        "0xc07b2da2e4b670af",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00730-fresh-random",
+      "args": [
+        "0xbfe1e0244183116c",
+        "0x4051b332998eb8b0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00731-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4051b332998eb8b0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x398cfc354cdd1571"
+    },
+    {
+      "id": "poisson-branch-heldout-00732-fresh-random",
+      "args": [
+        "0x3fb667f59a220518",
+        "0x4050a537e9ea3fc8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x39eec371ef809f21"
+    },
+    {
+      "id": "poisson-branch-heldout-00733-fresh-random",
+      "args": [
+        "0x3fe74f5387c6a98f",
+        "0x4050a537e9ea3fc8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x39eec371ef809f21"
+    },
+    {
+      "id": "poisson-branch-heldout-00734-fresh-random",
+      "args": [
+        "0xbfe4219c0c3d334a",
+        "0xc072ce6dd0a5d1b1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00735-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc072ce6dd0a5d1b1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x5b11432388358064"
+    },
+    {
+      "id": "poisson-branch-heldout-00736-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0xc078dc02420602a5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x63cc7f47e25b4f14"
+    },
+    {
+      "id": "poisson-branch-heldout-00737-fresh-random",
+      "args": [
+        "0x3fea54b85f676a26",
+        "0xc078dc02420602a5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x63cc7f47e25b4f14"
+    },
+    {
+      "id": "poisson-branch-heldout-00738-fresh-random",
+      "args": [
+        "0x3fe426eac529db57",
+        "0xc077f17e35c4d80c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x6279c179146b8816"
+    },
+    {
+      "id": "poisson-branch-heldout-00739-fresh-random",
+      "args": [
+        "0x3fbb8569590fe7b0",
+        "0xc077f17e35c4d80c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x6279c179146b8816"
+    },
+    {
+      "id": "poisson-branch-heldout-00740-fresh-random",
+      "args": [
+        "0x0000000000000000",
+        "0x4075d8a0edeb4ffc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x206a616926b3fb5d"
+    },
+    {
+      "id": "poisson-branch-heldout-00741-fresh-random",
+      "args": [
+        "0xbfef44a96a89aa64",
+        "0x4075d8a0edeb4ffc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson-branch-heldout-00742-fresh-random",
+      "args": [
+        "0x3fefdb0d86ccb772",
+        "0xc05ac7ca4f2a6a28",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x499753eade5a9ac9"
+    },
+    {
+      "id": "poisson-branch-heldout-00743-fresh-random",
+      "args": [
+        "0xbfb0d3eba0944ac8",
+        "0xc05ac7ca4f2a6a28",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T17:08:36.1220681Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

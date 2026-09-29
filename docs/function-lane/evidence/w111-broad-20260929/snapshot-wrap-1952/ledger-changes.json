@@ -1,0 +1,1941 @@
+[
+  {
+    "function_id": "FUNC.ABS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.ACOSH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.ACOT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.ACOTH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.ADDRESS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1340,
+    "agree": 1332
+  },
+  {
+    "function_id": "FUNC.AND",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1218,
+    "agree": 1218
+  },
+  {
+    "function_id": "FUNC.ARABIC",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.AREAS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.ARRAYTOTEXT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.ASIN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.ATAN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.ATANH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.AVEDEV",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1210,
+    "agree": 1210
+  },
+  {
+    "function_id": "FUNC.AVERAGE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1261,
+    "agree": 1256
+  },
+  {
+    "function_id": "FUNC.AVERAGEA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.AVERAGEIF",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.AVERAGEIFS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.BASE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1306,
+    "agree": 1296
+  },
+  {
+    "function_id": "FUNC.BESSELI",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1236,
+    "agree": 1160
+  },
+  {
+    "function_id": "FUNC.BESSELK",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1236,
+    "agree": 1171
+  },
+  {
+    "function_id": "FUNC.BIN2DEC",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.BIN2HEX",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.BIN2OCT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.BINOM.DIST.RANGE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 674
+  },
+  {
+    "function_id": "FUNC.BINOM.INV",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1264,
+    "agree": 1263
+  },
+  {
+    "function_id": "FUNC.BITAND",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1283,
+    "agree": 1273
+  },
+  {
+    "function_id": "FUNC.BITLSHIFT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1318,
+    "agree": 1308
+  },
+  {
+    "function_id": "FUNC.BITOR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1283,
+    "agree": 1273
+  },
+  {
+    "function_id": "FUNC.BITRSHIFT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1318,
+    "agree": 1308
+  },
+  {
+    "function_id": "FUNC.BITXOR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1283,
+    "agree": 1273
+  },
+  {
+    "function_id": "FUNC.CEILING",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1320,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.CEILING.MATH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1344,
+    "agree": 1217
+  },
+  {
+    "function_id": "FUNC.CEILING.PRECISE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1320,
+    "agree": 1185
+  },
+  {
+    "function_id": "FUNC.CHAR",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 9,
+    "agree": 9
+  },
+  {
+    "function_id": "FUNC.CHOOSECOLS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.CHOOSEROWS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.CLEAN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.CODE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.COLUMNS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.COMBIN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1290,
+    "agree": 1280
+  },
+  {
+    "function_id": "FUNC.COMBINA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1242,
+    "agree": 1242
+  },
+  {
+    "function_id": "FUNC.COMPLEX",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1352,
+    "agree": 1342
+  },
+  {
+    "function_id": "FUNC.CONCAT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.CONCATENATE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.COS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.COSH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.COT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.COTH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1223
+  },
+  {
+    "function_id": "FUNC.COUNT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.COUNTA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.COUNTBLANK",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 2,
+    "agree": 2
+  },
+  {
+    "function_id": "FUNC.COUNTIF",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.COUNTIFS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.CRITBINOM",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1264,
+    "agree": 1263
+  },
+  {
+    "function_id": "FUNC.CSC",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.CSCH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.DATE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1302,
+    "agree": 1292
+  },
+  {
+    "function_id": "FUNC.DAVERAGE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DAY",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  },
+  {
+    "function_id": "FUNC.DAYS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1368,
+    "agree": 1358
+  },
+  {
+    "function_id": "FUNC.DB",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1206,
+    "agree": 1206
+  },
+  {
+    "function_id": "FUNC.DCOUNT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DCOUNTA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DDB",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1254,
+    "agree": 1244
+  },
+  {
+    "function_id": "FUNC.DEC2BIN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1277,
+    "agree": 1267
+  },
+  {
+    "function_id": "FUNC.DEC2HEX",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1277,
+    "agree": 1267
+  },
+  {
+    "function_id": "FUNC.DEC2OCT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1277,
+    "agree": 1267
+  },
+  {
+    "function_id": "FUNC.DECIMAL",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1238,
+    "agree": 1238
+  },
+  {
+    "function_id": "FUNC.DEGREES",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.DELTA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1248,
+    "agree": 1248
+  },
+  {
+    "function_id": "FUNC.DEVSQ",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.DGET",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DMAX",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DMIN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DOLLARDE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1235,
+    "agree": 1235
+  },
+  {
+    "function_id": "FUNC.DOLLARFR",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1235,
+    "agree": 1235
+  },
+  {
+    "function_id": "FUNC.DPRODUCT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DROP",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 9,
+    "agree": 7
+  },
+  {
+    "function_id": "FUNC.DSTDEV",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DSTDEVP",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DSUM",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 3,
+    "agree": 2
+  },
+  {
+    "function_id": "FUNC.DVAR",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.DVARP",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 3,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.EDATE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1368,
+    "agree": 1358
+  },
+  {
+    "function_id": "FUNC.EFFECT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1235,
+    "agree": 1235
+  },
+  {
+    "function_id": "FUNC.ENCODEURL",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.EOMONTH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1368,
+    "agree": 1358
+  },
+  {
+    "function_id": "FUNC.ERROR.TYPE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1231,
+    "agree": 1231
+  },
+  {
+    "function_id": "FUNC.EVEN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.EXACT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.EXP",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.EXPAND",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.EXPON.DIST",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1240,
+    "agree": 1240
+  },
+  {
+    "function_id": "FUNC.EXPONDIST",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1240,
+    "agree": 1240
+  },
+  {
+    "function_id": "FUNC.FACT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1257,
+    "agree": 1247
+  },
+  {
+    "function_id": "FUNC.FACTDOUBLE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1258,
+    "agree": 1248
+  },
+  {
+    "function_id": "FUNC.FALSE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.FILTER",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.FIND",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 13,
+    "agree": 13
+  },
+  {
+    "function_id": "FUNC.FINDB",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.FISHER",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.FLOOR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1320,
+    "agree": 1227
+  },
+  {
+    "function_id": "FUNC.FLOOR.MATH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1344,
+    "agree": 1215
+  },
+  {
+    "function_id": "FUNC.FLOOR.PRECISE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1320,
+    "agree": 1180
+  },
+  {
+    "function_id": "FUNC.FV",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1230,
+    "agree": 1077
+  },
+  {
+    "function_id": "FUNC.GCD",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1207,
+    "agree": 1207
+  },
+  {
+    "function_id": "FUNC.GEOMEAN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 774
+  },
+  {
+    "function_id": "FUNC.GESTEP",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1248,
+    "agree": 1248
+  },
+  {
+    "function_id": "FUNC.HARMEAN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 1210
+  },
+  {
+    "function_id": "FUNC.HEX2BIN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.HEX2DEC",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.HEX2OCT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.HLOOKUP",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 4,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.HOUR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  },
+  {
+    "function_id": "FUNC.HSTACK",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.IFS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1210,
+    "agree": 1210
+  },
+  {
+    "function_id": "FUNC.IMABS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMAGINARY",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMARGUMENT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMCONJUGATE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMCOS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMCOSH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1202
+  },
+  {
+    "function_id": "FUNC.IMCOT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1085
+  },
+  {
+    "function_id": "FUNC.IMCSC",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMCSCH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1200
+  },
+  {
+    "function_id": "FUNC.IMDIV",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.IMLN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMLOG10",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1198
+  },
+  {
+    "function_id": "FUNC.IMLOG2",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1155
+  },
+  {
+    "function_id": "FUNC.IMPRODUCT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.IMREAL",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMSECH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1204
+  },
+  {
+    "function_id": "FUNC.IMSIN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMSINH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1200
+  },
+  {
+    "function_id": "FUNC.IMSQRT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1209,
+    "agree": 1209
+  },
+  {
+    "function_id": "FUNC.IMSUB",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.IMSUM",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.IMTAN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1209,
+    "agree": 1065
+  },
+  {
+    "function_id": "FUNC.INDEX",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.INT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.ISBLANK",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISERR",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISERROR",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISEVEN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1280,
+    "agree": 1270
+  },
+  {
+    "function_id": "FUNC.ISLOGICAL",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISNA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISNONTEXT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISNUMBER",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.ISO.CEILING",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1320,
+    "agree": 1177
+  },
+  {
+    "function_id": "FUNC.ISODD",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1280,
+    "agree": 1270
+  },
+  {
+    "function_id": "FUNC.ISOWEEKNUM",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  },
+  {
+    "function_id": "FUNC.ISTEXT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.LCM",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1207,
+    "agree": 1207
+  },
+  {
+    "function_id": "FUNC.LEFT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 10,
+    "agree": 10
+  },
+  {
+    "function_id": "FUNC.LEFTB",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 10,
+    "agree": 10
+  },
+  {
+    "function_id": "FUNC.LEN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.LENB",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.LN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.LOG",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1344,
+    "agree": 1344
+  },
+  {
+    "function_id": "FUNC.LOG10",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.LOWER",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.MATCH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 4,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.MAX",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1261,
+    "agree": 1256
+  },
+  {
+    "function_id": "FUNC.MAXA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.MAXIFS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.MDETERM",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.MEDIAN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.MID",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.MIDB",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.MIN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1261,
+    "agree": 1256
+  },
+  {
+    "function_id": "FUNC.MINA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.MINIFS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.MINUTE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  },
+  {
+    "function_id": "FUNC.MINVERSE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.MMULT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.MOD",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1392,
+    "agree": 1382
+  },
+  {
+    "function_id": "FUNC.MONTH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  },
+  {
+    "function_id": "FUNC.MROUND",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1236,
+    "agree": 1236
+  },
+  {
+    "function_id": "FUNC.MUNIT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.N",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.NA",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.NOMINAL",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1235,
+    "agree": 1235
+  },
+  {
+    "function_id": "FUNC.NOT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1280,
+    "agree": 1280
+  },
+  {
+    "function_id": "FUNC.NPER",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1210,
+    "agree": 1210
+  },
+  {
+    "function_id": "FUNC.NUMBERVALUE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.OCT2BIN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.OCT2DEC",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.OCT2HEX",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1216,
+    "agree": 1216
+  },
+  {
+    "function_id": "FUNC.ODD",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.OR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1218,
+    "agree": 1218
+  },
+  {
+    "function_id": "FUNC.PDURATION",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1205,
+    "agree": 1205
+  },
+  {
+    "function_id": "FUNC.PERMUT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1278,
+    "agree": 1268
+  },
+  {
+    "function_id": "FUNC.PERMUTATIONA",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1278,
+    "agree": 1268
+  },
+  {
+    "function_id": "FUNC.PHI",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.PI",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.POWER",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1311,
+    "agree": 1301
+  },
+  {
+    "function_id": "FUNC.PRODUCT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1261,
+    "agree": 1256
+  },
+  {
+    "function_id": "FUNC.PROPER",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.PV",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1230,
+    "agree": 1094
+  },
+  {
+    "function_id": "FUNC.QUOTIENT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1392,
+    "agree": 1382
+  },
+  {
+    "function_id": "FUNC.RADIANS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.REGEXEXTRACT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 7
+  },
+  {
+    "function_id": "FUNC.REGEXREPLACE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 7
+  },
+  {
+    "function_id": "FUNC.REGEXTEST",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 8,
+    "agree": 7
+  },
+  {
+    "function_id": "FUNC.REPLACE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.REPLACEB",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.REPT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 9,
+    "agree": 9
+  },
+  {
+    "function_id": "FUNC.RIGHT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 10,
+    "agree": 10
+  },
+  {
+    "function_id": "FUNC.RIGHTB",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 10,
+    "agree": 10
+  },
+  {
+    "function_id": "FUNC.ROMAN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 9,
+    "agree": 9
+  },
+  {
+    "function_id": "FUNC.ROUND",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 48,
+    "agree": 38
+  },
+  {
+    "function_id": "FUNC.ROWS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.SEARCH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 13,
+    "agree": 13
+  },
+  {
+    "function_id": "FUNC.SEARCHB",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.SEC",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.SECH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.SECOND",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  },
+  {
+    "function_id": "FUNC.SEQUENCE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.SIGN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.SIN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.SINH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.SLN",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1253,
+    "agree": 1243
+  },
+  {
+    "function_id": "FUNC.SORT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.SORTBY",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.SQRT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1272,
+    "agree": 1262
+  },
+  {
+    "function_id": "FUNC.SQRTPI",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.STANDARDIZE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1296,
+    "agree": 1296
+  },
+  {
+    "function_id": "FUNC.STDEV",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 942
+  },
+  {
+    "function_id": "FUNC.STDEV.P",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 921
+  },
+  {
+    "function_id": "FUNC.STDEV.S",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 951
+  },
+  {
+    "function_id": "FUNC.STDEVA",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 949
+  },
+  {
+    "function_id": "FUNC.STDEVP",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 934
+  },
+  {
+    "function_id": "FUNC.STDEVPA",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 924
+  },
+  {
+    "function_id": "FUNC.SUBSTITUTE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.SUM",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1261,
+    "agree": 1256
+  },
+  {
+    "function_id": "FUNC.SUMIF",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.SUMIFS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 5,
+    "agree": 5
+  },
+  {
+    "function_id": "FUNC.SUMSQ",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1213,
+    "agree": 1213
+  },
+  {
+    "function_id": "FUNC.SWITCH",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1224,
+    "agree": 1217
+  },
+  {
+    "function_id": "FUNC.SYD",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1207,
+    "agree": 1207
+  },
+  {
+    "function_id": "FUNC.T",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1232,
+    "agree": 1232
+  },
+  {
+    "function_id": "FUNC.TAKE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 4,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.TAN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1224,
+    "agree": 1224
+  },
+  {
+    "function_id": "FUNC.TEXTAFTER",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 15,
+    "agree": 12
+  },
+  {
+    "function_id": "FUNC.TEXTBEFORE",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 15,
+    "agree": 12
+  },
+  {
+    "function_id": "FUNC.TEXTJOIN",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 7,
+    "agree": 7
+  },
+  {
+    "function_id": "FUNC.TEXTSPLIT",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 3
+  },
+  {
+    "function_id": "FUNC.TIME",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1296,
+    "agree": 1296
+  },
+  {
+    "function_id": "FUNC.TOCOL",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.TOROW",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.TRANSPOSE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.TRIM",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.TRUE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.TRUNC",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1392,
+    "agree": 1372
+  },
+  {
+    "function_id": "FUNC.TYPE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1231,
+    "agree": 1231
+  },
+  {
+    "function_id": "FUNC.UNICHAR",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 9,
+    "agree": 9
+  },
+  {
+    "function_id": "FUNC.UNICODE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.UNIQUE",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 1,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.UPPER",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 8,
+    "agree": 8
+  },
+  {
+    "function_id": "FUNC.VALUETOTEXT",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.VAR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 798
+  },
+  {
+    "function_id": "FUNC.VAR.P",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 771
+  },
+  {
+    "function_id": "FUNC.VAR.S",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1213,
+    "agree": 825
+  },
+  {
+    "function_id": "FUNC.VARA",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 791
+  },
+  {
+    "function_id": "FUNC.VARP",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 791
+  },
+  {
+    "function_id": "FUNC.VARPA",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1210,
+    "agree": 764
+  },
+  {
+    "function_id": "FUNC.VDB",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1205,
+    "agree": 1205
+  },
+  {
+    "function_id": "FUNC.VLOOKUP",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 4,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.VSTACK",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.WEEKDAY",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1408,
+    "agree": 1398
+  },
+  {
+    "function_id": "FUNC.WEEKNUM",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1182,
+    "agree": 1182
+  },
+  {
+    "function_id": "FUNC.WRAPCOLS",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 6,
+    "agree": 1
+  },
+  {
+    "function_id": "FUNC.WRAPROWS",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 6,
+    "agree": 6
+  },
+  {
+    "function_id": "FUNC.XLOOKUP",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 4,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.XMATCH",
+    "before": "consistent",
+    "after": "consistent",
+    "rows": 4,
+    "agree": 4
+  },
+  {
+    "function_id": "FUNC.XOR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1218,
+    "agree": 1218
+  },
+  {
+    "function_id": "FUNC.YEAR",
+    "before": "divergent",
+    "after": "divergent",
+    "rows": 1268,
+    "agree": 1258
+  }
+]

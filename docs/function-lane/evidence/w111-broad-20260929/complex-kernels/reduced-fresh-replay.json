@@ -1,0 +1,14 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "validation": "public-dispatch Rust replay; exact binary64 bits/text/error tags",
+  "rows": 1436,
+  "matches": 1436,
+  "functions": {
+    "IMARGUMENT": 476,
+    "IMSQRT": 960
+  },
+  "misses": [],
+  "candidate_sources_unchanged_from": "reduced-candidate-freeze.json"
+}

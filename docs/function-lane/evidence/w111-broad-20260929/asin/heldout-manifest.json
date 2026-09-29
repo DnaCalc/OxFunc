@@ -1,0 +1,15 @@
+{
+  "generator": "gen_asin_holdout.py",
+  "seed": 2026092923,
+  "authority": "independent_exploration_input",
+  "angle_search_draws": 300000,
+  "angle_centers": 31,
+  "batches": [
+    {
+      "function": "ASIN",
+      "path": "batch-asin.json",
+      "rows": 6722,
+      "sha256": "88bf64b19740996b4399871a3073123db463ee05ba5c66d214d414588a15abb0"
+    }
+  ]
+}

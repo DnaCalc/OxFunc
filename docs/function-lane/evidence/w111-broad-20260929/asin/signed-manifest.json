@@ -1,0 +1,13 @@
+{
+  "generator": "gen_asin_signed_probes.py",
+  "seed": 2026092922,
+  "authority": "non_semantic_exploration_input",
+  "batches": [
+    {
+      "function": "ASIN",
+      "path": "batch-asin.json",
+      "rows": 6180,
+      "sha256": "91f18d887fa8e7ad3b2288653737b06c174b6faac9efb52dfee237e3ecfc8f49"
+    }
+  ]
+}

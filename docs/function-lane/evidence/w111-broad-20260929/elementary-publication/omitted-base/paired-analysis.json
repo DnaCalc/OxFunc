@@ -1,0 +1,10 @@
+{
+  "rows": 1755,
+  "omitted_matches_log10": 585,
+  "distinct_inputs": 585,
+  "explicit_ten_differs": 319,
+  "source_sha256": {
+    "answers-log.json": "64a517059aa99ca88fef26858993b031414b1a7c7c1d0ee423fa81855c07b5ec",
+    "answers-log10.json": "8d76f33e9f58f0628ecda8f3ef9bff8d268b8ebff583075e60b24bf9e985843f"
+  }
+}

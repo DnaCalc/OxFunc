@@ -1,0 +1,5587 @@
+{
+  "function": "IMCONJUGATE",
+  "witnesses": [
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-mantissa1.0-pos0",
+      "args": [
+        "0x0031fa182c40c60d"
+      ],
+      "expected_bits": "text:1E-307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-negative-mantissa1.0-pos0",
+      "args": [
+        "0x8031fa182c40c60d"
+      ],
+      "expected_bits": "text:-1E-307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-mantissa1.2-pos0",
+      "args": [
+        "0x00359283684dba76"
+      ],
+      "expected_bits": "text:1.2E-307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-negative-mantissa1.2-pos0",
+      "args": [
+        "0x80359283684dba76"
+      ],
+      "expected_bits": "text:-1.2E-307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x0036319916d6784d"
+      ],
+      "expected_bits": "text:1.23456789012346E-307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x8036319916d6784d"
+      ],
+      "expected_bits": "text:-1.23456789012346E-307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x0066789e3750f78e"
+      ],
+      "expected_bits": "text:1E-306"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-307-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x8066789e3750f78e"
+      ],
+      "expected_bits": "text:-1E-306"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-mantissa1.0-pos0",
+      "args": [
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:1E-300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-negative-mantissa1.0-pos0",
+      "args": [
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:-1E-300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-mantissa1.2-pos0",
+      "args": [
+        "0x01a9b759505df0d1"
+      ],
+      "expected_bits": "text:1.2E-300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-negative-mantissa1.2-pos0",
+      "args": [
+        "0x81a9b759505df0d1"
+      ],
+      "expected_bits": "text:-1.2E-300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x01aa74fe1c1e8908"
+      ],
+      "expected_bits": "text:1.23456789012346E-300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x81aa74fe1c1e8908"
+      ],
+      "expected_bits": "text:-1.23456789012346E-300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x01dac9a7b3b7302d"
+      ],
+      "expected_bits": "text:1E-299"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-300-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x81dac9a7b3b7302d"
+      ],
+      "expected_bits": "text:-1E-299"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-mantissa1.0-pos0",
+      "args": [
+        "0x2b2bff2ee48e0530"
+      ],
+      "expected_bits": "text:1E-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-negative-mantissa1.0-pos0",
+      "args": [
+        "0xab2bff2ee48e0530"
+      ],
+      "expected_bits": "text:-1E-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-mantissa1.2-pos0",
+      "args": [
+        "0x2b30cc4f55eecfe9"
+      ],
+      "expected_bits": "text:1.2E-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-negative-mantissa1.2-pos0",
+      "args": [
+        "0xab30cc4f55eecfe9"
+      ],
+      "expected_bits": "text:-1.2E-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x2b31482fe620c5d2"
+      ],
+      "expected_bits": "text:1.23456789012346E-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xab31482fe620c5d2"
+      ],
+      "expected_bits": "text:-1.23456789012346E-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x2b617f7d4ed8c33c"
+      ],
+      "expected_bits": "text:1E-99"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-100-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xab617f7d4ed8c33c"
+      ],
+      "expected_bits": "text:-1E-99"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-mantissa1.0-pos0",
+      "args": [
+        "0x3379b604aaaca626"
+      ],
+      "expected_bits": "text:1E-60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb379b604aaaca626"
+      ],
+      "expected_bits": "text:-1E-60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-mantissa1.2-pos0",
+      "args": [
+        "0x337eda6c000260fa"
+      ],
+      "expected_bits": "text:1.2E-60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb37eda6c000260fa"
+      ],
+      "expected_bits": "text:-1.2E-60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x337fbdf2c798645b"
+      ],
+      "expected_bits": "text:1.23456789012346E-60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb37fbdf2c798645b"
+      ],
+      "expected_bits": "text:-1.23456789012346E-60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x33b011c2eaabe7d6"
+      ],
+      "expected_bits": "text:1E-59"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-60-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb3b011c2eaabe7d6"
+      ],
+      "expected_bits": "text:-1E-59"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-mantissa1.0-pos0",
+      "args": [
+        "0x37a16c262777579c"
+      ],
+      "expected_bits": "text:1E-40"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb7a16c262777579c"
+      ],
+      "expected_bits": "text:-1E-40"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-mantissa1.2-pos0",
+      "args": [
+        "0x37a4e82dc8f59c55"
+      ],
+      "expected_bits": "text:1.2E-40"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb7a4e82dc8f59c55"
+      ],
+      "expected_bits": "text:-1.2E-40"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x37a5825b568ff413"
+      ],
+      "expected_bits": "text:1.23456789012346E-40"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb7a5825b568ff413"
+      ],
+      "expected_bits": "text:-1.23456789012346E-40"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x37d5c72fb1552d81"
+      ],
+      "expected_bits": "text:1E-39"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-40-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb7d5c72fb1552d81"
+      ],
+      "expected_bits": "text:-1E-39"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-mantissa1.0-pos0",
+      "args": [
+        "0x38aa95a5b7f87a0f"
+      ],
+      "expected_bits": "text:1E-35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb8aa95a5b7f87a0f"
+      ],
+      "expected_bits": "text:-1E-35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-mantissa1.2-pos0",
+      "args": [
+        "0x38afe6c6dcc3c5ab"
+      ],
+      "expected_bits": "text:1.2E-35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb8afe6c6dcc3c5ab"
+      ],
+      "expected_bits": "text:-1.2E-35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x38b069044f7ab3e7"
+      ],
+      "expected_bits": "text:1.23456789012346E-35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb8b069044f7ab3e7"
+      ],
+      "expected_bits": "text:-1.23456789012346E-35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x38e09d8792fb4c48"
+      ],
+      "expected_bits": "text:1E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-35-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb8e09d8792fb4c48"
+      ],
+      "expected_bits": "text:-1E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-mantissa1.0-pos0",
+      "args": [
+        "0x38e09d8792fb4c49"
+      ],
+      "expected_bits": "text:1E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb8e09d8792fb4c49"
+      ],
+      "expected_bits": "text:-1E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-mantissa1.2-pos0",
+      "args": [
+        "0x38e3f03c49fa5b8b"
+      ],
+      "expected_bits": "text:1.2E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb8e3f03c49fa5b8b"
+      ],
+      "expected_bits": "text:-1.2E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x38e48345635960e0"
+      ],
+      "expected_bits": "text:1.23456789012346E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb8e48345635960e0"
+      ],
+      "expected_bits": "text:-1.23456789012346E-34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3914c4e977ba1f59"
+      ],
+      "expected_bits": "text:1E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-34-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb914c4e977ba1f59"
+      ],
+      "expected_bits": "text:-1E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-mantissa1.0-pos0",
+      "args": [
+        "0x3914c4e977ba1f5c"
+      ],
+      "expected_bits": "text:1E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb914c4e977ba1f5c"
+      ],
+      "expected_bits": "text:-1E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-mantissa1.2-pos0",
+      "args": [
+        "0x3918ec4b5c78f26e"
+      ],
+      "expected_bits": "text:1.2E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb918ec4b5c78f26e"
+      ],
+      "expected_bits": "text:-1.2E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3919a416bc2fb919"
+      ],
+      "expected_bits": "text:1.23456789012346E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb919a416bc2fb919"
+      ],
+      "expected_bits": "text:-1.23456789012346E-33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3949f623d5a8a730"
+      ],
+      "expected_bits": "text:1E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-33-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb949f623d5a8a730"
+      ],
+      "expected_bits": "text:-1E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-mantissa1.0-pos0",
+      "args": [
+        "0x3949f623d5a8a733"
+      ],
+      "expected_bits": "text:1E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb949f623d5a8a733"
+      ],
+      "expected_bits": "text:-1E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-mantissa1.2-pos0",
+      "args": [
+        "0x394f275e33972f0a"
+      ],
+      "expected_bits": "text:1.2E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb94f275e33972f0a"
+      ],
+      "expected_bits": "text:-1.2E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3950068e359dd3b0"
+      ],
+      "expected_bits": "text:1.23456789012346E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb950068e359dd3b0"
+      ],
+      "expected_bits": "text:-1.23456789012346E-32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x398039d66589687e"
+      ],
+      "expected_bits": "text:1E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-32-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb98039d66589687e"
+      ],
+      "expected_bits": "text:-1E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-mantissa1.0-pos0",
+      "args": [
+        "0x398039d665896880"
+      ],
+      "expected_bits": "text:1E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb98039d665896880"
+      ],
+      "expected_bits": "text:-1E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-mantissa1.2-pos0",
+      "args": [
+        "0x3983789ae03e7d66"
+      ],
+      "expected_bits": "text:1.2E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb983789ae03e7d66"
+      ],
+      "expected_bits": "text:-1.2E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x39840831c305489c"
+      ],
+      "expected_bits": "text:1.23456789012346E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb9840831c305489c"
+      ],
+      "expected_bits": "text:-1.23456789012346E-31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x39b4484bfeebc29e"
+      ],
+      "expected_bits": "text:1E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-31-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb9b4484bfeebc29e"
+      ],
+      "expected_bits": "text:-1E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-mantissa1.0-pos0",
+      "args": [
+        "0x39b4484bfeebc2a0"
+      ],
+      "expected_bits": "text:1E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb9b4484bfeebc2a0"
+      ],
+      "expected_bits": "text:-1E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-mantissa1.2-pos0",
+      "args": [
+        "0x39b856c1984e1cc0"
+      ],
+      "expected_bits": "text:1.2E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb9b856c1984e1cc0"
+      ],
+      "expected_bits": "text:-1.2E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x39b90a3e33c69ac3"
+      ],
+      "expected_bits": "text:1.23456789012346E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb9b90a3e33c69ac3"
+      ],
+      "expected_bits": "text:-1.23456789012346E-30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x39e95a5efea6b345"
+      ],
+      "expected_bits": "text:1E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-30-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xb9e95a5efea6b345"
+      ],
+      "expected_bits": "text:-1E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-mantissa1.0-pos0",
+      "args": [
+        "0x39e95a5efea6b347"
+      ],
+      "expected_bits": "text:1E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-negative-mantissa1.0-pos0",
+      "args": [
+        "0xb9e95a5efea6b347"
+      ],
+      "expected_bits": "text:-1E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-mantissa1.2-pos0",
+      "args": [
+        "0x39ee6c71fe61a3ee"
+      ],
+      "expected_bits": "text:1.2E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-negative-mantissa1.2-pos0",
+      "args": [
+        "0xb9ee6c71fe61a3ee"
+      ],
+      "expected_bits": "text:-1.2E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x39ef4ccdc0b84172"
+      ],
+      "expected_bits": "text:1.23456789012346E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xb9ef4ccdc0b84172"
+      ],
+      "expected_bits": "text:-1.23456789012346E-29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3a1fb0f6be506016"
+      ],
+      "expected_bits": "text:1E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-29-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xba1fb0f6be506016"
+      ],
+      "expected_bits": "text:-1E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-mantissa1.0-pos0",
+      "args": [
+        "0x3a1fb0f6be506019"
+      ],
+      "expected_bits": "text:1E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-negative-mantissa1.0-pos0",
+      "args": [
+        "0xba1fb0f6be506019"
+      ],
+      "expected_bits": "text:-1E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-mantissa1.2-pos0",
+      "args": [
+        "0x3a2303c73efd0675"
+      ],
+      "expected_bits": "text:1.2E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-negative-mantissa1.2-pos0",
+      "args": [
+        "0xba2303c73efd0675"
+      ],
+      "expected_bits": "text:-1.2E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3a239000987328e8"
+      ],
+      "expected_bits": "text:1.23456789012346E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xba239000987328e8"
+      ],
+      "expected_bits": "text:-1.23456789012346E-28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3a53ce9a36f23c0e"
+      ],
+      "expected_bits": "text:1E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-28-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xba53ce9a36f23c0e"
+      ],
+      "expected_bits": "text:-1E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-mantissa1.0-pos0",
+      "args": [
+        "0x3a53ce9a36f23c10"
+      ],
+      "expected_bits": "text:1E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-negative-mantissa1.0-pos0",
+      "args": [
+        "0xba53ce9a36f23c10"
+      ],
+      "expected_bits": "text:-1E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-mantissa1.2-pos0",
+      "args": [
+        "0x3a57c4b90ebc4813"
+      ],
+      "expected_bits": "text:1.2E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-negative-mantissa1.2-pos0",
+      "args": [
+        "0xba57c4b90ebc4813"
+      ],
+      "expected_bits": "text:-1.2E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3a587400be8ff322"
+      ],
+      "expected_bits": "text:1.23456789012346E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xba587400be8ff322"
+      ],
+      "expected_bits": "text:-1.23456789012346E-27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3a88c240c4aecb12"
+      ],
+      "expected_bits": "text:1E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-27-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xba88c240c4aecb12"
+      ],
+      "expected_bits": "text:-1E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-mantissa1.0-pos0",
+      "args": [
+        "0x3a88c240c4aecb14"
+      ],
+      "expected_bits": "text:1E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-negative-mantissa1.0-pos0",
+      "args": [
+        "0xba88c240c4aecb14"
+      ],
+      "expected_bits": "text:-1E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-mantissa1.2-pos0",
+      "args": [
+        "0x3a8db5e7526b5a18"
+      ],
+      "expected_bits": "text:1.2E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-negative-mantissa1.2-pos0",
+      "args": [
+        "0xba8db5e7526b5a18"
+      ],
+      "expected_bits": "text:-1.2E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3a8e9100ee33efea"
+      ],
+      "expected_bits": "text:1.23456789012346E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xba8e9100ee33efea"
+      ],
+      "expected_bits": "text:-1.23456789012346E-26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3abef2d0f5da7dd6"
+      ],
+      "expected_bits": "text:1E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-26-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbabef2d0f5da7dd6"
+      ],
+      "expected_bits": "text:-1E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-mantissa1.0-pos0",
+      "args": [
+        "0x3abef2d0f5da7dd9"
+      ],
+      "expected_bits": "text:1E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbabef2d0f5da7dd9"
+      ],
+      "expected_bits": "text:-1E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-mantissa1.2-pos0",
+      "args": [
+        "0x3ac291b09383184f"
+      ],
+      "expected_bits": "text:1.2E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbac291b09383184f"
+      ],
+      "expected_bits": "text:-1.2E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3ac31aa094e075f3"
+      ],
+      "expected_bits": "text:1.23456789012346E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbac31aa094e075f3"
+      ],
+      "expected_bits": "text:-1.23456789012346E-25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3af357c299a88ea6"
+      ],
+      "expected_bits": "text:1E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-25-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbaf357c299a88ea6"
+      ],
+      "expected_bits": "text:-1E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-mantissa1.0-pos0",
+      "args": [
+        "0x3af357c299a88ea7"
+      ],
+      "expected_bits": "text:1E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbaf357c299a88ea7"
+      ],
+      "expected_bits": "text:-1E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-mantissa1.2-pos0",
+      "args": [
+        "0x3af7361cb863de62"
+      ],
+      "expected_bits": "text:1.2E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbaf7361cb863de62"
+      ],
+      "expected_bits": "text:-1.2E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3af7e148ba18936e"
+      ],
+      "expected_bits": "text:1.23456789012346E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbaf7e148ba18936e"
+      ],
+      "expected_bits": "text:-1.23456789012346E-24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3b282db34012b24e"
+      ],
+      "expected_bits": "text:1E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-24-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbb282db34012b24e"
+      ],
+      "expected_bits": "text:-1E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-mantissa1.0-pos0",
+      "args": [
+        "0x3b282db34012b251"
+      ],
+      "expected_bits": "text:1E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbb282db34012b251"
+      ],
+      "expected_bits": "text:-1E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-mantissa1.2-pos0",
+      "args": [
+        "0x3b2d03a3e67cd5fa"
+      ],
+      "expected_bits": "text:1.2E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbb2d03a3e67cd5fa"
+      ],
+      "expected_bits": "text:-1.2E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3b2dd99ae89eb84a"
+      ],
+      "expected_bits": "text:1.23456789012346E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbb2dd99ae89eb84a"
+      ],
+      "expected_bits": "text:-1.23456789012346E-23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3b5e392010175ee2"
+      ],
+      "expected_bits": "text:1E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-23-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbb5e392010175ee2"
+      ],
+      "expected_bits": "text:-1E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-mantissa1.0-pos0",
+      "args": [
+        "0x3b5e392010175ee6"
+      ],
+      "expected_bits": "text:1E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbb5e392010175ee6"
+      ],
+      "expected_bits": "text:-1E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-mantissa1.2-pos0",
+      "args": [
+        "0x3b622246700e05bd"
+      ],
+      "expected_bits": "text:1.2E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbb622246700e05bd"
+      ],
+      "expected_bits": "text:-1.2E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3b62a800d163332f"
+      ],
+      "expected_bits": "text:1.23456789012346E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbb62a800d163332f"
+      ],
+      "expected_bits": "text:-1.23456789012346E-22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3b92e3b40a0e9b4e"
+      ],
+      "expected_bits": "text:1E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-22-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbb92e3b40a0e9b4e"
+      ],
+      "expected_bits": "text:-1E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-mantissa1.0-pos0",
+      "args": [
+        "0x3b92e3b40a0e9b4f"
+      ],
+      "expected_bits": "text:1E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbb92e3b40a0e9b4f"
+      ],
+      "expected_bits": "text:-1E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-mantissa1.2-pos0",
+      "args": [
+        "0x3b96aad80c11872b"
+      ],
+      "expected_bits": "text:1.2E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbb96aad80c11872b"
+      ],
+      "expected_bits": "text:-1.2E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3b97520105bbfffa"
+      ],
+      "expected_bits": "text:1.23456789012346E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbb97520105bbfffa"
+      ],
+      "expected_bits": "text:-1.23456789012346E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3bc79ca10c924220"
+      ],
+      "expected_bits": "text:9.99999999999999E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-21-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbbc79ca10c924220"
+      ],
+      "expected_bits": "text:-9.99999999999999E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-mantissa1.0-pos0",
+      "args": [
+        "0x3bc79ca10c924223"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbbc79ca10c924223"
+      ],
+      "expected_bits": "text:-1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-mantissa1.2-pos0",
+      "args": [
+        "0x3bcc558e0f15e8f7"
+      ],
+      "expected_bits": "text:1.2E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbbcc558e0f15e8f7"
+      ],
+      "expected_bits": "text:-1.2E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3bcd2681472afff8"
+      ],
+      "expected_bits": "text:1.23456789012346E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbbcd2681472afff8"
+      ],
+      "expected_bits": "text:-1.23456789012346E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2a9"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-20-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbbfd83c94fb6d2a9"
+      ],
+      "expected_bits": "text:-0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-mantissa1.0-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2ac"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbbfd83c94fb6d2ac"
+      ],
+      "expected_bits": "text:-0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-mantissa1.2-pos0",
+      "args": [
+        "0x3c01b578c96db19a"
+      ],
+      "expected_bits": "text:1.2E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbc01b578c96db19a"
+      ],
+      "expected_bits": "text:-1.2E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3c023810cc7adffb"
+      ],
+      "expected_bits": "text:1.23456789012346E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbc023810cc7adffb"
+      ],
+      "expected_bits": "text:-1.23456789012346E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3c32725dd1d243aa"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-19-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbc32725dd1d243aa"
+      ],
+      "expected_bits": "text:-0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-mantissa1.0-pos0",
+      "args": [
+        "0x3c32725dd1d243ac"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbc32725dd1d243ac"
+      ],
+      "expected_bits": "text:-0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-mantissa1.2-pos0",
+      "args": [
+        "0x3c3622d6fbc91e01"
+      ],
+      "expected_bits": "text:0.0000000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbc3622d6fbc91e01"
+      ],
+      "expected_bits": "text:-0.0000000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3c36c614ff9997fb"
+      ],
+      "expected_bits": "text:1.23456789012346E-18"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbc36c614ff9997fb"
+      ],
+      "expected_bits": "text:-1.23456789012346E-18"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3c670ef54646d495"
+      ],
+      "expected_bits": "text:0.00000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-18-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbc670ef54646d495"
+      ],
+      "expected_bits": "text:-0.00000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-mantissa1.0-pos0",
+      "args": [
+        "0x3c670ef54646d497"
+      ],
+      "expected_bits": "text:0.00000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbc670ef54646d497"
+      ],
+      "expected_bits": "text:-0.00000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-mantissa1.2-pos0",
+      "args": [
+        "0x3c6bab8cbabb6582"
+      ],
+      "expected_bits": "text:0.000000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbc6bab8cbabb6582"
+      ],
+      "expected_bits": "text:-0.000000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3c6c779a3f7ffdfa"
+      ],
+      "expected_bits": "text:1.23456789012346E-17"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbc6c779a3f7ffdfa"
+      ],
+      "expected_bits": "text:-1.23456789012346E-17"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3c9cd2b297d889ba"
+      ],
+      "expected_bits": "text:0.0000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-17-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbc9cd2b297d889ba"
+      ],
+      "expected_bits": "text:-0.0000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-mantissa1.0-pos0",
+      "args": [
+        "0x3c9cd2b297d889bc"
+      ],
+      "expected_bits": "text:0.0000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbc9cd2b297d889bc"
+      ],
+      "expected_bits": "text:-0.0000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-mantissa1.2-pos0",
+      "args": [
+        "0x3ca14b37f4b51f71"
+      ],
+      "expected_bits": "text:0.00000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbca14b37f4b51f71"
+      ],
+      "expected_bits": "text:-0.00000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3ca1cac067affebc"
+      ],
+      "expected_bits": "text:1.23456789012346E-16"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbca1cac067affebc"
+      ],
+      "expected_bits": "text:-1.23456789012346E-16"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3cd203af9ee75614"
+      ],
+      "expected_bits": "text:0.000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-16-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbcd203af9ee75614"
+      ],
+      "expected_bits": "text:-0.000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-mantissa1.0-pos0",
+      "args": [
+        "0x3cd203af9ee75616"
+      ],
+      "expected_bits": "text:0.000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbcd203af9ee75616"
+      ],
+      "expected_bits": "text:-0.000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-mantissa1.2-pos0",
+      "args": [
+        "0x3cd59e05f1e2674d"
+      ],
+      "expected_bits": "text:0.0000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbcd59e05f1e2674d"
+      ],
+      "expected_bits": "text:-0.0000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3cd63d70819bfe6b"
+      ],
+      "expected_bits": "text:1.23456789012346E-15"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbcd63d70819bfe6b"
+      ],
+      "expected_bits": "text:-1.23456789012346E-15"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3d06849b86a12b99"
+      ],
+      "expected_bits": "text:0.00000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-15-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbd06849b86a12b99"
+      ],
+      "expected_bits": "text:-0.00000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-mantissa1.0-pos0",
+      "args": [
+        "0x3d06849b86a12b9b"
+      ],
+      "expected_bits": "text:0.00000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbd06849b86a12b9b"
+      ],
+      "expected_bits": "text:-0.00000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-mantissa1.2-pos0",
+      "args": [
+        "0x3d0b05876e5b0120"
+      ],
+      "expected_bits": "text:0.000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbd0b05876e5b0120"
+      ],
+      "expected_bits": "text:-0.000000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3d0bcccca202fe05"
+      ],
+      "expected_bits": "text:1.23456789012346E-14"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbd0bcccca202fe05"
+      ],
+      "expected_bits": "text:-1.23456789012346E-14"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3d3c25c26849767f"
+      ],
+      "expected_bits": "text:0.0000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-14-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbd3c25c26849767f"
+      ],
+      "expected_bits": "text:-0.0000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-mantissa1.0-pos0",
+      "args": [
+        "0x3d3c25c268497682"
+      ],
+      "expected_bits": "text:0.0000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbd3c25c268497682"
+      ],
+      "expected_bits": "text:-0.0000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-mantissa1.2-pos0",
+      "args": [
+        "0x3d40e374a4f8e0b4"
+      ],
+      "expected_bits": "text:0.00000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbd40e374a4f8e0b4"
+      ],
+      "expected_bits": "text:-0.00000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3d415fffe541dec3"
+      ],
+      "expected_bits": "text:1.23456789012346E-13"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbd415fffe541dec3"
+      ],
+      "expected_bits": "text:-1.23456789012346E-13"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3d719799812dea0f"
+      ],
+      "expected_bits": "text:0.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-13-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbd719799812dea0f"
+      ],
+      "expected_bits": "text:-0.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-mantissa1.0-pos0",
+      "args": [
+        "0x3d719799812dea11"
+      ],
+      "expected_bits": "text:0.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbd719799812dea11"
+      ],
+      "expected_bits": "text:-0.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-mantissa1.2-pos0",
+      "args": [
+        "0x3d751c51ce3718e1"
+      ],
+      "expected_bits": "text:0.0000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbd751c51ce3718e1"
+      ],
+      "expected_bits": "text:-0.0000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3d75b7ffde925674"
+      ],
+      "expected_bits": "text:1.23456789012346E-12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbd75b7ffde925674"
+      ],
+      "expected_bits": "text:-1.23456789012346E-12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3da5fd7fe1796493"
+      ],
+      "expected_bits": "text:0.00000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-12-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbda5fd7fe1796493"
+      ],
+      "expected_bits": "text:-0.00000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-mantissa1.0-pos0",
+      "args": [
+        "0x3da5fd7fe1796495"
+      ],
+      "expected_bits": "text:0.00000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbda5fd7fe1796495"
+      ],
+      "expected_bits": "text:-0.00000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-mantissa1.2-pos0",
+      "args": [
+        "0x3daa636641c4df19"
+      ],
+      "expected_bits": "text:0.000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbdaa636641c4df19"
+      ],
+      "expected_bits": "text:-0.000000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3dab25ffd636ec11"
+      ],
+      "expected_bits": "text:1.23456789012346E-11"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbdab25ffd636ec11"
+      ],
+      "expected_bits": "text:-1.23456789012346E-11"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3ddb7cdfd9d7bdb8"
+      ],
+      "expected_bits": "text:0.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-11-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbddb7cdfd9d7bdb8"
+      ],
+      "expected_bits": "text:-0.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-mantissa1.0-pos0",
+      "args": [
+        "0x3ddb7cdfd9d7bdbb"
+      ],
+      "expected_bits": "text:0.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbddb7cdfd9d7bdbb"
+      ],
+      "expected_bits": "text:-0.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-mantissa1.2-pos0",
+      "args": [
+        "0x3de07e1fe91b0b70"
+      ],
+      "expected_bits": "text:0.00000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbde07e1fe91b0b70"
+      ],
+      "expected_bits": "text:-0.00000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3de0f7bfe5e2538b"
+      ],
+      "expected_bits": "text:1.23456789012346E-10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbde0f7bfe5e2538b"
+      ],
+      "expected_bits": "text:-1.23456789012346E-10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3e112e0be826d693"
+      ],
+      "expected_bits": "text:0.000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-10-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbe112e0be826d693"
+      ],
+      "expected_bits": "text:-0.000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-mantissa1.0-pos0",
+      "args": [
+        "0x3e112e0be826d695"
+      ],
+      "expected_bits": "text:0.000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbe112e0be826d695"
+      ],
+      "expected_bits": "text:-0.000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-mantissa1.2-pos0",
+      "args": [
+        "0x3e149da7e361ce4c"
+      ],
+      "expected_bits": "text:0.0000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbe149da7e361ce4c"
+      ],
+      "expected_bits": "text:-0.0000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3e1535afdf5ae86e"
+      ],
+      "expected_bits": "text:1.23456789012346E-09"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbe1535afdf5ae86e"
+      ],
+      "expected_bits": "text:-1.23456789012346E-09"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3e45798ee2308c38"
+      ],
+      "expected_bits": "text:0.00000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-9-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbe45798ee2308c38"
+      ],
+      "expected_bits": "text:-0.00000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-mantissa1.0-pos0",
+      "args": [
+        "0x3e45798ee2308c3a"
+      ],
+      "expected_bits": "text:0.00000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbe45798ee2308c3a"
+      ],
+      "expected_bits": "text:-0.00000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-mantissa1.2-pos0",
+      "args": [
+        "0x3e49c511dc3a41df"
+      ],
+      "expected_bits": "text:0.000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbe49c511dc3a41df"
+      ],
+      "expected_bits": "text:-0.000000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3e4a831bd731a289"
+      ],
+      "expected_bits": "text:1.23456789012346E-08"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbe4a831bd731a289"
+      ],
+      "expected_bits": "text:-1.23456789012346E-08"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3e7ad7f29abcaf46"
+      ],
+      "expected_bits": "text:0.0000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-8-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbe7ad7f29abcaf46"
+      ],
+      "expected_bits": "text:-0.0000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-mantissa1.0-pos0",
+      "args": [
+        "0x3e7ad7f29abcaf48"
+      ],
+      "expected_bits": "text:0.0000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbe7ad7f29abcaf48"
+      ],
+      "expected_bits": "text:-0.0000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-mantissa1.2-pos0",
+      "args": [
+        "0x3e801b2b29a4692b"
+      ],
+      "expected_bits": "text:0.00000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbe801b2b29a4692b"
+      ],
+      "expected_bits": "text:-0.00000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3e8091f1667f0595"
+      ],
+      "expected_bits": "text:1.23456789012346E-07"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbe8091f1667f0595"
+      ],
+      "expected_bits": "text:-1.23456789012346E-07"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3eb0c6f7a0b5ed8b"
+      ],
+      "expected_bits": "text:0.000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-7-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbeb0c6f7a0b5ed8b"
+      ],
+      "expected_bits": "text:-0.000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-mantissa1.0-pos0",
+      "args": [
+        "0x3eb0c6f7a0b5ed8d"
+      ],
+      "expected_bits": "text:0.000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbeb0c6f7a0b5ed8d"
+      ],
+      "expected_bits": "text:-0.000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-mantissa1.2-pos0",
+      "args": [
+        "0x3eb421f5f40d8376"
+      ],
+      "expected_bits": "text:0.0000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbeb421f5f40d8376"
+      ],
+      "expected_bits": "text:-0.0000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3eb4b66dc01ec6fb"
+      ],
+      "expected_bits": "text:1.23456789012346E-06"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbeb4b66dc01ec6fb"
+      ],
+      "expected_bits": "text:-1.23456789012346E-06"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3ee4f8b588e368ee"
+      ],
+      "expected_bits": "text:0.00001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-6-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbee4f8b588e368ee"
+      ],
+      "expected_bits": "text:-0.00001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-mantissa1.0-pos0",
+      "args": [
+        "0x3ee4f8b588e368f1"
+      ],
+      "expected_bits": "text:0.00001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbee4f8b588e368f1"
+      ],
+      "expected_bits": "text:-0.00001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-mantissa1.2-pos0",
+      "args": [
+        "0x3ee92a737110e454"
+      ],
+      "expected_bits": "text:0.000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbee92a737110e454"
+      ],
+      "expected_bits": "text:-0.000012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3ee9e409302678ba"
+      ],
+      "expected_bits": "text:0.0000123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbee9e409302678ba"
+      ],
+      "expected_bits": "text:-0.0000123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3f1a36e2eb1c432b"
+      ],
+      "expected_bits": "text:0.0001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-5-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbf1a36e2eb1c432b"
+      ],
+      "expected_bits": "text:-0.0001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-mantissa1.0-pos0",
+      "args": [
+        "0x3f1a36e2eb1c432d"
+      ],
+      "expected_bits": "text:0.0001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbf1a36e2eb1c432d"
+      ],
+      "expected_bits": "text:-0.0001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-mantissa1.2-pos0",
+      "args": [
+        "0x3f1f75104d551d69"
+      ],
+      "expected_bits": "text:0.00012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbf1f75104d551d69"
+      ],
+      "expected_bits": "text:-0.00012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3f202e85be180b74"
+      ],
+      "expected_bits": "text:0.000123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbf202e85be180b74"
+      ],
+      "expected_bits": "text:-0.000123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3f50624dd2f1a9fa"
+      ],
+      "expected_bits": "text:0.001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-4-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbf50624dd2f1a9fa"
+      ],
+      "expected_bits": "text:-0.001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-mantissa1.0-pos0",
+      "args": [
+        "0x3f50624dd2f1a9fc"
+      ],
+      "expected_bits": "text:0.001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbf50624dd2f1a9fc"
+      ],
+      "expected_bits": "text:-0.001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-mantissa1.2-pos0",
+      "args": [
+        "0x3f53a92a30553261"
+      ],
+      "expected_bits": "text:0.0012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbf53a92a30553261"
+      ],
+      "expected_bits": "text:-0.0012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3f543a272d9e0e51"
+      ],
+      "expected_bits": "text:0.00123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbf543a272d9e0e51"
+      ],
+      "expected_bits": "text:-0.00123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3f847ae147ae1479"
+      ],
+      "expected_bits": "text:0.01"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-3-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbf847ae147ae1479"
+      ],
+      "expected_bits": "text:-0.01"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-mantissa1.0-pos0",
+      "args": [
+        "0x3f847ae147ae147b"
+      ],
+      "expected_bits": "text:0.01"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbf847ae147ae147b"
+      ],
+      "expected_bits": "text:-0.01"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-mantissa1.2-pos0",
+      "args": [
+        "0x3f889374bc6a7efa"
+      ],
+      "expected_bits": "text:0.012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbf889374bc6a7efa"
+      ],
+      "expected_bits": "text:-0.012"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3f8948b0f90591e5"
+      ],
+      "expected_bits": "text:0.0123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbf8948b0f90591e5"
+      ],
+      "expected_bits": "text:-0.0123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3fb9999999999997"
+      ],
+      "expected_bits": "text:0.1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-2-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbfb9999999999997"
+      ],
+      "expected_bits": "text:-0.1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-mantissa1.0-pos0",
+      "args": [
+        "0x3fb999999999999a"
+      ],
+      "expected_bits": "text:0.1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbfb999999999999a"
+      ],
+      "expected_bits": "text:-0.1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-mantissa1.2-pos0",
+      "args": [
+        "0x3fbeb851eb851eb8"
+      ],
+      "expected_bits": "text:0.12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbfbeb851eb851eb8"
+      ],
+      "expected_bits": "text:-0.12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3fbf9add3746f65f"
+      ],
+      "expected_bits": "text:0.123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbfbf9add3746f65f"
+      ],
+      "expected_bits": "text:-0.123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x3feffffffffffffd"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp-1-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xbfeffffffffffffd"
+      ],
+      "expected_bits": "text:-1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-mantissa1.0-pos0",
+      "args": [
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-negative-mantissa1.0-pos0",
+      "args": [
+        "0xbff0000000000000"
+      ],
+      "expected_bits": "text:-1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-mantissa1.2-pos0",
+      "args": [
+        "0x3ff3333333333333"
+      ],
+      "expected_bits": "text:1.2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-negative-mantissa1.2-pos0",
+      "args": [
+        "0xbff3333333333333"
+      ],
+      "expected_bits": "text:-1.2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x3ff3c0ca428c59fb"
+      ],
+      "expected_bits": "text:1.23456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xbff3c0ca428c59fb"
+      ],
+      "expected_bits": "text:-1.23456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4023fffffffffffe"
+      ],
+      "expected_bits": "text:10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp0-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc023fffffffffffe"
+      ],
+      "expected_bits": "text:-10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-mantissa1.0-pos0",
+      "args": [
+        "0x4024000000000000"
+      ],
+      "expected_bits": "text:10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc024000000000000"
+      ],
+      "expected_bits": "text:-10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-mantissa1.2-pos0",
+      "args": [
+        "0x4028000000000000"
+      ],
+      "expected_bits": "text:12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc028000000000000"
+      ],
+      "expected_bits": "text:-12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4028b0fcd32f707a"
+      ],
+      "expected_bits": "text:12.3456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc028b0fcd32f707a"
+      ],
+      "expected_bits": "text:-12.3456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4058fffffffffffe"
+      ],
+      "expected_bits": "text:100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp1-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc058fffffffffffe"
+      ],
+      "expected_bits": "text:-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-mantissa1.0-pos0",
+      "args": [
+        "0x4059000000000000"
+      ],
+      "expected_bits": "text:100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc059000000000000"
+      ],
+      "expected_bits": "text:-100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-mantissa1.2-pos0",
+      "args": [
+        "0x405e000000000000"
+      ],
+      "expected_bits": "text:120"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc05e000000000000"
+      ],
+      "expected_bits": "text:-120"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x405edd3c07fb4c98"
+      ],
+      "expected_bits": "text:123.456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc05edd3c07fb4c98"
+      ],
+      "expected_bits": "text:-123.456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x408f3ffffffffffd"
+      ],
+      "expected_bits": "text:1000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp2-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc08f3ffffffffffd"
+      ],
+      "expected_bits": "text:-1000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-mantissa1.0-pos0",
+      "args": [
+        "0x408f400000000000"
+      ],
+      "expected_bits": "text:1000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc08f400000000000"
+      ],
+      "expected_bits": "text:-1000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-mantissa1.2-pos0",
+      "args": [
+        "0x4092c00000000000"
+      ],
+      "expected_bits": "text:1200"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc092c00000000000"
+      ],
+      "expected_bits": "text:-1200"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x40934a4584fd0fdf"
+      ],
+      "expected_bits": "text:1234.56789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc0934a4584fd0fdf"
+      ],
+      "expected_bits": "text:-1234.56789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x40c387fffffffffe"
+      ],
+      "expected_bits": "text:10000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp3-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc0c387fffffffffe"
+      ],
+      "expected_bits": "text:-10000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-mantissa1.0-pos0",
+      "args": [
+        "0x40c3880000000000"
+      ],
+      "expected_bits": "text:10000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc0c3880000000000"
+      ],
+      "expected_bits": "text:-10000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-mantissa1.2-pos0",
+      "args": [
+        "0x40c7700000000000"
+      ],
+      "expected_bits": "text:12000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc0c7700000000000"
+      ],
+      "expected_bits": "text:-12000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x40c81cd6e63c53d7"
+      ],
+      "expected_bits": "text:12345.6789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc0c81cd6e63c53d7"
+      ],
+      "expected_bits": "text:-12345.6789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x40f869fffffffffe"
+      ],
+      "expected_bits": "text:100000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp4-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc0f869fffffffffe"
+      ],
+      "expected_bits": "text:-100000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-mantissa1.0-pos0",
+      "args": [
+        "0x40f86a0000000000"
+      ],
+      "expected_bits": "text:100000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc0f86a0000000000"
+      ],
+      "expected_bits": "text:-100000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-mantissa1.2-pos0",
+      "args": [
+        "0x40fd4c0000000000"
+      ],
+      "expected_bits": "text:120000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc0fd4c0000000000"
+      ],
+      "expected_bits": "text:-120000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x40fe240c9fcb68cd"
+      ],
+      "expected_bits": "text:123456.789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc0fe240c9fcb68cd"
+      ],
+      "expected_bits": "text:-123456.789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x412e847ffffffffd"
+      ],
+      "expected_bits": "text:1000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp5-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc12e847ffffffffd"
+      ],
+      "expected_bits": "text:-1000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-mantissa1.0-pos0",
+      "args": [
+        "0x412e848000000000"
+      ],
+      "expected_bits": "text:1000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc12e848000000000"
+      ],
+      "expected_bits": "text:-1000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-mantissa1.2-pos0",
+      "args": [
+        "0x41324f8000000000"
+      ],
+      "expected_bits": "text:1200000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc1324f8000000000"
+      ],
+      "expected_bits": "text:-1200000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4132d687e3df2180"
+      ],
+      "expected_bits": "text:1234567.89012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc132d687e3df2180"
+      ],
+      "expected_bits": "text:-1234567.89012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x416312cffffffffe"
+      ],
+      "expected_bits": "text:10000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp6-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc16312cffffffffe"
+      ],
+      "expected_bits": "text:-10000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-mantissa1.0-pos0",
+      "args": [
+        "0x416312d000000000"
+      ],
+      "expected_bits": "text:10000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc16312d000000000"
+      ],
+      "expected_bits": "text:-10000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-mantissa1.2-pos0",
+      "args": [
+        "0x4166e36000000000"
+      ],
+      "expected_bits": "text:12000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc166e36000000000"
+      ],
+      "expected_bits": "text:-12000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x41678c29dcd6e9e0"
+      ],
+      "expected_bits": "text:12345678.9012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc1678c29dcd6e9e0"
+      ],
+      "expected_bits": "text:-12345678.9012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4197d783fffffffe"
+      ],
+      "expected_bits": "text:100000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp7-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc197d783fffffffe"
+      ],
+      "expected_bits": "text:-100000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-mantissa1.0-pos0",
+      "args": [
+        "0x4197d78400000000"
+      ],
+      "expected_bits": "text:100000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc197d78400000000"
+      ],
+      "expected_bits": "text:-100000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-mantissa1.2-pos0",
+      "args": [
+        "0x419c9c3800000000"
+      ],
+      "expected_bits": "text:120000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc19c9c3800000000"
+      ],
+      "expected_bits": "text:-120000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x419d6f34540ca458"
+      ],
+      "expected_bits": "text:123456789.012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc19d6f34540ca458"
+      ],
+      "expected_bits": "text:-123456789.012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x41cdcd64fffffffd"
+      ],
+      "expected_bits": "text:1000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp8-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc1cdcd64fffffffd"
+      ],
+      "expected_bits": "text:-1000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-mantissa1.0-pos0",
+      "args": [
+        "0x41cdcd6500000000"
+      ],
+      "expected_bits": "text:1000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc1cdcd6500000000"
+      ],
+      "expected_bits": "text:-1000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-mantissa1.2-pos0",
+      "args": [
+        "0x41d1e1a300000000"
+      ],
+      "expected_bits": "text:1200000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc1d1e1a300000000"
+      ],
+      "expected_bits": "text:-1200000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x41d26580b487e6b7"
+      ],
+      "expected_bits": "text:1234567890.12346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc1d26580b487e6b7"
+      ],
+      "expected_bits": "text:-1234567890.12346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4202a05f1ffffffe"
+      ],
+      "expected_bits": "text:10000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp9-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc202a05f1ffffffe"
+      ],
+      "expected_bits": "text:-10000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-mantissa1.0-pos0",
+      "args": [
+        "0x4202a05f20000000"
+      ],
+      "expected_bits": "text:10000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc202a05f20000000"
+      ],
+      "expected_bits": "text:-10000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-mantissa1.2-pos0",
+      "args": [
+        "0x42065a0bc0000000"
+      ],
+      "expected_bits": "text:12000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc2065a0bc0000000"
+      ],
+      "expected_bits": "text:-12000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4206fee0e1a9e065"
+      ],
+      "expected_bits": "text:12345678901.2346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc206fee0e1a9e065"
+      ],
+      "expected_bits": "text:-12345678901.2346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x42374876e7fffffe"
+      ],
+      "expected_bits": "text:100000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp10-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc2374876e7fffffe"
+      ],
+      "expected_bits": "text:-100000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-mantissa1.0-pos0",
+      "args": [
+        "0x42374876e8000000"
+      ],
+      "expected_bits": "text:100000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc2374876e8000000"
+      ],
+      "expected_bits": "text:-100000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-mantissa1.2-pos0",
+      "args": [
+        "0x423bf08eb0000000"
+      ],
+      "expected_bits": "text:120000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc23bf08eb0000000"
+      ],
+      "expected_bits": "text:-120000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x423cbe991a14587e"
+      ],
+      "expected_bits": "text:123456789012.346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc23cbe991a14587e"
+      ],
+      "expected_bits": "text:-123456789012.346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x426d1a94a1fffffd"
+      ],
+      "expected_bits": "text:1000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp11-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc26d1a94a1fffffd"
+      ],
+      "expected_bits": "text:-1000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-mantissa1.0-pos0",
+      "args": [
+        "0x426d1a94a2000000"
+      ],
+      "expected_bits": "text:1000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc26d1a94a2000000"
+      ],
+      "expected_bits": "text:-1000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-mantissa1.2-pos0",
+      "args": [
+        "0x427176592e000000"
+      ],
+      "expected_bits": "text:1200000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc27176592e000000"
+      ],
+      "expected_bits": "text:-1200000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4271f71fb04cb74f"
+      ],
+      "expected_bits": "text:1234567890123.46"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc271f71fb04cb74f"
+      ],
+      "expected_bits": "text:-1234567890123.46"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x42a2309ce53ffffe"
+      ],
+      "expected_bits": "text:10000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp12-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc2a2309ce53ffffe"
+      ],
+      "expected_bits": "text:-10000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-mantissa1.0-pos0",
+      "args": [
+        "0x42a2309ce5400000"
+      ],
+      "expected_bits": "text:10000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc2a2309ce5400000"
+      ],
+      "expected_bits": "text:-10000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-mantissa1.2-pos0",
+      "args": [
+        "0x42a5d3ef79800000"
+      ],
+      "expected_bits": "text:12000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc2a5d3ef79800000"
+      ],
+      "expected_bits": "text:-12000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x42a674e79c5fe522"
+      ],
+      "expected_bits": "text:12345678901234.6"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc2a674e79c5fe522"
+      ],
+      "expected_bits": "text:-12345678901234.6"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x42d6bcc41e8ffffe"
+      ],
+      "expected_bits": "text:100000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp13-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc2d6bcc41e8ffffe"
+      ],
+      "expected_bits": "text:-100000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-mantissa1.0-pos0",
+      "args": [
+        "0x42d6bcc41e900000"
+      ],
+      "expected_bits": "text:100000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc2d6bcc41e900000"
+      ],
+      "expected_bits": "text:-100000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-mantissa1.2-pos0",
+      "args": [
+        "0x42db48eb57e00000"
+      ],
+      "expected_bits": "text:120000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc2db48eb57e00000"
+      ],
+      "expected_bits": "text:-120000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x42dc12218377de6b"
+      ],
+      "expected_bits": "text:123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc2dc12218377de6b"
+      ],
+      "expected_bits": "text:-123456789012346"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x430c6bf52633fffd"
+      ],
+      "expected_bits": "text:1000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp14-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc30c6bf52633fffd"
+      ],
+      "expected_bits": "text:-1000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-mantissa1.0-pos0",
+      "args": [
+        "0x430c6bf526340000"
+      ],
+      "expected_bits": "text:1000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc30c6bf526340000"
+      ],
+      "expected_bits": "text:-1000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-mantissa1.2-pos0",
+      "args": [
+        "0x43110d9316ec0000"
+      ],
+      "expected_bits": "text:1200000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc3110d9316ec0000"
+      ],
+      "expected_bits": "text:-1200000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x43118b54f22aeb03"
+      ],
+      "expected_bits": "text:1234567890123460"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc3118b54f22aeb03"
+      ],
+      "expected_bits": "text:-1234567890123460"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4341c37937e07ffe"
+      ],
+      "expected_bits": "text:10000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp15-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc341c37937e07ffe"
+      ],
+      "expected_bits": "text:-10000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-mantissa1.0-pos0",
+      "args": [
+        "0x4341c37937e08000"
+      ],
+      "expected_bits": "text:10000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc341c37937e08000"
+      ],
+      "expected_bits": "text:-10000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-mantissa1.2-pos0",
+      "args": [
+        "0x434550f7dca70000"
+      ],
+      "expected_bits": "text:12000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc34550f7dca70000"
+      ],
+      "expected_bits": "text:-12000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4345ee2a2eb5a5c3"
+      ],
+      "expected_bits": "text:12345678901234600"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc345ee2a2eb5a5c3"
+      ],
+      "expected_bits": "text:-12345678901234600"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4376345785d89ffe"
+      ],
+      "expected_bits": "text:100000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp16-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc376345785d89ffe"
+      ],
+      "expected_bits": "text:-100000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-mantissa1.0-pos0",
+      "args": [
+        "0x4376345785d8a000"
+      ],
+      "expected_bits": "text:100000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc376345785d8a000"
+      ],
+      "expected_bits": "text:-100000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-mantissa1.2-pos0",
+      "args": [
+        "0x437aa535d3d0c000"
+      ],
+      "expected_bits": "text:120000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc37aa535d3d0c000"
+      ],
+      "expected_bits": "text:-120000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x437b69b4ba630f34"
+      ],
+      "expected_bits": "text:123456789012346000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc37b69b4ba630f34"
+      ],
+      "expected_bits": "text:-123456789012346000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x43abc16d674ec7fd"
+      ],
+      "expected_bits": "text:1000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp17-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc3abc16d674ec7fd"
+      ],
+      "expected_bits": "text:-1000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-mantissa1.0-pos0",
+      "args": [
+        "0x43abc16d674ec800"
+      ],
+      "expected_bits": "text:1000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc3abc16d674ec800"
+      ],
+      "expected_bits": "text:-1000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-mantissa1.2-pos0",
+      "args": [
+        "0x43b0a741a4627800"
+      ],
+      "expected_bits": "text:1200000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc3b0a741a4627800"
+      ],
+      "expected_bits": "text:-1200000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x43b12210f47de981"
+      ],
+      "expected_bits": "text:1234567890123460000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc3b12210f47de981"
+      ],
+      "expected_bits": "text:-1234567890123460000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x43e158e460913cfe"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp18-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc3e158e460913cfe"
+      ],
+      "expected_bits": "text:-10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-mantissa1.0-pos0",
+      "args": [
+        "0x43e158e460913d00"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc3e158e460913d00"
+      ],
+      "expected_bits": "text:-10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-mantissa1.2-pos0",
+      "args": [
+        "0x43e4d1120d7b1600"
+      ],
+      "expected_bits": "text:12000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc3e4d1120d7b1600"
+      ],
+      "expected_bits": "text:-12000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x43e56a95319d63e1"
+      ],
+      "expected_bits": "text:12345678901234600000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc3e56a95319d63e1"
+      ],
+      "expected_bits": "text:-12345678901234600000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4415af1d78b58c3e"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp19-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc415af1d78b58c3e"
+      ],
+      "expected_bits": "text:-100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-mantissa1.0-pos0",
+      "args": [
+        "0x4415af1d78b58c40"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc415af1d78b58c40"
+      ],
+      "expected_bits": "text:-100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-mantissa1.2-pos0",
+      "args": [
+        "0x441a055690d9db80"
+      ],
+      "expected_bits": "text:120000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc41a055690d9db80"
+      ],
+      "expected_bits": "text:-120000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x441ac53a7e04bcd9"
+      ],
+      "expected_bits": "text:123456789012346000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc41ac53a7e04bcd9"
+      ],
+      "expected_bits": "text:-123456789012346000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x444b1ae4d6e2ef4d"
+      ],
+      "expected_bits": "text:1E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp20-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc44b1ae4d6e2ef4d"
+      ],
+      "expected_bits": "text:-1E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-mantissa1.0-pos0",
+      "args": [
+        "0x444b1ae4d6e2ef50"
+      ],
+      "expected_bits": "text:1E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc44b1ae4d6e2ef50"
+      ],
+      "expected_bits": "text:-1E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-mantissa1.2-pos0",
+      "args": [
+        "0x445043561a882930"
+      ],
+      "expected_bits": "text:1.2E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc45043561a882930"
+      ],
+      "expected_bits": "text:-1.2E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4450bb448ec2f608"
+      ],
+      "expected_bits": "text:1.23456789012346E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc450bb448ec2f608"
+      ],
+      "expected_bits": "text:-1.23456789012346E+21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4480f0cf064dd590"
+      ],
+      "expected_bits": "text:1E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp21-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc480f0cf064dd590"
+      ],
+      "expected_bits": "text:-1E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-mantissa1.0-pos0",
+      "args": [
+        "0x4480f0cf064dd592"
+      ],
+      "expected_bits": "text:1E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc480f0cf064dd592"
+      ],
+      "expected_bits": "text:-1E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-mantissa1.2-pos0",
+      "args": [
+        "0x4484542ba12a337c"
+      ],
+      "expected_bits": "text:1.2E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc484542ba12a337c"
+      ],
+      "expected_bits": "text:-1.2E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4484ea15b273b38a"
+      ],
+      "expected_bits": "text:1.23456789012346E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc484ea15b273b38a"
+      ],
+      "expected_bits": "text:-1.23456789012346E+22"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x44b52d02c7e14af4"
+      ],
+      "expected_bits": "text:1E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp22-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc4b52d02c7e14af4"
+      ],
+      "expected_bits": "text:-1E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-mantissa1.0-pos0",
+      "args": [
+        "0x44b52d02c7e14af7"
+      ],
+      "expected_bits": "text:1E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc4b52d02c7e14af7"
+      ],
+      "expected_bits": "text:-1E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-mantissa1.2-pos0",
+      "args": [
+        "0x44b969368974c05b"
+      ],
+      "expected_bits": "text:1.2E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc4b969368974c05b"
+      ],
+      "expected_bits": "text:-1.2E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x44ba249b1f10a06d"
+      ],
+      "expected_bits": "text:1.23456789012346E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc4ba249b1f10a06d"
+      ],
+      "expected_bits": "text:-1.23456789012346E+23"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x44ea784379d99db2"
+      ],
+      "expected_bits": "text:1E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp23-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc4ea784379d99db2"
+      ],
+      "expected_bits": "text:-1E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-mantissa1.0-pos0",
+      "args": [
+        "0x44ea784379d99db4"
+      ],
+      "expected_bits": "text:1E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc4ea784379d99db4"
+      ],
+      "expected_bits": "text:-1E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-mantissa1.2-pos0",
+      "args": [
+        "0x44efc3842bd1f071"
+      ],
+      "expected_bits": "text:1.2E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc4efc3842bd1f071"
+      ],
+      "expected_bits": "text:-1.2E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x44f056e0f36a6443"
+      ],
+      "expected_bits": "text:1.23456789012346E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc4f056e0f36a6443"
+      ],
+      "expected_bits": "text:-1.23456789012346E+24"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x45208b2a2c28028f"
+      ],
+      "expected_bits": "text:1E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp24-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc5208b2a2c28028f"
+      ],
+      "expected_bits": "text:-1E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-mantissa1.0-pos0",
+      "args": [
+        "0x45208b2a2c280291"
+      ],
+      "expected_bits": "text:1E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc5208b2a2c280291"
+      ],
+      "expected_bits": "text:-1E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-mantissa1.2-pos0",
+      "args": [
+        "0x4523da329b633647"
+      ],
+      "expected_bits": "text:1.2E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc523da329b633647"
+      ],
+      "expected_bits": "text:-1.2E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x45246c993044fd55"
+      ],
+      "expected_bits": "text:1.23456789012346E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc5246c993044fd55"
+      ],
+      "expected_bits": "text:-1.23456789012346E+25"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4554adf4b7320333"
+      ],
+      "expected_bits": "text:1E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp25-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc554adf4b7320333"
+      ],
+      "expected_bits": "text:-1E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-mantissa1.0-pos0",
+      "args": [
+        "0x4554adf4b7320335"
+      ],
+      "expected_bits": "text:1E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc554adf4b7320335"
+      ],
+      "expected_bits": "text:-1E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-mantissa1.2-pos0",
+      "args": [
+        "0x4558d0bf423c03d9"
+      ],
+      "expected_bits": "text:1.2E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc558d0bf423c03d9"
+      ],
+      "expected_bits": "text:-1.2E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x455987bf7c563caa"
+      ],
+      "expected_bits": "text:1.23456789012346E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc55987bf7c563caa"
+      ],
+      "expected_bits": "text:-1.23456789012346E+26"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4589d971e4fe8400"
+      ],
+      "expected_bits": "text:1E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp26-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc589d971e4fe8400"
+      ],
+      "expected_bits": "text:-1E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-mantissa1.0-pos0",
+      "args": [
+        "0x4589d971e4fe8402"
+      ],
+      "expected_bits": "text:1E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc589d971e4fe8402"
+      ],
+      "expected_bits": "text:-1E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-mantissa1.2-pos0",
+      "args": [
+        "0x458f04ef12cb04cf"
+      ],
+      "expected_bits": "text:1.2E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc58f04ef12cb04cf"
+      ],
+      "expected_bits": "text:-1.2E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x458fe9af5b6bcbd4"
+      ],
+      "expected_bits": "text:1.23456789012346E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc58fe9af5b6bcbd4"
+      ],
+      "expected_bits": "text:-1.23456789012346E+27"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x45c027e72f1f1280"
+      ],
+      "expected_bits": "text:1E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp27-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc5c027e72f1f1280"
+      ],
+      "expected_bits": "text:-1E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-mantissa1.0-pos0",
+      "args": [
+        "0x45c027e72f1f1281"
+      ],
+      "expected_bits": "text:1E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc5c027e72f1f1281"
+      ],
+      "expected_bits": "text:-1E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-mantissa1.2-pos0",
+      "args": [
+        "0x45c363156bbee301"
+      ],
+      "expected_bits": "text:1.2E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc5c363156bbee301"
+      ],
+      "expected_bits": "text:-1.2E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x45c3f20d99235f64"
+      ],
+      "expected_bits": "text:1.23456789012346E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc5c3f20d99235f64"
+      ],
+      "expected_bits": "text:-1.23456789012346E+28"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x45f431e0fae6d71f"
+      ],
+      "expected_bits": "text:1E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp28-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc5f431e0fae6d71f"
+      ],
+      "expected_bits": "text:-1E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-mantissa1.0-pos0",
+      "args": [
+        "0x45f431e0fae6d721"
+      ],
+      "expected_bits": "text:1E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc5f431e0fae6d721"
+      ],
+      "expected_bits": "text:-1E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-mantissa1.2-pos0",
+      "args": [
+        "0x45f83bdac6ae9bc1"
+      ],
+      "expected_bits": "text:1.2E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc5f83bdac6ae9bc1"
+      ],
+      "expected_bits": "text:-1.2E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x45f8ee90ff6c373d"
+      ],
+      "expected_bits": "text:1.23456789012346E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc5f8ee90ff6c373d"
+      ],
+      "expected_bits": "text:-1.23456789012346E+29"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x46293e5939a08ce7"
+      ],
+      "expected_bits": "text:1E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp29-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc6293e5939a08ce7"
+      ],
+      "expected_bits": "text:-1E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-mantissa1.0-pos0",
+      "args": [
+        "0x46293e5939a08cea"
+      ],
+      "expected_bits": "text:1E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc6293e5939a08cea"
+      ],
+      "expected_bits": "text:-1E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-mantissa1.2-pos0",
+      "args": [
+        "0x462e4ad1785a42b2"
+      ],
+      "expected_bits": "text:1.2E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc62e4ad1785a42b2"
+      ],
+      "expected_bits": "text:-1.2E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x462f2a353f47450d"
+      ],
+      "expected_bits": "text:1.23456789012346E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc62f2a353f47450d"
+      ],
+      "expected_bits": "text:-1.23456789012346E+30"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x465f8def8808b021"
+      ],
+      "expected_bits": "text:1E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp30-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc65f8def8808b021"
+      ],
+      "expected_bits": "text:-1E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-mantissa1.0-pos0",
+      "args": [
+        "0x465f8def8808b024"
+      ],
+      "expected_bits": "text:1E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc65f8def8808b024"
+      ],
+      "expected_bits": "text:-1E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-mantissa1.2-pos0",
+      "args": [
+        "0x4662eec2eb3869af"
+      ],
+      "expected_bits": "text:1.2E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc662eec2eb3869af"
+      ],
+      "expected_bits": "text:-1.2E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x46637a61478c8b28"
+      ],
+      "expected_bits": "text:1.23456789012346E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc6637a61478c8b28"
+      ],
+      "expected_bits": "text:-1.23456789012346E+31"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4693b8b5b5056e15"
+      ],
+      "expected_bits": "text:1E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp31-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc693b8b5b5056e15"
+      ],
+      "expected_bits": "text:-1E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-mantissa1.0-pos0",
+      "args": [
+        "0x4693b8b5b5056e17"
+      ],
+      "expected_bits": "text:1E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc693b8b5b5056e17"
+      ],
+      "expected_bits": "text:-1E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-mantissa1.2-pos0",
+      "args": [
+        "0x4697aa73a606841b"
+      ],
+      "expected_bits": "text:1.2E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc697aa73a606841b"
+      ],
+      "expected_bits": "text:-1.2E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x469858f9996fadf2"
+      ],
+      "expected_bits": "text:1.23456789012346E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc69858f9996fadf2"
+      ],
+      "expected_bits": "text:-1.23456789012346E+32"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x46c8a6e32246c99a"
+      ],
+      "expected_bits": "text:1E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp32-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc6c8a6e32246c99a"
+      ],
+      "expected_bits": "text:-1E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-mantissa1.0-pos0",
+      "args": [
+        "0x46c8a6e32246c99c"
+      ],
+      "expected_bits": "text:1E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc6c8a6e32246c99c"
+      ],
+      "expected_bits": "text:-1E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-mantissa1.2-pos0",
+      "args": [
+        "0x46cd95108f882521"
+      ],
+      "expected_bits": "text:1.2E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc6cd95108f882521"
+      ],
+      "expected_bits": "text:-1.2E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x46ce6f37ffcb996e"
+      ],
+      "expected_bits": "text:1.23456789012346E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc6ce6f37ffcb996e"
+      ],
+      "expected_bits": "text:-1.23456789012346E+33"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x46fed09bead87c00"
+      ],
+      "expected_bits": "text:1E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp33-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc6fed09bead87c00"
+      ],
+      "expected_bits": "text:-1E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-mantissa1.0-pos0",
+      "args": [
+        "0x46fed09bead87c03"
+      ],
+      "expected_bits": "text:1E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc6fed09bead87c03"
+      ],
+      "expected_bits": "text:-1E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-mantissa1.2-pos0",
+      "args": [
+        "0x47027d2a59b51735"
+      ],
+      "expected_bits": "text:1.2E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc7027d2a59b51735"
+      ],
+      "expected_bits": "text:-1.2E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x47030582ffdf3fe5"
+      ],
+      "expected_bits": "text:1.23456789012346E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc7030582ffdf3fe5"
+      ],
+      "expected_bits": "text:-1.23456789012346E+34"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4733426172c74d80"
+      ],
+      "expected_bits": "text:1E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp34-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc733426172c74d80"
+      ],
+      "expected_bits": "text:-1E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-mantissa1.0-pos0",
+      "args": [
+        "0x4733426172c74d82"
+      ],
+      "expected_bits": "text:1E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-negative-mantissa1.0-pos0",
+      "args": [
+        "0xc733426172c74d82"
+      ],
+      "expected_bits": "text:-1E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-mantissa1.2-pos0",
+      "args": [
+        "0x47371c74f0225d02"
+      ],
+      "expected_bits": "text:1.2E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-negative-mantissa1.2-pos0",
+      "args": [
+        "0xc7371c74f0225d02"
+      ],
+      "expected_bits": "text:-1.2E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4737c6e3bfd70fde"
+      ],
+      "expected_bits": "text:1.23456789012346E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xc737c6e3bfd70fde"
+      ],
+      "expected_bits": "text:-1.23456789012346E+35"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x476812f9cf7920e0"
+      ],
+      "expected_bits": "text:1E+36"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp35-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xc76812f9cf7920e0"
+      ],
+      "expected_bits": "text:-1E+36"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-mantissa1.0-pos0",
+      "args": [
+        "0x4c63e9e4e4c2f344"
+      ],
+      "expected_bits": "text:1E+60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-negative-mantissa1.0-pos0",
+      "args": [
+        "0xcc63e9e4e4c2f344"
+      ],
+      "expected_bits": "text:-1E+60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-mantissa1.2-pos0",
+      "args": [
+        "0x4c67e57912838a51"
+      ],
+      "expected_bits": "text:1.2E+60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-negative-mantissa1.2-pos0",
+      "args": [
+        "0xcc67e57912838a51"
+      ],
+      "expected_bits": "text:-1.2E+60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x4c6895b2461deb25"
+      ],
+      "expected_bits": "text:1.23456789012346E+60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xcc6895b2461deb25"
+      ],
+      "expected_bits": "text:-1.23456789012346E+60"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x4c98e45e1df3b013"
+      ],
+      "expected_bits": "text:1E+61"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp60-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xcc98e45e1df3b013"
+      ],
+      "expected_bits": "text:-1E+61"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-mantissa1.0-pos0",
+      "args": [
+        "0x54b249ad2594c37d"
+      ],
+      "expected_bits": "text:1E+100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-negative-mantissa1.0-pos0",
+      "args": [
+        "0xd4b249ad2594c37d"
+      ],
+      "expected_bits": "text:-1E+100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-mantissa1.2-pos0",
+      "args": [
+        "0x54b5f202f9e5b763"
+      ],
+      "expected_bits": "text:1.2E+100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-negative-mantissa1.2-pos0",
+      "args": [
+        "0xd4b5f202f9e5b763"
+      ],
+      "expected_bits": "text:-1.2E+100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x54b693d8e89df183"
+      ],
+      "expected_bits": "text:1.23456789012346E+100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xd4b693d8e89df183"
+      ],
+      "expected_bits": "text:-1.23456789012346E+100"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x54e6dc186ef9f45a"
+      ],
+      "expected_bits": "text:1E+101"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp100-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xd4e6dc186ef9f45a"
+      ],
+      "expected_bits": "text:-1E+101"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-mantissa1.0-pos0",
+      "args": [
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:1E+300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-negative-mantissa1.0-pos0",
+      "args": [
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:-1E+300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-mantissa1.2-pos0",
+      "args": [
+        "0x7e3cab7bd666f388"
+      ],
+      "expected_bits": "text:1.2E+300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-negative-mantissa1.2-pos0",
+      "args": [
+        "0xfe3cab7bd666f388"
+      ],
+      "expected_bits": "text:-1.2E+300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x7e3d7ee8bcbbd351"
+      ],
+      "expected_bits": "text:1.23456789012346E+300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xfe3d7ee8bcbbd351"
+      ],
+      "expected_bits": "text:-1.23456789012346E+300"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x7e6ddd4baa009300"
+      ],
+      "expected_bits": "text:1E+301"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp300-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xfe6ddd4baa009300"
+      ],
+      "expected_bits": "text:-1E+301"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-mantissa1.0-pos0",
+      "args": [
+        "0x7fac7b1f3cac7433"
+      ],
+      "expected_bits": "text:1E+307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-negative-mantissa1.0-pos0",
+      "args": [
+        "0xffac7b1f3cac7433"
+      ],
+      "expected_bits": "text:-1E+307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-mantissa1.2-pos0",
+      "args": [
+        "0x7fb116ac579aac1e"
+      ],
+      "expected_bits": "text:1.2E+307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-negative-mantissa1.2-pos0",
+      "args": [
+        "0xffb116ac579aac1e"
+      ],
+      "expected_bits": "text:-1.2E+307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0x7fb194b14be279e4"
+      ],
+      "expected_bits": "text:1.23456789012346E+307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-negative-mantissa1.2345678901234567-pos0",
+      "args": [
+        "0xffb194b14be279e4"
+      ],
+      "expected_bits": "text:-1.23456789012346E+307"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-mantissa9.999999999999996-pos0",
+      "args": [
+        "0x7fe1ccf385ebc89e"
+      ],
+      "expected_bits": "text:1E+308"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-exp307-negative-mantissa9.999999999999996-pos0",
+      "args": [
+        "0xffe1ccf385ebc89e"
+      ],
+      "expected_bits": "text:-1E+308"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-0.0-plus-5e-13-pos0",
+      "args": [
+        "0x3d619799812dea11"
+      ],
+      "expected_bits": "text:0.0000000000005"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-0.0-minus-5e-13-pos0",
+      "args": [
+        "0xbd619799812dea11"
+      ],
+      "expected_bits": "text:-0.0000000000005"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0--inf-1-pos0",
+      "args": [
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0--inf-2-pos0",
+      "args": [
+        "0x3feffffffffffffe"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0--inf-4-pos0",
+      "args": [
+        "0x3feffffffffffffc"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0--inf-5-pos0",
+      "args": [
+        "0x3feffffffffffffb"
+      ],
+      "expected_bits": "text:0.999999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0--inf-6-pos0",
+      "args": [
+        "0x3feffffffffffffa"
+      ],
+      "expected_bits": "text:0.999999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0-inf-1-pos0",
+      "args": [
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0-inf-2-pos0",
+      "args": [
+        "0x3ff0000000000002"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0-inf-3-pos0",
+      "args": [
+        "0x3ff0000000000003"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0-inf-4-pos0",
+      "args": [
+        "0x3ff0000000000004"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0-inf-5-pos0",
+      "args": [
+        "0x3ff0000000000005"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1.0-inf-6-pos0",
+      "args": [
+        "0x3ff0000000000006"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-plus-1e-10-pos0",
+      "args": [
+        "0x3ff000000006df38"
+      ],
+      "expected_bits": "text:1.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-minus-1e-10-pos0",
+      "args": [
+        "0x3feffffffff24190"
+      ],
+      "expected_bits": "text:0.9999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-plus-1e-12-pos0",
+      "args": [
+        "0x3ff0000000001198"
+      ],
+      "expected_bits": "text:1.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-minus-1e-12-pos0",
+      "args": [
+        "0x3fefffffffffdcd1"
+      ],
+      "expected_bits": "text:0.999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-plus-5e-13-pos0",
+      "args": [
+        "0x3ff00000000008cc"
+      ],
+      "expected_bits": "text:1.0000000000005"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-minus-5e-13-pos0",
+      "args": [
+        "0x3fefffffffffee68"
+      ],
+      "expected_bits": "text:0.9999999999995"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-plus-1e-13-pos0",
+      "args": [
+        "0x3ff00000000001c2"
+      ],
+      "expected_bits": "text:1.0000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-minus-1e-13-pos0",
+      "args": [
+        "0x3feffffffffffc7b"
+      ],
+      "expected_bits": "text:0.9999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-plus-1e-14-pos0",
+      "args": [
+        "0x3ff000000000002d"
+      ],
+      "expected_bits": "text:1.00000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1.0-minus-1e-14-pos0",
+      "args": [
+        "0x3fefffffffffffa6"
+      ],
+      "expected_bits": "text:0.99999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0--inf-1-pos0",
+      "args": [
+        "0x3fffffffffffffff"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0--inf-2-pos0",
+      "args": [
+        "0x3ffffffffffffffe"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0--inf-3-pos0",
+      "args": [
+        "0x3ffffffffffffffd"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0--inf-4-pos0",
+      "args": [
+        "0x3ffffffffffffffc"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0--inf-5-pos0",
+      "args": [
+        "0x3ffffffffffffffb"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0--inf-6-pos0",
+      "args": [
+        "0x3ffffffffffffffa"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0-inf-1-pos0",
+      "args": [
+        "0x4000000000000001"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0-inf-2-pos0",
+      "args": [
+        "0x4000000000000002"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0-inf-3-pos0",
+      "args": [
+        "0x4000000000000003"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0-inf-4-pos0",
+      "args": [
+        "0x4000000000000004"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0-inf-5-pos0",
+      "args": [
+        "0x4000000000000005"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-2.0-inf-6-pos0",
+      "args": [
+        "0x4000000000000006"
+      ],
+      "expected_bits": "text:2"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-plus-1e-10-pos0",
+      "args": [
+        "0x4000000000036f9c"
+      ],
+      "expected_bits": "text:2.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-minus-1e-10-pos0",
+      "args": [
+        "0x3ffffffffff920c8"
+      ],
+      "expected_bits": "text:1.9999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-plus-1e-12-pos0",
+      "args": [
+        "0x40000000000008cc"
+      ],
+      "expected_bits": "text:2.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-minus-1e-12-pos0",
+      "args": [
+        "0x3fffffffffffee68"
+      ],
+      "expected_bits": "text:1.999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-plus-5e-13-pos0",
+      "args": [
+        "0x4000000000000466"
+      ],
+      "expected_bits": "text:2.0000000000005"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-minus-5e-13-pos0",
+      "args": [
+        "0x3ffffffffffff734"
+      ],
+      "expected_bits": "text:1.9999999999995"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-plus-1e-13-pos0",
+      "args": [
+        "0x40000000000000e1"
+      ],
+      "expected_bits": "text:2.0000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-minus-1e-13-pos0",
+      "args": [
+        "0x3ffffffffffffe3e"
+      ],
+      "expected_bits": "text:1.9999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-plus-1e-14-pos0",
+      "args": [
+        "0x4000000000000017"
+      ],
+      "expected_bits": "text:2.00000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-2.0-minus-1e-14-pos0",
+      "args": [
+        "0x3fffffffffffffd3"
+      ],
+      "expected_bits": "text:1.99999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0--inf-1-pos0",
+      "args": [
+        "0x405ebfffffffffff"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0--inf-2-pos0",
+      "args": [
+        "0x405ebffffffffffe"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0--inf-3-pos0",
+      "args": [
+        "0x405ebffffffffffd"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0--inf-4-pos0",
+      "args": [
+        "0x405ebffffffffffc"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0--inf-5-pos0",
+      "args": [
+        "0x405ebffffffffffb"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0--inf-6-pos0",
+      "args": [
+        "0x405ebffffffffffa"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0-inf-1-pos0",
+      "args": [
+        "0x405ec00000000001"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0-inf-2-pos0",
+      "args": [
+        "0x405ec00000000002"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0-inf-3-pos0",
+      "args": [
+        "0x405ec00000000003"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0-inf-4-pos0",
+      "args": [
+        "0x405ec00000000004"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0-inf-5-pos0",
+      "args": [
+        "0x405ec00000000005"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-123.0-inf-6-pos0",
+      "args": [
+        "0x405ec00000000006"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-plus-1e-10-pos0",
+      "args": [
+        "0x405ec00000001b7d"
+      ],
+      "expected_bits": "text:123.0000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-minus-1e-10-pos0",
+      "args": [
+        "0x405ebfffffffe483"
+      ],
+      "expected_bits": "text:122.9999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-plus-1e-12-pos0",
+      "args": [
+        "0x405ec00000000046"
+      ],
+      "expected_bits": "text:123.000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-minus-1e-12-pos0",
+      "args": [
+        "0x405ebfffffffffba"
+      ],
+      "expected_bits": "text:122.999999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-plus-5e-13-pos0",
+      "args": [
+        "0x405ec00000000023"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-minus-5e-13-pos0",
+      "args": [
+        "0x405ebfffffffffdd"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-plus-1e-13-pos0",
+      "args": [
+        "0x405ec00000000007"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-123.0-minus-1e-13-pos0",
+      "args": [
+        "0x405ebffffffffff9"
+      ],
+      "expected_bits": "text:123"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20--inf-1-pos0",
+      "args": [
+        "0x3bc79ca10c924222"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20--inf-2-pos0",
+      "args": [
+        "0x3bc79ca10c924221"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20--inf-4-pos0",
+      "args": [
+        "0x3bc79ca10c92421f"
+      ],
+      "expected_bits": "text:9.99999999999999E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20--inf-5-pos0",
+      "args": [
+        "0x3bc79ca10c92421e"
+      ],
+      "expected_bits": "text:9.99999999999999E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20--inf-6-pos0",
+      "args": [
+        "0x3bc79ca10c92421d"
+      ],
+      "expected_bits": "text:9.99999999999999E-21"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20-inf-1-pos0",
+      "args": [
+        "0x3bc79ca10c924224"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20-inf-2-pos0",
+      "args": [
+        "0x3bc79ca10c924225"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20-inf-3-pos0",
+      "args": [
+        "0x3bc79ca10c924226"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20-inf-4-pos0",
+      "args": [
+        "0x3bc79ca10c924227"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20-inf-5-pos0",
+      "args": [
+        "0x3bc79ca10c924228"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-20-inf-6-pos0",
+      "args": [
+        "0x3bc79ca10c924229"
+      ],
+      "expected_bits": "text:1E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-plus-1e-10-pos0",
+      "args": [
+        "0x3ddb7cdfd9e38c0c"
+      ],
+      "expected_bits": "text:1.0000000001E-10"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-minus-1e-10-pos0",
+      "args": [
+        "0xbddb7cdfd9cbef6a"
+      ],
+      "expected_bits": "text:-9.999999999E-11"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-plus-1e-12-pos0",
+      "args": [
+        "0x3d71979984217e33"
+      ],
+      "expected_bits": "text:1.00000001E-12"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-minus-1e-12-pos0",
+      "args": [
+        "0xbd7197997e3a55ef"
+      ],
+      "expected_bits": "text:-9.9999999E-13"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-plus-5e-13-pos0",
+      "args": [
+        "0x3d61979987151254"
+      ],
+      "expected_bits": "text:5.0000001E-13"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-minus-5e-13-pos0",
+      "args": [
+        "0xbd6197997b46c1ce"
+      ],
+      "expected_bits": "text:-4.9999999E-13"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-plus-1e-13-pos0",
+      "args": [
+        "0x3d3c25c29782b89b"
+      ],
+      "expected_bits": "text:1.0000001E-13"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-minus-1e-13-pos0",
+      "args": [
+        "0xbd3c25c239103469"
+      ],
+      "expected_bits": "text:-9.999999E-14"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-plus-1e-14-pos0",
+      "args": [
+        "0x3d06849d006b3c64"
+      ],
+      "expected_bits": "text:1.000001E-14"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-20-minus-1e-14-pos0",
+      "args": [
+        "0xbd06849a0cd71ad2"
+      ],
+      "expected_bits": "text:-9.99999E-15"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19--inf-1-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2ab"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19--inf-2-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2aa"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19--inf-4-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2a8"
+      ],
+      "expected_bits": "text:9.99999999999999E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19--inf-5-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2a7"
+      ],
+      "expected_bits": "text:9.99999999999999E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19--inf-6-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2a6"
+      ],
+      "expected_bits": "text:9.99999999999999E-20"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19-inf-1-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2ad"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19-inf-2-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2ae"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19-inf-3-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2af"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19-inf-4-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2b0"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19-inf-5-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2b1"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-19-inf-6-pos0",
+      "args": [
+        "0x3bfd83c94fb6d2b2"
+      ],
+      "expected_bits": "text:0.0000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-plus-1e-10-pos0",
+      "args": [
+        "0x3ddb7cdfda4dcce0"
+      ],
+      "expected_bits": "text:0.0000000001000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-minus-1e-10-pos0",
+      "args": [
+        "0xbddb7cdfd961ae96"
+      ],
+      "expected_bits": "text:-0.0000000000999999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-plus-1e-12-pos0",
+      "args": [
+        "0x3d7197999eb1b361"
+      ],
+      "expected_bits": "text:0.0000000000010000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-minus-1e-12-pos0",
+      "args": [
+        "0xbd71979963aa20c1"
+      ],
+      "expected_bits": "text:-0.0000000000009999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-plus-5e-13-pos0",
+      "args": [
+        "0x3d619799bc357cb0"
+      ],
+      "expected_bits": "text:0.0000000000005000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-minus-5e-13-pos0",
+      "args": [
+        "0xbd61979946265772"
+      ],
+      "expected_bits": "text:-0.0000000000004999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-plus-1e-13-pos0",
+      "args": [
+        "0x3d3c25c440860b7d"
+      ],
+      "expected_bits": "text:0.0000000000001000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-minus-1e-13-pos0",
+      "args": [
+        "0xbd3c25c0900ce187"
+      ],
+      "expected_bits": "text:-0.0000000000000999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-plus-1e-14-pos0",
+      "args": [
+        "0x3d0684aa4885d376"
+      ],
+      "expected_bits": "text:0.0000000000000100001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-19-minus-1e-14-pos0",
+      "args": [
+        "0xbd06848cc4bc83c0"
+      ],
+      "expected_bits": "text:-0.0000000000000099999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18--inf-1-pos0",
+      "args": [
+        "0x3c32725dd1d243ab"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18--inf-3-pos0",
+      "args": [
+        "0x3c32725dd1d243a9"
+      ],
+      "expected_bits": "text:9.99999999999999E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18--inf-4-pos0",
+      "args": [
+        "0x3c32725dd1d243a8"
+      ],
+      "expected_bits": "text:9.99999999999999E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18--inf-5-pos0",
+      "args": [
+        "0x3c32725dd1d243a7"
+      ],
+      "expected_bits": "text:9.99999999999999E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18--inf-6-pos0",
+      "args": [
+        "0x3c32725dd1d243a6"
+      ],
+      "expected_bits": "text:9.99999999999999E-19"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18-inf-1-pos0",
+      "args": [
+        "0x3c32725dd1d243ad"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18-inf-2-pos0",
+      "args": [
+        "0x3c32725dd1d243ae"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18-inf-3-pos0",
+      "args": [
+        "0x3c32725dd1d243af"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18-inf-4-pos0",
+      "args": [
+        "0x3c32725dd1d243b0"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18-inf-5-pos0",
+      "args": [
+        "0x3c32725dd1d243b1"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e-18-inf-6-pos0",
+      "args": [
+        "0x3c32725dd1d243b2"
+      ],
+      "expected_bits": "text:0.000000000000000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-plus-1e-10-pos0",
+      "args": [
+        "0x3ddb7cdfde74552f"
+      ],
+      "expected_bits": "text:0.000000000100000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-minus-1e-10-pos0",
+      "args": [
+        "0xbddb7cdfd53b2647"
+      ],
+      "expected_bits": "text:-0.000000000099999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-plus-1e-12-pos0",
+      "args": [
+        "0x3d71979aa853c72e"
+      ],
+      "expected_bits": "text:0.000000000001000001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-minus-1e-12-pos0",
+      "args": [
+        "0xbd7197985a080cf4"
+      ],
+      "expected_bits": "text:-0.000000000000999999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-plus-5e-13-pos0",
+      "args": [
+        "0x3d61979bcf79a44b"
+      ],
+      "expected_bits": "text:0.000000000000500001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-minus-5e-13-pos0",
+      "args": [
+        "0xbd61979732e22fd7"
+      ],
+      "expected_bits": "text:-0.000000000000499999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-plus-1e-13-pos0",
+      "args": [
+        "0x3d3c25d4daa74854"
+      ],
+      "expected_bits": "text:0.000000000000100001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-minus-1e-13-pos0",
+      "args": [
+        "0xbd3c25aff5eba4b0"
+      ],
+      "expected_bits": "text:-0.000000000000099999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-plus-1e-14-pos0",
+      "args": [
+        "0x3d06852f198fba2d"
+      ],
+      "expected_bits": "text:0.000000000000010001"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-near-integer-1e-18-minus-1e-14-pos0",
+      "args": [
+        "0xbd068407f3b29d09"
+      ],
+      "expected_bits": "text:-0.000000000000009999"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19--inf-1-pos0",
+      "args": [
+        "0x43e158e460913cff"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19--inf-3-pos0",
+      "args": [
+        "0x43e158e460913cfd"
+      ],
+      "expected_bits": "text:9999999999999990000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19--inf-4-pos0",
+      "args": [
+        "0x43e158e460913cfc"
+      ],
+      "expected_bits": "text:9999999999999990000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19--inf-5-pos0",
+      "args": [
+        "0x43e158e460913cfb"
+      ],
+      "expected_bits": "text:9999999999999990000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19--inf-6-pos0",
+      "args": [
+        "0x43e158e460913cfa"
+      ],
+      "expected_bits": "text:9999999999999990000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19-inf-1-pos0",
+      "args": [
+        "0x43e158e460913d01"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19-inf-2-pos0",
+      "args": [
+        "0x43e158e460913d02"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19-inf-3-pos0",
+      "args": [
+        "0x43e158e460913d03"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19-inf-4-pos0",
+      "args": [
+        "0x43e158e460913d04"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19-inf-5-pos0",
+      "args": [
+        "0x43e158e460913d05"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+19-inf-6-pos0",
+      "args": [
+        "0x43e158e460913d06"
+      ],
+      "expected_bits": "text:10000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20--inf-1-pos0",
+      "args": [
+        "0x4415af1d78b58c3f"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20--inf-3-pos0",
+      "args": [
+        "0x4415af1d78b58c3d"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20--inf-4-pos0",
+      "args": [
+        "0x4415af1d78b58c3c"
+      ],
+      "expected_bits": "text:99999999999999900000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20--inf-5-pos0",
+      "args": [
+        "0x4415af1d78b58c3b"
+      ],
+      "expected_bits": "text:99999999999999900000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20--inf-6-pos0",
+      "args": [
+        "0x4415af1d78b58c3a"
+      ],
+      "expected_bits": "text:99999999999999900000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20-inf-1-pos0",
+      "args": [
+        "0x4415af1d78b58c41"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20-inf-2-pos0",
+      "args": [
+        "0x4415af1d78b58c42"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20-inf-3-pos0",
+      "args": [
+        "0x4415af1d78b58c43"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20-inf-4-pos0",
+      "args": [
+        "0x4415af1d78b58c44"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20-inf-5-pos0",
+      "args": [
+        "0x4415af1d78b58c45"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-nextafter-1e+20-inf-6-pos0",
+      "args": [
+        "0x4415af1d78b58c46"
+      ],
+      "expected_bits": "text:100000000000000000000"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-normal-limit-pos0",
+      "args": [
+        "0x0010000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-normal-limit-pos0",
+      "args": [
+        "0x0010000000000001"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-normal-limit-pos0",
+      "args": [
+        "0x7fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-format-IMCONJUGATE-normal-limit-pos0",
+      "args": [
+        "0x8000000000000000"
+      ],
+      "expected_bits": "text:0"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T12:28:13.0330817Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

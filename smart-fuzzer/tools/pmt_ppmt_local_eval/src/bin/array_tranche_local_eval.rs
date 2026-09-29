@@ -1,5 +1,7 @@
+use oxfunc_core::functions::a1_refs::parse_a1_reference;
 use oxfunc_core::functions::rand_fn::RandomProvider;
 use oxfunc_core::functions::surface_dispatch::eval_surface_value_call;
+use oxfunc_core::locale_format::LocaleFormatContext;
 use oxfunc_core::resolver::{
     CallerContext, ReferenceDereferenceRequest, ReferenceEnumerationRequest,
     ReferenceResolutionError, ReferenceSystemCapabilities, ReferenceSystemProvider,
@@ -14,8 +16,12 @@ use std::collections::BTreeMap;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::panic::{AssertUnwindSafe, catch_unwind};
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::path::PathBuf;
+
+#[cfg(feature = "oxfml-locale")]
+#[path = "array_tranche_local_eval/locale.rs"]
+mod locale;
 
 #[derive(Debug)]
 struct CaseRecord {
@@ -108,6 +114,114 @@ struct CaseResolver {
     caller: Option<CallerContext>,
 }
 
+impl CaseResolver {
+    fn fixture_value(&self, target: &str) -> Option<CalcValue> {
+        if let Some(value) = self.by_target.get(target) {
+            return Some(value.clone());
+        }
+
+        // INDEX and similar adapters can request a subrange of a fixture. Keep
+        // its worksheet prefix and copy the original typed cells unchanged.
+        let requested = parse_a1_reference(target)?;
+        for (fixture_target, value) in &self.by_target {
+            let Some(fixture) = parse_a1_reference(fixture_target) else {
+                continue;
+            };
+            if requested.prefix != fixture.prefix
+                || requested.start_row < fixture.start_row
+                || requested.end_row > fixture.end_row
+                || requested.start_col < fixture.start_col
+                || requested.end_col > fixture.end_col
+            {
+                continue;
+            }
+            let CoreValue::Array(array) = value.core() else {
+                if requested.height() == 1 && requested.width() == 1 {
+                    return Some(value.clone());
+                }
+                continue;
+            };
+            if array.shape().rows != fixture.height() || array.shape().cols != fixture.width() {
+                continue;
+            }
+            let row_offset = requested.start_row - fixture.start_row;
+            let col_offset = requested.start_col - fixture.start_col;
+            if requested.height() == 1 && requested.width() == 1 {
+                return array.get(row_offset, col_offset).cloned();
+            }
+            let rows = (0..requested.height())
+                .map(|row| {
+                    (0..requested.width())
+                        .map(|col| array.get(row_offset + row, col_offset + col).cloned())
+                        .collect::<Option<Vec<_>>>()
+                })
+                .collect::<Option<Vec<_>>>()?;
+            return CalcArray::from_rows(rows).map(CalcValue::array);
+        }
+        // A packet may declare each worksheet cell separately while passing a
+        // rectangular reference to the function. Assemble only declared cells:
+        // absent fixture coordinates remain unresolved, never invented blanks.
+        let mut cells = BTreeMap::new();
+        for (fixture_target, value) in &self.by_target {
+            let Some(fixture) = parse_a1_reference(fixture_target) else {
+                continue;
+            };
+            if requested.prefix != fixture.prefix {
+                continue;
+            }
+            let row_start = requested.start_row.max(fixture.start_row);
+            let row_end = requested.end_row.min(fixture.end_row);
+            let col_start = requested.start_col.max(fixture.start_col);
+            let col_end = requested.end_col.min(fixture.end_col);
+            if row_start > row_end || col_start > col_end {
+                continue;
+            }
+            let array = match value.core() {
+                CoreValue::Array(array)
+                    if array.shape().rows == fixture.height()
+                        && array.shape().cols == fixture.width() =>
+                {
+                    Some(array)
+                }
+                CoreValue::Array(_) => continue,
+                _ if fixture.height() == 1 && fixture.width() == 1 => None,
+                _ => continue,
+            };
+            for row in row_start..=row_end {
+                for col in col_start..=col_end {
+                    let cell = match array {
+                        Some(array) => array
+                            .get(row - fixture.start_row, col - fixture.start_col)?
+                            .clone(),
+                        None => value.clone(),
+                    };
+                    if let Some(previous) = cells.insert((row, col), cell.clone()) {
+                        if previous != cell {
+                            // Fixture order is not retained in this resolver;
+                            // conflicting overlapping declarations are ambiguous.
+                            return None;
+                        }
+                    }
+                }
+            }
+        }
+        if cells.len() != requested.height().checked_mul(requested.width())? {
+            return None;
+        }
+        if requested.height() == 1 && requested.width() == 1 {
+            return cells.remove(&(requested.start_row, requested.start_col));
+        }
+        let rows = (requested.start_row..=requested.end_row)
+            .map(|row| {
+                (requested.start_col..=requested.end_col)
+                    .map(|col| cells.remove(&(row, col)))
+                    .collect::<Option<Vec<_>>>()
+            })
+            .collect::<Option<Vec<_>>>()?;
+        CalcArray::from_rows(rows).map(CalcValue::array)
+    }
+}
+
 impl ReferenceSystemProvider for CaseResolver {
     fn capabilities(&self) -> ReferenceSystemCapabilities {
         ReferenceSystemCapabilities::permissive_local()
@@ -117,9 +231,7 @@ impl ReferenceSystemProvider for CaseResolver {
         &self,
         request: &ReferenceDereferenceRequest,
     ) -> Result<CalcValue, ReferenceResolutionError> {
-        self.by_target
-            .get(request.reference.target())
-            .cloned()
+        self.fixture_value(request.reference.target())
             .ok_or_else(|| ReferenceResolutionError::UnresolvedReference {
                 target: request.reference.target().to_string(),
             })
@@ -129,17 +241,39 @@ impl ReferenceSystemProvider for CaseResolver {
         &self,
         request: &ReferenceEnumerationRequest,
     ) -> Result<Option<ResolvedReferenceValues>, ReferenceResolutionError> {
-        Ok(self
-            .by_target
-            .get(request.reference.target())
-            .cloned()
-            .map(|value| {
-                ResolvedReferenceValues::new(
+        Ok(self.fixture_value(request.reference.target()).map(|value| {
+            let (extent, cells) = match value.core() {
+                CoreValue::Array(array) => {
+                    let shape = array.shape();
+                    let mut cells = Vec::with_capacity(shape.cell_count());
+                    for row in 0..shape.rows {
+                        for col in 0..shape.cols {
+                            cells.push(ResolvedReferenceCell::new(
+                                row + 1,
+                                col + 1,
+                                array
+                                    .get(row, col)
+                                    .expect("fixture shape validated")
+                                    .clone(),
+                            ));
+                        }
+                    }
+                    (ResolvedReferenceExtent::new(shape.rows, shape.cols), cells)
+                }
+                _ => (
                     ResolvedReferenceExtent::new(1, 1),
-                    vec![ResolvedReferenceCell::new(0, 0, value)],
-                    Some("array_tranche_local_eval_fixture".to_string()),
-                )
-            }))
+                    vec![ResolvedReferenceCell::new(1, 1, value)],
+                ),
+            };
+            ResolvedReferenceValues::new(
+                extent,
+                cells,
+                Some(format!(
+                    "array_tranche_local_eval_fixture:{}",
+                    request.reference.target()
+                )),
+            )
+        }))
     }
 
     fn caller_context(&self) -> Option<CallerContext> {
@@ -148,13 +282,26 @@ impl ReferenceSystemProvider for CaseResolver {
 }
 
 fn usage(program: &str) -> String {
-    format!("usage: {program} --cases <cases.jsonl> --out <local-outcomes.jsonl>")
+    format!(
+        "usage: {program} --cases <cases.jsonl> --out <local-outcomes.jsonl> [--locale-profile <canonical-id> --locale-profile-record <record.json> [--use-recorded-locale-settings]] (locale options require --features oxfml-locale)"
+    )
 }
 
-fn parse_args() -> Result<(PathBuf, PathBuf), String> {
+struct RunOptions {
+    cases: PathBuf,
+    out: PathBuf,
+    locale_profile: Option<String>,
+    locale_profile_record: Option<PathBuf>,
+    use_recorded_locale_settings: bool,
+}
+
+fn parse_args() -> Result<RunOptions, String> {
     let args: Vec<String> = env::args().collect();
     let mut cases = None;
     let mut out = None;
+    let mut locale_profile = None;
+    let mut locale_profile_record = None;
+    let mut use_recorded_locale_settings = false;
     let mut index = 1;
     while index < args.len() {
         match args[index].as_str() {
@@ -166,12 +313,37 @@ fn parse_args() -> Result<(PathBuf, PathBuf), String> {
                 index += 1;
                 out = args.get(index).map(PathBuf::from);
             }
+            "--locale-profile" => {
+                index += 1;
+                locale_profile = args.get(index).cloned();
+            }
+            "--locale-profile-record" => {
+                index += 1;
+                locale_profile_record = args.get(index).map(PathBuf::from);
+            }
+            "--use-recorded-locale-settings" => use_recorded_locale_settings = true,
             _ => return Err(usage(&args[0])),
         }
         index += 1;
     }
+    if locale_profile.is_some() != locale_profile_record.is_some() {
+        return Err(
+            "--locale-profile and --locale-profile-record must be supplied together".to_string(),
+        );
+    }
+    if use_recorded_locale_settings && locale_profile.is_none() {
+        return Err(
+            "--use-recorded-locale-settings requires explicit profile and record".to_string(),
+        );
+    }
     match (cases, out) {
-        (Some(cases), Some(out)) => Ok((cases, out)),
+        (Some(cases), Some(out)) => Ok(RunOptions {
+            cases,
+            out,
+            locale_profile,
+            locale_profile_record,
+            use_recorded_locale_settings,
+        }),
         _ => Err(usage(&args[0])),
     }
 }
@@ -336,7 +508,9 @@ fn input_to_calc_value(input: &JsonValue) -> Result<CalcValue, String> {
         }
         "empty_cell" => Ok(CalcValue::empty()),
         "missing_arg" => Ok(CalcValue::missing()),
-        "array" => Ok(CalcValue::array(input_to_array(input_field(input, "rows")?)?)),
+        "array" => Ok(CalcValue::array(input_to_array(input_field(
+            input, "rows",
+        )?)?)),
         "reference" => Ok(CalcValue::reference(input_to_reference(input)?)),
         other => Err(format!("unsupported input kind: {other}")),
     }
@@ -366,7 +540,9 @@ fn input_to_fixture_value(input: &JsonValue) -> Result<CalcValue, String> {
                 .ok_or_else(|| "error input has non-string code".to_string())?;
             Ok(CalcValue::error(parse_worksheet_error_code(code)?))
         }
-        "array" => Ok(CalcValue::array(input_to_array(input_field(input, "rows")?)?)),
+        "array" => Ok(CalcValue::array(input_to_array(input_field(
+            input, "rows",
+        )?)?)),
         "empty_cell" => Ok(CalcValue::empty()),
         "reference" => Ok(CalcValue::reference(input_to_reference(input)?)),
         "missing_arg" => Err("missing_arg is not a fixture value".to_string()),
@@ -575,7 +751,7 @@ fn parse_caller_context(cell: Option<&str>) -> Option<CallerContext> {
     })
 }
 
-fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
+fn evaluate_case(case: CaseRecord, locale_ctx: Option<&LocaleFormatContext<'_>>) -> OutcomeRecord {
     let args = match case
         .args
         .iter()
@@ -599,7 +775,12 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
     let fixture_result = case
         .cell_fixture
         .iter()
-        .map(|fixture| Ok((fixture.target.clone(), input_to_fixture_value(&fixture.value)?)))
+        .map(|fixture| {
+            Ok((
+                fixture.target.clone(),
+                input_to_fixture_value(&fixture.value)?,
+            ))
+        })
         .collect::<Result<BTreeMap<_, _>, String>>();
     let resolver = match fixture_result {
         Ok(by_target) => CaseResolver {
@@ -639,7 +820,7 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
             &resolver,
             case.now_serial,
             random_provider,
-            None,
+            locale_ctx,
             None,
         )
     }));
@@ -670,11 +851,35 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (cases_path, out_path) = parse_args()
+    let options = parse_args()
         .map_err(|message| std::io::Error::new(std::io::ErrorKind::InvalidInput, message))?;
 
-    let input = BufReader::new(File::open(cases_path)?);
-    let mut output = BufWriter::new(File::create(out_path)?);
+    #[cfg(feature = "oxfml-locale")]
+    let locale_binding = match (&options.locale_profile, &options.locale_profile_record) {
+        (Some(profile), Some(record)) => Some(
+            locale::bind(profile, record, options.use_recorded_locale_settings).map_err(
+                |message| std::io::Error::new(std::io::ErrorKind::InvalidInput, message),
+            )?,
+        ),
+        _ => None,
+    };
+    #[cfg(not(feature = "oxfml-locale"))]
+    if options.locale_profile.is_some()
+        || options.locale_profile_record.is_some()
+        || options.use_recorded_locale_settings
+    {
+        return Err(
+            "locale binding requires Cargo feature oxfml-locale; no fallback provider was selected"
+                .into(),
+        );
+    }
+    #[cfg(feature = "oxfml-locale")]
+    let locale_ctx = locale_binding.as_ref().map(|binding| &binding.context);
+    #[cfg(not(feature = "oxfml-locale"))]
+    let locale_ctx = None;
+
+    let input = BufReader::new(File::open(options.cases)?);
+    let mut output = BufWriter::new(File::create(&options.out)?);
     for line in input.lines() {
         let line = line?;
         let line = line.trim_start_matches('\u{feff}');
@@ -684,10 +889,242 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let case_json: JsonValue = serde_json::from_str(line)?;
         let case = case_from_json(case_json)
             .map_err(|message| std::io::Error::new(std::io::ErrorKind::InvalidData, message))?;
-        let outcome = evaluate_case(case);
+        let outcome = evaluate_case(case, locale_ctx);
+        #[cfg(feature = "oxfml-locale")]
+        if let Some(binding) = &locale_binding {
+            let mut value = serde_json::to_value(&outcome)?;
+            value["locale_context"] = serde_json::json!({
+                "provider":binding.provenance["provider"],
+                "profile_id":binding.provenance["profile_id"],
+                "date_system":binding.provenance["date_system"],
+                "profile_validation":binding.provenance["profile_validation"],
+                "profile_record_sha256":binding.provenance["profile_record_sha256"],
+            });
+            serde_json::to_writer(&mut output, &value)?;
+        } else {
+            serde_json::to_writer(&mut output, &outcome)?;
+        }
+        #[cfg(not(feature = "oxfml-locale"))]
         serde_json::to_writer(&mut output, &outcome)?;
         output.write_all(b"\n")?;
     }
     output.flush()?;
+    #[cfg(feature = "oxfml-locale")]
+    if let Some(binding) = &locale_binding {
+        let mut sidecar =
+            BufWriter::new(File::create(options.out.with_extension("provenance.json"))?);
+        serde_json::to_writer_pretty(&mut sidecar, &binding.provenance)?;
+        sidecar.flush()?;
+    }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use oxfunc_core::resolver::materialize_resolved_reference_values;
+    use serde_json::json;
+
+    #[test]
+    fn typed_json_decimal_ingress_preserves_original_binary64_bits() {
+        // Original source bits from the independent 10,000-row ABS ingress
+        // probe, not values inferred from the JSON decoder under test.
+        for (decimal, expected) in [
+            ("8.76062371711073e-303", 0x013807eb4fb3ba95_u64),
+            ("1.9737081258726104e+244", 0x72a71fed759c9875),
+            ("6.585554626534559e+304", 0x7f38020efc84768a),
+            ("2.1381717900254593e+263", 0x769b2939ce1c779f),
+            ("3.231130561040196e-231", 0x101410c82ffe240e),
+        ] {
+            let source = format!(
+                r#"{{"case_id":"ingress","function_id":"FUNC.ABS","formula_text":"=ABS(A1)","args":[{{"kind":"number","value":{decimal}}}]}}"#
+            );
+            let case = case_from_json(serde_json::from_str(&source).unwrap()).unwrap();
+            let result = evaluate_case(case, None);
+            let Outcome::Number { bits_hex, .. } = result.outcome else {
+                panic!("{result:?}");
+            };
+            assert_eq!(bits_hex, format!("0x{expected:016x}"), "{decimal}");
+        }
+    }
+
+    fn matrix_resolver() -> CaseResolver {
+        CaseResolver {
+            by_target: BTreeMap::from([(
+                "A1:C2".to_string(),
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![
+                            CalcValue::number(7.0),
+                            CalcValue::empty(),
+                            CalcValue::logical(true),
+                        ],
+                        vec![
+                            CalcValue::text(ExcelText::from_interop_assignment("02")),
+                            CalcValue::error(WorksheetErrorCode::NA),
+                            CalcValue::number(-0.0),
+                        ],
+                    ])
+                    .unwrap(),
+                ),
+            )]),
+            caller: None,
+        }
+    }
+
+    #[test]
+    fn fixture_enumeration_preserves_rectangular_shape_and_typed_cells() {
+        let resolver = matrix_resolver();
+        let values = resolver
+            .enumerate_values(&ReferenceEnumerationRequest {
+                reference: ReferenceLike::new(ReferenceKind::Area, "A1:C2"),
+            })
+            .unwrap()
+            .unwrap();
+        assert_eq!(values.declared_extent, ResolvedReferenceExtent::new(2, 3));
+        assert_eq!(values.defined_cardinality, 6);
+        assert_eq!(
+            (values.defined_cells[0].row, values.defined_cells[0].col),
+            (1, 1)
+        );
+        assert_eq!(
+            (values.defined_cells[5].row, values.defined_cells[5].col),
+            (2, 3)
+        );
+        let materialized = materialize_resolved_reference_values(&values).unwrap();
+        assert_eq!(
+            value_to_outcome(&CalcValue::array(materialized)).digest(),
+            value_to_outcome(resolver.by_target.get("A1:C2").unwrap()).digest()
+        );
+    }
+
+    #[test]
+    fn fixture_projection_keeps_sheet_identity_and_original_cell_types() {
+        let resolver = matrix_resolver();
+        assert!(matches!(
+            resolver.fixture_value("$B$2").unwrap().core(),
+            CoreValue::Error(WorksheetErrorCode::NA)
+        ));
+        assert!(resolver.fixture_value("Other!B2").is_none());
+        assert!(resolver.fixture_value("D2").is_none());
+        let row = resolver.fixture_value("A2:C2").unwrap();
+        assert_eq!(
+            value_to_outcome(&row).digest(),
+            "array:1x3:[text:02|error:NA|number:0x8000000000000000]"
+        );
+        let scalar = resolver
+            .enumerate_values(&ReferenceEnumerationRequest {
+                reference: ReferenceLike::new(ReferenceKind::A1, "A1"),
+            })
+            .unwrap()
+            .unwrap();
+        assert_eq!(scalar.declared_extent, ResolvedReferenceExtent::new(1, 1));
+        assert_eq!(
+            (scalar.defined_cells[0].row, scalar.defined_cells[0].col),
+            (1, 1)
+        );
+        materialize_resolved_reference_values(&scalar).unwrap();
+    }
+
+    impl Outcome {
+        fn digest(&self) -> &str {
+            outcome_digest(self)
+        }
+    }
+
+    #[test]
+    fn fixture_assembles_explicit_cells_and_areas_without_inventing_blanks() {
+        let mut resolver = CaseResolver {
+            by_target: BTreeMap::from([
+                ("Sheet1!B1".to_string(), CalcValue::number(7.0)),
+                ("Sheet1!C1".to_string(), CalcValue::empty()),
+                ("Sheet1!D1".to_string(), CalcValue::logical(true)),
+                (
+                    "Sheet1!B2:D2".to_string(),
+                    CalcValue::array(
+                        CalcArray::from_rows(vec![vec![
+                            CalcValue::text(ExcelText::from_interop_assignment("02")),
+                            CalcValue::error(WorksheetErrorCode::NA),
+                            CalcValue::number(-0.0),
+                        ]])
+                        .unwrap(),
+                    ),
+                ),
+            ]),
+            caller: None,
+        };
+        let request = ReferenceEnumerationRequest {
+            reference: ReferenceLike::new(ReferenceKind::Area, "Sheet1!$B$1:$D$2"),
+        };
+        let values = resolver.enumerate_values(&request).unwrap().unwrap();
+        assert_eq!(values.declared_extent, ResolvedReferenceExtent::new(2, 3));
+        assert_eq!(values.defined_cardinality, 6);
+        let value = CalcValue::array(materialize_resolved_reference_values(&values).unwrap());
+        assert_eq!(value_to_outcome(&value).digest(),
+            "array:2x3:[number:0x401c000000000000|empty_cell|logical:true|text:02|error:NA|number:0x8000000000000000]");
+        assert!(resolver.fixture_value("Other!B1:D2").is_none());
+        resolver.by_target.remove("Sheet1!C1");
+        assert!(resolver.fixture_value("Sheet1!B1:D2").is_none());
+    }
+
+    #[test]
+    fn fixture_surface_replays_criteria_lookup_and_index() {
+        let number = |value| json!({"kind":"number", "value":value});
+        let reference =
+            |target| json!({"kind":"reference", "reference_kind":"Area", "target":target});
+        let fixture = json!([
+            {"target":"A1:A3", "value":{"kind":"array", "rows":[[number(1)],[number(2)],[number(3)]]}},
+            {"target":"B1:B3", "value":{"kind":"array", "rows":[[number(10)],[number(20)],[number(30)]]}},
+            {"target":"D1:E2", "value":{"kind":"array", "rows":[[number(1),number(2)],[number(3),number(4)]]}}
+        ]);
+        for (function_id, args, expected) in [
+            (
+                "FUNC.COUNTIF",
+                vec![reference("A1:A3"), json!({"kind":"text","value":">1"})],
+                2.0,
+            ),
+            (
+                "FUNC.SUMIF",
+                vec![
+                    reference("A1:A3"),
+                    json!({"kind":"text","value":">1"}),
+                    reference("B1:B3"),
+                ],
+                50.0,
+            ),
+            (
+                "FUNC.MATCH",
+                vec![number(2), reference("A1:A3"), number(0)],
+                2.0,
+            ),
+            (
+                "FUNC.XMATCH",
+                vec![number(2), reference("A1:A3"), number(0)],
+                2.0,
+            ),
+            (
+                "FUNC.XLOOKUP",
+                vec![number(2), reference("A1:A3"), reference("B1:B3")],
+                20.0,
+            ),
+            (
+                "FUNC.INDEX",
+                vec![reference("D1:E2"), number(2), number(2)],
+                4.0,
+            ),
+            ("FUNC.MDETERM", vec![reference("D1:E2")], -2.0),
+        ] {
+            let record =
+                case_from_json(json!({"case_id":"fixture-smoke", "function_id":function_id,
+                "formula_text":"fixture smoke", "args":args, "cell_fixture":fixture}))
+                .unwrap();
+            let result = evaluate_case(record, None);
+            assert_eq!(result.execution_status, "ok");
+            assert_eq!(
+                result.outcome.digest(),
+                number_outcome(expected).digest(),
+                "{function_id}"
+            );
+        }
+    }
 }

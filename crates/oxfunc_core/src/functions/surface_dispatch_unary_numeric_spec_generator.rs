@@ -307,6 +307,9 @@ struct MigratedBinaryArm {
     meta_module: &'static str,
     /// `*_META` ident, e.g. `"OP_POWER_META"`.
     meta: &'static str,
+    /// A function-specific prepared surface can share this numeric kernel
+    /// while owning different Missing/coercion/broadcast behavior.
+    prepared_surface: Option<(&'static str, &'static str)>,
 }
 
 /// Build a migrated binary arm. The spec is constructed HERE from the live kernel + policy so the
@@ -324,6 +327,7 @@ macro_rules! binary_arm {
             kernel: stringify!($kernel),
             meta_module: stringify!($mmod),
             meta: stringify!($meta),
+            prepared_surface: None,
         }
     };
     ($id:expr, fallible, $kmod:ident, $kernel:ident, $mmod:ident, $meta:ident) => {
@@ -337,6 +341,7 @@ macro_rules! binary_arm {
             kernel: stringify!($kernel),
             meta_module: stringify!($mmod),
             meta: stringify!($meta),
+            prepared_surface: None,
         }
     };
 }
@@ -348,7 +353,13 @@ macro_rules! binary_arm {
 /// arms.
 fn migrated_binary_numeric() -> Vec<MigratedBinaryArm> {
     vec![
-        binary_arm!("FUNC.MOD", fallible, mod_fn, mod_kernel, mod_fn, MOD_META),
+        MigratedBinaryArm {
+            prepared_surface: Some((
+                "crate::functions::mod_fn::eval_mod_surface",
+                "crate::functions::mod_fn::map_mod_error_to_ws",
+            )),
+            ..binary_arm!("FUNC.MOD", fallible, mod_fn, mod_kernel, mod_fn, MOD_META)
+        },
         binary_arm!(
             "FUNC.OP_ADD",
             raw,
@@ -389,14 +400,13 @@ fn migrated_binary_numeric() -> Vec<MigratedBinaryArm> {
             operator_arithmetic_family,
             OP_POWER_META
         ),
-        binary_arm!(
-            "FUNC.POWER",
-            fallible,
-            power_fn,
-            power_kernel,
-            power_fn,
-            POWER_META
-        ),
+        MigratedBinaryArm {
+            prepared_surface: Some((
+                "crate::functions::power_fn::eval_power_surface",
+                "crate::functions::power_fn::map_power_error_to_ws",
+            )),
+            ..binary_arm!("FUNC.POWER", fallible, power_fn, power_kernel, power_fn, POWER_META)
+        },
     ]
 }
 
@@ -422,6 +432,15 @@ fn emit_spec_driven_binary_numeric_arms() -> String {
 
     let mut out = String::new();
     for (idx, arm) in &rows {
+        if let Some((surface, map_error)) = arm.prepared_surface {
+            out.push_str(&format!(
+                "    // {fid}  [spec-driven: binary kernel with function-specific prepared surface]\n",
+                fid = arm.function_id
+            ));
+            out.push_str(&format!("    {idx} => {surface}(args, resolver)\n"));
+            out.push_str(&format!("        .map_err(|e| {map_error}(&e)),\n"));
+            continue;
+        }
         let ctor = binary_kernel_ctor(arm.spec);
         out.push_str(&format!(
             "    // {fid}  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]\n",

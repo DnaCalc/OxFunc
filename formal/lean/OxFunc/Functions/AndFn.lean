@@ -1,6 +1,7 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 import OxFunc.ValueUniverse
+import OxFunc.Functions.LogicalFold
 
 namespace OxFunc.Functions
 
@@ -40,13 +41,7 @@ structure AndPreparedArg where
   deriving DecidableEq, Repr
 
 def andArgumentTruth : AndPreparedArg → Except WorksheetErrorCode (Option Bool)
-  | ⟨_, .logical b⟩ => .ok (some b)
-  | ⟨_, .number n⟩ => .ok (some (n ≠ 0))
-  | ⟨_, .error code⟩ => .error code
-  | ⟨.directScalar, .text _⟩ => .error .value
-  | ⟨.arrayLike, .text _⟩
-  | ⟨_, .missingArg⟩
-  | ⟨_, .emptyCell⟩ => .ok none
+  | ⟨origin, value⟩ => logicalFoldArgumentTruth (origin == .directScalar) value
 
 /-- Mirrors Rust `eval_and_surface` (`crates/oxfunc_core/src/functions/and_fn.rs`). Excel
 evaluates every argument of AND: once an item has decided the result (`decided`, a FALSE was
@@ -79,6 +74,23 @@ def evalAndPrepared : List AndPreparedArg → Except WorksheetErrorCode Bool
 
 theorem evalAndPrepared_direct_text_is_value_error :
     evalAndPrepared [⟨.directScalar, .text "1"⟩] = .error .value := by
+  native_decide
+
+/-- A logical spelling contributes a value; numeric and other text contribute nothing.
+The same spelling inside an array/reference is ignored (`oxf-xvt5.15`). -/
+theorem evalAndPrepared_direct_text_rule :
+    evalAndPrepared [⟨.directScalar, .text "TrUe"⟩] = .ok true
+    ∧ evalAndPrepared [⟨.directScalar, .logical true⟩, ⟨.directScalar, .text "fAlSe"⟩] = .ok false
+    ∧ evalAndPrepared [⟨.directScalar, .text "x"⟩, ⟨.directScalar, .logical true⟩,
+        ⟨.directScalar, .text "0"⟩, ⟨.directScalar, .text " FALSE "⟩] = .ok true
+    ∧ evalAndPrepared [⟨.directScalar, .logical true⟩, ⟨.arrayLike, .text "FALSE"⟩] = .ok true
+    ∧ evalAndPrepared [⟨.arrayLike, .text "TRUE"⟩] = .error .value := by
+  native_decide
+
+theorem evalAndPrepared_direct_text_does_not_mask_errors :
+    evalAndPrepared [⟨.directScalar, .text "x"⟩, ⟨.directScalar, .error .na⟩] = .error .na
+    ∧ evalAndPrepared [⟨.directScalar, .text "FALSE"⟩, ⟨.directScalar, .text "x"⟩,
+        ⟨.directScalar, .error .div0⟩, ⟨.directScalar, .error .na⟩] = .error .div0 := by
   native_decide
 
 theorem evalAndPrepared_reference_text_and_blank_are_ignored :

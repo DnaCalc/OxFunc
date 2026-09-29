@@ -1,0 +1,19 @@
+{
+  "schema_version": "w111-complex-format-freeze-v1",
+  "recorded_utc": "2026-09-29T12:39:28.068625+00:00",
+  "phase": "candidate_frozen_before_heldout_capture",
+  "sources": {
+    "crates/oxfunc_core/src/functions/complex_family.rs": "e4a1343b05ab1248a494a2d968751de4ba91b3c33337b59e7ee25a4b04a8c3b8",
+    "crates/oxfunc_core/src/functions/round_fn.rs": "3c154f8670066d9f9b70431a0163317f265031e3e830326a0be018dfb69679c1"
+  },
+  "candidate_rules": [
+    "15 significant digits with exact ties away from zero",
+    "fixed rendering if unsigned fixed string length <= 21; otherwise scientific",
+    "no absolute near-integer snap",
+    "decimal rounding below MIN_POSITIVE renders signed coefficient zero without removing component",
+    "exact abs==MAX rejected; lower finite neighbors admitted even if their decimal rendering is above binary64 max"
+  ],
+  "heldout_seed": 2026092902,
+  "heldout_manifest": "smart-fuzzer/runs/w111-complex-heldout-20260929/batches/manifest.json",
+  "hypothesis_revision": "Initial research predictor used ties-even and rejected all rounded decimal overflow; the independent ties/extremes captures falsified those parts before this production freeze."
+}

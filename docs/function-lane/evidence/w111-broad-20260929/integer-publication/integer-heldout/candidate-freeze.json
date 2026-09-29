@@ -1,0 +1,13 @@
+{
+  "source_sha256": {
+    "functions/int_fn.rs": "fe9212ce05c98e53fcabe17f48730fe0edde5db726c66f8675bd221eb747b109",
+    "functions/iseven_fn.rs": "dca486317087f3a0fab389c4348a16f966b881a9e3303886ca52aadfecc85f69",
+    "functions/is_predicates_family.rs": "2272ee07ec35392efb1a8137d9c64cb16f0dcddf6945c23f4b1e93527fbf799e",
+    "functions/round_fn.rs": "99cc24e69e4c301e468175f051dc708362aa4aa7e13d33e5908094a8ced1be19",
+    "coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95"
+  },
+  "frozen_utc": "2026-09-29T16:13:49.913358+00:00",
+  "seed": 202609292610
+}

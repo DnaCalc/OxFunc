@@ -194,17 +194,12 @@ mod tests {
     }
 
     #[test]
-    fn eval_count_propagates_worksheet_errors() {
+    fn eval_count_ignores_worksheet_error_values() {
         let got = eval_count_surface(
             &[(CalcValue::error(WorksheetErrorCode::Div0))],
             &MockResolver { resolved: None },
         );
-        assert_eq!(
-            got,
-            Err(CountEvalError::Coercion(CoercionError::WorksheetError(
-                WorksheetErrorCode::Div0
-            )))
-        );
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]

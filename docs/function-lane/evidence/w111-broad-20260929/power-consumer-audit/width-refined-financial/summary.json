@@ -1,0 +1,85 @@
+{
+  "old_executable": ".tmp\\sf-snapshot-1735.exe",
+  "old_sha256": "13e760982df3b51ec41c6761e858fcc1def00386172748237bcf97dca2f0ce3a",
+  "new_executable": ".tmp\\sf-power-width-candidate-20260929.exe",
+  "new_sha256": "670cdc9b2d642870533bac8be634bc25eb6bf097afbd74ffb5b1bb73bc5d5064",
+  "banks": [
+    {
+      "path": "smart-fuzzer\\cache\\w111-snapshot-1735\\inputs\\extended\\answers-fv.json",
+      "sha256": "6a127f5e63981542954244003989880ffdc08a99af84c34cecf3bb566f729ba3",
+      "function": "FV",
+      "rows": 1230,
+      "old_exact": 1077,
+      "new_exact": 1077,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    },
+    {
+      "path": "smart-fuzzer\\cache\\w111-snapshot-1735\\inputs\\extended\\answers-pv.json",
+      "sha256": "6224433c403747b1af5b89cab6af1083e8dc17793ae3fe58606a0ab20c50389d",
+      "function": "PV",
+      "rows": 1230,
+      "old_exact": 1094,
+      "new_exact": 1094,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    },
+    {
+      "path": "smart-fuzzer\\work\\w109\\G6-solvers\\answers-fv-r0.json",
+      "sha256": "37b7aaee4cd0e7804bcb4973e4aef3b2ad0f4713142c38af6b59953a08e2a3ed",
+      "function": "FV",
+      "rows": 96,
+      "old_exact": 90,
+      "new_exact": 90,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    },
+    {
+      "path": "smart-fuzzer\\work\\w109\\G6-solvers\\answers-fv-r1.json",
+      "sha256": "b37474b0e45b2f76d3654618d6fff25133a6a4c9a49d147928b1c5b8d63e6f89",
+      "function": "FV",
+      "rows": 54,
+      "old_exact": 44,
+      "new_exact": 44,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    },
+    {
+      "path": "smart-fuzzer\\work\\w109\\G6-solvers\\answers-ipf-fv.json",
+      "sha256": "c0c353bc5dac17a5af0c8868827a5ab2d36a24fe8f782c524b42a8d77e6f3d3c",
+      "function": "FV",
+      "rows": 9,
+      "old_exact": 9,
+      "new_exact": 9,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    },
+    {
+      "path": "smart-fuzzer\\work\\w109\\G6-solvers\\answers-m-fv.json",
+      "sha256": "8842f77f3bd20f84e4558d2c889c28cf1be06a8f18e73bf88e40a5481711ab8b",
+      "function": "FV",
+      "rows": 14,
+      "old_exact": 14,
+      "new_exact": 14,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    },
+    {
+      "path": "smart-fuzzer\\work\\w109\\G6-solvers\\answers-pv-r0.json",
+      "sha256": "2b316d49ed33aae772e450aeb21c811ada06bbe5fa6648189c007212bdf3aa34",
+      "function": "PV",
+      "rows": 48,
+      "old_exact": 36,
+      "new_exact": 36,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": []
+    }
+  ]
+}

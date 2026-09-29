@@ -1,0 +1,34 @@
+{
+  "seed": 202609293101,
+  "purpose": "independent_after_candidate_freeze",
+  "batches": [
+    {
+      "function": "POWER",
+      "rows": 23264,
+      "path": "batch-power.json",
+      "sha256": "a88d0a2ed061800b7856a8a09db6fd70ec0a4c864bb510d03044238a054456a2",
+      "prior_tuples": 21448
+    },
+    {
+      "function": "LOG",
+      "rows": 12671,
+      "path": "batch-log.json",
+      "sha256": "873e4ea8d5aefa209060a4d437618eedc4b51076de4121ea8baa59f0ba092f1d",
+      "prior_tuples": 9354
+    },
+    {
+      "function": "FISHER",
+      "rows": 24600,
+      "path": "batch-fisher.json",
+      "sha256": "c1db2d190f6ac7d4fdc730ecb6f2c72f752f34b382c3db615232a9a8a4cbfa78",
+      "prior_tuples": 9566
+    },
+    {
+      "function": "MEDIAN",
+      "rows": 31611,
+      "path": "batch-median.json",
+      "sha256": "7441dc8fc8f97d5adffbbee38d1fb54211bc5d6996f53a5dc017dc74e369979f",
+      "prior_tuples": 11801
+    }
+  ]
+}

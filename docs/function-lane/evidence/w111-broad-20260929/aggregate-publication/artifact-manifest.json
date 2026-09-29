@@ -1,0 +1,132 @@
+{
+  "artifacts": [
+    {
+      "path": "discovery/answers-devsq.json",
+      "sha256": "4f70539d2ba9faa2629d940b06e8c8d5381cd95330d97f25e2aaf1e63c7e8479"
+    },
+    {
+      "path": "discovery/answers-harmean.json",
+      "sha256": "492229d04b6b0f982995e6f856114b4c4b78119c8996a2b7eb253a562f01ff48"
+    },
+    {
+      "path": "discovery/answers-mround.json",
+      "sha256": "182977c8f9401ddd98c87ffac2aece09961e06bf2c84982b2e3cafd57cd8ef2c"
+    },
+    {
+      "path": "discovery/batch-devsq.json",
+      "sha256": "d1f72a7b195cd2b7f1061ea29bbd8fa0e0cb6c3db100c05610995fb45a0c66b8"
+    },
+    {
+      "path": "discovery/batch-harmean.json",
+      "sha256": "2d1e07f234848eed24a7c2da215eda0b630b7a67afe7cbecebaf9917e1909424"
+    },
+    {
+      "path": "discovery/batch-mround.json",
+      "sha256": "889ce9d0817fdedbe699914e746b52d51701242678b279bb8da8a46ae7f3c50a"
+    },
+    {
+      "path": "discovery/candidate/devsq_fn.rs",
+      "sha256": "e2315a77594ed44455e4b0f148b979287bc813fb4e19bcc98ea01a79d15b0746"
+    },
+    {
+      "path": "discovery/candidate/harmean_fn.rs",
+      "sha256": "954d471b15162c220eeb5096e16394a476dbb76f724b8a350e548d71bb6bfcb0"
+    },
+    {
+      "path": "discovery/candidate/mround.rs",
+      "sha256": "820a0ee489c67820cf800f2af77bdb80b2fd591f2a25c00b602944345b101890"
+    },
+    {
+      "path": "discovery/manifest.json",
+      "sha256": "20b845e1c175f4e8ef2dad55a361fd7110851c91de94be2b1580e02f99216542"
+    },
+    {
+      "path": "heldout/answers-devsq.json",
+      "sha256": "b8bc862cb3888a59793e41ea354392197841e670ad956d4bc12481246eb2d596"
+    },
+    {
+      "path": "heldout/answers-harmean.json",
+      "sha256": "bf28cbb89e3718deb79803d2607bf781e3033fdbcab18f5368d1904578924ba1"
+    },
+    {
+      "path": "heldout/batch-devsq.json",
+      "sha256": "e4561f1b696313128f8ef615722065b498dea4bc094ef7641bbfdd410704d891"
+    },
+    {
+      "path": "heldout/batch-harmean.json",
+      "sha256": "4e25a949994a66d2da671862558a86d3a1a83c85843bf28d5d24cd07f2a3e6d2"
+    },
+    {
+      "path": "heldout/batch-mround.json",
+      "sha256": "e9d29873340b40d585b7eef9687e737e9c05eb7567ea2c5a696384199cb95d9c"
+    },
+    {
+      "path": "heldout/candidate/devsq_fn.rs",
+      "sha256": "c4ca0fa2636a3fcee25d6348819be81f300bbbafe49c752b9845e50f5c411409"
+    },
+    {
+      "path": "heldout/candidate/harmean_fn.rs",
+      "sha256": "03b4a0c3a4e86ed0977fef2e8dfdff735ace9698962fe5f4c386a1303b80be2f"
+    },
+    {
+      "path": "heldout/candidate/mround.rs",
+      "sha256": "820a0ee489c67820cf800f2af77bdb80b2fd591f2a25c00b602944345b101890"
+    },
+    {
+      "path": "heldout/manifest.json",
+      "sha256": "149a9ab2966e19146346465c3385e81f51a46262c931d2373c93577819ffe1cc"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b4ca0e410d9c5c6813c0c0163fffbd6bf33af662639500e3fa188001c79c6f8d"
+    },
+    {
+      "path": "research/gen_aggregate_rounding_followup.py",
+      "sha256": "c90750bc7643cd8fbeeb6136511efef608e4aca49e459d86ed3f0f695860f290"
+    },
+    {
+      "path": "research/w111-aggregate-heldout-judgement.json",
+      "sha256": "88402e51b8748fed6a2348c25c499416f336a4da5a0e786efcb31d2f6a9a738a"
+    },
+    {
+      "path": "research/w111-aggregate-rounding-discovery-baseline.json",
+      "sha256": "bc12b67a11d95edefb66f366225416b424cd4586eb7cbb2c4f236150e4af622c"
+    },
+    {
+      "path": "research/w111-aggregate-stores-broad.json",
+      "sha256": "1fb04eba347d53187d9703b7291d73fc0a8b3938057b3bac1371bbeb2f44af70"
+    },
+    {
+      "path": "research/w111-aggregate-stores-discovery.json",
+      "sha256": "0aca6a2fded4f770661b7bfe7a1e9d144927dcfc94ca2e1dad5843462eb14dc9"
+    },
+    {
+      "path": "research/w111-aggregate-stores-v3.json",
+      "sha256": "fb5b3ef1184070328c05dc115e2046cb1f1c7fe922a9b56c416c5d54ae2450fd"
+    },
+    {
+      "path": "research/w111-harmean-graph-v2.json",
+      "sha256": "206e080a25b94efe48afb0081915a5c1e5ac8e730e4aef2d21ddb555356c85bd"
+    },
+    {
+      "path": "research/w111-mround-stores-discovery.json",
+      "sha256": "f3e64917e4dd140bb2e64b96b4785281aacb8432b52cfc96360528e54cfbb2f1"
+    },
+    {
+      "path": "research/w111-mround-stores-v2.json",
+      "sha256": "7bffcf86f6d799c529e1c937e0eb4f9efa1f70f3799413c0d014bae344914610"
+    },
+    {
+      "path": "research/w111-mround-stores-v3.json",
+      "sha256": "a5c15b6a60f54087b4aa7dd9be8afdedcbaec6fdb695c3dcd74f745d8fc76845"
+    },
+    {
+      "path": "research/w111_aggregate_stores.rs",
+      "sha256": "a39820a2b7bdde4479b28b66ee2e72bc4500f228e3ca49758ccd97e7ed5833aa"
+    },
+    {
+      "path": "research/w111_mround_stores.rs",
+      "sha256": "493baddcdf13d0b6518590962d6be3043b96f08c487cefbbe88b9fcb1a387056"
+    }
+  ]
+}

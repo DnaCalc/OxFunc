@@ -1,0 +1,87 @@
+
+running 2 tests
+text_slicing_preserves_exact_utf16_units_on_qualified_inputs --- FAILED
+text_slicing_defaults_and_arrays_match_live_discovery --- FAILED
+
+failures:
+
+---- text_slicing_preserves_exact_utf16_units_on_qualified_inputs stdout ----
+
+thread 'text_slicing_preserves_exact_utf16_units_on_qualified_inputs' (30400) panicked at crates\oxfunc_core\tests\w111_text_slice_live_replay.rs:158:9:
+assertion `left == right` failed: "text-utf16-1624"
+  left: CalcValue { core: Number(1.0), rich: None }
+ right: CalcValue { core: Number(0.0), rich: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- text_slicing_defaults_and_arrays_match_live_discovery stdout ----
+
+thread 'text_slicing_defaults_and_arrays_match_live_discovery' (2564) panicked at crates\oxfunc_core\tests\w111_text_slice_live_replay.rs:121:5:
+59 differing rows:
+"w111textdiscovery-00040-left-default-1-8" expected=text:A actual=text:
+"w111textdiscovery-00041-left-default-1-9" expected=text:Ab actual=text:A
+"w111textdiscovery-00071-left-default-2-8" expected=text:1 actual=text:
+"w111textdiscovery-00072-left-default-2-9" expected=text:12 actual=text:1
+"w111textdiscovery-00102-left-default-3-8" expected=text:T actual=text:
+"w111textdiscovery-00103-left-default-3-9" expected=text:TR actual=text:T
+"w111textdiscovery-00312-right-default-1-8" expected=text:́ actual=text:
+"w111textdiscovery-00313-right-default-1-9" expected=text:é actual=text:́
+"w111textdiscovery-00343-right-default-2-8" expected=text:3 actual=text:
+"w111textdiscovery-00344-right-default-2-9" expected=text:23 actual=text:3
+"w111textdiscovery-00374-right-default-3-8" expected=text:E actual=text:
+"w111textdiscovery-00375-right-default-3-9" expected=text:UE actual=text:E
+"w111textdiscovery-00584-leftb-default-1-8" expected=text:A actual=text:
+"w111textdiscovery-00585-leftb-default-1-9" expected=text:Ab actual=text:A
+"w111textdiscovery-00615-leftb-default-2-8" expected=text:1 actual=text:
+"w111textdiscovery-00616-leftb-default-2-9" expected=text:12 actual=text:1
+"w111textdiscovery-00646-leftb-default-3-8" expected=text:T actual=text:
+"w111textdiscovery-00647-leftb-default-3-9" expected=text:TR actual=text:T
+"w111textdiscovery-00856-rightb-default-1-8" expected=text:́ actual=text:
+"w111textdiscovery-00857-rightb-default-1-9" expected=text:é actual=text:́
+"w111textdiscovery-00887-rightb-default-2-8" expected=text:3 actual=text:
+"w111textdiscovery-00888-rightb-default-2-9" expected=text:23 actual=text:3
+"w111textdiscovery-00918-rightb-default-3-8" expected=text:E actual=text:
+"w111textdiscovery-00919-rightb-default-3-9" expected=text:UE actual=text:E
+"w111textdiscovery-01153-mid-position-13-0" expected=error:Value actual=text:
+"w111textdiscovery-01154-mid-position-13-1" expected=error:Value actual=text:
+"w111textdiscovery-01156-mid-position-13-3" expected=error:Value actual=text:
+"w111textdiscovery-01303-midb-position-13-0" expected=error:Value actual=text:
+"w111textdiscovery-01304-midb-position-13-1" expected=error:Value actual=text:
+"w111textdiscovery-01306-midb-position-13-3" expected=error:Value actual=text:
+"w111textdiscovery-01432-left-broadcast-5-3" expected=array:3x2:[error:Ref|error:NA|text:e|error:NA|error:Div0|error:NA] actual=array:3x2:[error:Ref|error:NA|text:e|error:NA|error:NA|error:NA]
+"w111textdiscovery-01433-left-broadcast-5-4" expected=array:3x3:[error:Num|error:Div0|error:NA|error:Div0|text:|error:NA|error:NA|error:Div0|error:NA] actual=array:3x3:[error:Num|error:Div0|error:NA|error:Div0|text:|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01434-left-ref-broadcast-5-4" expected=array:3x3:[error:Num|error:Div0|error:NA|error:Div0|text:|error:NA|error:NA|error:Div0|error:NA] actual=array:3x3:[error:Num|error:Div0|error:NA|error:Div0|text:|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01472-right-broadcast-4-3" expected=array:2x3:[error:Div0|error:Num|error:Div0|text:́|error:Value|error:NA] actual=array:2x3:[error:Div0|error:Num|error:NA|text:́|error:Value|error:NA]
+"w111textdiscovery-01474-right-broadcast-4-5" expected=array:3x3:[text:3|text:bc|error:NA|error:Value|text:|error:Div0|error:NA|error:NA|error:NA] actual=array:3x3:[text:3|text:bc|error:NA|error:Value|text:|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01475-right-ref-broadcast-4-5" expected=array:3x3:[text:3|text:bc|error:NA|error:Value|text:|error:Div0|error:NA|error:NA|error:NA] actual=array:3x3:[text:3|text:bc|error:NA|error:Value|text:|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01504-leftb-broadcast-2-3" expected=array:3x2:[text:ab|text:ab|error:Div0|error:Div0|error:Div0|error:Div0] actual=array:3x2:[text:ab|text:ab|error:Div0|error:Div0|error:NA|error:NA]
+"w111textdiscovery-01528-leftb-broadcast-5-3" expected=array:3x2:[error:Div0|error:NA|text:12|error:Num|error:NA|error:Div0] actual=array:3x2:[error:Div0|error:NA|text:12|error:Num|error:NA|error:NA]
+"w111textdiscovery-01544-rightb-broadcast-1-3" expected=array:2x3:[text:é|text:3|error:Div0|text:é|error:Ref|error:Div0] actual=array:2x3:[text:é|text:3|error:NA|text:é|error:Ref|error:NA]
+"w111textdiscovery-01597-mid-broadcast-2-1" expected=array:3x3:[error:Ref|error:Num|error:NA|error:NA|error:NA|error:NA|error:Ref|error:NA|error:NA] actual=array:3x3:[error:Ref|error:Num|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01598-mid-ref-broadcast-2-1" expected=array:3x3:[error:Ref|error:Num|error:NA|error:NA|error:NA|error:NA|error:Ref|error:NA|error:NA] actual=array:3x3:[error:Ref|error:Num|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01616-mid-broadcast-4-3" expected=array:2x3:[error:NA|error:Div0|error:Div0|error:Value|error:NA|error:NA] actual=array:2x3:[error:NA|error:Div0|error:NA|error:Value|error:NA|error:NA]
+"w111textdiscovery-01618-mid-broadcast-4-5" expected=array:3x3:[error:Ref|text:|error:Div0|error:NA|error:Num|error:NA|error:NA|error:NA|error:NA] actual=array:3x3:[error:Ref|text:|error:NA|error:NA|error:Num|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01619-mid-ref-broadcast-4-5" expected=array:3x3:[error:Ref|text:|error:Div0|error:NA|error:Num|error:NA|error:NA|error:NA|error:NA] actual=array:3x3:[error:Ref|text:|error:NA|error:NA|error:Num|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01624-mid-broadcast-5-3" expected=array:3x2:[error:Ref|error:NA|text:́|text:́|error:Div0|error:NA] actual=array:3x2:[error:Ref|error:NA|text:́|text:́|error:NA|error:NA]
+"w111textdiscovery-01625-mid-broadcast-5-4" expected=array:3x3:[error:Ref|error:Ref|error:NA|error:Value|error:Value|error:NA|error:Div0|error:NA|error:NA] actual=array:3x3:[error:Ref|error:Ref|error:NA|error:Value|error:Value|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01626-mid-ref-broadcast-5-4" expected=array:3x3:[error:Ref|error:Ref|error:NA|error:Value|error:Value|error:NA|error:Div0|error:NA|error:NA] actual=array:3x3:[error:Ref|error:Ref|error:NA|error:Value|error:Value|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01627-mid-broadcast-5-5" expected=array:3x3:[error:Value|error:Value|error:NA|error:Value|error:Ref|error:NA|error:Div0|error:NA|error:NA] actual=array:3x3:[error:Value|error:Value|error:NA|error:Value|error:Ref|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01641-midb-broadcast-1-4" expected=array:3x3:[error:Value|error:NA|error:NA|error:Ref|error:NA|error:Num|error:NA|error:NA|error:NA] actual=array:3x3:[error:Value|error:NA|error:NA|error:Ref|error:NA|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01645-midb-broadcast-2-1" expected=array:3x3:[error:Num|error:Value|error:Ref|error:Num|error:Ref|error:Ref|error:Num|error:NA|error:Ref] actual=array:3x3:[error:Num|error:Value|error:NA|error:Num|error:Ref|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01646-midb-ref-broadcast-2-1" expected=array:3x3:[error:Num|error:Value|error:Ref|error:Num|error:Ref|error:Ref|error:Num|error:NA|error:Ref] actual=array:3x3:[error:Num|error:Value|error:NA|error:Num|error:Ref|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01647-midb-broadcast-2-2" expected=array:3x3:[error:Num|error:Num|error:Num|error:Value|error:Value|error:Ref|error:Ref|error:Ref|error:Ref] actual=array:3x3:[error:Num|error:Num|error:Num|error:Value|error:Value|error:Ref|error:NA|error:NA|error:NA]
+"w111textdiscovery-01664-midb-broadcast-4-3" expected=array:2x3:[error:Value|error:Value|error:Div0|error:Div0|error:NA|error:NA] actual=array:2x3:[error:Value|error:Value|error:NA|error:Div0|error:NA|error:NA]
+"w111textdiscovery-01666-midb-broadcast-4-5" expected=array:3x3:[text:F|error:Value|error:NA|error:Div0|error:NA|error:Div0|error:NA|error:NA|error:NA] actual=array:3x3:[text:F|error:Value|error:NA|error:Div0|error:NA|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01667-midb-ref-broadcast-4-5" expected=array:3x3:[text:F|error:Value|error:NA|error:Div0|error:NA|error:Div0|error:NA|error:NA|error:NA] actual=array:3x3:[text:F|error:Value|error:NA|error:Div0|error:NA|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01675-midb-broadcast-5-5" expected=array:3x3:[error:Value|error:Ref|error:NA|error:NA|error:Div0|error:NA|error:NA|error:Ref|error:NA] actual=array:3x3:[error:Value|error:Ref|error:NA|error:NA|error:Div0|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01720-exact-broadcast-5-3" expected=array:3x2:[logical:false|logical:false|logical:true|logical:false|error:NA|error:Div0] actual=array:3x2:[logical:false|logical:false|logical:true|logical:false|error:NA|error:NA]
+"w111textdiscovery-01721-exact-broadcast-5-4" expected=array:3x3:[logical:false|error:Div0|error:NA|error:NA|logical:true|error:NA|error:NA|error:Div0|error:NA] actual=array:3x3:[logical:false|error:Div0|error:NA|error:NA|logical:true|error:NA|error:NA|error:NA|error:NA]
+"w111textdiscovery-01722-exact-ref-broadcast-5-4" expected=array:3x3:[logical:false|error:Div0|error:NA|error:NA|logical:true|error:NA|error:NA|error:Div0|error:NA] actual=array:3x3:[logical:false|error:Div0|error:NA|error:NA|logical:true|error:NA|error:NA|error:NA|error:NA]
+
+
+failures:
+    text_slicing_defaults_and_arrays_match_live_discovery
+    text_slicing_preserves_exact_utf16_units_on_qualified_inputs
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+error: test failed, to rerun pass `-p oxfunc_core --test w111_text_slice_live_replay`

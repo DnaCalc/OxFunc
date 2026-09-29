@@ -1,0 +1,489 @@
+{
+  "total_rows": 102472,
+  "functions": {
+    "TRUNC": {
+      "rows": 30946,
+      "sources": [
+        {
+          "source": "smart-fuzzer/runs/w111-integer-hyperbolic-heldout-20260929/answers/answers-trunc.json",
+          "sha256": "2619c181b7fb0f28e778aa95bdfea4f4e5ce18b39ef18c3a1322f2c65cfdbcee",
+          "rows": 12000,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:51:51.5223804Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-rounding-count-refinement-20260929/answers-trunc.json",
+          "sha256": "6890b0f47d8b88c265ce56a32f65d381807ae0d567a56831652a82efe99e6940",
+          "rows": 2130,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:59:10.4358311Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-integer-thresholds-20260929/answers/answers-trunc.json",
+          "sha256": "76ec4daee8269a8a7a889f999eec03715b9a1635cad3b064c1d7da401d09037b",
+          "rows": 6160,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:33:45.7817803Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-integer-refinement-20260929/answers/answers-trunc.json",
+          "sha256": "b9c9a68092a82be128be5cb040860e6bf3aaff9eafbb02f27d56c62da6fdaa27",
+          "rows": 3312,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:05:20.1643206Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-trunc-hyperbolic-20260929/answers/answers-trunc.json",
+          "sha256": "fd90ae4737599b5a18e9880f5d10a330b5edba595950bc7655a3ed5166d90816",
+          "rows": 7344,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:20:10.4866100Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        }
+      ]
+    },
+    "ROUNDDOWN": {
+      "rows": 30946,
+      "sources": [
+        {
+          "source": "smart-fuzzer/runs/w111-integer-hyperbolic-heldout-20260929/answers/answers-rounddown.json",
+          "sha256": "2db66d1a570ab939ce475da2febbaa3a295cad88fac44c3f2a1e426c36129077",
+          "rows": 12000,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:52:02.3084415Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-rounding-count-refinement-20260929/answers-rounddown.json",
+          "sha256": "bee28c6e47bcdf8e533cc02e2ea65f5d74e97d5ba107cf76e8806f2943222af0",
+          "rows": 2130,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:59:15.7877950Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-integer-thresholds-20260929/answers/answers-rounddown.json",
+          "sha256": "4e021d7a8c685cb34be4150cee6ef69ad4d9e7f8876ebc8c78f53f2296396b88",
+          "rows": 6160,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:33:55.3521573Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-integer-refinement-20260929/answers/answers-rounddown.json",
+          "sha256": "fae51f0f0870934646a6e61375f163edab63b7b8db09c3d8689f8801796de389",
+          "rows": 3312,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:05:26.2240714Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-trunc-hyperbolic-20260929/answers/answers-rounddown.json",
+          "sha256": "5cd588f712d2acf96fad1801dad25052f931fa3ce21e537301fdb9c782b977a4",
+          "rows": 7344,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:20:18.7519761Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        }
+      ]
+    },
+    "ROUNDUP": {
+      "rows": 20290,
+      "sources": [
+        {
+          "source": "smart-fuzzer/runs/w111-integer-hyperbolic-heldout-20260929/answers/answers-roundup.json",
+          "sha256": "058eb976c468429cc31c488c816adb9e3581bf4fa6f02437b7e637b22a4c4a4b",
+          "rows": 12000,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:52:12.8855256Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-rounding-count-refinement-20260929/answers-roundup.json",
+          "sha256": "2df6ff783949e3b22f4036b70ea04936448f00ab489aa816d4722f028ecd6788",
+          "rows": 2130,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:59:21.3438523Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-integer-thresholds-20260929/answers/answers-roundup.json",
+          "sha256": "100b2d6f8d87693ec16748a5ef2e70aaa16297c8cf53c335204a3a48d1484992",
+          "rows": 6160,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:34:11.4289155Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        }
+      ]
+    },
+    "ROUND": {
+      "rows": 20290,
+      "sources": [
+        {
+          "source": "smart-fuzzer/runs/w111-integer-hyperbolic-heldout-20260929/answers/answers-round.json",
+          "sha256": "1d3da7795f84d7c2ec8402c3e1590c974131d9eeb397c70929d0e179dddea821",
+          "rows": 12000,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:52:25.9627707Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-rounding-count-refinement-20260929/answers-round.json",
+          "sha256": "072cb48a78105477cc38e78ae93a19438cf412b88cf76b716b04ce9e31532586",
+          "rows": 2130,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:59:26.7060545Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        },
+        {
+          "source": "smart-fuzzer/runs/w111-integer-thresholds-20260929/answers/answers-round.json",
+          "sha256": "35545d142e8b7274c04a3b6206d7a88830aeb4f4ff69bfad64c21f67fde0d5b0",
+          "rows": 6160,
+          "capture_provenance": {
+            "schema_version": "w109-capture-provenance-v1",
+            "captured_utc": "2026-09-29T16:34:02.6874996Z",
+            "environment": {
+              "excel_version": "16.0",
+              "excel_build": "20430",
+              "excel_bitness": "64-bit",
+              "workbook_compatibility": "2",
+              "excel_operating_system": "Windows (64-bit) NT 10.00",
+              "excel_input_plumbing": "cell_value2_bulk"
+            },
+            "oracle_cache": {
+              "mode": "no_cache",
+              "root": null,
+              "hits": 0,
+              "misses": 0
+            },
+            "runner": {
+              "name": "Run-W109BulkBatch.ps1",
+              "version": "w109-bulk-batch-v2",
+              "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+              "powershell_version": "7.6.5"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "generator": "gen_asin_acos_holdout.py",
+  "seed": 2026092924,
+  "authority": "independent_exploration_input",
+  "angle_search_draws": 300000,
+  "angle_centers": 31,
+  "batches": [
+    {
+      "function": "ASIN",
+      "path": "batch-asin.json",
+      "rows": 8052,
+      "sha256": "648b9fcb31cf59fb2eb6c35d8a6fb52140bc722aa23f40cfc74fc8e1611a6d57"
+    },
+    {
+      "function": "ACOS",
+      "path": "batch-acos.json",
+      "rows": 8052,
+      "sha256": "239a7fcdf7f51da4b2b07b19db4764293cc3d244a2821d99d86356dce024966c"
+    }
+  ],
+  "final_subtraction_midpoints": 32
+}

@@ -162,3 +162,37 @@ Initial packet evidence is the native Excel baseline in:
 3. scope reconciliation: `docs/function-lane/W40_SCOPE_RECONCILIATION.csv`
 4. Rust: `crates/oxfunc_core/src/functions/reference_metadata_family.rs`; `crates/oxfunc_core/src/host_info.rs`
 5. Lean: `formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean`; `formal/lean/OxFunc/HostInfoSeam.lean`
+
+
+## 12. W111 ADDRESS empirical refinement (2026-09-29)
+
+Status remains `in_progress`: `scope_completeness=scope_partial`,
+`target_completeness=target_partial`, `integration_completeness=partial`.
+Open lanes: implicit numeric-text grammar, locale/workbook-date/current-year
+preparation context, cross-repository seam assessment, and final claim audit.
+
+The [retained ADDRESS evidence](evidence/w111-broad-20260929/address/README.md)
+refines this packet on Excel 16.0 build 20430, Workbook Compatibility Version 2.
+Numeric coordinates/mode use the evidenced tolerant-floor conversion; signed
+relative R1C1 coordinates have strict worksheet-size bounds and zero suppresses
+the bracketed offset. Scalar errors coerce left to right before numeric domain
+validation. Omitted and blank selectors differ, and omitted first/second
+coordinates have distinct behavior. All five arguments broadcast.
+
+The text renderer preserves raw UTF-16 units. Sheet names use position-sensitive
+character classes, reference-token ambiguity rules, apostrophe doubling and
+observed original/escaped length limits. A bounded append model governs long
+prefixes and integer fragments. Numeric sheet values use the evidenced
+15-significant-digit decimal primitive followed by ADDRESS-specific width and
+scientific rounding rules. These behaviors are exercised through production
+dispatch, including 5,330 admitted independent heldout cases after candidate
+freeze. The Lean rendering substrate and explicit classifier adapter binding
+are aligned with this admitted slice.
+
+The earlier host-independent ADDRESS description in sections 4–8 is valid for
+already prepared numeric/logical arguments and sheet text, but it does not yet
+account for all text-to-number preparation. Exact-ingress observations show
+locale-specific grouping/currency/digit/date/time parsing, and dates with no
+year depend on the current host year. That known seam gap prevents a full
+function claim. Runtime metadata and OxFml contracts must only change after
+cross-repository impact assessment; this note does not silently change them.

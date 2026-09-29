@@ -1,0 +1,1090 @@
+{
+  "documented_signature": "https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/asin-asinf-asinl?view=msvc-170",
+  "authority": "documented_public_C_API_observation_only",
+  "reports": [
+    {
+      "library": "msvcrt.dll",
+      "public_api": "double asin(double)",
+      "capture": "discovery.json",
+      "rows": 1224,
+      "matches": 1161,
+      "misses": [
+        {
+          "id": "w111extended-2026092903-ASIN-00051",
+          "args": [
+            "0xbfce90623b7ed2b0"
+          ],
+          "expected_bits": "0xbfcedcb6415e8d1a",
+          "actual": "0xbfcedcb6415e8d19"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00054",
+          "args": [
+            "0x3fe9e51b1bb6aef4"
+          ],
+          "expected_bits": "0x3fee2b910f1efa83",
+          "actual": "0x3fee2b910f1efa82"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00078",
+          "args": [
+            "0x3fe18a5a69f866d0"
+          ],
+          "expected_bits": "0x3fe2907c31ab08ca",
+          "actual": "0x3fe2907c31ab08cb"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00081",
+          "args": [
+            "0x3fd139809adea210"
+          ],
+          "expected_bits": "0x3fd1708c7cdfb6c8",
+          "actual": "0x3fd1708c7cdfb6c9"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00114",
+          "args": [
+            "0xbfe10a032c4cfd28"
+          ],
+          "expected_bits": "0xbfe1f7f5d44c410d",
+          "actual": "0xbfe1f7f5d44c410c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00153",
+          "args": [
+            "0x3fe9f55d20996cb4"
+          ],
+          "expected_bits": "0x3fee474dcca9f5c1",
+          "actual": "0x3fee474dcca9f5c0"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00165",
+          "args": [
+            "0xbfc0823f6ce4bb80"
+          ],
+          "expected_bits": "0xbfc08e0da301acc1",
+          "actual": "0xbfc08e0da301acc0"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00171",
+          "args": [
+            "0xbfe44142c2445e18"
+          ],
+          "expected_bits": "0xbfe5ee9fc201293b",
+          "actual": "0xbfe5ee9fc201293a"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00174",
+          "args": [
+            "0x3fe692026574d12c"
+          ],
+          "expected_bits": "0x3fe90d58cfea65b7",
+          "actual": "0x3fe90d58cfea65b8"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00183",
+          "args": [
+            "0xbfcd4c9514a40330"
+          ],
+          "expected_bits": "0xbfcd8facecad64f5",
+          "actual": "0xbfcd8facecad64f6"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00192",
+          "args": [
+            "0x3f955f56f7e79780"
+          ],
+          "expected_bits": "0x3f955fbcae59420a",
+          "actual": "0x3f955fbcae59420b"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00198",
+          "args": [
+            "0x3fe6737b3c08bdac"
+          ],
+          "expected_bits": "0x3fe8e264df0708e2",
+          "actual": "0x3fe8e264df0708e3"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00210",
+          "args": [
+            "0x3fde701d86525880"
+          ],
+          "expected_bits": "0x3fdfb88874c84148",
+          "actual": "0x3fdfb88874c84149"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00240",
+          "args": [
+            "0x3fdd353b816e5918"
+          ],
+          "expected_bits": "0x3fde54a3238c2317",
+          "actual": "0x3fde54a3238c2318"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00255",
+          "args": [
+            "0xbfe7e85a272d5cd4"
+          ],
+          "expected_bits": "0xbfeaffa908f135c0",
+          "actual": "0xbfeaffa908f135bf"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00267",
+          "args": [
+            "0xbfe0bdb059cc36e8"
+          ],
+          "expected_bits": "0xbfe19e1969aaa9f1",
+          "actual": "0xbfe19e1969aaa9f0"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00285",
+          "args": [
+            "0x3fd6864bb8144040"
+          ],
+          "expected_bits": "0x3fd70481f4036f0d",
+          "actual": "0x3fd70481f4036f0e"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00291",
+          "args": [
+            "0xbfc7ddf0d9ba6bc0"
+          ],
+          "expected_bits": "0xbfc801e93dd2b93f",
+          "actual": "0xbfc801e93dd2b93e"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00375",
+          "args": [
+            "0xbfd0bfaf0290d8a0"
+          ],
+          "expected_bits": "0xbfd0f232ac5a7bdf",
+          "actual": "0xbfd0f232ac5a7bde"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00393",
+          "args": [
+            "0xbfe7287f1f8d2eb8"
+          ],
+          "expected_bits": "0xbfe9e478064340cd",
+          "actual": "0xbfe9e478064340cc"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00426",
+          "args": [
+            "0xbfed7194bf1b3ac8"
+          ],
+          "expected_bits": "0xbff2b1a89c845383",
+          "actual": "0xbff2b1a89c845384"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00441",
+          "args": [
+            "0x3fcf5c212424acc0"
+          ],
+          "expected_bits": "0x3fcfaeb19bbcb410",
+          "actual": "0x3fcfaeb19bbcb40f"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00468",
+          "args": [
+            "0xbfbca7d7e1dcbc40"
+          ],
+          "expected_bits": "0xbfbcb73fe70c27fc",
+          "actual": "0xbfbcb73fe70c27fd"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00540",
+          "args": [
+            "0x3fc73344a3e433f0"
+          ],
+          "expected_bits": "0x3fc754473dbb740f",
+          "actual": "0x3fc754473dbb740e"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00552",
+          "args": [
+            "0xbfea7e919547f70c"
+          ],
+          "expected_bits": "0xbfef36d3c4cdce63",
+          "actual": "0xbfef36d3c4cdce64"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00558",
+          "args": [
+            "0x3fe9b68079164514"
+          ],
+          "expected_bits": "0x3feddcc3456cd7c4",
+          "actual": "0x3feddcc3456cd7c3"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00570",
+          "args": [
+            "0x3fed4fc8eeef9a14"
+          ],
+          "expected_bits": "0x3ff287086e2e19e7",
+          "actual": "0x3ff287086e2e19e6"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00594",
+          "args": [
+            "0x3fd5abc9df6633c0"
+          ],
+          "expected_bits": "0x3fd61badce9f3cf3",
+          "actual": "0x3fd61badce9f3cf4"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00606",
+          "args": [
+            "0x3fd985a5e2dde8d8"
+          ],
+          "expected_bits": "0x3fda408764e82f7b",
+          "actual": "0x3fda408764e82f7c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00621",
+          "args": [
+            "0xbfbf54d60a3a4ec0"
+          ],
+          "expected_bits": "0xbfbf68ff03146578",
+          "actual": "0xbfbf68ff03146577"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00627",
+          "args": [
+            "0x3fb4617560ef4d60"
+          ],
+          "expected_bits": "0x3fb466fc597008f6",
+          "actual": "0x3fb466fc597008f5"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00642",
+          "args": [
+            "0x3fd362f0b758ede0"
+          ],
+          "expected_bits": "0x3fd3b2276d4db57c",
+          "actual": "0x3fd3b2276d4db57b"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00672",
+          "args": [
+            "0xbfecd0820ec8a218"
+          ],
+          "expected_bits": "0xbff1eed57b782d1f",
+          "actual": "0xbff1eed57b782d20"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00675",
+          "args": [
+            "0xbfd2976c60f3d588"
+          ],
+          "expected_bits": "0xbfd2dd09e10370c2",
+          "actual": "0xbfd2dd09e10370c3"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00681",
+          "args": [
+            "0x3fda403fcef9b5e0"
+          ],
+          "expected_bits": "0x3fdb0c9148bfed54",
+          "actual": "0x3fdb0c9148bfed55"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00684",
+          "args": [
+            "0xbfdc130fcb439cb8"
+          ],
+          "expected_bits": "0xbfdd1026df0cdce6",
+          "actual": "0xbfdd1026df0cdce5"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00690",
+          "args": [
+            "0x3fc6db79830cd770"
+          ],
+          "expected_bits": "0x3fc6fb07495d630d",
+          "actual": "0x3fc6fb07495d630c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00714",
+          "args": [
+            "0x3fe1f663d3b0febc"
+          ],
+          "expected_bits": "0x3fe31255f3170335",
+          "actual": "0x3fe31255f3170334"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00717",
+          "args": [
+            "0xbf8a723b20fecd00"
+          ],
+          "expected_bits": "0xbf8a726b4cf2fd6e",
+          "actual": "0xbf8a726b4cf2fd6f"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00789",
+          "args": [
+            "0xbfeec4cd2aff5924"
+          ],
+          "expected_bits": "0xbff4ae0fb55ede45",
+          "actual": "0xbff4ae0fb55ede44"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00794",
+          "args": [
+            "0xbfb128bc12640cb5"
+          ],
+          "expected_bits": "0xbfb12c07d22054fb",
+          "actual": "0xbfb12c07d22054fc"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00795",
+          "args": [
+            "0xbfcf23afd4cd4520"
+          ],
+          "expected_bits": "0xbfcf747d6cba5974",
+          "actual": "0xbfcf747d6cba5973"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00858",
+          "args": [
+            "0xbfdcd8a9c06a3360"
+          ],
+          "expected_bits": "0xbfddecc5282c849c",
+          "actual": "0xbfddecc5282c849d"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00870",
+          "args": [
+            "0xbfd07c44075a09f8"
+          ],
+          "expected_bits": "0xbfd0ac62c1f24cbe",
+          "actual": "0xbfd0ac62c1f24cbf"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00876",
+          "args": [
+            "0x3fe56efac5b7e668"
+          ],
+          "expected_bits": "0x3fe77c66e8a2b00d",
+          "actual": "0x3fe77c66e8a2b00c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00912",
+          "args": [
+            "0xbfcf57aec092c000"
+          ],
+          "expected_bits": "0xbfcfaa1b748a55fd",
+          "actual": "0xbfcfaa1b748a55fe"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00921",
+          "args": [
+            "0xbfea8b0383a82ed8"
+          ],
+          "expected_bits": "0xbfef4d1036a24d23",
+          "actual": "0xbfef4d1036a24d24"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00929",
+          "args": [
+            "0xbfe52a3a8df2eadb"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac3",
+          "actual": "0xbfe720476e0c1ac2"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00972",
+          "args": [
+            "0x3fe221f59839bd68"
+          ],
+          "expected_bits": "0x3fe34718e26ea598",
+          "actual": "0x3fe34718e26ea597"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00999",
+          "args": [
+            "0xbfd73da4e120b6d8"
+          ],
+          "expected_bits": "0xbfd7c8d5d8bf7ac9",
+          "actual": "0xbfd7c8d5d8bf7aca"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01011",
+          "args": [
+            "0xbfd39bd613cfb2a8"
+          ],
+          "expected_bits": "0xbfd3ede3ba8abd0a",
+          "actual": "0xbfd3ede3ba8abd09"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01020",
+          "args": [
+            "0xbfea4d300e00ec24"
+          ],
+          "expected_bits": "0xbfeedf75887f3d1b",
+          "actual": "0xbfeedf75887f3d1a"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01023",
+          "args": [
+            "0xbfe09d085ed8b924"
+          ],
+          "expected_bits": "0xbfe177d5f8111348",
+          "actual": "0xbfe177d5f8111347"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01032",
+          "args": [
+            "0x3fe0b0e102812670"
+          ],
+          "expected_bits": "0x3fe18f13a7bd281f",
+          "actual": "0x3fe18f13a7bd2820"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01080",
+          "args": [
+            "0x3fdbc2daee52bb70"
+          ],
+          "expected_bits": "0x3fdcb7048737cd43",
+          "actual": "0x3fdcb7048737cd44"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01110",
+          "args": [
+            "0xbfd304e4d3d0ebe0"
+          ],
+          "expected_bits": "0xbfd34f909fce6a54",
+          "actual": "0xbfd34f909fce6a53"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01113",
+          "args": [
+            "0x3fccde2d3a0e25a0"
+          ],
+          "expected_bits": "0x3fcd1e4df296d7c3",
+          "actual": "0x3fcd1e4df296d7c2"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01122",
+          "args": [
+            "0xbfda7e4526549678"
+          ],
+          "expected_bits": "0xbfdb50a2d18fbeda",
+          "actual": "0xbfdb50a2d18fbed9"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01140",
+          "args": [
+            "0xbfde4d7fc7127fb0"
+          ],
+          "expected_bits": "0xbfdf9134fb64953c",
+          "actual": "0xbfdf9134fb64953d"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01173",
+          "args": [
+            "0xbfc05a74da7e3290"
+          ],
+          "expected_bits": "0xbfc065ee1580ff61",
+          "actual": "0xbfc065ee1580ff60"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01176",
+          "args": [
+            "0xbfef068cc7e871bc"
+          ],
+          "expected_bits": "0xbff52c9571fe18d5",
+          "actual": "0xbff52c9571fe18d6"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01191",
+          "args": [
+            "0x3fef5ea67f1b82bc"
+          ],
+          "expected_bits": "0x3ff5f3b0f6df51e3",
+          "actual": "0x3ff5f3b0f6df51e4"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01194",
+          "args": [
+            "0x3fa693aaf2be0540"
+          ],
+          "expected_bits": "0x3fa6958adb2001d3",
+          "actual": "0x3fa6958adb2001d4"
+        }
+      ]
+    },
+    {
+      "library": "msvcrt.dll",
+      "public_api": "double asin(double)",
+      "capture": "isolation-asin.json",
+      "rows": 14,
+      "matches": 9,
+      "misses": [
+        {
+          "id": "asin-isolation-ASIN-003",
+          "args": [
+            "0xbfe52a3a8df2ead9"
+          ],
+          "expected_bits": "0xbfe720476e0c1abf",
+          "actual": "0xbfe720476e0c1ac0"
+        },
+        {
+          "id": "asin-isolation-ASIN-007",
+          "args": [
+            "0xbfe52a3a8df2eadb"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac3",
+          "actual": "0xbfe720476e0c1ac2"
+        },
+        {
+          "id": "asin-isolation-ASIN-011",
+          "args": [
+            "0xbfe52a3a8df2eadd"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac4",
+          "actual": "0xbfe720476e0c1ac5"
+        },
+        {
+          "id": "asin-isolation-ASIN-012",
+          "args": [
+            "0x3fe52a3a8df2eade"
+          ],
+          "expected_bits": "0x3fe720476e0c1ac7",
+          "actual": "0x3fe720476e0c1ac6"
+        },
+        {
+          "id": "asin-isolation-ASIN-013",
+          "args": [
+            "0xbfe52a3a8df2eade"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac7",
+          "actual": "0xbfe720476e0c1ac6"
+        }
+      ]
+    },
+    {
+      "library": "ucrtbase.dll",
+      "public_api": "double asin(double)",
+      "capture": "discovery.json",
+      "rows": 1224,
+      "matches": 1166,
+      "misses": [
+        {
+          "id": "w111extended-2026092903-ASIN-00051",
+          "args": [
+            "0xbfce90623b7ed2b0"
+          ],
+          "expected_bits": "0xbfcedcb6415e8d1a",
+          "actual": "0xbfcedcb6415e8d19"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00054",
+          "args": [
+            "0x3fe9e51b1bb6aef4"
+          ],
+          "expected_bits": "0x3fee2b910f1efa83",
+          "actual": "0x3fee2b910f1efa82"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00078",
+          "args": [
+            "0x3fe18a5a69f866d0"
+          ],
+          "expected_bits": "0x3fe2907c31ab08ca",
+          "actual": "0x3fe2907c31ab08cb"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00081",
+          "args": [
+            "0x3fd139809adea210"
+          ],
+          "expected_bits": "0x3fd1708c7cdfb6c8",
+          "actual": "0x3fd1708c7cdfb6c9"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00114",
+          "args": [
+            "0xbfe10a032c4cfd28"
+          ],
+          "expected_bits": "0xbfe1f7f5d44c410d",
+          "actual": "0xbfe1f7f5d44c410c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00165",
+          "args": [
+            "0xbfc0823f6ce4bb80"
+          ],
+          "expected_bits": "0xbfc08e0da301acc1",
+          "actual": "0xbfc08e0da301acc0"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00171",
+          "args": [
+            "0xbfe44142c2445e18"
+          ],
+          "expected_bits": "0xbfe5ee9fc201293b",
+          "actual": "0xbfe5ee9fc201293a"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00174",
+          "args": [
+            "0x3fe692026574d12c"
+          ],
+          "expected_bits": "0x3fe90d58cfea65b7",
+          "actual": "0x3fe90d58cfea65b8"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00183",
+          "args": [
+            "0xbfcd4c9514a40330"
+          ],
+          "expected_bits": "0xbfcd8facecad64f5",
+          "actual": "0xbfcd8facecad64f6"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00192",
+          "args": [
+            "0x3f955f56f7e79780"
+          ],
+          "expected_bits": "0x3f955fbcae59420a",
+          "actual": "0x3f955fbcae59420b"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00198",
+          "args": [
+            "0x3fe6737b3c08bdac"
+          ],
+          "expected_bits": "0x3fe8e264df0708e2",
+          "actual": "0x3fe8e264df0708e3"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00210",
+          "args": [
+            "0x3fde701d86525880"
+          ],
+          "expected_bits": "0x3fdfb88874c84148",
+          "actual": "0x3fdfb88874c84149"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00240",
+          "args": [
+            "0x3fdd353b816e5918"
+          ],
+          "expected_bits": "0x3fde54a3238c2317",
+          "actual": "0x3fde54a3238c2318"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00255",
+          "args": [
+            "0xbfe7e85a272d5cd4"
+          ],
+          "expected_bits": "0xbfeaffa908f135c0",
+          "actual": "0xbfeaffa908f135bf"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00267",
+          "args": [
+            "0xbfe0bdb059cc36e8"
+          ],
+          "expected_bits": "0xbfe19e1969aaa9f1",
+          "actual": "0xbfe19e1969aaa9f0"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00291",
+          "args": [
+            "0xbfc7ddf0d9ba6bc0"
+          ],
+          "expected_bits": "0xbfc801e93dd2b93f",
+          "actual": "0xbfc801e93dd2b93e"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00375",
+          "args": [
+            "0xbfd0bfaf0290d8a0"
+          ],
+          "expected_bits": "0xbfd0f232ac5a7bdf",
+          "actual": "0xbfd0f232ac5a7bde"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00393",
+          "args": [
+            "0xbfe7287f1f8d2eb8"
+          ],
+          "expected_bits": "0xbfe9e478064340cd",
+          "actual": "0xbfe9e478064340cc"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00426",
+          "args": [
+            "0xbfed7194bf1b3ac8"
+          ],
+          "expected_bits": "0xbff2b1a89c845383",
+          "actual": "0xbff2b1a89c845384"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00441",
+          "args": [
+            "0x3fcf5c212424acc0"
+          ],
+          "expected_bits": "0x3fcfaeb19bbcb410",
+          "actual": "0x3fcfaeb19bbcb40f"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00468",
+          "args": [
+            "0xbfbca7d7e1dcbc40"
+          ],
+          "expected_bits": "0xbfbcb73fe70c27fc",
+          "actual": "0xbfbcb73fe70c27fd"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00540",
+          "args": [
+            "0x3fc73344a3e433f0"
+          ],
+          "expected_bits": "0x3fc754473dbb740f",
+          "actual": "0x3fc754473dbb740e"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00552",
+          "args": [
+            "0xbfea7e919547f70c"
+          ],
+          "expected_bits": "0xbfef36d3c4cdce63",
+          "actual": "0xbfef36d3c4cdce64"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00558",
+          "args": [
+            "0x3fe9b68079164514"
+          ],
+          "expected_bits": "0x3feddcc3456cd7c4",
+          "actual": "0x3feddcc3456cd7c3"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00570",
+          "args": [
+            "0x3fed4fc8eeef9a14"
+          ],
+          "expected_bits": "0x3ff287086e2e19e7",
+          "actual": "0x3ff287086e2e19e6"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00594",
+          "args": [
+            "0x3fd5abc9df6633c0"
+          ],
+          "expected_bits": "0x3fd61badce9f3cf3",
+          "actual": "0x3fd61badce9f3cf4"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00606",
+          "args": [
+            "0x3fd985a5e2dde8d8"
+          ],
+          "expected_bits": "0x3fda408764e82f7b",
+          "actual": "0x3fda408764e82f7c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00621",
+          "args": [
+            "0xbfbf54d60a3a4ec0"
+          ],
+          "expected_bits": "0xbfbf68ff03146578",
+          "actual": "0xbfbf68ff03146577"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00627",
+          "args": [
+            "0x3fb4617560ef4d60"
+          ],
+          "expected_bits": "0x3fb466fc597008f6",
+          "actual": "0x3fb466fc597008f5"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00642",
+          "args": [
+            "0x3fd362f0b758ede0"
+          ],
+          "expected_bits": "0x3fd3b2276d4db57c",
+          "actual": "0x3fd3b2276d4db57b"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00672",
+          "args": [
+            "0xbfecd0820ec8a218"
+          ],
+          "expected_bits": "0xbff1eed57b782d1f",
+          "actual": "0xbff1eed57b782d20"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00675",
+          "args": [
+            "0xbfd2976c60f3d588"
+          ],
+          "expected_bits": "0xbfd2dd09e10370c2",
+          "actual": "0xbfd2dd09e10370c3"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00681",
+          "args": [
+            "0x3fda403fcef9b5e0"
+          ],
+          "expected_bits": "0x3fdb0c9148bfed54",
+          "actual": "0x3fdb0c9148bfed55"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00684",
+          "args": [
+            "0xbfdc130fcb439cb8"
+          ],
+          "expected_bits": "0xbfdd1026df0cdce6",
+          "actual": "0xbfdd1026df0cdce5"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00690",
+          "args": [
+            "0x3fc6db79830cd770"
+          ],
+          "expected_bits": "0x3fc6fb07495d630d",
+          "actual": "0x3fc6fb07495d630c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00714",
+          "args": [
+            "0x3fe1f663d3b0febc"
+          ],
+          "expected_bits": "0x3fe31255f3170335",
+          "actual": "0x3fe31255f3170334"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00717",
+          "args": [
+            "0xbf8a723b20fecd00"
+          ],
+          "expected_bits": "0xbf8a726b4cf2fd6e",
+          "actual": "0xbf8a726b4cf2fd6f"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00789",
+          "args": [
+            "0xbfeec4cd2aff5924"
+          ],
+          "expected_bits": "0xbff4ae0fb55ede45",
+          "actual": "0xbff4ae0fb55ede44"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00794",
+          "args": [
+            "0xbfb128bc12640cb5"
+          ],
+          "expected_bits": "0xbfb12c07d22054fb",
+          "actual": "0xbfb12c07d22054fc"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00795",
+          "args": [
+            "0xbfcf23afd4cd4520"
+          ],
+          "expected_bits": "0xbfcf747d6cba5974",
+          "actual": "0xbfcf747d6cba5973"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00858",
+          "args": [
+            "0xbfdcd8a9c06a3360"
+          ],
+          "expected_bits": "0xbfddecc5282c849c",
+          "actual": "0xbfddecc5282c849d"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00870",
+          "args": [
+            "0xbfd07c44075a09f8"
+          ],
+          "expected_bits": "0xbfd0ac62c1f24cbe",
+          "actual": "0xbfd0ac62c1f24cbf"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00876",
+          "args": [
+            "0x3fe56efac5b7e668"
+          ],
+          "expected_bits": "0x3fe77c66e8a2b00d",
+          "actual": "0x3fe77c66e8a2b00c"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00912",
+          "args": [
+            "0xbfcf57aec092c000"
+          ],
+          "expected_bits": "0xbfcfaa1b748a55fd",
+          "actual": "0xbfcfaa1b748a55fe"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00921",
+          "args": [
+            "0xbfea8b0383a82ed8"
+          ],
+          "expected_bits": "0xbfef4d1036a24d23",
+          "actual": "0xbfef4d1036a24d24"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00929",
+          "args": [
+            "0xbfe52a3a8df2eadb"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac3",
+          "actual": "0xbfe720476e0c1ac2"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-00999",
+          "args": [
+            "0xbfd73da4e120b6d8"
+          ],
+          "expected_bits": "0xbfd7c8d5d8bf7ac9",
+          "actual": "0xbfd7c8d5d8bf7aca"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01011",
+          "args": [
+            "0xbfd39bd613cfb2a8"
+          ],
+          "expected_bits": "0xbfd3ede3ba8abd0a",
+          "actual": "0xbfd3ede3ba8abd09"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01020",
+          "args": [
+            "0xbfea4d300e00ec24"
+          ],
+          "expected_bits": "0xbfeedf75887f3d1b",
+          "actual": "0xbfeedf75887f3d1a"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01032",
+          "args": [
+            "0x3fe0b0e102812670"
+          ],
+          "expected_bits": "0x3fe18f13a7bd281f",
+          "actual": "0x3fe18f13a7bd2820"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01080",
+          "args": [
+            "0x3fdbc2daee52bb70"
+          ],
+          "expected_bits": "0x3fdcb7048737cd43",
+          "actual": "0x3fdcb7048737cd44"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01110",
+          "args": [
+            "0xbfd304e4d3d0ebe0"
+          ],
+          "expected_bits": "0xbfd34f909fce6a54",
+          "actual": "0xbfd34f909fce6a53"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01113",
+          "args": [
+            "0x3fccde2d3a0e25a0"
+          ],
+          "expected_bits": "0x3fcd1e4df296d7c3",
+          "actual": "0x3fcd1e4df296d7c2"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01140",
+          "args": [
+            "0xbfde4d7fc7127fb0"
+          ],
+          "expected_bits": "0xbfdf9134fb64953c",
+          "actual": "0xbfdf9134fb64953d"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01173",
+          "args": [
+            "0xbfc05a74da7e3290"
+          ],
+          "expected_bits": "0xbfc065ee1580ff61",
+          "actual": "0xbfc065ee1580ff60"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01176",
+          "args": [
+            "0xbfef068cc7e871bc"
+          ],
+          "expected_bits": "0xbff52c9571fe18d5",
+          "actual": "0xbff52c9571fe18d6"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01191",
+          "args": [
+            "0x3fef5ea67f1b82bc"
+          ],
+          "expected_bits": "0x3ff5f3b0f6df51e3",
+          "actual": "0x3ff5f3b0f6df51e4"
+        },
+        {
+          "id": "w111extended-2026092903-ASIN-01194",
+          "args": [
+            "0x3fa693aaf2be0540"
+          ],
+          "expected_bits": "0x3fa6958adb2001d3",
+          "actual": "0x3fa6958adb2001d4"
+        }
+      ]
+    },
+    {
+      "library": "ucrtbase.dll",
+      "public_api": "double asin(double)",
+      "capture": "isolation-asin.json",
+      "rows": 14,
+      "matches": 9,
+      "misses": [
+        {
+          "id": "asin-isolation-ASIN-003",
+          "args": [
+            "0xbfe52a3a8df2ead9"
+          ],
+          "expected_bits": "0xbfe720476e0c1abf",
+          "actual": "0xbfe720476e0c1ac0"
+        },
+        {
+          "id": "asin-isolation-ASIN-007",
+          "args": [
+            "0xbfe52a3a8df2eadb"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac3",
+          "actual": "0xbfe720476e0c1ac2"
+        },
+        {
+          "id": "asin-isolation-ASIN-011",
+          "args": [
+            "0xbfe52a3a8df2eadd"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac4",
+          "actual": "0xbfe720476e0c1ac5"
+        },
+        {
+          "id": "asin-isolation-ASIN-012",
+          "args": [
+            "0x3fe52a3a8df2eade"
+          ],
+          "expected_bits": "0x3fe720476e0c1ac7",
+          "actual": "0x3fe720476e0c1ac6"
+        },
+        {
+          "id": "asin-isolation-ASIN-013",
+          "args": [
+            "0xbfe52a3a8df2eade"
+          ],
+          "expected_bits": "0xbfe720476e0c1ac7",
+          "actual": "0xbfe720476e0c1ac6"
+        }
+      ]
+    }
+  ]
+}

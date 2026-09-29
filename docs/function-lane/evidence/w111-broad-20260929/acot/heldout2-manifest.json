@@ -1,0 +1,15 @@
+{
+  "generator": "gen_acot_holdout.py",
+  "seed": 2026092919,
+  "authority": "non_semantic_exploration_input",
+  "reciprocal_search_draws": 100000,
+  "reciprocal_centers": 27,
+  "batches": [
+    {
+      "function": "ACOT",
+      "path": "batch-acot.json",
+      "rows": 7976,
+      "sha256": "2585e22b1bf0c55ed818196409a00fe0a5021c0cee22de90963c6e539f8d63a7"
+    }
+  ]
+}

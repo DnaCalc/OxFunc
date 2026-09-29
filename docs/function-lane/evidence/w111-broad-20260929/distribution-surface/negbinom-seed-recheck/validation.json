@@ -1,0 +1,15 @@
+{
+  "purpose": "preserve live evidence for the strict failing seed assertion",
+  "baseline_binary_sha256": "94753fdbe0cd688756fe7c02b30a370930e77b6f90a1fff1e375a61f74dbc4ae",
+  "current_binary_sha256": "2e18e23ec4363e1da1101e4eec33da8c5b62d0514f039213edf6fb0392a1d8ac",
+  "seed_expected": "0x3fe5e849aaeed68d",
+  "baseline_and_current_actual": "0x3fe5e849aaeed68e",
+  "per_surface": {
+    "observations": 20,
+    "exact": 7,
+    "discrepant": 13
+  },
+  "unit_assertion_changed": false,
+  "current_judgement": "current-frozen-judgement.json",
+  "frozen_replay_equals_initial_current_judgement": true
+}

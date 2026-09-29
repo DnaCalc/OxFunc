@@ -1,7 +1,9 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.Functions.Bitwise
 namespace OxFunc.Functions
 open OxFunc
+def bitAndKernelModel := bitBinaryKernelModel .andOp
 def bitAndMeta : FunctionMeta := {
   functionId := "FUNC.BITAND", arity := Arity.exact 2, determinism := .deterministic,
   volatility := .nonvolatile, hostInteraction := .none, threadSafety := .safePure,

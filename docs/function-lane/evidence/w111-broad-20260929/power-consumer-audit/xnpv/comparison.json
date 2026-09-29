@@ -1,0 +1,9 @@
+{
+  "changed": [],
+  "dependency_not_reached": 234,
+  "distinct_power_calls": 4653,
+  "new_exact": 2170,
+  "old_exact": 2170,
+  "retained_misses": [],
+  "rows": 2170
+}

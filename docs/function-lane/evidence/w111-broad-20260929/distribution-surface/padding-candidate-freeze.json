@@ -1,0 +1,20 @@
+{
+  "utc": "2026-09-29T16:20:01.724557+00:00",
+  "sources": [
+    {
+      "source": "crates\\oxfunc_core\\src\\functions\\distribution_common.rs",
+      "retained": "padding-candidate-distribution_common.rs",
+      "sha256": "20c45413d25e8aaea096e3650f2dfbc4ef307391ff9a5c1380de6cf6b08a22d8"
+    },
+    {
+      "source": "crates\\oxfunc_core\\src\\functions\\normal_log_family.rs",
+      "retained": "padding-candidate-normal_log_family.rs",
+      "sha256": "b62350a710f9e4a2b56ee3f74c93c882b2d29c0f65cc954cbeb1576bb5487cab"
+    },
+    {
+      "source": "crates\\oxfunc_core\\src\\functions\\discrete_dist_family.rs",
+      "retained": "padding-candidate-discrete_dist_family.rs",
+      "sha256": "91b7178d11cc51b04602f7410e46eb85708a934690011c503d5c4dd5c7feaf4a"
+    }
+  ]
+}

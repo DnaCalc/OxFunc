@@ -1,0 +1,18 @@
+{
+  "batches": [
+    {
+      "function": "MROUND",
+      "path": "batch-mround.json",
+      "rows": 3200
+    }
+  ],
+  "division_centers": 160,
+  "draws": 1949014,
+  "generator": "mround_staged_holdout.rs",
+  "product_centers": 160,
+  "seed": 2026092968,
+  "selection": "fresh random graph disagreements, five source-ULP neighbors and both signs; no oracle selection",
+  "generated_utc": "2026-09-29T19:03:06.251210+00:00",
+  "candidate_freeze_sha256": "c942b440ec0a8698c040bc9b8bf0886d24ec65f537fc644dbc25260859f01316",
+  "generator_sha256": "28c15e5195835453b798821ec9d2013db8df5339b837801351a601f22d7b21c6"
+}

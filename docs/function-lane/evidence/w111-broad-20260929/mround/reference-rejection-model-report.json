@@ -1,0 +1,13 @@
+{
+  "rows": 432,
+  "matches": 432,
+  "by_function": {
+    "FUNC.MROUND": {
+      "rows": 432,
+      "matches": 432
+    }
+  },
+  "misses": [],
+  "authority": "Offline reference-rejection hypothesis, not production replay; local arguments substituted before evaluating frozen numerical/kernel policy.",
+  "selection_limit": "All original formula callers at unaligned J20; later reference80 distinguishes rejection from intersection."
+}

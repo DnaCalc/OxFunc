@@ -1,0 +1,13 @@
+{
+  "generator": "gen_poisson_publication.py",
+  "seed": 2026092937,
+  "phase": "discovery",
+  "authority": "mathematical_boundary_selection_without_oracle_outputs",
+  "batches": [
+    {
+      "function": "POISSON.DIST",
+      "path": "batch-poisson.dist.json",
+      "rows": 1428
+    }
+  ]
+}

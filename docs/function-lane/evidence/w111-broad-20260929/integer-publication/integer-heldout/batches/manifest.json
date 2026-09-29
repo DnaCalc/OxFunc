@@ -1,0 +1,27 @@
+{
+  "phase": "independent_after_integer_candidates",
+  "seed": 202609292610,
+  "batches": [
+    {
+      "function": "INT",
+      "path": "batch-int.json",
+      "rows": 36346,
+      "sha256": "7409d89d50f608246743af0b1b7bcc66afdb874597bd1adcbdfc30937568b97c",
+      "prior_inputs": 32239
+    },
+    {
+      "function": "ISEVEN",
+      "path": "batch-iseven.json",
+      "rows": 36200,
+      "sha256": "b1cd76ce7cb840ba0f0d5c0c4a6a137dfa9da1f65aea060564c1dd28bde2a55a",
+      "prior_inputs": 20866
+    },
+    {
+      "function": "ISODD",
+      "path": "batch-isodd.json",
+      "rows": 36150,
+      "sha256": "5755ad456f1e44bbbf0245eda3f46334c9dee3d0c9c6f28fcb06103a9ea5188e",
+      "prior_inputs": 20866
+    }
+  ]
+}

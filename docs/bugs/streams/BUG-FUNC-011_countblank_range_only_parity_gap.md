@@ -3,8 +3,8 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-011`
 - **Opened**: `2026-04-10`
-- **Status**: `closed`
-- **Owner workset**: `W084`
+- **Status**: `investigating` (reopened by W111 on 2026-09-29)
+- **Owner workset**: `W111`; historical repair `W084`
 
 ## Source Refs
 - **Reported against ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
@@ -163,3 +163,20 @@
 - [x] linked reports updated
 - [x] handoff filed if required
 - [x] fix landed or non-OxFunc ownership recorded
+
+
+## W111 Reopening: 2026-09-29
+
+The prior W084 range-only result remains historical evidence. Fresh typed probes
+show two additional rules: true ranges ignore error-valued cells when counting
+blanks; computed arrays preserve error cells while ordinary cells publish
+`#VALUE!`. The earlier whole-array rejection hid this per-cell distinction.
+Direct literal COUNTBLANK arguments can also fail formula entry, so those cases
+cannot be represented as an invented function error result.
+
+Canonical owner: `oxf-mwue.28.10`; report `BUGREP-FUNC-038`. The 476-case origin
+packet and follow-up computed-value controls are retained under the W111
+`count-family/` evidence directory. Status is `scope_partial`, `target_partial`,
+integration `partial`; open lanes include independent validation, computed-value
+admission, formal alignment, receiving-evaluator assessment and combined tests.
+The earlier closure does not establish parity for these newly observed lanes.

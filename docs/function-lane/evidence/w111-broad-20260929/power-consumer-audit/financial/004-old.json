@@ -1,0 +1,10 @@
+{
+  "function_id": "FUNC.FV",
+  "rows_judged": 9,
+  "rows_agree": 9,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": [],
+  "capture_provenance": null
+}

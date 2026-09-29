@@ -1,0 +1,21 @@
+{
+  "phase": "independent_after_signed_residual_refinement",
+  "seed": 202609293035,
+  "roundup_rows": 6542,
+  "rounddown_rows": 3470,
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/round_fn.rs": "ff443b103a753d5a19f6bd3e44667ec42c822d87ddde8d84ae50f77a9f5ad15c",
+    "crates/oxfunc_core/src/functions/roundup_fn.rs": "b1bc689a5bf76f866e72783f1d0e12fd0f82e1e0bb6bc35764cfb51f575d6492",
+    "crates/oxfunc_core/src/functions/rounddown_fn.rs": "581e63f12f21b6a02ed73a171af3a25a4bd443ce0685f1c5ae53b2141a56065a",
+    "crates/oxfunc_core/src/functions/trunc_fn.rs": "5d91158d5aaf0796040a4999ecdce96f1493f5e203674b4e63d7132bc2f64c4f",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "formal/lean/OxFunc/DecimalRounding.lean": "ddcb38f097e9398b2b292886352acf1401e51261c86af8cac8d0a72fb84544f2"
+  },
+  "open_lanes": [
+    "raw_overflow_numeric_publication",
+    "initial15_precision",
+    "contextual_numeric_text",
+    "receiving_acknowledgement"
+  ]
+}

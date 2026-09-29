@@ -1,0 +1,2837 @@
+{
+  "function": "POISSON.DIST",
+  "witnesses": [
+    {
+      "id": "poisson.dist-branch-00000-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00001-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00002-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00003-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00004-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00005-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00006-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00007-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00008-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00009-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00010-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00011-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00012-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00013-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00014-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00015-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00016-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00017-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00018-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00019-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00020-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00021-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00022-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00023-count-mean-order",
+      "args": [
+        "0xc000000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00024-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00025-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00026-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00027-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00028-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00029-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00030-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00031-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00032-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00033-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00034-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00035-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00036-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00037-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00038-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00039-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00040-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00041-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00042-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00043-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00044-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00045-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00046-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00047-count-mean-order",
+      "args": [
+        "0xbff0000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00048-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00049-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00050-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00051-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00052-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00053-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00054-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00055-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00056-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00057-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00058-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00059-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00060-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00061-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00062-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00063-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00064-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00065-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00066-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00067-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00068-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00069-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00070-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00071-count-mean-order",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00072-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00073-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00074-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00075-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00076-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00077-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00078-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00079-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00080-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00081-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00082-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00083-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00084-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00085-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00086-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00087-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00088-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00089-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00090-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00091-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00092-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00093-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00094-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00095-count-mean-order",
+      "args": [
+        "0xbfe0000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00096-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00097-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00098-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00099-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00100-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00101-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00102-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00103-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00104-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00105-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00106-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00107-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00108-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00109-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00110-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00111-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00112-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00113-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00114-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00115-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00116-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00117-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00118-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00119-count-mean-order",
+      "args": [
+        "0x8010000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00120-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00121-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00122-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00123-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00124-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00125-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00126-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00127-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00128-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00129-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00130-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00131-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00132-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00133-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00134-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00135-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00136-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00137-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00138-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00139-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00140-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00141-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00142-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00143-count-mean-order",
+      "args": [
+        "0x0000000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00144-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00145-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00146-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00147-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00148-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00149-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00150-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00151-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00152-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00153-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00154-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00155-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00156-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00157-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00158-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00159-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00160-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00161-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00162-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00163-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00164-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00165-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00166-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00167-count-mean-order",
+      "args": [
+        "0x0010000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00168-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00169-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00170-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00171-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00172-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00173-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00174-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00175-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00176-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00177-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00178-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00179-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00180-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00181-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00182-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00183-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00184-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00185-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00186-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00187-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00188-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00189-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00190-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00191-count-mean-order",
+      "args": [
+        "0x3fb999999999999a",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00192-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00193-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00194-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00195-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00196-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00197-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x7fdd422d2be5dc9b"
+    },
+    {
+      "id": "poisson.dist-branch-00198-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00199-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x40628d389970338f"
+    },
+    {
+      "id": "poisson.dist-branch-00200-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00201-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x4005bf0a8b145769"
+    },
+    {
+      "id": "poisson.dist-branch-00202-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00203-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff1aec7b35a00d4"
+    },
+    {
+      "id": "poisson.dist-branch-00204-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00205-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00206-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00207-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fecf46d99d52b3a"
+    },
+    {
+      "id": "poisson.dist-branch-00208-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00209-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00210-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00211-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f7b993fe00d5376"
+    },
+    {
+      "id": "poisson.dist-branch-00212-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00213-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00033802fd28b3c3"
+    },
+    {
+      "id": "poisson.dist-branch-00214-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00215-count-mean-order",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00216-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00217-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00218-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00219-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00220-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00221-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00222-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00223-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00224-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00225-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00226-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00227-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00228-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00229-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00230-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb729f147ddbc30"
+    },
+    {
+      "id": "poisson.dist-branch-00231-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefd9abc2d0e2c0"
+    },
+    {
+      "id": "poisson.dist-branch-00232-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00233-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe78b56362cef39"
+    },
+    {
+      "id": "poisson.dist-branch-00234-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa13fc7ec085429"
+    },
+    {
+      "id": "poisson.dist-branch-00235-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fa4b2efe809fe98"
+    },
+    {
+      "id": "poisson.dist-branch-00236-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0081dab0943dc520"
+    },
+    {
+      "id": "poisson.dist-branch-00237-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0081e1209a3814dd"
+    },
+    {
+      "id": "poisson.dist-branch-00238-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00239-count-mean-order",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00240-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00241-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00242-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00243-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00244-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00245-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00246-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00247-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00248-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00249-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00250-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00251-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00252-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00253-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00254-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb729f147ddbc30"
+    },
+    {
+      "id": "poisson.dist-branch-00255-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefd9abc2d0e2c0"
+    },
+    {
+      "id": "poisson.dist-branch-00256-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd78b56362cef38"
+    },
+    {
+      "id": "poisson.dist-branch-00257-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe78b56362cef39"
+    },
+    {
+      "id": "poisson.dist-branch-00258-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa13fc7ec085429"
+    },
+    {
+      "id": "poisson.dist-branch-00259-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fa4b2efe809fe98"
+    },
+    {
+      "id": "poisson.dist-branch-00260-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0081dab0943dc520"
+    },
+    {
+      "id": "poisson.dist-branch-00261-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0081e1209a3814dd"
+    },
+    {
+      "id": "poisson.dist-branch-00262-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00263-count-mean-order",
+      "args": [
+        "0x3ff199999999999a",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00264-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00265-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00266-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00267-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00268-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00269-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00270-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00271-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00272-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00273-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00274-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00275-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00276-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00277-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00278-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f7287f4397e3027"
+    },
+    {
+      "id": "poisson.dist-branch-00279-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feffebbab43df20"
+    },
+    {
+      "id": "poisson.dist-branch-00280-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc78b56362cef37"
+    },
+    {
+      "id": "poisson.dist-branch-00281-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fed6e2bc3b82b06"
+    },
+    {
+      "id": "poisson.dist-branch-00282-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb58fb9e70a6934"
+    },
+    {
+      "id": "poisson.dist-branch-00283-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fbfe931db0f6880"
+    },
+    {
+      "id": "poisson.dist-branch-00284-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0108c242dd91a60d"
+    },
+    {
+      "id": "poisson.dist-branch-00285-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0108d423fe2bdf36"
+    },
+    {
+      "id": "poisson.dist-branch-00286-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00287-count-mean-order",
+      "args": [
+        "0x4000000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00288-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc08f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00289-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc08f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00290-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00291-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00292-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc086280000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00293-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc086280000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00294-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00295-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xc014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00296-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xbff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00297-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xbff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00298-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00299-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "poisson.dist-branch-00300-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00301-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00302-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f23c437b4cade08"
+    },
+    {
+      "id": "poisson.dist-branch-00303-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x3fb999999999999a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feffff7eebf2bce"
+    },
+    {
+      "id": "poisson.dist-branch-00304-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faf6472f2e6944b"
+    },
+    {
+      "id": "poisson.dist-branch-00305-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fef6472f2e6944a"
+    },
+    {
+      "id": "poisson.dist-branch-00306-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc1f7c595de0257"
+    },
+    {
+      "id": "poisson.dist-branch-00307-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd0f62f41b2db4b"
+    },
+    {
+      "id": "poisson.dist-branch-00308-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0186e397262b51d6"
+    },
+    {
+      "id": "poisson.dist-branch-00309-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0186fc6b4a297f6a"
+    },
+    {
+      "id": "poisson.dist-branch-00310-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "poisson.dist-branch-00311-count-mean-order",
+      "args": [
+        "0x4008000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T16:56:02.9830781Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

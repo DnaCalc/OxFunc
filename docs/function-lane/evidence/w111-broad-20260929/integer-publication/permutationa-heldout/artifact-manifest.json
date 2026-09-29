@@ -1,0 +1,24 @@
+{
+  "artifacts": [
+    {
+      "path": "answers-permutationa.json",
+      "sha256": "45d3f276c4734416ce55f8775752251e7158c9c93cf7e8a6beb56de8fa70e55c"
+    },
+    {
+      "path": "batch-permutationa.json",
+      "sha256": "b5e36a2eef6d90c8ff0fc864ef27c272d27ae8c317d8e817ec462d78e4b4f423"
+    },
+    {
+      "path": "candidate-freeze.json",
+      "sha256": "50bd699e786d277e8005c6587eb2334b825b02a13c1e7a9ae658733d4c7a418c"
+    },
+    {
+      "path": "candidate.rs",
+      "sha256": "8a105046243280934e32d4d36bc6a81a69d9c2d58694a01f1b09f92e707e25a2"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "554568b2abc737468f6d76a08fa1bdb55c9fd43f1efa5fd8dc935289072292d1"
+    }
+  ]
+}

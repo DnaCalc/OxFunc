@@ -1,0 +1,20 @@
+{
+  "frozen_utc": "2026-09-29T15:53:32.494098+00:00",
+  "seed": 202609292411,
+  "source_sha256": {
+    "excel_numeric/mod.rs": "e2b0505d28e0a99ece9c02400123b5b64857f47162894e49cd2caf08eeb6a7af",
+    "excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd",
+    "functions/sqrt_fn.rs": "74d63f196e287a49a341df040bcee8c6c94b934591090e3fc031d54ae2c0a580",
+    "functions/radians.rs": "e8998a36cd209c28650f9dcf905b8d855c407d0801cc9b785fc1f3fc60e92c87",
+    "functions/sech.rs": "36086b76137230d31265129d494d0079f7f1d49534338f4e11e2c6abfb7a8d0e",
+    "functions/standardize_fn.rs": "f2886d61ef1623ffc44c6c271155fe22ec5eac26e153bf0f0c2dbd1f49587917",
+    "functions/phi_fn.rs": "db61b56460309785fac7a5d7a3fe7dd790732ffa1665027c128b7cf7f0133edd",
+    "functions/normal_log_family.rs": "d24a8b4d32f7d5968705baf2c1f3d89293ccbc41c103eddb1e4a51420a547e7e",
+    "functions/normal_dist_common.rs": "7bfe28859c3e6664483986291304f370248137437265afb0791efdb5db9fed0d",
+    "functions/discrete_dist_family.rs": "056e51703d7e163702a67839e639c63cb8d2f2f1477d2514f976eb857bcb6fa9",
+    "coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95"
+  },
+  "math_use": "Exact rational output midpoint squares select inputs only; Excel remains the oracle."
+}

@@ -43,6 +43,60 @@ use core::arch::asm;
 /// installed before every `exp`/`ln`/`log`/`pow` in the Microsoft CRT).
 const CW_CORE: u16 = 0x133F;
 
+/// Public ISA FPATAN operation, selected by W111 black-box complex-argument
+/// witnesses. No binary provenance inference is needed for this arithmetic graph.
+pub(super) fn atan(x: f64) -> f64 {
+    let mut result = 0.0_f64;
+    let cw_core = CW_CORE;
+    let mut cw_save = 0_u16;
+    // SAFETY: the two pushes and FPATAN/store pops balance the x87 stack. All
+    // pointers refer to live locals and the caller's control word is restored.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld qword ptr [{x}]",
+            "fld1",
+            "fpatan",
+            "fstp qword ptr [{res}]",
+            "fldcw word ptr [{save}]",
+            x = in(reg) &x,
+            res = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+            options(nostack, preserves_flags),
+        );
+    }
+    result
+}
+
+/// W111 ATAN magnitude reduction selected by independent black-box counterexamples.
+/// For |x| > 1, keep atan(1/|x|) and pi/2 extended until the final subtraction.
+/// FPATAN takes the two operands directly, so no rounded reciprocal is introduced.
+pub(super) fn atan_reduced(x: f64) -> f64 {
+    let magnitude = x.abs();
+    if magnitude <= 1.0 { return atan(x); }
+    let mut result = 0.0_f64;
+    let mut cw_save = 0_u16;
+    let cw_core = CW_CORE;
+    let two = 2.0_f64;
+    // SAFETY: all operands are live locals; the two FPATAN operands reduce to
+    // one angle, FLDPI adds one value, and subtraction/store empty the stack.
+    // The caller's control word is restored before returning.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]", "fldcw word ptr [{core}]",
+            "fld1", "fld qword ptr [{x}]", "fpatan",
+            "fldpi", "fdiv qword ptr [{two}]", "fsubrp st(1), st(0)",
+            "fstp qword ptr [{res}]", "fldcw word ptr [{save}]",
+            x = in(reg) &magnitude, two = in(reg) &two, res = in(reg) &mut result,
+            core = in(reg) &cw_core, save = in(reg) &mut cw_save,
+            options(nostack, preserves_flags),
+        );
+    }
+    result.copysign(x)
+}
+
 /// `e^x` via the `87tran.asm` `fFEXP` chain. `x` must be finite (the caller
 /// handles NaN/±Inf); overflow returns `+Inf`, underflow `+0.0`, per the x87
 /// masked-store semantics.

@@ -1,0 +1,244 @@
+{
+  "rows": 1296,
+  "matches": 1269,
+  "by_function": {
+    "FUNC.NORM.S.DIST": {
+      "rows": 240,
+      "matches": 237
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 271,
+      "matches": 265
+    },
+    "FUNC.NORMDIST": {
+      "rows": 271,
+      "matches": 265
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 257,
+      "matches": 251
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 257,
+      "matches": 251
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111typed-00222-norm_s_dist-earlier-error-later-padding",
+      "formula": "=NORM.S.DIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00224-norm_s_dist-earlier-error-later-padding",
+      "formula": "=NORM.S.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00226-norm_s_dist-earlier-error-later-padding",
+      "formula": "=NORM.S.DIST(CHOOSE({1;2;3},A100,A101,#NUM!),CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Num|error:Num]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00490-norm_dist-earlier-error-later-padding",
+      "formula": "=NORM.DIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,A103,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00492-norm_dist-scalar-error-later-padding",
+      "formula": "=NORM.DIST(#REF!,CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref]",
+      "actual": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00493-norm_dist-earlier-error-later-padding",
+      "formula": "=NORM.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,A103,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00495-norm_dist-scalar-error-later-padding",
+      "formula": "=NORM.DIST(#DIV/0!,CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0]",
+      "actual": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00496-norm_dist-earlier-error-later-padding",
+      "formula": "=NORM.DIST(CHOOSE({1;2;3},A100,A101,#NUM!),A102,A103,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Num|error:Num]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00498-norm_dist-scalar-error-later-padding",
+      "formula": "=NORM.DIST(#NUM!,CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:Num|error:Num]",
+      "actual": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00761-normdist-earlier-error-later-padding",
+      "formula": "=NORMDIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,A103,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00763-normdist-scalar-error-later-padding",
+      "formula": "=NORMDIST(#REF!,CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref]",
+      "actual": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00764-normdist-earlier-error-later-padding",
+      "formula": "=NORMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,A103,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00766-normdist-scalar-error-later-padding",
+      "formula": "=NORMDIST(#DIV/0!,CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0]",
+      "actual": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00767-normdist-earlier-error-later-padding",
+      "formula": "=NORMDIST(CHOOSE({1;2;3},A100,A101,#NUM!),A102,A103,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:Num|error:Num]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00769-normdist-scalar-error-later-padding",
+      "formula": "=NORMDIST(#NUM!,CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:Num|error:Num]",
+      "actual": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01018-expon_dist-earlier-error-later-padding",
+      "formula": "=EXPON.DIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01020-expon_dist-scalar-error-later-padding",
+      "formula": "=EXPON.DIST(#REF!,CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref]",
+      "actual": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01021-expon_dist-earlier-error-later-padding",
+      "formula": "=EXPON.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01023-expon_dist-scalar-error-later-padding",
+      "formula": "=EXPON.DIST(#DIV/0!,CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0]",
+      "actual": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01024-expon_dist-earlier-error-later-padding",
+      "formula": "=EXPON.DIST(CHOOSE({1;2;3},A100,A101,#NUM!),A102,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:Num|error:Num]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01026-expon_dist-scalar-error-later-padding",
+      "formula": "=EXPON.DIST(#NUM!,CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:Num|error:Num]",
+      "actual": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01275-expondist-earlier-error-later-padding",
+      "formula": "=EXPONDIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01277-expondist-scalar-error-later-padding",
+      "formula": "=EXPONDIST(#REF!,CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref]",
+      "actual": "array:3x2:[error:Ref|error:Ref|error:Ref|error:Ref|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01278-expondist-earlier-error-later-padding",
+      "formula": "=EXPONDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01280-expondist-scalar-error-later-padding",
+      "formula": "=EXPONDIST(#DIV/0!,CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0]",
+      "actual": "array:3x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01281-expondist-earlier-error-later-padding",
+      "formula": "=EXPONDIST(CHOOSE({1;2;3},A100,A101,#NUM!),A102,CHOOSE({1,2;3,4},FALSE,TRUE,TRUE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:Num|error:Num]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-01283-expondist-scalar-error-later-padding",
+      "formula": "=EXPONDIST(#NUM!,CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},FALSE,TRUE,FALSE))",
+      "expected": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:Num|error:Num]",
+      "actual": "array:3x2:[error:Num|error:Num|error:Num|error:Num|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

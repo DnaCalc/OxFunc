@@ -1,0 +1,56 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "contextual_numeric_text",
+    "multi_area_and_unresolved_references",
+    "evaluator_reference_provenance",
+    "HO_FN_027_receiving_acknowledgment"
+  ],
+  "reference_discovery": {
+    "rows": 80,
+    "baseline_exact": 26,
+    "baseline_mismatches": 54,
+    "current_direct_and_public_exact": 80
+  },
+  "prior_typed_current_exact": 504,
+  "prior_numeric_current_exact": 3141,
+  "numeric_kernel_body_unchanged": true,
+  "numeric_kernel_body_sha256": "0de1f6e14c9478bafdbc96a2d8756a3767955b8e4b9edaf5759bb9722b52d0ad",
+  "checks": {
+    "typed_replay_tests": 3,
+    "numeric_replay_tests": 2,
+    "metadata_golden": "passed",
+    "targeted_lean_jobs": 7
+  },
+  "frozen_sources": 6,
+  "independent_seed": 202609293040,
+  "first_reference_heldout": {
+    "rows": 512,
+    "exact": 507,
+    "failures": 5,
+    "reference_rule_failures": 0,
+    "materialized_positional_padding_failures": 5,
+    "candidate_and_failed_outcomes": "reference-heldout",
+    "source_hashes_unchanged_at_first_judgement": true
+  },
+  "positional_refinement": {
+    "current_typed_exact": 1720,
+    "current_numeric_exact": 3141,
+    "typed_tests": 5,
+    "numeric_tests": 2,
+    "metadata_golden": "passed",
+    "targeted_lean_jobs": 7,
+    "frozen_sources": 7,
+    "seed": 202609293041,
+    "freeze": "padding-heldout/candidate-freeze.json",
+    "fresh_rows": 624,
+    "fresh_exact": 624,
+    "source_hashes_unchanged": 7,
+    "golden_row_unchanged": true,
+    "fresh_direct_and_generated_replay": "passed"
+  },
+  "source_hold": "No production changes after successor freeze."
+}

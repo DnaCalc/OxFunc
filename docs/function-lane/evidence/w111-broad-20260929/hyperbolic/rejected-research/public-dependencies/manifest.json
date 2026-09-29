@@ -1,0 +1,25 @@
+{
+  "authority": "dependency_discovery_from_failed_SINH_inputs",
+  "source": "smart-fuzzer/runs/w111-tanh-dependencies-20260929/answers-sinh.json",
+  "source_sha256": "ebf9c27fc5327b639b373e2f04ef10ec328937b12c6070e26e42cc7435bfcec5",
+  "batches": [
+    {
+      "function": "EXP",
+      "rows": 388,
+      "path": "batch-exp.json",
+      "sha256": "e5981509e45187cef6a8b74e7517927777052302377fc073209596b4315d70fc"
+    },
+    {
+      "function": "EXPON.DIST",
+      "rows": 194,
+      "path": "batch-expon.dist.json",
+      "sha256": "4d0e53eea55773e94b4753063a4959410276d6cff072db978e79ce5f08e4ab11"
+    },
+    {
+      "function": "GAMMA.DIST",
+      "rows": 194,
+      "path": "batch-gamma.dist.json",
+      "sha256": "29a948c33cd03a0070d534fdeedf7f3da159b06cf73d23754fc7b81c0a0cfc56"
+    }
+  ]
+}

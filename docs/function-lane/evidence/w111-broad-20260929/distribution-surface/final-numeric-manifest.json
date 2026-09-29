@@ -1,0 +1,31 @@
+{
+  "generator": "gen_distribution_final_holdout.py",
+  "seed": 2026092930,
+  "authority": "independent_after_production_density_and_domain_freeze",
+  "batches": [
+    {
+      "function": "BINOM.INV",
+      "path": "batch-binom.inv.json",
+      "rows": 501,
+      "sha256": "228c9d8f4626a897c5b147be873476141f74cc21c3020749ad56ab66c70b68a3"
+    },
+    {
+      "function": "HYPGEOM.DIST",
+      "path": "batch-hypgeom.dist.json",
+      "rows": 1001,
+      "sha256": "8efedb56d3f73acd38d66de4324905bd0a7811693008bafb068c5d96855effc6"
+    },
+    {
+      "function": "NEGBINOM.DIST",
+      "path": "batch-negbinom.dist.json",
+      "rows": 181,
+      "sha256": "e762140585fb5fd8450a19827be9dd2488bb3af580fcb0312405a57d2ea39aec"
+    },
+    {
+      "function": "NORM.DIST",
+      "path": "batch-norm.dist.json",
+      "rows": 6810,
+      "sha256": "90fd0af21efafb0c1bc2e28d97b9e8f26a65a3073ab2d804b713e55c15c35537"
+    }
+  ]
+}

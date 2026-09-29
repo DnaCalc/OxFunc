@@ -1,0 +1,119 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_rollup.v1",
+  "run_id": "w111-elementary-prepared-audit-typed-20260929",
+  "tranche_id": "w111-elementary-prepared-audit-20260929-002",
+  "generated_utc": "2026-09-29T18:42:18.9822924Z",
+  "total_cases": 433,
+  "by_classification": {
+    "exact_typed_bit_match": 378,
+    "unexpected_mismatch": 55
+  },
+  "by_severity_class": {
+    "match": 378,
+    "structural_mismatch": 51,
+    "numeric_drift_1ulp": 4
+  },
+  "by_severity_sub_tag": {
+    "array_element_drift": 7,
+    "error_code_drift": 8,
+    "kind_drift": 36
+  },
+  "by_function": {
+    "FUNC.LOG": {
+      "exact_typed_bit_match": 105,
+      "unexpected_mismatch": 44
+    },
+    "FUNC.POWER": {
+      "exact_typed_bit_match": 128,
+      "unexpected_mismatch": 7
+    },
+    "FUNC.FISHER": {
+      "exact_typed_bit_match": 46
+    },
+    "FUNC.MEDIAN": {
+      "exact_typed_bit_match": 99,
+      "unexpected_mismatch": 4
+    }
+  },
+  "mismatch_case_ids": [
+    "w111elementaryprepared-00014-log-arg0-array-4",
+    "w111elementaryprepared-00017-log-arg0-array-5",
+    "w111elementaryprepared-00020-log-arg0-array-6",
+    "w111elementaryprepared-00023-log-arg0-array-7",
+    "w111elementaryprepared-00041-log-arg0-direct-14",
+    "w111elementaryprepared-00046-log-arg0-mixed-reference-area",
+    "w111elementaryprepared-00049-log-arg1-array-0",
+    "w111elementaryprepared-00052-log-arg1-array-1",
+    "w111elementaryprepared-00055-log-arg1-array-2",
+    "w111elementaryprepared-00058-log-arg1-array-3",
+    "w111elementaryprepared-00061-log-arg1-array-4",
+    "w111elementaryprepared-00064-log-arg1-array-5",
+    "w111elementaryprepared-00067-log-arg1-array-6",
+    "w111elementaryprepared-00070-log-arg1-array-7",
+    "w111elementaryprepared-00073-log-arg1-array-8",
+    "w111elementaryprepared-00076-log-arg1-array-9",
+    "w111elementaryprepared-00079-log-arg1-array-10",
+    "w111elementaryprepared-00082-log-arg1-array-11",
+    "w111elementaryprepared-00085-log-arg1-array-12",
+    "w111elementaryprepared-00088-log-arg1-direct-14",
+    "w111elementaryprepared-00093-log-arg1-mixed-reference-area",
+    "w111elementaryprepared-00095-log-omitted-base-1",
+    "w111elementaryprepared-00097-log-omitted-base-3",
+    "w111elementaryprepared-00100-log-omitted-base-6",
+    "w111elementaryprepared-00101-log-omitted-base-7",
+    "w111elementaryprepared-00128-log-ordered-errors-20",
+    "w111elementaryprepared-00130-log-ordered-errors-22",
+    "w111elementaryprepared-00132-log-ordered-errors-24",
+    "w111elementaryprepared-00133-log-broadcast-0",
+    "w111elementaryprepared-00134-log-broadcast-1",
+    "w111elementaryprepared-00135-log-broadcast-2",
+    "w111elementaryprepared-00136-log-broadcast-3",
+    "w111elementaryprepared-00137-log-broadcast-4",
+    "w111elementaryprepared-00138-log-broadcast-5",
+    "w111elementaryprepared-00139-log-broadcast-6",
+    "w111elementaryprepared-00140-log-broadcast-7",
+    "w111elementaryprepared-00141-log-broadcast-8",
+    "w111elementaryprepared-00142-log-broadcast-9",
+    "w111elementaryprepared-00143-log-broadcast-10",
+    "w111elementaryprepared-00144-log-broadcast-11",
+    "w111elementaryprepared-00145-log-broadcast-12",
+    "w111elementaryprepared-00146-log-broadcast-13",
+    "w111elementaryprepared-00147-log-broadcast-14",
+    "w111elementaryprepared-00148-log-broadcast-15",
+    "w111elementaryprepared-00190-power-arg0-direct-14",
+    "w111elementaryprepared-00237-power-arg1-direct-14",
+    "w111elementaryprepared-00263-power-ordered-errors-20",
+    "w111elementaryprepared-00265-power-ordered-errors-22",
+    "w111elementaryprepared-00267-power-ordered-errors-24",
+    "w111elementaryprepared-00270-power-broadcast-2",
+    "w111elementaryprepared-00271-power-broadcast-3",
+    "w111elementaryprepared-00369-median-arg0-direct-13",
+    "w111elementaryprepared-00371-median-arg0-direct-14",
+    "w111elementaryprepared-00416-median-arg1-direct-13",
+    "w111elementaryprepared-00418-median-arg1-direct-14"
+  ],
+  "axis_witness_pairs": {
+    "total_pairs": 0,
+    "differentiated_pairs": 0,
+    "not_differentiated_pairs": 0,
+    "blocked_or_incomplete_pairs": 0,
+    "by_axis_tag": {},
+    "pairs": []
+  },
+  "excel_environment": {
+    "available": true,
+    "version": "16.0",
+    "build": "20430",
+    "calculation": "-4105",
+    "workbook_compatibility_version": "2",
+    "channel": "unavailable_not_queried",
+    "bitness": "64-bit",
+    "operating_system": "Windows (64-bit) NT 10.00",
+    "workbook_date_system": "1900",
+    "precision_as_displayed": false,
+    "excel_input_plumbing": "typed_value2_with_fixture_readback",
+    "fixture_readback_policy": "numeric_exact_bits_text_ordinal_logical_blank_error_code"
+  },
+  "comparison_policy": "exact_typed_bit_match_no_tolerance_with_1x1_publication_seam_classification",
+  "failure_packet_dir": "smart-fuzzer/runs/w111-elementary-prepared-audit-typed-20260929/failure_packets"
+}

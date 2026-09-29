@@ -1,0 +1,52 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "midpoint arithmetic precision",
+    "unexercised consumers",
+    "locale/context",
+    "upstream acknowledgement"
+  ],
+  "admitted_discovery": 6961,
+  "distinct_COMPLEX_controls": 87,
+  "validation": {
+    "production_dispatch_discovery_tests": 1,
+    "existing_ADDRESS_tests": 8,
+    "existing_text_slice_tests": 7,
+    "focused_Lean_jobs": 13,
+    "text_filtered_library_tests": 248,
+    "production_dispatch_tests": 4,
+    "explicit_ignored_precision_regression": 1,
+    "serializer_filtered_library_tests": 22
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/numeric_text.rs": "3b0260ac9d687f635afdd8e6c911458590ea6b8ad201a935b369e80fda808ca3",
+    "crates/oxfunc_core/src/functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95",
+    "crates/oxfunc_core/src/functions/reference_metadata_family.rs": "7b2d463cf786467260285b8c818d05a80c34a4395f075389ff3ccda1c77c45a2",
+    "crates/oxfunc_core/src/functions/round_fn.rs": "99cc24e69e4c301e468175f051dc708362aa4aa7e13d33e5908094a8ced1be19",
+    "crates/oxfunc_core/tests/w111_numeric_to_text_live_replay.rs": "66be14b008ee916a0219ba4d58274e26cac7358f61346db8af45674df05d4cb5",
+    "formal/lean/OxFunc/NumericTextRendering.lean": "af294374e3ca7fc9f24f1195664f52df5ec7f77f35ec6efee3f043599bbabe39",
+    "crates/oxfunc_core/src/functions/valuetotext_fn.rs": "426a9448231f2b0c1ab869a9474dafad8da6aaa2c3ae5b07587ccf13d5bebe0e",
+    "crates/oxfunc_core/src/functions/array_text_split_family.rs": "46769b773ee2c75627eb96271cb73a905a07741f102f8fa807f67c744c6f536b",
+    "formal/lean/OxFunc/Functions/ValueToText.lean": "56edfd87a17fb6244fe59b0fbf414893a643538364469c8015b9f9e839fdabb4",
+    "formal/lean/OxFunc/Functions/ArrayTextSplitFamily.lean": "15cdf162c635319dd33a298ab80ddc12eedeedb03190862aa4070081664045e0"
+  },
+  "precision_research": {
+    "constructed_inputs": 103139,
+    "30_decimal_vs_exact15_differences": 414,
+    "captured_Excel_rows": 3204,
+    "candidate_matching_rows": 3156,
+    "candidate_mismatching_rows": 48,
+    "mismatches_by_function": {
+      "LEFT": 6,
+      "ADDRESS": 6,
+      "ROUND": 36
+    }
+  },
+  "admitted_heldout": 8208,
+  "admitted_total": 15169,
+  "admitted_serializer_discovery": 560,
+  "passing_regular_rows": 17149,
+  "admitted_serializer_heldout": 1420
+}

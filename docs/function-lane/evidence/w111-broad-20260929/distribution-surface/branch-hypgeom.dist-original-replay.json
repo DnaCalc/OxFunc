@@ -1,0 +1,415 @@
+{
+  "function": "HYPGEOM.DIST",
+  "matches": 446,
+  "misses": [
+    {
+      "actual": "0x3fee5be5be5be5bf",
+      "args": [
+        "0x4010000000000000",
+        "0x4019000000000000",
+        "0x401f000000000000",
+        "0x402c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fee5be5be5be5be",
+      "id": "hypgeom.dist-branch-00013-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fddddddddddddde",
+      "args": [
+        "0x3ff0000000000000",
+        "0x401d000000000000",
+        "0x4002000000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fddddddddddddd8",
+      "id": "hypgeom.dist-branch-00018-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fe1111111111111",
+      "args": [
+        "0x3ff0000000000000",
+        "0x401d000000000000",
+        "0x4002000000000000",
+        "0x4024000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe111111111110d",
+      "id": "hypgeom.dist-branch-00019-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3feb6db6db6db6db",
+      "args": [
+        "0x4008000000000000",
+        "0x4013000000000000",
+        "0x4017000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feb6db6db6db6dc",
+      "id": "hypgeom.dist-branch-00027-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f943304eeaad3cb",
+      "args": [
+        "0x4017000000000000",
+        "0x4031400000000000",
+        "0x4037400000000000",
+        "0x4046800000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f943304eeaad3cd",
+      "id": "hypgeom.dist-branch-00046-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f98db0957675afa",
+      "args": [
+        "0x4017000000000000",
+        "0x4031400000000000",
+        "0x4037400000000000",
+        "0x4046800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f98db0957675afc",
+      "id": "hypgeom.dist-branch-00047-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3e73ab91284cd6a5",
+      "args": [
+        "0x0000000000000000",
+        "0x4031000000000000",
+        "0x402e800000000000",
+        "0x4041000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3e73ab91284cd6a7",
+      "id": "hypgeom.dist-branch-00078-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3e73ab91284cd6a5",
+      "args": [
+        "0x0000000000000000",
+        "0x4031000000000000",
+        "0x402e800000000000",
+        "0x4041000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e73ab91284cd6a7",
+      "id": "hypgeom.dist-branch-00079-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f595cbb0be377ae",
+      "args": [
+        "0x4024800000000000",
+        "0x402a000000000000",
+        "0x4025800000000000",
+        "0x4034000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f595cbb0be377b2",
+      "id": "hypgeom.dist-branch-00098-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f5a044ef04c8d8a",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4041600000000000",
+        "0x4015000000000000",
+        "0x4044800000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f5a044ef04c8d87",
+      "id": "hypgeom.dist-branch-00102-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f5a79d7dc720b85",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4041600000000000",
+        "0x4015000000000000",
+        "0x4044800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f5a79d7dc720b81",
+      "id": "hypgeom.dist-branch-00103-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fa24f4f7475c2cf",
+      "args": [
+        "0x4002000000000000",
+        "0x4034c00000000000",
+        "0x4014000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa24f4f7475c2ce",
+      "id": "hypgeom.dist-branch-00132-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fa3487a5919eeb7",
+      "args": [
+        "0x4002000000000000",
+        "0x4034c00000000000",
+        "0x4014000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa3487a5919eeb5",
+      "id": "hypgeom.dist-branch-00133-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fd31b497b871396",
+      "args": [
+        "0x4011000000000000",
+        "0x4028000000000000",
+        "0x4018000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fd31b497b871393",
+      "id": "hypgeom.dist-branch-00152-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fec34fd2b5d68f5",
+      "args": [
+        "0x4011000000000000",
+        "0x4028000000000000",
+        "0x4018000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fec34fd2b5d68f6",
+      "id": "hypgeom.dist-branch-00153-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fd86fb586fb5870",
+      "args": [
+        "0x4015000000000000",
+        "0x401c000000000000",
+        "0x401f000000000000",
+        "0x4026000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fd86fb586fb586f",
+      "id": "hypgeom.dist-branch-00184-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fed3018d3018d30",
+      "args": [
+        "0x4015000000000000",
+        "0x401c000000000000",
+        "0x401f000000000000",
+        "0x4026000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fed3018d3018d31",
+      "id": "hypgeom.dist-branch-00185-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fd1a4848704a4e8",
+      "args": [
+        "0x400e000000000000",
+        "0x4019000000000000",
+        "0x4024800000000000",
+        "0x403b000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fd1a4848704a4e4",
+      "id": "hypgeom.dist-branch-00198-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f5e5408d882947b",
+      "args": [
+        "0x4021800000000000",
+        "0x4020800000000000",
+        "0x4024000000000000",
+        "0x4031000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f5e5408d8829481",
+      "id": "hypgeom.dist-branch-00218-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f93b13b13b13b14",
+      "args": [
+        "0x4013000000000000",
+        "0x4019000000000000",
+        "0x4043600000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f93b13b13b13b15",
+      "id": "hypgeom.dist-branch-00238-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f93b13b13b13b14",
+      "args": [
+        "0x4013000000000000",
+        "0x4019000000000000",
+        "0x4043600000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f93b13b13b13b15",
+      "id": "hypgeom.dist-branch-00239-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fb457b606de72a9",
+      "args": [
+        "0x4002000000000000",
+        "0x4026800000000000",
+        "0x4021800000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb457b606de72a5",
+      "id": "hypgeom.dist-branch-00286-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fb7617c6ef5b254",
+      "args": [
+        "0x4002000000000000",
+        "0x4026800000000000",
+        "0x4021800000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb7617c6ef5b250",
+      "id": "hypgeom.dist-branch-00287-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fd369d0369d036a",
+      "args": [
+        "0x4002000000000000",
+        "0x402c800000000000",
+        "0x4006000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fd369d0369d0365",
+      "id": "hypgeom.dist-branch-00324-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fc87278baed54cf",
+      "args": [
+        "0x4029800000000000",
+        "0x4036000000000000",
+        "0x4038c00000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc87278baed54d3",
+      "id": "hypgeom.dist-branch-00334-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fd4dbfbaf174a55",
+      "args": [
+        "0x4029800000000000",
+        "0x4036000000000000",
+        "0x4038c00000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd4dbfbaf174a59",
+      "id": "hypgeom.dist-branch-00335-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f94e110a842efa6",
+      "args": [
+        "0x401c000000000000",
+        "0x4032400000000000",
+        "0x401f000000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f94e110a842efb4",
+      "id": "hypgeom.dist-branch-00374-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fefffffffffffff",
+      "args": [
+        "0x401c000000000000",
+        "0x4032400000000000",
+        "0x401f000000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ff0000000000000",
+      "id": "hypgeom.dist-branch-00375-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f7475a4718cea43",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4025800000000000",
+        "0x4015000000000000",
+        "0x402c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f7475a4718cea45",
+      "id": "hypgeom.dist-branch-00402-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f7475a4718cea43",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4025800000000000",
+        "0x4015000000000000",
+        "0x402c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f7475a4718cea45",
+      "id": "hypgeom.dist-branch-00403-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fabb3d17fe05711",
+      "args": [
+        "0x4026000000000000",
+        "0x4036400000000000",
+        "0x4030400000000000",
+        "0x403b000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fabb3d17fe05704",
+      "id": "hypgeom.dist-branch-00440-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3fabb3d17fe05711",
+      "args": [
+        "0x4026000000000000",
+        "0x4036400000000000",
+        "0x4030400000000000",
+        "0x403b000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fabb3d17fe05704",
+      "id": "hypgeom.dist-branch-00441-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f9e0da77dd4b60b",
+      "args": [
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x4021800000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f9e0da77dd4b607",
+      "id": "hypgeom.dist-branch-00442-fresh-raw-negative"
+    },
+    {
+      "actual": "0x3f9e0da77dd4b60b",
+      "args": [
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x4021800000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9e0da77dd4b607",
+      "id": "hypgeom.dist-branch-00443-fresh-raw-negative"
+    }
+  ],
+  "rows": 480
+}

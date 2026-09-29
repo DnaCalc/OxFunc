@@ -1,0 +1,22 @@
+{
+  "seed": 202609293040,
+  "phase": "independent_reference_origin_validation",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/quotient_fn.rs": "fd509370b3852d2144e2bae74ab01329b474a5160f2572d001bb5353ebd8a036",
+    "crates/oxfunc_core/src/functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95",
+    "crates/oxfunc_core/src/functions/binary_numeric.rs": "84fe212a7d54f986a58f08a7335e3d301e92b8e861f5a3edd55e3b18c5860207",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "formal/lean/OxFunc/Functions/QuotientFn.lean": "f719afb57b55148cbf92ba23134cafb8c264ae89e2df8029db6b61b65cf1f246"
+  },
+  "golden_row": "FUNC.QUOTIENT => FunctionMeta { function_id: \"FUNC.QUOTIENT\", arity: Arity { min: 2, max: 2 }, determinism: Deterministic, volatility: NonVolatile, host_interaction: None, thread_safety: SafePure, arg_preparation_profile: RefsVisibleInAdapter, coercion_lift_profile: Custom, lift_broadcast_profile: SurfaceNative, kernel_signature_class: NumsToNum, fec_dependency_profile: None, surface_fec_dependency_profile: RefOnly, real_result_policy: ExcelRealPolicy { arg_domain_guard: None, non_finite: Allow }, error_collapse_profile: None, precision_rounding_profile: Default, argument_laziness_profile: Eager, excel_parity: ExcelParity { status: Unverified, as_of: \"\" } }",
+  "golden_row_sha256": "d7d96f4d0f088076f43375d7d4354c78a393d373a5fe2cfd792e9f63f2446077",
+  "numeric_kernel_unchanged": true,
+  "open_lanes": [
+    "reference_origin_independent_validation",
+    "multi_area_and_unresolved_references",
+    "broader_positional_array_padding",
+    "contextual_numeric_text",
+    "HO_FN_027_receiving_acknowledgment"
+  ]
+}

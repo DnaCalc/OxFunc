@@ -1,0 +1,487 @@
+{
+  "function": "GAUSS",
+  "matches": 452,
+  "misses": [
+    {
+      "actual": "0xbfddfb154cf64991",
+      "args": [
+        "0xbffdbc5a98c97f51"
+      ],
+      "expected": "0xbfddfb154cf64993",
+      "id": "cdf-z-GAUSS-00002-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fddfb154cf64990",
+      "args": [
+        "0x3ffdbc5a98c97f51"
+      ],
+      "expected": "0x3fddfb154cf64992",
+      "id": "cdf-z-GAUSS-00003-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fdb20312d7efcee",
+      "args": [
+        "0x3ff6e6f282c61bba"
+      ],
+      "expected": "0x3fdb20312d7efcf0",
+      "id": "cdf-z-GAUSS-00015-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfcfd5dc0868b62a",
+      "args": [
+        "0xbfe5744fff9d55c0"
+      ],
+      "expected": "0xbfcfd5dc0868b62c",
+      "id": "cdf-z-GAUSS-00016-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fcfd5dc0868b628",
+      "args": [
+        "0x3fe5744fff9d55c0"
+      ],
+      "expected": "0x3fcfd5dc0868b62c",
+      "id": "cdf-z-GAUSS-00017-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfda3d3d2157d1a4",
+      "args": [
+        "0xbff5736c414cd5a6"
+      ],
+      "expected": "0xbfda3d3d2157d1a3",
+      "id": "cdf-z-GAUSS-00028-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfcfa26cfe44bce6",
+      "args": [
+        "0xbfe54c065e57e4fc"
+      ],
+      "expected": "0xbfcfa26cfe44bce8",
+      "id": "cdf-z-GAUSS-00042-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fdd90b7a8bd68ce",
+      "args": [
+        "0x3ffc61c7c4da8ede"
+      ],
+      "expected": "0x3fdd90b7a8bd68d0",
+      "id": "cdf-z-GAUSS-00071-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfd2710ab4cee429",
+      "args": [
+        "0xbfe999bd3eb99db3"
+      ],
+      "expected": "0xbfd2710ab4cee42a",
+      "id": "cdf-z-GAUSS-00072-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd2710ab4cee428",
+      "args": [
+        "0x3fe999bd3eb99db3"
+      ],
+      "expected": "0x3fd2710ab4cee42a",
+      "id": "cdf-z-GAUSS-00073-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfd3a3ae11f23203",
+      "args": [
+        "0xbfebb9917f1cfd63"
+      ],
+      "expected": "0xbfd3a3ae11f23204",
+      "id": "cdf-z-GAUSS-00098-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfc9d72550da7b5c",
+      "args": [
+        "0xbfe0f4347bdbe9fb"
+      ],
+      "expected": "0xbfc9d72550da7b5e",
+      "id": "cdf-z-GAUSS-00112-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fc9d72550da7b5c",
+      "args": [
+        "0x3fe0f4347bdbe9fb"
+      ],
+      "expected": "0x3fc9d72550da7b60",
+      "id": "cdf-z-GAUSS-00113-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd8e46c5df00dd8",
+      "args": [
+        "0x3ff388e374279326"
+      ],
+      "expected": "0x3fd8e46c5df00dd6",
+      "id": "cdf-z-GAUSS-00131-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfcdace59d981fae",
+      "args": [
+        "0xbfe3c9cd597f4f50"
+      ],
+      "expected": "0xbfcdace59d981fb0",
+      "id": "cdf-z-GAUSS-00146-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfd5575ccfe9c0b0",
+      "args": [
+        "0xbfeef92de629c661"
+      ],
+      "expected": "0xbfd5575ccfe9c0af",
+      "id": "cdf-z-GAUSS-00190-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfc931437539cf44",
+      "args": [
+        "0xbfe07d0c006a39a0"
+      ],
+      "expected": "0xbfc931437539cf46",
+      "id": "cdf-z-GAUSS-00202-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fc931437539cf44",
+      "args": [
+        "0x3fe07d0c006a39a0"
+      ],
+      "expected": "0x3fc931437539cf48",
+      "id": "cdf-z-GAUSS-00203-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfd44295493226f0",
+      "args": [
+        "0xbfece0085cb54190"
+      ],
+      "expected": "0xbfd44295493226ef",
+      "id": "cdf-z-GAUSS-00210-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfde090f3260b217",
+      "args": [
+        "0xbffdee2ad402ab01"
+      ],
+      "expected": "0xbfde090f3260b219",
+      "id": "cdf-z-GAUSS-00212-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fde090f3260b216",
+      "args": [
+        "0x3ffdee2ad402ab01"
+      ],
+      "expected": "0x3fde090f3260b218",
+      "id": "cdf-z-GAUSS-00213-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfcb4a74577908b4",
+      "args": [
+        "0xbfe20257a4fe68a5"
+      ],
+      "expected": "0xbfcb4a74577908b6",
+      "id": "cdf-z-GAUSS-00224-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fcb4a74577908b4",
+      "args": [
+        "0x3fe20257a4fe68a5"
+      ],
+      "expected": "0x3fcb4a74577908b8",
+      "id": "cdf-z-GAUSS-00225-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfde5b4d1c070c9c",
+      "args": [
+        "0xbfff2d113f63a688"
+      ],
+      "expected": "0xbfde5b4d1c070c9d",
+      "id": "cdf-z-GAUSS-00228-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fde5b4d1c070c9c",
+      "args": [
+        "0x3fff2d113f63a688"
+      ],
+      "expected": "0x3fde5b4d1c070c9e",
+      "id": "cdf-z-GAUSS-00229-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfdc3456397ca77e",
+      "args": [
+        "0xbff8f8567c4279a0"
+      ],
+      "expected": "0xbfdc3456397ca77d",
+      "id": "cdf-z-GAUSS-00236-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfde22e9f150eb5e",
+      "args": [
+        "0xbffe4d6be27b8694"
+      ],
+      "expected": "0xbfde22e9f150eb60",
+      "id": "cdf-z-GAUSS-00248-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fde22e9f150eb5e",
+      "args": [
+        "0x3ffe4d6be27b8694"
+      ],
+      "expected": "0x3fde22e9f150eb60",
+      "id": "cdf-z-GAUSS-00249-z-staging-discriminator"
+    },
+    {
+      "actual": "0xbfde6325d6599842",
+      "args": [
+        "0xbfff4e25af586270"
+      ],
+      "expected": "0xbfde6325d6599843",
+      "id": "cdf-z-GAUSS-00260-fresh-control"
+    },
+    {
+      "actual": "0x3fde6325d6599842",
+      "args": [
+        "0x3fff4e25af586270"
+      ],
+      "expected": "0x3fde6325d6599844",
+      "id": "cdf-z-GAUSS-00261-fresh-control"
+    },
+    {
+      "actual": "0xbfd147065fdfe22f",
+      "args": [
+        "0xbfe7a38e02837898"
+      ],
+      "expected": "0xbfd147065fdfe22e",
+      "id": "cdf-z-GAUSS-00274-fresh-control"
+    },
+    {
+      "actual": "0x3fd147065fdfe230",
+      "args": [
+        "0x3fe7a38e02837898"
+      ],
+      "expected": "0x3fd147065fdfe22e",
+      "id": "cdf-z-GAUSS-00275-fresh-control"
+    },
+    {
+      "actual": "0xbfde20e42f992bbf",
+      "args": [
+        "0xbffe45d150cf4bdd"
+      ],
+      "expected": "0xbfde20e42f992bc1",
+      "id": "cdf-z-GAUSS-00292-fresh-control"
+    },
+    {
+      "actual": "0xbfdda2110099fb46",
+      "args": [
+        "0xbffc96d11c87e94f"
+      ],
+      "expected": "0xbfdda2110099fb47",
+      "id": "cdf-z-GAUSS-00316-fresh-control"
+    },
+    {
+      "actual": "0x3fdda2110099fb46",
+      "args": [
+        "0x3ffc96d11c87e94f"
+      ],
+      "expected": "0x3fdda2110099fb48",
+      "id": "cdf-z-GAUSS-00317-fresh-control"
+    },
+    {
+      "actual": "0xbfd0e0cdfaec26b1",
+      "args": [
+        "0xbfe6fc80ed560cb7"
+      ],
+      "expected": "0xbfd0e0cdfaec26b0",
+      "id": "cdf-z-GAUSS-00320-fresh-control"
+    },
+    {
+      "actual": "0xbfdde7a24f1a9916",
+      "args": [
+        "0xbffd78daa2456d6e"
+      ],
+      "expected": "0xbfdde7a24f1a9918",
+      "id": "cdf-z-GAUSS-00322-fresh-control"
+    },
+    {
+      "actual": "0x3fdde7a24f1a9916",
+      "args": [
+        "0x3ffd78daa2456d6e"
+      ],
+      "expected": "0x3fdde7a24f1a9918",
+      "id": "cdf-z-GAUSS-00323-fresh-control"
+    },
+    {
+      "actual": "0x3fdba0eddf3f96bc",
+      "args": [
+        "0x3ff7d11c1f914161"
+      ],
+      "expected": "0x3fdba0eddf3f96ba",
+      "id": "cdf-z-GAUSS-00339-fresh-control"
+    },
+    {
+      "actual": "0xbfd2f542e8cb96b3",
+      "args": [
+        "0xbfea808fdc900122"
+      ],
+      "expected": "0xbfd2f542e8cb96b2",
+      "id": "cdf-z-GAUSS-00344-fresh-control"
+    },
+    {
+      "actual": "0x3fd2f542e8cb96b4",
+      "args": [
+        "0x3fea808fdc900122"
+      ],
+      "expected": "0x3fd2f542e8cb96b2",
+      "id": "cdf-z-GAUSS-00345-fresh-control"
+    },
+    {
+      "actual": "0xbfd514b1bc5b1615",
+      "args": [
+        "0xbfee74bc2d847dc6"
+      ],
+      "expected": "0xbfd514b1bc5b1614",
+      "id": "cdf-z-GAUSS-00354-fresh-control"
+    },
+    {
+      "actual": "0xbfddc8e4216fdffe",
+      "args": [
+        "0xbffd1229d21ee50c"
+      ],
+      "expected": "0xbfddc8e4216fe000",
+      "id": "cdf-z-GAUSS-00364-fresh-control"
+    },
+    {
+      "actual": "0x3fddc8e4216fdffe",
+      "args": [
+        "0x3ffd1229d21ee50c"
+      ],
+      "expected": "0x3fddc8e4216fe000",
+      "id": "cdf-z-GAUSS-00365-fresh-control"
+    },
+    {
+      "actual": "0xbfd584f8fd8a53f1",
+      "args": [
+        "0xbfef54feed2e1bc6"
+      ],
+      "expected": "0xbfd584f8fd8a53f0",
+      "id": "cdf-z-GAUSS-00366-fresh-control"
+    },
+    {
+      "actual": "0x3fdea4eb023ae9b8",
+      "args": [
+        "0x40003d336e3229df"
+      ],
+      "expected": "0x3fdea4eb023ae9ba",
+      "id": "cdf-z-GAUSS-00381-fresh-control"
+    },
+    {
+      "actual": "0xbfdea20c06d72464",
+      "args": [
+        "0xc000362a7affa3d0"
+      ],
+      "expected": "0xbfdea20c06d72465",
+      "id": "cdf-z-GAUSS-00398-fresh-control"
+    },
+    {
+      "actual": "0xbfd511624853e83a",
+      "args": [
+        "0xbfee6e3634b6a897"
+      ],
+      "expected": "0xbfd511624853e83b",
+      "id": "cdf-z-GAUSS-00400-fresh-control"
+    },
+    {
+      "actual": "0x3fd511624853e83a",
+      "args": [
+        "0x3fee6e3634b6a897"
+      ],
+      "expected": "0x3fd511624853e83c",
+      "id": "cdf-z-GAUSS-00401-fresh-control"
+    },
+    {
+      "actual": "0xbfd2c87d15f95ba0",
+      "args": [
+        "0xbfea31cde954b0d2"
+      ],
+      "expected": "0xbfd2c87d15f95ba1",
+      "id": "cdf-z-GAUSS-00412-fresh-control"
+    },
+    {
+      "actual": "0xbfddce8aaa0ea9a4",
+      "args": [
+        "0xbffd24b03f5c53b4"
+      ],
+      "expected": "0xbfddce8aaa0ea9a6",
+      "id": "cdf-z-GAUSS-00426-fresh-control"
+    },
+    {
+      "actual": "0x3fddce8aaa0ea9a4",
+      "args": [
+        "0x3ffd24b03f5c53b4"
+      ],
+      "expected": "0x3fddce8aaa0ea9a6",
+      "id": "cdf-z-GAUSS-00427-fresh-control"
+    },
+    {
+      "actual": "0x3fde70873fd27ffc",
+      "args": [
+        "0x3fff87caf3f8eebb"
+      ],
+      "expected": "0x3fde70873fd27ffe",
+      "id": "cdf-z-GAUSS-00437-fresh-control"
+    },
+    {
+      "actual": "0xbfde4abd1d3fe943",
+      "args": [
+        "0xbffee8e775000e14"
+      ],
+      "expected": "0xbfde4abd1d3fe945",
+      "id": "cdf-z-GAUSS-00478-fresh-control"
+    },
+    {
+      "actual": "0xbfd7e1ba4aae24cf",
+      "args": [
+        "0xbff2434134ee671c"
+      ],
+      "expected": "0xbfd7e1ba4aae24ce",
+      "id": "cdf-z-GAUSS-00492-fresh-control"
+    },
+    {
+      "actual": "0x3fd7e1ba4aae24d0",
+      "args": [
+        "0x3ff2434134ee671c"
+      ],
+      "expected": "0x3fd7e1ba4aae24ce",
+      "id": "cdf-z-GAUSS-00493-fresh-control"
+    },
+    {
+      "actual": "0xbfd1e0ebe8674311",
+      "args": [
+        "0xbfe8a3ecb859fcd2"
+      ],
+      "expected": "0xbfd1e0ebe8674312",
+      "id": "cdf-z-GAUSS-00494-fresh-control"
+    },
+    {
+      "actual": "0x3fd1e0ebe8674310",
+      "args": [
+        "0x3fe8a3ecb859fcd2"
+      ],
+      "expected": "0x3fd1e0ebe8674312",
+      "id": "cdf-z-GAUSS-00495-fresh-control"
+    },
+    {
+      "actual": "0xbfddf411a6815c92",
+      "args": [
+        "0xbffda3c5b826851c"
+      ],
+      "expected": "0xbfddf411a6815c94",
+      "id": "cdf-z-GAUSS-00498-fresh-control"
+    },
+    {
+      "actual": "0x3fddf411a6815c92",
+      "args": [
+        "0x3ffda3c5b826851c"
+      ],
+      "expected": "0x3fddf411a6815c94",
+      "id": "cdf-z-GAUSS-00499-fresh-control"
+    }
+  ],
+  "rows": 512
+}

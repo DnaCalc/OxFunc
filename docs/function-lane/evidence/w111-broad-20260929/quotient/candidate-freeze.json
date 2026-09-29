@@ -1,0 +1,15 @@
+{
+  "seed": 202609291629,
+  "numeric_rows": 1797,
+  "typed_rows": 30,
+  "phase": "before_independent_oracle_capture",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/quotient_fn.rs": "0dd5c2f18fde15aacec4478d3927f060428a9b613cdcfdac4449dcdb3759dd53",
+    "crates/oxfunc_core/src/coercion.rs": "31d7a6e353a877a1e3a19787b533b20370efdb900980fcad29a2fb3cdae8dcd2",
+    "C:\\Work\\DnaCalc\\OxFunc\\smart-fuzzer\\tools\\w111\\gen_quotient_heldout_20260929.py": "7bcf1212444066d29b98a07cad85cf8a3533386e783d6852e0e394eec5c4674f"
+  },
+  "input_sha256": {
+    "smart-fuzzer\\runs\\w111-broad-20260929\\quotient-heldout.json": "611baf0028b98261f15d0944499bc38153c1450e4a1f4e80349746cda99915f1",
+    "smart-fuzzer\\runs\\w111-broad-20260929\\quotient-typed-heldout.json": "032749a46c07065e6416ac4c855c89a7071d0b1521944a758531aa7211a4b634"
+  }
+}

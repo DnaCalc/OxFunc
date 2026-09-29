@@ -1,0 +1,70 @@
+{
+  "phase": "independent_after_numeric_publication_candidates",
+  "seed": 202609292411,
+  "generator_sha256": "bbc00d2c9dfad64da2143d09b3f2b16f5d2ee0290a3afc5728fb227e4369d8d0",
+  "batches": [
+    {
+      "function": "SQRT",
+      "path": "batch-sqrt.json",
+      "rows": 35900,
+      "sha256": "42a134d21ba66bd046ccb3c73ffef71937b7c94d2aea9179f9870b145c492ae1",
+      "prior_tuples": 6896
+    },
+    {
+      "function": "PHI",
+      "path": "batch-phi.json",
+      "rows": 9130,
+      "sha256": "c72f8d70c626cf6235590a1523e33865f9b7b57ce419b284b39d36131bdbc090",
+      "prior_tuples": 4512
+    },
+    {
+      "function": "NORM.S.DIST",
+      "path": "batch-norm_s_dist.json",
+      "rows": 9606,
+      "sha256": "68240be92f20719d235306fbad300e7cb4449075c24909928994ec6c119a3631",
+      "prior_tuples": 860
+    },
+    {
+      "function": "NORM.DIST",
+      "path": "batch-norm_dist.json",
+      "rows": 10806,
+      "sha256": "f5d03642196f6e19263aa4c79dec3b0881de8ba055b78f43b1ee36a0bba707b9",
+      "prior_tuples": 860
+    },
+    {
+      "function": "RADIANS",
+      "path": "batch-radians.json",
+      "rows": 7500,
+      "sha256": "0fc5b7d3439c1b4287153da4828d8b89d33731f3125990b1fa6047f2d3e37a7c",
+      "prior_tuples": 3425
+    },
+    {
+      "function": "STANDARDIZE",
+      "path": "batch-standardize.json",
+      "rows": 6500,
+      "sha256": "f5e5fd24987499056dbd2e401afb1c6641322428ccbb280fe3ac22a0956cf54d",
+      "prior_tuples": 3810
+    },
+    {
+      "function": "SECH",
+      "path": "batch-sech.json",
+      "rows": 5600,
+      "sha256": "9c5d8ac081fe3ddedb4061a3194fae427017fd9627ed38552e3358996f78b5a0",
+      "prior_tuples": 2824
+    },
+    {
+      "function": "EXPONDIST",
+      "path": "batch-expondist.json",
+      "rows": 6500,
+      "sha256": "cb9408af1de073339da2f75b80393f7d4ea1f303f318f7eb885469420c01bc96",
+      "prior_tuples": 3240
+    },
+    {
+      "function": "EXPON.DIST",
+      "path": "batch-expon_dist.json",
+      "rows": 6500,
+      "sha256": "925cdcfc07368332ae5c5ba00b0af4d09efbf6f50c301c5ea805caff986ede10",
+      "prior_tuples": 3240
+    }
+  ]
+}

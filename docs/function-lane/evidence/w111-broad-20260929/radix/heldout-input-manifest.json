@@ -1,0 +1,37 @@
+{
+  "generator": "gen_radix_heldout_20260929.py",
+  "seed": 2026092906,
+  "phase": "heldout",
+  "batches": [
+    {
+      "function": "DEC2BIN",
+      "path": "batch-dec2bin.json",
+      "rows": 2000,
+      "sha256": "10c04f5fc63c700a6a3664dbba1ebba75b0f6f4560ee540dc7e77fc38a31e433"
+    },
+    {
+      "function": "DEC2OCT",
+      "path": "batch-dec2oct.json",
+      "rows": 2000,
+      "sha256": "218d58104850ea64e55242a3d43a15df60b9eed2166780ebf8e5a9a2321e931d"
+    },
+    {
+      "function": "DEC2HEX",
+      "path": "batch-dec2hex.json",
+      "rows": 2000,
+      "sha256": "e21e6ac11d5c6125ae8dd04a520ba26880991d00054253a9d2b8178be4e6af31"
+    },
+    {
+      "function": "BASE",
+      "path": "batch-base.json",
+      "rows": 2000,
+      "sha256": "32791a29c4648793399f13c3a41f6400483dd3170b972db9c324ffcaf23a7e2c"
+    }
+  ],
+  "candidate_sha256": {
+    "crates\\oxfunc_core\\src\\functions\\base_fn.rs": "87219689a2fff9f0fad988561bc67e8a8812f5d8af9463eb06de7b13e262075b",
+    "crates\\oxfunc_core\\src\\functions\\engineering_radix_family.rs": "1cbe5ff7b16a0d00d9e2e364f1daccb0828742aa2354fc9eb723807d05249ca2"
+  },
+  "typed_rows": 1950,
+  "typed_sha256": "fef8036a6970cf86e0717d222cde04774b1d01003cd810eb23d1ccfd1799cbe5"
+}

@@ -1,0 +1,10 @@
+{
+  "function_id": "FUNC.POWER",
+  "rows_judged": 4653,
+  "rows_agree": 4653,
+  "severity": null,
+  "worst_ulp": null,
+  "misses_by_severity": {},
+  "misses": [],
+  "capture_provenance": null
+}

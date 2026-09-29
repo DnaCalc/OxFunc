@@ -1,0 +1,4697 @@
+{
+  "function": "POISSON.DIST",
+  "matches": 959,
+  "misses": [
+    {
+      "actual": "0x001000000000007c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0cc",
+        "0x0000000000000000"
+      ],
+      "expected": "0x001000000000004c",
+      "id": "poisson-publication-discovery-00000-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa997d1",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0cc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa996f2",
+      "id": "poisson-publication-discovery-00001-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000027c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0cb",
+        "0x0000000000000000"
+      ],
+      "expected": "0x001000000000024c",
+      "id": "poisson-publication-discovery-00002-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa999d3",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0cb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa998f4",
+      "id": "poisson-publication-discovery-00003-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000047c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0ca",
+        "0x0000000000000000"
+      ],
+      "expected": "0x001000000000044c",
+      "id": "poisson-publication-discovery-00004-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa99bd5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0ca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa99af6",
+      "id": "poisson-publication-discovery-00005-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000067c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c9",
+        "0x0000000000000000"
+      ],
+      "expected": "0x001000000000064c",
+      "id": "poisson-publication-discovery-00006-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa99dd5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa99cf7",
+      "id": "poisson-publication-discovery-00007-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000087c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c8",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000000848",
+      "id": "poisson-publication-discovery-00008-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa99fd7",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa99ef8",
+      "id": "poisson-publication-discovery-00009-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000a7c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c7",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000000a48",
+      "id": "poisson-publication-discovery-00010-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9a1d9",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9a0f9",
+      "id": "poisson-publication-discovery-00011-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000c7c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c6",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000000c48",
+      "id": "poisson-publication-discovery-00012-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9a3db",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9a2fc",
+      "id": "poisson-publication-discovery-00013-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000e7c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c5",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000000e48",
+      "id": "poisson-publication-discovery-00014-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9a5db",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9a4fd",
+      "id": "poisson-publication-discovery-00015-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000107c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c4",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001048",
+      "id": "poisson-publication-discovery-00016-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9a7dd",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9a6fe",
+      "id": "poisson-publication-discovery-00017-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000127c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c3",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001244",
+      "id": "poisson-publication-discovery-00018-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9a9df",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9a8ff",
+      "id": "poisson-publication-discovery-00019-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000147c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c2",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001444",
+      "id": "poisson-publication-discovery-00020-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9abe0",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9ab01",
+      "id": "poisson-publication-discovery-00021-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000167c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c1",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001644",
+      "id": "poisson-publication-discovery-00022-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9ade1",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9ad03",
+      "id": "poisson-publication-discovery-00023-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000187c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c0",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001844",
+      "id": "poisson-publication-discovery-00024-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9afe3",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9af05",
+      "id": "poisson-publication-discovery-00025-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001a7c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bf",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001a44",
+      "id": "poisson-publication-discovery-00026-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9b1e5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9b106",
+      "id": "poisson-publication-discovery-00027-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001c7c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0be",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001c44",
+      "id": "poisson-publication-discovery-00028-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9b3e5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0be",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9b307",
+      "id": "poisson-publication-discovery-00029-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001e7c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bd",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000001e40",
+      "id": "poisson-publication-discovery-00030-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9b5e7",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9b509",
+      "id": "poisson-publication-discovery-00031-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000207c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bc",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000002040",
+      "id": "poisson-publication-discovery-00032-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9b7e9",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9b70b",
+      "id": "poisson-publication-discovery-00033-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000227c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bb",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000002240",
+      "id": "poisson-publication-discovery-00034-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9b9ea",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0bb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9b90b",
+      "id": "poisson-publication-discovery-00035-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000247c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0ba",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000002440",
+      "id": "poisson-publication-discovery-00036-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9bbeb",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0ba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9bb0d",
+      "id": "poisson-publication-discovery-00037-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000267c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0b9",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0010000000002640",
+      "id": "poisson-publication-discovery-00038-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9bded",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0b9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9bd0e",
+      "id": "poisson-publication-discovery-00039-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000287c",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0b8",
+        "0x0000000000000000"
+      ],
+      "expected": "0x001000000000283c",
+      "id": "poisson-publication-discovery-00040-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa9bfef",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0b8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa9bf10",
+      "id": "poisson-publication-discovery-00041-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa995d0",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0cd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa994f1",
+      "id": "poisson-publication-discovery-00043-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa993cf",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0ce",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa992f0",
+      "id": "poisson-publication-discovery-00045-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa991cd",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0cf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa990ef",
+      "id": "poisson-publication-discovery-00047-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa98fcb",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa98eed",
+      "id": "poisson-publication-discovery-00049-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa98dcb",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa98ceb",
+      "id": "poisson-publication-discovery-00051-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa98bc9",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa98aeb",
+      "id": "poisson-publication-discovery-00053-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa989c8",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa988e9",
+      "id": "poisson-publication-discovery-00055-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa987c7",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa986e8",
+      "id": "poisson-publication-discovery-00057-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa985c5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa984e7",
+      "id": "poisson-publication-discovery-00059-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa983c3",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa982e4",
+      "id": "poisson-publication-discovery-00061-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa981c2",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa980e4",
+      "id": "poisson-publication-discovery-00063-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa97fc1",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa97ee2",
+      "id": "poisson-publication-discovery-00065-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa97dbf",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0d9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa97ce0",
+      "id": "poisson-publication-discovery-00067-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa97bbe",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0da",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa97adf",
+      "id": "poisson-publication-discovery-00069-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa979bc",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0db",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa978dd",
+      "id": "poisson-publication-discovery-00071-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa977bb",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0dc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa976dc",
+      "id": "poisson-publication-discovery-00073-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa975b9",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0dd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa974db",
+      "id": "poisson-publication-discovery-00075-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa973b8",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0de",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa972d9",
+      "id": "poisson-publication-discovery-00077-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa971b7",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0df",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa970d8",
+      "id": "poisson-publication-discovery-00079-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001005ba9aa96fb5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657bfcf5db0e0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001005ba9aa96ed7",
+      "id": "poisson-publication-discovery-00081-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020eb1167823c0f",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408651bfcf5db0cc",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0020eb1167823b66",
+      "id": "poisson-publication-discovery-00082-boundary-controls"
+    },
+    {
+      "actual": "0x0020f121ce09bd21",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408651bfcf5db0cc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020f121ce09bc35",
+      "id": "poisson-publication-discovery-00083-boundary-controls"
+    },
+    {
+      "actual": "0x00122090898c2ad2",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408656bfcf5db0cc",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00122090898c2a61",
+      "id": "poisson-publication-discovery-00084-boundary-controls"
+    },
+    {
+      "actual": "0x0012270e6ae2894e",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408656bfcf5db0cc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0012270e6ae28851",
+      "id": "poisson-publication-discovery-00085-boundary-controls"
+    },
+    {
+      "actual": "0x00100000000002e2",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e1c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000204",
+      "id": "poisson-publication-discovery-00095-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000004e2",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e1b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000404",
+      "id": "poisson-publication-discovery-00097-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000006e3",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e1a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000606",
+      "id": "poisson-publication-discovery-00099-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000008e4",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e19",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000806",
+      "id": "poisson-publication-discovery-00101-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000ae4",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e18",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000a06",
+      "id": "poisson-publication-discovery-00103-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000ce5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e17",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c08",
+      "id": "poisson-publication-discovery-00105-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000ee6",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e16",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000e07",
+      "id": "poisson-publication-discovery-00107-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000010e7",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e15",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001008",
+      "id": "poisson-publication-discovery-00109-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000012e7",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e14",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001209",
+      "id": "poisson-publication-discovery-00111-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000014e8",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e13",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000140b",
+      "id": "poisson-publication-discovery-00113-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000016e9",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e12",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000160a",
+      "id": "poisson-publication-discovery-00115-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000018e9",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e11",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000180a",
+      "id": "poisson-publication-discovery-00117-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001aea",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e10",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001a0b",
+      "id": "poisson-publication-discovery-00119-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001ceb",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e0f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001c0d",
+      "id": "poisson-publication-discovery-00121-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001eec",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e0e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e0d",
+      "id": "poisson-publication-discovery-00123-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000020ec",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e0d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000200d",
+      "id": "poisson-publication-discovery-00125-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000022ed",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e0c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000220d",
+      "id": "poisson-publication-discovery-00127-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000024ee",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e0b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002410",
+      "id": "poisson-publication-discovery-00129-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000026ef",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e0a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002610",
+      "id": "poisson-publication-discovery-00131-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000028ef",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e09",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002811",
+      "id": "poisson-publication-discovery-00133-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002af0",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e08",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002a12",
+      "id": "poisson-publication-discovery-00135-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000000e1",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408657c2ad2e3e1d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000003",
+      "id": "poisson-publication-discovery-00137-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020e504cdb6ca21",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408651c2ad2e3e1c",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0020e504cdb6c9cd",
+      "id": "poisson-publication-discovery-00176-boundary-controls"
+    },
+    {
+      "actual": "0x0020eb1308652042",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408651c2ad2e3e1c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020eb1308651f57",
+      "id": "poisson-publication-discovery-00177-boundary-controls"
+    },
+    {
+      "actual": "0x00121a1545a3bc39",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408656c2ad2e3e1c",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00121a1545a3bc0c",
+      "id": "poisson-publication-discovery-00178-boundary-controls"
+    },
+    {
+      "actual": "0x00122090d3edb9a8",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408656c2ad2e3e1c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00122090d3edb8ae",
+      "id": "poisson-publication-discovery-00179-boundary-controls"
+    },
+    {
+      "actual": "0x01c3ed7a3974ca19",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4085c00eebb0b75c",
+        "0x0000000000000000"
+      ],
+      "expected": "0x01c3ed7a3974ca9b",
+      "id": "poisson-publication-discovery-00196-fresh-near-underflow"
+    },
+    {
+      "actual": "0x01c3f4ce9c3c15cd",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4085c00eebb0b75c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x01c3f4ce9c3c14b8",
+      "id": "poisson-publication-discovery-00197-fresh-near-underflow"
+    },
+    {
+      "actual": "0x008b7676cacf96bb",
+      "args": [
+        "0x3ff0000000000000",
+        "0x40862c8ce910c370",
+        "0x0000000000000000"
+      ],
+      "expected": "0x008b7676cacf9646",
+      "id": "poisson-publication-discovery-00198-fresh-near-underflow"
+    },
+    {
+      "actual": "0x008b805f42b36ed1",
+      "args": [
+        "0x3ff0000000000000",
+        "0x40862c8ce910c370",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x008b805f42b36d54",
+      "id": "poisson-publication-discovery-00199-fresh-near-underflow"
+    },
+    {
+      "actual": "0x010b2052fc6e7603",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408600399489ad27",
+        "0x0000000000000000"
+      ],
+      "expected": "0x010b2052fc6e76c8",
+      "id": "poisson-publication-discovery-00216-fresh-near-underflow"
+    },
+    {
+      "actual": "0x010b2a3018109a14",
+      "args": [
+        "0x3ff0000000000000",
+        "0x408600399489ad27",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x010b2a301810989e",
+      "id": "poisson-publication-discovery-00217-fresh-near-underflow"
+    },
+    {
+      "actual": "0x00100b61414d781a",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370025c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d773b",
+      "id": "poisson-publication-discovery-00229-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7a1c",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370025b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d793d",
+      "id": "poisson-publication-discovery-00231-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7c1f",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370025a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d7b3f",
+      "id": "poisson-publication-discovery-00233-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7e20",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700259",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d7d41",
+      "id": "poisson-publication-discovery-00235-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8022",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700258",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d7f45",
+      "id": "poisson-publication-discovery-00237-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8225",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700257",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d8147",
+      "id": "poisson-publication-discovery-00239-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8427",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700256",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d834a",
+      "id": "poisson-publication-discovery-00241-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8629",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700255",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d854c",
+      "id": "poisson-publication-discovery-00243-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d882b",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700254",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d874d",
+      "id": "poisson-publication-discovery-00245-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8a2e",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700253",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d894f",
+      "id": "poisson-publication-discovery-00247-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8c30",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700252",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d8b52",
+      "id": "poisson-publication-discovery-00249-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d8e31",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700251",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d8d54",
+      "id": "poisson-publication-discovery-00251-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d9034",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700250",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d8f57",
+      "id": "poisson-publication-discovery-00253-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d9235",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370024f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d9158",
+      "id": "poisson-publication-discovery-00255-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d9438",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370024e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d935a",
+      "id": "poisson-publication-discovery-00257-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d963a",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370024d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d955e",
+      "id": "poisson-publication-discovery-00259-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d983d",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370024c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d975e",
+      "id": "poisson-publication-discovery-00261-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d983e",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370024b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d9961",
+      "id": "poisson-publication-discovery-00263-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d9c41",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370024a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d9b62",
+      "id": "poisson-publication-discovery-00265-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d9c41",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700249",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d9d66",
+      "id": "poisson-publication-discovery-00267-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414da044",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700248",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d9f69",
+      "id": "poisson-publication-discovery-00269-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7618",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370025d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d753a",
+      "id": "poisson-publication-discovery-00271-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7416",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370025e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d7336",
+      "id": "poisson-publication-discovery-00273-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7213",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370025f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d7134",
+      "id": "poisson-publication-discovery-00275-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d7012",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700260",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6f33",
+      "id": "poisson-publication-discovery-00277-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6e10",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700261",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6d30",
+      "id": "poisson-publication-discovery-00279-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6c0d",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700262",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6b2e",
+      "id": "poisson-publication-discovery-00281-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6a0b",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700263",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d692c",
+      "id": "poisson-publication-discovery-00283-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6809",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700264",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6729",
+      "id": "poisson-publication-discovery-00285-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6607",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700265",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6528",
+      "id": "poisson-publication-discovery-00287-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6405",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700266",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6326",
+      "id": "poisson-publication-discovery-00289-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6202",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700267",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d6123",
+      "id": "poisson-publication-discovery-00291-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d6001",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700268",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5f23",
+      "id": "poisson-publication-discovery-00293-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d5dfe",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700269",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5d20",
+      "id": "poisson-publication-discovery-00295-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d5bfd",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370026a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5b1e",
+      "id": "poisson-publication-discovery-00297-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d59fa",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370026b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d591c",
+      "id": "poisson-publication-discovery-00299-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d57f8",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370026c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5719",
+      "id": "poisson-publication-discovery-00301-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d55f6",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370026d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5518",
+      "id": "poisson-publication-discovery-00303-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d53f3",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370026e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5316",
+      "id": "poisson-publication-discovery-00305-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d51f2",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d370026f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d5113",
+      "id": "poisson-publication-discovery-00307-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100b61414d4fef",
+      "args": [
+        "0x4000000000000000",
+        "0x408686e9d3700270",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100b61414d4f11",
+      "id": "poisson-publication-discovery-00309-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020f2a1d3881d20",
+      "args": [
+        "0x4000000000000000",
+        "0x408680e9d370025c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020f2a1d3881c35",
+      "id": "poisson-publication-discovery-00311-boundary-controls"
+    },
+    {
+      "actual": "0x00122ca8d0927648",
+      "args": [
+        "0x4000000000000000",
+        "0x408685e9d370025c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00122ca8d0927792",
+      "id": "poisson-publication-discovery-00313-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616302e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000044",
+      "id": "poisson-publication-discovery-00323-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000122",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616302d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000045",
+      "id": "poisson-publication-discovery-00325-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000323",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616302c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000447",
+      "id": "poisson-publication-discovery-00327-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000524",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616302b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000448",
+      "id": "poisson-publication-discovery-00329-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000724",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616302a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000848",
+      "id": "poisson-publication-discovery-00331-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000926",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163029",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000849",
+      "id": "poisson-publication-discovery-00333-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000b26",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163028",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c49",
+      "id": "poisson-publication-discovery-00335-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000d26",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163027",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c4a",
+      "id": "poisson-publication-discovery-00337-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000f27",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163026",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000104a",
+      "id": "poisson-publication-discovery-00339-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001128",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163025",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000104c",
+      "id": "poisson-publication-discovery-00341-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001329",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163024",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000124c",
+      "id": "poisson-publication-discovery-00343-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001529",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163023",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000144e",
+      "id": "poisson-publication-discovery-00345-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000172a",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163022",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000164f",
+      "id": "poisson-publication-discovery-00347-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000192b",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163021",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000184e",
+      "id": "poisson-publication-discovery-00349-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001b2c",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef86163020",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001a50",
+      "id": "poisson-publication-discovery-00351-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001d2c",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616301f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001c51",
+      "id": "poisson-publication-discovery-00353-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001f2d",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616301e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e51",
+      "id": "poisson-publication-discovery-00355-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000212e",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616301d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002052",
+      "id": "poisson-publication-discovery-00357-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000232e",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616301c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002252",
+      "id": "poisson-publication-discovery-00359-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000252f",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616301b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002453",
+      "id": "poisson-publication-discovery-00361-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002730",
+      "args": [
+        "0x4000000000000000",
+        "0x408686ef8616301a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002654",
+      "id": "poisson-publication-discovery-00363-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020e69c8f1d738f",
+      "args": [
+        "0x4000000000000000",
+        "0x408680ef8616302e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020e69c8f1d72a5",
+      "id": "poisson-publication-discovery-00405-boundary-controls"
+    },
+    {
+      "actual": "0x00121fc4cf1a525b",
+      "args": [
+        "0x4000000000000000",
+        "0x408685ef8616302e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00121fc4cf1a5162",
+      "id": "poisson-publication-discovery-00407-boundary-controls"
+    },
+    {
+      "actual": "0x01a3e33cffebb6f4",
+      "args": [
+        "0x4000000000000000",
+        "0x4085fa2bd9ada270",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x01a3e33cffebb85d",
+      "id": "poisson-publication-discovery-00447-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0080a1089ffb2823",
+      "args": [
+        "0x4000000000000000",
+        "0x40865fb3ab47b661",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0080a1089ffb273d",
+      "id": "poisson-publication-discovery-00453-fresh-near-underflow"
+    },
+    {
+      "actual": "0x001010f6b30717aa",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8626",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071749",
+      "id": "poisson-publication-discovery-00457-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30719ad",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8625",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b307194b",
+      "id": "poisson-publication-discovery-00459-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3071bb0",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8624",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071b4f",
+      "id": "poisson-publication-discovery-00461-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3071db3",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8623",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071d51",
+      "id": "poisson-publication-discovery-00463-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3071fb6",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8622",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071f54",
+      "id": "poisson-publication-discovery-00465-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30721b8",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8621",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072157",
+      "id": "poisson-publication-discovery-00467-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30723bb",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8620",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072359",
+      "id": "poisson-publication-discovery-00469-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30725bd",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f861f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b307255c",
+      "id": "poisson-publication-discovery-00471-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30727c1",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f861e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072760",
+      "id": "poisson-publication-discovery-00473-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30729c5",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f861d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072963",
+      "id": "poisson-publication-discovery-00475-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3072bc6",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f861c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072b65",
+      "id": "poisson-publication-discovery-00477-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3072dca",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f861b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072d68",
+      "id": "poisson-publication-discovery-00479-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3072fcc",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f861a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3072f6b",
+      "id": "poisson-publication-discovery-00481-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30731cf",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8619",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b307316e",
+      "id": "poisson-publication-discovery-00483-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30733d1",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8618",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073371",
+      "id": "poisson-publication-discovery-00485-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30735d4",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8617",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073573",
+      "id": "poisson-publication-discovery-00487-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30737d7",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8616",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073777",
+      "id": "poisson-publication-discovery-00489-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30739db",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8615",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073979",
+      "id": "poisson-publication-discovery-00491-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3073bdd",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8614",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073b7c",
+      "id": "poisson-publication-discovery-00493-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3073de0",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8613",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073d7f",
+      "id": "poisson-publication-discovery-00495-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3073fe3",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8612",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3073f81",
+      "id": "poisson-publication-discovery-00497-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30715a7",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8627",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071546",
+      "id": "poisson-publication-discovery-00499-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30713a4",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8628",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071343",
+      "id": "poisson-publication-discovery-00501-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b30711a1",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8629",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3071140",
+      "id": "poisson-publication-discovery-00503-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3070f9f",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f862a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3070f3c",
+      "id": "poisson-publication-discovery-00505-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3070d9c",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f862b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3070d3b",
+      "id": "poisson-publication-discovery-00507-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3070b9a",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f862c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3070b38",
+      "id": "poisson-publication-discovery-00509-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3070997",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f862d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3070935",
+      "id": "poisson-publication-discovery-00511-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3070793",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f862e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b3070731",
+      "id": "poisson-publication-discovery-00513-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b3070591",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f862f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b307052f",
+      "id": "poisson-publication-discovery-00515-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b307038e",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8630",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b307032d",
+      "id": "poisson-publication-discovery-00517-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b307018b",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8631",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b307012a",
+      "id": "poisson-publication-discovery-00519-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306ff88",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8632",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306ff27",
+      "id": "poisson-publication-discovery-00521-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306fd86",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8633",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306fd24",
+      "id": "poisson-publication-discovery-00523-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306fb83",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8634",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306fb22",
+      "id": "poisson-publication-discovery-00525-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306f980",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8635",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306f91f",
+      "id": "poisson-publication-discovery-00527-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306f77e",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8636",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306f71c",
+      "id": "poisson-publication-discovery-00529-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306f579",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8637",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306f51a",
+      "id": "poisson-publication-discovery-00531-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306f378",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8638",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306f317",
+      "id": "poisson-publication-discovery-00533-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306f175",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f8639",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306f114",
+      "id": "poisson-publication-discovery-00535-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001010f6b306ef71",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2f35e9f863a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001010f6b306ef11",
+      "id": "poisson-publication-discovery-00537-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020f41e71f3d27d",
+      "args": [
+        "0x4008000000000000",
+        "0x4086acf35e9f8626",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020f41e71f3d214",
+      "id": "poisson-publication-discovery-00539-boundary-controls"
+    },
+    {
+      "actual": "0x001232322f883691",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b1f35e9f8626",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001232322f883622",
+      "id": "poisson-publication-discovery-00541-boundary-controls"
+    },
+    {
+      "actual": "0x00100000000002b1",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768282",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000251",
+      "id": "poisson-publication-discovery-00551-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000004b2",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768281",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000452",
+      "id": "poisson-publication-discovery-00553-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000006b2",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768280",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000653",
+      "id": "poisson-publication-discovery-00555-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000008b3",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76827f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000853",
+      "id": "poisson-publication-discovery-00557-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000ab3",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76827e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000a53",
+      "id": "poisson-publication-discovery-00559-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000cb5",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76827d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c55",
+      "id": "poisson-publication-discovery-00561-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000eb6",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76827c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000e55",
+      "id": "poisson-publication-discovery-00563-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000010b6",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76827b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001055",
+      "id": "poisson-publication-discovery-00565-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000012b7",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76827a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001255",
+      "id": "poisson-publication-discovery-00567-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000014b7",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768279",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001457",
+      "id": "poisson-publication-discovery-00569-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000016b8",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768278",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001658",
+      "id": "poisson-publication-discovery-00571-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000018b8",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768277",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001859",
+      "id": "poisson-publication-discovery-00573-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001ab9",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768276",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001a59",
+      "id": "poisson-publication-discovery-00575-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001cba",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768275",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001c59",
+      "id": "poisson-publication-discovery-00577-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001ebc",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768274",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e5b",
+      "id": "poisson-publication-discovery-00579-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000020bb",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768273",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000205b",
+      "id": "poisson-publication-discovery-00581-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000022bc",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768272",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000225c",
+      "id": "poisson-publication-discovery-00583-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000024bd",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768271",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000245c",
+      "id": "poisson-publication-discovery-00585-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000026be",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768270",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000265d",
+      "id": "poisson-publication-discovery-00587-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000028be",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76826f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000285f",
+      "id": "poisson-publication-discovery-00589-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002abf",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde76826e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002a5f",
+      "id": "poisson-publication-discovery-00591-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00100000000000b1",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b2fbde768283",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000050",
+      "id": "poisson-publication-discovery-00593-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020e237ec082515",
+      "args": [
+        "0x4008000000000000",
+        "0x4086acfbde768282",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020e237ec0824b0",
+      "id": "poisson-publication-discovery-00633-boundary-controls"
+    },
+    {
+      "actual": "0x00121efbcd7e86f4",
+      "args": [
+        "0x4008000000000000",
+        "0x4086b1fbde768282",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00121efbcd7e8686",
+      "id": "poisson-publication-discovery-00635-boundary-controls"
+    },
+    {
+      "actual": "0x01c6d9908b9c40bb",
+      "args": [
+        "0x4008000000000000",
+        "0x408619c5d9599d80",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x01c6d9908b9c4032",
+      "id": "poisson-publication-discovery-00671-fresh-near-underflow"
+    },
+    {
+      "actual": "0x001026bc7ed7a27a",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7a417",
+      "id": "poisson-publication-discovery-00685-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7a480",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7a61c",
+      "id": "poisson-publication-discovery-00687-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7a685",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7a822",
+      "id": "poisson-publication-discovery-00689-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7a88b",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7aa28",
+      "id": "poisson-publication-discovery-00691-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7aa90",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7ac2b",
+      "id": "poisson-publication-discovery-00693-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7ac95",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729cf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7ae32",
+      "id": "poisson-publication-discovery-00695-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7ae9b",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729ce",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7b039",
+      "id": "poisson-publication-discovery-00697-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7b0a1",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729cd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7b23f",
+      "id": "poisson-publication-discovery-00699-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7b2a6",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729cc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7b444",
+      "id": "poisson-publication-discovery-00701-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7b4ac",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729cb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7b648",
+      "id": "poisson-publication-discovery-00703-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7b6b0",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729ca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7b84f",
+      "id": "poisson-publication-discovery-00705-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7b8b7",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7ba55",
+      "id": "poisson-publication-discovery-00707-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7babc",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7bc59",
+      "id": "poisson-publication-discovery-00709-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7bcc2",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7be5e",
+      "id": "poisson-publication-discovery-00711-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7bec7",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7c063",
+      "id": "poisson-publication-discovery-00713-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7c0cd",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7c269",
+      "id": "poisson-publication-discovery-00715-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7c2d2",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7c46f",
+      "id": "poisson-publication-discovery-00717-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7c4d8",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7c675",
+      "id": "poisson-publication-discovery-00719-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7c6dd",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7c676",
+      "id": "poisson-publication-discovery-00721-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7c8e3",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7ca7f",
+      "id": "poisson-publication-discovery-00723-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7cae8",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7ca80",
+      "id": "poisson-publication-discovery-00725-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7a074",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7a211",
+      "id": "poisson-publication-discovery-00727-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed79e6f",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed7a00c",
+      "id": "poisson-publication-discovery-00729-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed79c69",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed79e06",
+      "id": "poisson-publication-discovery-00731-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed79a64",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed79c01",
+      "id": "poisson-publication-discovery-00733-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7985e",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729d9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed799fb",
+      "id": "poisson-publication-discovery-00735-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed79659",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729da",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed797f6",
+      "id": "poisson-publication-discovery-00737-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed79453",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729db",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed795f0",
+      "id": "poisson-publication-discovery-00739-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7924e",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729dc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed793ec",
+      "id": "poisson-publication-discovery-00741-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed79048",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729dd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed791e6",
+      "id": "poisson-publication-discovery-00743-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed78e43",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729de",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed78fe0",
+      "id": "poisson-publication-discovery-00745-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed78c3d",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729df",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed78dd9",
+      "id": "poisson-publication-discovery-00747-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed78a38",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed78bd3",
+      "id": "poisson-publication-discovery-00749-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed78832",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed789cf",
+      "id": "poisson-publication-discovery-00751-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7862b",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed787ca",
+      "id": "poisson-publication-discovery-00753-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7862a",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed785c5",
+      "id": "poisson-publication-discovery-00755-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed78220",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed783bd",
+      "id": "poisson-publication-discovery-00757-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed7821f",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed781b9",
+      "id": "poisson-publication-discovery-00759-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed77e15",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed77fb3",
+      "id": "poisson-publication-discovery-00761-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed77e14",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed77dae",
+      "id": "poisson-publication-discovery-00763-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001026bc7ed77c0f",
+      "args": [
+        "0x401c000000000000",
+        "0x408751686c2729e8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001026bc7ed77ba8",
+      "id": "poisson-publication-discovery-00765-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020f9f5862eb7bd",
+      "args": [
+        "0x401c000000000000",
+        "0x40874b686c2729d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020f9f5862eb96e",
+      "id": "poisson-publication-discovery-00767-boundary-controls"
+    },
+    {
+      "actual": "0x001247c93b1c455b",
+      "args": [
+        "0x401c000000000000",
+        "0x408750686c2729d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001247c93b1c472b",
+      "id": "poisson-publication-discovery-00769-boundary-controls"
+    },
+    {
+      "actual": "0x001000000000035a",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aeea",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000004ef",
+      "id": "poisson-publication-discovery-00779-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000055b",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000006f2",
+      "id": "poisson-publication-discovery-00781-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000075b",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000008f2",
+      "id": "poisson-publication-discovery-00783-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000095c",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000af3",
+      "id": "poisson-publication-discovery-00785-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000b5d",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000cf2",
+      "id": "poisson-publication-discovery-00787-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000d5d",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000ef4",
+      "id": "poisson-publication-discovery-00789-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000f5e",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000010f4",
+      "id": "poisson-publication-discovery-00791-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000115e",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000012f6",
+      "id": "poisson-publication-discovery-00793-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001360",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000014f4",
+      "id": "poisson-publication-discovery-00795-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001561",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000016f5",
+      "id": "poisson-publication-discovery-00797-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001760",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aee0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000018f6",
+      "id": "poisson-publication-discovery-00799-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001962",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aedf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000018f7",
+      "id": "poisson-publication-discovery-00801-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001b63",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aede",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001cf8",
+      "id": "poisson-publication-discovery-00803-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001d63",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aedd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001cf8",
+      "id": "poisson-publication-discovery-00805-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001f64",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aedc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000020f8",
+      "id": "poisson-publication-discovery-00807-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002164",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aedb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000020f9",
+      "id": "poisson-publication-discovery-00809-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002365",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aeda",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000022fa",
+      "id": "poisson-publication-discovery-00811-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002566",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aed9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000024fa",
+      "id": "poisson-publication-discovery-00813-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002767",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aed8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000026fb",
+      "id": "poisson-publication-discovery-00815-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002968",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aed7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000028fb",
+      "id": "poisson-publication-discovery-00817-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002b68",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aed6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002afb",
+      "id": "poisson-publication-discovery-00819-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000015a",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aeeb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000002ef",
+      "id": "poisson-publication-discovery-00821-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x401c000000000000",
+        "0x4087517be1c5aeec",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000000ee",
+      "id": "poisson-publication-discovery-00823-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020d13e8b2c302c",
+      "args": [
+        "0x401c000000000000",
+        "0x40874b7be1c5aeea",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020d13e8b2c31d5",
+      "id": "poisson-publication-discovery-00861-boundary-controls"
+    },
+    {
+      "actual": "0x00121bf18a1f7060",
+      "args": [
+        "0x401c000000000000",
+        "0x4087507be1c5aeea",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00121bf18a1f6fec",
+      "id": "poisson-publication-discovery-00863-boundary-controls"
+    },
+    {
+      "actual": "0x015c5d00df0588a6",
+      "args": [
+        "0x401c000000000000",
+        "0x4086dce5b499707e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x015c5d00df0587ed",
+      "id": "poisson-publication-discovery-00877-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0397e4619a5a26e3",
+      "args": [
+        "0x401c000000000000",
+        "0x408614b26d719f93",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0397e4619a5a2942",
+      "id": "poisson-publication-discovery-00885-fresh-near-underflow"
+    },
+    {
+      "actual": "0x00fc1baf4f94c708",
+      "args": [
+        "0x401c000000000000",
+        "0x4086fe8fb64a38b7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00fc1baf4f94c64c",
+      "id": "poisson-publication-discovery-00901-fresh-near-underflow"
+    },
+    {
+      "actual": "0x00568f4b7b9ec68c",
+      "args": [
+        "0x401c000000000000",
+        "0x408738517d46e6e2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00568f4b7b9ec5f9",
+      "id": "poisson-publication-discovery-00907-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea56",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879111",
+      "id": "poisson-publication-discovery-00913-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea55",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879111",
+      "id": "poisson-publication-discovery-00915-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea54",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879529",
+      "id": "poisson-publication-discovery-00917-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea53",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879529",
+      "id": "poisson-publication-discovery-00919-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea52",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879943",
+      "id": "poisson-publication-discovery-00921-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea51",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879943",
+      "id": "poisson-publication-discovery-00923-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea50",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879b53",
+      "id": "poisson-publication-discovery-00925-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea4f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879d5e",
+      "id": "poisson-publication-discovery-00927-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea4e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f879f6d",
+      "id": "poisson-publication-discovery-00929-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea4d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87a178",
+      "id": "poisson-publication-discovery-00931-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea4c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87a385",
+      "id": "poisson-publication-discovery-00933-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea4b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87a593",
+      "id": "poisson-publication-discovery-00935-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea4a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87a7a1",
+      "id": "poisson-publication-discovery-00937-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea49",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87a9ad",
+      "id": "poisson-publication-discovery-00939-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea48",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87abba",
+      "id": "poisson-publication-discovery-00941-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea47",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87adc6",
+      "id": "poisson-publication-discovery-00943-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea46",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87afd4",
+      "id": "poisson-publication-discovery-00945-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea45",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87b1e3",
+      "id": "poisson-publication-discovery-00947-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea44",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87b3f0",
+      "id": "poisson-publication-discovery-00949-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea43",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87b5fd",
+      "id": "poisson-publication-discovery-00951-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea42",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87b80a",
+      "id": "poisson-publication-discovery-00953-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea57",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f878cf5",
+      "id": "poisson-publication-discovery-00955-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea58",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f878cf4",
+      "id": "poisson-publication-discovery-00957-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea59",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f878ae8",
+      "id": "poisson-publication-discovery-00959-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea5a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f8788db",
+      "id": "poisson-publication-discovery-00961-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea5b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f8786cf",
+      "id": "poisson-publication-discovery-00963-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea5c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f8784c1",
+      "id": "poisson-publication-discovery-00965-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea5d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f8782b3",
+      "id": "poisson-publication-discovery-00967-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea5e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f8780a5",
+      "id": "poisson-publication-discovery-00969-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea5f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f877e99",
+      "id": "poisson-publication-discovery-00971-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea60",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f877c8c",
+      "id": "poisson-publication-discovery-00973-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea61",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f877a80",
+      "id": "poisson-publication-discovery-00975-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea62",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f877870",
+      "id": "poisson-publication-discovery-00977-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea63",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f877664",
+      "id": "poisson-publication-discovery-00979-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea64",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f877456",
+      "id": "poisson-publication-discovery-00981-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea65",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87724a",
+      "id": "poisson-publication-discovery-00983-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea66",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f87703e",
+      "id": "poisson-publication-discovery-00985-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea67",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f876e31",
+      "id": "poisson-publication-discovery-00987-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea68",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f876c22",
+      "id": "poisson-publication-discovery-00989-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea69",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f876a15",
+      "id": "poisson-publication-discovery-00991-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dfbeca0eea6a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001064082f876807",
+      "id": "poisson-publication-discovery-00993-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088d9beca0eea56",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00210ac1892dad61",
+      "id": "poisson-publication-discovery-00995-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088debeca0eea56",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001284940780f5a9",
+      "id": "poisson-publication-discovery-00997-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000492",
+      "id": "poisson-publication-discovery-01007-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000692",
+      "id": "poisson-publication-discovery-01009-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000893",
+      "id": "poisson-publication-discovery-01011-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000a92",
+      "id": "poisson-publication-discovery-01013-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c95",
+      "id": "poisson-publication-discovery-01015-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d189f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000e95",
+      "id": "poisson-publication-discovery-01017-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d189e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001096",
+      "id": "poisson-publication-discovery-01019-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d189d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001096",
+      "id": "poisson-publication-discovery-01021-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d189c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001497",
+      "id": "poisson-publication-discovery-01023-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d189b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001497",
+      "id": "poisson-publication-discovery-01025-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d189a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001899",
+      "id": "poisson-publication-discovery-01027-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1899",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001899",
+      "id": "poisson-publication-discovery-01029-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1898",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001a99",
+      "id": "poisson-publication-discovery-01031-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1897",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001c99",
+      "id": "poisson-publication-discovery-01033-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1896",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e9a",
+      "id": "poisson-publication-discovery-01035-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1895",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000209b",
+      "id": "poisson-publication-discovery-01037-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1894",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000229d",
+      "id": "poisson-publication-discovery-01039-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1893",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000249d",
+      "id": "poisson-publication-discovery-01041-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1892",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000269d",
+      "id": "poisson-publication-discovery-01043-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1891",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000289d",
+      "id": "poisson-publication-discovery-01045-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d1890",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002a9d",
+      "id": "poisson-publication-discovery-01047-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000292",
+      "id": "poisson-publication-discovery-01049-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088dff1693d18a6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000091",
+      "id": "poisson-publication-discovery-01051-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088d9f1693d18a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020a2c07247d38a",
+      "id": "poisson-publication-discovery-01089-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4033000000000000",
+        "0x4088def1693d18a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001213909ce88cb7",
+      "id": "poisson-publication-discovery-01091-boundary-controls"
+    },
+    {
+      "actual": "0x05d3fe33e92286c7",
+      "args": [
+        "0x4033000000000000",
+        "0x4086d2f18bfe6556",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x05d3fe33e9228444",
+      "id": "poisson-publication-discovery-01101-fresh-near-underflow"
+    },
+    {
+      "actual": "0x01036883b41cb743",
+      "args": [
+        "0x4033000000000000",
+        "0x408889230b492624",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x01036883b41cb740",
+      "id": "poisson-publication-discovery-01107-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0077aba741347a11",
+      "args": [
+        "0x4033000000000000",
+        "0x4088baa5a8f45043",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0077aba741347a0c",
+      "id": "poisson-publication-discovery-01109-fresh-near-underflow"
+    },
+    {
+      "actual": "0x012aa3feb2c4886a",
+      "args": [
+        "0x4033000000000000",
+        "0x40887b2cc1432ca5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x012aa3feb2c48514",
+      "id": "poisson-publication-discovery-01113-fresh-near-underflow"
+    },
+    {
+      "actual": "0x07c58d93d60aa5ca",
+      "args": [
+        "0x4033000000000000",
+        "0x408621c4a92c5d53",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x07c58d93d60aa311",
+      "id": "poisson-publication-discovery-01115-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0575ccc7e6a9554e",
+      "args": [
+        "0x4033000000000000",
+        "0x4086f463861429f6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0575ccc7e6a95548",
+      "id": "poisson-publication-discovery-01117-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0104f55d432032af",
+      "args": [
+        "0x4033000000000000",
+        "0x40888881c5608d77",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0104f55d432032aa",
+      "id": "poisson-publication-discovery-01121-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0539b57ba513ee94",
+      "args": [
+        "0x4033000000000000",
+        "0x408709cd586c8c86",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0539b57ba513ee8c",
+      "id": "poisson-publication-discovery-01125-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0764071b59d2bc3d",
+      "args": [
+        "0x4033000000000000",
+        "0x4086448e36a6bb46",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0764071b59d2bc3c",
+      "id": "poisson-publication-discovery-01133-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b8363",
+      "id": "poisson-publication-discovery-01141-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b87a4",
+      "id": "poisson-publication-discovery-01143-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b87a4",
+      "id": "poisson-publication-discovery-01145-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b89c4",
+      "id": "poisson-publication-discovery-01147-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b8be3",
+      "id": "poisson-publication-discovery-01149-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b8e03",
+      "id": "poisson-publication-discovery-01151-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9024",
+      "id": "poisson-publication-discovery-01153-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcaf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9244",
+      "id": "poisson-publication-discovery-01155-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcae",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9465",
+      "id": "poisson-publication-discovery-01157-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcad",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9684",
+      "id": "poisson-publication-discovery-01159-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b98a5",
+      "id": "poisson-publication-discovery-01161-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcab",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9ac5",
+      "id": "poisson-publication-discovery-01163-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcaa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9ce6",
+      "id": "poisson-publication-discovery-01165-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b9f05",
+      "id": "poisson-publication-discovery-01167-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928ba126",
+      "id": "poisson-publication-discovery-01169-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928ba347",
+      "id": "poisson-publication-discovery-01171-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928ba567",
+      "id": "poisson-publication-discovery-01173-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928ba568",
+      "id": "poisson-publication-discovery-01175-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928ba9a7",
+      "id": "poisson-publication-discovery-01177-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928ba9a8",
+      "id": "poisson-publication-discovery-01179-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dca2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928babc9",
+      "id": "poisson-publication-discovery-01181-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b8362",
+      "id": "poisson-publication-discovery-01183-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b8142",
+      "id": "poisson-publication-discovery-01185-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcb9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b7f22",
+      "id": "poisson-publication-discovery-01187-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b7d01",
+      "id": "poisson-publication-discovery-01189-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcbb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b7ae1",
+      "id": "poisson-publication-discovery-01191-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcbc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b78c1",
+      "id": "poisson-publication-discovery-01193-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcbd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b76a1",
+      "id": "poisson-publication-discovery-01195-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcbe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b7480",
+      "id": "poisson-publication-discovery-01197-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcbf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b725f",
+      "id": "poisson-publication-discovery-01199-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b703f",
+      "id": "poisson-publication-discovery-01201-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b6e1e",
+      "id": "poisson-publication-discovery-01203-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b6bff",
+      "id": "poisson-publication-discovery-01205-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b69de",
+      "id": "poisson-publication-discovery-01207-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b67bd",
+      "id": "poisson-publication-discovery-01209-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b659d",
+      "id": "poisson-publication-discovery-01211-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b659c",
+      "id": "poisson-publication-discovery-01213-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b615b",
+      "id": "poisson-publication-discovery-01215-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b615b",
+      "id": "poisson-publication-discovery-01217-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcc9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b5d1c",
+      "id": "poisson-publication-discovery-01219-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c69041004dcca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010fd41928b5d1c",
+      "id": "poisson-publication-discovery-01221-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c63041004dcb6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x002136e1b295a812",
+      "id": "poisson-publication-discovery-01223-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c68041004dcb6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00131c9bca8333c5",
+      "id": "poisson-publication-discovery-01225-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5efe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000001d3",
+      "id": "poisson-publication-discovery-01235-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5efd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000003d4",
+      "id": "poisson-publication-discovery-01237-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5efc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000005d5",
+      "id": "poisson-publication-discovery-01239-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5efb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000007d5",
+      "id": "poisson-publication-discovery-01241-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5efa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000009d5",
+      "id": "poisson-publication-discovery-01243-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000bd6",
+      "id": "poisson-publication-discovery-01245-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000dd7",
+      "id": "poisson-publication-discovery-01247-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000fd7",
+      "id": "poisson-publication-discovery-01249-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000011d8",
+      "id": "poisson-publication-discovery-01251-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000013d9",
+      "id": "poisson-publication-discovery-01253-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000013d9",
+      "id": "poisson-publication-discovery-01255-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000017da",
+      "id": "poisson-publication-discovery-01257-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000017db",
+      "id": "poisson-publication-discovery-01259-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001bdb",
+      "id": "poisson-publication-discovery-01261-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5ef0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001bdc",
+      "id": "poisson-publication-discovery-01263-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5eef",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001fdc",
+      "id": "poisson-publication-discovery-01265-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5eee",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001fdd",
+      "id": "poisson-publication-discovery-01267-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5eed",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000021dc",
+      "id": "poisson-publication-discovery-01269-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5eec",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000023de",
+      "id": "poisson-publication-discovery-01271-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5eeb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000025dd",
+      "id": "poisson-publication-discovery-01273-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c698686dc5eea",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000027de",
+      "id": "poisson-publication-discovery-01275-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c638686dc5efe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x002036485cb92f8b",
+      "id": "poisson-publication-discovery-01317-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x404a800000000000",
+        "0x408c688686dc5efe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0011ffb729e2a92d",
+      "id": "poisson-publication-discovery-01319-boundary-controls"
+    },
+    {
+      "actual": "0x09e30b68c354f626",
+      "args": [
+        "0x404a800000000000",
+        "0x4088c79c957ce002",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x09e30b68c354f622",
+      "id": "poisson-publication-discovery-01329-fresh-near-underflow"
+    },
+    {
+      "actual": "0x04eb57a402c47cc4",
+      "args": [
+        "0x404a800000000000",
+        "0x408a9ea9e676b221",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x04eb57a402c4802a",
+      "id": "poisson-publication-discovery-01331-fresh-near-underflow"
+    },
+    {
+      "actual": "0x101590149b93f42a",
+      "args": [
+        "0x404a800000000000",
+        "0x40867835cc41d970",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x101590149b93f426",
+      "id": "poisson-publication-discovery-01333-fresh-near-underflow"
+    },
+    {
+      "actual": "0x09482a3020d4547b",
+      "args": [
+        "0x404a800000000000",
+        "0x408900f84d235d03",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x09482a3020d45474",
+      "id": "poisson-publication-discovery-01335-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0957729c8f0b1d5c",
+      "args": [
+        "0x404a800000000000",
+        "0x4088fb4a32625deb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0957729c8f0b1d57",
+      "id": "poisson-publication-discovery-01337-fresh-near-underflow"
+    },
+    {
+      "actual": "0x08a59a7b86de3c20",
+      "args": [
+        "0x404a800000000000",
+        "0x40893d4a25c50fed",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x08a59a7b86de3c1b",
+      "id": "poisson-publication-discovery-01339-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0b5c1755e7c5a784",
+      "args": [
+        "0x404a800000000000",
+        "0x40883b81b60dfe3d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0b5c1755e7c5a781",
+      "id": "poisson-publication-discovery-01341-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0da6524a71ae647f",
+      "args": [
+        "0x404a800000000000",
+        "0x408760fdbe36b822",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0da6524a71ae647c",
+      "id": "poisson-publication-discovery-01343-fresh-near-underflow"
+    },
+    {
+      "actual": "0x076487753bc258d8",
+      "args": [
+        "0x404a800000000000",
+        "0x4089b454ee7f14f2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x076487753bc258d5",
+      "id": "poisson-publication-discovery-01345-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0e708748097de2e2",
+      "args": [
+        "0x404a800000000000",
+        "0x408715f779d73686",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0e708748097de2dd",
+      "id": "poisson-publication-discovery-01347-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0e2e043d44a8d1c6",
+      "args": [
+        "0x404a800000000000",
+        "0x40872eafbc590558",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0e2e043d44a8cdff",
+      "id": "poisson-publication-discovery-01349-fresh-near-underflow"
+    },
+    {
+      "actual": "0x08a131f5fb593d4b",
+      "args": [
+        "0x404a800000000000",
+        "0x40893f3e53957411",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x08a131f5fb593b21",
+      "id": "poisson-publication-discovery-01351-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0410771fac54bdfb",
+      "args": [
+        "0x404a800000000000",
+        "0x408aefd269b6c57e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0410771fac54bdf7",
+      "id": "poisson-publication-discovery-01353-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0594653faf4ee18a",
+      "args": [
+        "0x404a800000000000",
+        "0x408a601b3c87e4de",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0594653faf4edef6",
+      "id": "poisson-publication-discovery-01355-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0272f45f0d53dbac",
+      "args": [
+        "0x404a800000000000",
+        "0x408b881f139c10d2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0272f45f0d53dba9",
+      "id": "poisson-publication-discovery-01357-fresh-near-underflow"
+    },
+    {
+      "actual": "0x098fc096e0e8aaf1",
+      "args": [
+        "0x404a800000000000",
+        "0x4088e6dffae787c7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x098fc096e0e8aee5",
+      "id": "poisson-publication-discovery-01359-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0325a54ce779f5c8",
+      "args": [
+        "0x404a800000000000",
+        "0x408b461343b5fd62",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0325a54ce779f5c3",
+      "id": "poisson-publication-discovery-01361-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0f516dae7d0d1c2e",
+      "args": [
+        "0x404a800000000000",
+        "0x4086c1d70f0e5758",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0f516dae7d0d1c2a",
+      "id": "poisson-publication-discovery-01363-fresh-near-underflow"
+    },
+    {
+      "actual": "0x04d91125bb174cd4",
+      "args": [
+        "0x404a800000000000",
+        "0x408aa5513321ee65",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x04d91125bb174ccc",
+      "id": "poisson-publication-discovery-01365-fresh-near-underflow"
+    },
+    {
+      "actual": "0x09b4e2bafff0aea9",
+      "args": [
+        "0x404a800000000000",
+        "0x4088d8a4f2b21c1c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x09b4e2bafff0aea6",
+      "id": "poisson-publication-discovery-01367-fresh-near-underflow"
+    }
+  ],
+  "rows": 1428
+}

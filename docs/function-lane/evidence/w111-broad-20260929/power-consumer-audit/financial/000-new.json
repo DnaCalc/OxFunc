@@ -1,0 +1,3556 @@
+{
+  "function_id": "FUNC.FV",
+  "rows_judged": 1230,
+  "rows_agree": 1077,
+  "severity": "numeric",
+  "worst_ulp": 8,
+  "misses_by_severity": {
+    "last_bit": 151,
+    "numeric": 2
+  },
+  "misses": [
+    {
+      "id": "w111extended-2026092903-FV-00023",
+      "args": [
+        "0x3ddb7cdfd9d7bdbb",
+        "0x4028000000000000",
+        "0xc059000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4641240894437409264
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4641240894437409256
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 8
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00460",
+      "args": [
+        "0x3fdecbae42fd88ec",
+        "0x401a67fe880817d2",
+        "0xc0a24104daf76fea",
+        "0x40bec076e88456e8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13893552859559336112
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13893552859559336104
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 8
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00796",
+      "args": [
+        "0x3fdec367d56201b6",
+        "0x4011248a0adfe6ec",
+        "0x40b86daff7a0ef10",
+        "0xc0c2d7b7f79f0175",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13898019243525721878
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13898019243525721882
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 4
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00850",
+      "args": [
+        "0xbfc86aa86021c4a4",
+        "0xbff40f74a3e1f4ea",
+        "0xc0c28615194c6515",
+        "0xc0bb27c23d504046",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13882546509594620872
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13882546509594620868
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 4
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01179",
+      "args": [
+        "0x3fd2953101d3ada6",
+        "0x403b27cd2c55f064",
+        "0xc09816c00883d0b8",
+        "0x40c1938f3f05a26e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13925321637701850084
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13925321637701850080
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 4
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00034",
+      "args": [
+        "0xbfdb8c71857a196e",
+        "0x4043bbed711c1f9c",
+        "0x40a695a3385a7df8",
+        "0xc0b941e008b440f4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13884001791601934780
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13884001791601934778
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00049",
+      "args": [
+        "0xbfdeb6d801f0e0f8",
+        "0x40563c04bfbde0c9",
+        "0x40b9ac3ac4c419f0",
+        "0x40afa625c7411930",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13887925307745290389
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13887925307745290391
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00065",
+      "args": [
+        "0xbfc44260bdb5ae48",
+        "0x40308b601b0c4c20",
+        "0xc0c2ed22190342cd",
+        "0x40b2b5236017c3f6",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4676868073515490753
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4676868073515490755
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00093",
+      "args": [
+        "0xbfc5d7ad64632110",
+        "0x4058fc4bb35c5a92",
+        "0x4083374013706560",
+        "0xc0a520e1dd86485c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13882162297340569128
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13882162297340569130
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00146",
+      "args": [
+        "0x3fd4656dd1c63f7c",
+        "0x4054e08cf1afbb86",
+        "0xc0ad2ddc275f5adc",
+        "0x40b472d78505939e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4816900882205993378
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4816900882205993380
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00200",
+      "args": [
+        "0x3fdc6d514d1b9890",
+        "0x40563168e47f9706",
+        "0x40a34b5182986b00",
+        "0xc08bffbeef382320",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14100001080239827112
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14100001080239827114
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00220",
+      "args": [
+        "0xbfdf4d83986ae79e",
+        "0x405420fcd4cd54a4",
+        "0xc0aa06593720e44c",
+        "0xc0bcb82e51104518",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4659870060599206108
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4659870060599206110
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00261",
+      "args": [
+        "0x3fca18cbcce72420",
+        "0x4051eb95ea916234",
+        "0xc0b6a602fc7817bb",
+        "0x40beac1637941ec8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4759562571849816451
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4759562571849816453
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00309",
+      "args": [
+        "0x3fc1aa3bbcc46f38",
+        "0x403ce91bf3fd9e8e",
+        "0xc0a84989ab8da9c2",
+        "0x40b1ec44308dcd30",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4695619088853655432
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4695619088853655430
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00383",
+      "args": [
+        "0x3fb06c64f619edf0",
+        "0x4039c493a508c7c6",
+        "0x40ba6a809c6781f8",
+        "0xc0ab73fb0943e84e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13914455410541199014
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13914455410541199016
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00400",
+      "args": [
+        "0xbfb5c79509f29ef0",
+        "0x404685d57c216fe1",
+        "0x40a250c67c6f17ec",
+        "0x40a6db9398f613c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13895919802162693359
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13895919802162693361
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00433",
+      "args": [
+        "0x3fb8f60519fa0170",
+        "0x404cc74fe95f1a7f",
+        "0x40bfe68043ef24c8",
+        "0x40b390339b6a50b8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13939620119450013552
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13939620119450013550
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00495",
+      "args": [
+        "0xbfc5dfd50ba91e74",
+        "0x404b96e99bc25fba",
+        "0x40c2f901cf898012",
+        "0xc0b55c4b6e3e4d2b",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13900081915495677956
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13900081915495677954
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00556",
+      "args": [
+        "0x3fb6e92426d1d198",
+        "0x40585cb5257ef657",
+        "0xc0afa1b09587ca36",
+        "0x40b9c2c8857b5b70",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4730351116316054602
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4730351116316054604
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00575",
+      "args": [
+        "0x3f8bbc578d6ad480",
+        "0xbff13872c6808844",
+        "0x40b1ee539da2da40",
+        "0x40a5fd5e0357a718",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4656976504613258213
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4656976504613258215
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00599",
+      "args": [
+        "0xbfc50e29aa3dfbdc",
+        "0x4054f02170375758",
+        "0xc0b4e197752336c6",
+        "0xc0b85e643033e676",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4673192546193525493
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4673192546193525495
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00631",
+      "args": [
+        "0x3fd8d9519f420b0e",
+        "0x404cb29bc72f2bce",
+        "0x40bf0b80999a09a4",
+        "0xc0b1e28b93008a51",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14018040948542515330
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14018040948542515328
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00639",
+      "args": [
+        "0xbfdebf879eacf626",
+        "0x40462dd199f3144e",
+        "0xc0c2ff899b3ea2d4",
+        "0xc0abc38d73eefe7a",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4667008552672055215
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4667008552672055217
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00667",
+      "args": [
+        "0xbfddea3b44f8a78c",
+        "0x404d26735e1c3d35",
+        "0x40bb8362d6ac6b58",
+        "0x40a884ec0095a160",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13888917869027245582
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13888917869027245580
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00729",
+      "args": [
+        "0x3fd6f65fe58a6dd4",
+        "0x404a83ffc11458c9",
+        "0x40af5d192f7e2ad4",
+        "0x40a4a57564b0f13c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13999416826086485618
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13999416826086485620
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00778",
+      "args": [
+        "0x3fd27a0b8b4231d2",
+        "0x404855834fae91ce",
+        "0xc0984a6395455860",
+        "0x40969a510ee6ddb8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4743075116757992646
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4743075116757992648
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00779",
+      "args": [
+        "0x3fcf6882047b2654",
+        "0x40499646c3acc5cd",
+        "0xc0a73e8b71e89d9a",
+        "0xc0b881c0cf6bca0c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4744539455496520750
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4744539455496520748
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00820",
+      "args": [
+        "0x3fd24be7756dfb70",
+        "0x40587d190f410fcd",
+        "0xc08f36baf17483a0",
+        "0x40b882c04ef07a9e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14038890303257674236
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14038890303257674238
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00839",
+      "args": [
+        "0x3fc5d53762b494dc",
+        "0x40404bd80ae86ad6",
+        "0xc0a80ca446854fa0",
+        "0x40c2d9fee0c6cfe0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4701014142525836242
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4701014142525836240
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00961",
+      "args": [
+        "0x3fd8c92aa894abd6",
+        "0x403c5fc0b9298ffa",
+        "0xc0bb9e0a59c00684",
+        "0x40b4c7b67f757114",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4731530622979703829
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4731530622979703831
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00982",
+      "args": [
+        "0x3fc850a5aa6ae4d8",
+        "0x40354161c9a6f883",
+        "0xc0bc891ca019bad6",
+        "0x40ad321fdf83aa60",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4699830984229220252
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4699830984229220254
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00985",
+      "args": [
+        "0x3fb04a4a5136f358",
+        "0x404eb9cc74f0eb48",
+        "0x407ef8f27f70ca60",
+        "0xc0b3a0bd163c5326",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13907287450773892685
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13907287450773892687
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00993",
+      "args": [
+        "0xbfdae5922c60688a",
+        "0x4049cee47e023b0d",
+        "0xc0b6935994a88356",
+        "0xc0bbd56714bf2aee",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4665487796145434035
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4665487796145434033
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01056",
+      "args": [
+        "0x3fc51bae41a75878",
+        "0x4051ff4e7580d5ab",
+        "0x40b677650f84240a",
+        "0xc0b81418add303fc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13969714900434196362
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13969714900434196364
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01117",
+      "args": [
+        "0xbfb9db4207880358",
+        "0x40370a58fd199fe2",
+        "0x40b9d080d9fe2a14",
+        "0x40c232e5397eff04",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13901103919627052372
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13901103919627052374
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01148",
+      "args": [
+        "0xbfcf70ba9c6c62c8",
+        "0x4054c0ea2001d21a",
+        "0xc0b22cc545243430",
+        "0x40c12694e378ad50",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4669081403644032472
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4669081403644032474
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01211",
+      "args": [
+        "0xbfbe13803a69f6d0",
+        "0x4021d6795b692647",
+        "0x40a541ea50ac7388",
+        "0xc0bc5c2396500122",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13890839120890582866
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13890839120890582868
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01224",
+      "args": [
+        "0x3fcab29aefdf2b34",
+        "0x4035b0e25e3bc8f7",
+        "0xc0b9044ba8319286",
+        "0x40c33b1a2a3151fc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4699722113891910054
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4699722113891910052
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00035",
+      "args": [
+        "0xbfba22acaaf60858",
+        "0x4051ba161cd0bf47",
+        "0x40b1ec22f18ad168",
+        "0xc09974e4213127d0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13899148171406034543
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13899148171406034542
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00040",
+      "args": [
+        "0xbfc837e17a0a6500",
+        "0x4027c7ffbe70efec",
+        "0x40ba2d9a87db7334",
+        "0xc0b3d0c9b0371361",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13896228164025420990
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13896228164025420989
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00041",
+      "args": [
+        "0xbfc169901411f7c4",
+        "0x404e8473f4ebc312",
+        "0x40b6a25634bf894e",
+        "0xc0ae4a94c4c02334",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13898661918393924967
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13898661918393924966
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00051",
+      "args": [
+        "0xbfa5bd40711c0ca0",
+        "0x40494e5438f569a4",
+        "0xc0ad11d47cbedcfa",
+        "0xc09bcdc039b893f8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4679874950115992987
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4679874950115992988
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00070",
+      "args": [
+        "0xbfba63fc5b76a9f0",
+        "0x40529f640e9c0ad4",
+        "0xc0c14667a820cd34",
+        "0x40bae50205d9d44c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4680022889516835466
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4680022889516835465
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00071",
+      "args": [
+        "0xbfd1cfb67195ff52",
+        "0x4022c3f7d1874730",
+        "0xc0371d3384318600",
+        "0xc0c288ad6167fa19",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4647538604110958523
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4647538604110958522
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00081",
+      "args": [
+        "0xbf9feff2d16e7740",
+        "0x40526db444a25039",
+        "0xc0b9c344a40d2cfd",
+        "0x4099fda618120c98",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4685592669570890447
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4685592669570890446
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00102",
+      "args": [
+        "0xbfd5fc0e87547f4a",
+        "0x40355feab7e2c875",
+        "0xc0b797c0102c7936",
+        "0x40a60af3ef14ee6c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4667570325249855801
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4667570325249855802
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00105",
+      "args": [
+        "0x3fd410f77f721caa",
+        "0x404ffb5e32d75c7a",
+        "0x40866b3375992ad0",
+        "0xc0bac6fc96b3bb3e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4774063655498120937
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4774063655498120938
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00118",
+      "args": [
+        "0xbfd812c152f5fb9e",
+        "0x4011aac5b72f3c84",
+        "0x40be102df6e2a1ec",
+        "0xc0be1c81a5455f76",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13890214510119780777
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13890214510119780776
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00124",
+      "args": [
+        "0xbfd81721ba3dd524",
+        "0x40538e17f7106f60",
+        "0x40ae33e0a844edcc",
+        "0xc0bbfc8adae391e4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13887135943653898883
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13887135943653898882
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00137",
+      "args": [
+        "0x3fd5de4cf1bf9190",
+        "0x404e383160bdb0b8",
+        "0xc0c14ef5eef4330a",
+        "0x409f640762830c90",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4789794055790250485
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4789794055790250484
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00153",
+      "args": [
+        "0xbfc9dfe738115fb4",
+        "0x404d2ef21451bac3",
+        "0xc0b433ca7abde5d6",
+        "0x40b74656ac74e33a",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4671340202775052348
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4671340202775052349
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00169",
+      "args": [
+        "0xbfdd1205bc237b16",
+        "0x404a7b489bd3de01",
+        "0x40be328e01276c28",
+        "0xc0b6e39f19185c56",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13889704148325407786
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13889704148325407785
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00177",
+      "args": [
+        "0x3fc363e4bb5bdd80",
+        "0x4057183af4b1e1f4",
+        "0x40c15616186f4798",
+        "0x40bb08bd702609bc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13988066249588656766
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13988066249588656765
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00180",
+      "args": [
+        "0x3fd54864f145eac8",
+        "0x402fc4884466e6ac",
+        "0xc0c2abceeffe93a4",
+        "0x409a46c70142f7a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4704690583214815336
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4704690583214815337
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00181",
+      "args": [
+        "0xbfd2c0291190309a",
+        "0x4031e3a66ee97443",
+        "0xc0a3daa2febf0d7c",
+        "0x40a85cd1b2854c1c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4663444454327822566
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4663444454327822565
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00188",
+      "args": [
+        "0xbfdd6a6127a23aec",
+        "0x40528bde16c31aff",
+        "0x40c032f9ef0e65aa",
+        "0x40be5c62610333a8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13889958522942176080
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13889958522942176081
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00198",
+      "args": [
+        "0xbf65b8c372b4ae00",
+        "0x405099e88cfa3b60",
+        "0xc0ba19430b7ad054",
+        "0x40b41d656a03a9da",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4690648203681312094
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4690648203681312095
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00208",
+      "args": [
+        "0x3fd09b3def13f80a",
+        "0x40569b6467645173",
+        "0x40ba5ff9a00422f0",
+        "0x40c15ed26823a7d6",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14034835678615238757
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14034835678615238756
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00222",
+      "args": [
+        "0xbfd346f1079cfe20",
+        "0x40538f067119ce4e",
+        "0xc08e6796dad3a160",
+        "0x40b051a4d47a5bc4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4657182137746451797
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4657182137746451798
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00226",
+      "args": [
+        "0x3fd8d2427721a2d0",
+        "0x4048ecaf00c55fd5",
+        "0xc0c1575d5ddbdeaf",
+        "0x4078136f5d58a8a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4780221050193823659
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4780221050193823658
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00246",
+      "args": [
+        "0x3fca5f61fc904610",
+        "0x4045ead0abba2f31",
+        "0xc0b05f58eaaaa02e",
+        "0x40a6d82a0be45dfc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4725114191456129000
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4725114191456128999
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00264",
+      "args": [
+        "0xbfc9b02cee4d3170",
+        "0x40317ef81e253dd7",
+        "0x40ae8262af5edadc",
+        "0xc0c0646d6ef24f5f",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13892886994114059418
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13892886994114059419
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00265",
+      "args": [
+        "0xbfa1ed9bc2855800",
+        "0x40587f3b70e240b3",
+        "0x40bd8417809cda94",
+        "0xc08135a53b6a9f90",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13909548688876931682
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13909548688876931683
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00275",
+      "args": [
+        "0xbfafb3325a692e60",
+        "0x4037aaf0ec9c1483",
+        "0x409982043aebc760",
+        "0xc0aa1940021c854a",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13894200045935994579
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13894200045935994580
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00279",
+      "args": [
+        "0xbfd5f3ccc4ba3918",
+        "0x40259c50aabf7d51",
+        "0x409c30dcc75474a8",
+        "0x40c0f53bf654db3c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13883312637172975722
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13883312637172975723
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00282",
+      "args": [
+        "0x3fdc1c2cd04c6926",
+        "0x40324c64783931c2",
+        "0x40c334b135132720",
+        "0xc0bccc4b1aae508c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13939348106897908583
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13939348106897908584
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00319",
+      "args": [
+        "0x3fbc652df7c3cf00",
+        "0x40567ea5feb4a9e6",
+        "0x40c227d8aebf15a8",
+        "0xc0b3ba82d7a9fd56",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13965921038734312374
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13965921038734312375
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00324",
+      "args": [
+        "0xbfb717c143a4ccf0",
+        "0x40551f08d15cd40f",
+        "0x409f2bb9f8696410",
+        "0x409408b94f2f1098",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13894630117296538869
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13894630117296538868
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00327",
+      "args": [
+        "0xbfde772b78810b46",
+        "0x405894b4e53e96c2",
+        "0xc0b703675bd6e005",
+        "0x40c08b4ea5880ebc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4663852218548260406
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4663852218548260405
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00347",
+      "args": [
+        "0x3fd2a4f6c1fd0e86",
+        "0x40483310a1b62bc8",
+        "0xc0b6129156fae505",
+        "0x40a2f787b4a4b554",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4752404192806140703
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4752404192806140704
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00359",
+      "args": [
+        "0xbfdbae4b648f9808",
+        "0x402df18d493894d2",
+        "0x40af8ae587d17d0c",
+        "0x40bf90b2f764a448",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13885919249049525647
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13885919249049525648
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00399",
+      "args": [
+        "0xbfdbbccb7bdf79c8",
+        "0x4043f0e6caaf5065",
+        "0x40a9a137e1e177fc",
+        "0x40b5940a3a7dea1a",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13884809742116267710
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13884809742116267711
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00404",
+      "args": [
+        "0x3fd1bf1005ef58da",
+        "0x405679a13fc44150",
+        "0xc09bfcafc8d0d6a8",
+        "0xc09cb3f8ccbf9a78",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4809979302278205040
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4809979302278205039
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00411",
+      "args": [
+        "0x3fda4987cd667626",
+        "0x4050b4160d67abda",
+        "0xc096f3ef8ffb3790",
+        "0xc0b7c9e364ac512c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4816730418106966288
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4816730418106966287
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00422",
+      "args": [
+        "0xbfa7389131acb370",
+        "0x40553afbb681c8c2",
+        "0xc0b04d6d6c1f6d2e",
+        "0xc077defc294c0040",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4680656476733568857
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4680656476733568856
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00424",
+      "args": [
+        "0xbf98d4ef4b7df8a0",
+        "0x405653e9537e6f41",
+        "0x40b792c12fdebbca",
+        "0xc0a210e1cc530d40",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13910015066724928830
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13910015066724928831
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00427",
+      "args": [
+        "0xbfc68aed7a44f3bc",
+        "0x403478ee7d0ba36f",
+        "0xc0a3e435645a8e74",
+        "0x40a473c201f5ca1c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4667622387399305674
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4667622387399305673
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00429",
+      "args": [
+        "0x3fd356bc204d0a80",
+        "0x4032bac6a2a510c8",
+        "0x40bf4fe89da5e29c",
+        "0x409a38d7390084b0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13930557385220252697
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13930557385220252696
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00439",
+      "args": [
+        "0xbfb6db04bfdd9ef8",
+        "0x4026c80861f15008",
+        "0xc0c1d684f03afac3",
+        "0xc092cef115566a60",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4678681282490198172
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4678681282490198171
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00450",
+      "args": [
+        "0xbfc321571815c07c",
+        "0x404e67b03b800ff6",
+        "0xc0b2b00622953107",
+        "0x40b2c8455819782e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4673212511870328956
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4673212511870328955
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00454",
+      "args": [
+        "0x3fdd161fffd424a8",
+        "0x40346aa760423d66",
+        "0xc0b34e7230f658d1",
+        "0xc0b590caf30f9525",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4721276810404069693
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4721276810404069692
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00456",
+      "args": [
+        "0xbfcf9a62cea28724",
+        "0x4040c1a2c7566403",
+        "0x40abde96f21b48ec",
+        "0x40b3a8ec60663e38",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13890579360934826049
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13890579360934826048
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00458",
+      "args": [
+        "0x3fd1028208d79a7a",
+        "0x4037dfb0ad7faf05",
+        "0x40b45b4612f95c8c",
+        "0xc0c2c6b53cd72fb9",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13929638247484482359
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13929638247484482360
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00461",
+      "args": [
+        "0xbfd68a1975bacc76",
+        "0x404c7ed3313d86f7",
+        "0x406c68dbaf5154c0",
+        "0xc0b6c726f6de3daf",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13869434381842829412
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13869434381842829413
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00467",
+      "args": [
+        "0xbfb3fca42dbb8560",
+        "0x40468082bff5779d",
+        "0xc0c16899e76c91bb",
+        "0x40bd66faa4911948",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4681769433213453028
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4681769433213453029
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00479",
+      "args": [
+        "0xbfc50f231c9a9ddc",
+        "0x405065665a843572",
+        "0xc0bc19352726f178",
+        "0x409cfdeb350cc628",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4675253143667734388
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4675253143667734389
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00491",
+      "args": [
+        "0x3fa4a5227ddd59a0",
+        "0x404db93f25adf90c",
+        "0x40b8ab1008b4d464",
+        "0xc0bddd8e240aede8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13922416221739415992
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13922416221739415991
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00496",
+      "args": [
+        "0xbfde291b8b0c383c",
+        "0x404214c3d633df8e",
+        "0x40bf646ad76c0ffc",
+        "0xc0bf39198310c655",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13889554613641851091
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13889554613641851090
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00501",
+      "args": [
+        "0x3fc889d673b02464",
+        "0x4058c6bbb65ed7af",
+        "0x40a8b1ba4c0e7798",
+        "0xc0a53b3a2b29f5d8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14006598670687672484
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14006598670687672483
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00510",
+      "args": [
+        "0x3f8e9dbb9b424cc0",
+        "0x404773398154e138",
+        "0x40b0e87dfef469d6",
+        "0xc0886a5510d751d0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13912165632237981395
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13912165632237981396
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00520",
+      "args": [
+        "0xbfa6c4b16db0ae10",
+        "0x404bce6243b0d9ec",
+        "0x40a0ae820dce34f4",
+        "0xc0b0bb31af48ce7d",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13899361324732586339
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13899361324732586340
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00527",
+      "args": [
+        "0x3fce5a761590d178",
+        "0x404dae3c218d1bbe",
+        "0xc0bfb4b56384bdbb",
+        "0x40a2db132635d6e4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4757708020394550959
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4757708020394550960
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00536",
+      "args": [
+        "0xbfcba46970d0cc14",
+        "0x404926ddf60d1990",
+        "0x40c26096179e3e4c",
+        "0x40a8923b4a8c47e4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13898299867920506017
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13898299867920506018
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00537",
+      "args": [
+        "0x3fd44f51c598e912",
+        "0x4043481df7a4b65b",
+        "0xc0b80608fc762340",
+        "0xc0a54f0740bf6f7e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4742681869302468336
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4742681869302468335
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00538",
+      "args": [
+        "0xbfd5263c7f6b23a4",
+        "0x404defaf2cd5cbf2",
+        "0x40b588462a3533ea",
+        "0x40b51e7a4bee6ae0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13890737542706118867
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13890737542706118868
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00545",
+      "args": [
+        "0x3fdc1411028cb49c",
+        "0x402447e199724399",
+        "0x40a92c6e80e26418",
+        "0xc0a4f7a9627bcd62",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13912349899547877643
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13912349899547877644
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00557",
+      "args": [
+        "0x3fd3aad072635806",
+        "0x40538a06b05670df",
+        "0xc0929ecf465f6650",
+        "0x40c3348167f61f9e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14021279618383910373
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14021279618383910372
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00561",
+      "args": [
+        "0xbfd408c45329ae62",
+        "0x40560e3e2e791b79",
+        "0x40c1ac8af0f3ce72",
+        "0xc0c145e0cdb10b77",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13894559910997158761
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13894559910997158762
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00562",
+      "args": [
+        "0xbfb072a03b1dac48",
+        "0x40562c0ac86b4a6e",
+        "0xc0c2f433e468f162",
+        "0x40c23ca9501549ae",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4684082055569592719
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4684082055569592720
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00571",
+      "args": [
+        "0xbfb184e2203ac6f8",
+        "0x4047c3dffd6ee17b",
+        "0x40bab4314acfe1d8",
+        "0xc0b8c4563afba09a",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13904268331337969991
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13904268331337969990
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00585",
+      "args": [
+        "0xbfc2bbc10d24ed48",
+        "0x403776ed94034bf1",
+        "0xc0c0fb86c2ee6839",
+        "0x40bded28bd4ca2bc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4677007333451312642
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4677007333451312641
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00588",
+      "args": [
+        "0x3fc6c765d65b8718",
+        "0x40437b9ed3c7cf17",
+        "0x40b089fea29bf3cc",
+        "0xc0bf3c6da63e9d69",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13935974790419159928
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13935974790419159927
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00600",
+      "args": [
+        "0x3fb5022d5ffb0c90",
+        "0x40450234834cc108",
+        "0x40b796724d0c93ce",
+        "0x40846a70c30c9a80",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13925194870985962305
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13925194870985962304
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00604",
+      "args": [
+        "0xbfb7cb1f38a97c90",
+        "0x404854ca761427a5",
+        "0xc0c243569b6622f2",
+        "0xc0c23482873c1982",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4680958601288861120
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4680958601288861119
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00608",
+      "args": [
+        "0xbfc184f6cbe828c4",
+        "0x404765fb6ad70dee",
+        "0xc0544e963a050200",
+        "0xc0acf6adf6a739de",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4647745579564312232
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4647745579564312233
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00614",
+      "args": [
+        "0xbf9a514ceba3c9e0",
+        "0x4050b4e2cbba9f1b",
+        "0x40c0270d8124bb0e",
+        "0xc0ba4622fa930c82",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13911452894664241501
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13911452894664241500
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00643",
+      "args": [
+        "0x3f612f6732947300",
+        "0x404d231af84fa2e7",
+        "0xc0b514584e742468",
+        "0x40ade73c943ae000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4689421580710681199
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4689421580710681200
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00648",
+      "args": [
+        "0x3fcc2df369fe3cc8",
+        "0x404ca79a96ebc11b",
+        "0xc0bfd9dfaa00ac2c",
+        "0x408649c4bdc0c2c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4750648526036669671
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4750648526036669670
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00649",
+      "args": [
+        "0xbfad0f56c0c9cce0",
+        "0x404a4215abc34d00",
+        "0x40af1bff0c4e4174",
+        "0x407d22d8e783dca0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13902280192004463558
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13902280192004463559
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00661",
+      "args": [
+        "0xbfdef73ac74863d8",
+        "0x404e65d1dab1f100",
+        "0xc0c0606df15e2d88",
+        "0x40bf0583106a94a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4666143163298488051
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4666143163298488050
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00670",
+      "args": [
+        "0xbfbea8b08c8ac200",
+        "0x404ac7a72596a290",
+        "0x40c15681b497748e",
+        "0xc0ae268501c34540",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13902561869230314047
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13902561869230314048
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00684",
+      "args": [
+        "0x3fd46d4a5d3ac93c",
+        "0x4046c8ea441afa28",
+        "0xc0b1b89ae3fa76af",
+        "0xc0bd4492a18ec84d",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4755143941139726867
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4755143941139726866
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00685",
+      "args": [
+        "0xbfb339933903f518",
+        "0x404fd38f843a1776",
+        "0x40c313aaee41d870",
+        "0x4092875d3e176148",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13906318189136680607
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13906318189136680608
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00687",
+      "args": [
+        "0xbf9d56ba94f30a40",
+        "0x404537e97c9b4274",
+        "0x40b6eb576d02bfdc",
+        "0xc0b09637c7e9cc07",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13907413802618538452
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13907413802618538451
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00701",
+      "args": [
+        "0x3fb7d31a019de2a0",
+        "0x4049153b289b50c5",
+        "0xc0b8fc2c527146b1",
+        "0xc0a28bd6832f9a50",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4708903364774795077
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4708903364774795078
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00749",
+      "args": [
+        "0x3fdec1f8a0d52cf6",
+        "0x4033c3779493fd3b",
+        "0xc0c0292588cf19d7",
+        "0x40a653a25907da48",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4722360368290462390
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4722360368290462391
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00753",
+      "args": [
+        "0xbfce95b0e52ab9c8",
+        "0x40338df11ca035e5",
+        "0x4078a2ea1b2ed3c0",
+        "0xc0c2d02ab7a54ac0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13876378819099974779
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13876378819099974778
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00784",
+      "args": [
+        "0x3fd0ea4e65f1e4c8",
+        "0x403cdbdbc2d4cfea",
+        "0xc0b9ab7fc5307c2c",
+        "0xc0b6219255865386",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4719416553391158056
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4719416553391158055
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00793",
+      "args": [
+        "0xbfcd7e3eea2b6810",
+        "0x4038dee998c5eca0",
+        "0xc0bcbbd8fb8e7212",
+        "0xc0a89b577b829206",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4672473811807735238
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4672473811807735239
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00810",
+      "args": [
+        "0x3fd6a9d26e80bf70",
+        "0x4033a00c427b20b0",
+        "0xc0c1a4c0b40d9b18",
+        "0x40b3e169a460c114",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4712307386625310839
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4712307386625310838
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00815",
+      "args": [
+        "0x3fb0cd1c00069080",
+        "0x4049abfafc9146c1",
+        "0xc0a8ea2a91a2a184",
+        "0x40a0f4855eba3fd4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4698099562684801234
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4698099562684801233
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00819",
+      "args": [
+        "0xbfb4a6e35a3186a8",
+        "0x40332396cb63b2ed",
+        "0xc098ed59f3b2a3d0",
+        "0x408992db8acedd40",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4669132246834826249
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4669132246834826250
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00854",
+      "args": [
+        "0xbfd6f3b201a13f9e",
+        "0x4051ea2af97f0a83",
+        "0x40c277519620c49e",
+        "0x40c0435e56735d30",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13893749164976521131
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13893749164976521132
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00877",
+      "args": [
+        "0x3fcc5f0fc07c274c",
+        "0x40381be50f9112dc",
+        "0xc0b925224eb0cbbe",
+        "0xc097cfd709841fa8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4706678311580479193
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4706678311580479194
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00880",
+      "args": [
+        "0xbfc9e1c28b4759e4",
+        "0x40478883d00eb464",
+        "0xc0c1ef82277cd0cc",
+        "0x408d164b40b37bf0",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4675212380532120749
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4675212380532120748
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00882",
+      "args": [
+        "0xbfc3e3852a686140",
+        "0x40352ed5b9c48c00",
+        "0x40bd3580eba9fea0",
+        "0xc0a45405575efcbc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13899025057267368019
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13899025057267368020
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00884",
+      "args": [
+        "0xbfa6840db79f62f0",
+        "0x404822bf6415db40",
+        "0xc0b3b9ac0390b85d",
+        "0x40bcee408f2c10d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4681361639055231081
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4681361639055231080
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00885",
+      "args": [
+        "0xbfdb8f196b66a6bc",
+        "0x40360ff26f4f2a5c",
+        "0xc0b2c68959c30092",
+        "0xc0a1acc9d23f287a",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4663710101493333407
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4663710101493333408
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00917",
+      "args": [
+        "0x3fbb9b2bcfa68310",
+        "0x404630967a5173ff",
+        "0x40c15bc3f0154752",
+        "0x40c12b69666f8b8e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13934643973945960750
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13934643973945960751
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00918",
+      "args": [
+        "0x3fdaa7243ec5b1b4",
+        "0x4040a199f50d4ba0",
+        "0xc0ac306c7d8db1a0",
+        "0x40891a955322d390",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4742933550380408403
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4742933550380408402
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00936",
+      "args": [
+        "0xbfc57018a0ec5c10",
+        "0x402dcafb3e123cb2",
+        "0xc0bec000348d0662",
+        "0xc0b12b71327451a8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4675299580384976735
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4675299580384976736
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00943",
+      "args": [
+        "0x3fd802f14b18296c",
+        "0x40264098fc18b01a",
+        "0xc088394dc2e3a240",
+        "0xc0a0c18deea4625e",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4685074599779923412
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4685074599779923413
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00964",
+      "args": [
+        "0x3fde5b9a05b8e256",
+        "0x4045e9cd9d9173b2",
+        "0x40b5d28d66ee6cd8",
+        "0x40c22c3415c0a5e8",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14007042542678334684
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14007042542678334685
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00990",
+      "args": [
+        "0xbfce29128bb9fd3c",
+        "0x40426648a7e99f1a",
+        "0x40c06045be48c24a",
+        "0xc0836f342ff28800",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13896577324981175447
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13896577324981175446
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00991",
+      "args": [
+        "0xbfde661620b69086",
+        "0x40559dc7fc1ee1a3",
+        "0x4054fa3b3b5b7280",
+        "0x40c1111e95931632",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13859599126699360792
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13859599126699360793
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01003",
+      "args": [
+        "0x3fd0738fda5e50b0",
+        "0x40534d924de36da3",
+        "0xc0c00a54bcaff514",
+        "0x40945f84f1869640",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4790289777228897916
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4790289777228897915
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01059",
+      "args": [
+        "0xbfcb611bdaf04428",
+        "0x40502423791e1120",
+        "0x40c26d5a018bccda",
+        "0xc0c1badd3726bd9c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13898370283192825039
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13898370283192825040
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01072",
+      "args": [
+        "0xbfdde1d0a40e6ffc",
+        "0x403e43567d9ef3ec",
+        "0xc0c224c44011e5c4",
+        "0xc0c353705c8df685",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4667056508723814862
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4667056508723814863
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01079",
+      "args": [
+        "0xbfdbce8dbc711b38",
+        "0x405403d2358d838c",
+        "0x40754968b537c3a0",
+        "0xc0b46fc755f01927",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13869878381789762921
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13869878381789762920
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01085",
+      "args": [
+        "0xbfd81929f0d91a36",
+        "0x40101094ab5fbf8e",
+        "0x40b2bbdb9a36981a",
+        "0x40a610fcf16b5900",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13887981685912893196
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13887981685912893197
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01090",
+      "args": [
+        "0xbfd9e99b97e62724",
+        "0x4055b8a32a0951f5",
+        "0xc0c10416a522d9e4",
+        "0xc09c665ab42b2c24",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4668265551970670025
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4668265551970670026
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01100",
+      "args": [
+        "0xbfdaa8b5882a5790",
+        "0x40466c3a61030ad2",
+        "0x40c05cd3d3d2e316",
+        "0x40bbda5cd94ce66c",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13891048752013133357
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13891048752013133356
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01115",
+      "args": [
+        "0x3fdef930391d4026",
+        "0x4040eb8245572217",
+        "0x40c1e5cee0895a68",
+        "0x40c135c190190452",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13985290912762036702
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13985290912762036703
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01138",
+      "args": [
+        "0x3fcfb1be44e24764",
+        "0x404f722667e39ba6",
+        "0xc0c10558f8c711e0",
+        "0x40bcbd12509c8edc",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4765589727418483496
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4765589727418483497
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01143",
+      "args": [
+        "0x3fae0a0810e1e260",
+        "0x4044de4281c9d8c6",
+        "0x40c05904c662b0e6",
+        "0x40bdfde1b7ac3448",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13922836042156994187
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13922836042156994186
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01149",
+      "args": [
+        "0xbfdedbe8fa0da46c",
+        "0x4058c1c76c63eb8c",
+        "0x40934b62e8abfc98",
+        "0x40a2945642d82580",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13876919368333607442
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13876919368333607443
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01152",
+      "args": [
+        "0x3fdd5abe1fa420a8",
+        "0x4042543388ddcec9",
+        "0x40b10e46151068c4",
+        "0x40b7841d20d12492",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13984515932802336463
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13984515932802336464
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01155",
+      "args": [
+        "0xbfd1c81c91d56148",
+        "0x405417dd795da955",
+        "0xc081e400916d9cc0",
+        "0x40bfca3e3f9aa9d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4654259318628877488
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4654259318628877487
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01156",
+      "args": [
+        "0xbfd45f9e2415e456",
+        "0x403c03a68d23a80e",
+        "0xc09642199e360a58",
+        "0xc0bc5561c628c5da",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4658926482797056342
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4658926482797056341
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01201",
+      "args": [
+        "0xbfba798f53151228",
+        "0x4047c00194718f02",
+        "0x40b1bf8b197198ec",
+        "0xc0b8f407ba507604",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13898983418844846221
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13898983418844846220
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-01218",
+      "args": [
+        "0xbfa37db16bd8d050",
+        "0x40519543dc52a82c",
+        "0x40a4242b44640054",
+        "0xc0ba64e8405699d5",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13901913559969232785
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13901913559969232786
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00003",
+      "args": [
+        "0xbff0000000000000",
+        "0x3ff0000000000000",
+        "0xc059000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 0
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 9223372036854775808
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 0
+      }
+    },
+    {
+      "id": "w111extended-2026092903-FV-00005",
+      "args": [
+        "0xbff0000000000000",
+        "0x4028000000000000",
+        "0xc059000000000000",
+        "0x408f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 0
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 9223372036854775808
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 0
+      }
+    }
+  ],
+  "capture_provenance": {
+    "captured_utc": "2026-09-29T12:56:40.4912703Z",
+    "environment": {
+      "excel_bitness": "64-bit",
+      "excel_build": "20430",
+      "excel_input_plumbing": "cell_value2_bulk",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_version": "16.0",
+      "workbook_compatibility": "2"
+    },
+    "oracle_cache": {
+      "hits": 0,
+      "misses": 0,
+      "mode": "no_cache",
+      "root": null
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "powershell_version": "7.6.5",
+      "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+      "version": "w109-bulk-batch-v2"
+    },
+    "schema_version": "w109-capture-provenance-v1"
+  }
+}

@@ -1,0 +1,3260 @@
+{
+  "source_run": "w111-broad-typed-20260929-002",
+  "binary_sha256": "a8c8d289f9d9e567ed41826579fa6bf96486a2b71f184faf3a2cf0b2f501711d",
+  "count": 998,
+  "exact": 885,
+  "semantic_or_unclassified": 80,
+  "one_cell_array_publication_seam": 33,
+  "by_function": {
+    "FUNC.AGGREGATE": 6,
+    "FUNC.ASC": 6,
+    "FUNC.DBCS": 6,
+    "FUNC.DSUM": 1,
+    "FUNC.ENCODEURL": 1,
+    "FUNC.FORMULATEXT": 1,
+    "FUNC.ISFORMULA": 1,
+    "FUNC.JIS": 8,
+    "FUNC.NUMBERVALUE": 3,
+    "FUNC.SUBTOTAL": 6,
+    "FUNC.CHOOSECOLS": 1,
+    "FUNC.CHOOSEROWS": 1,
+    "FUNC.COUNT": 1,
+    "FUNC.COUNTBLANK": 1,
+    "FUNC.DROP": 2,
+    "FUNC.EXACT": 1,
+    "FUNC.EXPAND": 2,
+    "FUNC.FILTER": 1,
+    "FUNC.HSTACK": 2,
+    "FUNC.IF": 1,
+    "FUNC.IFERROR": 1,
+    "FUNC.IFNA": 1,
+    "FUNC.LEFT": 1,
+    "FUNC.LEFTB": 1,
+    "FUNC.LEN": 1,
+    "FUNC.LENB": 1,
+    "FUNC.REGEXEXTRACT": 1,
+    "FUNC.REGEXREPLACE": 1,
+    "FUNC.REGEXTEST": 1,
+    "FUNC.RIGHT": 1,
+    "FUNC.RIGHTB": 1,
+    "FUNC.SORTBY": 1,
+    "FUNC.TEXTAFTER": 3,
+    "FUNC.TEXTBEFORE": 3,
+    "FUNC.TEXTSPLIT": 3,
+    "FUNC.VSTACK": 2,
+    "FUNC.WRAPCOLS": 5
+  },
+  "mismatches": [
+    {
+      "case_id": "w111typed-00884-aggregate-selector-1-mixed",
+      "function_id": "FUNC.AGGREGATE",
+      "case_tag": "selector-1-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 1
+        },
+        {
+          "kind": "number",
+          "value": 6
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 6
+          }
+        }
+      ],
+      "excel": "number:0x4004000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00885-aggregate-selector-2-mixed",
+      "function_id": "FUNC.AGGREGATE",
+      "case_tag": "selector-2-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "number",
+          "value": 6
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 6
+          }
+        }
+      ],
+      "excel": "number:0x4000000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00886-aggregate-selector-3-mixed",
+      "function_id": "FUNC.AGGREGATE",
+      "case_tag": "selector-3-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 3
+        },
+        {
+          "kind": "number",
+          "value": 6
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 6
+          }
+        }
+      ],
+      "excel": "number:0x4010000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00887-aggregate-selector-4-mixed",
+      "function_id": "FUNC.AGGREGATE",
+      "case_tag": "selector-4-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 4
+        },
+        {
+          "kind": "number",
+          "value": 6
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 4
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 6
+          }
+        }
+      ],
+      "excel": "number:0x4010000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00888-aggregate-selector-5-mixed",
+      "function_id": "FUNC.AGGREGATE",
+      "case_tag": "selector-5-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 5
+        },
+        {
+          "kind": "number",
+          "value": 6
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 5
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 6
+          }
+        }
+      ],
+      "excel": "number:0x3ff0000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00889-aggregate-selector-9-mixed",
+      "function_id": "FUNC.AGGREGATE",
+      "case_tag": "selector-9-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 9
+        },
+        {
+          "kind": "number",
+          "value": 6
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 6
+          }
+        }
+      ],
+      "excel": "number:0x4014000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00000-asc-valid-control",
+      "function_id": "FUNC.ASC",
+      "case_tag": "valid-control",
+      "args": [
+        {
+          "kind": "text",
+          "value": "ABC\uff11\uff12\uff13"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:ABC\uff11\uff12\uff13",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00003-asc-arg1-empty-text",
+      "function_id": "FUNC.ASC",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00004-asc-arg1-numeric-text",
+      "function_id": "FUNC.ASC",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00005-asc-arg1-logical",
+      "function_id": "FUNC.ASC",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:TRUE",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00006-asc-arg1-blank-cell",
+      "function_id": "FUNC.ASC",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00007-asc-arg1-row-array",
+      "function_id": "FUNC.ASC",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "ABC\uff11\uff12\uff13"
+              },
+              {
+                "kind": "text",
+                "value": "ABC\uff11\uff12\uff13"
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[text:ABC\uff11\uff12\uff13|text:ABC\uff11\uff12\uff13]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00008-dbcs-valid-control",
+      "function_id": "FUNC.DBCS",
+      "case_tag": "valid-control",
+      "args": [
+        {
+          "kind": "text",
+          "value": "ABC123"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:ABC123",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00011-dbcs-arg1-empty-text",
+      "function_id": "FUNC.DBCS",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00012-dbcs-arg1-numeric-text",
+      "function_id": "FUNC.DBCS",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00013-dbcs-arg1-logical",
+      "function_id": "FUNC.DBCS",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:TRUE",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00014-dbcs-arg1-blank-cell",
+      "function_id": "FUNC.DBCS",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00015-dbcs-arg1-row-array",
+      "function_id": "FUNC.DBCS",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "ABC123"
+              },
+              {
+                "kind": "text",
+                "value": "ABC123"
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[text:ABC123|text:ABC123]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00991-dsum-database-missing",
+      "function_id": "FUNC.DSUM",
+      "case_tag": "database-missing",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B4"
+        },
+        {
+          "kind": "text",
+          "value": "amount"
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "D1:D2"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:B4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "kind"
+                },
+                {
+                  "kind": "text",
+                  "value": "amount"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "a"
+                },
+                {
+                  "kind": "number",
+                  "value": 2
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "b"
+                },
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "a"
+                },
+                {
+                  "kind": "number",
+                  "value": 6
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "D1:D2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "kind"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "missing"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "excel": "number:0x0000000000000000",
+      "local": "number:0x8000000000000000"
+    },
+    {
+      "case_id": "w111typed-00031-encodeurl-arg1-row-array",
+      "function_id": "FUNC.ENCODEURL",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "a b/?x=\u00e9&z=1"
+              },
+              {
+                "kind": "text",
+                "value": "a b/?x=\u00e9&z=1"
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[text:a%20b%2F%3Fx%3D%C3%A9%26z%3D1|text:a%20b%2F%3Fx%3D%C3%A9%26z%3D1]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00961-formulatext-plain-value-cell",
+      "function_id": "FUNC.FORMULATEXT",
+      "case_tag": "plain-value-cell",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "A1",
+          "target": "A1"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1",
+          "value": {
+            "kind": "number",
+            "value": 7
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00960-isformula-plain-value-cell",
+      "function_id": "FUNC.ISFORMULA",
+      "case_tag": "plain-value-cell",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "A1",
+          "target": "A1"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1",
+          "value": {
+            "kind": "number",
+            "value": 7
+          }
+        }
+      ],
+      "excel": "logical:false",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00016-jis-valid-control",
+      "function_id": "FUNC.JIS",
+      "case_tag": "valid-control",
+      "args": [
+        {
+          "kind": "text",
+          "value": "ABC123"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00017-jis-arg1-na",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:NA"
+    },
+    {
+      "case_id": "w111typed-00018-jis-arg1-value-error",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00019-jis-arg1-empty-text",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00020-jis-arg1-numeric-text",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00021-jis-arg1-logical",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00022-jis-arg1-blank-cell",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00023-jis-arg1-row-array",
+      "function_id": "FUNC.JIS",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "ABC123"
+              },
+              {
+                "kind": "text",
+                "value": "ABC123"
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Name",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00314-numbervalue-arg1-empty-text",
+      "function_id": "FUNC.NUMBERVALUE",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        },
+        {
+          "kind": "text",
+          "value": ","
+        },
+        {
+          "kind": "text",
+          "value": "."
+        }
+      ],
+      "fixtures": [],
+      "excel": "number:0x0000000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00317-numbervalue-arg1-blank-cell",
+      "function_id": "FUNC.NUMBERVALUE",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        },
+        {
+          "kind": "text",
+          "value": ","
+        },
+        {
+          "kind": "text",
+          "value": "."
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "number:0x0000000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00318-numbervalue-arg1-row-array",
+      "function_id": "FUNC.NUMBERVALUE",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "1.234,5"
+              },
+              {
+                "kind": "text",
+                "value": "1.234,5"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "value": ","
+        },
+        {
+          "kind": "text",
+          "value": "."
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[number:0x40934a0000000000|number:0x40934a0000000000]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00890-subtotal-selector-1-mixed",
+      "function_id": "FUNC.SUBTOTAL",
+      "case_tag": "selector-1-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 1
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "number:0x4004000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00891-subtotal-selector-2-mixed",
+      "function_id": "FUNC.SUBTOTAL",
+      "case_tag": "selector-2-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "number:0x4000000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00892-subtotal-selector-3-mixed",
+      "function_id": "FUNC.SUBTOTAL",
+      "case_tag": "selector-3-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 3
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 3
+          }
+        }
+      ],
+      "excel": "number:0x4010000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00893-subtotal-selector-4-mixed",
+      "function_id": "FUNC.SUBTOTAL",
+      "case_tag": "selector-4-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 4
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 4
+          }
+        }
+      ],
+      "excel": "number:0x4010000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00894-subtotal-selector-5-mixed",
+      "function_id": "FUNC.SUBTOTAL",
+      "case_tag": "selector-5-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 5
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 5
+          }
+        }
+      ],
+      "excel": "number:0x3ff0000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00895-subtotal-selector-9-mixed",
+      "function_id": "FUNC.SUBTOTAL",
+      "case_tag": "selector-9-mixed",
+      "args": [
+        {
+          "kind": "number",
+          "value": 9
+        },
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "empty_cell"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "number:0x4014000000000000",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00700-choosecols-arg1-na",
+      "function_id": "FUNC.CHOOSECOLS",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "number",
+          "value": 2
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00694-chooserows-arg1-na",
+      "function_id": "FUNC.CHOOSEROWS",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "number",
+          "value": 2
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00844-count-error-reference",
+      "function_id": "FUNC.COUNT",
+      "case_tag": "error-reference",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "excel": "number:0x4000000000000000",
+      "local": "error:Div0"
+    },
+    {
+      "case_id": "w111typed-00850-countblank-error-reference",
+      "function_id": "FUNC.COUNTBLANK",
+      "case_tag": "error-reference",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A5"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A1:A5",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "2"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 4
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "excel": "number:0x0000000000000000",
+      "local": "error:Div0"
+    },
+    {
+      "case_id": "w111typed-00688-drop-arg1-na",
+      "function_id": "FUNC.DROP",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Calc"
+    },
+    {
+      "case_id": "w111typed-00689-drop-arg1-value-error",
+      "function_id": "FUNC.DROP",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "error:Calc"
+    },
+    {
+      "case_id": "w111typed-00239-exact-arg1-row-array",
+      "function_id": "FUNC.EXACT",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "Ab"
+              },
+              {
+                "kind": "text",
+                "value": "Ab"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "value": "ab"
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[logical:false|logical:false]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00754-expand-arg1-na",
+      "function_id": "FUNC.EXPAND",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "number",
+          "value": 3
+        },
+        {
+          "kind": "number",
+          "value": 3
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 3
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "array:3x3:[error:NA|text:pad|text:pad|text:pad|text:pad|text:pad|text:pad|text:pad|text:pad]"
+    },
+    {
+      "case_id": "w111typed-00755-expand-arg1-value-error",
+      "function_id": "FUNC.EXPAND",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        },
+        {
+          "kind": "number",
+          "value": 3
+        },
+        {
+          "kind": "number",
+          "value": 3
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 3
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "array:3x3:[error:Value|text:pad|text:pad|text:pad|text:pad|text:pad|text:pad|text:pad|text:pad]"
+    },
+    {
+      "case_id": "w111typed-00772-filter-arg1-na",
+      "function_id": "FUNC.FILTER",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": true
+              }
+            ],
+            [
+              {
+                "kind": "logical",
+                "value": false
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00742-hstack-arg1-na",
+      "function_id": "FUNC.HSTACK",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 8
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 9
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 8
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "array:2x2:[error:NA|number:0x4020000000000000|error:NA|number:0x4022000000000000]"
+    },
+    {
+      "case_id": "w111typed-00743-hstack-arg1-value-error",
+      "function_id": "FUNC.HSTACK",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        },
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 8
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 9
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 8
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "array:2x2:[error:Value|number:0x4020000000000000|error:NA|number:0x4022000000000000]"
+    },
+    {
+      "case_id": "w111typed-00609-if-arg1-numeric-text",
+      "function_id": "FUNC.IF",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        },
+        {
+          "kind": "number",
+          "value": 7
+        },
+        {
+          "kind": "number",
+          "value": 9
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 7
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "number:0x401c000000000000"
+    },
+    {
+      "case_id": "w111typed-00620-iferror-arg1-row-array",
+      "function_id": "FUNC.IFERROR",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "NA"
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "number",
+          "value": 9
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "array:1x2:[number:0x4022000000000000|number:0x4022000000000000]",
+      "local": "array:1x2:[error:NA|error:NA]"
+    },
+    {
+      "case_id": "w111typed-00628-ifna-arg1-row-array",
+      "function_id": "FUNC.IFNA",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "NA"
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "number",
+          "value": 9
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "array:1x2:[number:0x4022000000000000|number:0x4022000000000000]",
+      "local": "array:1x2:[error:NA|error:NA]"
+    },
+    {
+      "case_id": "w111typed-00646-left-missing-count",
+      "function_id": "FUNC.LEFT",
+      "case_tag": "missing-count",
+      "args": [
+        {
+          "kind": "text",
+          "value": "abc"
+        },
+        {
+          "kind": "missing_arg"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00650-leftb-missing-count",
+      "function_id": "FUNC.LEFTB",
+      "case_tag": "missing-count",
+      "args": [
+        {
+          "kind": "text",
+          "value": "abc"
+        },
+        {
+          "kind": "missing_arg"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00079-len-arg1-row-array",
+      "function_id": "FUNC.LEN",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "A\ud83d\ude00B"
+              },
+              {
+                "kind": "text",
+                "value": "A\ud83d\ude00B"
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[number:0x4008000000000000|number:0x4008000000000000]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00087-lenb-arg1-row-array",
+      "function_id": "FUNC.LENB",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "ASCII"
+              },
+              {
+                "kind": "text",
+                "value": "ASCII"
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[number:0x4014000000000000|number:0x4014000000000000]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00302-regexextract-arg1-row-array",
+      "function_id": "FUNC.REGEXEXTRACT",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "abc123"
+              },
+              {
+                "kind": "text",
+                "value": "abc123"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "value": "[0-9]+"
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[text:123|text:123]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00310-regexreplace-arg1-row-array",
+      "function_id": "FUNC.REGEXREPLACE",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "abc123"
+              },
+              {
+                "kind": "text",
+                "value": "abc123"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "value": "[0-9]+"
+        },
+        {
+          "kind": "text",
+          "value": "X"
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[text:abcX|text:abcX]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00294-regextest-arg1-row-array",
+      "function_id": "FUNC.REGEXTEST",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "abc123"
+              },
+              {
+                "kind": "text",
+                "value": "abc123"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "value": "[0-9]+"
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[logical:true|logical:true]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00648-right-missing-count",
+      "function_id": "FUNC.RIGHT",
+      "case_tag": "missing-count",
+      "args": [
+        {
+          "kind": "text",
+          "value": "abc"
+        },
+        {
+          "kind": "missing_arg"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00652-rightb-missing-count",
+      "function_id": "FUNC.RIGHTB",
+      "case_tag": "missing-count",
+      "args": [
+        {
+          "kind": "text",
+          "value": "abc"
+        },
+        {
+          "kind": "missing_arg"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00730-sortby-arg1-na",
+      "function_id": "FUNC.SORTBY",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 2
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00266-textafter-arg1-empty-text",
+      "function_id": "FUNC.TEXTAFTER",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        },
+        {
+          "kind": "text",
+          "value": "-"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00269-textafter-arg1-blank-cell",
+      "function_id": "FUNC.TEXTAFTER",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        },
+        {
+          "kind": "text",
+          "value": "-"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00659-textafter-not-found-fallback",
+      "function_id": "FUNC.TEXTAFTER",
+      "case_tag": "not-found-fallback",
+      "args": [
+        {
+          "kind": "text",
+          "value": "abc"
+        },
+        {
+          "kind": "text",
+          "value": "-"
+        },
+        {
+          "kind": "missing_arg"
+        },
+        {
+          "kind": "missing_arg"
+        },
+        {
+          "kind": "missing_arg"
+        },
+        {
+          "kind": "text",
+          "value": "absent"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:absent",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00274-textbefore-arg1-empty-text",
+      "function_id": "FUNC.TEXTBEFORE",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        },
+        {
+          "kind": "text",
+          "value": "-"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00277-textbefore-arg1-blank-cell",
+      "function_id": "FUNC.TEXTBEFORE",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        },
+        {
+          "kind": "text",
+          "value": "-"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00666-textbefore-not-found-fallback",
+      "function_id": "FUNC.TEXTBEFORE",
+      "case_tag": "not-found-fallback",
+      "args": [
+        {
+          "kind": "text",
+          "value": "abc"
+        },
+        {
+          "kind": "text",
+          "value": "-"
+        },
+        {
+          "kind": "missing_arg"
+        },
+        {
+          "kind": "missing_arg"
+        },
+        {
+          "kind": "missing_arg"
+        },
+        {
+          "kind": "text",
+          "value": "absent"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:absent",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00282-textsplit-arg1-empty-text",
+      "function_id": "FUNC.TEXTSPLIT",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        },
+        {
+          "kind": "text",
+          "value": ","
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Value",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00285-textsplit-arg1-blank-cell",
+      "function_id": "FUNC.TEXTSPLIT",
+      "case_tag": "arg1-blank-cell",
+      "args": [
+        {
+          "kind": "empty_cell"
+        },
+        {
+          "kind": "text",
+          "value": ","
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "empty_cell"
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00286-textsplit-arg1-row-array",
+      "function_id": "FUNC.TEXTSPLIT",
+      "case_tag": "arg1-row-array",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "a,b,c"
+              },
+              {
+                "kind": "text",
+                "value": "a,b,c"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "value": ","
+        }
+      ],
+      "fixtures": [],
+      "excel": "array:1x2:[text:a|text:a]",
+      "local": "error:Value"
+    },
+    {
+      "case_id": "w111typed-00748-vstack-arg1-na",
+      "function_id": "FUNC.VSTACK",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 8
+              },
+              {
+                "kind": "number",
+                "value": 9
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 8
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "array:2x2:[error:NA|error:NA|number:0x4020000000000000|number:0x4022000000000000]"
+    },
+    {
+      "case_id": "w111typed-00749-vstack-arg1-value-error",
+      "function_id": "FUNC.VSTACK",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        },
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 8
+              },
+              {
+                "kind": "number",
+                "value": 9
+              }
+            ]
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 8
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 9
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "array:2x2:[error:Value|error:NA|number:0x4020000000000000|number:0x4022000000000000]"
+    },
+    {
+      "case_id": "w111typed-00766-wrapcols-arg1-na",
+      "function_id": "FUNC.WRAPCOLS",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "array:2x1:[error:NA|text:pad]"
+    },
+    {
+      "case_id": "w111typed-00767-wrapcols-arg1-value-error",
+      "function_id": "FUNC.WRAPCOLS",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        },
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "array:2x1:[error:Value|text:pad]"
+    },
+    {
+      "case_id": "w111typed-00768-wrapcols-arg1-empty-text",
+      "function_id": "FUNC.WRAPCOLS",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        },
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "text:",
+      "local": "array:2x1:[text:|text:pad]"
+    },
+    {
+      "case_id": "w111typed-00769-wrapcols-arg1-numeric-text",
+      "function_id": "FUNC.WRAPCOLS",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        },
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "text:2",
+      "local": "array:2x1:[text:2|text:pad]"
+    },
+    {
+      "case_id": "w111typed-00770-wrapcols-arg1-logical",
+      "function_id": "FUNC.WRAPCOLS",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        },
+        {
+          "kind": "number",
+          "value": 2
+        },
+        {
+          "kind": "text",
+          "value": "pad"
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 2
+          }
+        }
+      ],
+      "excel": "logical:true",
+      "local": "array:2x1:[logical:true|text:pad]"
+    }
+  ],
+  "one_cell_array_rows": [
+    {
+      "case_id": "w111typed-00682-take-arg1-na",
+      "function_id": "FUNC.TAKE",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "error:NA",
+      "local": "array:1x1:[error:NA]"
+    },
+    {
+      "case_id": "w111typed-00683-take-arg1-value-error",
+      "function_id": "FUNC.TAKE",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "error:Value",
+      "local": "array:1x1:[error:Value]"
+    },
+    {
+      "case_id": "w111typed-00684-take-arg1-empty-text",
+      "function_id": "FUNC.TAKE",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "text:",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00685-take-arg1-numeric-text",
+      "function_id": "FUNC.TAKE",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00686-take-arg1-logical",
+      "function_id": "FUNC.TAKE",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        },
+        {
+          "kind": "number",
+          "value": 1
+        }
+      ],
+      "fixtures": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "excel": "logical:true",
+      "local": "array:1x1:[logical:true]"
+    },
+    {
+      "case_id": "w111typed-00806-munit-arg1-logical",
+      "function_id": "FUNC.MUNIT",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "number:0x3ff0000000000000",
+      "local": "array:1x1:[number:0x3ff0000000000000]"
+    },
+    {
+      "case_id": "w111typed-00724-sort-arg1-na",
+      "function_id": "FUNC.SORT",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "array:1x1:[error:NA]"
+    },
+    {
+      "case_id": "w111typed-00725-sort-arg1-value-error",
+      "function_id": "FUNC.SORT",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Value",
+      "local": "array:1x1:[error:Value]"
+    },
+    {
+      "case_id": "w111typed-00726-sort-arg1-empty-text",
+      "function_id": "FUNC.SORT",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00727-sort-arg1-numeric-text",
+      "function_id": "FUNC.SORT",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00728-sort-arg1-logical",
+      "function_id": "FUNC.SORT",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "logical:true",
+      "local": "array:1x1:[logical:true]"
+    },
+    {
+      "case_id": "w111typed-00283-textsplit-arg1-numeric-text",
+      "function_id": "FUNC.TEXTSPLIT",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        },
+        {
+          "kind": "text",
+          "value": ","
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00284-textsplit-arg1-logical",
+      "function_id": "FUNC.TEXTSPLIT",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        },
+        {
+          "kind": "text",
+          "value": ","
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:TRUE",
+      "local": "array:1x1:[text:TRUE]"
+    },
+    {
+      "case_id": "w111typed-00706-tocol-arg1-na",
+      "function_id": "FUNC.TOCOL",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "array:1x1:[error:NA]"
+    },
+    {
+      "case_id": "w111typed-00707-tocol-arg1-value-error",
+      "function_id": "FUNC.TOCOL",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Value",
+      "local": "array:1x1:[error:Value]"
+    },
+    {
+      "case_id": "w111typed-00708-tocol-arg1-empty-text",
+      "function_id": "FUNC.TOCOL",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00709-tocol-arg1-numeric-text",
+      "function_id": "FUNC.TOCOL",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00710-tocol-arg1-logical",
+      "function_id": "FUNC.TOCOL",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "logical:true",
+      "local": "array:1x1:[logical:true]"
+    },
+    {
+      "case_id": "w111typed-00712-torow-arg1-na",
+      "function_id": "FUNC.TOROW",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "array:1x1:[error:NA]"
+    },
+    {
+      "case_id": "w111typed-00713-torow-arg1-value-error",
+      "function_id": "FUNC.TOROW",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Value",
+      "local": "array:1x1:[error:Value]"
+    },
+    {
+      "case_id": "w111typed-00714-torow-arg1-empty-text",
+      "function_id": "FUNC.TOROW",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00715-torow-arg1-numeric-text",
+      "function_id": "FUNC.TOROW",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00716-torow-arg1-logical",
+      "function_id": "FUNC.TOROW",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "logical:true",
+      "local": "array:1x1:[logical:true]"
+    },
+    {
+      "case_id": "w111typed-00718-transpose-arg1-na",
+      "function_id": "FUNC.TRANSPOSE",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "array:1x1:[error:NA]"
+    },
+    {
+      "case_id": "w111typed-00719-transpose-arg1-value-error",
+      "function_id": "FUNC.TRANSPOSE",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Value",
+      "local": "array:1x1:[error:Value]"
+    },
+    {
+      "case_id": "w111typed-00720-transpose-arg1-empty-text",
+      "function_id": "FUNC.TRANSPOSE",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00721-transpose-arg1-numeric-text",
+      "function_id": "FUNC.TRANSPOSE",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00722-transpose-arg1-logical",
+      "function_id": "FUNC.TRANSPOSE",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "logical:true",
+      "local": "array:1x1:[logical:true]"
+    },
+    {
+      "case_id": "w111typed-00736-unique-arg1-na",
+      "function_id": "FUNC.UNIQUE",
+      "case_tag": "arg1-na",
+      "args": [
+        {
+          "kind": "error",
+          "code": "NA"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:NA",
+      "local": "array:1x1:[error:NA]"
+    },
+    {
+      "case_id": "w111typed-00737-unique-arg1-value-error",
+      "function_id": "FUNC.UNIQUE",
+      "case_tag": "arg1-value-error",
+      "args": [
+        {
+          "kind": "error",
+          "code": "Value"
+        }
+      ],
+      "fixtures": [],
+      "excel": "error:Value",
+      "local": "array:1x1:[error:Value]"
+    },
+    {
+      "case_id": "w111typed-00738-unique-arg1-empty-text",
+      "function_id": "FUNC.UNIQUE",
+      "case_tag": "arg1-empty-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": ""
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:",
+      "local": "array:1x1:[text:]"
+    },
+    {
+      "case_id": "w111typed-00739-unique-arg1-numeric-text",
+      "function_id": "FUNC.UNIQUE",
+      "case_tag": "arg1-numeric-text",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2"
+        }
+      ],
+      "fixtures": [],
+      "excel": "text:2",
+      "local": "array:1x1:[text:2]"
+    },
+    {
+      "case_id": "w111typed-00740-unique-arg1-logical",
+      "function_id": "FUNC.UNIQUE",
+      "case_tag": "arg1-logical",
+      "args": [
+        {
+          "kind": "logical",
+          "value": true
+        }
+      ],
+      "fixtures": [],
+      "excel": "logical:true",
+      "local": "array:1x1:[logical:true]"
+    }
+  ]
+}

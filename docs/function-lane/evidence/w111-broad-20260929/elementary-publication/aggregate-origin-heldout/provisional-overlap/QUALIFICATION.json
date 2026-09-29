@@ -1,0 +1,6 @@
+{
+  "status": "provisional_do_not_count_as_independent",
+  "reason": "Root observed accidental overlap of two independent Excel runner instances; serialized repetition requested before validation credit.",
+  "source_run": "smart-fuzzer\\runs\\w111-aggregate-origin-heldout-typed-20260929",
+  "raw_observations_retained": true
+}

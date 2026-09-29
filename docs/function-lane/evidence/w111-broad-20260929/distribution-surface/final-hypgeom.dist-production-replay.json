@@ -1,0 +1,4819 @@
+{
+  "function": "HYPGEOM.DIST",
+  "matches": 600,
+  "misses": [
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00000-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00001-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00002-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00003-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x401f99999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00008-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x401f99999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00009-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00016-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00017-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00024-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00025-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00028-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00029-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00032-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00033-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00036-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00037-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00046-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00047-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00048-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00049-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00056-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00057-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00060-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00061-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4019000000000000",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00068-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4019000000000000",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00069-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401f99999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00072-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401f99999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00073-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00078-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00079-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00080-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00081-fractional-support-controls"
+    },
+    {
+      "actual": "0x3feb6db6db6db6db",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3feb6db6db6db6dc",
+      "id": "fresh-hypgeom.dist-00082-fractional-support-controls"
+    },
+    {
+      "actual": "0x3feb6db6db6db6db",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feb6db6db6db6dc",
+      "id": "fresh-hypgeom.dist-00083-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00084-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00085-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401f99999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00096-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401f99999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00097-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00102-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00103-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00104-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00105-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00108-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00109-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00126-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00127-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00130-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00131-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00134-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00135-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00136-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00137-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe99999999999a0",
+        "0x401f99999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00138-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe99999999999a0",
+        "0x401f99999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00139-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00142-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00143-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00148-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00149-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00150-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00151-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00152-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x401b99999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00153-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe2492492492492",
+      "args": [
+        "0x400c000000000000",
+        "0x4019000000000000",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fe2492492492490",
+      "id": "fresh-hypgeom.dist-00162-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00178-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00179-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00180-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00181-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00182-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00183-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00190-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00191-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00194-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401c000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00195-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00204-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00205-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x401d000000000000",
+        "0x401d000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00206-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00214-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00215-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00216-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00217-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00218-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00219-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00224-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00225-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401d000000000000",
+        "0x4020000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00228-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401d000000000000",
+        "0x4020000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00229-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00234-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00235-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00238-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00239-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00244-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00245-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00252-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00253-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00264-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00265-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00276-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00277-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00280-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00281-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00284-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00285-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00288-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00289-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00290-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00291-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00292-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00293-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00294-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00295-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00296-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00297-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00300-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00301-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00308-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00309-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00314-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00315-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x401f000000000000",
+        "0x401d000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00318-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00322-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00323-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00328-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00329-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00332-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00333-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00334-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00335-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00336-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00337-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0x4020000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00338-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0x4020000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00339-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00344-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00345-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00346-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00347-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00348-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00349-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00354-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00355-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00356-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00357-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x4012000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00364-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00366-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00367-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00368-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00369-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00370-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00371-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x401d000000000000",
+        "0x401d000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00378-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00382-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00383-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00386-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00387-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00390-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00391-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00392-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00393-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00402-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00403-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00404-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00405-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fbc71c71c71c71c",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4020800000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00406-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fbc71c71c71c71c",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4020800000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00407-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00428-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00429-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00436-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00437-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe99999999999a0",
+        "0x4023cccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00440-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe99999999999a0",
+        "0x4023cccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00441-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00446-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00447-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00448-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00449-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fec71c71c71c71c",
+      "args": [
+        "0x3ff6666666666668",
+        "0x3ff8000000000000",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fec71c71c71c71b",
+      "id": "fresh-hypgeom.dist-00450-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fbc71c71c71c71c",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4020800000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00454-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fbc71c71c71c71c",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4020800000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00455-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fec71c71c71c71c",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fec71c71c71c71a",
+      "id": "fresh-hypgeom.dist-00462-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fec71c71c71c71c",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fec71c71c71c71a",
+      "id": "fresh-hypgeom.dist-00463-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00464-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00465-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00466-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00467-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00474-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00475-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00476-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00477-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00480-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00481-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fbc71c71c71c71c",
+      "args": [
+        "0x40204ccccccccccc",
+        "0x4020800000000000",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fbc71c71c71c71b",
+      "id": "fresh-hypgeom.dist-00492-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00498-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00499-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00500-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00501-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00504-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00505-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00506-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00507-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00510-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00511-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00512-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00513-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00514-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00515-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00520-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00521-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00524-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00525-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00526-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00527-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00528-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00529-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00530-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00531-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00544-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00545-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00554-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00555-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4023cccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00556-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4023cccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00557-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00560-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00561-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00562-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00563-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00564-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00565-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00570-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00571-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4023cccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00572-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4023cccccccccccd",
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00573-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00580-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00581-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00582-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00583-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00584-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x4012000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00585-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00590-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00591-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00602-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00603-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4028800000000000",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00608-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x4028800000000000",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00609-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00610-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00611-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00612-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00613-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00614-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00615-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdd89d89d89d89e",
+      "args": [
+        "0x3ff8000000000000",
+        "0x3ff8000000000000",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdd89d89d89d89f",
+      "id": "fresh-hypgeom.dist-00618-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00620-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00621-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00622-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00623-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00624-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00625-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x4028800000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00628-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x4028800000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00629-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fb3b13b13b13b14",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb3b13b13b13b15",
+      "id": "fresh-hypgeom.dist-00630-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fb3b13b13b13b14",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb3b13b13b13b15",
+      "id": "fresh-hypgeom.dist-00631-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00632-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00633-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00634-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00635-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00638-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00639-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00652-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00653-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00658-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00659-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00662-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00663-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402bcccccccccccd",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00668-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402bcccccccccccd",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00669-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00676-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00677-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00682-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00683-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00686-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00687-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00688-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00689-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00690-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00691-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00694-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00695-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00698-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00699-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdd89d89d89d89e",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3ff8000000000000",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdd89d89d89d89f",
+      "id": "fresh-hypgeom.dist-00702-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00706-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00707-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00710-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00711-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00712-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00713-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00718-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00719-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00722-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00723-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00728-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00729-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00740-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00741-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00744-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00745-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00750-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00751-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00752-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00753-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00754-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00755-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00756-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00757-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe99999999999a0",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00758-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe99999999999a0",
+        "0x402bcccccccccccd",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00759-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fb3b13b13b13b14",
+      "args": [
+        "0x40284ccccccccccc",
+        "0x4028800000000000",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb3b13b13b13b15",
+      "id": "fresh-hypgeom.dist-00762-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00768-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0x402a000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00769-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00770-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00771-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00772-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00773-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00778-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00779-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00784-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00785-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00788-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfeccccccccccccd",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00789-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe9999999999980",
+        "0x403fe66666666666",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00800-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fe9999999999980",
+        "0x403fe66666666666",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00801-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00802-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00803-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00806-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00807-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x403e400000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00808-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x403e400000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00809-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403fe66666666666",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00810-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403fe66666666666",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00811-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00812-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fd999999999999a",
+        "0xbfb999999999999a",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00813-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00816-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00817-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00824-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3ff8000000000000",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00825-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00826-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00827-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00830-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00831-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403e400000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00832-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403e400000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00833-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00834-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00835-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00838-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3feccccccccccccd",
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00839-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00840-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00841-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00846-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfeccccccccccccd",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00847-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403fe66666666666",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00848-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403fe66666666666",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00849-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00850-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00851-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00854-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00855-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fa0842108421084",
+      "args": [
+        "0x403e266666666666",
+        "0x403e400000000000",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa0842108421085",
+      "id": "fresh-hypgeom.dist-00858-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00862-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00863-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00864-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x3fb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00865-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00874-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00875-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fa0842108421084",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403e400000000000",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00884-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fa0842108421084",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403e400000000000",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00885-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00890-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00891-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403e400000000000",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00912-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403e400000000000",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00913-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00920-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00921-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00922-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfd999999999999a",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00923-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00924-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3fb9999999999998",
+        "0xbfeccccccccccccd",
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00925-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00932-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00933-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00934-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00935-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00940-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00941-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00958-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfeccccccccccccd",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00959-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00964-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x403f000000000000",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00965-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403fe66666666666",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00966-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0x403fe66666666666",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00967-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00978-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00979-fractional-support-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00980-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbfb999999999999a",
+        "0xbfb999999999999a",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00981-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00984-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0xbfeccccccccccccd",
+        "0x3ff0000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "error:Num",
+      "id": "fresh-hypgeom.dist-00985-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdef7bdef7bdef8",
+      "args": [
+        "0x402d800000000000",
+        "0x403e400000000000",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdef7bdef7bdee8",
+      "id": "fresh-hypgeom.dist-00992-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdef7bdef7bdef8",
+      "args": [
+        "0x402d800000000000",
+        "0x403e400000000000",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fdef7bdef7bdee8",
+      "id": "fresh-hypgeom.dist-00993-fractional-support-controls"
+    }
+  ],
+  "rows": 1001
+}

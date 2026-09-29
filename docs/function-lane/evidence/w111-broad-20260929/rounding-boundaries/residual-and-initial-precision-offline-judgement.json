@@ -1,0 +1,5764 @@
+[
+  {
+    "run": "w111-roundup-residual-heldout-20260929",
+    "function": "ROUNDUP",
+    "rows": 6542,
+    "mismatches": 0,
+    "misses": []
+  },
+  {
+    "run": "w111-roundup-residual-heldout-20260929",
+    "function": "ROUNDDOWN",
+    "rows": 3470,
+    "mismatches": 0,
+    "misses": []
+  },
+  {
+    "run": "w111-directed-initial-precision-20260929",
+    "function": "ROUNDUP",
+    "rows": 2136,
+    "mismatches": 212,
+    "misses": [
+      {
+        "id": "w111directedprecision-ROUNDUP-00002",
+        "args": [
+          "0x00215356a2007fbd",
+          "0x4074200000000000"
+        ],
+        "expected_bits": "0x00215356a2007fb8",
+        "actual": "0x00215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00003",
+        "args": [
+          "0x00215356a2007fbd",
+          "0x4074300000000000"
+        ],
+        "expected_bits": "0x00215356a2007fb8",
+        "actual": "0x00215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00282",
+        "args": [
+          "0x1ce4f02992cda663",
+          "0x4066e00000000000"
+        ],
+        "expected_bits": "0x1ce4f02992cda652",
+        "actual": "0x1ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00283",
+        "args": [
+          "0x1ce4f02992cda663",
+          "0x4067000000000000"
+        ],
+        "expected_bits": "0x1ce4f02992cda652",
+        "actual": "0x1ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00286",
+        "args": [
+          "0x1e13e833002df0ac",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x1e13e833002df0a9",
+        "actual": "0x1e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00287",
+        "args": [
+          "0x1e13e833002df0ac",
+          "0x4066600000000000"
+        ],
+        "expected_bits": "0x1e13e833002df0a9",
+        "actual": "0x1e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00290",
+        "args": [
+          "0x1e48e23fc0396cd7",
+          "0x4066200000000000"
+        ],
+        "expected_bits": "0x1e48e23fc0396cd3",
+        "actual": "0x1e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00291",
+        "args": [
+          "0x1e48e23fc0396cd7",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x1e48e23fc0396cd3",
+        "actual": "0x1e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00332",
+        "args": [
+          "0x2276953eb06e4a1e",
+          "0x4063800000000000"
+        ],
+        "expected_bits": "0x2276953eb06e4a03",
+        "actual": "0x2276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00333",
+        "args": [
+          "0x2276953eb06e4a1e",
+          "0x4063a00000000000"
+        ],
+        "expected_bits": "0x2276953eb06e4a03",
+        "actual": "0x2276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00336",
+        "args": [
+          "0x2317ed3972fe3a9a",
+          "0x4063200000000000"
+        ],
+        "expected_bits": "0x2317ed3972fe3a7f",
+        "actual": "0x2317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00337",
+        "args": [
+          "0x2317ed3972fe3a9a",
+          "0x4063400000000000"
+        ],
+        "expected_bits": "0x2317ed3972fe3a7f",
+        "actual": "0x2317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00338",
+        "args": [
+          "0x23b470fbbf78bb24",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x23b470fbbf78bb0a",
+        "actual": "0x23b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00339",
+        "args": [
+          "0x23b470fbbf78bb24",
+          "0x4062e00000000000"
+        ],
+        "expected_bits": "0x23b470fbbf78bb0a",
+        "actual": "0x23b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00344",
+        "args": [
+          "0x23e98d3aaf56e9ed",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0x23e98d3aaf56e9cc",
+        "actual": "0x23e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00345",
+        "args": [
+          "0x23e98d3aaf56e9ed",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x23e98d3aaf56e9cc",
+        "actual": "0x23e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00348",
+        "args": [
+          "0x241605b1e0c9a450",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0x241605b1e0c9a44c",
+        "actual": "0x241605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00349",
+        "args": [
+          "0x241605b1e0c9a450",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x241605b1e0c9a44c",
+        "actual": "0x241605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00390",
+        "args": [
+          "0x28738c74d9eea6f1",
+          "0x4060000000000000"
+        ],
+        "expected_bits": "0x28738c74d9eea6ee",
+        "actual": "0x28738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00391",
+        "args": [
+          "0x28738c74d9eea6f1",
+          "0x4060200000000000"
+        ],
+        "expected_bits": "0x28738c74d9eea6ee",
+        "actual": "0x28738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00502",
+        "args": [
+          "0x32df177a1f9a5f2e",
+          "0x4053400000000000"
+        ],
+        "expected_bits": "0x32df177a1f9a5f09",
+        "actual": "0x32df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00503",
+        "args": [
+          "0x32df177a1f9a5f2e",
+          "0x4053800000000000"
+        ],
+        "expected_bits": "0x32df177a1f9a5f09",
+        "actual": "0x32df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00620",
+        "args": [
+          "0x496c43366691792f",
+          "0xc03e000000000000"
+        ],
+        "expected_bits": "0x496c433666917927",
+        "actual": "0x496c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00621",
+        "args": [
+          "0x496c43366691792f",
+          "0xc03f000000000000"
+        ],
+        "expected_bits": "0x496c433666917927",
+        "actual": "0x496c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00624",
+        "args": [
+          "0x4a5dc48d0838433d",
+          "0xc041800000000000"
+        ],
+        "expected_bits": "0x4a5dc48d08384325",
+        "actual": "0x4a5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00625",
+        "args": [
+          "0x4a5dc48d0838433d",
+          "0xc042000000000000"
+        ],
+        "expected_bits": "0x4a5dc48d08384325",
+        "actual": "0x4a5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00626",
+        "args": [
+          "0x4b07f6e0e4307f55",
+          "0xc043000000000000"
+        ],
+        "expected_bits": "0x4b07f6e0e4307f49",
+        "actual": "0x4b07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00627",
+        "args": [
+          "0x4b07f6e0e4307f55",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0x4b07f6e0e4307f49",
+        "actual": "0x4b07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00628",
+        "args": [
+          "0x4b4a50a259963ca6",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0x4b4a50a259963c9f",
+        "actual": "0x4b4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00629",
+        "args": [
+          "0x4b4a50a259963ca6",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0x4b4a50a259963c9f",
+        "actual": "0x4b4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00632",
+        "args": [
+          "0x4b6ac87afa306090",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0x4b6ac87afa30607e",
+        "actual": "0x4b6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00633",
+        "args": [
+          "0x4b6ac87afa306090",
+          "0xc044800000000000"
+        ],
+        "expected_bits": "0x4b6ac87afa30607e",
+        "actual": "0x4b6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00656",
+        "args": [
+          "0x4d2ad08b0bf1b039",
+          "0xc048000000000000"
+        ],
+        "expected_bits": "0x4d2ad08b0bf1b032",
+        "actual": "0x4d2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00657",
+        "args": [
+          "0x4d2ad08b0bf1b039",
+          "0xc048800000000000"
+        ],
+        "expected_bits": "0x4d2ad08b0bf1b032",
+        "actual": "0x4d2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00668",
+        "args": [
+          "0x4ea59c2e58bb7622",
+          "0xc04b800000000000"
+        ],
+        "expected_bits": "0x4ea59c2e58bb761e",
+        "actual": "0x4ea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00669",
+        "args": [
+          "0x4ea59c2e58bb7622",
+          "0xc04c000000000000"
+        ],
+        "expected_bits": "0x4ea59c2e58bb761e",
+        "actual": "0x4ea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00672",
+        "args": [
+          "0x4f1ce40971e8e061",
+          "0xc04d000000000000"
+        ],
+        "expected_bits": "0x4f1ce40971e8e041",
+        "actual": "0x4f1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00673",
+        "args": [
+          "0x4f1ce40971e8e061",
+          "0xc04d800000000000"
+        ],
+        "expected_bits": "0x4f1ce40971e8e041",
+        "actual": "0x4f1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00678",
+        "args": [
+          "0x4ff6c2a5b2d376ea",
+          "0xc04f000000000000"
+        ],
+        "expected_bits": "0x4ff6c2a5b2d376d7",
+        "actual": "0x4ff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00679",
+        "args": [
+          "0x4ff6c2a5b2d376ea",
+          "0xc04f800000000000"
+        ],
+        "expected_bits": "0x4ff6c2a5b2d376d7",
+        "actual": "0x4ff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00682",
+        "args": [
+          "0x50d9368e13a6b5d4",
+          "0xc050800000000000"
+        ],
+        "expected_bits": "0x50d9368e13a6b5c8",
+        "actual": "0x50d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00683",
+        "args": [
+          "0x50d9368e13a6b5d4",
+          "0xc050c00000000000"
+        ],
+        "expected_bits": "0x50d9368e13a6b5c8",
+        "actual": "0x50d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00698",
+        "args": [
+          "0x52fa0feb7830bfce",
+          "0xc053000000000000"
+        ],
+        "expected_bits": "0x52fa0feb7830bfc7",
+        "actual": "0x52fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00699",
+        "args": [
+          "0x52fa0feb7830bfce",
+          "0xc053400000000000"
+        ],
+        "expected_bits": "0x52fa0feb7830bfc7",
+        "actual": "0x52fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00704",
+        "args": [
+          "0x541539b31ffa7dda",
+          "0xc054800000000000"
+        ],
+        "expected_bits": "0x541539b31ffa7dc0",
+        "actual": "0x541539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00705",
+        "args": [
+          "0x541539b31ffa7dda",
+          "0xc054c00000000000"
+        ],
+        "expected_bits": "0x541539b31ffa7dc0",
+        "actual": "0x541539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00752",
+        "args": [
+          "0x59e4f5adc031e664",
+          "0xc05b800000000000"
+        ],
+        "expected_bits": "0x59e4f5adc031e649",
+        "actual": "0x59e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00753",
+        "args": [
+          "0x59e4f5adc031e664",
+          "0xc05bc00000000000"
+        ],
+        "expected_bits": "0x59e4f5adc031e649",
+        "actual": "0x59e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00766",
+        "args": [
+          "0x5ab51137db332b9e",
+          "0xc05c400000000000"
+        ],
+        "expected_bits": "0x5ab51137db332b9b",
+        "actual": "0x5ab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00767",
+        "args": [
+          "0x5ab51137db332b9e",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0x5ab51137db332b9b",
+        "actual": "0x5ab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00768",
+        "args": [
+          "0x5ad18e5936aaa459",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0x5ad18e5936aaa451",
+        "actual": "0x5ad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00769",
+        "args": [
+          "0x5ad18e5936aaa459",
+          "0xc05cc00000000000"
+        ],
+        "expected_bits": "0x5ad18e5936aaa451",
+        "actual": "0x5ad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00822",
+        "args": [
+          "0x615ffb76d621c31e",
+          "0xc062400000000000"
+        ],
+        "expected_bits": "0x615ffb76d621c2f6",
+        "actual": "0x615ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00823",
+        "args": [
+          "0x615ffb76d621c31e",
+          "0xc062600000000000"
+        ],
+        "expected_bits": "0x615ffb76d621c2f6",
+        "actual": "0x615ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00836",
+        "args": [
+          "0x6279b85858f2d91e",
+          "0xc062e00000000000"
+        ],
+        "expected_bits": "0x6279b85858f2d90f",
+        "actual": "0x6279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00837",
+        "args": [
+          "0x6279b85858f2d91e",
+          "0xc063000000000000"
+        ],
+        "expected_bits": "0x6279b85858f2d90f",
+        "actual": "0x6279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00840",
+        "args": [
+          "0x63a1672c5aa48476",
+          "0xc063800000000000"
+        ],
+        "expected_bits": "0x63a1672c5aa48473",
+        "actual": "0x63a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00841",
+        "args": [
+          "0x63a1672c5aa48476",
+          "0xc063a00000000000"
+        ],
+        "expected_bits": "0x63a1672c5aa48473",
+        "actual": "0x63a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00844",
+        "args": [
+          "0x64a03501f5bbe541",
+          "0xc064200000000000"
+        ],
+        "expected_bits": "0x64a03501f5bbe53d",
+        "actual": "0x64a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00845",
+        "args": [
+          "0x64a03501f5bbe541",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0x64a03501f5bbe53d",
+        "actual": "0x64a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00848",
+        "args": [
+          "0x64d01fc1933951f9",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0x64d01fc1933951f3",
+        "actual": "0x64d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00849",
+        "args": [
+          "0x64d01fc1933951f9",
+          "0xc064600000000000"
+        ],
+        "expected_bits": "0x64d01fc1933951f3",
+        "actual": "0x64d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00856",
+        "args": [
+          "0x65c136c5b4eab4e8",
+          "0xc064e00000000000"
+        ],
+        "expected_bits": "0x65c136c5b4eab4d7",
+        "actual": "0x65c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00857",
+        "args": [
+          "0x65c136c5b4eab4e8",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0x65c136c5b4eab4d7",
+        "actual": "0x65c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00858",
+        "args": [
+          "0x65f5847722256222",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0x65f584772225620d",
+        "actual": "0x65f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00859",
+        "args": [
+          "0x65f5847722256222",
+          "0xc065200000000000"
+        ],
+        "expected_bits": "0x65f584772225620d",
+        "actual": "0x65f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00906",
+        "args": [
+          "0x6aeab2446fc8a1db",
+          "0xc068000000000000"
+        ],
+        "expected_bits": "0x6aeab2446fc8a1b8",
+        "actual": "0x6aeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00907",
+        "args": [
+          "0x6aeab2446fc8a1db",
+          "0xc068200000000000"
+        ],
+        "expected_bits": "0x6aeab2446fc8a1b8",
+        "actual": "0x6aeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00910",
+        "args": [
+          "0x6b771eb1a739e7ac",
+          "0xc068400000000000"
+        ],
+        "expected_bits": "0x6b771eb1a739e7a5",
+        "actual": "0x6b771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00911",
+        "args": [
+          "0x6b771eb1a739e7ac",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6b771eb1a739e7a5",
+        "actual": "0x6b771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00912",
+        "args": [
+          "0x6b93fd881b599505",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6b93fd881b5994f4",
+        "actual": "0x6b93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00913",
+        "args": [
+          "0x6b93fd881b599505",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6b93fd881b5994f4",
+        "actual": "0x6b93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00914",
+        "args": [
+          "0x6bace65e11086197",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6bace65e1108618e",
+        "actual": "0x6bace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00915",
+        "args": [
+          "0x6bace65e11086197",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6bace65e1108618e",
+        "actual": "0x6bace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00916",
+        "args": [
+          "0x6bbf123a41045d78",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6bbf123a41045d4d",
+        "actual": "0x6bbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00917",
+        "args": [
+          "0x6bbf123a41045d78",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0x6bbf123a41045d4d",
+        "actual": "0x6bbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00924",
+        "args": [
+          "0x6c08bb04ef8c689b",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0x6c08bb04ef8c688e",
+        "actual": "0x6c08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00925",
+        "args": [
+          "0x6c08bb04ef8c689b",
+          "0xc068c00000000000"
+        ],
+        "expected_bits": "0x6c08bb04ef8c688e",
+        "actual": "0x6c08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00942",
+        "args": [
+          "0x6dd2d1fe75827665",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0x6dd2d1fe7582764c",
+        "actual": "0x6dd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00943",
+        "args": [
+          "0x6dd2d1fe75827665",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0x6dd2d1fe7582764c",
+        "actual": "0x6dd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00944",
+        "args": [
+          "0x6df1752aa924e55d",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0x6df1752aa924e557",
+        "actual": "0x6df1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00945",
+        "args": [
+          "0x6df1752aa924e55d",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0x6df1752aa924e557",
+        "actual": "0x6df1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00950",
+        "args": [
+          "0x6f3b627d11b9d606",
+          "0xc06a800000000000"
+        ],
+        "expected_bits": "0x6f3b627d11b9d600",
+        "actual": "0x6f3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00951",
+        "args": [
+          "0x6f3b627d11b9d606",
+          "0xc06aa00000000000"
+        ],
+        "expected_bits": "0x6f3b627d11b9d600",
+        "actual": "0x6f3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00952",
+        "args": [
+          "0x7068a8ce5d081b8a",
+          "0xc06b400000000000"
+        ],
+        "expected_bits": "0x7068a8ce5d081b7f",
+        "actual": "0x7068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00953",
+        "args": [
+          "0x7068a8ce5d081b8a",
+          "0xc06b600000000000"
+        ],
+        "expected_bits": "0x7068a8ce5d081b7f",
+        "actual": "0x7068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00960",
+        "args": [
+          "0x7102473d6c38d3e6",
+          "0xc06ba00000000000"
+        ],
+        "expected_bits": "0x7102473d6c38d3db",
+        "actual": "0x7102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-00961",
+        "args": [
+          "0x7102473d6c38d3e6",
+          "0xc06bc00000000000"
+        ],
+        "expected_bits": "0x7102473d6c38d3db",
+        "actual": "0x7102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01002",
+        "args": [
+          "0x7893bd243521b08e",
+          "0xc070100000000000"
+        ],
+        "expected_bits": "0x7893bd243521b08a",
+        "actual": "0x7893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01003",
+        "args": [
+          "0x7893bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x7893bd243521b08a",
+        "actual": "0x7893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01004",
+        "args": [
+          "0x78a3bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x78a3bd243521b079",
+        "actual": "0x78a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01005",
+        "args": [
+          "0x78a3bd243521b08e",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0x78a3bd243521b079",
+        "actual": "0x78a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01012",
+        "args": [
+          "0x78bd9bb64fb288d5",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x78bd9bb64fb288cb",
+        "actual": "0x78bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01013",
+        "args": [
+          "0x78bd9bb64fb288d5",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0x78bd9bb64fb288cb",
+        "actual": "0x78bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01020",
+        "args": [
+          "0x7a5ef950aa1fe91c",
+          "0xc070a00000000000"
+        ],
+        "expected_bits": "0x7a5ef950aa1fe90c",
+        "actual": "0x7a5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01021",
+        "args": [
+          "0x7a5ef950aa1fe91c",
+          "0xc070b00000000000"
+        ],
+        "expected_bits": "0x7a5ef950aa1fe90c",
+        "actual": "0x7a5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01024",
+        "args": [
+          "0x7ba605562435086c",
+          "0xc071000000000000"
+        ],
+        "expected_bits": "0x7ba6055624350865",
+        "actual": "0x7ba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01025",
+        "args": [
+          "0x7ba605562435086c",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0x7ba6055624350865",
+        "actual": "0x7ba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01028",
+        "args": [
+          "0x7bdb86abad424a87",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0x7bdb86abad424a7e",
+        "actual": "0x7bdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01029",
+        "args": [
+          "0x7bdb86abad424a87",
+          "0xc071200000000000"
+        ],
+        "expected_bits": "0x7bdb86abad424a7e",
+        "actual": "0x7bdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01034",
+        "args": [
+          "0x7c6e97d8c27e1d47",
+          "0xc071400000000000"
+        ],
+        "expected_bits": "0x7c6e97d8c27e1d35",
+        "actual": "0x7c6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01035",
+        "args": [
+          "0x7c6e97d8c27e1d47",
+          "0xc071500000000000"
+        ],
+        "expected_bits": "0x7c6e97d8c27e1d35",
+        "actual": "0x7c6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01038",
+        "args": [
+          "0x7db86573ccca10ea",
+          "0xc071a00000000000"
+        ],
+        "expected_bits": "0x7db86573ccca10e1",
+        "actual": "0x7db86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01039",
+        "args": [
+          "0x7db86573ccca10ea",
+          "0xc071b00000000000"
+        ],
+        "expected_bits": "0x7db86573ccca10e1",
+        "actual": "0x7db86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01060",
+        "args": [
+          "0x7fd9e786105571f0",
+          "0xc072400000000000"
+        ],
+        "expected_bits": "0x7fd9e786105571eb",
+        "actual": "0x7fd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01061",
+        "args": [
+          "0x7fd9e786105571f0",
+          "0xc072500000000000"
+        ],
+        "expected_bits": "0x7fd9e786105571eb",
+        "actual": "0x7fd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01070",
+        "args": [
+          "0x80215356a2007fbd",
+          "0x4074200000000000"
+        ],
+        "expected_bits": "0x80215356a2007fb8",
+        "actual": "0x80215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01071",
+        "args": [
+          "0x80215356a2007fbd",
+          "0x4074300000000000"
+        ],
+        "expected_bits": "0x80215356a2007fb8",
+        "actual": "0x80215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01350",
+        "args": [
+          "0x9ce4f02992cda663",
+          "0x4066e00000000000"
+        ],
+        "expected_bits": "0x9ce4f02992cda652",
+        "actual": "0x9ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01351",
+        "args": [
+          "0x9ce4f02992cda663",
+          "0x4067000000000000"
+        ],
+        "expected_bits": "0x9ce4f02992cda652",
+        "actual": "0x9ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01354",
+        "args": [
+          "0x9e13e833002df0ac",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x9e13e833002df0a9",
+        "actual": "0x9e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01355",
+        "args": [
+          "0x9e13e833002df0ac",
+          "0x4066600000000000"
+        ],
+        "expected_bits": "0x9e13e833002df0a9",
+        "actual": "0x9e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01358",
+        "args": [
+          "0x9e48e23fc0396cd7",
+          "0x4066200000000000"
+        ],
+        "expected_bits": "0x9e48e23fc0396cd3",
+        "actual": "0x9e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01359",
+        "args": [
+          "0x9e48e23fc0396cd7",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x9e48e23fc0396cd3",
+        "actual": "0x9e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01400",
+        "args": [
+          "0xa276953eb06e4a1e",
+          "0x4063800000000000"
+        ],
+        "expected_bits": "0xa276953eb06e4a03",
+        "actual": "0xa276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01401",
+        "args": [
+          "0xa276953eb06e4a1e",
+          "0x4063a00000000000"
+        ],
+        "expected_bits": "0xa276953eb06e4a03",
+        "actual": "0xa276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01404",
+        "args": [
+          "0xa317ed3972fe3a9a",
+          "0x4063200000000000"
+        ],
+        "expected_bits": "0xa317ed3972fe3a7f",
+        "actual": "0xa317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01405",
+        "args": [
+          "0xa317ed3972fe3a9a",
+          "0x4063400000000000"
+        ],
+        "expected_bits": "0xa317ed3972fe3a7f",
+        "actual": "0xa317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01406",
+        "args": [
+          "0xa3b470fbbf78bb24",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa3b470fbbf78bb0a",
+        "actual": "0xa3b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01407",
+        "args": [
+          "0xa3b470fbbf78bb24",
+          "0x4062e00000000000"
+        ],
+        "expected_bits": "0xa3b470fbbf78bb0a",
+        "actual": "0xa3b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01412",
+        "args": [
+          "0xa3e98d3aaf56e9ed",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0xa3e98d3aaf56e9cc",
+        "actual": "0xa3e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01413",
+        "args": [
+          "0xa3e98d3aaf56e9ed",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa3e98d3aaf56e9cc",
+        "actual": "0xa3e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01416",
+        "args": [
+          "0xa41605b1e0c9a450",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0xa41605b1e0c9a44c",
+        "actual": "0xa41605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01417",
+        "args": [
+          "0xa41605b1e0c9a450",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa41605b1e0c9a44c",
+        "actual": "0xa41605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01458",
+        "args": [
+          "0xa8738c74d9eea6f1",
+          "0x4060000000000000"
+        ],
+        "expected_bits": "0xa8738c74d9eea6ee",
+        "actual": "0xa8738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01459",
+        "args": [
+          "0xa8738c74d9eea6f1",
+          "0x4060200000000000"
+        ],
+        "expected_bits": "0xa8738c74d9eea6ee",
+        "actual": "0xa8738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01570",
+        "args": [
+          "0xb2df177a1f9a5f2e",
+          "0x4053400000000000"
+        ],
+        "expected_bits": "0xb2df177a1f9a5f09",
+        "actual": "0xb2df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01571",
+        "args": [
+          "0xb2df177a1f9a5f2e",
+          "0x4053800000000000"
+        ],
+        "expected_bits": "0xb2df177a1f9a5f09",
+        "actual": "0xb2df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01688",
+        "args": [
+          "0xc96c43366691792f",
+          "0xc03e000000000000"
+        ],
+        "expected_bits": "0xc96c433666917927",
+        "actual": "0xc96c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01689",
+        "args": [
+          "0xc96c43366691792f",
+          "0xc03f000000000000"
+        ],
+        "expected_bits": "0xc96c433666917927",
+        "actual": "0xc96c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01692",
+        "args": [
+          "0xca5dc48d0838433d",
+          "0xc041800000000000"
+        ],
+        "expected_bits": "0xca5dc48d08384325",
+        "actual": "0xca5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01693",
+        "args": [
+          "0xca5dc48d0838433d",
+          "0xc042000000000000"
+        ],
+        "expected_bits": "0xca5dc48d08384325",
+        "actual": "0xca5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01694",
+        "args": [
+          "0xcb07f6e0e4307f55",
+          "0xc043000000000000"
+        ],
+        "expected_bits": "0xcb07f6e0e4307f49",
+        "actual": "0xcb07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01695",
+        "args": [
+          "0xcb07f6e0e4307f55",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0xcb07f6e0e4307f49",
+        "actual": "0xcb07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01696",
+        "args": [
+          "0xcb4a50a259963ca6",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0xcb4a50a259963c9f",
+        "actual": "0xcb4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01697",
+        "args": [
+          "0xcb4a50a259963ca6",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0xcb4a50a259963c9f",
+        "actual": "0xcb4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01700",
+        "args": [
+          "0xcb6ac87afa306090",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0xcb6ac87afa30607e",
+        "actual": "0xcb6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01701",
+        "args": [
+          "0xcb6ac87afa306090",
+          "0xc044800000000000"
+        ],
+        "expected_bits": "0xcb6ac87afa30607e",
+        "actual": "0xcb6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01724",
+        "args": [
+          "0xcd2ad08b0bf1b039",
+          "0xc048000000000000"
+        ],
+        "expected_bits": "0xcd2ad08b0bf1b032",
+        "actual": "0xcd2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01725",
+        "args": [
+          "0xcd2ad08b0bf1b039",
+          "0xc048800000000000"
+        ],
+        "expected_bits": "0xcd2ad08b0bf1b032",
+        "actual": "0xcd2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01736",
+        "args": [
+          "0xcea59c2e58bb7622",
+          "0xc04b800000000000"
+        ],
+        "expected_bits": "0xcea59c2e58bb761e",
+        "actual": "0xcea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01737",
+        "args": [
+          "0xcea59c2e58bb7622",
+          "0xc04c000000000000"
+        ],
+        "expected_bits": "0xcea59c2e58bb761e",
+        "actual": "0xcea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01740",
+        "args": [
+          "0xcf1ce40971e8e061",
+          "0xc04d000000000000"
+        ],
+        "expected_bits": "0xcf1ce40971e8e041",
+        "actual": "0xcf1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01741",
+        "args": [
+          "0xcf1ce40971e8e061",
+          "0xc04d800000000000"
+        ],
+        "expected_bits": "0xcf1ce40971e8e041",
+        "actual": "0xcf1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01746",
+        "args": [
+          "0xcff6c2a5b2d376ea",
+          "0xc04f000000000000"
+        ],
+        "expected_bits": "0xcff6c2a5b2d376d7",
+        "actual": "0xcff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01747",
+        "args": [
+          "0xcff6c2a5b2d376ea",
+          "0xc04f800000000000"
+        ],
+        "expected_bits": "0xcff6c2a5b2d376d7",
+        "actual": "0xcff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01750",
+        "args": [
+          "0xd0d9368e13a6b5d4",
+          "0xc050800000000000"
+        ],
+        "expected_bits": "0xd0d9368e13a6b5c8",
+        "actual": "0xd0d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01751",
+        "args": [
+          "0xd0d9368e13a6b5d4",
+          "0xc050c00000000000"
+        ],
+        "expected_bits": "0xd0d9368e13a6b5c8",
+        "actual": "0xd0d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01766",
+        "args": [
+          "0xd2fa0feb7830bfce",
+          "0xc053000000000000"
+        ],
+        "expected_bits": "0xd2fa0feb7830bfc7",
+        "actual": "0xd2fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01767",
+        "args": [
+          "0xd2fa0feb7830bfce",
+          "0xc053400000000000"
+        ],
+        "expected_bits": "0xd2fa0feb7830bfc7",
+        "actual": "0xd2fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01772",
+        "args": [
+          "0xd41539b31ffa7dda",
+          "0xc054800000000000"
+        ],
+        "expected_bits": "0xd41539b31ffa7dc0",
+        "actual": "0xd41539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01773",
+        "args": [
+          "0xd41539b31ffa7dda",
+          "0xc054c00000000000"
+        ],
+        "expected_bits": "0xd41539b31ffa7dc0",
+        "actual": "0xd41539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01820",
+        "args": [
+          "0xd9e4f5adc031e664",
+          "0xc05b800000000000"
+        ],
+        "expected_bits": "0xd9e4f5adc031e649",
+        "actual": "0xd9e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01821",
+        "args": [
+          "0xd9e4f5adc031e664",
+          "0xc05bc00000000000"
+        ],
+        "expected_bits": "0xd9e4f5adc031e649",
+        "actual": "0xd9e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01834",
+        "args": [
+          "0xdab51137db332b9e",
+          "0xc05c400000000000"
+        ],
+        "expected_bits": "0xdab51137db332b9b",
+        "actual": "0xdab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01835",
+        "args": [
+          "0xdab51137db332b9e",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0xdab51137db332b9b",
+        "actual": "0xdab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01836",
+        "args": [
+          "0xdad18e5936aaa459",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0xdad18e5936aaa451",
+        "actual": "0xdad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01837",
+        "args": [
+          "0xdad18e5936aaa459",
+          "0xc05cc00000000000"
+        ],
+        "expected_bits": "0xdad18e5936aaa451",
+        "actual": "0xdad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01890",
+        "args": [
+          "0xe15ffb76d621c31e",
+          "0xc062400000000000"
+        ],
+        "expected_bits": "0xe15ffb76d621c2f6",
+        "actual": "0xe15ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01891",
+        "args": [
+          "0xe15ffb76d621c31e",
+          "0xc062600000000000"
+        ],
+        "expected_bits": "0xe15ffb76d621c2f6",
+        "actual": "0xe15ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01904",
+        "args": [
+          "0xe279b85858f2d91e",
+          "0xc062e00000000000"
+        ],
+        "expected_bits": "0xe279b85858f2d90f",
+        "actual": "0xe279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01905",
+        "args": [
+          "0xe279b85858f2d91e",
+          "0xc063000000000000"
+        ],
+        "expected_bits": "0xe279b85858f2d90f",
+        "actual": "0xe279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01908",
+        "args": [
+          "0xe3a1672c5aa48476",
+          "0xc063800000000000"
+        ],
+        "expected_bits": "0xe3a1672c5aa48473",
+        "actual": "0xe3a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01909",
+        "args": [
+          "0xe3a1672c5aa48476",
+          "0xc063a00000000000"
+        ],
+        "expected_bits": "0xe3a1672c5aa48473",
+        "actual": "0xe3a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01912",
+        "args": [
+          "0xe4a03501f5bbe541",
+          "0xc064200000000000"
+        ],
+        "expected_bits": "0xe4a03501f5bbe53d",
+        "actual": "0xe4a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01913",
+        "args": [
+          "0xe4a03501f5bbe541",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0xe4a03501f5bbe53d",
+        "actual": "0xe4a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01916",
+        "args": [
+          "0xe4d01fc1933951f9",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0xe4d01fc1933951f3",
+        "actual": "0xe4d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01917",
+        "args": [
+          "0xe4d01fc1933951f9",
+          "0xc064600000000000"
+        ],
+        "expected_bits": "0xe4d01fc1933951f3",
+        "actual": "0xe4d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01924",
+        "args": [
+          "0xe5c136c5b4eab4e8",
+          "0xc064e00000000000"
+        ],
+        "expected_bits": "0xe5c136c5b4eab4d7",
+        "actual": "0xe5c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01925",
+        "args": [
+          "0xe5c136c5b4eab4e8",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0xe5c136c5b4eab4d7",
+        "actual": "0xe5c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01926",
+        "args": [
+          "0xe5f5847722256222",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0xe5f584772225620d",
+        "actual": "0xe5f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01927",
+        "args": [
+          "0xe5f5847722256222",
+          "0xc065200000000000"
+        ],
+        "expected_bits": "0xe5f584772225620d",
+        "actual": "0xe5f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01974",
+        "args": [
+          "0xeaeab2446fc8a1db",
+          "0xc068000000000000"
+        ],
+        "expected_bits": "0xeaeab2446fc8a1b8",
+        "actual": "0xeaeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01975",
+        "args": [
+          "0xeaeab2446fc8a1db",
+          "0xc068200000000000"
+        ],
+        "expected_bits": "0xeaeab2446fc8a1b8",
+        "actual": "0xeaeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01978",
+        "args": [
+          "0xeb771eb1a739e7ac",
+          "0xc068400000000000"
+        ],
+        "expected_bits": "0xeb771eb1a739e7a5",
+        "actual": "0xeb771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01979",
+        "args": [
+          "0xeb771eb1a739e7ac",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xeb771eb1a739e7a5",
+        "actual": "0xeb771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01980",
+        "args": [
+          "0xeb93fd881b599505",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xeb93fd881b5994f4",
+        "actual": "0xeb93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01981",
+        "args": [
+          "0xeb93fd881b599505",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xeb93fd881b5994f4",
+        "actual": "0xeb93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01982",
+        "args": [
+          "0xebace65e11086197",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xebace65e1108618e",
+        "actual": "0xebace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01983",
+        "args": [
+          "0xebace65e11086197",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xebace65e1108618e",
+        "actual": "0xebace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01984",
+        "args": [
+          "0xebbf123a41045d78",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xebbf123a41045d4d",
+        "actual": "0xebbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01985",
+        "args": [
+          "0xebbf123a41045d78",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0xebbf123a41045d4d",
+        "actual": "0xebbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01992",
+        "args": [
+          "0xec08bb04ef8c689b",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0xec08bb04ef8c688e",
+        "actual": "0xec08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-01993",
+        "args": [
+          "0xec08bb04ef8c689b",
+          "0xc068c00000000000"
+        ],
+        "expected_bits": "0xec08bb04ef8c688e",
+        "actual": "0xec08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02010",
+        "args": [
+          "0xedd2d1fe75827665",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0xedd2d1fe7582764c",
+        "actual": "0xedd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02011",
+        "args": [
+          "0xedd2d1fe75827665",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0xedd2d1fe7582764c",
+        "actual": "0xedd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02012",
+        "args": [
+          "0xedf1752aa924e55d",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0xedf1752aa924e557",
+        "actual": "0xedf1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02013",
+        "args": [
+          "0xedf1752aa924e55d",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0xedf1752aa924e557",
+        "actual": "0xedf1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02018",
+        "args": [
+          "0xef3b627d11b9d606",
+          "0xc06a800000000000"
+        ],
+        "expected_bits": "0xef3b627d11b9d600",
+        "actual": "0xef3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02019",
+        "args": [
+          "0xef3b627d11b9d606",
+          "0xc06aa00000000000"
+        ],
+        "expected_bits": "0xef3b627d11b9d600",
+        "actual": "0xef3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02020",
+        "args": [
+          "0xf068a8ce5d081b8a",
+          "0xc06b400000000000"
+        ],
+        "expected_bits": "0xf068a8ce5d081b7f",
+        "actual": "0xf068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02021",
+        "args": [
+          "0xf068a8ce5d081b8a",
+          "0xc06b600000000000"
+        ],
+        "expected_bits": "0xf068a8ce5d081b7f",
+        "actual": "0xf068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02028",
+        "args": [
+          "0xf102473d6c38d3e6",
+          "0xc06ba00000000000"
+        ],
+        "expected_bits": "0xf102473d6c38d3db",
+        "actual": "0xf102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02029",
+        "args": [
+          "0xf102473d6c38d3e6",
+          "0xc06bc00000000000"
+        ],
+        "expected_bits": "0xf102473d6c38d3db",
+        "actual": "0xf102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02070",
+        "args": [
+          "0xf893bd243521b08e",
+          "0xc070100000000000"
+        ],
+        "expected_bits": "0xf893bd243521b08a",
+        "actual": "0xf893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02071",
+        "args": [
+          "0xf893bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf893bd243521b08a",
+        "actual": "0xf893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02072",
+        "args": [
+          "0xf8a3bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf8a3bd243521b079",
+        "actual": "0xf8a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02073",
+        "args": [
+          "0xf8a3bd243521b08e",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0xf8a3bd243521b079",
+        "actual": "0xf8a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02080",
+        "args": [
+          "0xf8bd9bb64fb288d5",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf8bd9bb64fb288cb",
+        "actual": "0xf8bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02081",
+        "args": [
+          "0xf8bd9bb64fb288d5",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0xf8bd9bb64fb288cb",
+        "actual": "0xf8bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02088",
+        "args": [
+          "0xfa5ef950aa1fe91c",
+          "0xc070a00000000000"
+        ],
+        "expected_bits": "0xfa5ef950aa1fe90c",
+        "actual": "0xfa5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02089",
+        "args": [
+          "0xfa5ef950aa1fe91c",
+          "0xc070b00000000000"
+        ],
+        "expected_bits": "0xfa5ef950aa1fe90c",
+        "actual": "0xfa5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02092",
+        "args": [
+          "0xfba605562435086c",
+          "0xc071000000000000"
+        ],
+        "expected_bits": "0xfba6055624350865",
+        "actual": "0xfba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02093",
+        "args": [
+          "0xfba605562435086c",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0xfba6055624350865",
+        "actual": "0xfba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02096",
+        "args": [
+          "0xfbdb86abad424a87",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0xfbdb86abad424a7e",
+        "actual": "0xfbdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02097",
+        "args": [
+          "0xfbdb86abad424a87",
+          "0xc071200000000000"
+        ],
+        "expected_bits": "0xfbdb86abad424a7e",
+        "actual": "0xfbdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02102",
+        "args": [
+          "0xfc6e97d8c27e1d47",
+          "0xc071400000000000"
+        ],
+        "expected_bits": "0xfc6e97d8c27e1d35",
+        "actual": "0xfc6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02103",
+        "args": [
+          "0xfc6e97d8c27e1d47",
+          "0xc071500000000000"
+        ],
+        "expected_bits": "0xfc6e97d8c27e1d35",
+        "actual": "0xfc6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02106",
+        "args": [
+          "0xfdb86573ccca10ea",
+          "0xc071a00000000000"
+        ],
+        "expected_bits": "0xfdb86573ccca10e1",
+        "actual": "0xfdb86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02107",
+        "args": [
+          "0xfdb86573ccca10ea",
+          "0xc071b00000000000"
+        ],
+        "expected_bits": "0xfdb86573ccca10e1",
+        "actual": "0xfdb86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02128",
+        "args": [
+          "0xffd9e786105571f0",
+          "0xc072400000000000"
+        ],
+        "expected_bits": "0xffd9e786105571eb",
+        "actual": "0xffd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDUP-02129",
+        "args": [
+          "0xffd9e786105571f0",
+          "0xc072500000000000"
+        ],
+        "expected_bits": "0xffd9e786105571eb",
+        "actual": "0xffd9e786105571f5"
+      }
+    ]
+  },
+  {
+    "run": "w111-directed-initial-precision-20260929",
+    "function": "ROUNDDOWN",
+    "rows": 2136,
+    "mismatches": 212,
+    "misses": [
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00002",
+        "args": [
+          "0x00215356a2007fbd",
+          "0x4074200000000000"
+        ],
+        "expected_bits": "0x00215356a2007fb8",
+        "actual": "0x00215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00003",
+        "args": [
+          "0x00215356a2007fbd",
+          "0x4074300000000000"
+        ],
+        "expected_bits": "0x00215356a2007fb8",
+        "actual": "0x00215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00282",
+        "args": [
+          "0x1ce4f02992cda663",
+          "0x4066e00000000000"
+        ],
+        "expected_bits": "0x1ce4f02992cda652",
+        "actual": "0x1ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00283",
+        "args": [
+          "0x1ce4f02992cda663",
+          "0x4067000000000000"
+        ],
+        "expected_bits": "0x1ce4f02992cda652",
+        "actual": "0x1ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00286",
+        "args": [
+          "0x1e13e833002df0ac",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x1e13e833002df0a9",
+        "actual": "0x1e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00287",
+        "args": [
+          "0x1e13e833002df0ac",
+          "0x4066600000000000"
+        ],
+        "expected_bits": "0x1e13e833002df0a9",
+        "actual": "0x1e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00290",
+        "args": [
+          "0x1e48e23fc0396cd7",
+          "0x4066200000000000"
+        ],
+        "expected_bits": "0x1e48e23fc0396cd3",
+        "actual": "0x1e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00291",
+        "args": [
+          "0x1e48e23fc0396cd7",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x1e48e23fc0396cd3",
+        "actual": "0x1e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00332",
+        "args": [
+          "0x2276953eb06e4a1e",
+          "0x4063800000000000"
+        ],
+        "expected_bits": "0x2276953eb06e4a03",
+        "actual": "0x2276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00333",
+        "args": [
+          "0x2276953eb06e4a1e",
+          "0x4063a00000000000"
+        ],
+        "expected_bits": "0x2276953eb06e4a03",
+        "actual": "0x2276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00336",
+        "args": [
+          "0x2317ed3972fe3a9a",
+          "0x4063200000000000"
+        ],
+        "expected_bits": "0x2317ed3972fe3a7f",
+        "actual": "0x2317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00337",
+        "args": [
+          "0x2317ed3972fe3a9a",
+          "0x4063400000000000"
+        ],
+        "expected_bits": "0x2317ed3972fe3a7f",
+        "actual": "0x2317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00338",
+        "args": [
+          "0x23b470fbbf78bb24",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x23b470fbbf78bb0a",
+        "actual": "0x23b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00339",
+        "args": [
+          "0x23b470fbbf78bb24",
+          "0x4062e00000000000"
+        ],
+        "expected_bits": "0x23b470fbbf78bb0a",
+        "actual": "0x23b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00344",
+        "args": [
+          "0x23e98d3aaf56e9ed",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0x23e98d3aaf56e9cc",
+        "actual": "0x23e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00345",
+        "args": [
+          "0x23e98d3aaf56e9ed",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x23e98d3aaf56e9cc",
+        "actual": "0x23e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00348",
+        "args": [
+          "0x241605b1e0c9a450",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0x241605b1e0c9a44c",
+        "actual": "0x241605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00349",
+        "args": [
+          "0x241605b1e0c9a450",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x241605b1e0c9a44c",
+        "actual": "0x241605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00390",
+        "args": [
+          "0x28738c74d9eea6f1",
+          "0x4060000000000000"
+        ],
+        "expected_bits": "0x28738c74d9eea6ee",
+        "actual": "0x28738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00391",
+        "args": [
+          "0x28738c74d9eea6f1",
+          "0x4060200000000000"
+        ],
+        "expected_bits": "0x28738c74d9eea6ee",
+        "actual": "0x28738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00502",
+        "args": [
+          "0x32df177a1f9a5f2e",
+          "0x4053400000000000"
+        ],
+        "expected_bits": "0x32df177a1f9a5f09",
+        "actual": "0x32df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00503",
+        "args": [
+          "0x32df177a1f9a5f2e",
+          "0x4053800000000000"
+        ],
+        "expected_bits": "0x32df177a1f9a5f09",
+        "actual": "0x32df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00620",
+        "args": [
+          "0x496c43366691792f",
+          "0xc03e000000000000"
+        ],
+        "expected_bits": "0x496c433666917927",
+        "actual": "0x496c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00621",
+        "args": [
+          "0x496c43366691792f",
+          "0xc03f000000000000"
+        ],
+        "expected_bits": "0x496c433666917927",
+        "actual": "0x496c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00624",
+        "args": [
+          "0x4a5dc48d0838433d",
+          "0xc041800000000000"
+        ],
+        "expected_bits": "0x4a5dc48d08384325",
+        "actual": "0x4a5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00625",
+        "args": [
+          "0x4a5dc48d0838433d",
+          "0xc042000000000000"
+        ],
+        "expected_bits": "0x4a5dc48d08384325",
+        "actual": "0x4a5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00626",
+        "args": [
+          "0x4b07f6e0e4307f55",
+          "0xc043000000000000"
+        ],
+        "expected_bits": "0x4b07f6e0e4307f49",
+        "actual": "0x4b07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00627",
+        "args": [
+          "0x4b07f6e0e4307f55",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0x4b07f6e0e4307f49",
+        "actual": "0x4b07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00628",
+        "args": [
+          "0x4b4a50a259963ca6",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0x4b4a50a259963c9f",
+        "actual": "0x4b4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00629",
+        "args": [
+          "0x4b4a50a259963ca6",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0x4b4a50a259963c9f",
+        "actual": "0x4b4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00632",
+        "args": [
+          "0x4b6ac87afa306090",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0x4b6ac87afa30607e",
+        "actual": "0x4b6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00633",
+        "args": [
+          "0x4b6ac87afa306090",
+          "0xc044800000000000"
+        ],
+        "expected_bits": "0x4b6ac87afa30607e",
+        "actual": "0x4b6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00656",
+        "args": [
+          "0x4d2ad08b0bf1b039",
+          "0xc048000000000000"
+        ],
+        "expected_bits": "0x4d2ad08b0bf1b032",
+        "actual": "0x4d2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00657",
+        "args": [
+          "0x4d2ad08b0bf1b039",
+          "0xc048800000000000"
+        ],
+        "expected_bits": "0x4d2ad08b0bf1b032",
+        "actual": "0x4d2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00668",
+        "args": [
+          "0x4ea59c2e58bb7622",
+          "0xc04b800000000000"
+        ],
+        "expected_bits": "0x4ea59c2e58bb761e",
+        "actual": "0x4ea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00669",
+        "args": [
+          "0x4ea59c2e58bb7622",
+          "0xc04c000000000000"
+        ],
+        "expected_bits": "0x4ea59c2e58bb761e",
+        "actual": "0x4ea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00672",
+        "args": [
+          "0x4f1ce40971e8e061",
+          "0xc04d000000000000"
+        ],
+        "expected_bits": "0x4f1ce40971e8e041",
+        "actual": "0x4f1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00673",
+        "args": [
+          "0x4f1ce40971e8e061",
+          "0xc04d800000000000"
+        ],
+        "expected_bits": "0x4f1ce40971e8e041",
+        "actual": "0x4f1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00678",
+        "args": [
+          "0x4ff6c2a5b2d376ea",
+          "0xc04f000000000000"
+        ],
+        "expected_bits": "0x4ff6c2a5b2d376d7",
+        "actual": "0x4ff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00679",
+        "args": [
+          "0x4ff6c2a5b2d376ea",
+          "0xc04f800000000000"
+        ],
+        "expected_bits": "0x4ff6c2a5b2d376d7",
+        "actual": "0x4ff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00682",
+        "args": [
+          "0x50d9368e13a6b5d4",
+          "0xc050800000000000"
+        ],
+        "expected_bits": "0x50d9368e13a6b5c8",
+        "actual": "0x50d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00683",
+        "args": [
+          "0x50d9368e13a6b5d4",
+          "0xc050c00000000000"
+        ],
+        "expected_bits": "0x50d9368e13a6b5c8",
+        "actual": "0x50d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00698",
+        "args": [
+          "0x52fa0feb7830bfce",
+          "0xc053000000000000"
+        ],
+        "expected_bits": "0x52fa0feb7830bfc7",
+        "actual": "0x52fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00699",
+        "args": [
+          "0x52fa0feb7830bfce",
+          "0xc053400000000000"
+        ],
+        "expected_bits": "0x52fa0feb7830bfc7",
+        "actual": "0x52fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00704",
+        "args": [
+          "0x541539b31ffa7dda",
+          "0xc054800000000000"
+        ],
+        "expected_bits": "0x541539b31ffa7dc0",
+        "actual": "0x541539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00705",
+        "args": [
+          "0x541539b31ffa7dda",
+          "0xc054c00000000000"
+        ],
+        "expected_bits": "0x541539b31ffa7dc0",
+        "actual": "0x541539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00752",
+        "args": [
+          "0x59e4f5adc031e664",
+          "0xc05b800000000000"
+        ],
+        "expected_bits": "0x59e4f5adc031e649",
+        "actual": "0x59e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00753",
+        "args": [
+          "0x59e4f5adc031e664",
+          "0xc05bc00000000000"
+        ],
+        "expected_bits": "0x59e4f5adc031e649",
+        "actual": "0x59e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00766",
+        "args": [
+          "0x5ab51137db332b9e",
+          "0xc05c400000000000"
+        ],
+        "expected_bits": "0x5ab51137db332b9b",
+        "actual": "0x5ab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00767",
+        "args": [
+          "0x5ab51137db332b9e",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0x5ab51137db332b9b",
+        "actual": "0x5ab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00768",
+        "args": [
+          "0x5ad18e5936aaa459",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0x5ad18e5936aaa451",
+        "actual": "0x5ad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00769",
+        "args": [
+          "0x5ad18e5936aaa459",
+          "0xc05cc00000000000"
+        ],
+        "expected_bits": "0x5ad18e5936aaa451",
+        "actual": "0x5ad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00822",
+        "args": [
+          "0x615ffb76d621c31e",
+          "0xc062400000000000"
+        ],
+        "expected_bits": "0x615ffb76d621c2f6",
+        "actual": "0x615ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00823",
+        "args": [
+          "0x615ffb76d621c31e",
+          "0xc062600000000000"
+        ],
+        "expected_bits": "0x615ffb76d621c2f6",
+        "actual": "0x615ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00836",
+        "args": [
+          "0x6279b85858f2d91e",
+          "0xc062e00000000000"
+        ],
+        "expected_bits": "0x6279b85858f2d90f",
+        "actual": "0x6279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00837",
+        "args": [
+          "0x6279b85858f2d91e",
+          "0xc063000000000000"
+        ],
+        "expected_bits": "0x6279b85858f2d90f",
+        "actual": "0x6279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00840",
+        "args": [
+          "0x63a1672c5aa48476",
+          "0xc063800000000000"
+        ],
+        "expected_bits": "0x63a1672c5aa48473",
+        "actual": "0x63a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00841",
+        "args": [
+          "0x63a1672c5aa48476",
+          "0xc063a00000000000"
+        ],
+        "expected_bits": "0x63a1672c5aa48473",
+        "actual": "0x63a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00844",
+        "args": [
+          "0x64a03501f5bbe541",
+          "0xc064200000000000"
+        ],
+        "expected_bits": "0x64a03501f5bbe53d",
+        "actual": "0x64a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00845",
+        "args": [
+          "0x64a03501f5bbe541",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0x64a03501f5bbe53d",
+        "actual": "0x64a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00848",
+        "args": [
+          "0x64d01fc1933951f9",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0x64d01fc1933951f3",
+        "actual": "0x64d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00849",
+        "args": [
+          "0x64d01fc1933951f9",
+          "0xc064600000000000"
+        ],
+        "expected_bits": "0x64d01fc1933951f3",
+        "actual": "0x64d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00856",
+        "args": [
+          "0x65c136c5b4eab4e8",
+          "0xc064e00000000000"
+        ],
+        "expected_bits": "0x65c136c5b4eab4d7",
+        "actual": "0x65c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00857",
+        "args": [
+          "0x65c136c5b4eab4e8",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0x65c136c5b4eab4d7",
+        "actual": "0x65c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00858",
+        "args": [
+          "0x65f5847722256222",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0x65f584772225620d",
+        "actual": "0x65f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00859",
+        "args": [
+          "0x65f5847722256222",
+          "0xc065200000000000"
+        ],
+        "expected_bits": "0x65f584772225620d",
+        "actual": "0x65f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00906",
+        "args": [
+          "0x6aeab2446fc8a1db",
+          "0xc068000000000000"
+        ],
+        "expected_bits": "0x6aeab2446fc8a1b8",
+        "actual": "0x6aeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00907",
+        "args": [
+          "0x6aeab2446fc8a1db",
+          "0xc068200000000000"
+        ],
+        "expected_bits": "0x6aeab2446fc8a1b8",
+        "actual": "0x6aeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00910",
+        "args": [
+          "0x6b771eb1a739e7ac",
+          "0xc068400000000000"
+        ],
+        "expected_bits": "0x6b771eb1a739e7a5",
+        "actual": "0x6b771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00911",
+        "args": [
+          "0x6b771eb1a739e7ac",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6b771eb1a739e7a5",
+        "actual": "0x6b771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00912",
+        "args": [
+          "0x6b93fd881b599505",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6b93fd881b5994f4",
+        "actual": "0x6b93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00913",
+        "args": [
+          "0x6b93fd881b599505",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6b93fd881b5994f4",
+        "actual": "0x6b93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00914",
+        "args": [
+          "0x6bace65e11086197",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6bace65e1108618e",
+        "actual": "0x6bace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00915",
+        "args": [
+          "0x6bace65e11086197",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6bace65e1108618e",
+        "actual": "0x6bace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00916",
+        "args": [
+          "0x6bbf123a41045d78",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6bbf123a41045d4d",
+        "actual": "0x6bbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00917",
+        "args": [
+          "0x6bbf123a41045d78",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0x6bbf123a41045d4d",
+        "actual": "0x6bbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00924",
+        "args": [
+          "0x6c08bb04ef8c689b",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0x6c08bb04ef8c688e",
+        "actual": "0x6c08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00925",
+        "args": [
+          "0x6c08bb04ef8c689b",
+          "0xc068c00000000000"
+        ],
+        "expected_bits": "0x6c08bb04ef8c688e",
+        "actual": "0x6c08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00942",
+        "args": [
+          "0x6dd2d1fe75827665",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0x6dd2d1fe7582764c",
+        "actual": "0x6dd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00943",
+        "args": [
+          "0x6dd2d1fe75827665",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0x6dd2d1fe7582764c",
+        "actual": "0x6dd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00944",
+        "args": [
+          "0x6df1752aa924e55d",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0x6df1752aa924e557",
+        "actual": "0x6df1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00945",
+        "args": [
+          "0x6df1752aa924e55d",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0x6df1752aa924e557",
+        "actual": "0x6df1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00950",
+        "args": [
+          "0x6f3b627d11b9d606",
+          "0xc06a800000000000"
+        ],
+        "expected_bits": "0x6f3b627d11b9d600",
+        "actual": "0x6f3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00951",
+        "args": [
+          "0x6f3b627d11b9d606",
+          "0xc06aa00000000000"
+        ],
+        "expected_bits": "0x6f3b627d11b9d600",
+        "actual": "0x6f3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00952",
+        "args": [
+          "0x7068a8ce5d081b8a",
+          "0xc06b400000000000"
+        ],
+        "expected_bits": "0x7068a8ce5d081b7f",
+        "actual": "0x7068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00953",
+        "args": [
+          "0x7068a8ce5d081b8a",
+          "0xc06b600000000000"
+        ],
+        "expected_bits": "0x7068a8ce5d081b7f",
+        "actual": "0x7068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00960",
+        "args": [
+          "0x7102473d6c38d3e6",
+          "0xc06ba00000000000"
+        ],
+        "expected_bits": "0x7102473d6c38d3db",
+        "actual": "0x7102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-00961",
+        "args": [
+          "0x7102473d6c38d3e6",
+          "0xc06bc00000000000"
+        ],
+        "expected_bits": "0x7102473d6c38d3db",
+        "actual": "0x7102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01002",
+        "args": [
+          "0x7893bd243521b08e",
+          "0xc070100000000000"
+        ],
+        "expected_bits": "0x7893bd243521b08a",
+        "actual": "0x7893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01003",
+        "args": [
+          "0x7893bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x7893bd243521b08a",
+        "actual": "0x7893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01004",
+        "args": [
+          "0x78a3bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x78a3bd243521b079",
+        "actual": "0x78a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01005",
+        "args": [
+          "0x78a3bd243521b08e",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0x78a3bd243521b079",
+        "actual": "0x78a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01012",
+        "args": [
+          "0x78bd9bb64fb288d5",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x78bd9bb64fb288cb",
+        "actual": "0x78bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01013",
+        "args": [
+          "0x78bd9bb64fb288d5",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0x78bd9bb64fb288cb",
+        "actual": "0x78bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01020",
+        "args": [
+          "0x7a5ef950aa1fe91c",
+          "0xc070a00000000000"
+        ],
+        "expected_bits": "0x7a5ef950aa1fe90c",
+        "actual": "0x7a5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01021",
+        "args": [
+          "0x7a5ef950aa1fe91c",
+          "0xc070b00000000000"
+        ],
+        "expected_bits": "0x7a5ef950aa1fe90c",
+        "actual": "0x7a5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01024",
+        "args": [
+          "0x7ba605562435086c",
+          "0xc071000000000000"
+        ],
+        "expected_bits": "0x7ba6055624350865",
+        "actual": "0x7ba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01025",
+        "args": [
+          "0x7ba605562435086c",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0x7ba6055624350865",
+        "actual": "0x7ba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01028",
+        "args": [
+          "0x7bdb86abad424a87",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0x7bdb86abad424a7e",
+        "actual": "0x7bdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01029",
+        "args": [
+          "0x7bdb86abad424a87",
+          "0xc071200000000000"
+        ],
+        "expected_bits": "0x7bdb86abad424a7e",
+        "actual": "0x7bdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01034",
+        "args": [
+          "0x7c6e97d8c27e1d47",
+          "0xc071400000000000"
+        ],
+        "expected_bits": "0x7c6e97d8c27e1d35",
+        "actual": "0x7c6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01035",
+        "args": [
+          "0x7c6e97d8c27e1d47",
+          "0xc071500000000000"
+        ],
+        "expected_bits": "0x7c6e97d8c27e1d35",
+        "actual": "0x7c6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01038",
+        "args": [
+          "0x7db86573ccca10ea",
+          "0xc071a00000000000"
+        ],
+        "expected_bits": "0x7db86573ccca10e1",
+        "actual": "0x7db86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01039",
+        "args": [
+          "0x7db86573ccca10ea",
+          "0xc071b00000000000"
+        ],
+        "expected_bits": "0x7db86573ccca10e1",
+        "actual": "0x7db86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01060",
+        "args": [
+          "0x7fd9e786105571f0",
+          "0xc072400000000000"
+        ],
+        "expected_bits": "0x7fd9e786105571eb",
+        "actual": "0x7fd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01061",
+        "args": [
+          "0x7fd9e786105571f0",
+          "0xc072500000000000"
+        ],
+        "expected_bits": "0x7fd9e786105571eb",
+        "actual": "0x7fd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01070",
+        "args": [
+          "0x80215356a2007fbd",
+          "0x4074200000000000"
+        ],
+        "expected_bits": "0x80215356a2007fb8",
+        "actual": "0x80215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01071",
+        "args": [
+          "0x80215356a2007fbd",
+          "0x4074300000000000"
+        ],
+        "expected_bits": "0x80215356a2007fb8",
+        "actual": "0x80215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01350",
+        "args": [
+          "0x9ce4f02992cda663",
+          "0x4066e00000000000"
+        ],
+        "expected_bits": "0x9ce4f02992cda652",
+        "actual": "0x9ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01351",
+        "args": [
+          "0x9ce4f02992cda663",
+          "0x4067000000000000"
+        ],
+        "expected_bits": "0x9ce4f02992cda652",
+        "actual": "0x9ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01354",
+        "args": [
+          "0x9e13e833002df0ac",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x9e13e833002df0a9",
+        "actual": "0x9e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01355",
+        "args": [
+          "0x9e13e833002df0ac",
+          "0x4066600000000000"
+        ],
+        "expected_bits": "0x9e13e833002df0a9",
+        "actual": "0x9e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01358",
+        "args": [
+          "0x9e48e23fc0396cd7",
+          "0x4066200000000000"
+        ],
+        "expected_bits": "0x9e48e23fc0396cd3",
+        "actual": "0x9e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01359",
+        "args": [
+          "0x9e48e23fc0396cd7",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x9e48e23fc0396cd3",
+        "actual": "0x9e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01400",
+        "args": [
+          "0xa276953eb06e4a1e",
+          "0x4063800000000000"
+        ],
+        "expected_bits": "0xa276953eb06e4a03",
+        "actual": "0xa276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01401",
+        "args": [
+          "0xa276953eb06e4a1e",
+          "0x4063a00000000000"
+        ],
+        "expected_bits": "0xa276953eb06e4a03",
+        "actual": "0xa276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01404",
+        "args": [
+          "0xa317ed3972fe3a9a",
+          "0x4063200000000000"
+        ],
+        "expected_bits": "0xa317ed3972fe3a7f",
+        "actual": "0xa317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01405",
+        "args": [
+          "0xa317ed3972fe3a9a",
+          "0x4063400000000000"
+        ],
+        "expected_bits": "0xa317ed3972fe3a7f",
+        "actual": "0xa317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01406",
+        "args": [
+          "0xa3b470fbbf78bb24",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa3b470fbbf78bb0a",
+        "actual": "0xa3b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01407",
+        "args": [
+          "0xa3b470fbbf78bb24",
+          "0x4062e00000000000"
+        ],
+        "expected_bits": "0xa3b470fbbf78bb0a",
+        "actual": "0xa3b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01412",
+        "args": [
+          "0xa3e98d3aaf56e9ed",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0xa3e98d3aaf56e9cc",
+        "actual": "0xa3e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01413",
+        "args": [
+          "0xa3e98d3aaf56e9ed",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa3e98d3aaf56e9cc",
+        "actual": "0xa3e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01416",
+        "args": [
+          "0xa41605b1e0c9a450",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0xa41605b1e0c9a44c",
+        "actual": "0xa41605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01417",
+        "args": [
+          "0xa41605b1e0c9a450",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa41605b1e0c9a44c",
+        "actual": "0xa41605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01458",
+        "args": [
+          "0xa8738c74d9eea6f1",
+          "0x4060000000000000"
+        ],
+        "expected_bits": "0xa8738c74d9eea6ee",
+        "actual": "0xa8738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01459",
+        "args": [
+          "0xa8738c74d9eea6f1",
+          "0x4060200000000000"
+        ],
+        "expected_bits": "0xa8738c74d9eea6ee",
+        "actual": "0xa8738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01570",
+        "args": [
+          "0xb2df177a1f9a5f2e",
+          "0x4053400000000000"
+        ],
+        "expected_bits": "0xb2df177a1f9a5f09",
+        "actual": "0xb2df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01571",
+        "args": [
+          "0xb2df177a1f9a5f2e",
+          "0x4053800000000000"
+        ],
+        "expected_bits": "0xb2df177a1f9a5f09",
+        "actual": "0xb2df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01688",
+        "args": [
+          "0xc96c43366691792f",
+          "0xc03e000000000000"
+        ],
+        "expected_bits": "0xc96c433666917927",
+        "actual": "0xc96c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01689",
+        "args": [
+          "0xc96c43366691792f",
+          "0xc03f000000000000"
+        ],
+        "expected_bits": "0xc96c433666917927",
+        "actual": "0xc96c433666917937"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01692",
+        "args": [
+          "0xca5dc48d0838433d",
+          "0xc041800000000000"
+        ],
+        "expected_bits": "0xca5dc48d08384325",
+        "actual": "0xca5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01693",
+        "args": [
+          "0xca5dc48d0838433d",
+          "0xc042000000000000"
+        ],
+        "expected_bits": "0xca5dc48d08384325",
+        "actual": "0xca5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01694",
+        "args": [
+          "0xcb07f6e0e4307f55",
+          "0xc043000000000000"
+        ],
+        "expected_bits": "0xcb07f6e0e4307f49",
+        "actual": "0xcb07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01695",
+        "args": [
+          "0xcb07f6e0e4307f55",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0xcb07f6e0e4307f49",
+        "actual": "0xcb07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01696",
+        "args": [
+          "0xcb4a50a259963ca6",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0xcb4a50a259963c9f",
+        "actual": "0xcb4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01697",
+        "args": [
+          "0xcb4a50a259963ca6",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0xcb4a50a259963c9f",
+        "actual": "0xcb4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01700",
+        "args": [
+          "0xcb6ac87afa306090",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0xcb6ac87afa30607e",
+        "actual": "0xcb6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01701",
+        "args": [
+          "0xcb6ac87afa306090",
+          "0xc044800000000000"
+        ],
+        "expected_bits": "0xcb6ac87afa30607e",
+        "actual": "0xcb6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01724",
+        "args": [
+          "0xcd2ad08b0bf1b039",
+          "0xc048000000000000"
+        ],
+        "expected_bits": "0xcd2ad08b0bf1b032",
+        "actual": "0xcd2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01725",
+        "args": [
+          "0xcd2ad08b0bf1b039",
+          "0xc048800000000000"
+        ],
+        "expected_bits": "0xcd2ad08b0bf1b032",
+        "actual": "0xcd2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01736",
+        "args": [
+          "0xcea59c2e58bb7622",
+          "0xc04b800000000000"
+        ],
+        "expected_bits": "0xcea59c2e58bb761e",
+        "actual": "0xcea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01737",
+        "args": [
+          "0xcea59c2e58bb7622",
+          "0xc04c000000000000"
+        ],
+        "expected_bits": "0xcea59c2e58bb761e",
+        "actual": "0xcea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01740",
+        "args": [
+          "0xcf1ce40971e8e061",
+          "0xc04d000000000000"
+        ],
+        "expected_bits": "0xcf1ce40971e8e041",
+        "actual": "0xcf1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01741",
+        "args": [
+          "0xcf1ce40971e8e061",
+          "0xc04d800000000000"
+        ],
+        "expected_bits": "0xcf1ce40971e8e041",
+        "actual": "0xcf1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01746",
+        "args": [
+          "0xcff6c2a5b2d376ea",
+          "0xc04f000000000000"
+        ],
+        "expected_bits": "0xcff6c2a5b2d376d7",
+        "actual": "0xcff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01747",
+        "args": [
+          "0xcff6c2a5b2d376ea",
+          "0xc04f800000000000"
+        ],
+        "expected_bits": "0xcff6c2a5b2d376d7",
+        "actual": "0xcff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01750",
+        "args": [
+          "0xd0d9368e13a6b5d4",
+          "0xc050800000000000"
+        ],
+        "expected_bits": "0xd0d9368e13a6b5c8",
+        "actual": "0xd0d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01751",
+        "args": [
+          "0xd0d9368e13a6b5d4",
+          "0xc050c00000000000"
+        ],
+        "expected_bits": "0xd0d9368e13a6b5c8",
+        "actual": "0xd0d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01766",
+        "args": [
+          "0xd2fa0feb7830bfce",
+          "0xc053000000000000"
+        ],
+        "expected_bits": "0xd2fa0feb7830bfc7",
+        "actual": "0xd2fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01767",
+        "args": [
+          "0xd2fa0feb7830bfce",
+          "0xc053400000000000"
+        ],
+        "expected_bits": "0xd2fa0feb7830bfc7",
+        "actual": "0xd2fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01772",
+        "args": [
+          "0xd41539b31ffa7dda",
+          "0xc054800000000000"
+        ],
+        "expected_bits": "0xd41539b31ffa7dc0",
+        "actual": "0xd41539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01773",
+        "args": [
+          "0xd41539b31ffa7dda",
+          "0xc054c00000000000"
+        ],
+        "expected_bits": "0xd41539b31ffa7dc0",
+        "actual": "0xd41539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01820",
+        "args": [
+          "0xd9e4f5adc031e664",
+          "0xc05b800000000000"
+        ],
+        "expected_bits": "0xd9e4f5adc031e649",
+        "actual": "0xd9e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01821",
+        "args": [
+          "0xd9e4f5adc031e664",
+          "0xc05bc00000000000"
+        ],
+        "expected_bits": "0xd9e4f5adc031e649",
+        "actual": "0xd9e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01834",
+        "args": [
+          "0xdab51137db332b9e",
+          "0xc05c400000000000"
+        ],
+        "expected_bits": "0xdab51137db332b9b",
+        "actual": "0xdab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01835",
+        "args": [
+          "0xdab51137db332b9e",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0xdab51137db332b9b",
+        "actual": "0xdab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01836",
+        "args": [
+          "0xdad18e5936aaa459",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0xdad18e5936aaa451",
+        "actual": "0xdad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01837",
+        "args": [
+          "0xdad18e5936aaa459",
+          "0xc05cc00000000000"
+        ],
+        "expected_bits": "0xdad18e5936aaa451",
+        "actual": "0xdad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01890",
+        "args": [
+          "0xe15ffb76d621c31e",
+          "0xc062400000000000"
+        ],
+        "expected_bits": "0xe15ffb76d621c2f6",
+        "actual": "0xe15ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01891",
+        "args": [
+          "0xe15ffb76d621c31e",
+          "0xc062600000000000"
+        ],
+        "expected_bits": "0xe15ffb76d621c2f6",
+        "actual": "0xe15ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01904",
+        "args": [
+          "0xe279b85858f2d91e",
+          "0xc062e00000000000"
+        ],
+        "expected_bits": "0xe279b85858f2d90f",
+        "actual": "0xe279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01905",
+        "args": [
+          "0xe279b85858f2d91e",
+          "0xc063000000000000"
+        ],
+        "expected_bits": "0xe279b85858f2d90f",
+        "actual": "0xe279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01908",
+        "args": [
+          "0xe3a1672c5aa48476",
+          "0xc063800000000000"
+        ],
+        "expected_bits": "0xe3a1672c5aa48473",
+        "actual": "0xe3a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01909",
+        "args": [
+          "0xe3a1672c5aa48476",
+          "0xc063a00000000000"
+        ],
+        "expected_bits": "0xe3a1672c5aa48473",
+        "actual": "0xe3a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01912",
+        "args": [
+          "0xe4a03501f5bbe541",
+          "0xc064200000000000"
+        ],
+        "expected_bits": "0xe4a03501f5bbe53d",
+        "actual": "0xe4a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01913",
+        "args": [
+          "0xe4a03501f5bbe541",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0xe4a03501f5bbe53d",
+        "actual": "0xe4a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01916",
+        "args": [
+          "0xe4d01fc1933951f9",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0xe4d01fc1933951f3",
+        "actual": "0xe4d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01917",
+        "args": [
+          "0xe4d01fc1933951f9",
+          "0xc064600000000000"
+        ],
+        "expected_bits": "0xe4d01fc1933951f3",
+        "actual": "0xe4d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01924",
+        "args": [
+          "0xe5c136c5b4eab4e8",
+          "0xc064e00000000000"
+        ],
+        "expected_bits": "0xe5c136c5b4eab4d7",
+        "actual": "0xe5c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01925",
+        "args": [
+          "0xe5c136c5b4eab4e8",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0xe5c136c5b4eab4d7",
+        "actual": "0xe5c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01926",
+        "args": [
+          "0xe5f5847722256222",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0xe5f584772225620d",
+        "actual": "0xe5f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01927",
+        "args": [
+          "0xe5f5847722256222",
+          "0xc065200000000000"
+        ],
+        "expected_bits": "0xe5f584772225620d",
+        "actual": "0xe5f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01974",
+        "args": [
+          "0xeaeab2446fc8a1db",
+          "0xc068000000000000"
+        ],
+        "expected_bits": "0xeaeab2446fc8a1b8",
+        "actual": "0xeaeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01975",
+        "args": [
+          "0xeaeab2446fc8a1db",
+          "0xc068200000000000"
+        ],
+        "expected_bits": "0xeaeab2446fc8a1b8",
+        "actual": "0xeaeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01978",
+        "args": [
+          "0xeb771eb1a739e7ac",
+          "0xc068400000000000"
+        ],
+        "expected_bits": "0xeb771eb1a739e7a5",
+        "actual": "0xeb771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01979",
+        "args": [
+          "0xeb771eb1a739e7ac",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xeb771eb1a739e7a5",
+        "actual": "0xeb771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01980",
+        "args": [
+          "0xeb93fd881b599505",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xeb93fd881b5994f4",
+        "actual": "0xeb93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01981",
+        "args": [
+          "0xeb93fd881b599505",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xeb93fd881b5994f4",
+        "actual": "0xeb93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01982",
+        "args": [
+          "0xebace65e11086197",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xebace65e1108618e",
+        "actual": "0xebace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01983",
+        "args": [
+          "0xebace65e11086197",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xebace65e1108618e",
+        "actual": "0xebace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01984",
+        "args": [
+          "0xebbf123a41045d78",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xebbf123a41045d4d",
+        "actual": "0xebbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01985",
+        "args": [
+          "0xebbf123a41045d78",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0xebbf123a41045d4d",
+        "actual": "0xebbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01992",
+        "args": [
+          "0xec08bb04ef8c689b",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0xec08bb04ef8c688e",
+        "actual": "0xec08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-01993",
+        "args": [
+          "0xec08bb04ef8c689b",
+          "0xc068c00000000000"
+        ],
+        "expected_bits": "0xec08bb04ef8c688e",
+        "actual": "0xec08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02010",
+        "args": [
+          "0xedd2d1fe75827665",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0xedd2d1fe7582764c",
+        "actual": "0xedd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02011",
+        "args": [
+          "0xedd2d1fe75827665",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0xedd2d1fe7582764c",
+        "actual": "0xedd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02012",
+        "args": [
+          "0xedf1752aa924e55d",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0xedf1752aa924e557",
+        "actual": "0xedf1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02013",
+        "args": [
+          "0xedf1752aa924e55d",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0xedf1752aa924e557",
+        "actual": "0xedf1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02018",
+        "args": [
+          "0xef3b627d11b9d606",
+          "0xc06a800000000000"
+        ],
+        "expected_bits": "0xef3b627d11b9d600",
+        "actual": "0xef3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02019",
+        "args": [
+          "0xef3b627d11b9d606",
+          "0xc06aa00000000000"
+        ],
+        "expected_bits": "0xef3b627d11b9d600",
+        "actual": "0xef3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02020",
+        "args": [
+          "0xf068a8ce5d081b8a",
+          "0xc06b400000000000"
+        ],
+        "expected_bits": "0xf068a8ce5d081b7f",
+        "actual": "0xf068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02021",
+        "args": [
+          "0xf068a8ce5d081b8a",
+          "0xc06b600000000000"
+        ],
+        "expected_bits": "0xf068a8ce5d081b7f",
+        "actual": "0xf068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02028",
+        "args": [
+          "0xf102473d6c38d3e6",
+          "0xc06ba00000000000"
+        ],
+        "expected_bits": "0xf102473d6c38d3db",
+        "actual": "0xf102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02029",
+        "args": [
+          "0xf102473d6c38d3e6",
+          "0xc06bc00000000000"
+        ],
+        "expected_bits": "0xf102473d6c38d3db",
+        "actual": "0xf102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02070",
+        "args": [
+          "0xf893bd243521b08e",
+          "0xc070100000000000"
+        ],
+        "expected_bits": "0xf893bd243521b08a",
+        "actual": "0xf893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02071",
+        "args": [
+          "0xf893bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf893bd243521b08a",
+        "actual": "0xf893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02072",
+        "args": [
+          "0xf8a3bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf8a3bd243521b079",
+        "actual": "0xf8a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02073",
+        "args": [
+          "0xf8a3bd243521b08e",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0xf8a3bd243521b079",
+        "actual": "0xf8a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02080",
+        "args": [
+          "0xf8bd9bb64fb288d5",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf8bd9bb64fb288cb",
+        "actual": "0xf8bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02081",
+        "args": [
+          "0xf8bd9bb64fb288d5",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0xf8bd9bb64fb288cb",
+        "actual": "0xf8bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02088",
+        "args": [
+          "0xfa5ef950aa1fe91c",
+          "0xc070a00000000000"
+        ],
+        "expected_bits": "0xfa5ef950aa1fe90c",
+        "actual": "0xfa5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02089",
+        "args": [
+          "0xfa5ef950aa1fe91c",
+          "0xc070b00000000000"
+        ],
+        "expected_bits": "0xfa5ef950aa1fe90c",
+        "actual": "0xfa5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02092",
+        "args": [
+          "0xfba605562435086c",
+          "0xc071000000000000"
+        ],
+        "expected_bits": "0xfba6055624350865",
+        "actual": "0xfba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02093",
+        "args": [
+          "0xfba605562435086c",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0xfba6055624350865",
+        "actual": "0xfba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02096",
+        "args": [
+          "0xfbdb86abad424a87",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0xfbdb86abad424a7e",
+        "actual": "0xfbdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02097",
+        "args": [
+          "0xfbdb86abad424a87",
+          "0xc071200000000000"
+        ],
+        "expected_bits": "0xfbdb86abad424a7e",
+        "actual": "0xfbdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02102",
+        "args": [
+          "0xfc6e97d8c27e1d47",
+          "0xc071400000000000"
+        ],
+        "expected_bits": "0xfc6e97d8c27e1d35",
+        "actual": "0xfc6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02103",
+        "args": [
+          "0xfc6e97d8c27e1d47",
+          "0xc071500000000000"
+        ],
+        "expected_bits": "0xfc6e97d8c27e1d35",
+        "actual": "0xfc6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02106",
+        "args": [
+          "0xfdb86573ccca10ea",
+          "0xc071a00000000000"
+        ],
+        "expected_bits": "0xfdb86573ccca10e1",
+        "actual": "0xfdb86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02107",
+        "args": [
+          "0xfdb86573ccca10ea",
+          "0xc071b00000000000"
+        ],
+        "expected_bits": "0xfdb86573ccca10e1",
+        "actual": "0xfdb86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02128",
+        "args": [
+          "0xffd9e786105571f0",
+          "0xc072400000000000"
+        ],
+        "expected_bits": "0xffd9e786105571eb",
+        "actual": "0xffd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-ROUNDDOWN-02129",
+        "args": [
+          "0xffd9e786105571f0",
+          "0xc072500000000000"
+        ],
+        "expected_bits": "0xffd9e786105571eb",
+        "actual": "0xffd9e786105571f5"
+      }
+    ]
+  },
+  {
+    "run": "w111-directed-initial-precision-20260929",
+    "function": "TRUNC",
+    "rows": 2136,
+    "mismatches": 212,
+    "misses": [
+      {
+        "id": "w111directedprecision-TRUNC-00002",
+        "args": [
+          "0x00215356a2007fbd",
+          "0x4074200000000000"
+        ],
+        "expected_bits": "0x00215356a2007fb8",
+        "actual": "0x00215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00003",
+        "args": [
+          "0x00215356a2007fbd",
+          "0x4074300000000000"
+        ],
+        "expected_bits": "0x00215356a2007fb8",
+        "actual": "0x00215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00282",
+        "args": [
+          "0x1ce4f02992cda663",
+          "0x4066e00000000000"
+        ],
+        "expected_bits": "0x1ce4f02992cda652",
+        "actual": "0x1ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00283",
+        "args": [
+          "0x1ce4f02992cda663",
+          "0x4067000000000000"
+        ],
+        "expected_bits": "0x1ce4f02992cda652",
+        "actual": "0x1ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00286",
+        "args": [
+          "0x1e13e833002df0ac",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x1e13e833002df0a9",
+        "actual": "0x1e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00287",
+        "args": [
+          "0x1e13e833002df0ac",
+          "0x4066600000000000"
+        ],
+        "expected_bits": "0x1e13e833002df0a9",
+        "actual": "0x1e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00290",
+        "args": [
+          "0x1e48e23fc0396cd7",
+          "0x4066200000000000"
+        ],
+        "expected_bits": "0x1e48e23fc0396cd3",
+        "actual": "0x1e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00291",
+        "args": [
+          "0x1e48e23fc0396cd7",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x1e48e23fc0396cd3",
+        "actual": "0x1e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00332",
+        "args": [
+          "0x2276953eb06e4a1e",
+          "0x4063800000000000"
+        ],
+        "expected_bits": "0x2276953eb06e4a03",
+        "actual": "0x2276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00333",
+        "args": [
+          "0x2276953eb06e4a1e",
+          "0x4063a00000000000"
+        ],
+        "expected_bits": "0x2276953eb06e4a03",
+        "actual": "0x2276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00336",
+        "args": [
+          "0x2317ed3972fe3a9a",
+          "0x4063200000000000"
+        ],
+        "expected_bits": "0x2317ed3972fe3a7f",
+        "actual": "0x2317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00337",
+        "args": [
+          "0x2317ed3972fe3a9a",
+          "0x4063400000000000"
+        ],
+        "expected_bits": "0x2317ed3972fe3a7f",
+        "actual": "0x2317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00338",
+        "args": [
+          "0x23b470fbbf78bb24",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x23b470fbbf78bb0a",
+        "actual": "0x23b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00339",
+        "args": [
+          "0x23b470fbbf78bb24",
+          "0x4062e00000000000"
+        ],
+        "expected_bits": "0x23b470fbbf78bb0a",
+        "actual": "0x23b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00344",
+        "args": [
+          "0x23e98d3aaf56e9ed",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0x23e98d3aaf56e9cc",
+        "actual": "0x23e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00345",
+        "args": [
+          "0x23e98d3aaf56e9ed",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x23e98d3aaf56e9cc",
+        "actual": "0x23e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00348",
+        "args": [
+          "0x241605b1e0c9a450",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0x241605b1e0c9a44c",
+        "actual": "0x241605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00349",
+        "args": [
+          "0x241605b1e0c9a450",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0x241605b1e0c9a44c",
+        "actual": "0x241605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00390",
+        "args": [
+          "0x28738c74d9eea6f1",
+          "0x4060000000000000"
+        ],
+        "expected_bits": "0x28738c74d9eea6ee",
+        "actual": "0x28738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00391",
+        "args": [
+          "0x28738c74d9eea6f1",
+          "0x4060200000000000"
+        ],
+        "expected_bits": "0x28738c74d9eea6ee",
+        "actual": "0x28738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00502",
+        "args": [
+          "0x32df177a1f9a5f2e",
+          "0x4053400000000000"
+        ],
+        "expected_bits": "0x32df177a1f9a5f09",
+        "actual": "0x32df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00503",
+        "args": [
+          "0x32df177a1f9a5f2e",
+          "0x4053800000000000"
+        ],
+        "expected_bits": "0x32df177a1f9a5f09",
+        "actual": "0x32df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00620",
+        "args": [
+          "0x496c43366691792f",
+          "0xc03e000000000000"
+        ],
+        "expected_bits": "0x496c433666917927",
+        "actual": "0x496c433666917937"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00621",
+        "args": [
+          "0x496c43366691792f",
+          "0xc03f000000000000"
+        ],
+        "expected_bits": "0x496c433666917927",
+        "actual": "0x496c433666917937"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00624",
+        "args": [
+          "0x4a5dc48d0838433d",
+          "0xc041800000000000"
+        ],
+        "expected_bits": "0x4a5dc48d08384325",
+        "actual": "0x4a5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00625",
+        "args": [
+          "0x4a5dc48d0838433d",
+          "0xc042000000000000"
+        ],
+        "expected_bits": "0x4a5dc48d08384325",
+        "actual": "0x4a5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00626",
+        "args": [
+          "0x4b07f6e0e4307f55",
+          "0xc043000000000000"
+        ],
+        "expected_bits": "0x4b07f6e0e4307f49",
+        "actual": "0x4b07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00627",
+        "args": [
+          "0x4b07f6e0e4307f55",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0x4b07f6e0e4307f49",
+        "actual": "0x4b07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00628",
+        "args": [
+          "0x4b4a50a259963ca6",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0x4b4a50a259963c9f",
+        "actual": "0x4b4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00629",
+        "args": [
+          "0x4b4a50a259963ca6",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0x4b4a50a259963c9f",
+        "actual": "0x4b4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00632",
+        "args": [
+          "0x4b6ac87afa306090",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0x4b6ac87afa30607e",
+        "actual": "0x4b6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00633",
+        "args": [
+          "0x4b6ac87afa306090",
+          "0xc044800000000000"
+        ],
+        "expected_bits": "0x4b6ac87afa30607e",
+        "actual": "0x4b6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00656",
+        "args": [
+          "0x4d2ad08b0bf1b039",
+          "0xc048000000000000"
+        ],
+        "expected_bits": "0x4d2ad08b0bf1b032",
+        "actual": "0x4d2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00657",
+        "args": [
+          "0x4d2ad08b0bf1b039",
+          "0xc048800000000000"
+        ],
+        "expected_bits": "0x4d2ad08b0bf1b032",
+        "actual": "0x4d2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00668",
+        "args": [
+          "0x4ea59c2e58bb7622",
+          "0xc04b800000000000"
+        ],
+        "expected_bits": "0x4ea59c2e58bb761e",
+        "actual": "0x4ea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00669",
+        "args": [
+          "0x4ea59c2e58bb7622",
+          "0xc04c000000000000"
+        ],
+        "expected_bits": "0x4ea59c2e58bb761e",
+        "actual": "0x4ea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00672",
+        "args": [
+          "0x4f1ce40971e8e061",
+          "0xc04d000000000000"
+        ],
+        "expected_bits": "0x4f1ce40971e8e041",
+        "actual": "0x4f1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00673",
+        "args": [
+          "0x4f1ce40971e8e061",
+          "0xc04d800000000000"
+        ],
+        "expected_bits": "0x4f1ce40971e8e041",
+        "actual": "0x4f1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00678",
+        "args": [
+          "0x4ff6c2a5b2d376ea",
+          "0xc04f000000000000"
+        ],
+        "expected_bits": "0x4ff6c2a5b2d376d7",
+        "actual": "0x4ff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00679",
+        "args": [
+          "0x4ff6c2a5b2d376ea",
+          "0xc04f800000000000"
+        ],
+        "expected_bits": "0x4ff6c2a5b2d376d7",
+        "actual": "0x4ff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00682",
+        "args": [
+          "0x50d9368e13a6b5d4",
+          "0xc050800000000000"
+        ],
+        "expected_bits": "0x50d9368e13a6b5c8",
+        "actual": "0x50d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00683",
+        "args": [
+          "0x50d9368e13a6b5d4",
+          "0xc050c00000000000"
+        ],
+        "expected_bits": "0x50d9368e13a6b5c8",
+        "actual": "0x50d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00698",
+        "args": [
+          "0x52fa0feb7830bfce",
+          "0xc053000000000000"
+        ],
+        "expected_bits": "0x52fa0feb7830bfc7",
+        "actual": "0x52fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00699",
+        "args": [
+          "0x52fa0feb7830bfce",
+          "0xc053400000000000"
+        ],
+        "expected_bits": "0x52fa0feb7830bfc7",
+        "actual": "0x52fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00704",
+        "args": [
+          "0x541539b31ffa7dda",
+          "0xc054800000000000"
+        ],
+        "expected_bits": "0x541539b31ffa7dc0",
+        "actual": "0x541539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00705",
+        "args": [
+          "0x541539b31ffa7dda",
+          "0xc054c00000000000"
+        ],
+        "expected_bits": "0x541539b31ffa7dc0",
+        "actual": "0x541539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00752",
+        "args": [
+          "0x59e4f5adc031e664",
+          "0xc05b800000000000"
+        ],
+        "expected_bits": "0x59e4f5adc031e649",
+        "actual": "0x59e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00753",
+        "args": [
+          "0x59e4f5adc031e664",
+          "0xc05bc00000000000"
+        ],
+        "expected_bits": "0x59e4f5adc031e649",
+        "actual": "0x59e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00766",
+        "args": [
+          "0x5ab51137db332b9e",
+          "0xc05c400000000000"
+        ],
+        "expected_bits": "0x5ab51137db332b9b",
+        "actual": "0x5ab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00767",
+        "args": [
+          "0x5ab51137db332b9e",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0x5ab51137db332b9b",
+        "actual": "0x5ab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00768",
+        "args": [
+          "0x5ad18e5936aaa459",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0x5ad18e5936aaa451",
+        "actual": "0x5ad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00769",
+        "args": [
+          "0x5ad18e5936aaa459",
+          "0xc05cc00000000000"
+        ],
+        "expected_bits": "0x5ad18e5936aaa451",
+        "actual": "0x5ad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00822",
+        "args": [
+          "0x615ffb76d621c31e",
+          "0xc062400000000000"
+        ],
+        "expected_bits": "0x615ffb76d621c2f6",
+        "actual": "0x615ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00823",
+        "args": [
+          "0x615ffb76d621c31e",
+          "0xc062600000000000"
+        ],
+        "expected_bits": "0x615ffb76d621c2f6",
+        "actual": "0x615ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00836",
+        "args": [
+          "0x6279b85858f2d91e",
+          "0xc062e00000000000"
+        ],
+        "expected_bits": "0x6279b85858f2d90f",
+        "actual": "0x6279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00837",
+        "args": [
+          "0x6279b85858f2d91e",
+          "0xc063000000000000"
+        ],
+        "expected_bits": "0x6279b85858f2d90f",
+        "actual": "0x6279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00840",
+        "args": [
+          "0x63a1672c5aa48476",
+          "0xc063800000000000"
+        ],
+        "expected_bits": "0x63a1672c5aa48473",
+        "actual": "0x63a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00841",
+        "args": [
+          "0x63a1672c5aa48476",
+          "0xc063a00000000000"
+        ],
+        "expected_bits": "0x63a1672c5aa48473",
+        "actual": "0x63a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00844",
+        "args": [
+          "0x64a03501f5bbe541",
+          "0xc064200000000000"
+        ],
+        "expected_bits": "0x64a03501f5bbe53d",
+        "actual": "0x64a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00845",
+        "args": [
+          "0x64a03501f5bbe541",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0x64a03501f5bbe53d",
+        "actual": "0x64a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00848",
+        "args": [
+          "0x64d01fc1933951f9",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0x64d01fc1933951f3",
+        "actual": "0x64d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00849",
+        "args": [
+          "0x64d01fc1933951f9",
+          "0xc064600000000000"
+        ],
+        "expected_bits": "0x64d01fc1933951f3",
+        "actual": "0x64d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00856",
+        "args": [
+          "0x65c136c5b4eab4e8",
+          "0xc064e00000000000"
+        ],
+        "expected_bits": "0x65c136c5b4eab4d7",
+        "actual": "0x65c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00857",
+        "args": [
+          "0x65c136c5b4eab4e8",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0x65c136c5b4eab4d7",
+        "actual": "0x65c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00858",
+        "args": [
+          "0x65f5847722256222",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0x65f584772225620d",
+        "actual": "0x65f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00859",
+        "args": [
+          "0x65f5847722256222",
+          "0xc065200000000000"
+        ],
+        "expected_bits": "0x65f584772225620d",
+        "actual": "0x65f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00906",
+        "args": [
+          "0x6aeab2446fc8a1db",
+          "0xc068000000000000"
+        ],
+        "expected_bits": "0x6aeab2446fc8a1b8",
+        "actual": "0x6aeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00907",
+        "args": [
+          "0x6aeab2446fc8a1db",
+          "0xc068200000000000"
+        ],
+        "expected_bits": "0x6aeab2446fc8a1b8",
+        "actual": "0x6aeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00910",
+        "args": [
+          "0x6b771eb1a739e7ac",
+          "0xc068400000000000"
+        ],
+        "expected_bits": "0x6b771eb1a739e7a5",
+        "actual": "0x6b771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00911",
+        "args": [
+          "0x6b771eb1a739e7ac",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6b771eb1a739e7a5",
+        "actual": "0x6b771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00912",
+        "args": [
+          "0x6b93fd881b599505",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6b93fd881b5994f4",
+        "actual": "0x6b93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00913",
+        "args": [
+          "0x6b93fd881b599505",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6b93fd881b5994f4",
+        "actual": "0x6b93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00914",
+        "args": [
+          "0x6bace65e11086197",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0x6bace65e1108618e",
+        "actual": "0x6bace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00915",
+        "args": [
+          "0x6bace65e11086197",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6bace65e1108618e",
+        "actual": "0x6bace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00916",
+        "args": [
+          "0x6bbf123a41045d78",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0x6bbf123a41045d4d",
+        "actual": "0x6bbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00917",
+        "args": [
+          "0x6bbf123a41045d78",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0x6bbf123a41045d4d",
+        "actual": "0x6bbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00924",
+        "args": [
+          "0x6c08bb04ef8c689b",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0x6c08bb04ef8c688e",
+        "actual": "0x6c08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00925",
+        "args": [
+          "0x6c08bb04ef8c689b",
+          "0xc068c00000000000"
+        ],
+        "expected_bits": "0x6c08bb04ef8c688e",
+        "actual": "0x6c08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00942",
+        "args": [
+          "0x6dd2d1fe75827665",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0x6dd2d1fe7582764c",
+        "actual": "0x6dd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00943",
+        "args": [
+          "0x6dd2d1fe75827665",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0x6dd2d1fe7582764c",
+        "actual": "0x6dd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00944",
+        "args": [
+          "0x6df1752aa924e55d",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0x6df1752aa924e557",
+        "actual": "0x6df1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00945",
+        "args": [
+          "0x6df1752aa924e55d",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0x6df1752aa924e557",
+        "actual": "0x6df1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00950",
+        "args": [
+          "0x6f3b627d11b9d606",
+          "0xc06a800000000000"
+        ],
+        "expected_bits": "0x6f3b627d11b9d600",
+        "actual": "0x6f3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00951",
+        "args": [
+          "0x6f3b627d11b9d606",
+          "0xc06aa00000000000"
+        ],
+        "expected_bits": "0x6f3b627d11b9d600",
+        "actual": "0x6f3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00952",
+        "args": [
+          "0x7068a8ce5d081b8a",
+          "0xc06b400000000000"
+        ],
+        "expected_bits": "0x7068a8ce5d081b7f",
+        "actual": "0x7068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00953",
+        "args": [
+          "0x7068a8ce5d081b8a",
+          "0xc06b600000000000"
+        ],
+        "expected_bits": "0x7068a8ce5d081b7f",
+        "actual": "0x7068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00960",
+        "args": [
+          "0x7102473d6c38d3e6",
+          "0xc06ba00000000000"
+        ],
+        "expected_bits": "0x7102473d6c38d3db",
+        "actual": "0x7102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-00961",
+        "args": [
+          "0x7102473d6c38d3e6",
+          "0xc06bc00000000000"
+        ],
+        "expected_bits": "0x7102473d6c38d3db",
+        "actual": "0x7102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01002",
+        "args": [
+          "0x7893bd243521b08e",
+          "0xc070100000000000"
+        ],
+        "expected_bits": "0x7893bd243521b08a",
+        "actual": "0x7893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01003",
+        "args": [
+          "0x7893bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x7893bd243521b08a",
+        "actual": "0x7893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01004",
+        "args": [
+          "0x78a3bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x78a3bd243521b079",
+        "actual": "0x78a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01005",
+        "args": [
+          "0x78a3bd243521b08e",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0x78a3bd243521b079",
+        "actual": "0x78a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01012",
+        "args": [
+          "0x78bd9bb64fb288d5",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0x78bd9bb64fb288cb",
+        "actual": "0x78bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01013",
+        "args": [
+          "0x78bd9bb64fb288d5",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0x78bd9bb64fb288cb",
+        "actual": "0x78bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01020",
+        "args": [
+          "0x7a5ef950aa1fe91c",
+          "0xc070a00000000000"
+        ],
+        "expected_bits": "0x7a5ef950aa1fe90c",
+        "actual": "0x7a5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01021",
+        "args": [
+          "0x7a5ef950aa1fe91c",
+          "0xc070b00000000000"
+        ],
+        "expected_bits": "0x7a5ef950aa1fe90c",
+        "actual": "0x7a5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01024",
+        "args": [
+          "0x7ba605562435086c",
+          "0xc071000000000000"
+        ],
+        "expected_bits": "0x7ba6055624350865",
+        "actual": "0x7ba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01025",
+        "args": [
+          "0x7ba605562435086c",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0x7ba6055624350865",
+        "actual": "0x7ba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01028",
+        "args": [
+          "0x7bdb86abad424a87",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0x7bdb86abad424a7e",
+        "actual": "0x7bdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01029",
+        "args": [
+          "0x7bdb86abad424a87",
+          "0xc071200000000000"
+        ],
+        "expected_bits": "0x7bdb86abad424a7e",
+        "actual": "0x7bdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01034",
+        "args": [
+          "0x7c6e97d8c27e1d47",
+          "0xc071400000000000"
+        ],
+        "expected_bits": "0x7c6e97d8c27e1d35",
+        "actual": "0x7c6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01035",
+        "args": [
+          "0x7c6e97d8c27e1d47",
+          "0xc071500000000000"
+        ],
+        "expected_bits": "0x7c6e97d8c27e1d35",
+        "actual": "0x7c6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01038",
+        "args": [
+          "0x7db86573ccca10ea",
+          "0xc071a00000000000"
+        ],
+        "expected_bits": "0x7db86573ccca10e1",
+        "actual": "0x7db86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01039",
+        "args": [
+          "0x7db86573ccca10ea",
+          "0xc071b00000000000"
+        ],
+        "expected_bits": "0x7db86573ccca10e1",
+        "actual": "0x7db86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01060",
+        "args": [
+          "0x7fd9e786105571f0",
+          "0xc072400000000000"
+        ],
+        "expected_bits": "0x7fd9e786105571eb",
+        "actual": "0x7fd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01061",
+        "args": [
+          "0x7fd9e786105571f0",
+          "0xc072500000000000"
+        ],
+        "expected_bits": "0x7fd9e786105571eb",
+        "actual": "0x7fd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01070",
+        "args": [
+          "0x80215356a2007fbd",
+          "0x4074200000000000"
+        ],
+        "expected_bits": "0x80215356a2007fb8",
+        "actual": "0x80215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01071",
+        "args": [
+          "0x80215356a2007fbd",
+          "0x4074300000000000"
+        ],
+        "expected_bits": "0x80215356a2007fb8",
+        "actual": "0x80215356a2007fc2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01350",
+        "args": [
+          "0x9ce4f02992cda663",
+          "0x4066e00000000000"
+        ],
+        "expected_bits": "0x9ce4f02992cda652",
+        "actual": "0x9ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01351",
+        "args": [
+          "0x9ce4f02992cda663",
+          "0x4067000000000000"
+        ],
+        "expected_bits": "0x9ce4f02992cda652",
+        "actual": "0x9ce4f02992cda674"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01354",
+        "args": [
+          "0x9e13e833002df0ac",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x9e13e833002df0a9",
+        "actual": "0x9e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01355",
+        "args": [
+          "0x9e13e833002df0ac",
+          "0x4066600000000000"
+        ],
+        "expected_bits": "0x9e13e833002df0a9",
+        "actual": "0x9e13e833002df0af"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01358",
+        "args": [
+          "0x9e48e23fc0396cd7",
+          "0x4066200000000000"
+        ],
+        "expected_bits": "0x9e48e23fc0396cd3",
+        "actual": "0x9e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01359",
+        "args": [
+          "0x9e48e23fc0396cd7",
+          "0x4066400000000000"
+        ],
+        "expected_bits": "0x9e48e23fc0396cd3",
+        "actual": "0x9e48e23fc0396cdb"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01400",
+        "args": [
+          "0xa276953eb06e4a1e",
+          "0x4063800000000000"
+        ],
+        "expected_bits": "0xa276953eb06e4a03",
+        "actual": "0xa276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01401",
+        "args": [
+          "0xa276953eb06e4a1e",
+          "0x4063a00000000000"
+        ],
+        "expected_bits": "0xa276953eb06e4a03",
+        "actual": "0xa276953eb06e4a39"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01404",
+        "args": [
+          "0xa317ed3972fe3a9a",
+          "0x4063200000000000"
+        ],
+        "expected_bits": "0xa317ed3972fe3a7f",
+        "actual": "0xa317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01405",
+        "args": [
+          "0xa317ed3972fe3a9a",
+          "0x4063400000000000"
+        ],
+        "expected_bits": "0xa317ed3972fe3a7f",
+        "actual": "0xa317ed3972fe3ab5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01406",
+        "args": [
+          "0xa3b470fbbf78bb24",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa3b470fbbf78bb0a",
+        "actual": "0xa3b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01407",
+        "args": [
+          "0xa3b470fbbf78bb24",
+          "0x4062e00000000000"
+        ],
+        "expected_bits": "0xa3b470fbbf78bb0a",
+        "actual": "0xa3b470fbbf78bb3e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01412",
+        "args": [
+          "0xa3e98d3aaf56e9ed",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0xa3e98d3aaf56e9cc",
+        "actual": "0xa3e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01413",
+        "args": [
+          "0xa3e98d3aaf56e9ed",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa3e98d3aaf56e9cc",
+        "actual": "0xa3e98d3aaf56ea0e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01416",
+        "args": [
+          "0xa41605b1e0c9a450",
+          "0x4062a00000000000"
+        ],
+        "expected_bits": "0xa41605b1e0c9a44c",
+        "actual": "0xa41605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01417",
+        "args": [
+          "0xa41605b1e0c9a450",
+          "0x4062c00000000000"
+        ],
+        "expected_bits": "0xa41605b1e0c9a44c",
+        "actual": "0xa41605b1e0c9a454"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01458",
+        "args": [
+          "0xa8738c74d9eea6f1",
+          "0x4060000000000000"
+        ],
+        "expected_bits": "0xa8738c74d9eea6ee",
+        "actual": "0xa8738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01459",
+        "args": [
+          "0xa8738c74d9eea6f1",
+          "0x4060200000000000"
+        ],
+        "expected_bits": "0xa8738c74d9eea6ee",
+        "actual": "0xa8738c74d9eea6f4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01570",
+        "args": [
+          "0xb2df177a1f9a5f2e",
+          "0x4053400000000000"
+        ],
+        "expected_bits": "0xb2df177a1f9a5f09",
+        "actual": "0xb2df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01571",
+        "args": [
+          "0xb2df177a1f9a5f2e",
+          "0x4053800000000000"
+        ],
+        "expected_bits": "0xb2df177a1f9a5f09",
+        "actual": "0xb2df177a1f9a5f53"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01688",
+        "args": [
+          "0xc96c43366691792f",
+          "0xc03e000000000000"
+        ],
+        "expected_bits": "0xc96c433666917927",
+        "actual": "0xc96c433666917937"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01689",
+        "args": [
+          "0xc96c43366691792f",
+          "0xc03f000000000000"
+        ],
+        "expected_bits": "0xc96c433666917927",
+        "actual": "0xc96c433666917937"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01692",
+        "args": [
+          "0xca5dc48d0838433d",
+          "0xc041800000000000"
+        ],
+        "expected_bits": "0xca5dc48d08384325",
+        "actual": "0xca5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01693",
+        "args": [
+          "0xca5dc48d0838433d",
+          "0xc042000000000000"
+        ],
+        "expected_bits": "0xca5dc48d08384325",
+        "actual": "0xca5dc48d08384355"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01694",
+        "args": [
+          "0xcb07f6e0e4307f55",
+          "0xc043000000000000"
+        ],
+        "expected_bits": "0xcb07f6e0e4307f49",
+        "actual": "0xcb07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01695",
+        "args": [
+          "0xcb07f6e0e4307f55",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0xcb07f6e0e4307f49",
+        "actual": "0xcb07f6e0e4307f61"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01696",
+        "args": [
+          "0xcb4a50a259963ca6",
+          "0xc043800000000000"
+        ],
+        "expected_bits": "0xcb4a50a259963c9f",
+        "actual": "0xcb4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01697",
+        "args": [
+          "0xcb4a50a259963ca6",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0xcb4a50a259963c9f",
+        "actual": "0xcb4a50a259963cad"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01700",
+        "args": [
+          "0xcb6ac87afa306090",
+          "0xc044000000000000"
+        ],
+        "expected_bits": "0xcb6ac87afa30607e",
+        "actual": "0xcb6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01701",
+        "args": [
+          "0xcb6ac87afa306090",
+          "0xc044800000000000"
+        ],
+        "expected_bits": "0xcb6ac87afa30607e",
+        "actual": "0xcb6ac87afa3060a2"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01724",
+        "args": [
+          "0xcd2ad08b0bf1b039",
+          "0xc048000000000000"
+        ],
+        "expected_bits": "0xcd2ad08b0bf1b032",
+        "actual": "0xcd2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01725",
+        "args": [
+          "0xcd2ad08b0bf1b039",
+          "0xc048800000000000"
+        ],
+        "expected_bits": "0xcd2ad08b0bf1b032",
+        "actual": "0xcd2ad08b0bf1b040"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01736",
+        "args": [
+          "0xcea59c2e58bb7622",
+          "0xc04b800000000000"
+        ],
+        "expected_bits": "0xcea59c2e58bb761e",
+        "actual": "0xcea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01737",
+        "args": [
+          "0xcea59c2e58bb7622",
+          "0xc04c000000000000"
+        ],
+        "expected_bits": "0xcea59c2e58bb761e",
+        "actual": "0xcea59c2e58bb7626"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01740",
+        "args": [
+          "0xcf1ce40971e8e061",
+          "0xc04d000000000000"
+        ],
+        "expected_bits": "0xcf1ce40971e8e041",
+        "actual": "0xcf1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01741",
+        "args": [
+          "0xcf1ce40971e8e061",
+          "0xc04d800000000000"
+        ],
+        "expected_bits": "0xcf1ce40971e8e041",
+        "actual": "0xcf1ce40971e8e081"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01746",
+        "args": [
+          "0xcff6c2a5b2d376ea",
+          "0xc04f000000000000"
+        ],
+        "expected_bits": "0xcff6c2a5b2d376d7",
+        "actual": "0xcff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01747",
+        "args": [
+          "0xcff6c2a5b2d376ea",
+          "0xc04f800000000000"
+        ],
+        "expected_bits": "0xcff6c2a5b2d376d7",
+        "actual": "0xcff6c2a5b2d376fd"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01750",
+        "args": [
+          "0xd0d9368e13a6b5d4",
+          "0xc050800000000000"
+        ],
+        "expected_bits": "0xd0d9368e13a6b5c8",
+        "actual": "0xd0d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01751",
+        "args": [
+          "0xd0d9368e13a6b5d4",
+          "0xc050c00000000000"
+        ],
+        "expected_bits": "0xd0d9368e13a6b5c8",
+        "actual": "0xd0d9368e13a6b5e0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01766",
+        "args": [
+          "0xd2fa0feb7830bfce",
+          "0xc053000000000000"
+        ],
+        "expected_bits": "0xd2fa0feb7830bfc7",
+        "actual": "0xd2fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01767",
+        "args": [
+          "0xd2fa0feb7830bfce",
+          "0xc053400000000000"
+        ],
+        "expected_bits": "0xd2fa0feb7830bfc7",
+        "actual": "0xd2fa0feb7830bfd5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01772",
+        "args": [
+          "0xd41539b31ffa7dda",
+          "0xc054800000000000"
+        ],
+        "expected_bits": "0xd41539b31ffa7dc0",
+        "actual": "0xd41539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01773",
+        "args": [
+          "0xd41539b31ffa7dda",
+          "0xc054c00000000000"
+        ],
+        "expected_bits": "0xd41539b31ffa7dc0",
+        "actual": "0xd41539b31ffa7df4"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01820",
+        "args": [
+          "0xd9e4f5adc031e664",
+          "0xc05b800000000000"
+        ],
+        "expected_bits": "0xd9e4f5adc031e649",
+        "actual": "0xd9e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01821",
+        "args": [
+          "0xd9e4f5adc031e664",
+          "0xc05bc00000000000"
+        ],
+        "expected_bits": "0xd9e4f5adc031e649",
+        "actual": "0xd9e4f5adc031e67f"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01834",
+        "args": [
+          "0xdab51137db332b9e",
+          "0xc05c400000000000"
+        ],
+        "expected_bits": "0xdab51137db332b9b",
+        "actual": "0xdab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01835",
+        "args": [
+          "0xdab51137db332b9e",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0xdab51137db332b9b",
+        "actual": "0xdab51137db332ba1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01836",
+        "args": [
+          "0xdad18e5936aaa459",
+          "0xc05c800000000000"
+        ],
+        "expected_bits": "0xdad18e5936aaa451",
+        "actual": "0xdad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01837",
+        "args": [
+          "0xdad18e5936aaa459",
+          "0xc05cc00000000000"
+        ],
+        "expected_bits": "0xdad18e5936aaa451",
+        "actual": "0xdad18e5936aaa461"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01890",
+        "args": [
+          "0xe15ffb76d621c31e",
+          "0xc062400000000000"
+        ],
+        "expected_bits": "0xe15ffb76d621c2f6",
+        "actual": "0xe15ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01891",
+        "args": [
+          "0xe15ffb76d621c31e",
+          "0xc062600000000000"
+        ],
+        "expected_bits": "0xe15ffb76d621c2f6",
+        "actual": "0xe15ffb76d621c346"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01904",
+        "args": [
+          "0xe279b85858f2d91e",
+          "0xc062e00000000000"
+        ],
+        "expected_bits": "0xe279b85858f2d90f",
+        "actual": "0xe279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01905",
+        "args": [
+          "0xe279b85858f2d91e",
+          "0xc063000000000000"
+        ],
+        "expected_bits": "0xe279b85858f2d90f",
+        "actual": "0xe279b85858f2d92d"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01908",
+        "args": [
+          "0xe3a1672c5aa48476",
+          "0xc063800000000000"
+        ],
+        "expected_bits": "0xe3a1672c5aa48473",
+        "actual": "0xe3a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01909",
+        "args": [
+          "0xe3a1672c5aa48476",
+          "0xc063a00000000000"
+        ],
+        "expected_bits": "0xe3a1672c5aa48473",
+        "actual": "0xe3a1672c5aa48479"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01912",
+        "args": [
+          "0xe4a03501f5bbe541",
+          "0xc064200000000000"
+        ],
+        "expected_bits": "0xe4a03501f5bbe53d",
+        "actual": "0xe4a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01913",
+        "args": [
+          "0xe4a03501f5bbe541",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0xe4a03501f5bbe53d",
+        "actual": "0xe4a03501f5bbe545"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01916",
+        "args": [
+          "0xe4d01fc1933951f9",
+          "0xc064400000000000"
+        ],
+        "expected_bits": "0xe4d01fc1933951f3",
+        "actual": "0xe4d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01917",
+        "args": [
+          "0xe4d01fc1933951f9",
+          "0xc064600000000000"
+        ],
+        "expected_bits": "0xe4d01fc1933951f3",
+        "actual": "0xe4d01fc1933951ff"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01924",
+        "args": [
+          "0xe5c136c5b4eab4e8",
+          "0xc064e00000000000"
+        ],
+        "expected_bits": "0xe5c136c5b4eab4d7",
+        "actual": "0xe5c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01925",
+        "args": [
+          "0xe5c136c5b4eab4e8",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0xe5c136c5b4eab4d7",
+        "actual": "0xe5c136c5b4eab4f9"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01926",
+        "args": [
+          "0xe5f5847722256222",
+          "0xc065000000000000"
+        ],
+        "expected_bits": "0xe5f584772225620d",
+        "actual": "0xe5f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01927",
+        "args": [
+          "0xe5f5847722256222",
+          "0xc065200000000000"
+        ],
+        "expected_bits": "0xe5f584772225620d",
+        "actual": "0xe5f5847722256237"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01974",
+        "args": [
+          "0xeaeab2446fc8a1db",
+          "0xc068000000000000"
+        ],
+        "expected_bits": "0xeaeab2446fc8a1b8",
+        "actual": "0xeaeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01975",
+        "args": [
+          "0xeaeab2446fc8a1db",
+          "0xc068200000000000"
+        ],
+        "expected_bits": "0xeaeab2446fc8a1b8",
+        "actual": "0xeaeab2446fc8a1fe"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01978",
+        "args": [
+          "0xeb771eb1a739e7ac",
+          "0xc068400000000000"
+        ],
+        "expected_bits": "0xeb771eb1a739e7a5",
+        "actual": "0xeb771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01979",
+        "args": [
+          "0xeb771eb1a739e7ac",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xeb771eb1a739e7a5",
+        "actual": "0xeb771eb1a739e7b3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01980",
+        "args": [
+          "0xeb93fd881b599505",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xeb93fd881b5994f4",
+        "actual": "0xeb93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01981",
+        "args": [
+          "0xeb93fd881b599505",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xeb93fd881b5994f4",
+        "actual": "0xeb93fd881b599516"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01982",
+        "args": [
+          "0xebace65e11086197",
+          "0xc068600000000000"
+        ],
+        "expected_bits": "0xebace65e1108618e",
+        "actual": "0xebace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01983",
+        "args": [
+          "0xebace65e11086197",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xebace65e1108618e",
+        "actual": "0xebace65e110861a0"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01984",
+        "args": [
+          "0xebbf123a41045d78",
+          "0xc068800000000000"
+        ],
+        "expected_bits": "0xebbf123a41045d4d",
+        "actual": "0xebbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01985",
+        "args": [
+          "0xebbf123a41045d78",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0xebbf123a41045d4d",
+        "actual": "0xebbf123a41045da3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01992",
+        "args": [
+          "0xec08bb04ef8c689b",
+          "0xc068a00000000000"
+        ],
+        "expected_bits": "0xec08bb04ef8c688e",
+        "actual": "0xec08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-01993",
+        "args": [
+          "0xec08bb04ef8c689b",
+          "0xc068c00000000000"
+        ],
+        "expected_bits": "0xec08bb04ef8c688e",
+        "actual": "0xec08bb04ef8c68a8"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02010",
+        "args": [
+          "0xedd2d1fe75827665",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0xedd2d1fe7582764c",
+        "actual": "0xedd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02011",
+        "args": [
+          "0xedd2d1fe75827665",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0xedd2d1fe7582764c",
+        "actual": "0xedd2d1fe7582767e"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02012",
+        "args": [
+          "0xedf1752aa924e55d",
+          "0xc069c00000000000"
+        ],
+        "expected_bits": "0xedf1752aa924e557",
+        "actual": "0xedf1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02013",
+        "args": [
+          "0xedf1752aa924e55d",
+          "0xc069e00000000000"
+        ],
+        "expected_bits": "0xedf1752aa924e557",
+        "actual": "0xedf1752aa924e563"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02018",
+        "args": [
+          "0xef3b627d11b9d606",
+          "0xc06a800000000000"
+        ],
+        "expected_bits": "0xef3b627d11b9d600",
+        "actual": "0xef3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02019",
+        "args": [
+          "0xef3b627d11b9d606",
+          "0xc06aa00000000000"
+        ],
+        "expected_bits": "0xef3b627d11b9d600",
+        "actual": "0xef3b627d11b9d60c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02020",
+        "args": [
+          "0xf068a8ce5d081b8a",
+          "0xc06b400000000000"
+        ],
+        "expected_bits": "0xf068a8ce5d081b7f",
+        "actual": "0xf068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02021",
+        "args": [
+          "0xf068a8ce5d081b8a",
+          "0xc06b600000000000"
+        ],
+        "expected_bits": "0xf068a8ce5d081b7f",
+        "actual": "0xf068a8ce5d081b95"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02028",
+        "args": [
+          "0xf102473d6c38d3e6",
+          "0xc06ba00000000000"
+        ],
+        "expected_bits": "0xf102473d6c38d3db",
+        "actual": "0xf102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02029",
+        "args": [
+          "0xf102473d6c38d3e6",
+          "0xc06bc00000000000"
+        ],
+        "expected_bits": "0xf102473d6c38d3db",
+        "actual": "0xf102473d6c38d3f1"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02070",
+        "args": [
+          "0xf893bd243521b08e",
+          "0xc070100000000000"
+        ],
+        "expected_bits": "0xf893bd243521b08a",
+        "actual": "0xf893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02071",
+        "args": [
+          "0xf893bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf893bd243521b08a",
+        "actual": "0xf893bd243521b092"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02072",
+        "args": [
+          "0xf8a3bd243521b08e",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf8a3bd243521b079",
+        "actual": "0xf8a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02073",
+        "args": [
+          "0xf8a3bd243521b08e",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0xf8a3bd243521b079",
+        "actual": "0xf8a3bd243521b0a3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02080",
+        "args": [
+          "0xf8bd9bb64fb288d5",
+          "0xc070200000000000"
+        ],
+        "expected_bits": "0xf8bd9bb64fb288cb",
+        "actual": "0xf8bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02081",
+        "args": [
+          "0xf8bd9bb64fb288d5",
+          "0xc070300000000000"
+        ],
+        "expected_bits": "0xf8bd9bb64fb288cb",
+        "actual": "0xf8bd9bb64fb288df"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02088",
+        "args": [
+          "0xfa5ef950aa1fe91c",
+          "0xc070a00000000000"
+        ],
+        "expected_bits": "0xfa5ef950aa1fe90c",
+        "actual": "0xfa5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02089",
+        "args": [
+          "0xfa5ef950aa1fe91c",
+          "0xc070b00000000000"
+        ],
+        "expected_bits": "0xfa5ef950aa1fe90c",
+        "actual": "0xfa5ef950aa1fe92c"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02092",
+        "args": [
+          "0xfba605562435086c",
+          "0xc071000000000000"
+        ],
+        "expected_bits": "0xfba6055624350865",
+        "actual": "0xfba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02093",
+        "args": [
+          "0xfba605562435086c",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0xfba6055624350865",
+        "actual": "0xfba6055624350873"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02096",
+        "args": [
+          "0xfbdb86abad424a87",
+          "0xc071100000000000"
+        ],
+        "expected_bits": "0xfbdb86abad424a7e",
+        "actual": "0xfbdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02097",
+        "args": [
+          "0xfbdb86abad424a87",
+          "0xc071200000000000"
+        ],
+        "expected_bits": "0xfbdb86abad424a7e",
+        "actual": "0xfbdb86abad424a90"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02102",
+        "args": [
+          "0xfc6e97d8c27e1d47",
+          "0xc071400000000000"
+        ],
+        "expected_bits": "0xfc6e97d8c27e1d35",
+        "actual": "0xfc6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02103",
+        "args": [
+          "0xfc6e97d8c27e1d47",
+          "0xc071500000000000"
+        ],
+        "expected_bits": "0xfc6e97d8c27e1d35",
+        "actual": "0xfc6e97d8c27e1d59"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02106",
+        "args": [
+          "0xfdb86573ccca10ea",
+          "0xc071a00000000000"
+        ],
+        "expected_bits": "0xfdb86573ccca10e1",
+        "actual": "0xfdb86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02107",
+        "args": [
+          "0xfdb86573ccca10ea",
+          "0xc071b00000000000"
+        ],
+        "expected_bits": "0xfdb86573ccca10e1",
+        "actual": "0xfdb86573ccca10f3"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02128",
+        "args": [
+          "0xffd9e786105571f0",
+          "0xc072400000000000"
+        ],
+        "expected_bits": "0xffd9e786105571eb",
+        "actual": "0xffd9e786105571f5"
+      },
+      {
+        "id": "w111directedprecision-TRUNC-02129",
+        "args": [
+          "0xffd9e786105571f0",
+          "0xc072500000000000"
+        ],
+        "expected_bits": "0xffd9e786105571eb",
+        "actual": "0xffd9e786105571f5"
+      }
+    ]
+  }
+]

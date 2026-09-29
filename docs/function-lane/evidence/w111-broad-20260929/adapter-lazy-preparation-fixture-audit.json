@@ -1,0 +1,119 @@
+{
+  "fixture": "crates/oxfunc_core/tests/fixtures/oxfunc_adapter_function_corpus.json",
+  "previous_fixture_sha256": "d54220daeb0d7eabec47313f263945fd1de790db3b54fd88d41424b7ff65bd1b",
+  "corrected_fixture_sha256": "4f9ebd17bb8d62f86d1dcaab0cf5eadc16d1b89ce2e043726987e20c75a1e0d0",
+  "previous_rows": [
+    {
+      "scenario_id": "FN-CHOOSE-01",
+      "seam_family": "function_coverage",
+      "formula": "=CHOOSE(2,\"a\",\"b\",\"c\")",
+      "caller_row": 1,
+      "caller_col": 1,
+      "snapshot_surface_name": "CHOOSE",
+      "cell_fixture": {},
+      "expected_value_summary": "Text(b)",
+      "expected_returned_value_surface_kind": "OrdinaryValue",
+      "expected_prepared_argument_structures": [
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar"
+      ],
+      "expected_prepared_argument_sources": null,
+      "now_serial": null,
+      "random_provider": null
+    },
+    {
+      "scenario_id": "FN-SWITCH-01",
+      "seam_family": "function_coverage",
+      "formula": "=SWITCH(2,1,\"one\",2,\"two\",3,\"three\")",
+      "caller_row": 1,
+      "caller_col": 1,
+      "snapshot_surface_name": "SWITCH",
+      "cell_fixture": {},
+      "expected_value_summary": "Text(two)",
+      "expected_returned_value_surface_kind": "OrdinaryValue",
+      "expected_prepared_argument_structures": [
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar"
+      ],
+      "expected_prepared_argument_sources": null,
+      "now_serial": null,
+      "random_provider": null
+    },
+    {
+      "scenario_id": "FN-IFS-01",
+      "seam_family": "function_coverage",
+      "formula": "=IFS(FALSE,1,TRUE,2,TRUE,3)",
+      "caller_row": 1,
+      "caller_col": 1,
+      "snapshot_surface_name": "IFS",
+      "cell_fixture": {},
+      "expected_value_summary": "Number(2)",
+      "expected_returned_value_surface_kind": "OrdinaryValue",
+      "expected_prepared_argument_structures": [
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar",
+        "DirectScalar"
+      ],
+      "expected_prepared_argument_sources": null,
+      "now_serial": null,
+      "random_provider": null
+    }
+  ],
+  "corrected_expected_structures": {
+    "FN-CHOOSE-01": [
+      "DirectScalar",
+      "Omitted",
+      "DirectScalar",
+      "Omitted"
+    ],
+    "FN-SWITCH-01": [
+      "DirectScalar",
+      "DirectScalar",
+      "Omitted",
+      "DirectScalar",
+      "DirectScalar",
+      "Omitted",
+      "Omitted"
+    ],
+    "FN-IFS-01": [
+      "DirectScalar",
+      "Omitted",
+      "DirectScalar",
+      "DirectScalar",
+      "Omitted",
+      "Omitted"
+    ]
+  },
+  "pre_change_failure_log": ".tmp/w111-full-rust-1742.log",
+  "pre_change_failure_log_sha256": "90f59194e862d4c899ce183a2f2825ec28c92e097693beb78e8bc13e80e2d8c4",
+  "pre_change_failures": [
+    "FN-CHOOSE-01 [function_coverage] prepared structure mismatch: expected [\"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\"], got [\"DirectScalar\", \"Omitted\", \"DirectScalar\", \"Omitted\"]",
+    "FN-SWITCH-01 [function_coverage] prepared structure mismatch: expected [\"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\"], got [\"DirectScalar\", \"DirectScalar\", \"Omitted\", \"DirectScalar\", \"DirectScalar\", \"Omitted\", \"Omitted\"]",
+    "FN-IFS-01 [function_coverage] prepared structure mismatch: expected [\"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\", \"DirectScalar\"], got [\"DirectScalar\", \"Omitted\", \"DirectScalar\", \"DirectScalar\", \"Omitted\", \"Omitted\"]"
+  ],
+  "rationale": "OxFml lazy_skipped_prepared_argument deliberately records structure Omitted with resolved_value=None and explicit skipped-branch/condition reasons. The local fixtures assumed eager DirectScalar preparation. Values and source-origin fields are unchanged. This corrects only three local witness expectations, with no production change or new receiving acknowledgement.",
+  "source_references": [
+    "../OxFml/crates/oxfml_core/src/eval/mod.rs:6523",
+    "../OxFml/crates/oxfml_core/tests/evaluator_tests.rs:1227",
+    "../OxFml/crates/oxfml_core/tests/evaluator_tests.rs:1332",
+    "../OxFml/crates/oxfml_core/tests/evaluator_tests.rs:1429",
+    "../OxFml/docs/handoffs/HANDOFF-OXFUNC-007_W079_LAZY_ARGUMENT_PROFILE_ON_FUNCTION_META.md:64"
+  ],
+  "validation": {
+    "command": "cargo test -q -p oxfunc_core --test oxfml_seam_integration oxfunc_function_corpus_passes_through_adapter",
+    "exit_code": 0,
+    "passed": 1,
+    "failed": 0,
+    "filtered_out": 37
+  }
+}

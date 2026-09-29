@@ -3,7 +3,8 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
+use crate::functions::binary_numeric::BinaryNumericSurfaceError;
+use crate::functions::round_fn::eval_rounding_surface;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -54,8 +55,16 @@ pub fn eval_roundup_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, RoundUpEvalError> {
-    eval_binary_numeric_surface(args, resolver, |value, digits| {
-        Ok(roundup_kernel(value, digits.trunc() as i32))
+    eval_rounding_surface(args, resolver, |value, digits| {
+        let result = roundup_kernel(
+            value,
+            crate::functions::round_fn::directed_digit_count(digits),
+        );
+        if result.is_finite() {
+            Ok(result)
+        } else {
+            Err(WorksheetErrorCode::Num)
+        }
     })
     .map_err(RoundUpEvalError::from)
 }

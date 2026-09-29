@@ -1,0 +1,7 @@
+{
+  "phase": "refinement_after_two_first_holdout_failures",
+  "numeric_rows": 38200,
+  "typed_rows": 544,
+  "seed": 202609291927,
+  "generator_sha256": "0f5ac7535c3380742c7718d1d9778c62a63b549ed253c06b3b0dbd797dc0a735"
+}

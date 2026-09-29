@@ -1,0 +1,504 @@
+{
+  "rows": 132,
+  "matches": 81,
+  "by_function": {
+    "FUNC.CONFIDENCE": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.CONFIDENCE.NORM": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.NORM.INV": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.NORMINV": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.LOGNORM.INV": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.LOGNORM.DIST": {
+      "rows": 6,
+      "matches": 0
+    },
+    "FUNC.LOGNORMDIST": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.BINOM.DIST": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.BINOMDIST": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.BINOM.DIST.RANGE": {
+      "rows": 6,
+      "matches": 0
+    },
+    "FUNC.BINOM.INV": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.CRITBINOM": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.POISSON": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.POISSON.DIST": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.HYPGEOM.DIST": {
+      "rows": 6,
+      "matches": 0
+    },
+    "FUNC.HYPGEOMDIST": {
+      "rows": 6,
+      "matches": 0
+    },
+    "FUNC.NEGBINOM.DIST": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.NEGBINOMDIST": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.NORMDIST": {
+      "rows": 6,
+      "matches": 3
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 6,
+      "matches": 6
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 6,
+      "matches": 3
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111typed-00001-confidence-unit-padding-order",
+      "formula": "=CONFIDENCE(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00003-confidence-unit-padding-order",
+      "formula": "=CONFIDENCE(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00005-confidence-unit-padding-order",
+      "formula": "=CONFIDENCE(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|number:0x3fef5c0331eeff82|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00019-norminv-unit-padding-order",
+      "formula": "=NORMINV(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00021-norminv-unit-padding-order",
+      "formula": "=NORMINV(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00023-norminv-unit-padding-order",
+      "formula": "=NORMINV(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00030-lognorm_dist-scalar-padding-control",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00031-lognorm_dist-unit-padding-order",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00032-lognorm_dist-scalar-padding-control",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00033-lognorm_dist-unit-padding-order",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00034-lognorm_dist-scalar-padding-control",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00035-lognorm_dist-unit-padding-order",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00037-lognormdist-unit-padding-order",
+      "formula": "=LOGNORMDIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00039-lognormdist-unit-padding-order",
+      "formula": "=LOGNORMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00041-lognormdist-unit-padding-order",
+      "formula": "=LOGNORMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00049-binomdist-unit-padding-order",
+      "formula": "=BINOMDIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00051-binomdist-unit-padding-order",
+      "formula": "=BINOMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00053-binomdist-unit-padding-order",
+      "formula": "=BINOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00054-binom_dist_range-scalar-padding-control",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#REF!),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00055-binom_dist_range-unit-padding-order",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00056-binom_dist_range-scalar-padding-control",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00057-binom_dist_range-unit-padding-order",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00058-binom_dist_range-scalar-padding-control",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00059-binom_dist_range-unit-padding-order",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00067-critbinom-unit-padding-order",
+      "formula": "=CRITBINOM(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00069-critbinom-unit-padding-order",
+      "formula": "=CRITBINOM(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00071-critbinom-unit-padding-order",
+      "formula": "=CRITBINOM(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00073-poisson-unit-padding-order",
+      "formula": "=POISSON(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00075-poisson-unit-padding-order",
+      "formula": "=POISSON(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00077-poisson-unit-padding-order",
+      "formula": "=POISSON(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|number:0x3fd78b56362cef38|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00084-hypgeom_dist-scalar-padding-control",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00085-hypgeom_dist-unit-padding-order",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00086-hypgeom_dist-scalar-padding-control",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00087-hypgeom_dist-unit-padding-order",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00088-hypgeom_dist-scalar-padding-control",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00089-hypgeom_dist-unit-padding-order",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00090-hypgeomdist-scalar-padding-control",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#REF!),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00091-hypgeomdist-unit-padding-order",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00092-hypgeomdist-scalar-padding-control",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00093-hypgeomdist-unit-padding-order",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Div0|error:Div0]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00094-hypgeomdist-scalar-padding-control",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00095-hypgeomdist-unit-padding-order",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00103-negbinomdist-unit-padding-order",
+      "formula": "=NEGBINOMDIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00105-negbinomdist-unit-padding-order",
+      "formula": "=NEGBINOMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00107-negbinomdist-unit-padding-order",
+      "formula": "=NEGBINOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00115-normdist-unit-padding-order",
+      "formula": "=NORMDIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00117-normdist-unit-padding-order",
+      "formula": "=NORMDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00119-normdist-unit-padding-order",
+      "formula": "=NORMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00127-expondist-unit-padding-order",
+      "formula": "=EXPONDIST(CHOOSE({1;2;3},A100,A101,#REF!),CHOOSE({1},A102),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:Ref|error:Ref]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00129-expondist-unit-padding-order",
+      "formula": "=EXPONDIST(CHOOSE({1;2;3},A100,A101,#DIV/0!),CHOOSE({1},A102),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:Div0|error:Div0]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00131-expondist-unit-padding-order",
+      "formula": "=EXPONDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1},A102),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|number:0x3ff0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+use crate::coercion::CoercionError;
+use crate::function::{
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+};
+use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
+use crate::resolver::ReferenceSystemProvider;
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
+
+pub const ROUNDUP_META: FunctionMeta = function_spec! {
+    function_id: "FUNC.ROUNDUP",
+    arity: Arity::exact(2),
+    determinism: DeterminismClass::Deterministic,
+    volatility: VolatilityClass::NonVolatile,
+    host_interaction: HostInteractionClass::None,
+    thread_safety: ThreadSafetyClass::SafePure,
+    coercion_lift_profile: CoercionLiftProfile::Custom,
+    kernel_signature_class: KernelSignatureClass::NumsToNum,
+    fec_dependency_profile: FecDependencyProfile::None,
+    surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum RoundUpEvalError {
+    ArityMismatch { expected: usize, actual: usize },
+    Coercion(CoercionError),
+    Domain(WorksheetErrorCode),
+}
+
+impl From<BinaryNumericSurfaceError> for RoundUpEvalError {
+    fn from(value: BinaryNumericSurfaceError) -> Self {
+        match value {
+            BinaryNumericSurfaceError::ArityMismatch { expected, actual } => {
+                Self::ArityMismatch { expected, actual }
+            }
+            BinaryNumericSurfaceError::Coercion(error) => Self::Coercion(error),
+            BinaryNumericSurfaceError::Domain(code) => Self::Domain(code),
+        }
+    }
+}
+
+/// Excel's ROUNDUP: decimal rounding on the 15-significant-digit value (see
+/// [`crate::functions::round_fn::excel_decimal_round`]).
+pub fn roundup_kernel(n: f64, digits: i32) -> f64 {
+    crate::functions::round_fn::excel_decimal_round(
+        n,
+        digits,
+        crate::functions::round_fn::DecimalRoundMode::AwayFromZero,
+    )
+}
+
+pub fn eval_roundup_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, RoundUpEvalError> {
+    eval_binary_numeric_surface(args, resolver, |value, digits| {
+        let result = roundup_kernel(value, crate::functions::round_fn::directed_digit_count(digits));
+        if result.is_finite() { Ok(result) } else { Err(WorksheetErrorCode::Num) }
+    })
+    .map_err(RoundUpEvalError::from)
+}
+
+pub fn map_roundup_error_to_ws(e: &RoundUpEvalError) -> WorksheetErrorCode {
+    match e {
+        RoundUpEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+        RoundUpEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        RoundUpEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        RoundUpEvalError::Domain(code) => *code,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn roundup_kernel_matches_excel_probe() {
+        assert_eq!(roundup_kernel(3.14159, 3), 3.142);
+        assert_eq!(roundup_kernel(-3.14159, 3), -3.142);
+        assert_eq!(roundup_kernel(314.159, -2), 400.0);
+    }
+}

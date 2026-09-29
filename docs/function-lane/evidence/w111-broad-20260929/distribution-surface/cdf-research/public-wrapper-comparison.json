@@ -1,0 +1,3249 @@
+{
+  "rows": 463,
+  "matches": 462,
+  "prior_repeat_matches": 463,
+  "erfc_alias_exact": true,
+  "checks": [
+    {
+      "x_bits": "0xc0103de48707a4a0",
+      "z_bits": "0x4006f825f22d3d0d",
+      "expected": "0x3ef9adf8232a1170",
+      "composed": "0x3ef9adf8232a1170",
+      "prior": "0x3ef9adf8232a1170"
+    },
+    {
+      "x_bits": "0x3fbdc140f4a054ee",
+      "z_bits": "0x3fb50a3636746184",
+      "expected": "0x3fe17b00850d362c",
+      "composed": "0x3fe17b00850d362c",
+      "prior": "0x3fe17b00850d362c"
+    },
+    {
+      "x_bits": "0x3feab482481041fd",
+      "z_bits": "0x3fe2e2244dc0500b",
+      "expected": "0x3fe9894c95bcdc2e",
+      "composed": "0x3fe9894c95bcdc2e",
+      "prior": "0x3fe9894c95bcdc2e"
+    },
+    {
+      "x_bits": "0x3ff218a5a2b35f88",
+      "z_bits": "0x3fe9978d5f6252f4",
+      "expected": "0x3febdf0946ab722e",
+      "composed": "0x3febdf0946ab722e",
+      "prior": "0x3febdf0946ab722e"
+    },
+    {
+      "x_bits": "0xc031d9e6a71a4ec5",
+      "z_bits": "0x40293ed0e26bf83f",
+      "expected": "0x31390090995e35e2",
+      "composed": "0x31390090995e35e2",
+      "prior": "0x31390090995e35e2"
+    },
+    {
+      "x_bits": "0xc00317e0bcb2bd97",
+      "z_bits": "0x3ffb0080d0f01514",
+      "expected": "0x3f8169098a595322",
+      "composed": "0x3f8169098a595322",
+      "prior": "0x3f8169098a595322"
+    },
+    {
+      "x_bits": "0xc01f662380824496",
+      "z_bits": "0x401633d286bdce35",
+      "expected": "0x3ce2c65a653dd403",
+      "composed": "0x3ce2c65a653dd403",
+      "prior": "0x3ce2c65a653dd403"
+    },
+    {
+      "x_bits": "0xc008d0e0b97dae20",
+      "z_bits": "0x40018c29b9f7e7a4",
+      "expected": "0x3f4f7e7277fb2269",
+      "composed": "0x3f4f7e7277fb2269",
+      "prior": "0x3f4f7e7277fb2269"
+    },
+    {
+      "x_bits": "0xc03decac92ca2a85",
+      "z_bits": "0x403528ea24366623",
+      "expected": "0x172c3e62edbd6191",
+      "composed": "0x172c3e62edbd6191",
+      "prior": "0x172c3e62edbd6191"
+    },
+    {
+      "x_bits": "0xc017fce1d42a4900",
+      "z_bits": "0x4010f64268725d76",
+      "expected": "0x3e11452b2da24eb7",
+      "composed": "0x3e11452b2da24eb7",
+      "prior": "0x3e11452b2da24eb7"
+    },
+    {
+      "x_bits": "0xc03e7a6b761b4127",
+      "z_bits": "0x40358d24d893418f",
+      "expected": "0x15a96d3d4c1869a3",
+      "composed": "0x15a96d3d4c1869a3",
+      "prior": "0x15a96d3d4c1869a3"
+    },
+    {
+      "x_bits": "0xc041d4a8e0e48ca7",
+      "z_bits": "0x4039376754405af0",
+      "expected": "0x0631cb9622947bfa",
+      "composed": "0x0631cb9622947bfa",
+      "prior": "0x0631cb9622947bfa"
+    },
+    {
+      "x_bits": "0xc032743dbf8837a7",
+      "z_bits": "0x402a191602f02b5c",
+      "expected": "0x303c00440bbc48f9",
+      "composed": "0x303c00440bbc48f9",
+      "prior": "0x303c00440bbc48f9"
+    },
+    {
+      "x_bits": "0xc0288d78944fbfac",
+      "z_bits": "0x40215c7fca044e80",
+      "expected": "0x38d42c331e222227",
+      "composed": "0x38d42c331e222227",
+      "prior": "0x38d42c331e222227"
+    },
+    {
+      "x_bits": "0xc03dd54ee58bbd38",
+      "z_bits": "0x40351864750fe3f8",
+      "expected": "0x176b12360ad5e934",
+      "composed": "0x176b12360ad5e934",
+      "prior": "0x176b12360ad5e934"
+    },
+    {
+      "x_bits": "0xbfe0b4ac6279ef00",
+      "z_bits": "0x3fd7a021266b5be6",
+      "expected": "0x3fd340920a476e76",
+      "composed": "0x3fd340920a476e76",
+      "prior": "0x3fd340920a476e76"
+    },
+    {
+      "x_bits": "0xc036efc4f5fffba5",
+      "z_bits": "0x403037f7cb41f1ce",
+      "expected": "0x27d947e428feb3d4",
+      "composed": "0x27d947e428feb3d4",
+      "prior": "0x27d947e428feb3d4"
+    },
+    {
+      "x_bits": "0xc042b66bc8bc007e",
+      "z_bits": "0x403a76adab21f3fa",
+      "expected": "0x00611cd34c4efd60",
+      "composed": "0x00611cd34c4efd60",
+      "prior": "0x00611cd34c4efd60"
+    },
+    {
+      "x_bits": "0xc01728553666a660",
+      "z_bits": "0x40105ff6e0c7f333",
+      "expected": "0x3e2e5756891e8569",
+      "composed": "0x3e2e5756891e8569",
+      "prior": "0x3e2e5756891e8569"
+    },
+    {
+      "x_bits": "0xc037a64d4678402a",
+      "z_bits": "0x4030b909b3b0afd5",
+      "expected": "0x2659322afbf13792",
+      "composed": "0x2659322afbf13792",
+      "prior": "0x2659322afbf13792"
+    },
+    {
+      "x_bits": "0xc026d01ba7844398",
+      "z_bits": "0x402021947a0b1b9d",
+      "expected": "0x39c3af2e5a131484",
+      "composed": "0x39c3af2e5a131484",
+      "prior": "0x39c3af2e5a131484"
+    },
+    {
+      "x_bits": "0xc03f26ce75622d41",
+      "z_bits": "0x4036070a2c615be4",
+      "expected": "0x13ca0009e11e9658",
+      "composed": "0x13ca0009e11e9658",
+      "prior": "0x13ca0009e11e9658"
+    },
+    {
+      "x_bits": "0xc031c70ad93bea78",
+      "z_bits": "0x40292425569c1e3e",
+      "expected": "0x315750a65efb1c49",
+      "composed": "0x315750a65efb1c49",
+      "prior": "0x315750a65efb1c49"
+    },
+    {
+      "x_bits": "0xc0415fec1a2921ce",
+      "z_bits": "0x4038924fdf87579d",
+      "expected": "0x0916d2811637a047",
+      "composed": "0x0916d2811637a047",
+      "prior": "0x0916d2811637a047"
+    },
+    {
+      "x_bits": "0xc0408ec27f81a92b",
+      "z_bits": "0x40376a82f41fc74e",
+      "expected": "0x0e17dcba3dda491d",
+      "composed": "0x0e17dcba3dda491d",
+      "prior": "0x0e17dcba3dda491d"
+    },
+    {
+      "x_bits": "0xc042b91c63ce5e28",
+      "z_bits": "0x403a7a7b810b2303",
+      "expected": "0x004f26b753ab5733",
+      "composed": "0x004f26b753ab5733",
+      "prior": "0x004f26b753ab5733"
+    },
+    {
+      "x_bits": "0xc0331e9de03f5b92",
+      "z_bits": "0x402b0a0887ebd6df",
+      "expected": "0x2f1a52e3b2113267",
+      "composed": "0x2f1a52e3b2113267",
+      "prior": "0x2f1a52e3b2113267"
+    },
+    {
+      "x_bits": "0xc02ccc80ce812576",
+      "z_bits": "0x40245d259ffba71d",
+      "expected": "0x364310a86476ab97",
+      "composed": "0x364310a86476ab97",
+      "prior": "0x364310a86476ab97"
+    },
+    {
+      "x_bits": "0xc0310c984b8cb3f0",
+      "z_bits": "0x40281c78246cbf12",
+      "expected": "0x327ddac1e175d361",
+      "composed": "0x327ddac1e175d361",
+      "prior": "0x327ddac1e175d361"
+    },
+    {
+      "x_bits": "0xc03ce10c26c708ba",
+      "z_bits": "0x40346bac8b16e27e",
+      "expected": "0x19f29361d41aaa23",
+      "composed": "0x19f29361d41aaa23",
+      "prior": "0x19f29361d41aaa23"
+    },
+    {
+      "x_bits": "0xc042beda0473678f",
+      "z_bits": "0x403a8299df09db33",
+      "expected": "0x00272f5ca8d886cd",
+      "composed": "0x00272f5ca8d886cd",
+      "prior": "0x00272f5ca8d886cd"
+    },
+    {
+      "x_bits": "0xc0410ef10e5e17e8",
+      "z_bits": "0x40381fc9bf2462c6",
+      "expected": "0x0b0f47b98d671fb9",
+      "composed": "0x0b0f47b98d671fb9",
+      "prior": "0x0b0f47b98d671fb9"
+    },
+    {
+      "x_bits": "0xc03502ad9a98ed72",
+      "z_bits": "0x402db6997da6bcec",
+      "expected": "0x2bacc61701418fbb",
+      "composed": "0x2bacc61701418fbb",
+      "prior": "0x2bacc61701418fbb"
+    },
+    {
+      "x_bits": "0xc01c21e62cfba030",
+      "z_bits": "0x4013e482ff4a4f28",
+      "expected": "0x3d71c45c69b29e00",
+      "composed": "0x3d71c45c69b29e00",
+      "prior": "0x3d71c45c69b29e00"
+    },
+    {
+      "x_bits": "0xc0253f753fd18e88",
+      "z_bits": "0x401e0c8e2701ac55",
+      "expected": "0x3a8c8c70475e1b3c",
+      "composed": "0x3a8c8c70475e1b3c",
+      "prior": "0x3a8c8c70475e1b3c"
+    },
+    {
+      "x_bits": "0xc040049695c7ac92",
+      "z_bits": "0x4036a71b83b8015f",
+      "expected": "0x114478e2d4c364b8",
+      "composed": "0x114478e2d4c35f9a",
+      "prior": "0x114478e2d4c364b8"
+    },
+    {
+      "x_bits": "0xc03f6d0c227b153f",
+      "z_bits": "0x403638b523757a76",
+      "expected": "0x1303bae8b65391b4",
+      "composed": "0x1303bae8b65391b4",
+      "prior": "0x1303bae8b65391b4"
+    },
+    {
+      "x_bits": "0xc032210295d49b34",
+      "z_bits": "0x4029a36121fac54d",
+      "expected": "0x30c54bf087e537d9",
+      "composed": "0x30c54bf087e537d9",
+      "prior": "0x30c54bf087e537d9"
+    },
+    {
+      "x_bits": "0xc02afbc6fd88c3be",
+      "z_bits": "0x4023148942d60a2c",
+      "expected": "0x37686065bd672996",
+      "composed": "0x37686065bd672996",
+      "prior": "0x37686065bd672996"
+    },
+    {
+      "x_bits": "0xc02cbb0c85c7b12c",
+      "z_bits": "0x402450ce122a78c3",
+      "expected": "0x364f33e56a609147",
+      "composed": "0x364f33e56a609147",
+      "prior": "0x364f33e56a609147"
+    },
+    {
+      "x_bits": "0xc02008934d0254c4",
+      "z_bits": "0x4016acbf064a0f5d",
+      "expected": "0x3cc38f68673d153e",
+      "composed": "0x3cc38f68673d153e",
+      "prior": "0x3cc38f68673d153e"
+    },
+    {
+      "x_bits": "0xc03b7ff4aa55d3ee",
+      "z_bits": "0x403372001c4beaf5",
+      "expected": "0x1d74cddc9307e775",
+      "composed": "0x1d74cddc9307e775",
+      "prior": "0x1d74cddc9307e775"
+    },
+    {
+      "x_bits": "0xc00c2ff085c0bc60",
+      "z_bits": "0x4003ee70958dbb31",
+      "expected": "0x3f2bebae6e162ae2",
+      "composed": "0x3f2bebae6e162ae2",
+      "prior": "0x3f2bebae6e162ae2"
+    },
+    {
+      "x_bits": "0xc0319931e2e2bb66",
+      "z_bits": "0x4028e34ec45dcd46",
+      "expected": "0x31a17b7dad45d89e",
+      "composed": "0x31a17b7dad45d89e",
+      "prior": "0x31a17b7dad45d89e"
+    },
+    {
+      "x_bits": "0xc02a15ade8611b34",
+      "z_bits": "0x402271d513e424b9",
+      "expected": "0x37f320ba8f31df9d",
+      "composed": "0x37f320ba8f31df9d",
+      "prior": "0x37f320ba8f31df9d"
+    },
+    {
+      "x_bits": "0xc015f4d86f377ff8",
+      "z_bits": "0x400f0d136bc54284",
+      "expected": "0x3e55b02311d82ad4",
+      "composed": "0x3e55b02311d82ad4",
+      "prior": "0x3e55b02311d82ad4"
+    },
+    {
+      "x_bits": "0xc020513a1db04ef0",
+      "z_bits": "0x4017137db8a0c904",
+      "expected": "0x3ca869bfbdcd6a66",
+      "composed": "0x3ca869bfbdcd6a66",
+      "prior": "0x3ca869bfbdcd6a66"
+    },
+    {
+      "x_bits": "0xc03d0180d79f04cb",
+      "z_bits": "0x4034829facc7b5e0",
+      "expected": "0x199e2ce0c23ca933",
+      "composed": "0x199e2ce0c23ca933",
+      "prior": "0x199e2ce0c23ca933"
+    },
+    {
+      "x_bits": "0xc023509ed329dce0",
+      "z_bits": "0x401b50bfce752432",
+      "expected": "0x3b71444b413cf441",
+      "composed": "0x3b71444b413cf441",
+      "prior": "0x3b71444b413cf441"
+    },
+    {
+      "x_bits": "0xc02d9ac88338b288",
+      "z_bits": "0x4024ef024fd832e3",
+      "expected": "0x35ba7a2c41336d1c",
+      "composed": "0x35ba7a2c41336d1c",
+      "prior": "0x35ba7a2c41336d1c"
+    },
+    {
+      "x_bits": "0xc005c970ef410e80",
+      "z_bits": "0x3ffecfb1631ea977",
+      "expected": "0x3f6a781124ff39db",
+      "composed": "0x3f6a781124ff39db",
+      "prior": "0x3f6a781124ff39db"
+    },
+    {
+      "x_bits": "0xc0373a1a09dc0fd4",
+      "z_bits": "0x40306c87623eb4de",
+      "expected": "0x273f677e122cbe48",
+      "composed": "0x273f677e122cbe48",
+      "prior": "0x273f677e122cbe48"
+    },
+    {
+      "x_bits": "0xc013dd6a5a883bb0",
+      "z_bits": "0x400c17dd0dc06024",
+      "expected": "0x3e96e835aff073a0",
+      "composed": "0x3e96e835aff073a0",
+      "prior": "0x3e96e835aff073a0"
+    },
+    {
+      "x_bits": "0xc027f063e529c4cc",
+      "z_bits": "0x4020ed6d20a130d6",
+      "expected": "0x392aa6ddf8cf9b7a",
+      "composed": "0x392aa6ddf8cf9b7a",
+      "prior": "0x392aa6ddf8cf9b7a"
+    },
+    {
+      "x_bits": "0x3fe4255fba09e1c0",
+      "z_bits": "0x3fdc7da0cf31bc91",
+      "expected": "0x3fe7894b2ff16515",
+      "composed": "0x3fe7894b2ff16515",
+      "prior": "0x3fe7894b2ff16515"
+    },
+    {
+      "x_bits": "0xc03c5f96133aa1fd",
+      "z_bits": "0x403410218e6ef238",
+      "expected": "0x1b4175b85b53a189",
+      "composed": "0x1b4175b85b53a189",
+      "prior": "0x1b4175b85b53a189"
+    },
+    {
+      "x_bits": "0xc041b8a7b41be4f8",
+      "z_bits": "0x40390fcc95ad9d65",
+      "expected": "0x06e4e0f960a97a8c",
+      "composed": "0x06e4e0f960a97a8c",
+      "prior": "0x06e4e0f960a97a8c"
+    },
+    {
+      "x_bits": "0xc03655fe18d6d028",
+      "z_bits": "0x402f96766f62c98c",
+      "expected": "0x2913e771c472d7ed",
+      "composed": "0x2913e771c472d7ed",
+      "prior": "0x2913e771c472d7ed"
+    },
+    {
+      "x_bits": "0x3fc2f5dd7dde5e00",
+      "z_bits": "0x3fbad066e95dd64e",
+      "expected": "0x3fe1e256a57d1a40",
+      "composed": "0x3fe1e256a57d1a40",
+      "prior": "0x3fe1e256a57d1a40"
+    },
+    {
+      "x_bits": "0xc0402c2fe9d4e707",
+      "z_bits": "0x4036df1bdc9a8067",
+      "expected": "0x105f7009783c505f",
+      "composed": "0x105f7009783c505f",
+      "prior": "0x105f7009783c505f"
+    },
+    {
+      "x_bits": "0xbfe1f1e3de64bf00",
+      "z_bits": "0x3fd960bde01969f5",
+      "expected": "0x3fd265fbc6a92067",
+      "composed": "0x3fd265fbc6a92067",
+      "prior": "0x3fd265fbc6a92067"
+    },
+    {
+      "x_bits": "0xc0401b1992b73333",
+      "z_bits": "0x4036c6f19c406d8c",
+      "expected": "0x10c257156ede5861",
+      "composed": "0x10c257156ede5861",
+      "prior": "0x10c257156ede5861"
+    },
+    {
+      "x_bits": "0xc0306b381379b8ce",
+      "z_bits": "0x4027383fd781f58c",
+      "expected": "0x337207e663667e65",
+      "composed": "0x337207e663667e65",
+      "prior": "0x337207e663667e65"
+    },
+    {
+      "x_bits": "0xc041bc22f7f13e10",
+      "z_bits": "0x403914b90610d8bc",
+      "expected": "0x06cfd02c42627933",
+      "composed": "0x06cfd02c42627933",
+      "prior": "0x06cfd02c42627933"
+    },
+    {
+      "x_bits": "0xc01582f1d0b66428",
+      "z_bits": "0x400e6bfee803ac02",
+      "expected": "0x3e643b60ccdc27d2",
+      "composed": "0x3e643b60ccdc27d2",
+      "prior": "0x3e643b60ccdc27d2"
+    },
+    {
+      "x_bits": "0xc0241f09817f2054",
+      "z_bits": "0x401c74aaa48180a7",
+      "expected": "0x3b13f1209ef6cf07",
+      "composed": "0x3b13f1209ef6cf07",
+      "prior": "0x3b13f1209ef6cf07"
+    },
+    {
+      "x_bits": "0xc03e20a493da6773",
+      "z_bits": "0x40354da97e35db9c",
+      "expected": "0x16a02eb9e5805de0",
+      "composed": "0x16a02eb9e5805de0",
+      "prior": "0x16a02eb9e5805de0"
+    },
+    {
+      "x_bits": "0xc0422b0da3e198d7",
+      "z_bits": "0x4039b1952746a50c",
+      "expected": "0x0400d36e03143946",
+      "composed": "0x0400d36e03143946",
+      "prior": "0x0400d36e03143946"
+    },
+    {
+      "x_bits": "0xc038d9c508c67967",
+      "z_bits": "0x40319273520a21ec",
+      "expected": "0x23b7aa0223af617c",
+      "composed": "0x23b7aa0223af617c",
+      "prior": "0x23b7aa0223af617c"
+    },
+    {
+      "x_bits": "0xc02de2b975dcb746",
+      "z_bits": "0x402521e10f824657",
+      "expected": "0x3589f6276c662da1",
+      "composed": "0x3589f6276c662da1",
+      "prior": "0x3589f6276c662da1"
+    },
+    {
+      "x_bits": "0xc034393091350291",
+      "z_bits": "0x402c99a6e3a1f6b2",
+      "expected": "0x2d23dc88ce1b0cd0",
+      "composed": "0x2d23dc88ce1b0cd0",
+      "prior": "0x2d23dc88ce1b0cd0"
+    },
+    {
+      "x_bits": "0xc037024b9223839d",
+      "z_bits": "0x40304511535b0a9b",
+      "expected": "0x27b31ec236b7dfb8",
+      "composed": "0x27b31ec236b7dfb8",
+      "prior": "0x27b31ec236b7dfb8"
+    },
+    {
+      "x_bits": "0xc03f68d660cd0779",
+      "z_bits": "0x403635bb0cae8257",
+      "expected": "0x13108bfcb8342b59",
+      "composed": "0x13108bfcb8342b59",
+      "prior": "0x13108bfcb8342b59"
+    },
+    {
+      "x_bits": "0xc0281c65284cbde4",
+      "z_bits": "0x40210c8adeec196e",
+      "expected": "0x3912d99280b19df9",
+      "composed": "0x3912d99280b19df9",
+      "prior": "0x3912d99280b19df9"
+    },
+    {
+      "x_bits": "0xc03ba5de0b58ae5b",
+      "z_bits": "0x40338cced98cad05",
+      "expected": "0x1d16504cc63b2e64",
+      "composed": "0x1d16504cc63b2e64",
+      "prior": "0x1d16504cc63b2e64"
+    },
+    {
+      "x_bits": "0xc042328d66c82d50",
+      "z_bits": "0x4039bc301b1e61c1",
+      "expected": "0x03cfec98d68b21b2",
+      "composed": "0x03cfec98d68b21b2",
+      "prior": "0x03cfec98d68b21b2"
+    },
+    {
+      "x_bits": "0xc02bdd5c7a311c98",
+      "z_bits": "0x4023b40c509db5e9",
+      "expected": "0x36dcc07bc343965c",
+      "composed": "0x36dcc07bc343965c",
+      "prior": "0x36dcc07bc343965c"
+    },
+    {
+      "x_bits": "0xc036c9ef05d24aa4",
+      "z_bits": "0x40301d36cd28216a",
+      "expected": "0x28275497c50992b8",
+      "composed": "0x28275497c50992b8",
+      "prior": "0x28275497c50992b8"
+    },
+    {
+      "x_bits": "0xc02badae8a1a54ac",
+      "z_bits": "0x4023925569da111e",
+      "expected": "0x36fa5e2cde3e4211",
+      "composed": "0x36fa5e2cde3e4211",
+      "prior": "0x36fa5e2cde3e4211"
+    },
+    {
+      "x_bits": "0xc01f654da0c30948",
+      "z_bits": "0x4016333b4b68eb7b",
+      "expected": "0x3ce2e5b82bac8d18",
+      "composed": "0x3ce2e5b82bac8d18",
+      "prior": "0x3ce2e5b82bac8d18"
+    },
+    {
+      "x_bits": "0xc041984a79428cf5",
+      "z_bits": "0x4038e207800e4e1b",
+      "expected": "0x07b3628d51b6e4a1",
+      "composed": "0x07b3628d51b6e4a1",
+      "prior": "0x07b3628d51b6e4a1"
+    },
+    {
+      "x_bits": "0xc02a634d89807c36",
+      "z_bits": "0x4022a8b8710c214f",
+      "expected": "0x37c4b447b4b078f1",
+      "composed": "0x37c4b447b4b078f1",
+      "prior": "0x37c4b447b4b078f1"
+    },
+    {
+      "x_bits": "0xc034538c702d0af1",
+      "z_bits": "0x402cbeedd1e0c7a4",
+      "expected": "0x2cf399d967eaa7e6",
+      "composed": "0x2cf399d967eaa7e6",
+      "prior": "0x2cf399d967eaa7e6"
+    },
+    {
+      "x_bits": "0xc0261c9513b0368c",
+      "z_bits": "0x401f4545b5bd5b70",
+      "expected": "0x3a2046cf5086358d",
+      "composed": "0x3a2046cf5086358d",
+      "prior": "0x3a2046cf5086358d"
+    },
+    {
+      "x_bits": "0xc0188dab2af623f0",
+      "z_bits": "0x40115ca38f825d43",
+      "expected": "0x3dfca68693382253",
+      "composed": "0x3dfca68693382253",
+      "prior": "0x3dfca68693382253"
+    },
+    {
+      "x_bits": "0xc0425db5f8df03de",
+      "z_bits": "0x4039f93924f7c99e",
+      "expected": "0x02b2582f96e6f3c5",
+      "composed": "0x02b2582f96e6f3c5",
+      "prior": "0x02b2582f96e6f3c5"
+    },
+    {
+      "x_bits": "0xc03bb80a30baab77",
+      "z_bits": "0x403399a869ef2285",
+      "expected": "0x1ce8f3a8a3f90337",
+      "composed": "0x1ce8f3a8a3f90337",
+      "prior": "0x1ce8f3a8a3f90337"
+    },
+    {
+      "x_bits": "0xc02c86b0aa7ff5c0",
+      "z_bits": "0x40242bc81cf38194",
+      "expected": "0x3670fa894f89d6df",
+      "composed": "0x3670fa894f89d6df",
+      "prior": "0x3670fa894f89d6df"
+    },
+    {
+      "x_bits": "0xc04028837ca42f22",
+      "z_bits": "0x4036d9e9e5d55dae",
+      "expected": "0x1073e52be67ac503",
+      "composed": "0x1073e52be67ac503",
+      "prior": "0x1073e52be67ac503"
+    },
+    {
+      "x_bits": "0xc02f7945c9e5e4f4",
+      "z_bits": "0x4026415a2357d251",
+      "expected": "0x3470951337984418",
+      "composed": "0x3470951337984418",
+      "prior": "0x3470951337984418"
+    },
+    {
+      "x_bits": "0xc040ecc43728c69c",
+      "z_bits": "0x4037ef75047d4302",
+      "expected": "0x0be0c729d780c57a",
+      "composed": "0x0be0c729d780c57a",
+      "prior": "0x0be0c729d780c57a"
+    },
+    {
+      "x_bits": "0xc035650f2e96d201",
+      "z_bits": "0x402e41bb46e593ef",
+      "expected": "0x2af0bd9f9918151d",
+      "composed": "0x2af0bd9f9918151d",
+      "prior": "0x2af0bd9f9918151d"
+    },
+    {
+      "x_bits": "0xc03815d21777db9c",
+      "z_bits": "0x403107e4c37a636c",
+      "expected": "0x2568be5ae15c899b",
+      "composed": "0x2568be5ae15c899b",
+      "prior": "0x2568be5ae15c899b"
+    },
+    {
+      "x_bits": "0xc035a4c2aa3e440a",
+      "z_bits": "0x402e9bd18a64d308",
+      "expected": "0x2a7405a949ec99b4",
+      "composed": "0x2a7405a949ec99b4",
+      "prior": "0x2a7405a949ec99b4"
+    },
+    {
+      "x_bits": "0xc0368d175ec5c23e",
+      "z_bits": "0x402fe4624dc135bb",
+      "expected": "0x28a424d0b9a3b064",
+      "composed": "0x28a424d0b9a3b064",
+      "prior": "0x28a424d0b9a3b064"
+    },
+    {
+      "x_bits": "0xc03d3583e5e9739d",
+      "z_bits": "0x4034a766d7580555",
+      "expected": "0x1914ba101fe25846",
+      "composed": "0x1914ba101fe25846",
+      "prior": "0x1914ba101fe25846"
+    },
+    {
+      "x_bits": "0xc036ebb4ad8cdd2b",
+      "z_bits": "0x4030351833eb237b",
+      "expected": "0x27e233c77a1388fe",
+      "composed": "0x27e233c77a1388fe",
+      "prior": "0x27e233c77a1388fe"
+    },
+    {
+      "x_bits": "0xc03a603aaf729d06",
+      "z_bits": "0x4032a68c0da9658e",
+      "expected": "0x20315e188e182505",
+      "composed": "0x20315e188e182505",
+      "prior": "0x20315e188e182505"
+    },
+    {
+      "x_bits": "0xc02aa2c3c3cbd56a",
+      "z_bits": "0x4022d59842666c62",
+      "expected": "0x379fbc9ad9c21a06",
+      "composed": "0x379fbc9ad9c21a06",
+      "prior": "0x379fbc9ad9c21a06"
+    },
+    {
+      "x_bits": "0xc028b24ad43d9db0",
+      "z_bits": "0x40217689277b88b2",
+      "expected": "0x38c08c3be20a5756",
+      "composed": "0x38c08c3be20a5756",
+      "prior": "0x38c08c3be20a5756"
+    },
+    {
+      "x_bits": "0xc039ec767494c307",
+      "z_bits": "0x403254b012fed9fe",
+      "expected": "0x21426c61820b417a",
+      "composed": "0x21426c61820b417a",
+      "prior": "0x21426c61820b417a"
+    },
+    {
+      "x_bits": "0xc032e1b4d5fe172b",
+      "z_bits": "0x402ab3e4a46814e2",
+      "expected": "0x2f83239d01acf539",
+      "composed": "0x2f83239d01acf539",
+      "prior": "0x2f83239d01acf539"
+    },
+    {
+      "x_bits": "0xc0144270d29ab048",
+      "z_bits": "0x400ca6bc1bb18754",
+      "expected": "0x3e8b6c8e6d5818f0",
+      "composed": "0x3e8b6c8e6d5818f0",
+      "prior": "0x3e8b6c8e6d5818f0"
+    },
+    {
+      "x_bits": "0xc03de0cfb364778c",
+      "z_bits": "0x40352086bf8af060",
+      "expected": "0x174c4488fd1ef1d5",
+      "composed": "0x174c4488fd1ef1d5",
+      "prior": "0x174c4488fd1ef1d5"
+    },
+    {
+      "x_bits": "0xc0377dafa2c07d7f",
+      "z_bits": "0x40309c5175e352df",
+      "expected": "0x26b0ad71a48c971c",
+      "composed": "0x26b0ad71a48c971c",
+      "prior": "0x26b0ad71a48c971c"
+    },
+    {
+      "x_bits": "0xc035afa012594fb7",
+      "z_bits": "0x402eab2f0b2b0f74",
+      "expected": "0x2a5fdf0f59dca358",
+      "composed": "0x2a5fdf0f59dca358",
+      "prior": "0x2a5fdf0f59dca358"
+    },
+    {
+      "x_bits": "0xc03f930a0a170fca",
+      "z_bits": "0x4036539264461a8d",
+      "expected": "0x129772072d420941",
+      "composed": "0x129772072d420941",
+      "prior": "0x129772072d420941"
+    },
+    {
+      "x_bits": "0xc03b4bdd7abfdf24",
+      "z_bits": "0x40334d2ab5cd90e9",
+      "expected": "0x1df5977d816803de",
+      "composed": "0x1df5977d816803de",
+      "prior": "0x1df5977d816803de"
+    },
+    {
+      "x_bits": "0xc0378478df8c5610",
+      "z_bits": "0x4030a11ddf76cb99",
+      "expected": "0x26a1de4d2465fad7",
+      "composed": "0x26a1de4d2465fad7",
+      "prior": "0x26a1de4d2465fad7"
+    },
+    {
+      "x_bits": "0xc02b4c2c01b73396",
+      "z_bits": "0x40234d623cbf2589",
+      "expected": "0x3736e470943411eb",
+      "composed": "0x3736e470943411eb",
+      "prior": "0x3736e470943411eb"
+    },
+    {
+      "x_bits": "0xc020fda19335e9bc",
+      "z_bits": "0x4018074eaf9dccf6",
+      "expected": "0x3c66bf3336d7d700",
+      "composed": "0x3c66bf3336d7d700",
+      "prior": "0x3c66bf3336d7d700"
+    },
+    {
+      "x_bits": "0xc03a685e309afc44",
+      "z_bits": "0x4032ac4d50445024",
+      "expected": "0x201dfbd7ed912cac",
+      "composed": "0x201dfbd7ed912cac",
+      "prior": "0x201dfbd7ed912cac"
+    },
+    {
+      "x_bits": "0xc03aa9ceeb070544",
+      "z_bits": "0x4032da934800e67a",
+      "expected": "0x1f8138e47c9e1cb5",
+      "composed": "0x1f8138e47c9e1cb5",
+      "prior": "0x1f8138e47c9e1cb5"
+    },
+    {
+      "x_bits": "0xc0421a6a7aa5439a",
+      "z_bits": "0x40399a0dca4188dc",
+      "expected": "0x046d6f068910104f",
+      "composed": "0x046d6f068910104f",
+      "prior": "0x046d6f068910104f"
+    },
+    {
+      "x_bits": "0xc031cd6e7c974275",
+      "z_bits": "0x40292d2e7adc23d0",
+      "expected": "0x314ddeb261e75708",
+      "composed": "0x314ddeb261e75708",
+      "prior": "0x314ddeb261e75708"
+    },
+    {
+      "x_bits": "0xc042adb62652f6d4",
+      "z_bits": "0x403a6a5c7d3ffd55",
+      "expected": "0x009b49622d506bc3",
+      "composed": "0x009b49622d506bc3",
+      "prior": "0x009b49622d506bc3"
+    },
+    {
+      "x_bits": "0xc02e3b4c67080e70",
+      "z_bits": "0x40256082aa77264c",
+      "expected": "0x354e806bd9524af3",
+      "composed": "0x354e806bd9524af3",
+      "prior": "0x354e806bd9524af3"
+    },
+    {
+      "x_bits": "0xc03c0b27614da528",
+      "z_bits": "0x4033d46da8b16467",
+      "expected": "0x1c17ab81095af2f8",
+      "composed": "0x1c17ab81095af2f8",
+      "prior": "0x1c17ab81095af2f8"
+    },
+    {
+      "x_bits": "0xc03fdcd3d634ea34",
+      "z_bits": "0x403687bf7ed7ee6b",
+      "expected": "0x11c45f0cf11aa581",
+      "composed": "0x11c45f0cf11aa581",
+      "prior": "0x11c45f0cf11aa581"
+    },
+    {
+      "x_bits": "0xc023b2f73ed2fe60",
+      "z_bits": "0x401bdbd4a4517673",
+      "expected": "0x3b44cf860daacc05",
+      "composed": "0x3b44cf860daacc05",
+      "prior": "0x3b44cf860daacc05"
+    },
+    {
+      "x_bits": "0xc030945bac716b32",
+      "z_bits": "0x4027726dc517486f",
+      "expected": "0x3334286bbda805b6",
+      "composed": "0x3334286bbda805b6",
+      "prior": "0x3334286bbda805b6"
+    },
+    {
+      "x_bits": "0xc02c58e6f1dfda24",
+      "z_bits": "0x40240b679ac3a56e",
+      "expected": "0x368e770f379c3f1b",
+      "composed": "0x368e770f379c3f1b",
+      "prior": "0x368e770f379c3f1b"
+    },
+    {
+      "x_bits": "0xc00bc47474329240",
+      "z_bits": "0x4003a26fc91759e6",
+      "expected": "0x3f30fee7da5ac774",
+      "composed": "0x3f30fee7da5ac774",
+      "prior": "0x3f30fee7da5ac774"
+    },
+    {
+      "x_bits": "0xc037f06cf70ad246",
+      "z_bits": "0x4030ed738a7234b1",
+      "expected": "0x25b9f51a8ca29d37",
+      "composed": "0x25b9f51a8ca29d37",
+      "prior": "0x25b9f51a8ca29d37"
+    },
+    {
+      "x_bits": "0xc03eb4be76bb5032",
+      "z_bits": "0x4035b662a8b90fc1",
+      "expected": "0x15084a4401f5ad32",
+      "composed": "0x15084a4401f5ad32",
+      "prior": "0x15084a4401f5ad32"
+    },
+    {
+      "x_bits": "0xc031a722c1a55f86",
+      "z_bits": "0x4028f705e960ef85",
+      "expected": "0x318ab2a962f0acb4",
+      "composed": "0x318ab2a962f0acb4",
+      "prior": "0x318ab2a962f0acb4"
+    },
+    {
+      "x_bits": "0xc03282d7a1029de1",
+      "z_bits": "0x402a2dbc2c545b9c",
+      "expected": "0x302374bdc37e6e6f",
+      "composed": "0x302374bdc37e6e6f",
+      "prior": "0x302374bdc37e6e6f"
+    },
+    {
+      "x_bits": "0xc0402b096e1308f4",
+      "z_bits": "0x4036dd7b6636f7cb",
+      "expected": "0x106506c3679b22b5",
+      "composed": "0x106506c3679b22b5",
+      "prior": "0x106506c3679b22b5"
+    },
+    {
+      "x_bits": "0xc02e084172019e7a",
+      "z_bits": "0x40253c6aee900173",
+      "expected": "0x35713bd807d734fc",
+      "composed": "0x35713bd807d734fc",
+      "prior": "0x35713bd807d734fc"
+    },
+    {
+      "x_bits": "0xc03c0acac67dd93f",
+      "z_bits": "0x4033d42c2d72143c",
+      "expected": "0x1c18a0c0c5707e70",
+      "composed": "0x1c18a0c0c5707e70",
+      "prior": "0x1c18a0c0c5707e70"
+    },
+    {
+      "x_bits": "0xc01ca5181b21f2b8",
+      "z_bits": "0x40144147d616282a",
+      "expected": "0x3d5c221aabd80dc9",
+      "composed": "0x3d5c221aabd80dc9",
+      "prior": "0x3d5c221aabd80dc9"
+    },
+    {
+      "x_bits": "0xc03bdf6c4e7225a4",
+      "z_bits": "0x4033b5818be473f7",
+      "expected": "0x1c8611a9f0bb52ed",
+      "composed": "0x1c8611a9f0bb52ed",
+      "prior": "0x1c8611a9f0bb52ed"
+    },
+    {
+      "x_bits": "0xbff0af0526233d80",
+      "z_bits": "0x3fe79822732119fa",
+      "expected": "0x3fc30340e9ab1acf",
+      "composed": "0x3fc30340e9ab1acf",
+      "prior": "0x3fc30340e9ab1acf"
+    },
+    {
+      "x_bits": "0xc0355b01c568ecc2",
+      "z_bits": "0x402e3383eca5d9b0",
+      "expected": "0x2b036958452be9f7",
+      "composed": "0x2b036958452be9f7",
+      "prior": "0x2b036958452be9f7"
+    },
+    {
+      "x_bits": "0xc01905f44c2ccc88",
+      "z_bits": "0x4011b1b197685dd1",
+      "expected": "0x3deb2cc250c99972",
+      "composed": "0x3deb2cc250c99972",
+      "prior": "0x3deb2cc250c99972"
+    },
+    {
+      "x_bits": "0xc032987d4a4814a8",
+      "z_bits": "0x402a4c5943ff295a",
+      "expected": "0x300022dbec3b5a54",
+      "composed": "0x300022dbec3b5a54",
+      "prior": "0x300022dbec3b5a54"
+    },
+    {
+      "x_bits": "0xc017aeca9800ad60",
+      "z_bits": "0x4010bf0a785c18d3",
+      "expected": "0x3e1b89ba3c9d3669",
+      "composed": "0x3e1b89ba3c9d3669",
+      "prior": "0x3e1b89ba3c9d3669"
+    },
+    {
+      "x_bits": "0xc041cb7b6dcf3cce",
+      "z_bits": "0x40392a6cb4a89cdc",
+      "expected": "0x066cab66155d7c6b",
+      "composed": "0x066cab66155d7c6b",
+      "prior": "0x066cab66155d7c6b"
+    },
+    {
+      "x_bits": "0xc03f0aa948ab2fab",
+      "z_bits": "0x4035f3235872476b",
+      "expected": "0x1418e57fa03f6b14",
+      "composed": "0x1418e57fa03f6b14",
+      "prior": "0x1418e57fa03f6b14"
+    },
+    {
+      "x_bits": "0xc009791f76f40c10",
+      "z_bits": "0x4002032156bd4477",
+      "expected": "0x3f47c972a4c3d2f0",
+      "composed": "0x3f47c972a4c3d2f0",
+      "prior": "0x3f47c972a4c3d2f0"
+    },
+    {
+      "x_bits": "0xc018a494d3655058",
+      "z_bits": "0x40116cd735040b30",
+      "expected": "0x3df8e1866999dc2e",
+      "composed": "0x3df8e1866999dc2e",
+      "prior": "0x3df8e1866999dc2e"
+    },
+    {
+      "x_bits": "0xc03f0e0f9b031a5e",
+      "z_bits": "0x4035f58ac17e8a99",
+      "expected": "0x14107a28b37d5bdd",
+      "composed": "0x14107a28b37d5bdd",
+      "prior": "0x14107a28b37d5bdd"
+    },
+    {
+      "x_bits": "0xc0426a035e597622",
+      "z_bits": "0x403a0a9f10420887",
+      "expected": "0x026112701ae58ea9",
+      "composed": "0x026112701ae58ea9",
+      "prior": "0x026112701ae58ea9"
+    },
+    {
+      "x_bits": "0x3fb62b841535cc00",
+      "z_bits": "0x3faf5a6441bc1a37",
+      "expected": "0x3fe11aac0a6731f1",
+      "composed": "0x3fe11aac0a6731f1",
+      "prior": "0x3fe11aac0a6731f1"
+    },
+    {
+      "x_bits": "0xc02937d05679e2c0",
+      "z_bits": "0x4021d4f3217f0503",
+      "expected": "0x3874071f63ed823d",
+      "composed": "0x3874071f63ed823d",
+      "prior": "0x3874071f63ed823d"
+    },
+    {
+      "x_bits": "0xc037963691423be4",
+      "z_bits": "0x4030ada955edd7bb",
+      "expected": "0x267bdd5f06261fb4",
+      "composed": "0x267bdd5f06261fb4",
+      "prior": "0x267bdd5f06261fb4"
+    },
+    {
+      "x_bits": "0xc0330714342b4d47",
+      "z_bits": "0x402ae8bef1912e8d",
+      "expected": "0x2f4318dfcf5e33a8",
+      "composed": "0x2f4318dfcf5e33a8",
+      "prior": "0x2f4318dfcf5e33a8"
+    },
+    {
+      "x_bits": "0xc033ac3514381f74",
+      "z_bits": "0x402bd245d129c6f2",
+      "expected": "0x2e22628bc29d55d7",
+      "composed": "0x2e22628bc29d55d7",
+      "prior": "0x2e22628bc29d55d7"
+    },
+    {
+      "x_bits": "0xc0416a42575420b0",
+      "z_bits": "0x4038a0ee385bf80a",
+      "expected": "0x08d5f1aff0b98463",
+      "composed": "0x08d5f1aff0b98463",
+      "prior": "0x08d5f1aff0b98463"
+    },
+    {
+      "x_bits": "0xc04038f72d90bf48",
+      "z_bits": "0x4036f12e20e3b900",
+      "expected": "0x1013c1a4dbd4b698",
+      "composed": "0x1013c1a4dbd4b698",
+      "prior": "0x1013c1a4dbd4b698"
+    },
+    {
+      "x_bits": "0xc042720b5e4db977",
+      "z_bits": "0x403a15faafb3e226",
+      "expected": "0x022afe6812517ab6",
+      "composed": "0x022afe6812517ab6",
+      "prior": "0x022afe6812517ab6"
+    },
+    {
+      "x_bits": "0xc02bc164a8382182",
+      "z_bits": "0x4023a0458eb77a84",
+      "expected": "0x36eed89706f78061",
+      "composed": "0x36eed89706f78061",
+      "prior": "0x36eed89706f78061"
+    },
+    {
+      "x_bits": "0xc03c6cac04147e00",
+      "z_bits": "0x40341962527f39f1",
+      "expected": "0x1b205377012a5bd4",
+      "composed": "0x1b205377012a5bd4",
+      "prior": "0x1b205377012a5bd4"
+    },
+    {
+      "x_bits": "0xc035c10b3ba0087c",
+      "z_bits": "0x402ec3d13ffade00",
+      "expected": "0x2a3cfdf115519391",
+      "composed": "0x2a3cfdf115519391",
+      "prior": "0x2a3cfdf115519391"
+    },
+    {
+      "x_bits": "0xc032f0c90706e185",
+      "z_bits": "0x402ac937c7067fdd",
+      "expected": "0x2f690dcf4ab8a1c4",
+      "composed": "0x2f690dcf4ab8a1c4",
+      "prior": "0x2f690dcf4ab8a1c4"
+    },
+    {
+      "x_bits": "0xc040ffa0c1f18070",
+      "z_bits": "0x40380a219b77c838",
+      "expected": "0x0b6cd9992209cc36",
+      "composed": "0x0b6cd9992209cc36",
+      "prior": "0x0b6cd9992209cc36"
+    },
+    {
+      "x_bits": "0x3fde3c6590c71580",
+      "z_bits": "0x3fd561497a6af8fc",
+      "expected": "0x3fe5d06c63abfd85",
+      "composed": "0x3fe5d06c63abfd85",
+      "prior": "0x3fe5d06c63abfd85"
+    },
+    {
+      "x_bits": "0xc038210e5da592c9",
+      "z_bits": "0x40310fd698b64d3d",
+      "expected": "0x255125d825427e14",
+      "composed": "0x255125d825427e14",
+      "prior": "0x255125d825427e14"
+    },
+    {
+      "x_bits": "0xc0328ea5d5117598",
+      "z_bits": "0x402a3e6e36d13b24",
+      "expected": "0x3010833a20e03205",
+      "composed": "0x3010833a20e03205",
+      "prior": "0x3010833a20e03205"
+    },
+    {
+      "x_bits": "0xc03fa6a2bd00e0f4",
+      "z_bits": "0x4036616dbbc62377",
+      "expected": "0x1260a3c395d77c36",
+      "composed": "0x1260a3c395d77c36",
+      "prior": "0x1260a3c395d77c36"
+    },
+    {
+      "x_bits": "0xc02cefc3c599341a",
+      "z_bits": "0x40247614a73b3f25",
+      "expected": "0x362c16aae4d726dc",
+      "composed": "0x362c16aae4d726dc",
+      "prior": "0x362c16aae4d726dc"
+    },
+    {
+      "x_bits": "0xc03b0b337055dedf",
+      "z_bits": "0x40331f713c59ec30",
+      "expected": "0x1e9459ce23c83cd8",
+      "composed": "0x1e9459ce23c83cd8",
+      "prior": "0x1e9459ce23c83cd8"
+    },
+    {
+      "x_bits": "0xc03ac5bb61440577",
+      "z_bits": "0x4032ee5201d3002b",
+      "expected": "0x1f3dc59de51ff605",
+      "composed": "0x1f3dc59de51ff605",
+      "prior": "0x1f3dc59de51ff605"
+    },
+    {
+      "x_bits": "0xc0357d310ab9134c",
+      "z_bits": "0x402e63dc1716f9d8",
+      "expected": "0x2ac1aa8aa8fc0c01",
+      "composed": "0x2ac1aa8aa8fc0c01",
+      "prior": "0x2ac1aa8aa8fc0c01"
+    },
+    {
+      "x_bits": "0xc00a90405d732af0",
+      "z_bits": "0x4002c880ff65a612",
+      "expected": "0x3f3d73722aec92c5",
+      "composed": "0x3f3d73722aec92c5",
+      "prior": "0x3f3d73722aec92c5"
+    },
+    {
+      "x_bits": "0xc04047ea0cfa0ab7",
+      "z_bits": "0x4037065224ccbf0a",
+      "expected": "0x0fbc4c5a8caec9e6",
+      "composed": "0x0fbc4c5a8caec9e6",
+      "prior": "0x0fbc4c5a8caec9e6"
+    },
+    {
+      "x_bits": "0xc03f5b03ed23de0e",
+      "z_bits": "0x40362bf4fc7c8735",
+      "expected": "0x13368e8bd62c44ab",
+      "composed": "0x13368e8bd62c44ab",
+      "prior": "0x13368e8bd62c44ab"
+    },
+    {
+      "x_bits": "0xc04254b306103176",
+      "z_bits": "0x4039ec7aa0687be8",
+      "expected": "0x02ee6d83ca79da62",
+      "composed": "0x02ee6d83ca79da62",
+      "prior": "0x02ee6d83ca79da62"
+    },
+    {
+      "x_bits": "0xc02abb1c91ce426a",
+      "z_bits": "0x4022e6cf8492987e",
+      "expected": "0x3790c4cf45501d49",
+      "composed": "0x3790c4cf45501d49",
+      "prior": "0x3790c4cf45501d49"
+    },
+    {
+      "x_bits": "0xc0185e0cc82b0f78",
+      "z_bits": "0x40113af7a7f239cf",
+      "expected": "0x3e032cefaec916fd",
+      "composed": "0x3e032cefaec916fd",
+      "prior": "0x3e032cefaec916fd"
+    },
+    {
+      "x_bits": "0xc02ee8ae74473556",
+      "z_bits": "0x4025db1c5814481f",
+      "expected": "0x34d5941f44e72f53",
+      "composed": "0x34d5941f44e72f53",
+      "prior": "0x34d5941f44e72f53"
+    },
+    {
+      "x_bits": "0xc031bc6d3dde91b7",
+      "z_bits": "0x402915220fd1bf5a",
+      "expected": "0x3168668033bf0062",
+      "composed": "0x3168668033bf0062",
+      "prior": "0x3168668033bf0062"
+    },
+    {
+      "x_bits": "0xc030996e33217f16",
+      "z_bits": "0x4027799a29c3b50b",
+      "expected": "0x332cfcbb196076e7",
+      "composed": "0x332cfcbb196076e7",
+      "prior": "0x332cfcbb196076e7"
+    },
+    {
+      "x_bits": "0xc02a670e8927e332",
+      "z_bits": "0x4022ab5ff8627185",
+      "expected": "0x37c2c8ccc34c44d6",
+      "composed": "0x37c2c8ccc34c44d6",
+      "prior": "0x37c2c8ccc34c44d6"
+    },
+    {
+      "x_bits": "0xc0416928cb0425f2",
+      "z_bits": "0x40389f600d0f8a46",
+      "expected": "0x08dd9b1c5f47d06d",
+      "composed": "0x08dd9b1c5f47d06d",
+      "prior": "0x08dd9b1c5f47d06d"
+    },
+    {
+      "x_bits": "0xc03bb073644e0763",
+      "z_bits": "0x4033944aa5d57253",
+      "expected": "0x1cfc64a2bbab8935",
+      "composed": "0x1cfc64a2bbab8935",
+      "prior": "0x1cfc64a2bbab8935"
+    },
+    {
+      "x_bits": "0xc033491dff47df08",
+      "z_bits": "0x402b4623588f55f5",
+      "expected": "0x2ed13a2f2e017b7b",
+      "composed": "0x2ed13a2f2e017b7b",
+      "prior": "0x2ed13a2f2e017b7b"
+    },
+    {
+      "x_bits": "0xc0316eecd38ad9a9",
+      "z_bits": "0x4028a7877a32c829",
+      "expected": "0x31e3e35ebe978e25",
+      "composed": "0x31e3e35ebe978e25",
+      "prior": "0x31e3e35ebe978e25"
+    },
+    {
+      "x_bits": "0xc037cc6b6eaa381b",
+      "z_bits": "0x4030d3fdc2cb0248",
+      "expected": "0x26076c39990aafd7",
+      "composed": "0x26076c39990aafd7",
+      "prior": "0x26076c39990aafd7"
+    },
+    {
+      "x_bits": "0xc03c1c1e928243af",
+      "z_bits": "0x4033e06cc27672d2",
+      "expected": "0x1bed63696df571b1",
+      "composed": "0x1bed63696df571b1",
+      "prior": "0x1bed63696df571b1"
+    },
+    {
+      "x_bits": "0xc00e1c985a5ee500",
+      "z_bits": "0x40054accc5883580",
+      "expected": "0x3f15ebb5d1cf1dbf",
+      "composed": "0x3f15ebb5d1cf1dbf",
+      "prior": "0x3f15ebb5d1cf1dbf"
+    },
+    {
+      "x_bits": "0xc0235718a70ff050",
+      "z_bits": "0x401b59e854350454",
+      "expected": "0x3b6e8568f43a80ba",
+      "composed": "0x3b6e8568f43a80ba",
+      "prior": "0x3b6e8568f43a80ba"
+    },
+    {
+      "x_bits": "0xc03f1bdfd44e44d5",
+      "z_bits": "0x4035ff4f3e610925",
+      "expected": "0x13e89861b5da3ec1",
+      "composed": "0x13e89861b5da3ec1",
+      "prior": "0x13e89861b5da3ec1"
+    },
+    {
+      "x_bits": "0x3ff2699b5f061dc0",
+      "z_bits": "0x3fea0a0bfd3099fe",
+      "expected": "0x3fec00bb1f910587",
+      "composed": "0x3fec00bb1f910587",
+      "prior": "0x3fec00bb1f910587"
+    },
+    {
+      "x_bits": "0xc034f79c3be66c91",
+      "z_bits": "0x402da6f2802be4cc",
+      "expected": "0x2bc1dc8c54c0d2b5",
+      "composed": "0x2bc1dc8c54c0d2b5",
+      "prior": "0x2bc1dc8c54c0d2b5"
+    },
+    {
+      "x_bits": "0xc034561dec211fca",
+      "z_bits": "0x402cc28fa495090c",
+      "expected": "0x2ceff3f07455bde8",
+      "composed": "0x2ceff3f07455bde8",
+      "prior": "0x2ceff3f07455bde8"
+    },
+    {
+      "x_bits": "0xc03d8296248396c3",
+      "z_bits": "0x4034dde63b1bf1e0",
+      "expected": "0x18485d513179823c",
+      "composed": "0x18485d513179823c",
+      "prior": "0x18485d513179823c"
+    },
+    {
+      "x_bits": "0xc02248760950e5bc",
+      "z_bits": "0x4019db2be9d954d4",
+      "expected": "0x3be22ca927e093f2",
+      "composed": "0x3be22ca927e093f2",
+      "prior": "0x3be22ca927e093f2"
+    },
+    {
+      "x_bits": "0xc03a6a70799614c6",
+      "z_bits": "0x4032adc4481ec354",
+      "expected": "0x201834faab30e779",
+      "composed": "0x201834faab30e779",
+      "prior": "0x201834faab30e779"
+    },
+    {
+      "x_bits": "0xc01b8ac8c0ca7e00",
+      "z_bits": "0x401379a845c64529",
+      "expected": "0x3d89520da235f028",
+      "composed": "0x3d89520da235f028",
+      "prior": "0x3d89520da235f028"
+    },
+    {
+      "x_bits": "0xc037258b478b29f0",
+      "z_bits": "0x40305dfe0d18ca1c",
+      "expected": "0x27695a961e9bf99c",
+      "composed": "0x27695a961e9bf99c",
+      "prior": "0x27695a961e9bf99c"
+    },
+    {
+      "x_bits": "0xc04151bdcb2dd4f1",
+      "z_bits": "0x40387e41d773d8fe",
+      "expected": "0x0970b49189eb23c8",
+      "composed": "0x0970b49189eb23c8",
+      "prior": "0x0970b49189eb23c8"
+    },
+    {
+      "x_bits": "0xc000068da1f202a0",
+      "z_bits": "0x3ff6a9e2ee600dbe",
+      "expected": "0x3f971eaab1785373",
+      "composed": "0x3f971eaab1785373",
+      "prior": "0x3f971eaab1785373"
+    },
+    {
+      "x_bits": "0xc034c50bfddaefcc",
+      "z_bits": "0x402d5f7093db580b",
+      "expected": "0x2c215fd10902a457",
+      "composed": "0x2c215fd10902a457",
+      "prior": "0x2c215fd10902a457"
+    },
+    {
+      "x_bits": "0xc00547c174b3ba00",
+      "z_bits": "0x3ffe184a3bef2fd4",
+      "expected": "0x3f70005eff7d0799",
+      "composed": "0x3f70005eff7d0799",
+      "prior": "0x3f70005eff7d0799"
+    },
+    {
+      "x_bits": "0xbfda61dc7d2e6380",
+      "z_bits": "0x3fd2a7b37c334aee",
+      "expected": "0x3fd5c400735167c1",
+      "composed": "0x3fd5c400735167c1",
+      "prior": "0x3fd5c400735167c1"
+    },
+    {
+      "x_bits": "0xc02dadf075223d02",
+      "z_bits": "0x4024fc8decb4e7ba",
+      "expected": "0x35ae56a338005c27",
+      "composed": "0x35ae56a338005c27",
+      "prior": "0x35ae56a338005c27"
+    },
+    {
+      "x_bits": "0xc02abd19c74a289c",
+      "z_bits": "0x4022e837953bc956",
+      "expected": "0x378fd4ca31d32f1c",
+      "composed": "0x378fd4ca31d32f1c",
+      "prior": "0x378fd4ca31d32f1c"
+    },
+    {
+      "x_bits": "0xc022e869a085f1b0",
+      "z_bits": "0x401abd608d3075bf",
+      "expected": "0x3b9ed26953d8d6b2",
+      "composed": "0x3b9ed26953d8d6b2",
+      "prior": "0x3b9ed26953d8d6b2"
+    },
+    {
+      "x_bits": "0x40018cbe19135870",
+      "z_bits": "0x3ff8d1b28db75d4a",
+      "expected": "0x3fef8c440fac503c",
+      "composed": "0x3fef8c440fac503c",
+      "prior": "0x3fef8c440fac503c"
+    },
+    {
+      "x_bits": "0xc01adf5ab86a39a0",
+      "z_bits": "0x401300702945d31e",
+      "expected": "0x3da43d860275151c",
+      "composed": "0x3da43d860275151c",
+      "prior": "0x3da43d860275151c"
+    },
+    {
+      "x_bits": "0xc039f46692482cce",
+      "z_bits": "0x40325a4cff49b35c",
+      "expected": "0x2130772587d79668",
+      "composed": "0x2130772587d79668",
+      "prior": "0x2130772587d79668"
+    },
+    {
+      "x_bits": "0xc012590ea65c7f10",
+      "z_bits": "0x4009f2a45c391b5a",
+      "expected": "0x3ec2dce3bc12fc74",
+      "composed": "0x3ec2dce3bc12fc74",
+      "prior": "0x3ec2dce3bc12fc74"
+    },
+    {
+      "x_bits": "0xc0377ef421a3523d",
+      "z_bits": "0x40309d36e9dff528",
+      "expected": "0x26adaf98a0d05135",
+      "composed": "0x26adaf98a0d05135",
+      "prior": "0x26adaf98a0d05135"
+    },
+    {
+      "x_bits": "0xc037f25bbcd3453f",
+      "z_bits": "0x4030eed165da0f4f",
+      "expected": "0x25b5a87eff45e5e4",
+      "composed": "0x25b5a87eff45e5e4",
+      "prior": "0x25b5a87eff45e5e4"
+    },
+    {
+      "x_bits": "0xc030e73a04a257c8",
+      "z_bits": "0x4027e79f6232fa4b",
+      "expected": "0x32b66d857357b617",
+      "composed": "0x32b66d857357b617",
+      "prior": "0x32b66d857357b617"
+    },
+    {
+      "x_bits": "0xc02dffda143a50fc",
+      "z_bits": "0x40253679afa8cdbc",
+      "expected": "0x357612507400e5cf",
+      "composed": "0x357612507400e5cf",
+      "prior": "0x357612507400e5cf"
+    },
+    {
+      "x_bits": "0xc040ba3eb82d5fd8",
+      "z_bits": "0x4037a8024ac3d8f5",
+      "expected": "0x0d130080e92e214e",
+      "composed": "0x0d130080e92e214e",
+      "prior": "0x0d130080e92e214e"
+    },
+    {
+      "x_bits": "0xc03d84a7b68ba6e6",
+      "z_bits": "0x4034df5cb199068b",
+      "expected": "0x1843308267b381d5",
+      "composed": "0x1843308267b381d5",
+      "prior": "0x1843308267b381d5"
+    },
+    {
+      "x_bits": "0xc020052a0d58b88c",
+      "z_bits": "0x4016a7ec107f09b5",
+      "expected": "0x3cc4a6469170190f",
+      "composed": "0x3cc4a6469170190f",
+      "prior": "0x3cc4a6469170190f"
+    },
+    {
+      "x_bits": "0xc0375cb484f456eb",
+      "z_bits": "0x403084ff469074e7",
+      "expected": "0x26f56f6997b172c3",
+      "composed": "0x26f56f6997b172c3",
+      "prior": "0x26f56f6997b172c3"
+    },
+    {
+      "x_bits": "0xc03474071c67debf",
+      "z_bits": "0x402cecdc8af76c3b",
+      "expected": "0x2cb7747b8443a5cf",
+      "composed": "0x2cb7747b8443a5cf",
+      "prior": "0x2cb7747b8443a5cf"
+    },
+    {
+      "x_bits": "0xc02a49340cae0b68",
+      "z_bits": "0x40229643ea99e63a",
+      "expected": "0x37d4557abdcf6578",
+      "composed": "0x37d4557abdcf6578",
+      "prior": "0x37d4557abdcf6578"
+    },
+    {
+      "x_bits": "0xc0427a43ca511e3d",
+      "z_bits": "0x403a219ac9d28257",
+      "expected": "0x01f4206862a70072",
+      "composed": "0x01f4206862a70072",
+      "prior": "0x01f4206862a70072"
+    },
+    {
+      "x_bits": "0xc03e874c00dce695",
+      "z_bits": "0x4035963fda6c178f",
+      "expected": "0x1585e43155b6a657",
+      "composed": "0x1585e43155b6a657",
+      "prior": "0x1585e43155b6a657"
+    },
+    {
+      "x_bits": "0xc000485388e98d00",
+      "z_bits": "0x3ff706e75221b8e0",
+      "expected": "0x3f956951231dcaec",
+      "composed": "0x3f956951231dcaec",
+      "prior": "0x3f956951231dcaec"
+    },
+    {
+      "x_bits": "0xc015e5620431e3a8",
+      "z_bits": "0x400ef7355f5ae4c3",
+      "expected": "0x3e579eef31965bc9",
+      "composed": "0x3e579eef31965bc9",
+      "prior": "0x3e579eef31965bc9"
+    },
+    {
+      "x_bits": "0xc02e52b4dd095fe0",
+      "z_bits": "0x4025710ff9c4d591",
+      "expected": "0x353e710dfbd450e2",
+      "composed": "0x353e710dfbd450e2",
+      "prior": "0x353e710dfbd450e2"
+    },
+    {
+      "x_bits": "0xc03366ba8ed4d356",
+      "z_bits": "0x402b7003e0b46288",
+      "expected": "0x2e9d3e770eed8155",
+      "composed": "0x2e9d3e770eed8155",
+      "prior": "0x2e9d3e770eed8155"
+    },
+    {
+      "x_bits": "0xc03dee7479665438",
+      "z_bits": "0x40352a2c83138685",
+      "expected": "0x1726ee121cec5de7",
+      "composed": "0x1726ee121cec5de7",
+      "prior": "0x1726ee121cec5de7"
+    },
+    {
+      "x_bits": "0xc04156649bbd7d7d",
+      "z_bits": "0x403884d5e86c154e",
+      "expected": "0x0952f1d528cca0fb",
+      "composed": "0x0952f1d528cca0fb",
+      "prior": "0x0952f1d528cca0fb"
+    },
+    {
+      "x_bits": "0xc03a0ca479221654",
+      "z_bits": "0x40326b713b810eff",
+      "expected": "0x20f66023ce9a4db7",
+      "composed": "0x20f66023ce9a4db7",
+      "prior": "0x20f66023ce9a4db7"
+    },
+    {
+      "x_bits": "0xc03b6652e0353500",
+      "z_bits": "0x40335fe03981eaf7",
+      "expected": "0x1db46190130e31ce",
+      "composed": "0x1db46190130e31ce",
+      "prior": "0x1db46190130e31ce"
+    },
+    {
+      "x_bits": "0xc025bc5a08f15ab8",
+      "z_bits": "0x401ebd2e7fdbf8d8",
+      "expected": "0x3a503d4cd71ecc64",
+      "composed": "0x3a503d4cd71ecc64",
+      "prior": "0x3a503d4cd71ecc64"
+    },
+    {
+      "x_bits": "0xc02f1cf8fd2bf40c",
+      "z_bits": "0x402600160db5845d",
+      "expected": "0x34b199745e5661f2",
+      "composed": "0x34b199745e5661f2",
+      "prior": "0x34b199745e5661f2"
+    },
+    {
+      "x_bits": "0xc007efc6a7efe790",
+      "z_bits": "0x4000ecfdf14cf178",
+      "expected": "0x3f56b2e69cfaf0a3",
+      "composed": "0x3f56b2e69cfaf0a3",
+      "prior": "0x3f56b2e69cfaf0a3"
+    },
+    {
+      "x_bits": "0xc0407fc4718e87c2",
+      "z_bits": "0x4037554f1ff9257e",
+      "expected": "0x0e71f8e09eefe91f",
+      "composed": "0x0e71f8e09eefe91f",
+      "prior": "0x0e71f8e09eefe91f"
+    },
+    {
+      "x_bits": "0xc030574f2d5ae618",
+      "z_bits": "0x40271c17bcfef418",
+      "expected": "0x339030b7a8cb420e",
+      "composed": "0x339030b7a8cb420e",
+      "prior": "0x339030b7a8cb420e"
+    },
+    {
+      "x_bits": "0xc0165e2f251c5160",
+      "z_bits": "0x400fa20c1bd5e546",
+      "expected": "0x3e481afac3bae73f",
+      "composed": "0x3e481afac3bae73f",
+      "prior": "0x3e481afac3bae73f"
+    },
+    {
+      "x_bits": "0xc02e660b071918cc",
+      "z_bits": "0x40257ebc45395285",
+      "expected": "0x35311dc32029b46c",
+      "composed": "0x35311dc32029b46c",
+      "prior": "0x35311dc32029b46c"
+    },
+    {
+      "x_bits": "0xc03fb19b0927e034",
+      "z_bits": "0x4036692f7fead101",
+      "expected": "0x12411b9ba3466c4c",
+      "composed": "0x12411b9ba3466c4c",
+      "prior": "0x12411b9ba3466c4c"
+    },
+    {
+      "x_bits": "0xc02fa4bf93b48fc6",
+      "z_bits": "0x40266018163b8694",
+      "expected": "0x345147156e1a6b7f",
+      "composed": "0x345147156e1a6b7f",
+      "prior": "0x345147156e1a6b7f"
+    },
+    {
+      "x_bits": "0xc024b788fe1c5fec",
+      "z_bits": "0x401d4c54d073b48d",
+      "expected": "0x3acda31f0c30f856",
+      "composed": "0x3acda31f0c30f856",
+      "prior": "0x3acda31f0c30f856"
+    },
+    {
+      "x_bits": "0xc00e29bc15ea82b0",
+      "z_bits": "0x400554174a2c7023",
+      "expected": "0x3f155d61d6eb2237",
+      "composed": "0x3f155d61d6eb2237",
+      "prior": "0x3f155d61d6eb2237"
+    },
+    {
+      "x_bits": "0xc0236fd6c3483fc4",
+      "z_bits": "0x401b7ce61d107c10",
+      "expected": "0x3b6302ffbcc8c9bf",
+      "composed": "0x3b6302ffbcc8c9bf",
+      "prior": "0x3b6302ffbcc8c9bf"
+    },
+    {
+      "x_bits": "0xc01c882ad94125c8",
+      "z_bits": "0x40142cd387521ab8",
+      "expected": "0x3d614783586bfb68",
+      "composed": "0x3d614783586bfb68",
+      "prior": "0x3d614783586bfb68"
+    },
+    {
+      "x_bits": "0xc0058cab012d2160",
+      "z_bits": "0x3ffe79bf26ce9c0f",
+      "expected": "0x3f6cf1f38158fa9f",
+      "composed": "0x3f6cf1f38158fa9f",
+      "prior": "0x3f6cf1f38158fa9f"
+    },
+    {
+      "x_bits": "0xc02f42feebba714c",
+      "z_bits": "0x40261af8fb9756e2",
+      "expected": "0x349601edc8835974",
+      "composed": "0x349601edc8835974",
+      "prior": "0x349601edc8835974"
+    },
+    {
+      "x_bits": "0xc04082f9056168c7",
+      "z_bits": "0x403759d798bd141d",
+      "expected": "0x0e5f6da0fdfcad6c",
+      "composed": "0x0e5f6da0fdfcad6c",
+      "prior": "0x0e5f6da0fdfcad6c"
+    },
+    {
+      "x_bits": "0xc02b11076746a93a",
+      "z_bits": "0x4023239036cb6956",
+      "expected": "0x375bbd5ea8a154d6",
+      "composed": "0x375bbd5ea8a154d6",
+      "prior": "0x375bbd5ea8a154d6"
+    },
+    {
+      "x_bits": "0xc01e6090827bb060",
+      "z_bits": "0x40157adc8a578c99",
+      "expected": "0x3d116bc15e84c81d",
+      "composed": "0x3d116bc15e84c81d",
+      "prior": "0x3d116bc15e84c81d"
+    },
+    {
+      "x_bits": "0xc038f53e76b17219",
+      "z_bits": "0x4031a5e0b4c0d2c6",
+      "expected": "0x237a0936b1ed24a2",
+      "composed": "0x237a0936b1ed24a2",
+      "prior": "0x237a0936b1ed24a2"
+    },
+    {
+      "x_bits": "0xc009f0654db70a20",
+      "z_bits": "0x4002577805fbff54",
+      "expected": "0x3f436bbdd55f6c7e",
+      "composed": "0x3f436bbdd55f6c7e",
+      "prior": "0x3f436bbdd55f6c7e"
+    },
+    {
+      "x_bits": "0xc0257e2218e5df98",
+      "z_bits": "0x401e6530fe74c6ed",
+      "expected": "0x3a6e8727572ceda3",
+      "composed": "0x3a6e8727572ceda3",
+      "prior": "0x3a6e8727572ceda3"
+    },
+    {
+      "x_bits": "0xc0219eaafdf7815c",
+      "z_bits": "0x4018eb0c3ad82833",
+      "expected": "0x3c271b359725837a",
+      "composed": "0x3c271b359725837a",
+      "prior": "0x3c271b359725837a"
+    },
+    {
+      "x_bits": "0xc03e290890241944",
+      "z_bits": "0x40355398591e8412",
+      "expected": "0x16881315a1592c49",
+      "composed": "0x16881315a1592c49",
+      "prior": "0x16881315a1592c49"
+    },
+    {
+      "x_bits": "0xc0385741ea970f45",
+      "z_bits": "0x4031362a17a92dfc",
+      "expected": "0x24d9b7f0d1de5d70",
+      "composed": "0x24d9b7f0d1de5d70",
+      "prior": "0x24d9b7f0d1de5d70"
+    },
+    {
+      "x_bits": "0xc0225db1e3378258",
+      "z_bits": "0x4019f9335e307c76",
+      "expected": "0x3bd8bf9601f916bc",
+      "composed": "0x3bd8bf9601f916bc",
+      "prior": "0x3bd8bf9601f916bc"
+    },
+    {
+      "x_bits": "0xc03d0d174c72885e",
+      "z_bits": "0x40348ad146bd4062",
+      "expected": "0x198031b7b76e8509",
+      "composed": "0x198031b7b76e8509",
+      "prior": "0x198031b7b76e8509"
+    },
+    {
+      "x_bits": "0xc01f7711d744c968",
+      "z_bits": "0x40163fcb5de45d84",
+      "expected": "0x3ce07424e9c78802",
+      "composed": "0x3ce07424e9c78802",
+      "prior": "0x3ce07424e9c78802"
+    },
+    {
+      "x_bits": "0xc0404d4b3cac44ee",
+      "z_bits": "0x40370dedc780f2b4",
+      "expected": "0x0f9cbe44e63204d6",
+      "composed": "0x0f9cbe44e63204d6",
+      "prior": "0x0f9cbe44e63204d6"
+    },
+    {
+      "x_bits": "0xc0309237840a8575",
+      "z_bits": "0x40276f668ec30111",
+      "expected": "0x33372accace2b579",
+      "composed": "0x33372accace2b579",
+      "prior": "0x33372accace2b579"
+    },
+    {
+      "x_bits": "0xc0366f2375ba96c2",
+      "z_bits": "0x402fba063daeebd2",
+      "expected": "0x28e1966f813ddc9c",
+      "composed": "0x28e1966f813ddc9c",
+      "prior": "0x28e1966f813ddc9c"
+    },
+    {
+      "x_bits": "0xc0429b2c55426c6a",
+      "z_bits": "0x403a5024e416e718",
+      "expected": "0x0117b0c491160f66",
+      "composed": "0x0117b0c491160f66",
+      "prior": "0x0117b0c491160f66"
+    },
+    {
+      "x_bits": "0xc03bb1fddccfda71",
+      "z_bits": "0x4033956194a9df0d",
+      "expected": "0x1cf80753fc6329e0",
+      "composed": "0x1cf80753fc6329e0",
+      "prior": "0x1cf80753fc6329e0"
+    },
+    {
+      "x_bits": "0xc0420a6e9df7698e",
+      "z_bits": "0x4039837305f62a99",
+      "expected": "0x04d50d448566d9fe",
+      "composed": "0x04d50d448566d9fe",
+      "prior": "0x04d50d448566d9fe"
+    },
+    {
+      "x_bits": "0xbfef86be808da4c0",
+      "z_bits": "0x3fe64ae0bf2b991f",
+      "expected": "0x3fc4c50b9d6410a5",
+      "composed": "0x3fc4c50b9d6410a5",
+      "prior": "0x3fc4c50b9d6410a5"
+    },
+    {
+      "x_bits": "0xc03b47c5e0490096",
+      "z_bits": "0x40334a45f155df62",
+      "expected": "0x1e00b58bece4406f",
+      "composed": "0x1e00b58bece4406f",
+      "prior": "0x1e00b58bece4406f"
+    },
+    {
+      "x_bits": "0xc03f1456d0d06754",
+      "z_bits": "0x4035f9fb399c679a",
+      "expected": "0x13febda17d6fb435",
+      "composed": "0x13febda17d6fb435",
+      "prior": "0x13febda17d6fb435"
+    },
+    {
+      "x_bits": "0xc040f3a18a236362",
+      "z_bits": "0x4037f92a3fc931a4",
+      "expected": "0x0bb5c894a6670b1c",
+      "composed": "0x0bb5c894a6670b1c",
+      "prior": "0x0bb5c894a6670b1c"
+    },
+    {
+      "x_bits": "0x3fe4abaf63d1df80",
+      "z_bits": "0x3fdd3b92a6f59de2",
+      "expected": "0x3fe7b503f3801e53",
+      "composed": "0x3fe7b503f3801e53",
+      "prior": "0x3fe7b503f3801e53"
+    },
+    {
+      "x_bits": "0xc03800b91f23cd3d",
+      "z_bits": "0x4030f8f9b37817aa",
+      "expected": "0x25968327ede5d06c",
+      "composed": "0x25968327ede5d06c",
+      "prior": "0x25968327ede5d06c"
+    },
+    {
+      "x_bits": "0xc0418a508f35d6ba",
+      "z_bits": "0x4038ce4390bae4d6",
+      "expected": "0x080c2b762348e65e",
+      "composed": "0x080c2b762348e65e",
+      "prior": "0x080c2b762348e65e"
+    },
+    {
+      "x_bits": "0xc034f8a6083a864b",
+      "z_bits": "0x402da86a656239a4",
+      "expected": "0x2bc066f05f8abac7",
+      "composed": "0x2bc066f05f8abac7",
+      "prior": "0x2bc066f05f8abac7"
+    },
+    {
+      "x_bits": "0xc028fed0e9e7cf8c",
+      "z_bits": "0x4021aca56f980493",
+      "expected": "0x38946e6ffe8fea21",
+      "composed": "0x38946e6ffe8fea21",
+      "prior": "0x38946e6ffe8fea21"
+    },
+    {
+      "x_bits": "0xc024216fb01a9464",
+      "z_bits": "0x401c780f3a29bd82",
+      "expected": "0x3b1303c42085f7e8",
+      "composed": "0x3b1303c42085f7e8",
+      "prior": "0x3b1303c42085f7e8"
+    },
+    {
+      "x_bits": "0xc02ad7f437cd6260",
+      "z_bits": "0x4022fb348bb51fc1",
+      "expected": "0x377f692e33ad16d5",
+      "composed": "0x377f692e33ad16d5",
+      "prior": "0x377f692e33ad16d5"
+    },
+    {
+      "x_bits": "0xc0146676c7118620",
+      "z_bits": "0x400cd9adec032439",
+      "expected": "0x3e86c946d0a63f65",
+      "composed": "0x3e86c946d0a63f65",
+      "prior": "0x3e86c946d0a63f65"
+    },
+    {
+      "x_bits": "0xc02e9948f354dde4",
+      "z_bits": "0x4025a2f80ae57465",
+      "expected": "0x350d9212ee52771e",
+      "composed": "0x350d9212ee52771e",
+      "prior": "0x350d9212ee52771e"
+    },
+    {
+      "x_bits": "0xc00376d79258fe30",
+      "z_bits": "0x3ffb86cd873302f2",
+      "expected": "0x3f7eaa3b3e3fe00f",
+      "composed": "0x3f7eaa3b3e3fe00f",
+      "prior": "0x3f7eaa3b3e3fe00f"
+    },
+    {
+      "x_bits": "0xc02a8429c35b908c",
+      "z_bits": "0x4022bff4c89ca4f9",
+      "expected": "0x37b1a256587ad7e6",
+      "composed": "0x37b1a256587ad7e6",
+      "prior": "0x37b1a256587ad7e6"
+    },
+    {
+      "x_bits": "0xc00e6c6e588a38a0",
+      "z_bits": "0x400583409d6d261f",
+      "expected": "0x3f12bdd21a2843ca",
+      "composed": "0x3f12bdd21a2843ca",
+      "prior": "0x3f12bdd21a2843ca"
+    },
+    {
+      "x_bits": "0xc02fecaddabfd078",
+      "z_bits": "0x402692f4f2855f9c",
+      "expected": "0x341d632be90cd357",
+      "composed": "0x341d632be90cd357",
+      "prior": "0x341d632be90cd357"
+    },
+    {
+      "x_bits": "0xc0369fcdf585edd6",
+      "z_bits": "0x402ffed9382fe4da",
+      "expected": "0x287ed0864dba9543",
+      "composed": "0x287ed0864dba9543",
+      "prior": "0x287ed0864dba9543"
+    },
+    {
+      "x_bits": "0xc02a3265617b78e8",
+      "z_bits": "0x402286235aa9a9eb",
+      "expected": "0x37e24d1c856a405f",
+      "composed": "0x37e24d1c856a405f",
+      "prior": "0x37e24d1c856a405f"
+    },
+    {
+      "x_bits": "0xc04067a21015c398",
+      "z_bits": "0x4037332d93364279",
+      "expected": "0x0f01772962986b99",
+      "composed": "0x0f01772962986b99",
+      "prior": "0x0f01772962986b99"
+    },
+    {
+      "x_bits": "0xc02f692c7376dd78",
+      "z_bits": "0x402635f7e98aa67c",
+      "expected": "0x347b3d28b88a3401",
+      "composed": "0x347b3d28b88a3401",
+      "prior": "0x347b3d28b88a3401"
+    },
+    {
+      "x_bits": "0xc02b87b1cc00e3ee",
+      "z_bits": "0x40237778fb687d22",
+      "expected": "0x371273de6a6471fd",
+      "composed": "0x371273de6a6471fd",
+      "prior": "0x371273de6a6471fd"
+    },
+    {
+      "x_bits": "0xc02620622c1accb0",
+      "z_bits": "0x401f4aa5dfe5be91",
+      "expected": "0x3a1df7a2823a96f8",
+      "composed": "0x3a1df7a2823a96f8",
+      "prior": "0x3a1df7a2823a96f8"
+    },
+    {
+      "x_bits": "0xc02aca2c7eb80354",
+      "z_bits": "0x4022f17611a2be4c",
+      "expected": "0x37869359a3a2aae2",
+      "composed": "0x37869359a3a2aae2",
+      "prior": "0x37869359a3a2aae2"
+    },
+    {
+      "x_bits": "0xc02f77a559362308",
+      "z_bits": "0x40264033ab9e2bf3",
+      "expected": "0x34716f976cd6633e",
+      "composed": "0x34716f976cd6633e",
+      "prior": "0x34716f976cd6633e"
+    },
+    {
+      "x_bits": "0xc035dadaded39224",
+      "z_bits": "0x402ee851dc498335",
+      "expected": "0x2a099f134f3870c0",
+      "composed": "0x2a099f134f3870c0",
+      "prior": "0x2a099f134f3870c0"
+    },
+    {
+      "x_bits": "0xc0373451c9b196f3",
+      "z_bits": "0x40306870b0416b4b",
+      "expected": "0x274a8d82bf701ca2",
+      "composed": "0x274a8d82bf701ca2",
+      "prior": "0x274a8d82bf701ca2"
+    },
+    {
+      "x_bits": "0xc03c174271f3a1d5",
+      "z_bits": "0x4033dcfd076328a8",
+      "expected": "0x1bf91150d7ca4334",
+      "composed": "0x1bf91150d7ca4334",
+      "prior": "0x1bf91150d7ca4334"
+    },
+    {
+      "x_bits": "0xc020da96b4630bdc",
+      "z_bits": "0x4017d5bff59bcadf",
+      "expected": "0x3c7474a50b8f436f",
+      "composed": "0x3c7474a50b8f436f",
+      "prior": "0x3c7474a50b8f436f"
+    },
+    {
+      "x_bits": "0xc034cd918075f88f",
+      "z_bits": "0x402d6b7db2e7930e",
+      "expected": "0x2c115e2fab6f8cb1",
+      "composed": "0x2c115e2fab6f8cb1",
+      "prior": "0x2c115e2fab6f8cb1"
+    },
+    {
+      "x_bits": "0xc02fe51bfcb58eaa",
+      "z_bits": "0x40268d9aab0fa7b6",
+      "expected": "0x34229eaccb4b6d56",
+      "composed": "0x34229eaccb4b6d56",
+      "prior": "0x34229eaccb4b6d56"
+    },
+    {
+      "x_bits": "0xc040c38c5a5fc65d",
+      "z_bits": "0x4037b52a6e395883",
+      "expected": "0x0cda98890db8bdc0",
+      "composed": "0x0cda98890db8bdc0",
+      "prior": "0x0cda98890db8bdc0"
+    },
+    {
+      "x_bits": "0xc0401cee8451ad58",
+      "z_bits": "0x4036c988cc076c2f",
+      "expected": "0x10b71ece1f12beec",
+      "composed": "0x10b71ece1f12beec",
+      "prior": "0x10b71ece1f12beec"
+    },
+    {
+      "x_bits": "0xc005edc25fbe28b0",
+      "z_bits": "0x3fff030df3bc6f4e",
+      "expected": "0x3f6914f72b4d06f8",
+      "composed": "0x3f6914f72b4d06f8",
+      "prior": "0x3f6914f72b4d06f8"
+    },
+    {
+      "x_bits": "0xc0341ad2b7d618e7",
+      "z_bits": "0x402c6eb501a075fa",
+      "expected": "0x2d5b4dee0bea605d",
+      "composed": "0x2d5b4dee0bea605d",
+      "prior": "0x2d5b4dee0bea605d"
+    },
+    {
+      "x_bits": "0xc014894da018e748",
+      "z_bits": "0x400d0af313d06178",
+      "expected": "0x3e8306d4ba03c919",
+      "composed": "0x3e8306d4ba03c919",
+      "prior": "0x3e8306d4ba03c919"
+    },
+    {
+      "x_bits": "0xc0404f382c9402de",
+      "z_bits": "0x403710a6e5cebc23",
+      "expected": "0x0f91972d6df58c2c",
+      "composed": "0x0f91972d6df58c2c",
+      "prior": "0x0f91972d6df58c2c"
+    },
+    {
+      "x_bits": "0xc039ff1f397ee9f9",
+      "z_bits": "0x403261e1c29577f0",
+      "expected": "0x211627d14b51fba1",
+      "composed": "0x211627d14b51fba1",
+      "prior": "0x211627d14b51fba1"
+    },
+    {
+      "x_bits": "0xc040e1b20fd959ae",
+      "z_bits": "0x4037dfcceb4cc305",
+      "expected": "0x0c2391f75a033327",
+      "composed": "0x0c2391f75a033327",
+      "prior": "0x0c2391f75a033327"
+    },
+    {
+      "x_bits": "0xc038fd1fa3e418a0",
+      "z_bits": "0x4031ab7310b6aec2",
+      "expected": "0x23681cc62e90b510",
+      "composed": "0x23681cc62e90b510",
+      "prior": "0x23681cc62e90b510"
+    },
+    {
+      "x_bits": "0xc03a427bd21230fc",
+      "z_bits": "0x4032918387e68d78",
+      "expected": "0x2077348a7d240637",
+      "composed": "0x2077348a7d240637",
+      "prior": "0x2077348a7d240637"
+    },
+    {
+      "x_bits": "0xc0356aea2fe6cb97",
+      "z_bits": "0x402e4a0330b8da8c",
+      "expected": "0x2ae47f5c5baac738",
+      "composed": "0x2ae47f5c5baac738",
+      "prior": "0x2ae47f5c5baac738"
+    },
+    {
+      "x_bits": "0xc0092b7be1c75dd0",
+      "z_bits": "0x4001cc3b2df44e99",
+      "expected": "0x3f4b18e5f35768d2",
+      "composed": "0x3f4b18e5f35768d2",
+      "prior": "0x3f4b18e5f35768d2"
+    },
+    {
+      "x_bits": "0xc024c290c857d18c",
+      "z_bits": "0x401d5bee419f59a5",
+      "expected": "0x3ac7a7d0252a6cc1",
+      "composed": "0x3ac7a7d0252a6cc1",
+      "prior": "0x3ac7a7d0252a6cc1"
+    },
+    {
+      "x_bits": "0xc009d0718232d4c0",
+      "z_bits": "0x400240e008ed7096",
+      "expected": "0x3f4482f0157ad476",
+      "composed": "0x3f4482f0157ad476",
+      "prior": "0x3f4482f0157ad476"
+    },
+    {
+      "x_bits": "0xc03012fce12aa527",
+      "z_bits": "0x4026bb78b8e05bf5",
+      "expected": "0x33f370d6c290fb53",
+      "composed": "0x33f370d6c290fb53",
+      "prior": "0x33f370d6c290fb53"
+    },
+    {
+      "x_bits": "0xc041c73579af1d62",
+      "z_bits": "0x403924619f2505c0",
+      "expected": "0x068786791e524851",
+      "composed": "0x068786791e524851",
+      "prior": "0x068786791e524851"
+    },
+    {
+      "x_bits": "0xc0133dd6fa46b530",
+      "z_bits": "0x400b36307bd620f1",
+      "expected": "0x3ea945c212e7f5c4",
+      "composed": "0x3ea945c212e7f5c4",
+      "prior": "0x3ea945c212e7f5c4"
+    },
+    {
+      "x_bits": "0xc03dbb0eb8d954fa",
+      "z_bits": "0x403505d49384cea5",
+      "expected": "0x17b1fe9230884986",
+      "composed": "0x17b1fe9230884986",
+      "prior": "0x17b1fe9230884986"
+    },
+    {
+      "x_bits": "0xc03b7ae3a839874d",
+      "z_bits": "0x40336e6afcb9b400",
+      "expected": "0x1d81ef6f21dc5f56",
+      "composed": "0x1d81ef6f21dc5f56",
+      "prior": "0x1d81ef6f21dc5f56"
+    },
+    {
+      "x_bits": "0xc04020b49c98b48d",
+      "z_bits": "0x4036cedf0fb838fa",
+      "expected": "0x10a1db6533d58f61",
+      "composed": "0x10a1db6533d58f61",
+      "prior": "0x10a1db6533d58f61"
+    },
+    {
+      "x_bits": "0xc032db89e59f0bc3",
+      "z_bits": "0x402aab2baf72264e",
+      "expected": "0x2f8e3183a41dda7e",
+      "composed": "0x2f8e3183a41dda7e",
+      "prior": "0x2f8e3183a41dda7e"
+    },
+    {
+      "x_bits": "0x3ff789211855cf80",
+      "z_bits": "0x3ff0a468e6aac192",
+      "expected": "0x3fedbd3f859209b5",
+      "composed": "0x3fedbd3f859209b5",
+      "prior": "0x3fedbd3f859209b5"
+    },
+    {
+      "x_bits": "0xc0332e6a3cefdb34",
+      "z_bits": "0x402b20601f64b319",
+      "expected": "0x2f0018b34ce0d187",
+      "composed": "0x2f0018b34ce0d187",
+      "prior": "0x2f0018b34ce0d187"
+    },
+    {
+      "x_bits": "0xc02987c43345dd7c",
+      "z_bits": "0x40220d7c185f66ae",
+      "expected": "0x3845d41eea334c72",
+      "composed": "0x3845d41eea334c72",
+      "prior": "0x3845d41eea334c72"
+    },
+    {
+      "x_bits": "0xc028cd19b323cb54",
+      "z_bits": "0x4021897defc79185",
+      "expected": "0x38b13dc133c1b3aa",
+      "composed": "0x38b13dc133c1b3aa",
+      "prior": "0x38b13dc133c1b3aa"
+    },
+    {
+      "x_bits": "0xc0400af95856049d",
+      "z_bits": "0x4036b0236a0d737c",
+      "expected": "0x1120841acfa9dc31",
+      "composed": "0x1120841acfa9dc31",
+      "prior": "0x1120841acfa9dc31"
+    },
+    {
+      "x_bits": "0xc030a1562d3e9e1a",
+      "z_bits": "0x402784c87fb64e80",
+      "expected": "0x332152097d2278dd",
+      "composed": "0x332152097d2278dd",
+      "prior": "0x332152097d2278dd"
+    },
+    {
+      "x_bits": "0xc0332a39d575b421",
+      "z_bits": "0x402b1a738399241e",
+      "expected": "0x2f060c1d262d00c9",
+      "composed": "0x2f060c1d262d00c9",
+      "prior": "0x2f060c1d262d00c9"
+    },
+    {
+      "x_bits": "0xc02551bfe1f18f3c",
+      "z_bits": "0x401e266c65591b8e",
+      "expected": "0x3a8374916316d3c7",
+      "composed": "0x3a8374916316d3c7",
+      "prior": "0x3a8374916316d3c7"
+    },
+    {
+      "x_bits": "0xc031b2c90b6dd9bd",
+      "z_bits": "0x4029077f810b25ad",
+      "expected": "0x3177d3be969e8019",
+      "composed": "0x3177d3be969e8019",
+      "prior": "0x3177d3be969e8019"
+    },
+    {
+      "x_bits": "0xc02695cd2439f99c",
+      "z_bits": "0x401ff0b3ad3255f0",
+      "expected": "0x39e2198843ec695d",
+      "composed": "0x39e2198843ec695d",
+      "prior": "0x39e2198843ec695d"
+    },
+    {
+      "x_bits": "0xc03fc9acd559f73c",
+      "z_bits": "0x40367a348c6f33ef",
+      "expected": "0x11fb9ae3f50aa740",
+      "composed": "0x11fb9ae3f50aa740",
+      "prior": "0x11fb9ae3f50aa740"
+    },
+    {
+      "x_bits": "0xc038c028a551115e",
+      "z_bits": "0x4031805740f1ebf9",
+      "expected": "0x23f1c0915bbca958",
+      "composed": "0x23f1c0915bbca958",
+      "prior": "0x23f1c0915bbca958"
+    },
+    {
+      "x_bits": "0xc042587999f3a174",
+      "z_bits": "0x4039f1d192e93ca0",
+      "expected": "0x02d49c74c96c242a",
+      "composed": "0x02d49c74c96c242a",
+      "prior": "0x02d49c74c96c242a"
+    },
+    {
+      "x_bits": "0xc03ccc35eacbf0bc",
+      "z_bits": "0x40345cf0ab89d4a7",
+      "expected": "0x1a285966db83f3d8",
+      "composed": "0x1a285966db83f3d8",
+      "prior": "0x1a285966db83f3d8"
+    },
+    {
+      "x_bits": "0xc017210df040cd38",
+      "z_bits": "0x40105ad15827f62f",
+      "expected": "0x3e2fa6daa7f69fce",
+      "composed": "0x3e2fa6daa7f69fce",
+      "prior": "0x3e2fa6daa7f69fce"
+    },
+    {
+      "x_bits": "0xc032034ca466f365",
+      "z_bits": "0x4029795cb472b1c1",
+      "expected": "0x30f5d186a5d61bc2",
+      "composed": "0x30f5d186a5d61bc2",
+      "prior": "0x30f5d186a5d61bc2"
+    },
+    {
+      "x_bits": "0xc036b0c42cdd2dbe",
+      "z_bits": "0x40300b6b052ea81c",
+      "expected": "0x285b63b70dad85ef",
+      "composed": "0x285b63b70dad85ef",
+      "prior": "0x285b63b70dad85ef"
+    },
+    {
+      "x_bits": "0xc021d91d98d60ab0",
+      "z_bits": "0x40193db48c78fb1d",
+      "expected": "0x3c1095a442f6d57d",
+      "composed": "0x3c1095a442f6d57d",
+      "prior": "0x3c1095a442f6d57d"
+    },
+    {
+      "x_bits": "0xc04254bbd1f7882a",
+      "z_bits": "0x4039ec871114b268",
+      "expected": "0x02ee212bf00c9f0d",
+      "composed": "0x02ee212bf00c9f0d",
+      "prior": "0x02ee212bf00c9f0d"
+    },
+    {
+      "x_bits": "0xc0341aa2a8a4431a",
+      "z_bits": "0x402c6e710a4833bb",
+      "expected": "0x2d5bb6010f0d760f",
+      "composed": "0x2d5bb6010f0d760f",
+      "prior": "0x2d5bb6010f0d760f"
+    },
+    {
+      "x_bits": "0xc0403cf6ea27b88b",
+      "z_bits": "0x4036f6d5e92839ea",
+      "expected": "0x0ffca2e8cf06df5d",
+      "composed": "0x0ffca2e8cf06df5d",
+      "prior": "0x0ffca2e8cf06df5d"
+    },
+    {
+      "x_bits": "0xbfd29ac703bda500",
+      "z_bits": "0x3fca4f959ae6170f",
+      "expected": "0x3fd8ae5a0b7e68bd",
+      "composed": "0x3fd8ae5a0b7e68bd",
+      "prior": "0x3fd8ae5a0b7e68bd"
+    },
+    {
+      "x_bits": "0xc0421ac87b7efe36",
+      "z_bits": "0x40399a92bb180d54",
+      "expected": "0x046a8717ac8400ad",
+      "composed": "0x046a8717ac8400ad",
+      "prior": "0x046a8717ac8400ad"
+    },
+    {
+      "x_bits": "0xc02f53f879832e82",
+      "z_bits": "0x402626f9c0dccfab",
+      "expected": "0x348a251bc264d8bf",
+      "composed": "0x348a251bc264d8bf",
+      "prior": "0x348a251bc264d8bf"
+    },
+    {
+      "x_bits": "0xc0299affade62f24",
+      "z_bits": "0x40221b15854607f0",
+      "expected": "0x383aee347cd90dd5",
+      "composed": "0x383aee347cd90dd5",
+      "prior": "0x383aee347cd90dd5"
+    },
+    {
+      "x_bits": "0xbff57f6df3afc140",
+      "z_bits": "0x3fee67064eab9e70",
+      "expected": "0x3fb6ebe81f1cde40",
+      "composed": "0x3fb6ebe81f1cde40",
+      "prior": "0x3fb6ebe81f1cde40"
+    },
+    {
+      "x_bits": "0xc02810c09be948cc",
+      "z_bits": "0x4021044f4e0807af",
+      "expected": "0x3918d5bc17c7ecd6",
+      "composed": "0x3918d5bc17c7ecd6",
+      "prior": "0x3918d5bc17c7ecd6"
+    },
+    {
+      "x_bits": "0x4007462641fbf370",
+      "z_bits": "0x4000750c41902cc3",
+      "expected": "0x3feff129129e224a",
+      "composed": "0x3feff129129e224a",
+      "prior": "0x3feff129129e224a"
+    },
+    {
+      "x_bits": "0x04481e05da6c7685",
+      "z_bits": "0x04410db184eb2d25",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x403d93b469836dbc",
+      "z_bits": "0x4034ea00f6a11e19",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0x3292900ef98696c9",
+      "z_bits": "0x328a406cf2562d98",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x40232c0b49ecbfb0",
+      "z_bits": "0x401b1d05c4497e4a",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0x3e47e6292961735f",
+      "z_bits": "0x3e40e6316739cc34",
+      "expected": "0x3fe00000026232c1",
+      "composed": "0x3fe00000026232c1",
+      "prior": "0x3fe00000026232c1"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8ac9",
+      "z_bits": "0x403ac3c96948f5f5",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b20",
+      "z_bits": "0x403ac3c96948f670",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x8e437541334c0ef8",
+      "z_bits": "0x0e3b848ed513a2d0",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xb6e519cd97a44ce5",
+      "z_bits": "0x36ddd74d9e68d886",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a16",
+      "z_bits": "0x403ac3c96948f4f8",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a33",
+      "z_bits": "0x403ac3c96948f521",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8af6",
+      "z_bits": "0x403ac3c96948f634",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xbb5c005b6a586042",
+      "z_bits": "0x3b53cccb3da45245",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x403991a4ca5c49f0",
+      "z_bits": "0x403214781416ce82",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0x40422e716969c61a",
+      "z_bits": "0x4039b6605e282aae",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a71",
+      "z_bits": "0x403ac3c96948f578",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x4014b4c1a91fff78",
+      "z_bits": "0x400d4866d6c4a017",
+      "expected": "0x3fefffffc35114cd",
+      "composed": "0x3fefffffc35114cd",
+      "prior": "0x3fefffffc35114cd"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8ab5",
+      "z_bits": "0x403ac3c96948f5d9",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xb6cd56f411564285",
+      "z_bits": "0x36c4bf0bcb90e486",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89da",
+      "z_bits": "0x403ac3c96948f4a3",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89bf",
+      "z_bits": "0x403ac3c96948f47d",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x277efa3e5f023268",
+      "z_bits": "0x2775e7876ff95499",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b8b",
+      "z_bits": "0x403ac3c96948f707",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f212d8",
+      "z_bits": "0x403a992b45faf2f9",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89f2",
+      "z_bits": "0x403ac3c96948f4c5",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f212ff",
+      "z_bits": "0x403a992b45faf330",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8afc",
+      "z_bits": "0x403ac3c96948f63d",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x1b0a34c5a5f2be5c",
+      "z_bits": "0x1b0287d176d4ec60",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x403bd7a15e2c9054",
+      "z_bits": "0x4033affee9704934",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b36",
+      "z_bits": "0x403ac3c96948f68f",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x970bdfee7c3e80eb",
+      "z_bits": "0x1703b5dd98ca5399",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xbf4058d50ff79538",
+      "z_bits": "0x3f371e3f1e846328",
+      "expected": "0x3fdffcbd3f2c443b",
+      "composed": "0x3fdffcbd3f2c443b",
+      "prior": "0x3fdffcbd3f2c443b"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a52",
+      "z_bits": "0x403ac3c96948f54d",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x4042e06dd9153fa4",
+      "z_bits": "0x403ab2163621a3ed",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a10",
+      "z_bits": "0x403ac3c96948f4ef",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f2127a",
+      "z_bits": "0x403a992b45faf274",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd897f",
+      "z_bits": "0x403ac3c96948f422",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x0e1bbf81e5302215",
+      "z_bits": "0x0e139ef0317d25a7",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x8d827a1f5d8f7aee",
+      "z_bits": "0x0d7a216746a0161a",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89b6",
+      "z_bits": "0x403ac3c96948f470",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f211b1",
+      "z_bits": "0x403a992b45faf158",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21378",
+      "z_bits": "0x403a992b45faf3db",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xb4a7df645fb34d9c",
+      "z_bits": "0x34a0e16823205989",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x386cea65449d6f43",
+      "z_bits": "0x38647248bb756d8a",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x92392ab5ef85cc70",
+      "z_bits": "0x1231cbaf35d81ca5",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x4034bb7709570004",
+      "z_bits": "0x402d51e3933c769a",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8ba3",
+      "z_bits": "0x403ac3c96948f729",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f2131f",
+      "z_bits": "0x403a992b45faf35d",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x806f44f4ee2b16a2",
+      "z_bits": "0x00661c5bf505efc8",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b1b",
+      "z_bits": "0x403ac3c96948f669",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xb87bb8fd26ceb8f8",
+      "z_bits": "0x38739a54369df94b",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x3b463d52b47451bf",
+      "z_bits": "0x3b3f73931f34fab3",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b86",
+      "z_bits": "0x403ac3c96948f700",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x1e41dc730279ec8f",
+      "z_bits": "0x1e39426b74db86b9",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x1da76d38755f5fd0",
+      "z_bits": "0x1da090ace14c7b7b",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x2408b251ff3a86e5",
+      "z_bits": "0x2401768e3903d4cb",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x39d881e36c9ac02e",
+      "z_bits": "0x39d1544f1b9bc852",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x3b5f307bc9ba7b8d",
+      "z_bits": "0x3b560de1e8ea9aab",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b37",
+      "z_bits": "0x403ac3c96948f690",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21318",
+      "z_bits": "0x403a992b45faf354",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x4010ff2ed2f23398",
+      "z_bits": "0x400809807b1ad398",
+      "expected": "0x3fefffe9812a173b",
+      "composed": "0x3fefffe9812a173b",
+      "prior": "0x3fefffe9812a173b"
+    },
+    {
+      "x_bits": "0x095d72ef4c7fa620",
+      "z_bits": "0x0954d2d4f6e73c1d",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a68",
+      "z_bits": "0x403ac3c96948f56c",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8aa2",
+      "z_bits": "0x403ac3c96948f5be",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x2936f918bd2b2926",
+      "z_bits": "0x29303e90353f0081",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21308",
+      "z_bits": "0x403a992b45faf33d",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x402ef8d06dbc9454",
+      "z_bits": "0x4025e684ad4fb06d",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8ac7",
+      "z_bits": "0x403ac3c96948f5f2",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xa8e9aaf1157f85f4",
+      "z_bits": "0x28e2265b827072b4",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x272fdfe7376ebea0",
+      "z_bits": "0x272689ec41cf5ba9",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f213b6",
+      "z_bits": "0x403a992b45faf433",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x8f68b173bbf1607f",
+      "z_bits": "0x0f6175f10f24e881",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x3fbc39e4089e2e00",
+      "z_bits": "0x3fb3f579f256826f",
+      "expected": "0x3fe1679c42db41a0",
+      "composed": "0x3fe1679c42db41a0",
+      "prior": "0x3fe1679c42db41a0"
+    },
+    {
+      "x_bits": "0xc042cecf41f2123b",
+      "z_bits": "0x403a992b45faf21b",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8a22",
+      "z_bits": "0x403ac3c96948f509",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89b7",
+      "z_bits": "0x403ac3c96948f471",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x80d2308405314490",
+      "z_bits": "0x00c9b94ec2f54cef",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f2136d",
+      "z_bits": "0x403a992b45faf3cc",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89b9",
+      "z_bits": "0x403ac3c96948f474",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89b8",
+      "z_bits": "0x403ac3c96948f473",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21325",
+      "z_bits": "0x403a992b45faf366",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xa03ca7de9c1fa73b",
+      "z_bits": "0x2034433e3d068973",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8afd",
+      "z_bits": "0x403ac3c96948f63e",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x4002fbc496eb5190",
+      "z_bits": "0x3ffad8bfed3a0e48",
+      "expected": "0x3fefb7b751e8ebe7",
+      "composed": "0x3fefb7b751e8ebe7",
+      "prior": "0x3fefb7b751e8ebe7"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8bb4",
+      "z_bits": "0x403ac3c96948f741",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x3dfcc2a8c24281c2",
+      "z_bits": "0x3df4562fae99191f",
+      "expected": "0x3fe000000016f28e",
+      "composed": "0x3fe000000016f28e",
+      "prior": "0x3fe000000016f28e"
+    },
+    {
+      "x_bits": "0x9df9c6da37ec9363",
+      "z_bits": "0x1df23a17e1f00d45",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xa57dafc52a6f9f75",
+      "z_bits": "0x2574fdd959f4bacd",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21350",
+      "z_bits": "0x403a992b45faf3a3",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8998",
+      "z_bits": "0x403ac3c96948f445",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f212fe",
+      "z_bits": "0x403a992b45faf32f",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x404355fb4561fd2a",
+      "z_bits": "0x403b5854bd0bc1bf",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21392",
+      "z_bits": "0x403a992b45faf400",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8ad5",
+      "z_bits": "0x403ac3c96948f606",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x40422844a14c3692",
+      "z_bits": "0x4039ada4ce0c96fd",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21368",
+      "z_bits": "0x403a992b45faf3c5",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x817daca371a4d295",
+      "z_bits": "0x0174fba272cccf98",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x4012bccebc923c20",
+      "z_bits": "0x400a7fb5d728f5cd",
+      "expected": "0x3feffffd0e380883",
+      "composed": "0x3feffffd0e380883",
+      "prior": "0x3feffffd0e380883"
+    },
+    {
+      "x_bits": "0xb9c55ae7e410ddd7",
+      "z_bits": "0x39be335f52ff1d88",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21269",
+      "z_bits": "0x403a992b45faf25c",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x33e0e17a0bea0df3",
+      "z_bits": "0x33d7df7db391d43d",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xbe872198290fb830",
+      "z_bits": "0x3e805b3314fe7588",
+      "expected": "0x3fdfffffb62d014d",
+      "composed": "0x3fdfffffb62d014d",
+      "prior": "0x3fdfffffb62d014d"
+    },
+    {
+      "x_bits": "0xad0c30afe07d2724",
+      "z_bits": "0x2d03eef7e468279a",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0x37c83753856ce2c7",
+      "z_bits": "0x37c11f95ec13022e",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b52",
+      "z_bits": "0x403ac3c96948f6b7",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x4035e7821482d468",
+      "z_bits": "0x402efa36cb7797a1",
+      "expected": "0x3ff0000000000000",
+      "composed": "0x3ff0000000000000",
+      "prior": "0x3ff0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd89a6",
+      "z_bits": "0x403ac3c96948f459",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f21238",
+      "z_bits": "0x403a992b45faf217",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f2131a",
+      "z_bits": "0x403a992b45faf356",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x40149137fa6ece18",
+      "z_bits": "0x400d1624c5eacadc",
+      "expected": "0x3fefffffb6f5a5f2",
+      "composed": "0x3fefffffb6f5a5f2",
+      "prior": "0x3fefffffb6f5a5f2"
+    },
+    {
+      "x_bits": "0xbf6095d3869ca65f",
+      "z_bits": "0x3f5774814e215c43",
+      "expected": "0x3fdff2c452b597c5",
+      "composed": "0x3fdff2c452b597c5",
+      "prior": "0x3fdff2c452b597c5"
+    },
+    {
+      "x_bits": "0x9474a8bf0cba9600",
+      "z_bits": "0x146d376aaeb68063",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xa016cb154a89b10c",
+      "z_bits": "0x20101e06e16e6ea8",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f2123a",
+      "z_bits": "0x403a992b45faf21a",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f211de",
+      "z_bits": "0x403a992b45faf197",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x1a5ec210383db815",
+      "z_bits": "0x1a55bfcdb8789836",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8aa5",
+      "z_bits": "0x403ac3c96948f5c2",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xbda867632cd0fb2d",
+      "z_bits": "0x3da14191eb5402ea",
+      "expected": "0x3fdffffffffec875",
+      "composed": "0x3fdffffffffec875",
+      "prior": "0x3fdffffffffec875"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b0f",
+      "z_bits": "0x403ac3c96948f658",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x8eda9e90783975f2",
+      "z_bits": "0x0ed2d29fe92d358b",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f2134e",
+      "z_bits": "0x403a992b45faf3a0",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x88385e57c9068a01",
+      "z_bits": "0x08313b2cb100abea",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042ecf1e3dd8b78",
+      "z_bits": "0x403ac3c96948f6ec",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0x29beb18acc80305f",
+      "z_bits": "0x29b5b41f1183e853",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f211f6",
+      "z_bits": "0x403a992b45faf1b9",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    },
+    {
+      "x_bits": "0xb78ed281720384d0",
+      "z_bits": "0x3785cb6e17b5297f",
+      "expected": "0x3fe0000000000000",
+      "composed": "0x3fe0000000000000",
+      "prior": "0x3fe0000000000000"
+    },
+    {
+      "x_bits": "0xc042cecf41f213a7",
+      "z_bits": "0x403a992b45faf41e",
+      "expected": "0x0000000000000000",
+      "composed": "0x0000000000000000",
+      "prior": "0x0000000000000000"
+    }
+  ]
+}

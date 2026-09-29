@@ -1,0 +1,71 @@
+{
+  "full-rust": {
+    "command": "cargo test --workspace --no-fail-fast",
+    "exit_code": 101,
+    "targets": 61,
+    "passed": 2003,
+    "failed": 3,
+    "ignored": 8,
+    "failed_tests": [
+      "functions::discrete_dist_family::tests::finite_combinatoric_witnesses_match_excel_bits",
+      "norm_standard_density_independent",
+      "norm_density_independent"
+    ],
+    "log": "full-rust.log"
+  },
+  "engine-tests": {
+    "command": "cargo test --manifest-path smart-fuzzer/engine/Cargo.toml --no-fail-fast",
+    "exit_code": 0,
+    "targets": 3,
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0,
+    "failed_tests": [],
+    "log": "engine-tests.log"
+  },
+  "helper-tests": {
+    "command": "cargo test --manifest-path smart-fuzzer/tools/pmt_ppmt_local_eval/Cargo.toml --no-fail-fast",
+    "exit_code": 0,
+    "targets": 9,
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "failed_tests": [],
+    "log": "helper-tests.log"
+  },
+  "lean": {
+    "command": "lake build",
+    "cwd": "formal/lean",
+    "exit_code": 0,
+    "jobs": 526,
+    "log": "full-lean.log"
+  },
+  "source_freeze": {
+    "snapshot": "snapshot-wrap-1952",
+    "files": 1851,
+    "unchanged_after_checks": true,
+    "raw_and_lf_hashes_retained": true
+  },
+  "oracle_policy": {
+    "reference": "Excel16.0 build20430;64-bit;CV2;1900dates;precision-as-displayed disabled;channel unverified",
+    "comparison": "exact binary64 bits and ordinal typed output; no tolerance",
+    "ingress_exclusions": "negative-zero/subnormal Value2 input transformations; missing host/provider context; unsupported unstable WEEKNUM selectors; malformed formula-entry rows",
+    "normal_input_subnormal_and_nonfinite_output": "retained as observed, not excluded",
+    "overlap_incident": "MROUND432 and aggregate2190 initial captures overlapped; serial repetitions matched all observable outputs; only serial repeats credited"
+  },
+  "state": {
+    "status": "in_progress",
+    "scope_completeness": "scope_partial",
+    "target_completeness": "target_partial",
+    "integration_completeness": "partial",
+    "open_lanes": [
+      "numerical residuals",
+      "contextual text and host providers",
+      "broader reference classes and resolver order",
+      "receiving acknowledgment for HO022-HO030",
+      "current-baseline full semantic characterization",
+      "orthogonal locale/version/platform validation"
+    ]
+  },
+  "generated_utc": "2026-09-29T19:57:07.124873+00:00"
+}

@@ -1,0 +1,48 @@
+{
+  "rows": 132,
+  "matches": 129,
+  "by_function": {
+    "FUNC.NORM.S.DIST": {
+      "rows": 22,
+      "matches": 22
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 44,
+      "matches": 41
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 33,
+      "matches": 33
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 33,
+      "matches": 33
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111pub-heldout-00135-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,TRUE)",
+      "expected": "number:0x3febad3174db579f",
+      "actual": "number:0x3febad3174db57a0",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00140-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,CHOOSE({1,2},A103,A104))",
+      "expected": "array:1x2:[number:0x3febad3174db579f|number:0x3febad3174db579f]",
+      "actual": "array:1x2:[number:0x3febad3174db57a0|number:0x3febad3174db57a0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00142-norm_dist-reference-3",
+      "formula": "=NORM.DIST(A100,A101,A102,B2:B3)",
+      "expected": "array:2x1:[number:0x3febad3174db579f|number:0x3fa6d0c7af4ca36b]",
+      "actual": "array:2x1:[number:0x3febad3174db57a0|number:0x3fa6d0c7af4ca36b]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

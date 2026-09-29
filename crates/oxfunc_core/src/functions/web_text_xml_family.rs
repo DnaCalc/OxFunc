@@ -4,6 +4,7 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
+use crate::functions::text_slice_family::run_text_lifted;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::{CalcArray, ExcelText, WorksheetErrorCode};
@@ -117,12 +118,19 @@ pub fn eval_encodeurl_surface(
     if !ENCODEURL_META.arity.accepts(args.len()) {
         return Err(arity_error(&ENCODEURL_META, args.len()));
     }
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(WebTextXmlEvalError::Coercion)?;
-    let text = coerce_prepared_to_text(&prepared[0]).map_err(WebTextXmlEvalError::Coercion)?;
-    Ok(CalcValue::text(ExcelText::from_interop_assignment(
-        &encodeurl_kernel(&text.to_string_lossy()),
-    )))
+    run_text_lifted(
+        args,
+        resolver,
+        |prepared| {
+            let text =
+                coerce_prepared_to_text(&prepared[0]).map_err(WebTextXmlEvalError::Coercion)?;
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                &encodeurl_kernel(&text.to_string_lossy()),
+            )))
+        },
+        map_web_text_xml_error_to_ws,
+        WebTextXmlEvalError::Coercion,
+    )
 }
 
 pub fn eval_filterxml_surface(

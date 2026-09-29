@@ -1,0 +1,3878 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case_set.v0",
+  "authority": "non_semantic_exploration_input",
+  "generator": "gen_complex_parser_probes.py",
+  "tranche_id": "w111-complex-parser-20260929",
+  "comparison_policy": "exact_typed_bit_match_no_tolerance",
+  "cases": [
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00000-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.5707963267948966\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.5707963267948966"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00001-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.5707963267948966+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.5707963267948966+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00002-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.5707963267948966i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.5707963267948966i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00003-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.5707963267948966\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.5707963267948966"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00004-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.5707963267948966+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.5707963267948966+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00005-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.5707963267948966i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.5707963267948966i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00006-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.5707963267948966\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.5707963267948966"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00007-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.5707963267948966+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.5707963267948966+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00008-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.5707963267948966i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.5707963267948966i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00009-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"3.141592653589793\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "3.141592653589793"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00010-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"3.141592653589793+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "3.141592653589793+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00011-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"3.141592653589793i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "3.141592653589793i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00012-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-3.141592653589793\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-3.141592653589793"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00013-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-3.141592653589793+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-3.141592653589793+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00014-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-3.141592653589793i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-3.141592653589793i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00015-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+3.141592653589793\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+3.141592653589793"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00016-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+3.141592653589793+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+3.141592653589793+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00017-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+3.141592653589793i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+3.141592653589793i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00018-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00019-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00020-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00021-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00022-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00023-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00024-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00025-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00026-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00027-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123454999\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123454999"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00028-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123454999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123454999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00029-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.234567890123454999i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123454999i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00030-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123454999\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123454999"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00031-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123454999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123454999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00032-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.234567890123454999i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123454999i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00033-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123454999\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123454999"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00034-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123454999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123454999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00035-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.234567890123454999i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123454999i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00036-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"9.99999999999999999\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "9.99999999999999999"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00037-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"9.99999999999999999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "9.99999999999999999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00038-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"9.99999999999999999i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "9.99999999999999999i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00039-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-9.99999999999999999\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-9.99999999999999999"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00040-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-9.99999999999999999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-9.99999999999999999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00041-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-9.99999999999999999i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-9.99999999999999999i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00042-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+9.99999999999999999\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+9.99999999999999999"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00043-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+9.99999999999999999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+9.99999999999999999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00044-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+9.99999999999999999i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+9.99999999999999999i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00045-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0.0000001234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.0000001234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00046-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0.0000001234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.0000001234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00047-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"0.0000001234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.0000001234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00048-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0.0000001234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.0000001234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00049-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0.0000001234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.0000001234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00050-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-0.0000001234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.0000001234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00051-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0.0000001234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.0000001234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00052-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0.0000001234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.0000001234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00053-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+0.0000001234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.0000001234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00054-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"12345678901234567890\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "12345678901234567890"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00055-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"12345678901234567890+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "12345678901234567890+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00056-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"12345678901234567890i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "12345678901234567890i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00057-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-12345678901234567890\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-12345678901234567890"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00058-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-12345678901234567890+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-12345678901234567890+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00059-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-12345678901234567890i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-12345678901234567890i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00060-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+12345678901234567890\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+12345678901234567890"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00061-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+12345678901234567890+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+12345678901234567890+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00062-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+12345678901234567890i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+12345678901234567890i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00063-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"123456789012345.5\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "123456789012345.5"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00064-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"123456789012345.5+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "123456789012345.5+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00065-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"123456789012345.5i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "123456789012345.5i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00066-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-123456789012345.5\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-123456789012345.5"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00067-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-123456789012345.5+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-123456789012345.5+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00068-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-123456789012345.5i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-123456789012345.5i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00069-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+123456789012345.5\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+123456789012345.5"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00070-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+123456789012345.5+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+123456789012345.5+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00071-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+123456789012345.5i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+123456789012345.5i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00072-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0.1234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.1234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00073-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0.1234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.1234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00074-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"0.1234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.1234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00075-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0.1234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.1234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00076-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0.1234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.1234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00077-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-0.1234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.1234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00078-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0.1234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.1234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00079-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0.1234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.1234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00080-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+0.1234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.1234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00081-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.0000000000000001\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.0000000000000001"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00082-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.0000000000000001+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.0000000000000001+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00083-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.0000000000000001i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.0000000000000001i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00084-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.0000000000000001\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.0000000000000001"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00085-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.0000000000000001+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.0000000000000001+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00086-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.0000000000000001i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.0000000000000001i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00087-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.0000000000000001\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.0000000000000001"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00088-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.0000000000000001+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.0000000000000001+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00089-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.0000000000000001i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.0000000000000001i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00090-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0.0000000000000001\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.0000000000000001"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00091-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0.0000000000000001+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.0000000000000001+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00092-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"0.0000000000000001i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0.0000000000000001i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00093-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0.0000000000000001\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.0000000000000001"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00094-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0.0000000000000001+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.0000000000000001+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00095-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-0.0000000000000001i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0.0000000000000001i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00096-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0.0000000000000001\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.0000000000000001"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00097-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0.0000000000000001+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.0000000000000001+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00098-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+0.0000000000000001i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0.0000000000000001i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00099-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0001.234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0001.234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00100-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0001.234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0001.234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00101-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"0001.234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0001.234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00102-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0001.234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0001.234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00103-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-0001.234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0001.234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00104-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-0001.234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-0001.234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00105-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0001.234567890123456789\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0001.234567890123456789"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00106-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+0001.234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0001.234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00107-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+0001.234567890123456789i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+0001.234567890123456789i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00108-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456789e-200\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789e-200"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00109-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456789e-200+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789e-200+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00110-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.234567890123456789e-200i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789e-200i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00111-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123456789e-200\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789e-200"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00112-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123456789e-200+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789e-200+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00113-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.234567890123456789e-200i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789e-200i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00114-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123456789e-200\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789e-200"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00115-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123456789e-200+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789e-200+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00116-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.234567890123456789e-200i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789e-200i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00117-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456789E+200\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789E+200"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00118-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456789E+200+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789E+200+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00119-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.234567890123456789E+200i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456789E+200i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00120-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123456789E+200\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789E+200"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00121-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.234567890123456789E+200+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789E+200+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00122-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.234567890123456789E+200i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.234567890123456789E+200i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00123-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123456789E+200\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789E+200"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00124-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.234567890123456789E+200+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789E+200+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00125-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.234567890123456789E+200i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.234567890123456789E+200i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00126-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"2.2250738585072014e-308\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2.2250738585072014e-308"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00127-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"2.2250738585072014e-308+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2.2250738585072014e-308+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00128-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"2.2250738585072014e-308i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "2.2250738585072014e-308i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00129-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-2.2250738585072014e-308\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-2.2250738585072014e-308"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00130-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-2.2250738585072014e-308+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-2.2250738585072014e-308+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00131-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-2.2250738585072014e-308i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-2.2250738585072014e-308i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00132-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+2.2250738585072014e-308\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+2.2250738585072014e-308"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00133-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+2.2250738585072014e-308+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+2.2250738585072014e-308+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00134-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+2.2250738585072014e-308i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+2.2250738585072014e-308i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00135-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"4.9406564584124654e-324\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "4.9406564584124654e-324"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00136-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"4.9406564584124654e-324+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "4.9406564584124654e-324+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00137-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"4.9406564584124654e-324i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "4.9406564584124654e-324i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00138-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-4.9406564584124654e-324\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-4.9406564584124654e-324"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00139-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-4.9406564584124654e-324+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-4.9406564584124654e-324+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00140-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-4.9406564584124654e-324i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-4.9406564584124654e-324i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00141-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+4.9406564584124654e-324\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+4.9406564584124654e-324"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00142-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+4.9406564584124654e-324+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+4.9406564584124654e-324+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00143-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+4.9406564584124654e-324i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+4.9406564584124654e-324i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00144-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.7976931348623157e308\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.7976931348623157e308"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00145-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.7976931348623157e308+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.7976931348623157e308+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00146-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"1.7976931348623157e308i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.7976931348623157e308i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00147-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.7976931348623157e308\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.7976931348623157e308"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00148-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"-1.7976931348623157e308+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.7976931348623157e308+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00149-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"-1.7976931348623157e308i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "-1.7976931348623157e308i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00150-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.7976931348623157e308\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.7976931348623157e308"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00151-imreal-coefficient-digits",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"+1.7976931348623157e308+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.7976931348623157e308+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00152-imaginary-coefficient-digits",
+      "function_id": "FUNC.IMAGINARY",
+      "canonical_surface_name": "IMAGINARY",
+      "case_tag": "coefficient-digits",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMAGINARY(\"+1.7976931348623157e308i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "+1.7976931348623157e308i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00153-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\".1234567890123456789+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": ".1234567890123456789+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00154-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1234567890123456789.+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1234567890123456789.+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00155-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.23456789012345e2+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.23456789012345e2+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00156-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.234567890123456e2+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.234567890123456e2+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00157-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1.2345678901234567e2+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1.2345678901234567e2+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00158-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1e309+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1e309+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00159-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"0e999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "0e999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00160-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1e-999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1e-999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00161-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1e999+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1e999+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00162-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1e++0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1e++0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00163-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\" 1+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": " 1+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00164-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1 +0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1 +0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00165-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"1 2+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "1 2+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00166-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"NaN+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "NaN+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-complex-parser-20260929",
+      "case_id": "w111typed-00167-imreal-grammar-boundary",
+      "function_id": "FUNC.IMREAL",
+      "canonical_surface_name": "IMREAL",
+      "case_tag": "grammar-boundary",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=IMREAL(\"inf+0i\")",
+      "args": [
+        {
+          "kind": "text",
+          "value": "inf+0i"
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    }
+  ],
+  "tranches": [],
+  "summary": {
+    "case_count": 168,
+    "surfaces_covered": 2
+  }
+}

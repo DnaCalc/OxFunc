@@ -1,0 +1,25 @@
+{
+  "candidate_state": "provisional_after_1284_row_discovery_before_boundary_answers",
+  "coordinate_heldout_seed": 930202619,
+  "coordinate_heldout_rows": 4096,
+  "typed_discovery_rows": 301,
+  "semantics": "Truncated signed coordinates; absolute/A1 1..sheet_limit; relative R1C1 (-sheet_limit,sheet_limit); relative zero has no brackets. Boundary hypothesis awaits 928 live probes.",
+  "artifacts": [
+    {
+      "path": "crates/oxfunc_core/src/functions/reference_metadata_family.rs",
+      "sha256": "3d9ee3f76fd91249a611c821d0729be3313e43413555642264330614a507bd32"
+    },
+    {
+      "path": "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean",
+      "sha256": "b830a5fc0fa0fe22ed0bb795cd4c90812d4acedb58ee45e37c6dc16c6aed0fd0"
+    },
+    {
+      "path": "smart-fuzzer/runs/w111-broad-20260929/address-heldout.json",
+      "sha256": "86074020f5277550406faf9aa93fb517d5b3a72196b772b9d37e0ddd82352597"
+    },
+    {
+      "path": "smart-fuzzer/runs/w111-broad-20260929/address-typed.json",
+      "sha256": "545d6e3ce17eaeb4f3a51ff7bfcac55fcd3e50f3dd48a13e3bae8ca541615b2f"
+    }
+  ]
+}

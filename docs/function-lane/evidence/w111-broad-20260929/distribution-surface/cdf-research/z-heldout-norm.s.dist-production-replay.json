@@ -1,0 +1,2131 @@
+{
+  "function": "NORM.S.DIST",
+  "matches": 276,
+  "misses": [
+    {
+      "actual": "0x3fa02755984db37b",
+      "args": [
+        "0xbffdbc5a98c97f51",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa02755984db36a",
+      "id": "cdf-z-NORM.S.DIST-00002-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3feefd8aa67b24c8",
+      "args": [
+        "0x3ffdbc5a98c97f51",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feefd8aa67b24c9",
+      "id": "cdf-z-NORM.S.DIST-00003-z-staging-discriminator"
+    },
+    {
+      "actual": "0x132565eaea3b4a9c",
+      "args": [
+        "0xc03f6118b854fcc2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x132565eaea3b4b06",
+      "id": "cdf-z-NORM.S.DIST-00004-z-staging-discriminator"
+    },
+    {
+      "actual": "0x38610413ac2f89cb",
+      "args": [
+        "0xc0295a45968f82b5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x38610413ac2f89da",
+      "id": "cdf-z-NORM.S.DIST-00006-z-staging-discriminator"
+    },
+    {
+      "actual": "0x35e47a29218d624f",
+      "args": [
+        "0xc02d5bc5115a7cd7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x35e47a29218d622b",
+      "id": "cdf-z-NORM.S.DIST-00008-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d76c937dea35109",
+      "args": [
+        "0xc01bfe4804b34d2f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d76c937dea35104",
+      "id": "cdf-z-NORM.S.DIST-00010-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fb37f3b4a040c45",
+      "args": [
+        "0xbff6e6f282c61bba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb37f3b4a040c44",
+      "id": "cdf-z-NORM.S.DIST-00014-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fed901896bf7e77",
+      "args": [
+        "0x3ff6e6f282c61bba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fed901896bf7e78",
+      "id": "cdf-z-NORM.S.DIST-00015-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd01511fbcba4eb",
+      "args": [
+        "0xbfe5744fff9d55c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd01511fbcba4ea",
+      "id": "cdf-z-NORM.S.DIST-00016-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fe7f577021a2d8a",
+      "args": [
+        "0x3fe5744fff9d55c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe7f577021a2d8b",
+      "id": "cdf-z-NORM.S.DIST-00017-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f64bbfc83779975",
+      "args": [
+        "0xc0066ca88b5452b7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f64bbfc83779976",
+      "id": "cdf-z-NORM.S.DIST-00024-z-staging-discriminator"
+    },
+    {
+      "actual": "0x0af1927788cac92b",
+      "args": [
+        "0xc04113b2f7679e85",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0af1927788cac97f",
+      "id": "cdf-z-NORM.S.DIST-00026-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fb70b0b7aa0b972",
+      "args": [
+        "0xbff5736c414cd5a6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb70b0b7aa0b973",
+      "id": "cdf-z-NORM.S.DIST-00028-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3b07f1e5d2987997",
+      "args": [
+        "0xc02438b0d50cb433",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b07f1e5d29879a1",
+      "id": "cdf-z-NORM.S.DIST-00030-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2ee483d165ca9094",
+      "args": [
+        "0xc0333d9d7e32813b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2ee483d165ca909f",
+      "id": "cdf-z-NORM.S.DIST-00032-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2cec35dd272acfe2",
+      "args": [
+        "0xc03457ae57cf69f8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2cec35dd272acf93",
+      "id": "cdf-z-NORM.S.DIST-00036-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3faf92c90043f7ae",
+      "args": [
+        "0xbff8a7a78cc18662",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3faf92c90043f7b0",
+      "id": "cdf-z-NORM.S.DIST-00038-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3b13685b73450af6",
+      "args": [
+        "0xc0242067dc30bc7d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b13685b73450af8",
+      "id": "cdf-z-NORM.S.DIST-00040-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd02ec980dda18d",
+      "args": [
+        "0xbfe54c065e57e4fc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd02ec980dda18c",
+      "id": "cdf-z-NORM.S.DIST-00042-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d9ca54c155b9c1a",
+      "args": [
+        "0xc01b12c88a64d1ac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d9ca54c155b9c1b",
+      "id": "cdf-z-NORM.S.DIST-00044-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3de7248c06848737",
+      "args": [
+        "0xc0191f91bed2e695",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3de7248c06848742",
+      "id": "cdf-z-NORM.S.DIST-00046-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fa960584906ff20",
+      "args": [
+        "0xbffa62babea0668d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa960584906ff22",
+      "id": "cdf-z-NORM.S.DIST-00048-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f12d26a98e58d39",
+      "args": [
+        "0xc00e6a421fcfe11d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f12d26a98e58d36",
+      "id": "cdf-z-NORM.S.DIST-00050-z-staging-discriminator"
+    },
+    {
+      "actual": "0x07d54fe832436788",
+      "args": [
+        "0xc04192e79dd2d4bf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x07d54fe832436641",
+      "id": "cdf-z-NORM.S.DIST-00054-z-staging-discriminator"
+    },
+    {
+      "actual": "0x375cf81aa006423f",
+      "args": [
+        "0xc02b0f659a3e212c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x375cf81aa0064245",
+      "id": "cdf-z-NORM.S.DIST-00056-z-staging-discriminator"
+    },
+    {
+      "actual": "0x36972de94e2ae327",
+      "args": [
+        "0xc02c49cb9bc9bfb0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x36972de94e2ae31d",
+      "id": "cdf-z-NORM.S.DIST-00060-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d6013d953e4f116",
+      "args": [
+        "0xc01c92512fc9b04a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d6013d953e4f112",
+      "id": "cdf-z-NORM.S.DIST-00062-z-staging-discriminator"
+    },
+    {
+      "actual": "0x020069d6ec28b464",
+      "args": [
+        "0xc042789240e5c6e2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x020069d6ec28b536",
+      "id": "cdf-z-NORM.S.DIST-00064-z-staging-discriminator"
+    },
+    {
+      "actual": "0x21e67ef343ab344b",
+      "args": [
+        "0xc039a5c52b0fda57",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x21e67ef343ab33c3",
+      "id": "cdf-z-NORM.S.DIST-00066-z-staging-discriminator"
+    },
+    {
+      "actual": "0x28dbf3dd1c7c175c",
+      "args": [
+        "0xc03671c162c71a56",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x28dbf3dd1c7c173a",
+      "id": "cdf-z-NORM.S.DIST-00068-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fa37a42ba14b98b",
+      "args": [
+        "0xbffc61c7c4da8ede",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa37a42ba14b986",
+      "id": "cdf-z-NORM.S.DIST-00070-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3feec85bd45eb467",
+      "args": [
+        "0x3ffc61c7c4da8ede",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feec85bd45eb468",
+      "id": "cdf-z-NORM.S.DIST-00071-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fcb1dea966237ae",
+      "args": [
+        "0xbfe999bd3eb99db3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fcb1dea966237ad",
+      "id": "cdf-z-NORM.S.DIST-00072-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fe938855a677214",
+      "args": [
+        "0x3fe999bd3eb99db3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe938855a677215",
+      "id": "cdf-z-NORM.S.DIST-00073-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d3712ad5be383d5",
+      "args": [
+        "0xc01d80557e7208e3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d3712ad5be383df",
+      "id": "cdf-z-NORM.S.DIST-00074-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f1ea050a8f85e8b",
+      "args": [
+        "0xc00d6fb00f26e6d4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f1ea050a8f85e8d",
+      "id": "cdf-z-NORM.S.DIST-00078-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3432d5164c26bef1",
+      "args": [
+        "0xc02fce8c5267662d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3432d5164c26bf12",
+      "id": "cdf-z-NORM.S.DIST-00080-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3dd5a6ef4781c828",
+      "args": [
+        "0xc01997703ac22e89",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3dd5a6ef4781c82e",
+      "id": "cdf-z-NORM.S.DIST-00082-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2879664a8833fe48",
+      "args": [
+        "0xc036a1fc920cfd45",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2879664a8833fe92",
+      "id": "cdf-z-NORM.S.DIST-00084-z-staging-discriminator"
+    },
+    {
+      "actual": "0x0d7d63e28d30f7e2",
+      "args": [
+        "0xc040a8a4d95a609c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0d7d63e28d30f848",
+      "id": "cdf-z-NORM.S.DIST-00086-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3e1fa45a16222b19",
+      "args": [
+        "0xc017975b159c9c42",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e1fa45a16222b07",
+      "id": "cdf-z-NORM.S.DIST-00088-z-staging-discriminator"
+    },
+    {
+      "actual": "0x0a5c5006b9093bd6",
+      "args": [
+        "0xc0412bcd4280fcba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0a5c5006b9093b43",
+      "id": "cdf-z-NORM.S.DIST-00090-z-staging-discriminator"
+    },
+    {
+      "actual": "0x31cd4e559592e0b9",
+      "args": [
+        "0xc0317d849b69a305",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x31cd4e559592e105",
+      "id": "cdf-z-NORM.S.DIST-00092-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d157a843d1ff322",
+      "args": [
+        "0xc01e44bfd9c052c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d157a843d1ff31c",
+      "id": "cdf-z-NORM.S.DIST-00096-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fc8b8a3dc1b9bfa",
+      "args": [
+        "0xbfebb9917f1cfd63",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc8b8a3dc1b9bf9",
+      "id": "cdf-z-NORM.S.DIST-00098-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3b0a5b250abedcb1",
+      "args": [
+        "0xc02433e058403618",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b0a5b250abedcc5",
+      "id": "cdf-z-NORM.S.DIST-00100-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f6831b0986f1d11",
+      "args": [
+        "0xc00605f723c80d74",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f6831b0986f1d10",
+      "id": "cdf-z-NORM.S.DIST-00102-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fb8d630cbbb3830",
+      "args": [
+        "0xbff4c799303a2f31",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb8d630cbbb3831",
+      "id": "cdf-z-NORM.S.DIST-00104-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3faaf8b4f8cb1986",
+      "args": [
+        "0xbff9e922500d8791",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3faaf8b4f8cb1985",
+      "id": "cdf-z-NORM.S.DIST-00106-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd3146d5792c252",
+      "args": [
+        "0xbfe0f4347bdbe9fb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd3146d5792c251",
+      "id": "cdf-z-NORM.S.DIST-00112-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fe675c954369ed7",
+      "args": [
+        "0x3fe0f4347bdbe9fb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe675c954369ed8",
+      "id": "cdf-z-NORM.S.DIST-00113-z-staging-discriminator"
+    },
+    {
+      "actual": "0x34cc3c74bfcfb461",
+      "args": [
+        "0xc02ef6aa8b235120",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x34cc3c74bfcfb45f",
+      "id": "cdf-z-NORM.S.DIST-00114-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f38232b5222e13b",
+      "args": [
+        "0xc00b012dcea812a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f38232b5222e140",
+      "id": "cdf-z-NORM.S.DIST-00116-z-staging-discriminator"
+    },
+    {
+      "actual": "0x278b86cd33f417ee",
+      "args": [
+        "0xc037154f767388a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x278b86cd33f41745",
+      "id": "cdf-z-NORM.S.DIST-00118-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f16754d1d4ab7e7",
+      "args": [
+        "0xc00e103004aefad5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f16754d1d4ab7e5",
+      "id": "cdf-z-NORM.S.DIST-00122-z-staging-discriminator"
+    },
+    {
+      "actual": "0x26e71702cb16c4d2",
+      "args": [
+        "0xc03763783784cfb0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x26e71702cb16c4f3",
+      "id": "cdf-z-NORM.S.DIST-00124-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3ef32d3a4da21e03",
+      "args": [
+        "0xc010832dd02f6777",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ef32d3a4da21dfe",
+      "id": "cdf-z-NORM.S.DIST-00128-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fbc6e4e883fc8a4",
+      "args": [
+        "0xbff388e374279326",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fbc6e4e883fc8a5",
+      "id": "cdf-z-NORM.S.DIST-00130-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fec72362ef806ec",
+      "args": [
+        "0x3ff388e374279326",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fec72362ef806eb",
+      "id": "cdf-z-NORM.S.DIST-00131-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2eed1e57ed0d0d5c",
+      "args": [
+        "0xc03338f73b6502f3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2eed1e57ed0d0d5f",
+      "id": "cdf-z-NORM.S.DIST-00134-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2b71cf0270d9ccd0",
+      "args": [
+        "0xc03521b396f9bcb6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2b71cf0270d9ccb0",
+      "id": "cdf-z-NORM.S.DIST-00136-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3db0e30e48d85023",
+      "args": [
+        "0xc01a9286816ed1b3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3db0e30e48d85024",
+      "id": "cdf-z-NORM.S.DIST-00140-z-staging-discriminator"
+    },
+    {
+      "actual": "0x1eaf6f5e8754f484",
+      "args": [
+        "0xc03b0087a9f7e5cf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1eaf6f5e8754f41d",
+      "id": "cdf-z-NORM.S.DIST-00142-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3647992b472427a5",
+      "args": [
+        "0xc02cc4f350f82d07",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3647992b4724277c",
+      "id": "cdf-z-NORM.S.DIST-00144-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd1298d3133f029",
+      "args": [
+        "0xbfe3c9cd597f4f50",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd1298d3133f028",
+      "id": "cdf-z-NORM.S.DIST-00146-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f8a1dc113bfe7cd",
+      "args": [
+        "0xc001de93ae21483c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f8a1dc113bfe7d0",
+      "id": "cdf-z-NORM.S.DIST-00148-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3a6087563716786e",
+      "args": [
+        "0xc0259b0b2566a86b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3a60875637167867",
+      "id": "cdf-z-NORM.S.DIST-00150-z-staging-discriminator"
+    },
+    {
+      "actual": "0x38bc450bc76ba19c",
+      "args": [
+        "0xc028b8c82f3bed80",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x38bc450bc76ba18e",
+      "id": "cdf-z-NORM.S.DIST-00152-z-staging-discriminator"
+    },
+    {
+      "actual": "0x37df39899674dc1a",
+      "args": [
+        "0xc02a3891a6689721",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x37df39899674dbfe",
+      "id": "cdf-z-NORM.S.DIST-00154-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f701508c3bd6f29",
+      "args": [
+        "0xc0054448bb5b9df1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f701508c3bd6f28",
+      "id": "cdf-z-NORM.S.DIST-00156-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2d4a06f6a5f9bdee",
+      "args": [
+        "0xc034243a39ac6c5f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2d4a06f6a5f9be19",
+      "id": "cdf-z-NORM.S.DIST-00158-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f615b3ee613f03a",
+      "args": [
+        "0xc006e12077b4a038",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f615b3ee613f039",
+      "id": "cdf-z-NORM.S.DIST-00160-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2c06461525effbf3",
+      "args": [
+        "0xc034d305758da5ae",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2c06461525effc07",
+      "id": "cdf-z-NORM.S.DIST-00162-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f2028c3a7a53fc9",
+      "args": [
+        "0xc00d538ce319c662",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f2028c3a7a53fcd",
+      "id": "cdf-z-NORM.S.DIST-00164-z-staging-discriminator"
+    },
+    {
+      "actual": "0x1834180320c9b41a",
+      "args": [
+        "0xc03d8a4238c6e0fe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1834180320c9b49a",
+      "id": "cdf-z-NORM.S.DIST-00166-z-staging-discriminator"
+    },
+    {
+      "actual": "0x305cdbc841497797",
+      "args": [
+        "0xc032609bbc0515c8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x305cdbc841497795",
+      "id": "cdf-z-NORM.S.DIST-00172-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f8c0c8df491efe0",
+      "args": [
+        "0xc001a5aa1cbdf99d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f8c0c8df491efe6",
+      "id": "cdf-z-NORM.S.DIST-00174-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3e1b75c121486e0e",
+      "args": [
+        "0xc017af44e50d2e9d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e1b75c121486e05",
+      "id": "cdf-z-NORM.S.DIST-00176-z-staging-discriminator"
+    },
+    {
+      "actual": "0x34208c4e86d89840",
+      "args": [
+        "0xc02fe8e17c3eef22",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x34208c4e86d89820",
+      "id": "cdf-z-NORM.S.DIST-00178-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3e24253e9fe0cf6e",
+      "args": [
+        "0xc0176e623a503b11",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e24253e9fe0cf6c",
+      "id": "cdf-z-NORM.S.DIST-00180-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2370f1fb22677541",
+      "args": [
+        "0xc038f9a40fa77a62",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2370f1fb226774fa",
+      "id": "cdf-z-NORM.S.DIST-00182-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3b1a12e3e572d102",
+      "args": [
+        "0xc02411819d367ccf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b1a12e3e572d100",
+      "id": "cdf-z-NORM.S.DIST-00184-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3e5d51ad92e06f5c",
+      "args": [
+        "0xc015be0f1515c4c6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e5d51ad92e06f5f",
+      "id": "cdf-z-NORM.S.DIST-00186-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f772027d1173b6d",
+      "args": [
+        "0xc00444aebe0aac10",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f772027d1173b6e",
+      "id": "cdf-z-NORM.S.DIST-00188-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fc55146602c7ea1",
+      "args": [
+        "0xbfeef92de629c661",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc55146602c7ea2",
+      "id": "cdf-z-NORM.S.DIST-00190-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3206cdc72f006391",
+      "args": [
+        "0xc03158938ed2da09",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3206cdc72f0063c6",
+      "id": "cdf-z-NORM.S.DIST-00192-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d71b151fe4aa42a",
+      "args": [
+        "0xc01c227f8b954379",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d71b151fe4aa432",
+      "id": "cdf-z-NORM.S.DIST-00194-z-staging-discriminator"
+    },
+    {
+      "actual": "0x1d800ebe8cbe7b53",
+      "args": [
+        "0xc03b7beb070ac9d2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1d800ebe8cbe7ae1",
+      "id": "cdf-z-NORM.S.DIST-00196-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3ef45abd5d9e255e",
+      "args": [
+        "0xc010751ea48413e9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ef45abd5d9e255b",
+      "id": "cdf-z-NORM.S.DIST-00198-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2eed84e46fad7d06",
+      "args": [
+        "0xc03338c8c620a8d6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2eed84e46fad7cc7",
+      "id": "cdf-z-NORM.S.DIST-00200-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd3675e4563185e",
+      "args": [
+        "0xbfe07d0c006a39a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd3675e4563185d",
+      "id": "cdf-z-NORM.S.DIST-00202-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fe64c50dd4e73d1",
+      "args": [
+        "0x3fe07d0c006a39a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe64c50dd4e73d2",
+      "id": "cdf-z-NORM.S.DIST-00203-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3c92abcbc687f21e",
+      "args": [
+        "0xc0208c478056ecf9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3c92abcbc687f228",
+      "id": "cdf-z-NORM.S.DIST-00204-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fc77ad56d9bb220",
+      "args": [
+        "0xbfece0085cb54190",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc77ad56d9bb222",
+      "id": "cdf-z-NORM.S.DIST-00210-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f9f6f0cd9f4de93",
+      "args": [
+        "0xbffdee2ad402ab01",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9f6f0cd9f4de73",
+      "id": "cdf-z-NORM.S.DIST-00212-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fef04879930590b",
+      "args": [
+        "0x3ffdee2ad402ab01",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fef04879930590c",
+      "id": "cdf-z-NORM.S.DIST-00213-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2de9f9cffb80bee6",
+      "args": [
+        "0xc033cb9c5f2c2bb5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2de9f9cffb80bf43",
+      "id": "cdf-z-NORM.S.DIST-00214-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f5d854879bc6b5b",
+      "args": [
+        "0xc0074993939c4a0b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f5d854879bc6b5c",
+      "id": "cdf-z-NORM.S.DIST-00220-z-staging-discriminator"
+    },
+    {
+      "actual": "0x1c97264ed30944cd",
+      "args": [
+        "0xc03bd89f8af9abe2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1c97264ed3094442",
+      "id": "cdf-z-NORM.S.DIST-00222-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fd25ac5d4437ba6",
+      "args": [
+        "0xbfe20257a4fe68a5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd25ac5d4437ba5",
+      "id": "cdf-z-NORM.S.DIST-00224-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fe6d29d15de422d",
+      "args": [
+        "0x3fe20257a4fe68a5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe6d29d15de422e",
+      "id": "cdf-z-NORM.S.DIST-00225-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fad8ebdcbc2b246",
+      "args": [
+        "0xbff92f9a433bb7c6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fad8ebdcbc2b247",
+      "id": "cdf-z-NORM.S.DIST-00226-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f9a4b2e3f8f3638",
+      "args": [
+        "0xbfff2d113f63a688",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9a4b2e3f8f3629",
+      "id": "cdf-z-NORM.S.DIST-00228-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fef2da68e03864e",
+      "args": [
+        "0x3fff2d113f63a688",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fef2da68e03864f",
+      "id": "cdf-z-NORM.S.DIST-00229-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3eb1316b81dc0334",
+      "args": [
+        "0xc012fe70014b8c45",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3eb1316b81dc0332",
+      "id": "cdf-z-NORM.S.DIST-00230-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f6ef8d75f96e262",
+      "args": [
+        "0xc0055e4d4607fffe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f6ef8d75f96e263",
+      "id": "cdf-z-NORM.S.DIST-00232-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fae5d4e341ac414",
+      "args": [
+        "0xbff8f8567c4279a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fae5d4e341ac415",
+      "id": "cdf-z-NORM.S.DIST-00236-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3da6df89c5c126ee",
+      "args": [
+        "0xc01acd145e6ff8b5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3da6df89c5c126f0",
+      "id": "cdf-z-NORM.S.DIST-00238-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3d36b06c1ebef4ca",
+      "args": [
+        "0xc01d829f390d6ad5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d36b06c1ebef4c8",
+      "id": "cdf-z-NORM.S.DIST-00240-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fc2dfb4d2d52b4d",
+      "args": [
+        "0xbff0c23fee85d62b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc2dfb4d2d52b4c",
+      "id": "cdf-z-NORM.S.DIST-00246-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f9dd160eaf14a23",
+      "args": [
+        "0xbffe4d6be27b8694",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9dd160eaf14a07",
+      "id": "cdf-z-NORM.S.DIST-00248-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3fef1174f8a875af",
+      "args": [
+        "0x3ffe4d6be27b8694",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fef1174f8a875b0",
+      "id": "cdf-z-NORM.S.DIST-00249-z-staging-discriminator"
+    },
+    {
+      "actual": "0x2c9f002841b02efa",
+      "args": [
+        "0xc03481d6468be044",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2c9f002841b02ee7",
+      "id": "cdf-z-NORM.S.DIST-00252-z-staging-discriminator"
+    },
+    {
+      "actual": "0x26fc48178b88d50c",
+      "args": [
+        "0xc03759ac32466e5f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x26fc48178b88d595",
+      "id": "cdf-z-NORM.S.DIST-00254-z-staging-discriminator"
+    },
+    {
+      "actual": "0x3f5922ad76f324cf",
+      "args": [
+        "0xc007afbe1cf49543",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f5922ad76f324d1",
+      "id": "cdf-z-NORM.S.DIST-00256-fresh-control"
+    },
+    {
+      "actual": "0x3f92a209aab68de2",
+      "args": [
+        "0xc000bd7856124ca9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f92a209aab68de1",
+      "id": "cdf-z-NORM.S.DIST-00258-fresh-control"
+    },
+    {
+      "actual": "0x3f99cda29a667bdd",
+      "args": [
+        "0xbfff4e25af586270",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f99cda29a667bce",
+      "id": "cdf-z-NORM.S.DIST-00260-fresh-control"
+    },
+    {
+      "actual": "0x3fef3192eb2ccc21",
+      "args": [
+        "0x3fff4e25af586270",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fef3192eb2ccc22",
+      "id": "cdf-z-NORM.S.DIST-00261-fresh-control"
+    },
+    {
+      "actual": "0x3cf8527af0cc2d4e",
+      "args": [
+        "0xc01eeaf4f176827c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3cf8527af0cc2d45",
+      "id": "cdf-z-NORM.S.DIST-00270-fresh-control"
+    },
+    {
+      "actual": "0x35e1baa81578b6eb",
+      "args": [
+        "0xc02d60c5758b7078",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x35e1baa81578b6f7",
+      "id": "cdf-z-NORM.S.DIST-00272-fresh-control"
+    },
+    {
+      "actual": "0x3fcd71f340403ba2",
+      "args": [
+        "0xbfe7a38e02837898",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fcd71f340403ba3",
+      "id": "cdf-z-NORM.S.DIST-00274-fresh-control"
+    },
+    {
+      "actual": "0x3fe8a3832feff118",
+      "args": [
+        "0x3fe7a38e02837898",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe8a3832feff117",
+      "id": "cdf-z-NORM.S.DIST-00275-fresh-control"
+    },
+    {
+      "actual": "0x3fc46cd170dbf56d",
+      "args": [
+        "0xbfefe10f61995869",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc46cd170dbf56c",
+      "id": "cdf-z-NORM.S.DIST-00276-fresh-control"
+    },
+    {
+      "actual": "0x3f97f15a349fb7e8",
+      "args": [
+        "0xbfffd0a493335099",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f97f15a349fb7df",
+      "id": "cdf-z-NORM.S.DIST-00278-fresh-control"
+    },
+    {
+      "actual": "0x3f53dbae1fc5a423",
+      "args": [
+        "0xc00842e31c223078",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f53dbae1fc5a421",
+      "id": "cdf-z-NORM.S.DIST-00280-fresh-control"
+    },
+    {
+      "actual": "0x3fc060b2737fe340",
+      "args": [
+        "0xbff22d9740a96a18",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc060b2737fe341",
+      "id": "cdf-z-NORM.S.DIST-00282-fresh-control"
+    },
+    {
+      "actual": "0x3de64edb91496218",
+      "args": [
+        "0xc019256a14a9becc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3de64edb91496217",
+      "id": "cdf-z-NORM.S.DIST-00284-fresh-control"
+    },
+    {
+      "actual": "0x3f477a66027ad1c0",
+      "args": [
+        "0xc00980dd6054deb1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f477a66027ad1bd",
+      "id": "cdf-z-NORM.S.DIST-00286-fresh-control"
+    },
+    {
+      "actual": "0x3fbf09bf7e89edda",
+      "args": [
+        "0xbff2b365a2edfb4c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fbf09bf7e89edd9",
+      "id": "cdf-z-NORM.S.DIST-00288-fresh-control"
+    },
+    {
+      "actual": "0x334c98daa9f9c366",
+      "args": [
+        "0xc03084488acb73ba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x334c98daa9f9c362",
+      "id": "cdf-z-NORM.S.DIST-00290-fresh-control"
+    },
+    {
+      "actual": "0x3f9df1bd066d4410",
+      "args": [
+        "0xbffe45d150cf4bdd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9df1bd066d43f6",
+      "id": "cdf-z-NORM.S.DIST-00292-fresh-control"
+    },
+    {
+      "actual": "0x3da13b0cde5118ba",
+      "args": [
+        "0xc01af7576093abc1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3da13b0cde5118c2",
+      "id": "cdf-z-NORM.S.DIST-00298-fresh-control"
+    },
+    {
+      "actual": "0x39a2da74718b0919",
+      "args": [
+        "0xc0270f73266c5cd6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x39a2da74718b0928",
+      "id": "cdf-z-NORM.S.DIST-00300-fresh-control"
+    },
+    {
+      "actual": "0x1ec10997a33fde46",
+      "args": [
+        "0xc03af933337371ef",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1ec10997a33fde39",
+      "id": "cdf-z-NORM.S.DIST-00302-fresh-control"
+    },
+    {
+      "actual": "0x21132a9ed7cb0724",
+      "args": [
+        "0xc03a008bfe6c0ccc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x21132a9ed7cb073b",
+      "id": "cdf-z-NORM.S.DIST-00304-fresh-control"
+    },
+    {
+      "actual": "0x3f555c43b55d40bb",
+      "args": [
+        "0xc00815ac3ca067d5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f555c43b55d40be",
+      "id": "cdf-z-NORM.S.DIST-00306-fresh-control"
+    },
+    {
+      "actual": "0x2561a479a0671747",
+      "args": [
+        "0xc0381968a48e725a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2561a479a06717c5",
+      "id": "cdf-z-NORM.S.DIST-00308-fresh-control"
+    },
+    {
+      "actual": "0x26a311c31494b739",
+      "args": [
+        "0xc03783c3e86cb83e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x26a311c31494b798",
+      "id": "cdf-z-NORM.S.DIST-00310-fresh-control"
+    },
+    {
+      "actual": "0x3d25c7ab87bf7241",
+      "args": [
+        "0xc01de618be09aece",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d25c7ab87bf7240",
+      "id": "cdf-z-NORM.S.DIST-00312-fresh-control"
+    },
+    {
+      "actual": "0x3e3916220d87836a",
+      "args": [
+        "0xc016d135a4e1ce13",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e3916220d878365",
+      "id": "cdf-z-NORM.S.DIST-00314-fresh-control"
+    },
+    {
+      "actual": "0x3fa2ef77fb3025d0",
+      "args": [
+        "0xbffc96d11c87e94f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa2ef77fb3025c5",
+      "id": "cdf-z-NORM.S.DIST-00316-fresh-control"
+    },
+    {
+      "actual": "0x3feed108804cfda3",
+      "args": [
+        "0x3ffc96d11c87e94f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feed108804cfda4",
+      "id": "cdf-z-NORM.S.DIST-00317-fresh-control"
+    },
+    {
+      "actual": "0x396d951a67308978",
+      "args": [
+        "0xc02774f1c8d7555d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x396d951a67308977",
+      "id": "cdf-z-NORM.S.DIST-00318-fresh-control"
+    },
+    {
+      "actual": "0x3fce3e640a27b29e",
+      "args": [
+        "0xbfe6fc80ed560cb7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fce3e640a27b2a0",
+      "id": "cdf-z-NORM.S.DIST-00320-fresh-control"
+    },
+    {
+      "actual": "0x3fa0c2ed872b3750",
+      "args": [
+        "0xbffd78daa2456d6e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa0c2ed872b373d",
+      "id": "cdf-z-NORM.S.DIST-00322-fresh-control"
+    },
+    {
+      "actual": "0x3feef3d1278d4c8b",
+      "args": [
+        "0x3ffd78daa2456d6e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feef3d1278d4c8c",
+      "id": "cdf-z-NORM.S.DIST-00323-fresh-control"
+    },
+    {
+      "actual": "0x0b1354296d3e1159",
+      "args": [
+        "0xc0410e25d39f7c34",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0b1354296d3e1274",
+      "id": "cdf-z-NORM.S.DIST-00324-fresh-control"
+    },
+    {
+      "actual": "0x34135e78592da6c1",
+      "args": [
+        "0xc02ff9fd0ff9cfcc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x34135e78592da6d3",
+      "id": "cdf-z-NORM.S.DIST-00326-fresh-control"
+    },
+    {
+      "actual": "0x170b60e2c2e32750",
+      "args": [
+        "0xc03df8c6dcf06f0d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x170b60e2c2e3276b",
+      "id": "cdf-z-NORM.S.DIST-00330-fresh-control"
+    },
+    {
+      "actual": "0x3599a2b3faed5c0e",
+      "args": [
+        "0xc02dcb79b995ec93",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3599a2b3faed5bd3",
+      "id": "cdf-z-NORM.S.DIST-00332-fresh-control"
+    },
+    {
+      "actual": "0x28f3e79f5184a25e",
+      "args": [
+        "0xc03665d3d6ba160d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x28f3e79f5184a2ac",
+      "id": "cdf-z-NORM.S.DIST-00336-fresh-control"
+    },
+    {
+      "actual": "0x3fb17c488301a514",
+      "args": [
+        "0xbff7d11c1f914161",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb17c488301a515",
+      "id": "cdf-z-NORM.S.DIST-00338-fresh-control"
+    },
+    {
+      "actual": "0x3fedd076ef9fcb5e",
+      "args": [
+        "0x3ff7d11c1f914161",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fedd076ef9fcb5d",
+      "id": "cdf-z-NORM.S.DIST-00339-fresh-control"
+    },
+    {
+      "actual": "0x350bb89adc631850",
+      "args": [
+        "0xc02e9b6fdc941ba3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x350bb89adc631836",
+      "id": "cdf-z-NORM.S.DIST-00340-fresh-control"
+    },
+    {
+      "actual": "0x3fca157a2e68d29a",
+      "args": [
+        "0xbfea808fdc900122",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fca157a2e68d29b",
+      "id": "cdf-z-NORM.S.DIST-00344-fresh-control"
+    },
+    {
+      "actual": "0x3fe97aa17465cb5a",
+      "args": [
+        "0x3fea808fdc900122",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe97aa17465cb59",
+      "id": "cdf-z-NORM.S.DIST-00345-fresh-control"
+    },
+    {
+      "actual": "0x3eb0fc772e55e7f9",
+      "args": [
+        "0xc01300f1b44d29a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3eb0fc772e55e7f8",
+      "id": "cdf-z-NORM.S.DIST-00346-fresh-control"
+    },
+    {
+      "actual": "0x3f697b0a415f77f4",
+      "args": [
+        "0xc005e32356bddbf3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f697b0a415f77f3",
+      "id": "cdf-z-NORM.S.DIST-00348-fresh-control"
+    },
+    {
+      "actual": "0x399439ea8823c220",
+      "args": [
+        "0xc0272ad77d103c84",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x399439ea8823c206",
+      "id": "cdf-z-NORM.S.DIST-00350-fresh-control"
+    },
+    {
+      "actual": "0x3fc9d5171925aec5",
+      "args": [
+        "0xbfeab994eb8fbdfd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc9d5171925aec4",
+      "id": "cdf-z-NORM.S.DIST-00352-fresh-control"
+    },
+    {
+      "actual": "0x3fc5d69c8749d3d6",
+      "args": [
+        "0xbfee74bc2d847dc6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc5d69c8749d3d7",
+      "id": "cdf-z-NORM.S.DIST-00354-fresh-control"
+    },
+    {
+      "actual": "0x162219f20e27fbd6",
+      "args": [
+        "0xc03e4e9f3202c4bd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x162219f20e27fc1d",
+      "id": "cdf-z-NORM.S.DIST-00356-fresh-control"
+    },
+    {
+      "actual": "0x3fa4254ab5e42e72",
+      "args": [
+        "0xbffc220e48a84e74",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa4254ab5e42e73",
+      "id": "cdf-z-NORM.S.DIST-00358-fresh-control"
+    },
+    {
+      "actual": "0x3cf2810a300093a4",
+      "args": [
+        "0xc01f0e85703403e8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3cf2810a300093ab",
+      "id": "cdf-z-NORM.S.DIST-00360-fresh-control"
+    },
+    {
+      "actual": "0x0c02ed7cfd1844f9",
+      "args": [
+        "0xc040e711d47791ef",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0c02ed7cfd184615",
+      "id": "cdf-z-NORM.S.DIST-00362-fresh-control"
+    },
+    {
+      "actual": "0x3fa1b8def481000f",
+      "args": [
+        "0xbffd1229d21ee50c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa1b8def480fffd",
+      "id": "cdf-z-NORM.S.DIST-00364-fresh-control"
+    },
+    {
+      "actual": "0x3feee47210b7efff",
+      "args": [
+        "0x3ffd1229d21ee50c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feee47210b7f000",
+      "id": "cdf-z-NORM.S.DIST-00365-fresh-control"
+    },
+    {
+      "actual": "0x3fc4f60e04eb581e",
+      "args": [
+        "0xbfef54feed2e1bc6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc4f60e04eb581f",
+      "id": "cdf-z-NORM.S.DIST-00366-fresh-control"
+    },
+    {
+      "actual": "0x3e34f94bef5fea90",
+      "args": [
+        "0xc016f05d74e87671",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e34f94bef5fea96",
+      "id": "cdf-z-NORM.S.DIST-00368-fresh-control"
+    },
+    {
+      "actual": "0x1f8640b60a459f02",
+      "args": [
+        "0xc03aa759cf681add",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1f8640b60a459fa2",
+      "id": "cdf-z-NORM.S.DIST-00370-fresh-control"
+    },
+    {
+      "actual": "0x3fc5a31a4d9756a4",
+      "args": [
+        "0xbfeea7a7e7a24013",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc5a31a4d9756a5",
+      "id": "cdf-z-NORM.S.DIST-00374-fresh-control"
+    },
+    {
+      "actual": "0x3cc7ac069b4c301f",
+      "args": [
+        "0xc01ff91bc8596053",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3cc7ac069b4c302a",
+      "id": "cdf-z-NORM.S.DIST-00376-fresh-control"
+    },
+    {
+      "actual": "0x36333f9390558784",
+      "args": [
+        "0xc02ce4a7893da653",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x36333f9390558789",
+      "id": "cdf-z-NORM.S.DIST-00378-fresh-control"
+    },
+    {
+      "actual": "0x3f95b14fdc516474",
+      "args": [
+        "0xc0003d336e3229df",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f95b14fdc51646e",
+      "id": "cdf-z-NORM.S.DIST-00380-fresh-control"
+    },
+    {
+      "actual": "0x3fef5275811d74dc",
+      "args": [
+        "0x40003d336e3229df",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fef5275811d74dd",
+      "id": "cdf-z-NORM.S.DIST-00381-fresh-control"
+    },
+    {
+      "actual": "0x3fc012d293ab774b",
+      "args": [
+        "0xbff25c6b75c7da4c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc012d293ab774c",
+      "id": "cdf-z-NORM.S.DIST-00382-fresh-control"
+    },
+    {
+      "actual": "0x3ce54680bf461d87",
+      "args": [
+        "0xc01f5610a46346f8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ce54680bf461d85",
+      "id": "cdf-z-NORM.S.DIST-00384-fresh-control"
+    },
+    {
+      "actual": "0x293069442c6019b3",
+      "args": [
+        "0xc036485389cf3e75",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x293069442c60197b",
+      "id": "cdf-z-NORM.S.DIST-00386-fresh-control"
+    },
+    {
+      "actual": "0x3ecb8b949d4f667a",
+      "args": [
+        "0xc012076cc7677033",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ecb8b949d4f6677",
+      "id": "cdf-z-NORM.S.DIST-00390-fresh-control"
+    },
+    {
+      "actual": "0x1fba5ab05dd1107f",
+      "args": [
+        "0xc03a91bff9d71d77",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1fba5ab05dd10ffd",
+      "id": "cdf-z-NORM.S.DIST-00394-fresh-control"
+    },
+    {
+      "actual": "0x1eb1fa2af5e2ebda",
+      "args": [
+        "0xc03aff420d570e8d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1eb1fa2af5e2ebf2",
+      "id": "cdf-z-NORM.S.DIST-00396-fresh-control"
+    },
+    {
+      "actual": "0x3f95df3f928db9b9",
+      "args": [
+        "0xc000362a7affa3d0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f95df3f928db9b3",
+      "id": "cdf-z-NORM.S.DIST-00398-fresh-control"
+    },
+    {
+      "actual": "0x3fc5dd3b6f582f8b",
+      "args": [
+        "0xbfee6e3634b6a897",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc5dd3b6f582f8a",
+      "id": "cdf-z-NORM.S.DIST-00400-fresh-control"
+    },
+    {
+      "actual": "0x3fea88b12429f41d",
+      "args": [
+        "0x3fee6e3634b6a897",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fea88b12429f41e",
+      "id": "cdf-z-NORM.S.DIST-00401-fresh-control"
+    },
+    {
+      "actual": "0x18d4b99834f7b617",
+      "args": [
+        "0xc03d4dbfa06b0006",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x18d4b99834f7b671",
+      "id": "cdf-z-NORM.S.DIST-00402-fresh-control"
+    },
+    {
+      "actual": "0x3d0f944d1c5f993a",
+      "args": [
+        "0xc01e6d978ae71786",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d0f944d1c5f9933",
+      "id": "cdf-z-NORM.S.DIST-00404-fresh-control"
+    },
+    {
+      "actual": "0x3fc4a7e1e9fd2dd4",
+      "args": [
+        "0xbfefa47d0e95f829",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc4a7e1e9fd2dd3",
+      "id": "cdf-z-NORM.S.DIST-00406-fresh-control"
+    },
+    {
+      "actual": "0x3fca6f05d40d48bf",
+      "args": [
+        "0xbfea31cde954b0d2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fca6f05d40d48be",
+      "id": "cdf-z-NORM.S.DIST-00412-fresh-control"
+    },
+    {
+      "actual": "0x3cdb60799f482270",
+      "args": [
+        "0xc01f8e9e6bd66d33",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3cdb60799f48226e",
+      "id": "cdf-z-NORM.S.DIST-00414-fresh-control"
+    },
+    {
+      "actual": "0x3c359a75499e623d",
+      "args": [
+        "0xc0217a9ab56eed29",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3c359a75499e6242",
+      "id": "cdf-z-NORM.S.DIST-00416-fresh-control"
+    },
+    {
+      "actual": "0x1a5ad65d6856e94f",
+      "args": [
+        "0xc03cb8dbb37c5ab3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1a5ad65d6856e947",
+      "id": "cdf-z-NORM.S.DIST-00418-fresh-control"
+    },
+    {
+      "actual": "0x31a42d6f44a268b4",
+      "args": [
+        "0xc031971d8dd66ec6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x31a42d6f44a268cb",
+      "id": "cdf-z-NORM.S.DIST-00420-fresh-control"
+    },
+    {
+      "actual": "0x3887fcaec236a9f2",
+      "args": [
+        "0xc029147769b8b39b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3887fcaec236a9dc",
+      "id": "cdf-z-NORM.S.DIST-00422-fresh-control"
+    },
+    {
+      "actual": "0x3aad6e10678a6679",
+      "args": [
+        "0xc024fb5a774c443c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3aad6e10678a6673",
+      "id": "cdf-z-NORM.S.DIST-00424-fresh-control"
+    },
+    {
+      "actual": "0x3fa18baaaf8ab2e1",
+      "args": [
+        "0xbffd24b03f5c53b4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa18baaaf8ab2cf",
+      "id": "cdf-z-NORM.S.DIST-00426-fresh-control"
+    },
+    {
+      "actual": "0x3feee745550754d2",
+      "args": [
+        "0x3ffd24b03f5c53b4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feee745550754d3",
+      "id": "cdf-z-NORM.S.DIST-00427-fresh-control"
+    },
+    {
+      "actual": "0x3f2cc5ca0fd34c16",
+      "args": [
+        "0xc00c1f9c0e668613",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f2cc5ca0fd34c1a",
+      "id": "cdf-z-NORM.S.DIST-00428-fresh-control"
+    },
+    {
+      "actual": "0x3fbc0f61e844060c",
+      "args": [
+        "0xbff3a85f20a7afdf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fbc0f61e844060d",
+      "id": "cdf-z-NORM.S.DIST-00430-fresh-control"
+    },
+    {
+      "actual": "0x3fa3a8db4419eec2",
+      "args": [
+        "0xbffc503eac76f740",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa3a8db4419eec0",
+      "id": "cdf-z-NORM.S.DIST-00432-fresh-control"
+    },
+    {
+      "actual": "0x3f98f78c02d80035",
+      "args": [
+        "0xbfff87caf3f8eebb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f98f78c02d8002b",
+      "id": "cdf-z-NORM.S.DIST-00436-fresh-control"
+    },
+    {
+      "actual": "0x3fef38439fe93ffe",
+      "args": [
+        "0x3fff87caf3f8eebb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fef38439fe93fff",
+      "id": "cdf-z-NORM.S.DIST-00437-fresh-control"
+    },
+    {
+      "actual": "0x3f719bf9c858dae9",
+      "args": [
+        "0xc005056126bfd1a6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f719bf9c858daea",
+      "id": "cdf-z-NORM.S.DIST-00438-fresh-control"
+    },
+    {
+      "actual": "0x39234ecf7e470135",
+      "args": [
+        "0xc027fe11be380785",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x39234ecf7e470158",
+      "id": "cdf-z-NORM.S.DIST-00440-fresh-control"
+    },
+    {
+      "actual": "0x08600b2063effcc8",
+      "args": [
+        "0xc0417d2f7e2136ca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x08600b2063effc96",
+      "id": "cdf-z-NORM.S.DIST-00442-fresh-control"
+    },
+    {
+      "actual": "0x3b831263eab85d68",
+      "args": [
+        "0xc02326dd82078627",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b831263eab85d60",
+      "id": "cdf-z-NORM.S.DIST-00444-fresh-control"
+    },
+    {
+      "actual": "0x3b66d17a70204a87",
+      "args": [
+        "0xc02366504c09c5dd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b66d17a70204a7a",
+      "id": "cdf-z-NORM.S.DIST-00450-fresh-control"
+    },
+    {
+      "actual": "0x34f9279f4da2f329",
+      "args": [
+        "0xc02eb5b8d4770116",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x34f9279f4da2f305",
+      "id": "cdf-z-NORM.S.DIST-00452-fresh-control"
+    },
+    {
+      "actual": "0x3fa5ec239c032f19",
+      "args": [
+        "0xbffb80928d156a94",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa5ec239c032f18",
+      "id": "cdf-z-NORM.S.DIST-00454-fresh-control"
+    },
+    {
+      "actual": "0x1aa0b0a5c25f4295",
+      "args": [
+        "0xc03c9e2f81f71fcb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1aa0b0a5c25f42d1",
+      "id": "cdf-z-NORM.S.DIST-00458-fresh-control"
+    },
+    {
+      "actual": "0x3d057f42c313c01d",
+      "args": [
+        "0xc01ea05986a26334",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d057f42c313c018",
+      "id": "cdf-z-NORM.S.DIST-00460-fresh-control"
+    },
+    {
+      "actual": "0x22c60357b734fee7",
+      "args": [
+        "0xc039448e04b56af2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x22c60357b734fe7e",
+      "id": "cdf-z-NORM.S.DIST-00462-fresh-control"
+    },
+    {
+      "actual": "0x3fbe421914345b48",
+      "args": [
+        "0xbff2f1e161f6fca7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fbe421914345b47",
+      "id": "cdf-z-NORM.S.DIST-00464-fresh-control"
+    },
+    {
+      "actual": "0x34a379849908f291",
+      "args": [
+        "0xc02f3059b022d89e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x34a379849908f29f",
+      "id": "cdf-z-NORM.S.DIST-00466-fresh-control"
+    },
+    {
+      "actual": "0x32531073b6dc5ad8",
+      "args": [
+        "0xc03127f75ccd439a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x32531073b6dc5b07",
+      "id": "cdf-z-NORM.S.DIST-00470-fresh-control"
+    },
+    {
+      "actual": "0x3d42e13159d6cb96",
+      "args": [
+        "0xc01d3cd8d66d7f9d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3d42e13159d6cb93",
+      "id": "cdf-z-NORM.S.DIST-00472-fresh-control"
+    },
+    {
+      "actual": "0x3113c80d0e6714b6",
+      "args": [
+        "0xc031f1029729e222",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3113c80d0e671481",
+      "id": "cdf-z-NORM.S.DIST-00474-fresh-control"
+    },
+    {
+      "actual": "0x3f80364b801f2335",
+      "args": [
+        "0xc0034d5696f77966",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f80364b801f2337",
+      "id": "cdf-z-NORM.S.DIST-00476-fresh-control"
+    },
+    {
+      "actual": "0x3f9b542e2c016bca",
+      "args": [
+        "0xbffee8e775000e14",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9b542e2c016bb7",
+      "id": "cdf-z-NORM.S.DIST-00478-fresh-control"
+    },
+    {
+      "actual": "0x3f54ab30ddf183bb",
+      "args": [
+        "0xc0082a1dec3b0b08",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f54ab30ddf183b9",
+      "id": "cdf-z-NORM.S.DIST-00480-fresh-control"
+    },
+    {
+      "actual": "0x3ab34deb0a89e8d5",
+      "args": [
+        "0xc024ee34c67cbf1e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ab34deb0a89e8ce",
+      "id": "cdf-z-NORM.S.DIST-00482-fresh-control"
+    },
+    {
+      "actual": "0x3db444e18c8d7241",
+      "args": [
+        "0xc01a76ee24fc41e0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3db444e18c8d7245",
+      "id": "cdf-z-NORM.S.DIST-00484-fresh-control"
+    },
+    {
+      "actual": "0x316805a4dc6fe24d",
+      "args": [
+        "0xc031bca6cd5fc163",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x316805a4dc6fe272",
+      "id": "cdf-z-NORM.S.DIST-00486-fresh-control"
+    },
+    {
+      "actual": "0x3cf6b2c934364ba6",
+      "args": [
+        "0xc01ef3f5a35b4621",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3cf6b2c934364b9d",
+      "id": "cdf-z-NORM.S.DIST-00488-fresh-control"
+    },
+    {
+      "actual": "0x13d36f1ffdbfdb42",
+      "args": [
+        "0xc03f238147d258ed",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x13d36f1ffdbfdae0",
+      "id": "cdf-z-NORM.S.DIST-00490-fresh-control"
+    },
+    {
+      "actual": "0x3fc03c8b6aa3b662",
+      "args": [
+        "0xbff2434134ee671c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc03c8b6aa3b663",
+      "id": "cdf-z-NORM.S.DIST-00492-fresh-control"
+    },
+    {
+      "actual": "0x3febf0dd25571268",
+      "args": [
+        "0x3ff2434134ee671c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3febf0dd25571267",
+      "id": "cdf-z-NORM.S.DIST-00493-fresh-control"
+    },
+    {
+      "actual": "0x3fcc3e282f3179de",
+      "args": [
+        "0xbfe8a3ecb859fcd2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fcc3e282f3179dd",
+      "id": "cdf-z-NORM.S.DIST-00494-fresh-control"
+    },
+    {
+      "actual": "0x3fe8f075f433a188",
+      "args": [
+        "0x3fe8a3ecb859fcd2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe8f075f433a189",
+      "id": "cdf-z-NORM.S.DIST-00495-fresh-control"
+    },
+    {
+      "actual": "0x3f3aa7789f1637bd",
+      "args": [
+        "0xc00ac9163f9a3bab",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f3aa7789f1637c2",
+      "id": "cdf-z-NORM.S.DIST-00496-fresh-control"
+    },
+    {
+      "actual": "0x3fa05f72cbf51b6e",
+      "args": [
+        "0xbffda3c5b826851c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa05f72cbf51b5d",
+      "id": "cdf-z-NORM.S.DIST-00498-fresh-control"
+    },
+    {
+      "actual": "0x3feefa08d340ae49",
+      "args": [
+        "0x3ffda3c5b826851c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feefa08d340ae4a",
+      "id": "cdf-z-NORM.S.DIST-00499-fresh-control"
+    },
+    {
+      "actual": "0x34d7f0c8195c459d",
+      "args": [
+        "0xc02ee540f4780f16",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x34d7f0c8195c45ac",
+      "id": "cdf-z-NORM.S.DIST-00500-fresh-control"
+    },
+    {
+      "actual": "0x37b3f35cab502df5",
+      "args": [
+        "0xc02a7f6bf98a9b7d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x37b3f35cab502e04",
+      "id": "cdf-z-NORM.S.DIST-00504-fresh-control"
+    },
+    {
+      "actual": "0x3b753e58457c45bc",
+      "args": [
+        "0xc02345bbfda6f10b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3b753e58457c45b5",
+      "id": "cdf-z-NORM.S.DIST-00506-fresh-control"
+    },
+    {
+      "actual": "0x37f1cdfed554eaba",
+      "args": [
+        "0xc02a187a01929e29",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x37f1cdfed554eaa5",
+      "id": "cdf-z-NORM.S.DIST-00508-fresh-control"
+    },
+    {
+      "actual": "0x3ce7ccec32c62c1e",
+      "args": [
+        "0xc01f479ee0591155",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ce7ccec32c62c24",
+      "id": "cdf-z-NORM.S.DIST-00510-fresh-control"
+    }
+  ],
+  "rows": 512
+}

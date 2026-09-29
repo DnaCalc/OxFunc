@@ -3,10 +3,10 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
+use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::WorksheetErrorCode;
 
 pub const DEVSQ_META: FunctionMeta = function_spec! {
@@ -32,10 +32,27 @@ pub enum DevSqEvalError {
     Coercion(CoercionError),
 }
 
+// W111 distinguishes blank cells from explicit omitted scalar arguments.
+// Keep reference/array-origin policy in the existing aggregate helper.
+fn prepared_number(arg: &AggregatePreparedItem) -> Result<Option<f64>, CoercionError> {
+    match arg.0.core() {
+        CoreValue::Empty => Ok(None),
+        CoreValue::Missing if matches!(arg.1, AggregateArgOrigin::DirectScalar) => Ok(Some(0.0)),
+        _ => average_argument_value(arg),
+    }
+}
+
 fn eval_devsq_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, DevSqEvalError> {
+    // Direct scalar coercion errors precede errors in arrays/references.
+    // Validate only here: the full pass below keeps numeric accumulation order.
+    for arg in args {
+        if matches!(arg.1, AggregateArgOrigin::DirectScalar) {
+            prepared_number(arg).map_err(DevSqEvalError::Coercion)?;
+        }
+    }
     let mut values = Vec::new();
     for arg in args {
-        if let Some(value) = average_argument_value(arg).map_err(DevSqEvalError::Coercion)? {
+        if let Some(value) = prepared_number(arg).map_err(DevSqEvalError::Coercion)? {
             values.push(value);
         }
     }
@@ -49,10 +66,14 @@ fn eval_devsq_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, Dev
         .iter()
         .map(|value| {
             let delta = value - mean;
-            delta * delta
+            let square = crate::excel_numeric::excel_x87_mul(delta, delta);
+            // The stored square is published before accumulation. Tiny terms
+            // contribute zero even when their unflushed sum would be normal.
+            if square < f64::MIN_POSITIVE { 0.0 } else { square }
         })
         .sum::<f64>();
-    Ok(CalcValue::number(devsq))
+    Ok(if devsq.is_finite() { CalcValue::number(devsq) }
+       else { CalcValue::error(WorksheetErrorCode::Num) })
 }
 
 pub fn eval_devsq_surface(

@@ -1,0 +1,29 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "locale/currency/native digit/date/time/current-year implicit numeric text context",
+    "HO-FN-022 receiving integration",
+    "function-level final audit"
+  ],
+  "address_non_numeric_text_bank": {
+    "admitted": 41015,
+    "tests_passed": 8
+  },
+  "address_numeric_text_syntax720": {
+    "matched": 656,
+    "mismatched": 64,
+    "reproduction_test": "address_open_numeric_text_coercion_reproduction",
+    "run_explicitly_ignored": true,
+    "result": "expected_known_gap_failure",
+    "remaining_class": "context-dependent implicit numeric text admission"
+  },
+  "existing_coercion_unit_checks_passed": 16,
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/reference_metadata_family.rs": "a178f2be22f11b84d0c0f2b1d8ef4c71a43627a87687038d8b1f01399e0bd0e1",
+    "crates/oxfunc_core/src/coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "crates/oxfunc_core/src/coercion_decimal_powers.rs": "a9a14c0e7c497c61cd428058b6fdafc5f7df132a0b3aa41dda7992e2a97ade13"
+  }
+}

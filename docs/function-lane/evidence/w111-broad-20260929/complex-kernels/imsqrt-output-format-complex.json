@@ -1,0 +1,429 @@
+{
+  "function": "COMPLEX",
+  "witnesses": [
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--2--2",
+      "args": [
+        "0x4445b8f45edcb2f7",
+        "0xc43dd575da017e94"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--2--1",
+      "args": [
+        "0x4445b8f45edcb2f7",
+        "0xc43dd575da017e95"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--2-+0",
+      "args": [
+        "0x4445b8f45edcb2f7",
+        "0xc43dd575da017e96"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--2-+1",
+      "args": [
+        "0x4445b8f45edcb2f7",
+        "0xc43dd575da017e97"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--2-+2",
+      "args": [
+        "0x4445b8f45edcb2f7",
+        "0xc43dd575da017e98"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939885000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--1--2",
+      "args": [
+        "0x4445b8f45edcb2f8",
+        "0xc43dd575da017e94"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--1--1",
+      "args": [
+        "0x4445b8f45edcb2f8",
+        "0xc43dd575da017e95"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--1-+0",
+      "args": [
+        "0x4445b8f45edcb2f8",
+        "0xc43dd575da017e96"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--1-+1",
+      "args": [
+        "0x4445b8f45edcb2f8",
+        "0xc43dd575da017e97"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant--1-+2",
+      "args": [
+        "0x4445b8f45edcb2f8",
+        "0xc43dd575da017e98"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939885000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+0--2",
+      "args": [
+        "0x4445b8f45edcb2f9",
+        "0xc43dd575da017e94"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+0--1",
+      "args": [
+        "0x4445b8f45edcb2f9",
+        "0xc43dd575da017e95"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+0-+0",
+      "args": [
+        "0x4445b8f45edcb2f9",
+        "0xc43dd575da017e96"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+0-+1",
+      "args": [
+        "0x4445b8f45edcb2f9",
+        "0xc43dd575da017e97"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+0-+2",
+      "args": [
+        "0x4445b8f45edcb2f9",
+        "0xc43dd575da017e98"
+      ],
+      "expected_bits": "text:801418014094370000000-550337017939885000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+1--2",
+      "args": [
+        "0x4445b8f45edcb2fa",
+        "0xc43dd575da017e94"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+1--1",
+      "args": [
+        "0x4445b8f45edcb2fa",
+        "0xc43dd575da017e95"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+1-+0",
+      "args": [
+        "0x4445b8f45edcb2fa",
+        "0xc43dd575da017e96"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+1-+1",
+      "args": [
+        "0x4445b8f45edcb2fa",
+        "0xc43dd575da017e97"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+1-+2",
+      "args": [
+        "0x4445b8f45edcb2fa",
+        "0xc43dd575da017e98"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939885000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+2--2",
+      "args": [
+        "0x4445b8f45edcb2fb",
+        "0xc43dd575da017e94"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+2--1",
+      "args": [
+        "0x4445b8f45edcb2fb",
+        "0xc43dd575da017e95"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+2-+0",
+      "args": [
+        "0x4445b8f45edcb2fb",
+        "0xc43dd575da017e96"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+2-+1",
+      "args": [
+        "0x4445b8f45edcb2fb",
+        "0xc43dd575da017e97"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939884000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00096-imsqrt-ordinary-quadrant-+2-+2",
+      "args": [
+        "0x4445b8f45edcb2fb",
+        "0xc43dd575da017e98"
+      ],
+      "expected_bits": "text:801418014094371000000-550337017939885000000i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--2--2",
+      "args": [
+        "0x4bc43565b0d6ccc9",
+        "0xcba98d32f43ba8a4"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--2--1",
+      "args": [
+        "0x4bc43565b0d6ccc9",
+        "0xcba98d32f43ba8a5"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--2-+0",
+      "args": [
+        "0x4bc43565b0d6ccc9",
+        "0xcba98d32f43ba8a6"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--2-+1",
+      "args": [
+        "0x4bc43565b0d6ccc9",
+        "0xcba98d32f43ba8a7"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--2-+2",
+      "args": [
+        "0x4bc43565b0d6ccc9",
+        "0xcba98d32f43ba8a8"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--1--2",
+      "args": [
+        "0x4bc43565b0d6ccca",
+        "0xcba98d32f43ba8a4"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--1--1",
+      "args": [
+        "0x4bc43565b0d6ccca",
+        "0xcba98d32f43ba8a5"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--1-+0",
+      "args": [
+        "0x4bc43565b0d6ccca",
+        "0xcba98d32f43ba8a6"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--1-+1",
+      "args": [
+        "0x4bc43565b0d6ccca",
+        "0xcba98d32f43ba8a7"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant--1-+2",
+      "args": [
+        "0x4bc43565b0d6ccca",
+        "0xcba98d32f43ba8a8"
+      ],
+      "expected_bits": "text:9.91026023186233E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+0--2",
+      "args": [
+        "0x4bc43565b0d6cccb",
+        "0xcba98d32f43ba8a4"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+0--1",
+      "args": [
+        "0x4bc43565b0d6cccb",
+        "0xcba98d32f43ba8a5"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+0-+0",
+      "args": [
+        "0x4bc43565b0d6cccb",
+        "0xcba98d32f43ba8a6"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+0-+1",
+      "args": [
+        "0x4bc43565b0d6cccb",
+        "0xcba98d32f43ba8a7"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+0-+2",
+      "args": [
+        "0x4bc43565b0d6cccb",
+        "0xcba98d32f43ba8a8"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+1--2",
+      "args": [
+        "0x4bc43565b0d6cccc",
+        "0xcba98d32f43ba8a4"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+1--1",
+      "args": [
+        "0x4bc43565b0d6cccc",
+        "0xcba98d32f43ba8a5"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+1-+0",
+      "args": [
+        "0x4bc43565b0d6cccc",
+        "0xcba98d32f43ba8a6"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+1-+1",
+      "args": [
+        "0x4bc43565b0d6cccc",
+        "0xcba98d32f43ba8a7"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+1-+2",
+      "args": [
+        "0x4bc43565b0d6cccc",
+        "0xcba98d32f43ba8a8"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+2--2",
+      "args": [
+        "0x4bc43565b0d6cccd",
+        "0xcba98d32f43ba8a4"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+2--1",
+      "args": [
+        "0x4bc43565b0d6cccd",
+        "0xcba98d32f43ba8a5"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+2-+0",
+      "args": [
+        "0x4bc43565b0d6cccd",
+        "0xcba98d32f43ba8a6"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734092E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+2-+1",
+      "args": [
+        "0x4bc43565b0d6cccd",
+        "0xcba98d32f43ba8a7"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734093E+56i"
+    },
+    {
+      "id": "imsqrt-output-w111typed-00221-imsqrt-ordinary-quadrant-+2-+2",
+      "args": [
+        "0x4bc43565b0d6cccd",
+        "0xcba98d32f43ba8a8"
+      ],
+      "expected_bits": "text:9.91026023186234E+56-3.13261198734093E+56i"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T13:44:25.3536489Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

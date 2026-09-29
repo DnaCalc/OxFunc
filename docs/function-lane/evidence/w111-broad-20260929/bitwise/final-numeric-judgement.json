@@ -1,0 +1,497 @@
+[
+  {
+    "function_id": "FUNC.BITAND",
+    "rows_judged": 1235,
+    "rows_agree": 1235,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:16:51.8250728Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITOR",
+    "rows_judged": 1235,
+    "rows_agree": 1235,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:16:58.2326491Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITXOR",
+    "rows_judged": 1235,
+    "rows_agree": 1235,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:17:04.0507266Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITLSHIFT",
+    "rows_judged": 1270,
+    "rows_agree": 1270,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:17:08.9452088Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITRSHIFT",
+    "rows_judged": 1270,
+    "rows_agree": 1270,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:17:13.8761764Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITAND",
+    "rows_judged": 289,
+    "rows_agree": 289,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:27:48.4811827Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITOR",
+    "rows_judged": 289,
+    "rows_agree": 289,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:27:55.9511080Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITXOR",
+    "rows_judged": 289,
+    "rows_agree": 289,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:28:03.3494626Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITLSHIFT",
+    "rows_judged": 442,
+    "rows_agree": 442,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:27:52.5384084Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITRSHIFT",
+    "rows_judged": 442,
+    "rows_agree": 442,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:27:59.6006902Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITAND",
+    "rows_judged": 4500,
+    "rows_agree": 4500,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:31:56.6209363Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITOR",
+    "rows_judged": 4500,
+    "rows_agree": 4500,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:32:10.7429677Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITXOR",
+    "rows_judged": 4500,
+    "rows_agree": 4500,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:32:24.6819635Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITLSHIFT",
+    "rows_judged": 6468,
+    "rows_agree": 6468,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:32:04.0201247Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.BITRSHIFT",
+    "rows_judged": 6465,
+    "rows_agree": 6465,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T12:32:18.3849658Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  }
+]

@@ -1,0 +1,1469 @@
+{
+  "function": "NORM.DIST",
+  "witnesses": [
+    {
+      "id": "density-subtraction-0000",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff00000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0001",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff00000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0002",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff00000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0003",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff00000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0004",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff80000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0005",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff80000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0006",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff80000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0007",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ff80000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0008",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0009",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0010",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0011",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0012",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0013",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0014",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0015",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0016",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0017",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0000000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0018",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0019",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0020",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0010000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0021",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0010000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0022",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0010000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0023",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0010000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0024",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0020000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331738"
+    },
+    {
+      "id": "density-subtraction-0025",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0020000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0026",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0020000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0027",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0020000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0028",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0040000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331736"
+    },
+    {
+      "id": "density-subtraction-0029",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0040000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722516"
+    },
+    {
+      "id": "density-subtraction-0030",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0040000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0031",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0040000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0032",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0080000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e331736"
+    },
+    {
+      "id": "density-subtraction-0033",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0080000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722516"
+    },
+    {
+      "id": "density-subtraction-0034",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0080000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0035",
+      "args": [
+        "0x3ff0000000000000",
+        "0xbca0080000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0036",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff00000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0037",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff00000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0038",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff00000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0039",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff00000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0040",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff80000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0041",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff80000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0042",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff80000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0043",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaff80000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0044",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffc0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0045",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffc0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0046",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffc0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0047",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffc0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0048",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffe0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0049",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffe0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0050",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffe0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0051",
+      "args": [
+        "0x4000000000000000",
+        "0xbcaffe0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0052",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0053",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0000000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0054",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0055",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0056",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0010000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0057",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0010000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0058",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0010000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0059",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0010000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0060",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0020000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ad6"
+    },
+    {
+      "id": "density-subtraction-0061",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0020000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb7"
+    },
+    {
+      "id": "density-subtraction-0062",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0020000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0063",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0020000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0064",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0040000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ace"
+    },
+    {
+      "id": "density-subtraction-0065",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0040000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb4"
+    },
+    {
+      "id": "density-subtraction-0066",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0040000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0067",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0040000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0068",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0080000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3faba4b436e83ace"
+    },
+    {
+      "id": "density-subtraction-0069",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0080000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb80eb1d96f0bb4"
+    },
+    {
+      "id": "density-subtraction-0070",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0080000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fbb4272bad48f33"
+    },
+    {
+      "id": "density-subtraction-0071",
+      "args": [
+        "0x4000000000000000",
+        "0xbcb0080000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fac03435037b0c7"
+    },
+    {
+      "id": "density-subtraction-0072",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff00000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0073",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff00000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0074",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff00000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0075",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff00000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0076",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff80000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0077",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff80000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0078",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff80000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0079",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbff80000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0080",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffc0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0081",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffc0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0082",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffc0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0083",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffc0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0084",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffe0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0085",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffe0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0086",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffe0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0087",
+      "args": [
+        "0x4010000000000000",
+        "0xbcbffe0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0088",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0089",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0000000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0090",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0091",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0092",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0010000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0093",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0010000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0094",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0010000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0095",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0010000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0096",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0020000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4b5"
+    },
+    {
+      "id": "density-subtraction-0097",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0020000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a80"
+    },
+    {
+      "id": "density-subtraction-0098",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0020000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c2c"
+    },
+    {
+      "id": "density-subtraction-0099",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0020000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0100",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0040000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4a3"
+    },
+    {
+      "id": "density-subtraction-0101",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0040000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a70"
+    },
+    {
+      "id": "density-subtraction-0102",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0040000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c29"
+    },
+    {
+      "id": "density-subtraction-0103",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0040000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0104",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0080000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f218a98e2c0b4a3"
+    },
+    {
+      "id": "density-subtraction-0105",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0080000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f661b539a0c4a70"
+    },
+    {
+      "id": "density-subtraction-0106",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0080000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabfdb5a1f71c29"
+    },
+    {
+      "id": "density-subtraction-0107",
+      "args": [
+        "0x4010000000000000",
+        "0xbcc0080000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa8c8c849d3910a"
+    },
+    {
+      "id": "density-subtraction-0108",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff00000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0109",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff00000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0110",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff00000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0111",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff00000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0112",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff80000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0113",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff80000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0114",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff80000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0115",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ff80000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0116",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0117",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0118",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0119",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffc0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0120",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0121",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0122",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0123",
+      "args": [
+        "0xbff0000000000000",
+        "0xbc9ffe0000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0124",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0125",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0000000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0126",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0127",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0128",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0010000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0129",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0010000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0130",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0010000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0131",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0010000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0132",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0020000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0133",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0020000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0134",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0020000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0135",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0020000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0136",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0040000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0137",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0040000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0138",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0040000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0139",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0040000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    },
+    {
+      "id": "density-subtraction-0140",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0080000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcef8e58e33173a"
+    },
+    {
+      "id": "density-subtraction-0141",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0080000000000",
+        "0x3ff4cccccccccccd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcd3870b2722518"
+    },
+    {
+      "id": "density-subtraction-0142",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0080000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc01a07fcd558e8"
+    },
+    {
+      "id": "density-subtraction-0143",
+      "args": [
+        "0xbff0000000000000",
+        "0xbca0080000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3face22fa2fc30f3"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T16:35:47.8840772Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

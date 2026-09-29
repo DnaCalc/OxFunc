@@ -1,5 +1,5 @@
 use crate::function::{
-    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
@@ -21,12 +21,27 @@ pub const TANH_META: FunctionMeta = function_spec! {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // W111 live normal inputs beyond the exp overflow boundary publish +/-1.
+    // The composed raw kernel can be Inf/Inf; publication must be explicit.
+    real_result_policy: ExcelRealPolicy::SATURATE_SIGN,
 };
 
 pub fn tanh_kernel(n: f64) -> f64 {
-    // Live Excel 16.0 b20326: TANH(x)=SINH(x)/COSH(x) 8/8. libm tanh is
-    // 1 ULP off the first pin.
-    crate::functions::sinh::sinh_kernel(n) / crate::functions::cosh::cosh_kernel(n)
+    // W111: small arguments reuse the cancellation-safe expm1 pair for the
+    // denominator too. The public COSH result is observably different there.
+    let denominator = if n.abs() < 1.0 {
+        let sum = crate::excel_numeric::excel_x87_add(
+            crate::excel_numeric::excel_expm1_internal(n),
+            crate::excel_numeric::excel_expm1_internal(-n),
+        );
+        crate::excel_numeric::excel_x87_add(sum, 2.0) / 2.0
+    } else {
+        crate::functions::cosh::cosh_kernel(n)
+    };
+    crate::excel_numeric::excel_x87_div(
+        crate::functions::sinh::sinh_kernel(n),
+        denominator,
+    )
 }
 
 pub fn eval_tanh_surface(

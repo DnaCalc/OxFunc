@@ -5,6 +5,13 @@ Owner workset: W108 (Phase D)
 Catalog: resolved (removed from the open tracker)
 Reproduced on: live Excel 16.0 build 20131, 64-bit, AMD Zen2, Value2 cell-ref plumbing
 
+## W111 qualification (2026-09-29)
+
+The historical 715-row result below is a bounded observation, not whole-function
+bit-exactness. BUG-FUNC-069 retains new integer arithmetic and large-exponent
+counterexamples and fresh candidate validation. POWER remains scope_partial,
+target_partial, integration partial; these known lanes are open.
+
 ## Resolution (2026-07-04)
 
 `POWER` is now bit-exact (715/715 live rows: 315 reverse-engineering ground truth +

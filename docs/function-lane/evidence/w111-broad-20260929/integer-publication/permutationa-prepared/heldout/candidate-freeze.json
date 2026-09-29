@@ -1,0 +1,9 @@
+{
+  "source_sha256": {
+    "functions/permutationa_fn.rs": "8d600cf52bacdc55fa2bceecbae9f7dfaaa48aea991d6cde2b224d3531885a4f",
+    "functions/distribution_common.rs": "20c45413d25e8aaea096e3650f2dfbc4ef307391ff9a5c1380de6cf6b08a22d8",
+    "coercion.rs": "96564e9e279de1ad5962f846b41d52242ccfafdfaa568b8f00b61ef335667908"
+  },
+  "frozen_utc": "2026-09-29T17:17:50.169771+00:00",
+  "seed": 202609292804
+}

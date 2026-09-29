@@ -1,0 +1,2 @@
+answered 7344 probes for ROUNDDOWN (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-trunc-hyperbolic-20260929\answers\answers-rounddown.json
+BULK throughput: 7344 live probes | compute 1.10s (6654.4/s) | +excel startup 1.62s (2695/s incl startup) | total wall 3.34s

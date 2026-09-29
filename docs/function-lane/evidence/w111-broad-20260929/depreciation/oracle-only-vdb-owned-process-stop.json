@@ -1,0 +1,1 @@
+{"process_id":22604,"process_start_utc":"2026-09-29T15:25:47.0260325Z","cpu_seconds":183.578125,"reason":"Owned VDB probe stuck during formula entry; watchdog initially covered explicit Calculate only. No semantic result inferred. Exact-readback runner now also times formula entry."}

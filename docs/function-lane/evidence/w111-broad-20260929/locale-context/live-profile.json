@@ -1,0 +1,110 @@
+{
+  "schema_version": "w111.live_locale_profile.v1",
+  "captured_utc": "2026-09-29T12:59:18.8927675Z",
+  "excel_version": "16.0",
+  "excel_build": "20430",
+  "operating_system": "Windows (64-bit) NT 10.00",
+  "channel": "unavailable_not_queried",
+  "compatibility_version": "2",
+  "date_system": "1900",
+  "precision_as_displayed": false,
+  "use_system_separators": true,
+  "application_decimal_separator": ".",
+  "application_thousands_separator": " ",
+  "international": {
+    "country_code": 1.0,
+    "country_setting": 27.0,
+    "decimal_separator": ".",
+    "thousands_separator": " ",
+    "list_separator": ",",
+    "column_separator": ",",
+    "row_separator": ";",
+    "date_separator": "/",
+    "time_separator": ":",
+    "year_code": "y",
+    "month_code": "m",
+    "day_code": "d",
+    "hour_code": "h",
+    "minute_code": "m",
+    "second_code": "s",
+    "currency_code": "R",
+    "general_format_name": "General",
+    "currency_digits": 2.0,
+    "currency_negative": 1.0,
+    "noncurrency_digits": 2.0,
+    "date_order": 2.0,
+    "clock_24_hour": true,
+    "non_english_functions": false,
+    "currency_space_before": false,
+    "currency_before": true,
+    "currency_minus_sign": true,
+    "currency_trailing_zeros": true,
+    "currency_leading_zeros": true,
+    "month_leading_zero": true,
+    "day_leading_zero": true,
+    "four_digit_years": true,
+    "long_date_mdy": false,
+    "time_leading_zero": true
+  },
+  "windows_culture": {
+    "name": "en-ZA",
+    "lcid": 7177,
+    "decimal_separator": ".",
+    "thousands_separator": " ",
+    "currency_symbol": "R",
+    "currency_positive_pattern": 0,
+    "currency_negative_pattern": 1,
+    "short_date_pattern": "yyyy/MM/dd",
+    "date_separator": "/",
+    "time_separator": ":",
+    "two_digit_year_max": 2049
+  },
+  "sentinel_input_value2": 1234.5,
+  "sentinels": [
+    {
+      "formula": "=DOLLAR(A1)",
+      "value2": "R1 234.50",
+      "clr_type": "System.String",
+      "bits_hex": null
+    },
+    {
+      "formula": "=FIXED(A1)",
+      "value2": "1 234.50",
+      "clr_type": "System.String",
+      "bits_hex": null
+    },
+    {
+      "formula": "=TEXT(A1,\"0.00\")",
+      "value2": "1234.50",
+      "clr_type": "System.String",
+      "bits_hex": null
+    },
+    {
+      "formula": "=DATEVALUE(\"1/2/2026\")",
+      "value2": -2146826273,
+      "clr_type": "System.Int32",
+      "bits_hex": null
+    },
+    {
+      "formula": "=TIMEVALUE(\"13:30\")",
+      "value2": 0.5625,
+      "clr_type": "System.Double",
+      "bits_hex": "0x3fe2000000000000"
+    },
+    {
+      "formula": "=VALUE(\"1,234.5\")",
+      "value2": -2146826273,
+      "clr_type": "System.Int32",
+      "bits_hex": null
+    }
+  ],
+  "provider_source_sha256": {
+    "crates/oxfunc_core/src/locale_format.rs": "bbba491e526710950ec5604929f3d0e0f62921dc1bf50cb459e75e0b62058168",
+    "../OxFml/crates/oxfml_core/src/format/engine.rs": "124e2ccc1472027167680e9d63e88ca435272cdd10365ee463752ba3404c8ae6",
+    "../OxFml/crates/oxfml_core/src/format/number.rs": "77a7067c762fa6e671c78e07899206cadddea37e590d7eec5811f837f41f5c60",
+    "../OxFml/crates/oxfml_core/src/format/datetime.rs": "fd43a8de1ce36d7d2642138bec3e04962a9f9da987129bfeadba3f20b3d512d7",
+    "../OxFml/crates/oxfml_core/src/format/general.rs": "234267416306cbc4e7fe35cbb8a73db6e1951ea44ffbc5c5dce31fcf96a1a5fa"
+  },
+  "profile_admission": "No automatic profile selection; compare recorded regional fields with an explicit FormatProfile before local replay.",
+  "script_sha256": "f5050489a08742d43f087cd642a4df0c6e6ea45b96f50704f4dc6742df8a63e3"
+}

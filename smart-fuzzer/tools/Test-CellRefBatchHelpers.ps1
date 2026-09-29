@@ -41,7 +41,11 @@ $safeCases = @(
     '=POWER(2,10)',
     '=A1+B1',
     '=IF(A1>0,"yes","no")',
-    '=ABS(1.5e10)'
+    '=ABS(1.5e10)',
+    '=VALUE("9.840529574637312")',
+    '=BIN2HEX("0010","9.840529574637312")',
+    '=EXACT("a""1234567890123456789","b")',
+    "='1234567890123456789'!A1"
 )
 foreach ($f in $safeCases) {
     $r = Test-FormulaTextIsBitExactSafe -FormulaText $f
@@ -52,7 +56,9 @@ $unsafeCases = @(
     '=ABS(-140920.05717469757655635)',
     '=TAN(797601.5817469757655635)',
     '=GAMMA(-1.00011965486703613)',
-    '=POWER(2.7182818284590451,3)'
+    '=POWER(2.7182818284590451,3)',
+    '=IF(TRUE,"1234567890123456789",2.7182818284590451)',
+    '=EXACT("escaped""12345678901234567",797601.5817469757655635)'
 )
 foreach ($f in $unsafeCases) {
     $r = Test-FormulaTextIsBitExactSafe -FormulaText $f
@@ -111,10 +117,11 @@ $r = Get-StandardSeverityClass -LocalOutcome (_Number-Outcome $negative) -ExcelO
 Assert-Equal "4b: negative numeric drift is 1 ULP" "numeric_drift_1ulp" $r.severity_class
 Assert-Equal "4b: negative ULP distance" 1 $r.ulp_distance
 
-# 5. Signed-zero collapse.
+# 5. Signed-zero drift remains a mismatch under the exact-bit contract.
 $a = _Number-Outcome 0.0; $b = _Number-Outcome (-0.0)
 $r = Get-StandardSeverityClass -LocalOutcome $a -ExcelOutcome $b
-Assert-Equal "5: signed-zero collapses to match" "match" $r.severity_class
+Assert-Equal "5: signed-zero remains numeric drift" "numeric_drift_1ulp" $r.severity_class
+Assert-Equal "5: signed-zero tag" $true ($r.sub_tags -contains "signed_zero_drift")
 
 # 6. Kind drift = structural mismatch.
 $a = _Number-Outcome 5.0
@@ -167,6 +174,15 @@ $b = [ordered]@{ kind = "array"; rows = 2; cols = 1; digest_payload = "array:2x1
 $r = Get-StandardSeverityClass -LocalOutcome $a -ExcelOutcome $b
 Assert-Equal "14: array element drift -> structural_mismatch" "structural_mismatch" $r.severity_class
 Assert-Equal "14: array element drift sub-tag" $true ($r.sub_tags -contains "array_element_drift")
+
+$a = [ordered]@{ kind = "text"; value = "Sheet"; digest_payload = "text:Sheet" }
+$b = [ordered]@{ kind = "text"; value = "sheet"; digest_payload = "text:sheet" }
+$r = Get-StandardSeverityClass -LocalOutcome $a -ExcelOutcome $b
+Assert-Equal "15: text case remains a mismatch" "structural_mismatch" $r.severity_class
+$a = [ordered]@{ kind = "array"; rows = 1; cols = 1; digest_payload = "array:1x1:[text:Sheet]" }
+$b = [ordered]@{ kind = "array"; rows = 1; cols = 1; digest_payload = "array:1x1:[text:sheet]" }
+$r = Get-StandardSeverityClass -LocalOutcome $a -ExcelOutcome $b
+Assert-Equal "16: compound text case remains a mismatch" "structural_mismatch" $r.severity_class
 
 Write-Host ""
 Write-Host "Summary: $passes / $($script:totalCases) passed, $($failures.Count) failed."

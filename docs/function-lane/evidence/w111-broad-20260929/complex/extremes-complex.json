@@ -1,0 +1,4253 @@
+{
+  "function": "COMPLEX",
+  "witnesses": [
+    {
+      "id": "minnormal+0-sign1-pos0",
+      "args": [
+        "0x0010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+0-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000000"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+0-sign1-pos2",
+      "args": [
+        "0x0010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+0-sign-1-pos0",
+      "args": [
+        "0x8010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+0-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000000"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+0-sign-1-pos2",
+      "args": [
+        "0x8010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+1-sign1-pos0",
+      "args": [
+        "0x0010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+1-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+1-sign1-pos2",
+      "args": [
+        "0x0010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+1-sign-1-pos0",
+      "args": [
+        "0x8010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+1-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000001"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+1-sign-1-pos2",
+      "args": [
+        "0x8010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+2-sign1-pos0",
+      "args": [
+        "0x0010000000000002",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+2-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000002"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+2-sign1-pos2",
+      "args": [
+        "0x0010000000000002",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+2-sign-1-pos0",
+      "args": [
+        "0x8010000000000002",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+2-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000002"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+2-sign-1-pos2",
+      "args": [
+        "0x8010000000000002",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+3-sign1-pos0",
+      "args": [
+        "0x0010000000000003",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+3-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000003"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+3-sign1-pos2",
+      "args": [
+        "0x0010000000000003",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+3-sign-1-pos0",
+      "args": [
+        "0x8010000000000003",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+3-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000003"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+3-sign-1-pos2",
+      "args": [
+        "0x8010000000000003",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+4-sign1-pos0",
+      "args": [
+        "0x0010000000000004",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+4-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000004"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+4-sign1-pos2",
+      "args": [
+        "0x0010000000000004",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+4-sign-1-pos0",
+      "args": [
+        "0x8010000000000004",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+4-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000004"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+4-sign-1-pos2",
+      "args": [
+        "0x8010000000000004",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+5-sign1-pos0",
+      "args": [
+        "0x0010000000000005",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+5-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000005"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+5-sign1-pos2",
+      "args": [
+        "0x0010000000000005",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+5-sign-1-pos0",
+      "args": [
+        "0x8010000000000005",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+5-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000005"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+5-sign-1-pos2",
+      "args": [
+        "0x8010000000000005",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+6-sign1-pos0",
+      "args": [
+        "0x0010000000000006",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+6-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000006"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+6-sign1-pos2",
+      "args": [
+        "0x0010000000000006",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+6-sign-1-pos0",
+      "args": [
+        "0x8010000000000006",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+6-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000006"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+6-sign-1-pos2",
+      "args": [
+        "0x8010000000000006",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+7-sign1-pos0",
+      "args": [
+        "0x0010000000000007",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "minnormal+7-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000007"
+      ],
+      "expected_bits": "text:0i"
+    },
+    {
+      "id": "minnormal+7-sign1-pos2",
+      "args": [
+        "0x0010000000000007",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:0+i"
+    },
+    {
+      "id": "minnormal+7-sign-1-pos0",
+      "args": [
+        "0x8010000000000007",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-0"
+    },
+    {
+      "id": "minnormal+7-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000007"
+      ],
+      "expected_bits": "text:-0i"
+    },
+    {
+      "id": "minnormal+7-sign-1-pos2",
+      "args": [
+        "0x8010000000000007",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-0+i"
+    },
+    {
+      "id": "minnormal+8-sign1-pos0",
+      "args": [
+        "0x0010000000000008",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+8-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000008"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+8-sign1-pos2",
+      "args": [
+        "0x0010000000000008",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+8-sign-1-pos0",
+      "args": [
+        "0x8010000000000008",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+8-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000008"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+8-sign-1-pos2",
+      "args": [
+        "0x8010000000000008",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+9-sign1-pos0",
+      "args": [
+        "0x0010000000000009",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+9-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000009"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+9-sign1-pos2",
+      "args": [
+        "0x0010000000000009",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+9-sign-1-pos0",
+      "args": [
+        "0x8010000000000009",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+9-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000009"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+9-sign-1-pos2",
+      "args": [
+        "0x8010000000000009",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+10-sign1-pos0",
+      "args": [
+        "0x001000000000000a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+10-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000000a"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+10-sign1-pos2",
+      "args": [
+        "0x001000000000000a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+10-sign-1-pos0",
+      "args": [
+        "0x801000000000000a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+10-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000000a"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+10-sign-1-pos2",
+      "args": [
+        "0x801000000000000a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+11-sign1-pos0",
+      "args": [
+        "0x001000000000000b",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+11-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000000b"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+11-sign1-pos2",
+      "args": [
+        "0x001000000000000b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+11-sign-1-pos0",
+      "args": [
+        "0x801000000000000b",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+11-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000000b"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+11-sign-1-pos2",
+      "args": [
+        "0x801000000000000b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+12-sign1-pos0",
+      "args": [
+        "0x001000000000000c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+12-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000000c"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+12-sign1-pos2",
+      "args": [
+        "0x001000000000000c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+12-sign-1-pos0",
+      "args": [
+        "0x801000000000000c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+12-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000000c"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+12-sign-1-pos2",
+      "args": [
+        "0x801000000000000c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+13-sign1-pos0",
+      "args": [
+        "0x001000000000000d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+13-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000000d"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+13-sign1-pos2",
+      "args": [
+        "0x001000000000000d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+13-sign-1-pos0",
+      "args": [
+        "0x801000000000000d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+13-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000000d"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+13-sign-1-pos2",
+      "args": [
+        "0x801000000000000d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+14-sign1-pos0",
+      "args": [
+        "0x001000000000000e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+14-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000000e"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+14-sign1-pos2",
+      "args": [
+        "0x001000000000000e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+14-sign-1-pos0",
+      "args": [
+        "0x801000000000000e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+14-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000000e"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+14-sign-1-pos2",
+      "args": [
+        "0x801000000000000e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+15-sign1-pos0",
+      "args": [
+        "0x001000000000000f",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+15-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000000f"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+15-sign1-pos2",
+      "args": [
+        "0x001000000000000f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+15-sign-1-pos0",
+      "args": [
+        "0x801000000000000f",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+15-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000000f"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+15-sign-1-pos2",
+      "args": [
+        "0x801000000000000f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+16-sign1-pos0",
+      "args": [
+        "0x0010000000000010",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+16-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000010"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+16-sign1-pos2",
+      "args": [
+        "0x0010000000000010",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+16-sign-1-pos0",
+      "args": [
+        "0x8010000000000010",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+16-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000010"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+16-sign-1-pos2",
+      "args": [
+        "0x8010000000000010",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+17-sign1-pos0",
+      "args": [
+        "0x0010000000000011",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+17-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000011"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+17-sign1-pos2",
+      "args": [
+        "0x0010000000000011",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+17-sign-1-pos0",
+      "args": [
+        "0x8010000000000011",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+17-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000011"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+17-sign-1-pos2",
+      "args": [
+        "0x8010000000000011",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+18-sign1-pos0",
+      "args": [
+        "0x0010000000000012",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+18-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000012"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+18-sign1-pos2",
+      "args": [
+        "0x0010000000000012",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+18-sign-1-pos0",
+      "args": [
+        "0x8010000000000012",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+18-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000012"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+18-sign-1-pos2",
+      "args": [
+        "0x8010000000000012",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+19-sign1-pos0",
+      "args": [
+        "0x0010000000000013",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+19-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000013"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+19-sign1-pos2",
+      "args": [
+        "0x0010000000000013",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+19-sign-1-pos0",
+      "args": [
+        "0x8010000000000013",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+19-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000013"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+19-sign-1-pos2",
+      "args": [
+        "0x8010000000000013",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+20-sign1-pos0",
+      "args": [
+        "0x0010000000000014",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+20-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000014"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+20-sign1-pos2",
+      "args": [
+        "0x0010000000000014",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+20-sign-1-pos0",
+      "args": [
+        "0x8010000000000014",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+20-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000014"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+20-sign-1-pos2",
+      "args": [
+        "0x8010000000000014",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+21-sign1-pos0",
+      "args": [
+        "0x0010000000000015",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+21-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000015"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+21-sign1-pos2",
+      "args": [
+        "0x0010000000000015",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+21-sign-1-pos0",
+      "args": [
+        "0x8010000000000015",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+21-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000015"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+21-sign-1-pos2",
+      "args": [
+        "0x8010000000000015",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+22-sign1-pos0",
+      "args": [
+        "0x0010000000000016",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+22-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000016"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+22-sign1-pos2",
+      "args": [
+        "0x0010000000000016",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+22-sign-1-pos0",
+      "args": [
+        "0x8010000000000016",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+22-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000016"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+22-sign-1-pos2",
+      "args": [
+        "0x8010000000000016",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+23-sign1-pos0",
+      "args": [
+        "0x0010000000000017",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+23-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000017"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+23-sign1-pos2",
+      "args": [
+        "0x0010000000000017",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+23-sign-1-pos0",
+      "args": [
+        "0x8010000000000017",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+23-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000017"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+23-sign-1-pos2",
+      "args": [
+        "0x8010000000000017",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+24-sign1-pos0",
+      "args": [
+        "0x0010000000000018",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+24-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000018"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+24-sign1-pos2",
+      "args": [
+        "0x0010000000000018",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+24-sign-1-pos0",
+      "args": [
+        "0x8010000000000018",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+24-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000018"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+24-sign-1-pos2",
+      "args": [
+        "0x8010000000000018",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+25-sign1-pos0",
+      "args": [
+        "0x0010000000000019",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+25-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000019"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+25-sign1-pos2",
+      "args": [
+        "0x0010000000000019",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+25-sign-1-pos0",
+      "args": [
+        "0x8010000000000019",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+25-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000019"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+25-sign-1-pos2",
+      "args": [
+        "0x8010000000000019",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+26-sign1-pos0",
+      "args": [
+        "0x001000000000001a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+26-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000001a"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+26-sign1-pos2",
+      "args": [
+        "0x001000000000001a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+26-sign-1-pos0",
+      "args": [
+        "0x801000000000001a",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+26-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000001a"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+26-sign-1-pos2",
+      "args": [
+        "0x801000000000001a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+27-sign1-pos0",
+      "args": [
+        "0x001000000000001b",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+27-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000001b"
+      ],
+      "expected_bits": "text:2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+27-sign1-pos2",
+      "args": [
+        "0x001000000000001b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+27-sign-1-pos0",
+      "args": [
+        "0x801000000000001b",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308"
+    },
+    {
+      "id": "minnormal+27-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000001b"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308i"
+    },
+    {
+      "id": "minnormal+27-sign-1-pos2",
+      "args": [
+        "0x801000000000001b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850721E-308+i"
+    },
+    {
+      "id": "minnormal+28-sign1-pos0",
+      "args": [
+        "0x001000000000001c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+28-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000001c"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+28-sign1-pos2",
+      "args": [
+        "0x001000000000001c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+28-sign-1-pos0",
+      "args": [
+        "0x801000000000001c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+28-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000001c"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+28-sign-1-pos2",
+      "args": [
+        "0x801000000000001c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+29-sign1-pos0",
+      "args": [
+        "0x001000000000001d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+29-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000001d"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+29-sign1-pos2",
+      "args": [
+        "0x001000000000001d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+29-sign-1-pos0",
+      "args": [
+        "0x801000000000001d",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+29-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000001d"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+29-sign-1-pos2",
+      "args": [
+        "0x801000000000001d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+30-sign1-pos0",
+      "args": [
+        "0x001000000000001e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+30-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000001e"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+30-sign1-pos2",
+      "args": [
+        "0x001000000000001e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+30-sign-1-pos0",
+      "args": [
+        "0x801000000000001e",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+30-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000001e"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+30-sign-1-pos2",
+      "args": [
+        "0x801000000000001e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+31-sign1-pos0",
+      "args": [
+        "0x001000000000001f",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+31-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x001000000000001f"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+31-sign1-pos2",
+      "args": [
+        "0x001000000000001f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+31-sign-1-pos0",
+      "args": [
+        "0x801000000000001f",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+31-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x801000000000001f"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+31-sign-1-pos2",
+      "args": [
+        "0x801000000000001f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+32-sign1-pos0",
+      "args": [
+        "0x0010000000000020",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+32-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000020"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+32-sign1-pos2",
+      "args": [
+        "0x0010000000000020",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+32-sign-1-pos0",
+      "args": [
+        "0x8010000000000020",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+32-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000020"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+32-sign-1-pos2",
+      "args": [
+        "0x8010000000000020",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+33-sign1-pos0",
+      "args": [
+        "0x0010000000000021",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+33-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000021"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+33-sign1-pos2",
+      "args": [
+        "0x0010000000000021",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+33-sign-1-pos0",
+      "args": [
+        "0x8010000000000021",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+33-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000021"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+33-sign-1-pos2",
+      "args": [
+        "0x8010000000000021",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+34-sign1-pos0",
+      "args": [
+        "0x0010000000000022",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+34-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000022"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+34-sign1-pos2",
+      "args": [
+        "0x0010000000000022",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+34-sign-1-pos0",
+      "args": [
+        "0x8010000000000022",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+34-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000022"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+34-sign-1-pos2",
+      "args": [
+        "0x8010000000000022",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+35-sign1-pos0",
+      "args": [
+        "0x0010000000000023",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+35-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000023"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+35-sign1-pos2",
+      "args": [
+        "0x0010000000000023",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+35-sign-1-pos0",
+      "args": [
+        "0x8010000000000023",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+35-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000023"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+35-sign-1-pos2",
+      "args": [
+        "0x8010000000000023",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+36-sign1-pos0",
+      "args": [
+        "0x0010000000000024",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+36-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000024"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+36-sign1-pos2",
+      "args": [
+        "0x0010000000000024",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+36-sign-1-pos0",
+      "args": [
+        "0x8010000000000024",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+36-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000024"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+36-sign-1-pos2",
+      "args": [
+        "0x8010000000000024",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+37-sign1-pos0",
+      "args": [
+        "0x0010000000000025",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+37-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000025"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+37-sign1-pos2",
+      "args": [
+        "0x0010000000000025",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+37-sign-1-pos0",
+      "args": [
+        "0x8010000000000025",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+37-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000025"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+37-sign-1-pos2",
+      "args": [
+        "0x8010000000000025",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+38-sign1-pos0",
+      "args": [
+        "0x0010000000000026",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+38-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000026"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+38-sign1-pos2",
+      "args": [
+        "0x0010000000000026",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+38-sign-1-pos0",
+      "args": [
+        "0x8010000000000026",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+38-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000026"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+38-sign-1-pos2",
+      "args": [
+        "0x8010000000000026",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+39-sign1-pos0",
+      "args": [
+        "0x0010000000000027",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+39-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x0010000000000027"
+      ],
+      "expected_bits": "text:2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+39-sign1-pos2",
+      "args": [
+        "0x0010000000000027",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:2.22507385850722E-308+i"
+    },
+    {
+      "id": "minnormal+39-sign-1-pos0",
+      "args": [
+        "0x8010000000000027",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308"
+    },
+    {
+      "id": "minnormal+39-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x8010000000000027"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308i"
+    },
+    {
+      "id": "minnormal+39-sign-1-pos2",
+      "args": [
+        "0x8010000000000027",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-2.22507385850722E-308+i"
+    },
+    {
+      "id": "maxnormal-0-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "maxnormal-0-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "maxnormal-0-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "maxnormal-0-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "maxnormal-0-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "maxnormal-0-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "maxnormal-1-sign1-pos0",
+      "args": [
+        "0x7feffffffffffffe",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486232E+308"
+    },
+    {
+      "id": "maxnormal-1-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffffe"
+      ],
+      "expected_bits": "text:1.79769313486232E+308i"
+    },
+    {
+      "id": "maxnormal-1-sign1-pos2",
+      "args": [
+        "0x7feffffffffffffe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486232E+308+i"
+    },
+    {
+      "id": "maxnormal-1-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffffe",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308"
+    },
+    {
+      "id": "maxnormal-1-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffffe"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308i"
+    },
+    {
+      "id": "maxnormal-1-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffffe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308+i"
+    },
+    {
+      "id": "maxnormal-2-sign1-pos0",
+      "args": [
+        "0x7feffffffffffffd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486232E+308"
+    },
+    {
+      "id": "maxnormal-2-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffffd"
+      ],
+      "expected_bits": "text:1.79769313486232E+308i"
+    },
+    {
+      "id": "maxnormal-2-sign1-pos2",
+      "args": [
+        "0x7feffffffffffffd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486232E+308+i"
+    },
+    {
+      "id": "maxnormal-2-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffffd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308"
+    },
+    {
+      "id": "maxnormal-2-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffffd"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308i"
+    },
+    {
+      "id": "maxnormal-2-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffffd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308+i"
+    },
+    {
+      "id": "maxnormal-3-sign1-pos0",
+      "args": [
+        "0x7feffffffffffffc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486232E+308"
+    },
+    {
+      "id": "maxnormal-3-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffffc"
+      ],
+      "expected_bits": "text:1.79769313486232E+308i"
+    },
+    {
+      "id": "maxnormal-3-sign1-pos2",
+      "args": [
+        "0x7feffffffffffffc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486232E+308+i"
+    },
+    {
+      "id": "maxnormal-3-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffffc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308"
+    },
+    {
+      "id": "maxnormal-3-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffffc"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308i"
+    },
+    {
+      "id": "maxnormal-3-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffffc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486232E+308+i"
+    },
+    {
+      "id": "maxnormal-4-sign1-pos0",
+      "args": [
+        "0x7feffffffffffffb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-4-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffffb"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-4-sign1-pos2",
+      "args": [
+        "0x7feffffffffffffb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-4-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffffb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-4-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffffb"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-4-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffffb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-5-sign1-pos0",
+      "args": [
+        "0x7feffffffffffffa",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-5-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffffa"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-5-sign1-pos2",
+      "args": [
+        "0x7feffffffffffffa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-5-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffffa",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-5-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffffa"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-5-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffffa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-6-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-6-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff9"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-6-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-6-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-6-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff9"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-6-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-7-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-7-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff8"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-7-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-7-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-7-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff8"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-7-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-8-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-8-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff7"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-8-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-8-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-8-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff7"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-8-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-9-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-9-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff6"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-9-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-9-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-9-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff6"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-9-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-10-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-10-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff5"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-10-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-10-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-10-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff5"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-10-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-11-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-11-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff4"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-11-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-11-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-11-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff4"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-11-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-12-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-12-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff3"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-12-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-12-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-12-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff3"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-12-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-13-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-13-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff2"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-13-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-13-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-13-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff2"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-13-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-14-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-14-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff1"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-14-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-14-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-14-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff1"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-14-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-15-sign1-pos0",
+      "args": [
+        "0x7feffffffffffff0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-15-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7feffffffffffff0"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-15-sign1-pos2",
+      "args": [
+        "0x7feffffffffffff0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-15-sign-1-pos0",
+      "args": [
+        "0xffeffffffffffff0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-15-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffeffffffffffff0"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-15-sign-1-pos2",
+      "args": [
+        "0xffeffffffffffff0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-16-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffef",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-16-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffef"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-16-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffef",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-16-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffef",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-16-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffef"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-16-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffef",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-17-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffee",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-17-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffee"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-17-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-17-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffee",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-17-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffee"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-17-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-18-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffed",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-18-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffed"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-18-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffed",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-18-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffed",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-18-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffed"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-18-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffed",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-19-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffec",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-19-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffec"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-19-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-19-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffec",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-19-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffec"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-19-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-20-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffeb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-20-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffeb"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-20-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffeb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-20-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffeb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-20-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffeb"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-20-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffeb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-21-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffea",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-21-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffea"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-21-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffea",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-21-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffea",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-21-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffea"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-21-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffea",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-22-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-22-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe9"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-22-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-22-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-22-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe9"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-22-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-23-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-23-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe8"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-23-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-23-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-23-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe8"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-23-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-24-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-24-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe7"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-24-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-24-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-24-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe7"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-24-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-25-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-25-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe6"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-25-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-25-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-25-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe6"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-25-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-26-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-26-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe5"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-26-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-26-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-26-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe5"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-26-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-27-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-27-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe4"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-27-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-27-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-27-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe4"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-27-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-28-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-28-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe3"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-28-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-28-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-28-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe3"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-28-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-29-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-29-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe2"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-29-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-29-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-29-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe2"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-29-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-30-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-30-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe1"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-30-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-30-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-30-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe1"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-30-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-31-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffe0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-31-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffe0"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-31-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffe0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-31-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffe0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-31-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffe0"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-31-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffe0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-32-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffdf",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-32-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffdf"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-32-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffdf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-32-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffdf",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-32-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffdf"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-32-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffdf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-33-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffde",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-33-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffde"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-33-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffde",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-33-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffde",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-33-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffde"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-33-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffde",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-34-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffdd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-34-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffdd"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-34-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffdd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-34-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffdd",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-34-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffdd"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-34-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffdd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-35-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffdc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-35-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffdc"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-35-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffdc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-35-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffdc",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-35-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffdc"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-35-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffdc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-36-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffdb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-36-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffdb"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-36-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffdb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-36-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffdb",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-36-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffdb"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-36-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffdb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-37-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffda",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-37-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffda"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-37-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffda",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-37-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffda",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-37-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffda"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-37-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffda",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-38-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-38-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd9"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-38-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-38-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd9",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-38-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd9"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-38-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-39-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-39-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd8"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-39-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-39-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd8",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-39-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd8"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-39-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-40-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-40-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd7"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-40-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-40-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd7",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-40-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd7"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-40-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-41-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-41-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd6"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-41-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-41-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd6",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-41-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd6"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-41-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-42-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-42-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd5"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-42-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-42-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd5",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-42-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd5"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-42-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-43-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-43-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd4"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-43-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-43-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd4",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-43-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd4"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-43-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-44-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-44-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd3"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-44-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-44-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd3",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-44-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd3"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-44-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-45-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-45-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd2"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-45-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-45-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd2",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-45-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd2"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-45-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-46-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-46-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd1"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-46-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-46-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd1",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-46-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd1"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-46-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-47-sign1-pos0",
+      "args": [
+        "0x7fefffffffffffd0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-47-sign1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0x7fefffffffffffd0"
+      ],
+      "expected_bits": "text:1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-47-sign1-pos2",
+      "args": [
+        "0x7fefffffffffffd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:1.79769313486231E+308+i"
+    },
+    {
+      "id": "maxnormal-47-sign-1-pos0",
+      "args": [
+        "0xffefffffffffffd0",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308"
+    },
+    {
+      "id": "maxnormal-47-sign-1-pos1",
+      "args": [
+        "0x0000000000000000",
+        "0xffefffffffffffd0"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308i"
+    },
+    {
+      "id": "maxnormal-47-sign-1-pos2",
+      "args": [
+        "0xffefffffffffffd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.79769313486231E+308+i"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T12:28:24.3039035Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

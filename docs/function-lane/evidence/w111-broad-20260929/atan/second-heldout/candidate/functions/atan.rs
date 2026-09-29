@@ -1,0 +1,71 @@
+use crate::function::{
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+};
+use crate::functions::unary_numeric::{
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
+};
+use crate::resolver::ReferenceSystemProvider;
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
+
+pub const ATAN_META: FunctionMeta = function_spec! {
+    function_id: "FUNC.ATAN",
+    arity: Arity::exact(1),
+    determinism: DeterminismClass::Deterministic,
+    volatility: VolatilityClass::NonVolatile,
+    host_interaction: HostInteractionClass::None,
+    thread_safety: ThreadSafetyClass::SafePure,
+    coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
+    kernel_signature_class: KernelSignatureClass::NumToNum,
+    fec_dependency_profile: FecDependencyProfile::None,
+    surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+};
+
+pub fn atan_kernel(n: f64) -> f64 {
+    crate::excel_numeric::excel_atan_reduced(n)
+}
+
+pub fn eval_atan_surface(
+    args: &[crate::value::CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::raw(atan_kernel, ATAN_META.real_result_policy),
+    )
+}
+
+pub fn map_atan_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
+    map_unary_numeric_error_to_ws(e)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn atan_meta_function_id_is_stable() {
+        assert_eq!(ATAN_META.function_id, "FUNC.ATAN");
+    }
+
+    #[test]
+    fn atan_kernel_matches_std() {
+        assert_eq!(atan_kernel(1.0), 1.0f64.atan());
+    }
+
+    #[test]
+    fn atan_matches_live_excel_pins() {
+        assert_eq!(atan_kernel(0.5).to_bits(), 0x3fddac670561bb4f);
+        assert_eq!(atan_kernel(1.0).to_bits(), 0x3fe921fb54442d18);
+    }
+
+    #[test]
+    #[cfg(target_arch = "x86_64")]
+    fn atan_retains_extended_inverse_angle_and_pi() {
+        assert_eq!(atan_kernel(f64::from_bits(0xc0000d685e592174)).to_bits(), 0xbff1bc3aef431d2a);
+        assert_eq!(atan_kernel(f64::from_bits(0x40001dc1079c3c90)).to_bits(), 0x3ff1c2b6c60d2617);
+    }
+}

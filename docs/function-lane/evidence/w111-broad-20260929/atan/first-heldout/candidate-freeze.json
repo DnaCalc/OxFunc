@@ -1,0 +1,13 @@
+{
+  "frozen_utc": "2026-09-29T14:55:29.839227+00:00",
+  "source_sha256": {
+    "functions/atan.rs": "3012ff2536b734bd899cf31fbec4097c14c0129528fa48cde7dab4cb222acce4",
+    "excel_numeric/mod.rs": "f7fca56494ecc0d56371afed2b3d43615bb5c4674320bcf842d2e919a0eda9e4",
+    "excel_numeric/x87.rs": "9020f6665e9fcc31daf3b8891a580a989a983252e0680d6457930b506f59abd8",
+    "coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "functions/adapters.rs": "f17be16760d6efdaf750d0fd4e7f1ab65f0ce5a6a262244112861f88240d3fe7"
+  },
+  "seed": 202609291803,
+  "phase": "independent_after_1224_discovery_candidate"
+}

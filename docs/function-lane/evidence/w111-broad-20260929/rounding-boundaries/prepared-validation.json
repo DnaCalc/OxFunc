@@ -1,0 +1,34 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "HO-FN-028 receiving acknowledgement",
+    "ROUNDUP positive tiny residual",
+    "raw overflow publication HO-FN-029",
+    "initial15 precision",
+    "contextual numeric text HO-FN-022"
+  ],
+  "discovery": {
+    "captured": 691,
+    "admitted": 690,
+    "harness_rejected": 1,
+    "before_exact": 658,
+    "before_semantic_mismatches": 32,
+    "after_exact": 690
+  },
+  "tests": {
+    "w111_rounding_prepared_live_replay": "1 passed; 690 rows",
+    "w111_rounding_boundary_live_replay": "8 passed; 116124 finite/error numeric rows",
+    "function_meta_golden": "1 passed; no final newline preserved",
+    "lean_targeted": "13 jobs passed"
+  },
+  "source_freeze": "smart-fuzzer/runs/w111-rounding-prepared-heldout-20260929/candidate-freeze.json",
+  "independent": {
+    "captured": 928,
+    "admitted": 928,
+    "exact": 928,
+    "source_hashes_unchanged_at_judgement": true
+  }
+}

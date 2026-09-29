@@ -3,7 +3,8 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
+use crate::functions::adapters::coerce_prepared_to_text;
+use crate::functions::text_slice_family::run_text_lifted;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -48,10 +49,11 @@ pub fn eval_exact_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, ExactEvalError> {
-    run_values_only_prepared(
+    run_text_lifted(
         args,
         resolver,
         eval_exact_adapter_prepared,
+        map_exact_error_to_ws,
         ExactEvalError::Coercion,
     )
 }

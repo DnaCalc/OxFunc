@@ -1,9 +1,11 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.NumericPublication
 
 namespace OxFunc.Functions
 
 open OxFunc
+abbrev sechExecutable := NumericPublication.sechWithCosh
 
 def sechMeta : FunctionMeta := {
   functionId := "FUNC.SECH"
@@ -27,7 +29,8 @@ def evalSechSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Str
 
 theorem evalSech_numeric_text_admitted :
     evalSechSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalSechSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalSechSurfaceClass, coerceToNumber, parsed]
 
 theorem sechMeta_profiles :
     sechMeta.kernelSignatureClass = KernelSignatureClass.numToNum

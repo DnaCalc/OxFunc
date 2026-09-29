@@ -1507,7 +1507,7 @@ Current checkpoint (2026-09-24):
 
 ## W111 Excel Parity Status Axis And Broad Closure
 
-Status: `planned`
+Status: `in_progress`
 
 Priority (2026-09-24): this is OxFunc's core campaign. The goal is a bit-exact
 match with Excel for every implemented function, and the stock take shows the
@@ -1524,7 +1524,7 @@ provisional.
 
 Canonical surfaces:
 1. `docs/decisions/ODR-FN-005-excel-parity-status-axis.md`
-2. `docs/function-lane/EXCEL_PARITY_LEDGER.csv` (to be created)
+2. `docs/function-lane/EXCEL_PARITY_LEDGER.csv`
 3. `docs/function-lane/BIT_EXACT_STOCK_TAKE_20260922.md`
 4. `docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md`
 5. `smart-fuzzer/planning/FUNCTION_STATUS_MAP.md` (regenerated from the ledger)
@@ -1543,6 +1543,18 @@ Rules:
 3. partial-domain agreement is evidence to build on, never a tick,
 4. `Characterized` needs a held-out sweep under ODR-FN-005 §4 and a kernel story,
    and stays provisional.
+
+The 2026-09-29 broad campaign is active under `oxf-mwue.28`. Its retained
+observations, qualification rules, candidate repairs and open lanes are in
+`docs/function-lane/evidence/w111-broad-20260929/README.md`. Both broad discovery
+and independent candidate holdouts use live Excel20430/CV2; no whole-function
+completion follows from a passing subset. HO-FN-022 through HO-FN-030 retain
+locale/evaluation-date, conditional, text, number rendering, distribution,
+aggregate, positional argument, omission/origin and numeric-payload dependencies
+with OxFml; acknowledgment and
+receiving integration remain open. Campaign state: `scope_partial`,
+`target_partial`, integration `partial`; ongoing numeric, typed, formal and
+cross-repo work remains in the bead graph.
 
 ## W112 Parity Driver: Smart-Fuzzer As The One Engine
 

@@ -1,0 +1,20 @@
+{
+  "schema_version": "w111-complex-format-freeze-v2",
+  "recorded_utc": "2026-09-29T12:53:44.034745+00:00",
+  "phase": "candidate_frozen_before_second_independent_capture",
+  "sources": {
+    "crates/oxfunc_core/src/functions/complex_family.rs": "1dfc892f44778cb31853cddd92191acb09b14a96789001ceeb4b777356d7abaa",
+    "crates/oxfunc_core/src/functions/complex_decimal.rs": "82c535543d8be3201d392cfceffea4f81c1be89bf304c60bf01f17039b5a3ebe",
+    "crates/oxfunc_core/src/functions/complex_decimal_powers.rs": "b5cf4cb72f708a4cefbe14f25621d7253f8ff30b7fd37ee93bc5d086de19190a",
+    "smart-fuzzer/tools/w111/complex_binary_scaling_candidate.py": "67038feec5236d96cbda2d88e38a326be9e765d6814a47d6159503fb7b8ea0c3"
+  },
+  "candidate_rules": [
+    "k=14-floor(log10(abs(n))); p=RN64(10^abs(k))",
+    "RN64(n*p) if k>=0, RN64(n/p) otherwise; integer half-away rounding",
+    "RN64 is nearest-even to64 binary significand bits; pure arithmetic hypothesis, no claim about Excel internals",
+    "other rendering and observed boundaries remain first candidate rules"
+  ],
+  "prior_candidate_status": "4371/4375 first heldout; retained failures prompted new independent discriminators; all prior10199rows now research/regression evidence",
+  "second_holdout_seed": 2026092904,
+  "midpoint_holdout_seed": 2026092905
+}

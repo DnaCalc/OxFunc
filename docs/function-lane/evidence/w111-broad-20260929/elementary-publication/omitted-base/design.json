@@ -1,0 +1,9 @@
+{
+  "phase": "optional_argument_numeric_discovery",
+  "seed": 202609293037,
+  "distinct_inputs": 585,
+  "LOG_rows": 1170,
+  "LOG10_rows": 585,
+  "log_source_sha256": "15c3ca08ee0ba12c693244dcce90f4e18a831d585508be6d812da7fafe6a2141",
+  "purpose": "Test whether an omitted LOG base uses a dedicated logarithm graph distinct from explicit base ten; includes full-bit normals, decimal-power neighbors, endpoints and domain controls."
+}

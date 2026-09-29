@@ -1,0 +1,10 @@
+[package]
+name = "w111-complex-kernel-probe"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+oxfunc_core = { path = "../../../../crates/oxfunc_core", features = ["research-x87"] }
+serde_json = "1"

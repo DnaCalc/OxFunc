@@ -38,15 +38,18 @@ def evalSinLiftClass (inputs : List CoercionInput) : List (Except WorksheetError
 
 theorem evalSin_numeric_text_admitted :
     evalSinSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalSinSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalSinSurfaceClass, coerceToNumber, parsed]
 
 theorem evalSin_bad_text_value :
     evalSinSurfaceClass (.text "asd") = .error .value := by
-  simp [evalSinSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "asd" = none := by native_decide
+  simp [evalSinSurfaceClass, coerceToNumber, parsed]
 
 theorem evalSin_array_bad_text_element_errors :
     evalSinLiftClass [.number 1, .text "asd"] = [.ok "number", .error .value] := by
-  simp [evalSinLiftClass, evalSinSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "asd" = none := by native_decide
+  simp [evalSinLiftClass, evalSinSurfaceClass, coerceToNumber, parsed]
 
 theorem sinMeta_profiles :
     sinMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter

@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-09-29T13:30:28.078179+00:00",
+  "candidate": "individual squared term subnormal flush; finite-term sum overflow zero; double sqrt; normalized signed zero; ratio atan with quadrant PI; characterized cos/sin",
+  "source": "crates\\oxfunc_core\\src\\functions\\complex_family.rs",
+  "sha256": "fe9dd0fc919daa72c87435d5b830ddac764cbe0ac0cbbef78a317d781934b408",
+  "seed": 2026092908,
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "independent holdout",
+    "shared coefficient formatter midpoint discrepancies",
+    "other function semantic lanes"
+  ]
+}

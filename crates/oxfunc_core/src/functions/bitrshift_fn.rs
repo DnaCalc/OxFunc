@@ -2,10 +2,8 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::binary_numeric::{
-    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
-};
-use crate::functions::bit_common::{coerce_bit_operand, coerce_shift_count};
+use crate::functions::binary_numeric::{BinaryNumericSurfaceError, map_binary_numeric_error_to_ws};
+use crate::functions::bit_common::{bit_shift_kernel, eval_bitwise_surface};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -24,23 +22,14 @@ pub const BITRSHIFT_META: FunctionMeta = function_spec! {
 };
 
 pub fn bitrshift_kernel(number: f64, shift: f64) -> Result<f64, WorksheetErrorCode> {
-    let number = coerce_bit_operand(number)?;
-    let shift = coerce_shift_count(shift)?;
-    let result = if shift >= 0 {
-        number >> (shift as u32)
-    } else {
-        number
-            .checked_shl((-shift) as u32)
-            .ok_or(WorksheetErrorCode::Num)?
-    };
-    Ok(result as f64)
+    bit_shift_kernel(number, shift, false)
 }
 
 pub fn eval_bitrshift_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, BinaryNumericSurfaceError> {
-    eval_binary_numeric_surface(args, resolver, bitrshift_kernel)
+    eval_bitwise_surface(args, resolver, bitrshift_kernel)
 }
 
 pub fn map_bitrshift_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetErrorCode {

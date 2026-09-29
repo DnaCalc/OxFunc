@@ -1,0 +1,26 @@
+{
+  "utc": "2026-09-29T15:58:31.005464+00:00",
+  "authority": "production_candidate_frozen_before_fresh_combined_capture",
+  "sources": [
+    {
+      "source": "crates/oxfunc_core/src/functions/asin.rs",
+      "retained": "production-frozen-asin.rs",
+      "sha256": "2e7b064a4fd2a27c4c5f3f39a1cf561758b6c738aae806f5de7b394c353fe729"
+    },
+    {
+      "source": "crates/oxfunc_core/src/functions/acos.rs",
+      "retained": "production-frozen-acos.rs",
+      "sha256": "143bdd2cc4a32631fcdebcf425be95e3a646f386b07ce7904ebaa5bcad4b11fe"
+    },
+    {
+      "source": "crates/oxfunc_core/src/excel_numeric/mod.rs",
+      "retained": "production-frozen-mod.rs",
+      "sha256": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989"
+    },
+    {
+      "source": "crates/oxfunc_core/src/excel_numeric/x87.rs",
+      "retained": "production-frozen-x87.rs",
+      "sha256": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+    }
+  ]
+}

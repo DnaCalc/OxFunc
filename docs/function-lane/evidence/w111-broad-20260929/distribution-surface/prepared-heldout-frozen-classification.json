@@ -1,0 +1,2585 @@
+{
+  "source": ".tmp/w111-distribution-prepared-heldout-judge.json",
+  "rows": 2541,
+  "matches": 2255,
+  "discrepancy_counts": {
+    "numeric_bits_open": 280,
+    "type_shape_or_error_open": 6
+  },
+  "misses": [
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00495-lognorm_dist-fresh-axis-0-direct",
+      "formula": "=LOGNORM.DIST(\" 1 \",A100,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00496-lognorm_dist-fresh-axis-0-reference",
+      "formula": "=LOGNORM.DIST(F8,A100,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00497-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,\" 1 \",#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00500-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,\"\t1\",#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00503-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,\"(1)\",#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00504-lognorm_dist-fresh-axis-0-direct",
+      "formula": "=LOGNORM.DIST(TRUE,A100,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00505-lognorm_dist-fresh-axis-0-reference",
+      "formula": "=LOGNORM.DIST(F8,A100,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00506-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,TRUE,#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00509-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,FALSE,#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00513-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,#NAME?,#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00516-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,#VALUE!,#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00519-lognorm_dist-fresh-axis-0-array",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,#DIV/0!,#REF!),A101,A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00521-lognorm_dist-fresh-axis-1-direct",
+      "formula": "=LOGNORM.DIST(A100,\" 0 \",A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00522-lognorm_dist-fresh-axis-1-reference",
+      "formula": "=LOGNORM.DIST(A100,F8,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00523-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,\" 0 \",#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00526-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,\"\t0\",#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00527-lognorm_dist-fresh-axis-1-direct",
+      "formula": "=LOGNORM.DIST(A100,\"(0)\",A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00528-lognorm_dist-fresh-axis-1-reference",
+      "formula": "=LOGNORM.DIST(A100,F8,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00529-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,\"(0)\",#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00532-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,TRUE,#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fcef8e58e331738|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fcef8e58e331738|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00533-lognorm_dist-fresh-axis-1-direct",
+      "formula": "=LOGNORM.DIST(A100,FALSE,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00534-lognorm_dist-fresh-axis-1-reference",
+      "formula": "=LOGNORM.DIST(A100,F8,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00535-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,FALSE,#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00536-lognorm_dist-fresh-axis-1-direct",
+      "formula": "=LOGNORM.DIST(A100,,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00539-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,#NAME?,#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00542-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,#VALUE!,#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00545-lognorm_dist-fresh-axis-1-array",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,#DIV/0!,#REF!),A102,FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00546-lognorm_dist-fresh-axis-1-blank",
+      "formula": "=LOGNORM.DIST(A100,F8,A101,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00547-lognorm_dist-fresh-axis-2-direct",
+      "formula": "=LOGNORM.DIST(A100,A101,\" 1 \",FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00548-lognorm_dist-fresh-axis-2-reference",
+      "formula": "=LOGNORM.DIST(A100,A101,F8,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00549-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,\" 1 \",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00552-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,\"\t1\",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00555-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,\"(1)\",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00556-lognorm_dist-fresh-axis-2-direct",
+      "formula": "=LOGNORM.DIST(A100,A101,TRUE,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00557-lognorm_dist-fresh-axis-2-reference",
+      "formula": "=LOGNORM.DIST(A100,A101,F8,FALSE)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00558-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,TRUE,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00561-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,FALSE,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00565-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,#NAME?,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00568-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,#VALUE!,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00571-lognorm_dist-fresh-axis-2-array",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,#DIV/0!,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00575-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"trUE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00576-lognorm_dist-fresh-axis-3-direct",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,\"FAlse\")",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00577-lognorm_dist-fresh-axis-3-reference",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,F8)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00578-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"FAlse\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00581-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"tRuE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00582-lognorm_dist-fresh-axis-3-direct",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,\"FaLSE\")",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00583-lognorm_dist-fresh-axis-3-reference",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,F8)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00584-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"FaLSE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00587-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"\rTRUE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00590-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"FALSE\n\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00593-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"\u202fTRUE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00596-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"FALSE\u2003\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00599-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"00\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00602-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"+1\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00605-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"(1)\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00608-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,\"100%\",#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00611-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,#NAME?,#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00614-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,#VALUE!,#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00617-lognorm_dist-fresh-axis-3-array",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,CHOOSE({1;2;3},FALSE,#DIV/0!,#REF!))",
+      "expected": "array:3x1:[number:0x3fd9884533d43650|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd9884533d43651|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00618-lognorm_dist-fresh-axis-3-blank",
+      "formula": "=LOGNORM.DIST(A100,A101,A102,F8)",
+      "expected": "number:0x3fd9884533d43650",
+      "actual": "number:0x3fd9884533d43651",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00619-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1,2;3,4},A102,A103,A104,A105),A106,FALSE)",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00620-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,CHOOSE({1,2;3,4},A103,A104,A105,A106),FALSE)",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00621-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00622-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},A104,A105,#NAME?),A106,FALSE)",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00623-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),CHOOSE({1,2;3,4},A103,A104,A105,A106),FALSE)",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00624-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00625-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},A105,A106,#NAME?),FALSE)",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00626-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),CHOOSE({1;2;3},A105,A106,#NAME?),FALSE)",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00627-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1;2;3},A102,A103,#NAME?),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00628-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00629-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),A105,CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00630-lognorm_dist-fresh-positional-padding",
+      "formula": "=LOGNORM.DIST(A100,A101,CHOOSE({1,2;3,4},A102,A103,A104,A105),CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00666-lognormdist-fresh-axis-1-direct",
+      "formula": "=LOGNORMDIST(A100,TRUE,A101)",
+      "expected": "number:0x3fc44ed0bb7cb209",
+      "actual": "number:0x3fc44ed0bb7cb20a",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00667-lognormdist-fresh-axis-1-reference",
+      "formula": "=LOGNORMDIST(A100,F8,A101)",
+      "expected": "number:0x3fc44ed0bb7cb209",
+      "actual": "number:0x3fc44ed0bb7cb20a",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00668-lognormdist-fresh-axis-1-array",
+      "formula": "=LOGNORMDIST(A100,CHOOSE({1;2;3},A101,TRUE,#REF!),A102)",
+      "expected": "array:3x1:[number:0x3fe0000000000000|number:0x3fc44ed0bb7cb209|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fc44ed0bb7cb20a|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00987-binom_dist_range-fresh-axis-0-direct",
+      "formula": "=BINOM.DIST.RANGE(\" 2 \",A100,A101,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00988-binom_dist_range-fresh-axis-0-reference",
+      "formula": "=BINOM.DIST.RANGE(F8,A100,A101,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00989-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,\" 2 \",#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00992-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,\"\t2\",#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00995-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,\"(2)\",#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-00998-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,TRUE,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01001-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,FALSE,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01005-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,#NAME?,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01008-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,#VALUE!,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01011-binom_dist_range-fresh-axis-0-array",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,#DIV/0!,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01013-binom_dist_range-fresh-axis-1-direct",
+      "formula": "=BINOM.DIST.RANGE(A100,\" 0.5 \",A101,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01014-binom_dist_range-fresh-axis-1-reference",
+      "formula": "=BINOM.DIST.RANGE(A100,F8,A101,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01015-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,\" 0.5 \",#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01018-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,\"\t0.5\",#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01021-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,\"(0.5)\",#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01024-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,TRUE,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x0000000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01027-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,FALSE,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x0000000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01031-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,#NAME?,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01034-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,#VALUE!,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01037-binom_dist_range-fresh-axis-1-array",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,#DIV/0!,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01039-binom_dist_range-fresh-axis-2-direct",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,\" 1 \",A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01040-binom_dist_range-fresh-axis-2-reference",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,F8,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01041-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,\" 1 \",#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01044-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,\"\t1\",#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01047-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,\"(1)\",#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01048-binom_dist_range-fresh-axis-2-direct",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,TRUE,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01049-binom_dist_range-fresh-axis-2-reference",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,F8,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01050-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,TRUE,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01053-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,FALSE,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fe8000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe8000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01057-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,#NAME?,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01060-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,#VALUE!,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01063-binom_dist_range-fresh-axis-2-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,#DIV/0!,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01065-binom_dist_range-fresh-axis-3-direct",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,\" 1 \")",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01066-binom_dist_range-fresh-axis-3-reference",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,F8)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01067-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,\" 1 \",#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01070-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,\"\t1\",#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01073-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,\"(1)\",#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01074-binom_dist_range-fresh-axis-3-direct",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,TRUE)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01075-binom_dist_range-fresh-axis-3-reference",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,F8)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01076-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,TRUE,#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01079-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,FALSE,#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01080-binom_dist_range-fresh-axis-3-direct",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01083-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,#NAME?,#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01086-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,#VALUE!,#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01089-binom_dist_range-fresh-axis-3-array",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,CHOOSE({1;2;3},A103,#DIV/0!,#REF!))",
+      "expected": "array:3x1:[number:0x3fdfffffffffffff|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe0000000000000|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01091-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1,2;3,4},A102,A103,A104,A105),A106,A107)",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01092-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NAME?),A102,CHOOSE({1,2;3,4},A103,A104,A105,A106),A107)",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01093-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01094-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},A104,A105,#NAME?),A106,A107)",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01095-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,A102,#NAME?),CHOOSE({1,2;3,4},A103,A104,A105,A106),A107)",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01096-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1;2;3},A101,A102,#NAME?),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01097-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},A105,A106,#NAME?),A107)",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01098-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),CHOOSE({1;2;3},A105,A106,#NAME?),A107)",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01099-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1;2;3},A102,A103,#NAME?),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01100-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1;2;3},A106,A107,#NAME?))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01101-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),A105,CHOOSE({1;2;3},A106,A107,#NAME?))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01102-binom_dist_range-fresh-positional-padding",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,CHOOSE({1,2;3,4},A102,A103,A104,A105),CHOOSE({1;2;3},A106,A107,#NAME?))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01103-binom_dist_range-fresh-omitted-upper",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01104-binom_dist_range-fresh-explicit-missing-upper",
+      "formula": "=BINOM.DIST.RANGE(A100,A101,A102,)",
+      "expected": "number:0x3fdfffffffffffff",
+      "actual": "number:0x3fe0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01114-binom_inv-fresh-axis-0-direct",
+      "formula": "=BINOM.INV(TRUE,A100,A101)",
+      "expected": "number:0x3ff0000000000000",
+      "actual": "number:0x0000000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01115-binom_inv-fresh-axis-0-reference",
+      "formula": "=BINOM.INV(F8,A100,A101)",
+      "expected": "number:0x3ff0000000000000",
+      "actual": "number:0x0000000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01116-binom_inv-fresh-axis-0-array",
+      "formula": "=BINOM.INV(CHOOSE({1;2;3},A100,TRUE,#REF!),A101,A102)",
+      "expected": "array:3x1:[number:0x3ff0000000000000|number:0x3ff0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3ff0000000000000|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01198-critbinom-fresh-axis-0-direct",
+      "formula": "=CRITBINOM(TRUE,A100,A101)",
+      "expected": "number:0x3ff0000000000000",
+      "actual": "number:0x0000000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01199-critbinom-fresh-axis-0-reference",
+      "formula": "=CRITBINOM(F8,A100,A101)",
+      "expected": "number:0x3ff0000000000000",
+      "actual": "number:0x0000000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01200-critbinom-fresh-axis-0-array",
+      "formula": "=CRITBINOM(CHOOSE({1;2;3},A100,TRUE,#REF!),A101,A102)",
+      "expected": "array:3x1:[number:0x3ff0000000000000|number:0x3ff0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3ff0000000000000|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "type_shape_or_error_open",
+      "case_id": "w111typed-01305-poisson-fresh-axis-1-direct",
+      "formula": "=POISSON(A100,\"(1)\",FALSE)",
+      "expected": "number:0x4005bf0a8b145769",
+      "actual": "error:Num",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "type_shape_or_error_open",
+      "case_id": "w111typed-01306-poisson-fresh-axis-1-reference",
+      "formula": "=POISSON(A100,F8,FALSE)",
+      "expected": "number:0x4005bf0a8b145769",
+      "actual": "error:Num",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "type_shape_or_error_open",
+      "case_id": "w111typed-01307-poisson-fresh-axis-1-array",
+      "formula": "=POISSON(A100,CHOOSE({1;2;3},A101,\"(1)\",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd78b56362cef38|number:0x4005bf0a8b145769|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd78b56362cef38|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "type_shape_or_error_open",
+      "case_id": "w111typed-01409-poisson_dist-fresh-axis-1-direct",
+      "formula": "=POISSON.DIST(A100,\"(1)\",FALSE)",
+      "expected": "number:0x4005bf0a8b145769",
+      "actual": "error:Num",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "type_shape_or_error_open",
+      "case_id": "w111typed-01410-poisson_dist-fresh-axis-1-reference",
+      "formula": "=POISSON.DIST(A100,F8,FALSE)",
+      "expected": "number:0x4005bf0a8b145769",
+      "actual": "error:Num",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "type_shape_or_error_open",
+      "case_id": "w111typed-01411-poisson_dist-fresh-axis-1-array",
+      "formula": "=POISSON.DIST(A100,CHOOSE({1;2;3},A101,\"(1)\",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fd78b56362cef38|number:0x4005bf0a8b145769|error:Ref]",
+      "actual": "array:3x1:[number:0x3fd78b56362cef38|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01481-hypgeom_dist-fresh-axis-0-direct",
+      "formula": "=HYPGEOM.DIST(\" 1 \",A100,A101,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01482-hypgeom_dist-fresh-axis-0-reference",
+      "formula": "=HYPGEOM.DIST(F8,A100,A101,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01483-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,\" 1 \",#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01486-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,\"\t1\",#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01489-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,\"(1)\",#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01490-hypgeom_dist-fresh-axis-0-direct",
+      "formula": "=HYPGEOM.DIST(TRUE,A100,A101,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01491-hypgeom_dist-fresh-axis-0-reference",
+      "formula": "=HYPGEOM.DIST(F8,A100,A101,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01492-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,TRUE,#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01495-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,FALSE,#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fc5555555555555|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fc5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01499-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,#NAME?,#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01502-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,#VALUE!,#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01505-hypgeom_dist-fresh-axis-0-array",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,#DIV/0!,#REF!),A101,A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01507-hypgeom_dist-fresh-axis-1-direct",
+      "formula": "=HYPGEOM.DIST(A100,\" 2 \",A101,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01508-hypgeom_dist-fresh-axis-1-reference",
+      "formula": "=HYPGEOM.DIST(A100,F8,A101,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01509-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,\" 2 \",#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01512-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,\"\t2\",#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01515-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,\"(2)\",#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01518-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,TRUE,#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01521-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,FALSE,#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x0000000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01525-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,#NAME?,#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01528-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,#VALUE!,#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01531-hypgeom_dist-fresh-axis-1-array",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,#DIV/0!,#REF!),A102,A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01533-hypgeom_dist-fresh-axis-2-direct",
+      "formula": "=HYPGEOM.DIST(A100,A101,\" 2 \",A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01534-hypgeom_dist-fresh-axis-2-reference",
+      "formula": "=HYPGEOM.DIST(A100,A101,F8,A102,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01535-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,\" 2 \",#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01538-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,\"\t2\",#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01541-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,\"(2)\",#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01544-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,TRUE,#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01547-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,FALSE,#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x0000000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01551-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,#NAME?,#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01554-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,#VALUE!,#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01557-hypgeom_dist-fresh-axis-2-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,#DIV/0!,#REF!),A103,FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01559-hypgeom_dist-fresh-axis-3-direct",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,\" 4 \",FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01560-hypgeom_dist-fresh-axis-3-reference",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,F8,FALSE)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01561-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,\" 4 \",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01564-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,\"\t4\",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01567-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,\"(4)\",#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01570-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,TRUE,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01573-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,FALSE,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01577-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,#NAME?,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01580-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,#VALUE!,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01583-hypgeom_dist-fresh-axis-3-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,#DIV/0!,#REF!),FALSE)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01585-hypgeom_dist-fresh-axis-4-direct",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,\"trUE\")",
+      "expected": "number:0x3feaaaaaaaaaaaa9",
+      "actual": "number:0x3feaaaaaaaaaaaaa",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01586-hypgeom_dist-fresh-axis-4-reference",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,F8)",
+      "expected": "number:0x3feaaaaaaaaaaaa9",
+      "actual": "number:0x3feaaaaaaaaaaaaa",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01587-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"trUE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3feaaaaaaaaaaaa9|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3feaaaaaaaaaaaaa|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01588-hypgeom_dist-fresh-axis-4-direct",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,\"FAlse\")",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01589-hypgeom_dist-fresh-axis-4-reference",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,F8)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01590-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"FAlse\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01591-hypgeom_dist-fresh-axis-4-direct",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,\"tRuE\")",
+      "expected": "number:0x3feaaaaaaaaaaaa9",
+      "actual": "number:0x3feaaaaaaaaaaaaa",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01592-hypgeom_dist-fresh-axis-4-reference",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,F8)",
+      "expected": "number:0x3feaaaaaaaaaaaa9",
+      "actual": "number:0x3feaaaaaaaaaaaaa",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01593-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"tRuE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3feaaaaaaaaaaaa9|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3feaaaaaaaaaaaaa|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01594-hypgeom_dist-fresh-axis-4-direct",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,\"FaLSE\")",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01595-hypgeom_dist-fresh-axis-4-reference",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,F8)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01596-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"FaLSE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01599-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"\rTRUE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01602-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"FALSE\n\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01605-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"\u202fTRUE\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01608-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"FALSE\u2003\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01611-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"00\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01614-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"+1\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01617-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"(1)\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01620-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,\"100%\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01623-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,#NAME?,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01626-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,#VALUE!,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01629-hypgeom_dist-fresh-axis-4-array",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,CHOOSE({1;2;3},FALSE,#DIV/0!,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01630-hypgeom_dist-fresh-axis-4-blank",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,A103,F8)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01631-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1,2;3,4},A102,A103,A104,A105),A106,A107,FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01632-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,CHOOSE({1,2;3,4},A103,A104,A105,A106),A107,FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01633-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107),FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01634-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01635-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},A104,A105,#NAME?),A106,A107,FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01636-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),CHOOSE({1,2;3,4},A103,A104,A105,A106),A107,FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01637-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107),FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01638-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01639-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},A105,A106,#NAME?),A107,FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01640-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),CHOOSE({1;2;3},A105,A106,#NAME?),A107,FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01641-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,A103,#NAME?),CHOOSE({1,2;3,4},A104,A105,A106,A107),FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01642-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1;2;3},A102,A103,#NAME?),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01643-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1;2;3},A106,A107,#NAME?),FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01644-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),A105,CHOOSE({1;2;3},A106,A107,#NAME?),FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01645-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1,2;3,4},A102,A103,A104,A105),CHOOSE({1;2;3},A106,A107,#NAME?),FALSE)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01646-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1;2;3},A103,A104,#NAME?),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01647-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,A106,CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01648-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),A105,A106,CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01649-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,A101,CHOOSE({1,2;3,4},A102,A103,A104,A105),A106,CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01650-hypgeom_dist-fresh-positional-padding",
+      "formula": "=HYPGEOM.DIST(A100,A101,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106),CHOOSE({1;2;3},FALSE,FALSE,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01651-hypgeomdist-fresh-axis-0-direct",
+      "formula": "=HYPGEOMDIST(\" 1 \",A100,A101,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01652-hypgeomdist-fresh-axis-0-reference",
+      "formula": "=HYPGEOMDIST(F8,A100,A101,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01653-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,\" 1 \",#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01656-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,\"\t1\",#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01659-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,\"(1)\",#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01660-hypgeomdist-fresh-axis-0-direct",
+      "formula": "=HYPGEOMDIST(TRUE,A100,A101,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01661-hypgeomdist-fresh-axis-0-reference",
+      "formula": "=HYPGEOMDIST(F8,A100,A101,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01662-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,TRUE,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01665-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,FALSE,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fc5555555555555|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fc5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01669-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,#NAME?,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01672-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,#VALUE!,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01675-hypgeomdist-fresh-axis-0-array",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,#DIV/0!,#REF!),A101,A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01677-hypgeomdist-fresh-axis-1-direct",
+      "formula": "=HYPGEOMDIST(A100,\" 2 \",A101,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01678-hypgeomdist-fresh-axis-1-reference",
+      "formula": "=HYPGEOMDIST(A100,F8,A101,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01679-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,\" 2 \",#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01682-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,\"\t2\",#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01685-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,\"(2)\",#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01688-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,TRUE,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01691-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,FALSE,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x0000000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01695-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,#NAME?,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01698-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,#VALUE!,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01701-hypgeomdist-fresh-axis-1-array",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,#DIV/0!,#REF!),A102,A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01703-hypgeomdist-fresh-axis-2-direct",
+      "formula": "=HYPGEOMDIST(A100,A101,\" 2 \",A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01704-hypgeomdist-fresh-axis-2-reference",
+      "formula": "=HYPGEOMDIST(A100,A101,F8,A102)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01705-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,\" 2 \",#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01708-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,\"\t2\",#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01711-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,\"(2)\",#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01714-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,TRUE,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe0000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe0000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01717-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,FALSE,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x0000000000000000|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x0000000000000000|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01721-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,#NAME?,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01724-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,#VALUE!,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01727-hypgeomdist-fresh-axis-2-array",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,#DIV/0!,#REF!),A103)",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01729-hypgeomdist-fresh-axis-3-direct",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,\" 4 \")",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01730-hypgeomdist-fresh-axis-3-reference",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,F8)",
+      "expected": "number:0x3fe5555555555554",
+      "actual": "number:0x3fe5555555555555",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01731-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,\" 4 \",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01734-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,\"\t4\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01737-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,\"(4)\",#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01740-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,TRUE,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01743-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,FALSE,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Num|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Num|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01747-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,#NAME?,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Name|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Name|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01750-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,#VALUE!,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Value|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01753-hypgeomdist-fresh-axis-3-array",
+      "formula": "=HYPGEOMDIST(A100,A101,A102,CHOOSE({1;2;3},A103,#DIV/0!,#REF!))",
+      "expected": "array:3x1:[number:0x3fe5555555555554|error:Div0|error:Ref]",
+      "actual": "array:3x1:[number:0x3fe5555555555555|error:Div0|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01755-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),CHOOSE({1,2;3,4},A102,A103,A104,A105),A106,A107)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01756-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,CHOOSE({1,2;3,4},A103,A104,A105,A106),A107)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01757-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NAME?),A102,A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01758-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1;2;3},A104,A105,#NAME?),A106,A107)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01759-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),CHOOSE({1,2;3,4},A103,A104,A105,A106),A107)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01760-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1;2;3},A101,A102,#NAME?),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01761-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1;2;3},A105,A106,#NAME?),A107)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01762-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),CHOOSE({1;2;3},A105,A106,#NAME?),A107)",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01763-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1;2;3},A102,A103,#NAME?),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Name|error:Name]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01764-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1;2;3},A106,A107,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01765-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(A100,CHOOSE({1,2;3,4},A101,A102,A103,A104),A105,CHOOSE({1;2;3},A106,A107,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "classification": "numeric_bits_open",
+      "case_id": "w111typed-01766-hypgeomdist-fresh-positional-padding",
+      "formula": "=HYPGEOMDIST(A100,A101,CHOOSE({1,2;3,4},A102,A103,A104,A105),CHOOSE({1;2;3},A106,A107,#NAME?))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

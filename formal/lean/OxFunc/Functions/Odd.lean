@@ -27,7 +27,8 @@ def evalOddSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalOdd_numeric_text_admitted :
     evalOddSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalOddSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalOddSurfaceClass, coerceToNumber, parsed]
 
 theorem oddMeta_profiles :
     oddMeta.kernelSignatureClass = KernelSignatureClass.numToNum

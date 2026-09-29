@@ -4,7 +4,7 @@
 1. `function_id`: `FUNC.IF`
 2. `display_name`: `IF`
 3. `owner_lane`: `OxFunc`
-4. `status`: `provisional`
+4. `status`: `in_progress` (W111 expanded typed scope)
 
 ## 2. Signature and Admission Contract
 1. arity:
@@ -27,13 +27,22 @@
 ## 4. Pre-call Coercion Policy
 1. references stay visible to the adapter so branch preparation can remain selective.
 2. the condition argument is prepared first and coerced through the function-local truthiness policy.
-3. only the selected branch is prepared/evaluated.
+3. scalar conditions prepare the selected branch only. Array conditions preserve
+   shape information from both branches; this prepared-value rule does not
+   establish evaluator expression scheduling, effects or reference-valued selection.
+4. condition text accepts only ASCII-case-insensitive TRUE/FALSE; numeric text
+   and whitespace-decorated logical text return `#VALUE!`, including references.
 
 ## 5. Core Outcome Model
 1. when the condition coerces true, the prepared `then_value` is returned.
 2. when the condition coerces false, the prepared `else_value` is returned.
 3. if `else_value` is omitted, the false branch defaults to logical `FALSE`.
-4. non-selected branch errors are masked by lazy branch selection.
+4. non-selected branch values/errors are masked per result cell. For array
+   conditions, dimensions are the coordinatewise maxima of condition and both
+   branches, including an unused branch. Singleton axes broadcast; absent
+   coordinates of other axes yield `#N/A` only when selected.
+5. selected blank cells and explicit missing arguments publish numeric zero.
+   An omitted third argument remains distinct from an explicitly missing slot.
 
 ## 6. Post-call Adaptation Policy
 1. successful evaluation returns the selected scalar, text, logical, or error payload directly as `EvalValue`.
@@ -56,16 +65,30 @@
    - `docs/function-lane/W10_PROFILE_SYSTEM_SIDE_NOTES.md` (note 2)
    - `docs/function-lane/W10_EXECUTION_RECORD.md`
 4. current status rationale:
-   - function-phase-complete and locally verified for the current reference Excel baseline,
-   - lazy branch masking and omitted-false behavior are exercised in both Rust tests and W10 dual-run workbook replay,
-   - remaining locale/version expansion is orthogonal validation-phase work rather than a current-phase function-semantic gap.
+   - W111 withdraws the earlier phase claim for the expanded typed scope,
+   - 812 discovery/control observations exercise prepared-value selection;
+     the frozen independent packet exposed direct one-cell array shape failures,
+   - evaluator scheduling, reference-returning expressions and HO-FN-023
+     acknowledgment/integration remain open.
 
 ## 9. W10 Coverage
 1. condition coercion is explicit and deterministic.
-2. branch selection is lazy in the runtime adapter (non-selected branch is not prepared/evaluated).
+2. the historical scalar adapter selected one branch; this does not prove array expression scheduling or reference-returning behavior.
 3. missing `else` defaults to logical false in the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/if_fn.rs`
 2. Lean: `formal/lean/OxFunc/Functions/IfFn.lean`
 3. side-note linkage: `docs/function-lane/W10_PROFILE_SYSTEM_SIDE_NOTES.md` (note 2)
+
+
+## 11. W111 reference and evidence
+
+Excel 16.0 build 20430, 64-bit, Workbook Compatibility Version 2; channel unverified.
+See `evidence/w111-broad-20260929/conditional/` and HO-FN-023. The first independent
+660-case packet has 496 exact cases, 24 valid direct one-cell array failures, and
+140 malformed local array inputs retained but withheld. Refinement remains active.
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`. Open lanes: the shape refinement and fresh
+replay; expression scheduling and effects; reference-returning selection;
+uncommon host/reference forms; receiving acknowledgment and integration.

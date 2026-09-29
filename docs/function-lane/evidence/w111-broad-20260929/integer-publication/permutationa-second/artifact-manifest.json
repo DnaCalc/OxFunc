@@ -1,0 +1,60 @@
+{
+  "artifacts": [
+    {
+      "path": "answers-permutationa.json",
+      "sha256": "2ac743cb0283d739292a32076abf0f00b3c0e06c2e434024b211e89ae7255a33"
+    },
+    {
+      "path": "batch-permutationa.json",
+      "sha256": "10a7f7f33a8bf1094912597561738f5a98006d8b3a535e889abbb86376b25b1a"
+    },
+    {
+      "path": "candidate/coercion.rs",
+      "sha256": "96564e9e279de1ad5962f846b41d52242ccfafdfaa568b8f00b61ef335667908"
+    },
+    {
+      "path": "candidate/coercion_decimal.rs",
+      "sha256": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096"
+    },
+    {
+      "path": "candidate/coercion_decimal_powers.rs",
+      "sha256": "a9a14c0e7c497c61cd428058b6fdafc5f7df132a0b3aa41dda7992e2a97ade13"
+    },
+    {
+      "path": "candidate/functions/permutationa_fn.rs",
+      "sha256": "feac99115e5706ac168cc6b37bb3891e3835c45136c56fa115b68e4aad9abdd9"
+    },
+    {
+      "path": "candidate-freeze.json",
+      "sha256": "216a3f4b2d938955935d089686abdeafeca08b6567d24f336bd7747eafcbeb6b"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "48ba3a8506bac9a5785670858f0f2168d4a6b91faac12f9db8c2ef54ed27ebc7"
+    },
+    {
+      "path": "typed/cases/cases.jsonl",
+      "sha256": "a7d80be3e36a724bc4bc618db3afd87dfef77ffb9472f0d011a15241be06f0e3"
+    },
+    {
+      "path": "typed/manifest.json",
+      "sha256": "635846104098ceb5e857f65fb4a64c5a192cb76ce68c8404eb87c13f4b7a5272"
+    },
+    {
+      "path": "typed/outcomes/excel.jsonl",
+      "sha256": "b1afdd4932caac9a1336a1b9c0664b28a314b099201616540b292a33305046d8"
+    },
+    {
+      "path": "typed/outcomes/local.jsonl",
+      "sha256": "96b806bc8040fbb72511b0d5557d637a52eb3f94126b8b0d1112c70be2001437"
+    },
+    {
+      "path": "typed/rollup.json",
+      "sha256": "f72c821ff1a41ba409bdbd02d549b974d8ca560ec46e29ef95331476c816ceed"
+    },
+    {
+      "path": "typed.json",
+      "sha256": "ac91458a55cec477ed8eee78932b17d57c219e0cb43c2d5959524e2f79d13774"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "generator": "gen_distribution_branch_probes.py",
+  "seed": 2026092932,
+  "authority": "poisson_branch_discovery_and_hypergeometric_refinement_holdout",
+  "batches": [
+    {
+      "function": "POISSON.DIST",
+      "path": "batch-poisson.dist.json",
+      "rows": 312
+    },
+    {
+      "function": "HYPGEOM.DIST",
+      "path": "batch-hypgeom.dist.json",
+      "rows": 480
+    }
+  ]
+}

@@ -3,12 +3,13 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
+use crate::functions::adapters::coerce_prepared_to_text;
 use crate::functions::text_search_replace_family::{
     TextSearchReplaceEvalError, eval_find_surface, eval_replace_surface, eval_search_surface,
 };
+use crate::functions::text_slice_family::run_text_lifted;
 use crate::functions::text_slice_family::{
-    TextSliceEvalError, eval_left_surface, eval_mid_surface, eval_right_surface,
+    TextSliceEvalError, eval_left_surface, eval_mid_utf16_surface, eval_right_surface,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -86,7 +87,7 @@ pub fn eval_lenb_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, TextBCompatEvalError> {
-    run_values_only_prepared(
+    run_text_lifted(
         args,
         resolver,
         |prepared| {
@@ -103,6 +104,7 @@ pub fn eval_lenb_surface(
                 .map_err(|e| TextBCompatEvalError::Slice(TextSliceEvalError::Coercion(e)))?;
             Ok(CalcValue::number(text.len_utf16_code_units() as f64))
         },
+        map_text_b_compat_error_to_ws,
         |e| TextBCompatEvalError::Slice(TextSliceEvalError::Coercion(e)),
     )
 }
@@ -111,7 +113,7 @@ pub fn eval_midb_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, TextBCompatEvalError> {
-    eval_mid_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
+    eval_mid_utf16_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_replaceb_surface(

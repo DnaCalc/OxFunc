@@ -1,0 +1,32 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "locale grouping/currency/native digits/date/time",
+    "captured current-year context",
+    "HO-FN-022 receiving acknowledgement and integration"
+  ],
+  "validation": {
+    "parser_exact_replay_rows": 14260,
+    "fresh_staged_arithmetic_heldout_rows": 3760,
+    "fresh_staged_arithmetic_heldout_mismatches": 0,
+    "ingress_exclusions": 0,
+    "existing_coercion_unit_checks_passed": 16,
+    "typed_integration_tests_passed": 9,
+    "typed_integration_tests_ignored": 0,
+    "lean_modules_built": [
+      "OxFunc.DecimalTextConversion",
+      "OxFunc.CoercionPrimitives",
+      "OxFunc.Functions.QuotientFn"
+    ]
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "crates/oxfunc_core/src/coercion_decimal_powers.rs": "a9a14c0e7c497c61cd428058b6fdafc5f7df132a0b3aa41dda7992e2a97ade13",
+    "crates/oxfunc_core/tests/w111_numeric_text_live_replay.rs": "ae8d3d0553c3a06eb142781ed2bb67c1e96eb0b688eb10f284d79bbc3374cde9",
+    "formal/lean/OxFunc/CoercionPrimitives.lean": "26c4922fca5f67d4d3fa7a266c6f49f38e03d9038ea7560a741e477107e9c6ab",
+    "formal/lean/OxFunc/DecimalTextConversion.lean": "f208e765bb2ee4b738fbb94d5cdaa0451d64a58f1ebd6212c76244c241bfb8aa"
+  }
+}

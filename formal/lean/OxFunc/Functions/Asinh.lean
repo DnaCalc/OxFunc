@@ -27,7 +27,8 @@ def evalAsinhSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode St
 
 theorem evalAsinh_numeric_text_admitted :
     evalAsinhSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalAsinhSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalAsinhSurfaceClass, coerceToNumber, parsed]
 
 theorem asinhMeta_profiles :
     asinhMeta.kernelSignatureClass = KernelSignatureClass.numToNum

@@ -1,0 +1,121 @@
+{
+  "default_failures": [
+    {
+      "alternatives": [
+        "0xbff1bc3aef431d2a",
+        "0xbff1bc3aef431d2a",
+        "0xbff1bc3aef431d29",
+        "0xbff1bc3aef431d29"
+      ],
+      "args": [
+        "0xc0000d685e592174"
+      ],
+      "expected": "0xbff1bc3aef431d2a",
+      "id": "w111atan-heldout-20468"
+    },
+    {
+      "alternatives": [
+        "0xbff1c2b6c60d2617",
+        "0xbff1c2b6c60d2617",
+        "0xbff1c2b6c60d2616",
+        "0xbff1c2b6c60d2616"
+      ],
+      "args": [
+        "0xc0001dc1079c3c90"
+      ],
+      "expected": "0xbff1c2b6c60d2617",
+      "id": "w111atan-heldout-22881"
+    },
+    {
+      "alternatives": [
+        "0xbff1bc3aef431d2a",
+        "0xbff1bc3aef431d2a",
+        "0xbff1bc3aef431d29",
+        "0xbff1bc3aef431d29"
+      ],
+      "args": [
+        "0xc0000d685e592174"
+      ],
+      "expected": "0xbff1bc3aef431d2a",
+      "id": "atan-refine-01024"
+    },
+    {
+      "alternatives": [
+        "0x3ff1bc3aef431d2a",
+        "0x3ff1bc3aef431d2a",
+        "0x3ff1bc3aef431d29",
+        "0x3ff1bc3aef431d29"
+      ],
+      "args": [
+        "0x40000d685e592174"
+      ],
+      "expected": "0x3ff1bc3aef431d2a",
+      "id": "atan-refine-01025"
+    },
+    {
+      "alternatives": [
+        "0xbff1c2b6c60d2617",
+        "0xbff1c2b6c60d2617",
+        "0xbff1c2b6c60d2616",
+        "0xbff1c2b6c60d2616"
+      ],
+      "args": [
+        "0xc0001dc1079c3c90"
+      ],
+      "expected": "0xbff1c2b6c60d2617",
+      "id": "atan-refine-03074"
+    },
+    {
+      "alternatives": [
+        "0x3ff1c2b6c60d2617",
+        "0x3ff1c2b6c60d2617",
+        "0x3ff1c2b6c60d2616",
+        "0x3ff1c2b6c60d2616"
+      ],
+      "args": [
+        "0x40001dc1079c3c90"
+      ],
+      "expected": "0x3ff1c2b6c60d2617",
+      "id": "atan-refine-03075"
+    },
+    {
+      "alternatives": [
+        "0xbff31503e9041d9d",
+        "0xbff31503e9041d9d",
+        "0xbff31503e9041d9c",
+        "0xbff31503e9041d9c"
+      ],
+      "args": [
+        "0xc00422f5b8083883"
+      ],
+      "expected": "0xbff31503e9041d9d",
+      "id": "atan-refine-14957"
+    },
+    {
+      "alternatives": [
+        "0xbfea9872caee324d",
+        "0xbfea9872caee324d",
+        "0xbfea9872caee324c",
+        "0xbfea9872caee324c"
+      ],
+      "args": [
+        "0xbff188b0ca40f8e7"
+      ],
+      "expected": "0xbfea9872caee324d",
+      "id": "atan-refine-16894"
+    }
+  ],
+  "exact": [
+    68997,
+    63436,
+    57322,
+    56958
+  ],
+  "graphs": [
+    "extended_pi_extended_angle",
+    "extended_pi_stored_angle",
+    "f64_pi_extended_angle",
+    "f64_pi_stored_angle"
+  ],
+  "rows": 68997
+}

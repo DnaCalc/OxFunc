@@ -1,0 +1,1538 @@
+[
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fec54f57249d046",
+    "z_native_bits": "0x3fe4089dc809890b",
+    "z_staged_bits": "0x3fe4089dc809890a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ffdbc5a98c97f51",
+    "z_native_bits": "0x3ff506bf3f446547",
+    "z_staged_bits": "0x3ff506bf3f446548"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403f6118b854fcc2",
+    "z_native_bits": "0x40363041ce4067a3",
+    "z_staged_bits": "0x40363041ce4067a2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40295a45968f82b5",
+    "z_native_bits": "0x4021ed50b25f9a43",
+    "z_staged_bits": "0x4021ed50b25f9a44"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402d5bc5115a7cd7",
+    "z_native_bits": "0x4024c273a86b3f2d",
+    "z_staged_bits": "0x4024c273a86b3f2e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401bfe4804b34d2f",
+    "z_native_bits": "0x4013cb537c802fd5",
+    "z_staged_bits": "0x4013cb537c802fd4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe0aa6c139581f5",
+    "z_native_bits": "0x3fd791a1d15fa329",
+    "z_staged_bits": "0x3fd791a1d15fa32a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff6e6f282c61bba",
+    "z_native_bits": "0x3ff031bad41eabad",
+    "z_staged_bits": "0x3ff031bad41eabac"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe5744fff9d55c0",
+    "z_native_bits": "0x3fde574d857a90db",
+    "z_staged_bits": "0x3fde574d857a90dc"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3feaaae3c41b61f8",
+    "z_native_bits": "0x3fe2db570ad6b29b",
+    "z_staged_bits": "0x3fe2db570ad6b29a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe2fbe6edd1da46",
+    "z_native_bits": "0x3fdad8f07d7001b9",
+    "z_staged_bits": "0x3fdad8f07d7001b8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff0a28be3a7f0cd",
+    "z_native_bits": "0x3fe7867e7fa166cb",
+    "z_staged_bits": "0x3fe7867e7fa166ca"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40066ca88b5452b7",
+    "z_native_bits": "0x3fffb68455aca199",
+    "z_staged_bits": "0x3fffb68455aca19a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x404113b2f7679e85",
+    "z_native_bits": "0x4038268421c53261",
+    "z_staged_bits": "0x4038268421c53260"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff5736c414cd5a6",
+    "z_native_bits": "0x3fee560b718e116b",
+    "z_staged_bits": "0x3fee560b718e116c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402438b0d50cb433",
+    "z_native_bits": "0x401c98f23ea0638b",
+    "z_staged_bits": "0x401c98f23ea0638c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40333d9d7e32813b",
+    "z_native_bits": "0x402b35df302875f1",
+    "z_staged_bits": "0x402b35df302875f0"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe9ff8f1d0b7af4",
+    "z_native_bits": "0x3fe26230e0a1b459",
+    "z_staged_bits": "0x3fe26230e0a1b45a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403457ae57cf69f8",
+    "z_native_bits": "0x402cc4c5ec55aa69",
+    "z_staged_bits": "0x402cc4c5ec55aa68"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff8a7a78cc18662",
+    "z_native_bits": "0x3ff16f0381488883",
+    "z_staged_bits": "0x3ff16f0381488884"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40242067dc30bc7d",
+    "z_native_bits": "0x401c769a1e4d2b77",
+    "z_staged_bits": "0x401c769a1e4d2b78"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe54c065e57e4fc",
+    "z_native_bits": "0x3fde1e53d8953115",
+    "z_staged_bits": "0x3fde1e53d8953116"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401b12c88a64d1ac",
+    "z_native_bits": "0x401324cdcd4ef7ed",
+    "z_staged_bits": "0x401324cdcd4ef7ee"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40191f91bed2e695",
+    "z_native_bits": "0x4011c3ce68434007",
+    "z_staged_bits": "0x4011c3ce68434006"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ffa62babea0668d",
+    "z_native_bits": "0x3ff2a850a4c5121d",
+    "z_staged_bits": "0x3ff2a850a4c5121e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400e6a421fcfe11d",
+    "z_native_bits": "0x400581b74e90188f",
+    "z_staged_bits": "0x400581b74e90188e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff2298699cd43ab",
+    "z_native_bits": "0x3fe9af6c23e6980d",
+    "z_staged_bits": "0x3fe9af6c23e6980e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x404192e79dd2d4bf",
+    "z_native_bits": "0x4038da69806f9ba3",
+    "z_staged_bits": "0x4038da69806f9ba4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402b0f659a3e212c",
+    "z_native_bits": "0x40232268c8c0428f",
+    "z_staged_bits": "0x40232268c8c04290"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3feb2ece4d25cc97",
+    "z_native_bits": "0x3fe3389e6ab79cb7",
+    "z_staged_bits": "0x3fe3389e6ab79cb6"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402c49cb9bc9bfb0",
+    "z_native_bits": "0x402400b8fc1ea879",
+    "z_staged_bits": "0x402400b8fc1ea87a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401c92512fc9b04a",
+    "z_native_bits": "0x40143400d4be7277",
+    "z_staged_bits": "0x40143400d4be7278"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4042789240e5c6e2",
+    "z_native_bits": "0x403a1f35acbcb289",
+    "z_staged_bits": "0x403a1f35acbcb288"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4039a5c52b0fda57",
+    "z_native_bits": "0x403222b35c16184b",
+    "z_staged_bits": "0x403222b35c16184c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403671c162c71a56",
+    "z_native_bits": "0x402fbdb9a8cae653",
+    "z_staged_bits": "0x402fbdb9a8cae654"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ffc61c7c4da8ede",
+    "z_native_bits": "0x3ff411aebbe168d9",
+    "z_staged_bits": "0x3ff411aebbe168d8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe999bd3eb99db3",
+    "z_native_bits": "0x3fe21a31866f776b",
+    "z_staged_bits": "0x3fe21a31866f776a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401d80557e7208e3",
+    "z_native_bits": "0x4014dc4e7a8b1d93",
+    "z_staged_bits": "0x4014dc4e7a8b1d94"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400a22f41c553d20",
+    "z_native_bits": "0x40027b37f854e5c7",
+    "z_staged_bits": "0x40027b37f854e5c8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400d6fb00f26e6d4",
+    "z_native_bits": "0x4004d0893074d779",
+    "z_staged_bits": "0x4004d0893074d77a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402fce8c5267662d",
+    "z_native_bits": "0x40267da6a7f8c891",
+    "z_staged_bits": "0x40267da6a7f8c890"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401997703ac22e89",
+    "z_native_bits": "0x40121891073de399",
+    "z_staged_bits": "0x40121891073de39a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4036a1fc920cfd45",
+    "z_native_bits": "0x403000f79b909271",
+    "z_staged_bits": "0x403000f79b909272"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4040a8a4d95a609c",
+    "z_native_bits": "0x40378f1e076d42c3",
+    "z_staged_bits": "0x40378f1e076d42c2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4017975b159c9c42",
+    "z_native_bits": "0x4010ae782d29b44d",
+    "z_staged_bits": "0x4010ae782d29b44c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40412bcd4280fcba",
+    "z_native_bits": "0x4038489a3e951e7b",
+    "z_staged_bits": "0x4038489a3e951e7c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40317d849b69a305",
+    "z_native_bits": "0x4028bc2aab4c2243",
+    "z_staged_bits": "0x4028bc2aab4c2242"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe5c5596432768f",
+    "z_native_bits": "0x3fdec9e7eff952cb",
+    "z_staged_bits": "0x3fdec9e7eff952cc"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401e44bfd9c052c0",
+    "z_native_bits": "0x40156731795bba97",
+    "z_staged_bits": "0x40156731795bba98"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3febb9917f1cfd63",
+    "z_native_bits": "0x3fe39abd1beb9ed5",
+    "z_staged_bits": "0x3fe39abd1beb9ed4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402433e058403618",
+    "z_native_bits": "0x401c92233e7d9171",
+    "z_staged_bits": "0x401c92233e7d9172"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400605f723c80d74",
+    "z_native_bits": "0x3fff254980968d8b",
+    "z_staged_bits": "0x3fff254980968d8c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff4c799303a2f31",
+    "z_native_bits": "0x3fed630c5658b187",
+    "z_staged_bits": "0x3fed630c5658b188"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff9e922500d8791",
+    "z_native_bits": "0x3ff2525584b11f27",
+    "z_staged_bits": "0x3ff2525584b11f28"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe71a1a0920efe7",
+    "z_native_bits": "0x3fe055e6c353e471",
+    "z_staged_bits": "0x3fe055e6c353e472"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe6ab1d6d5e9ffc",
+    "z_native_bits": "0x3fe0076c03d0c267",
+    "z_staged_bits": "0x3fe0076c03d0c266"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe0f4347bdbe9fb",
+    "z_native_bits": "0x3fd7f9fa0f46e04d",
+    "z_staged_bits": "0x3fd7f9fa0f46e04c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402ef6aa8b235120",
+    "z_native_bits": "0x4025e4ffd97763c7",
+    "z_staged_bits": "0x4025e4ffd97763c8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400b012dcea812a4",
+    "z_native_bits": "0x4003185b0f6e22b3",
+    "z_staged_bits": "0x4003185b0f6e22b4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4037154f767388a4",
+    "z_native_bits": "0x4030528371e7bd77",
+    "z_staged_bits": "0x4030528371e7bd76"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400bc6dad0fd0f4f",
+    "z_native_bits": "0x4003a42234939e4b",
+    "z_staged_bits": "0x4003a42234939e4c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400e103004aefad5",
+    "z_native_bits": "0x40054206c387eff5",
+    "z_staged_bits": "0x40054206c387eff4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403763783784cfb0",
+    "z_native_bits": "0x403089c7c54c86a3",
+    "z_staged_bits": "0x403089c7c54c86a2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff74ed26bd2a7a4",
+    "z_native_bits": "0x3ff07b2e2612d001",
+    "z_staged_bits": "0x3ff07b2e2612d000"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4010832dd02f6777",
+    "z_native_bits": "0x40075a22418f0325",
+    "z_staged_bits": "0x40075a22418f0324"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff388e374279326",
+    "z_native_bits": "0x3feba053072a12af",
+    "z_staged_bits": "0x3feba053072a12b0"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4010ec9f9eabd82d",
+    "z_native_bits": "0x4007ef4143724d99",
+    "z_staged_bits": "0x4007ef4143724d98"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403338f73b6502f3",
+    "z_native_bits": "0x402b2f4be7aa44cf",
+    "z_staged_bits": "0x402b2f4be7aa44ce"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403521b396f9bcb6",
+    "z_native_bits": "0x402de27927a97b1b",
+    "z_staged_bits": "0x402de27927a97b1a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff28dba02a6fc02",
+    "z_native_bits": "0x3fea3d20b62806a9",
+    "z_staged_bits": "0x3fea3d20b62806aa"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401a9286816ed1b3",
+    "z_native_bits": "0x4012ca1ca2182d41",
+    "z_staged_bits": "0x4012ca1ca2182d42"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403b0087a9f7e5cf",
+    "z_native_bits": "0x403317e5944729b1",
+    "z_staged_bits": "0x403317e5944729b2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402cc4f350f82d07",
+    "z_native_bits": "0x402457ce70d7029b",
+    "z_staged_bits": "0x402457ce70d7029a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe3c9cd597f4f50",
+    "z_native_bits": "0x3fdbfc20481db2cf",
+    "z_staged_bits": "0x3fdbfc20481db2ce"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4001de93ae21483c",
+    "z_native_bits": "0x3ff9456dbca66ea1",
+    "z_staged_bits": "0x3ff9456dbca66ea2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40259b0b2566a86b",
+    "z_native_bits": "0x401e8e13a85971f5",
+    "z_staged_bits": "0x401e8e13a85971f4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4028b8c82f3bed80",
+    "z_native_bits": "0x40217b1fe8f111c7",
+    "z_staged_bits": "0x40217b1fe8f111c8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402a3891a6689721",
+    "z_native_bits": "0x40228a80c5f3aa43",
+    "z_staged_bits": "0x40228a80c5f3aa44"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40054448bb5b9df1",
+    "z_native_bits": "0x3ffe1361637a34a7",
+    "z_staged_bits": "0x3ffe1361637a34a8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4034243a39ac6c5f",
+    "z_native_bits": "0x402c7c01bc53e8cb",
+    "z_staged_bits": "0x402c7c01bc53e8ca"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4006e12077b4a038",
+    "z_native_bits": "0x40002d9d357b940b",
+    "z_staged_bits": "0x40002d9d357b940c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4034d305758da5ae",
+    "z_native_bits": "0x402d7333e17710bd",
+    "z_staged_bits": "0x402d7333e17710bc"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400d538ce319c662",
+    "z_native_bits": "0x4004bca3c707c60b",
+    "z_staged_bits": "0x4004bca3c707c60c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403d8a4238c6e0fe",
+    "z_native_bits": "0x4034e3530b69bc69",
+    "z_staged_bits": "0x4034e3530b69bc6a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe8f7587ff6c8ab",
+    "z_native_bits": "0x3fe1a75d27b6221b",
+    "z_staged_bits": "0x3fe1a75d27b6221a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff187b8c7440041",
+    "z_native_bits": "0x3fe8ca98d65378e1",
+    "z_staged_bits": "0x3fe8ca98d65378e2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4032609bbc0515c8",
+    "z_native_bits": "0x4029fd52279b15d1",
+    "z_staged_bits": "0x4029fd52279b15d2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4001a5aa1cbdf99d",
+    "z_native_bits": "0x3ff8f4f141a0f02f",
+    "z_staged_bits": "0x3ff8f4f141a0f02e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4017af44e50d2e9d",
+    "z_native_bits": "0x4010bf60f333545d",
+    "z_staged_bits": "0x4010bf60f333545c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402fe8e17c3eef22",
+    "z_native_bits": "0x4026904560e70327",
+    "z_staged_bits": "0x4026904560e70326"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40176e623a503b11",
+    "z_native_bits": "0x4010917f6f4cbca9",
+    "z_staged_bits": "0x4010917f6f4cbca8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4038f9a40fa77a62",
+    "z_native_bits": "0x4031a8fc9faa7f33",
+    "z_staged_bits": "0x4031a8fc9faa7f34"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x402411819d367ccf",
+    "z_native_bits": "0x401c6187f5be2d37",
+    "z_staged_bits": "0x401c6187f5be2d38"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4015be0f1515c4c6",
+    "z_native_bits": "0x400ebf9893ee3e79",
+    "z_staged_bits": "0x400ebf9893ee3e78"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400444aebe0aac10",
+    "z_native_bits": "0x3ffca9e7c0cfb2df",
+    "z_staged_bits": "0x3ffca9e7c0cfb2e0"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3feef92de629c661",
+    "z_native_bits": "0x3fe5e6c6c54392cf",
+    "z_staged_bits": "0x3fe5e6c6c54392ce"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403158938ed2da09",
+    "z_native_bits": "0x402887ec61c5e749",
+    "z_staged_bits": "0x402887ec61c5e74a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401c227f8b954379",
+    "z_native_bits": "0x4013e4ef72241df1",
+    "z_staged_bits": "0x4013e4ef72241df0"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403b7beb070ac9d2",
+    "z_native_bits": "0x40336f2537db57c7",
+    "z_staged_bits": "0x40336f2537db57c6"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4010751ea48413e9",
+    "z_native_bits": "0x40074640429edf3f",
+    "z_staged_bits": "0x40074640429edf3e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403338c8c620a8d6",
+    "z_native_bits": "0x402b2f0a340badc1",
+    "z_staged_bits": "0x402b2f0a340badc2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe07d0c006a39a0",
+    "z_native_bits": "0x3fd75176350d0447",
+    "z_staged_bits": "0x3fd75176350d0448"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40208c478056ecf9",
+    "z_native_bits": "0x40176700eebedd95",
+    "z_staged_bits": "0x40176700eebedd96"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x400912164edae282",
+    "z_native_bits": "0x4001ba45df5c3d3d",
+    "z_staged_bits": "0x4001ba45df5c3d3c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff4026d31ff3686",
+    "z_native_bits": "0x3fec4c3480d7c6fd",
+    "z_staged_bits": "0x3fec4c3480d7c6fc"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fece0085cb54190",
+    "z_native_bits": "0x3fe46af4d8325ad9",
+    "z_staged_bits": "0x3fe46af4d8325ad8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ffdee2ad402ab01",
+    "z_native_bits": "0x3ff529f86fb78361",
+    "z_staged_bits": "0x3ff529f86fb78362"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4033cb9c5f2c2bb5",
+    "z_native_bits": "0x402bfeaf180c10a7",
+    "z_staged_bits": "0x402bfeaf180c10a6"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ffb132b35f5d298",
+    "z_native_bits": "0x3ff325139284e8bb",
+    "z_staged_bits": "0x3ff325139284e8bc"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff867aa54d8cfd0",
+    "z_native_bits": "0x3ff141c43c01c5d3",
+    "z_staged_bits": "0x3ff141c43c01c5d2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40074993939c4a0b",
+    "z_native_bits": "0x400077789d3d471b",
+    "z_staged_bits": "0x400077789d3d471a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403bd89f8af9abe2",
+    "z_native_bits": "0x4033b0b2a4077905",
+    "z_staged_bits": "0x4033b0b2a4077906"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe20257a4fe68a5",
+    "z_native_bits": "0x3fd9780239cf61ed",
+    "z_staged_bits": "0x3fd9780239cf61ec"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff92f9a433bb7c6",
+    "z_native_bits": "0x3ff1cf24bd3ec499",
+    "z_staged_bits": "0x3ff1cf24bd3ec49a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fff2d113f63a688",
+    "z_native_bits": "0x3ff60b77843239d3",
+    "z_staged_bits": "0x3ff60b77843239d4"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x4012fe70014b8c45",
+    "z_native_bits": "0x400adc866c13f5c3",
+    "z_staged_bits": "0x400adc866c13f5c2"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x40055e4d4607fffe",
+    "z_native_bits": "0x3ffe382cd1257c8d",
+    "z_staged_bits": "0x3ffe382cd1257c8e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe201e98b4394ab",
+    "z_native_bits": "0x3fd97766852b32c9",
+    "z_staged_bits": "0x3fd97766852b32c8"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff8f8567c4279a0",
+    "z_native_bits": "0x3ff1a810c000e173",
+    "z_staged_bits": "0x3ff1a810c000e174"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401acd145e6ff8b5",
+    "z_native_bits": "0x4012f3841131fe0d",
+    "z_staged_bits": "0x4012f3841131fe0c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x401d829f390d6ad5",
+    "z_native_bits": "0x4014ddeca6ce574f",
+    "z_staged_bits": "0x4014ddeca6ce574e"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff3f5dcd3ca11a6",
+    "z_native_bits": "0x3fec3a6fdf3e8249",
+    "z_staged_bits": "0x3fec3a6fdf3e824a"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3fe2e60fe451ab9f",
+    "z_native_bits": "0x3fdaba0d91c95965",
+    "z_staged_bits": "0x3fdaba0d91c95966"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff0c23fee85d62b",
+    "z_native_bits": "0x3fe7b35450dc3051",
+    "z_staged_bits": "0x3fe7b35450dc3052"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ffe4d6be27b8694",
+    "z_native_bits": "0x3ff56d534675482f",
+    "z_staged_bits": "0x3ff56d5346754830"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x3ff4d1133e434b73",
+    "z_native_bits": "0x3fed70734c03938d",
+    "z_staged_bits": "0x3fed70734c03938c"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403481d6468be044",
+    "z_native_bits": "0x402d006405448d01",
+    "z_staged_bits": "0x402d006405448d02"
+  },
+  {
+    "kind": "z-staging-discriminator",
+    "x_bits": "0x403759ac32466e5f",
+    "z_native_bits": "0x403082da5518b0ab",
+    "z_staged_bits": "0x403082da5518b0ac"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4007afbe1cf49543",
+    "z_native_bits": "0x4000bfb6aa11f83b",
+    "z_staged_bits": "0x4000bfb6aa11f83b"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4000bd7856124ca9",
+    "z_native_bits": "0x3ff7ac91e3f72ffd",
+    "z_staged_bits": "0x3ff7ac91e3f72ffd"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fff4e25af586270",
+    "z_native_bits": "0x3ff622db9b192023",
+    "z_staged_bits": "0x3ff622db9b192023"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe0cd19a3384eb4",
+    "z_native_bits": "0x3fd7c2ac95cbe94e",
+    "z_staged_bits": "0x3fd7c2ac95cbe94e"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff7487a71e91329",
+    "z_native_bits": "0x3ff076b1d2f9f66f",
+    "z_staged_bits": "0x3ff076b1d2f9f66f"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe4b71d8bb52b4f",
+    "z_native_bits": "0x3fdd4bbcdc860a1d",
+    "z_staged_bits": "0x3fdd4bbcdc860a1d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4005f6e51d3372d9",
+    "z_native_bits": "0x3fff0ff96e15df30",
+    "z_staged_bits": "0x3fff0ff96e15df30"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401eeaf4f176827c",
+    "z_native_bits": "0x4015dcb839da0d80",
+    "z_staged_bits": "0x4015dcb839da0d80"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402d60c5758b7078",
+    "z_native_bits": "0x4024c5fd0803cf42",
+    "z_staged_bits": "0x4024c5fd0803cf42"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe7a38e02837898",
+    "z_native_bits": "0x3fe0b7186b0b729d",
+    "z_staged_bits": "0x3fe0b7186b0b729d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fefe10f61995869",
+    "z_native_bits": "0x3fe68abdad597f37",
+    "z_staged_bits": "0x3fe68abdad597f37"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fffd0a493335099",
+    "z_native_bits": "0x3ff67f21d8276ae0",
+    "z_staged_bits": "0x3ff67f21d8276ae0"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400842e31c223078",
+    "z_native_bits": "0x400127c2aadb31e3",
+    "z_staged_bits": "0x400127c2aadb31e3"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff22d9740a96a18",
+    "z_native_bits": "0x3fe9b52bd818609d",
+    "z_staged_bits": "0x3fe9b52bd818609d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4019256a14a9becc",
+    "z_native_bits": "0x4011c7f079e30789",
+    "z_staged_bits": "0x4011c7f079e30789"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400980dd6054deb1",
+    "z_native_bits": "0x4002089ac31135d1",
+    "z_staged_bits": "0x4002089ac31135d1"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff2b365a2edfb4c",
+    "z_native_bits": "0x3fea7266dbbc8c12",
+    "z_staged_bits": "0x3fea7266dbbc8c12"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403084488acb73ba",
+    "z_native_bits": "0x40275bb2185eb26e",
+    "z_staged_bits": "0x40275bb2185eb26e"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffe45d150cf4bdd",
+    "z_native_bits": "0x3ff567f2d7d2f87e",
+    "z_staged_bits": "0x3ff567f2d7d2f87e"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff2cb182cd3820a",
+    "z_native_bits": "0x3fea93ea3d55fcf6",
+    "z_staged_bits": "0x3fea93ea3d55fcf6"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fee3fc89737e78e",
+    "z_native_bits": "0x3fe563ae8ebc8669",
+    "z_staged_bits": "0x3fe563ae8ebc8669"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401af7576093abc1",
+    "z_native_bits": "0x4013116642e773d4",
+    "z_staged_bits": "0x4013116642e773d4"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40270f73266c5cd6",
+    "z_native_bits": "0x40204e5e90501ace",
+    "z_staged_bits": "0x40204e5e90501ace"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403af933337371ef",
+    "z_native_bits": "0x403312b6b8330037",
+    "z_staged_bits": "0x403312b6b8330037"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403a008bfe6c0ccc",
+    "z_native_bits": "0x403262e3b0debe40",
+    "z_staged_bits": "0x403262e3b0debe40"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400815ac3ca067d5",
+    "z_native_bits": "0x400107c9ff04acc9",
+    "z_staged_bits": "0x400107c9ff04acc9"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40381968a48e725a",
+    "z_native_bits": "0x40310a6e46fe32c6",
+    "z_staged_bits": "0x40310a6e46fe32c6"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403783c3e86cb83e",
+    "z_native_bits": "0x4030a09de93da935",
+    "z_staged_bits": "0x4030a09de93da935"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401de618be09aece",
+    "z_native_bits": "0x401524437e3b52d7",
+    "z_staged_bits": "0x401524437e3b52d7"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4016d135a4e1ce13",
+    "z_native_bits": "0x4010225bdfa218bd",
+    "z_staged_bits": "0x4010225bdfa218bd"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffc96d11c87e94f",
+    "z_native_bits": "0x3ff4372f5d66fb5a",
+    "z_staged_bits": "0x3ff4372f5d66fb5a"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402774f1c8d7555d",
+    "z_native_bits": "0x402096230f8c15a8",
+    "z_staged_bits": "0x402096230f8c15a8"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe6fc80ed560cb7",
+    "z_native_bits": "0x3fe040f8f02aaadf",
+    "z_staged_bits": "0x3fe040f8f02aaadf"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffd78daa2456d6e",
+    "z_native_bits": "0x3ff4d70477d8ff32",
+    "z_staged_bits": "0x3ff4d70477d8ff32"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40410e25d39f7c34",
+    "z_native_bits": "0x40381eaa5636e098",
+    "z_staged_bits": "0x40381eaa5636e098"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402ff9fd0ff9cfcc",
+    "z_native_bits": "0x40269c5e35091956",
+    "z_staged_bits": "0x40269c5e35091956"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff0256aacca4f53",
+    "z_native_bits": "0x3fe6d588b1426bde",
+    "z_staged_bits": "0x3fe6d588b1426bde"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403df8c6dcf06f0d",
+    "z_native_bits": "0x40353178f68c06a0",
+    "z_staged_bits": "0x40353178f68c06a0"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402dcb79b995ec93",
+    "z_native_bits": "0x402511708c4f0fd1",
+    "z_staged_bits": "0x402511708c4f0fd1"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe19cac951b838a",
+    "z_native_bits": "0x3fd8e83a66d40215",
+    "z_staged_bits": "0x3fd8e83a66d40215"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403665d3d6ba160d",
+    "z_native_bits": "0x402facdb4aaa4e0d",
+    "z_staged_bits": "0x402facdb4aaa4e0d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff7d11c1f914161",
+    "z_native_bits": "0x3ff0d74ec715cb25",
+    "z_staged_bits": "0x3ff0d74ec715cb25"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402e9b6fdc941ba3",
+    "z_native_bits": "0x4025a47d98762f4b",
+    "z_staged_bits": "0x4025a47d98762f4b"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff89703d3f7bb54",
+    "z_native_bits": "0x3ff1633f6d442f88",
+    "z_staged_bits": "0x3ff1633f6d442f88"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fea808fdc900122",
+    "z_native_bits": "0x3fe2bd68e69b4c25",
+    "z_staged_bits": "0x3fe2bd68e69b4c25"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401300f1b44d29a0",
+    "z_native_bits": "0x400ae011ec0514b9",
+    "z_staged_bits": "0x400ae011ec0514b9"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4005e32356bddbf3",
+    "z_native_bits": "0x3ffef408a7db7f98",
+    "z_staged_bits": "0x3ffef408a7db7f98"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40272ad77d103c84",
+    "z_native_bits": "0x402061bd0929207b",
+    "z_staged_bits": "0x402061bd0929207b"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3feab994eb8fbdfd",
+    "z_native_bits": "0x3fe2e5ba9475b991",
+    "z_staged_bits": "0x3fe2e5ba9475b991"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fee74bc2d847dc6",
+    "z_native_bits": "0x3fe5891fce1cfdb1",
+    "z_staged_bits": "0x3fe5891fce1cfdb1"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403e4e9f3202c4bd",
+    "z_native_bits": "0x40356e2c93a11822",
+    "z_staged_bits": "0x40356e2c93a11822"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffc220e48a84e74",
+    "z_native_bits": "0x3ff3e49f5ba1ef7a",
+    "z_staged_bits": "0x3ff3e49f5ba1ef7a"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401f0e85703403e8",
+    "z_native_bits": "0x4015f5de138165c5",
+    "z_staged_bits": "0x4015f5de138165c5"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4040e711d47791ef",
+    "z_native_bits": "0x4037e7668c88a16d",
+    "z_staged_bits": "0x4037e7668c88a16d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffd1229d21ee50c",
+    "z_native_bits": "0x3ff48e67785bd121",
+    "z_staged_bits": "0x3ff48e67785bd121"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fef54feed2e1bc6",
+    "z_native_bits": "0x3fe627b355b7cd2c",
+    "z_staged_bits": "0x3fe627b355b7cd2c"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4016f05d74e87671",
+    "z_native_bits": "0x401038639fef2baf",
+    "z_staged_bits": "0x401038639fef2baf"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403aa759cf681add",
+    "z_native_bits": "0x4032d8d66f4f7351",
+    "z_staged_bits": "0x4032d8d66f4f7351"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4014d4de1efbdda8",
+    "z_native_bits": "0x400d75d0535448eb",
+    "z_staged_bits": "0x400d75d0535448eb"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3feea7a7e7a24013",
+    "z_native_bits": "0x3fe5ad2174c308dd",
+    "z_staged_bits": "0x3fe5ad2174c308dd"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401ff91bc8596053",
+    "z_native_bits": "0x40169bbee9098749",
+    "z_staged_bits": "0x40169bbee9098749"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402ce4a7893da653",
+    "z_native_bits": "0x40246e39798f83b6",
+    "z_staged_bits": "0x40246e39798f83b6"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40003d336e3229df",
+    "z_native_bits": "0x3ff6f72b7e3619bd",
+    "z_staged_bits": "0x3ff6f72b7e3619bd"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff25c6b75c7da4c",
+    "z_native_bits": "0x3fe9f765bad0f509",
+    "z_staged_bits": "0x3fe9f765bad0f509"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401f5610a46346f8",
+    "z_native_bits": "0x40162874e18b4a05",
+    "z_staged_bits": "0x40162874e18b4a05"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4036485389cf3e75",
+    "z_native_bits": "0x402f8322b9d6451e",
+    "z_staged_bits": "0x402f8322b9d6451e"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40121223804f9d49",
+    "z_native_bits": "0x40098e591a527d52",
+    "z_staged_bits": "0x40098e591a527d52"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4012076cc7677033",
+    "z_native_bits": "0x40097f324ec9298f",
+    "z_staged_bits": "0x40097f324ec9298f"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400d4a588d15d213",
+    "z_native_bits": "0x4004b62198a71631",
+    "z_staged_bits": "0x4004b62198a71631"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403a91bff9d71d77",
+    "z_native_bits": "0x4032c99040633170",
+    "z_staged_bits": "0x4032c99040633170"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403aff420d570e8d",
+    "z_native_bits": "0x403316ff563da934",
+    "z_staged_bits": "0x403316ff563da934"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4000362a7affa3d0",
+    "z_native_bits": "0x3ff6ed3890ab3599",
+    "z_staged_bits": "0x3ff6ed3890ab3599"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fee6e3634b6a897",
+    "z_native_bits": "0x3fe58482f4e91486",
+    "z_staged_bits": "0x3fe58482f4e91486"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403d4dbfa06b0006",
+    "z_native_bits": "0x4034b8898a2a2537",
+    "z_staged_bits": "0x4034b8898a2a2537"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401e6d978ae71786",
+    "z_native_bits": "0x40158412c3c7f050",
+    "z_staged_bits": "0x40158412c3c7f050"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fefa47d0e95f829",
+    "z_native_bits": "0x3fe65fe90cd39f0a",
+    "z_staged_bits": "0x3fe65fe90cd39f0a"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4015f7c31dc1f999",
+    "z_native_bits": "0x400f113363753d63",
+    "z_staged_bits": "0x400f113363753d63"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4013733dace33c2a",
+    "z_native_bits": "0x400b81b5c513b2f1",
+    "z_staged_bits": "0x400b81b5c513b2f1"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fea31cde954b0d2",
+    "z_native_bits": "0x3fe285b83fc8780b",
+    "z_staged_bits": "0x3fe285b83fc8780b"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401f8e9e6bd66d33",
+    "z_native_bits": "0x401650723780e19d",
+    "z_staged_bits": "0x401650723780e19d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40217a9ab56eed29",
+    "z_native_bits": "0x4018b80bcf3f33c8",
+    "z_staged_bits": "0x4018b80bcf3f33c8"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403cb8dbb37c5ab3",
+    "z_native_bits": "0x40344f4182a321f7",
+    "z_staged_bits": "0x40344f4182a321f7"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4031971d8dd66ec6",
+    "z_native_bits": "0x4028e05def844eeb",
+    "z_staged_bits": "0x4028e05def844eeb"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4029147769b8b39b",
+    "z_native_bits": "0x4021bbf4932225b6",
+    "z_staged_bits": "0x4021bbf4932225b6"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4024fb5a774c443c",
+    "z_native_bits": "0x401dac3da5386cd0",
+    "z_staged_bits": "0x401dac3da5386cd0"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffd24b03f5c53b4",
+    "z_native_bits": "0x3ff49b80df4b51e2",
+    "z_staged_bits": "0x3ff49b80df4b51e2"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400c1f9c0e668613",
+    "z_native_bits": "0x4003e2e48c559755",
+    "z_staged_bits": "0x4003e2e48c559755"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff3a85f20a7afdf",
+    "z_native_bits": "0x3febccd920c63185",
+    "z_staged_bits": "0x3febccd920c63185"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffc503eac76f740",
+    "z_native_bits": "0x3ff4054876d5eb83",
+    "z_staged_bits": "0x3ff4054876d5eb83"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3febef4c8727caae",
+    "z_native_bits": "0x3fe3c0bb6292d37c",
+    "z_staged_bits": "0x3fe3c0bb6292d37c"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fff87caf3f8eebb",
+    "z_native_bits": "0x3ff64b9e91f74a2b",
+    "z_staged_bits": "0x3ff64b9e91f74a2b"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4005056126bfd1a6",
+    "z_native_bits": "0x3ffdba6b7c9411b6",
+    "z_staged_bits": "0x3ffdba6b7c9411b6"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4027fe11be380785",
+    "z_native_bits": "0x4020f7194ece7641",
+    "z_staged_bits": "0x4020f7194ece7641"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40417d2f7e2136ca",
+    "z_native_bits": "0x4038bbb24c9916cc",
+    "z_staged_bits": "0x4038bbb24c9916cc"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402326dd82078627",
+    "z_native_bits": "0x401b15b2d45a17ed",
+    "z_staged_bits": "0x401b15b2d45a17ed"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400a8dfd89f0e0eb",
+    "z_native_bits": "0x4002c6e7b4a95569",
+    "z_staged_bits": "0x4002c6e7b4a95569"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe88536a5125bea",
+    "z_native_bits": "0x3fe156a902fde6b9",
+    "z_staged_bits": "0x3fe156a902fde6b9"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402366504c09c5dd",
+    "z_native_bits": "0x401b6f6d9a25452f",
+    "z_staged_bits": "0x401b6f6d9a25452f"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402eb5b8d4770116",
+    "z_native_bits": "0x4025b713b1d6148f",
+    "z_staged_bits": "0x4025b713b1d6148f"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffb80928d156a94",
+    "z_native_bits": "0x3ff3726fc0aae9c1",
+    "z_staged_bits": "0x3ff3726fc0aae9c1"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fea819c8a856541",
+    "z_native_bits": "0x3fe2be26e2cbc371",
+    "z_staged_bits": "0x3fe2be26e2cbc371"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403c9e2f81f71fcb",
+    "z_native_bits": "0x40343c653f984be5",
+    "z_staged_bits": "0x40343c653f984be5"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401ea05986a26334",
+    "z_native_bits": "0x4015a7f6e603bbe2",
+    "z_staged_bits": "0x4015a7f6e603bbe2"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4039448e04b56af2",
+    "z_native_bits": "0x4031ddf57cc077d8",
+    "z_staged_bits": "0x4031ddf57cc077d8"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff2f1e161f6fca7",
+    "z_native_bits": "0x3feacac442758c37",
+    "z_staged_bits": "0x3feacac442758c37"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402f3059b022d89e",
+    "z_native_bits": "0x40260dc9cc2998e2",
+    "z_staged_bits": "0x40260dc9cc2998e2"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe9a21fa5b97aaf",
+    "z_native_bits": "0x3fe2201f42c31637",
+    "z_staged_bits": "0x3fe2201f42c31637"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403127f75ccd439a",
+    "z_native_bits": "0x4028432da1cc2c4d",
+    "z_staged_bits": "0x4028432da1cc2c4d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401d3cd8d66d7f9d",
+    "z_native_bits": "0x4014ac9609b04142",
+    "z_staged_bits": "0x4014ac9609b04142"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4031f1029729e222",
+    "z_native_bits": "0x40295f7f48a9eb19",
+    "z_staged_bits": "0x40295f7f48a9eb19"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40034d5696f77966",
+    "z_native_bits": "0x3ffb4c1b88d78a7c",
+    "z_staged_bits": "0x3ffb4c1b88d78a7c"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffee8e775000e14",
+    "z_native_bits": "0x3ff5db44a6b12383",
+    "z_staged_bits": "0x3ff5db44a6b12383"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x40082a1dec3b0b08",
+    "z_native_bits": "0x4001163ec55fd0e0",
+    "z_staged_bits": "0x4001163ec55fd0e0"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4024ee34c67cbf1e",
+    "z_native_bits": "0x401d99a5d70a8fbf",
+    "z_staged_bits": "0x401d99a5d70a8fbf"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401a76ee24fc41e0",
+    "z_native_bits": "0x4012b699602281bd",
+    "z_staged_bits": "0x4012b699602281bd"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x4031bca6cd5fc163",
+    "z_native_bits": "0x4029157376f8469c",
+    "z_staged_bits": "0x4029157376f8469c"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401ef3f5a35b4621",
+    "z_native_bits": "0x4015e315e4311030",
+    "z_staged_bits": "0x4015e315e4311030"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x403f238147d258ed",
+    "z_native_bits": "0x403604b48ad306ad",
+    "z_staged_bits": "0x403604b48ad306ad"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ff2434134ee671c",
+    "z_native_bits": "0x3fe9d3cf01fb0249",
+    "z_staged_bits": "0x3fe9d3cf01fb0249"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe8a3ecb859fcd2",
+    "z_native_bits": "0x3fe16c6056a4e928",
+    "z_staged_bits": "0x3fe16c6056a4e928"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x400ac9163f9a3bab",
+    "z_native_bits": "0x4002f0b151a15d43",
+    "z_staged_bits": "0x4002f0b151a15d43"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3ffda3c5b826851c",
+    "z_native_bits": "0x3ff4f55d82c358f3",
+    "z_staged_bits": "0x3ff4f55d82c358f3"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402ee540f4780f16",
+    "z_native_bits": "0x4025d8afdbbf305d",
+    "z_staged_bits": "0x4025d8afdbbf305d"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x3fe52d5b9f61fa88",
+    "z_native_bits": "0x3fddf2f536f2e172",
+    "z_staged_bits": "0x3fddf2f536f2e172"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402a7f6bf98a9b7d",
+    "z_native_bits": "0x4022bc9a8173a370",
+    "z_staged_bits": "0x4022bc9a8173a370"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402345bbfda6f10b",
+    "z_native_bits": "0x401b415aa0c449a7",
+    "z_staged_bits": "0x401b415aa0c449a7"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x402a187a01929e29",
+    "z_native_bits": "0x402273cf6f8cd864",
+    "z_staged_bits": "0x402273cf6f8cd864"
+  },
+  {
+    "kind": "fresh-control",
+    "x_bits": "0x401f479ee0591155",
+    "z_native_bits": "0x40161e3e2a701617",
+    "z_staged_bits": "0x40161e3e2a701617"
+  }
+]

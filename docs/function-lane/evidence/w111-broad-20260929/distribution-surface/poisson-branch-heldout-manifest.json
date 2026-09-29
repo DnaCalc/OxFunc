@@ -1,0 +1,12 @@
+{
+  "generator": "gen_poisson_branch_holdout.py",
+  "seed": 2026092933,
+  "authority": "independent_after_poisson_branch_candidate_freeze",
+  "batches": [
+    {
+      "function": "POISSON.DIST",
+      "path": "batch-poisson.dist.json",
+      "rows": 744
+    }
+  ]
+}

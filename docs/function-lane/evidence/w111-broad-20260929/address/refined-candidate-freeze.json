@@ -1,0 +1,15 @@
+{
+  "seed": 202609291429,
+  "state": "candidate_frozen_for_independent_non_text_coercion_validation",
+  "open_lanes": [
+    "numeric text coercion syntax and host date/year context",
+    "formal sheet rendering alignment"
+  ],
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/reference_metadata_family.rs": "82b9cda7737e3ef24bcb203bd5c9b379648fa54b8ea6603c17003cc9b274702b",
+    "crates/oxfunc_core/src/functions/address_name_classes.rs": "7922c81f5ecfd1e45603b9db53090fe8d516c0cc8568098aedafe4f45122fa36",
+    "crates/oxfunc_core/src/functions/round_fn.rs": "99cc24e69e4c301e468175f051dc708362aa4aa7e13d33e5908094a8ced1be19"
+  },
+  "input_sha256": "016cba80f65b419659789dc534c5cb611c26a3a0f9b947a2f608e2d9b8b89af8",
+  "rows": 5400
+}

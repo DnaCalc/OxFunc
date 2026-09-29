@@ -1,0 +1,2823 @@
+{
+  "rows": 691,
+  "raw_differences": 33,
+  "misses": [
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00050-round-arg0-direct-17",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "arg0-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(,A100)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "number",
+            "value": 1
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00050-round-arg0-direct-17",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,A100)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00050-round-arg0-direct-17",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,A100)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00101-round-arg1-direct-17",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "arg1-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(A100,)",
+        "args": [
+          {
+            "kind": "number",
+            "value": 12.375
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 12.375
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00101-round-arg1-direct-17",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(A100,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 12.0,
+          "bits_hex": "0x4028000000000000",
+          "digest_payload": "number:0x4028000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00101-round-arg1-direct-17",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(A100,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00132-round-pair-order-30",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "pair-order-30",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(,#N/A)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "NA"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00132-round-pair-order-30",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,#N/A)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "NA",
+          "digest_payload": "error:NA"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00132-round-pair-order-30",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,#N/A)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00134-round-pair-order-32",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "pair-order-32",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(,#DIV/0!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Div0"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00134-round-pair-order-32",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,#DIV/0!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Div0",
+          "digest_payload": "error:Div0"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00134-round-pair-order-32",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,#DIV/0!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00135-round-pair-order-33",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "pair-order-33",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(,#NUM!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Num"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00135-round-pair-order-33",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,#NUM!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Num",
+          "digest_payload": "error:Num"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00135-round-pair-order-33",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,#NUM!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00137-round-pair-order-35",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "pair-order-35",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(,)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00137-round-pair-order-35",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00137-round-pair-order-35",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00140-round-array-shape-2",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "array-shape-2",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "text",
+                  "value": "2.5"
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00140-round-array-shape-2",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L21",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.3,
+                "bits_hex": "0x3ff4cccccccccccd",
+                "digest_payload": "number:0x3ff4cccccccccccd"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff4cccccccccccd|error:Div0|error:Value|error:Ref|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00140-round-array-shape-2",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.3,
+                "bits_hex": "0x3ff4cccccccccccd",
+                "digest_payload": "number:0x3ff4cccccccccccd"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff4cccccccccccd|error:Div0|error:NA|error:Ref|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00141-round-array-shape-3",
+        "function_id": "FUNC.ROUND",
+        "canonical_surface_name": "ROUND",
+        "case_tag": "array-shape-3",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUND(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "number",
+                  "value": 2.5
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A102",
+            "value": {
+              "kind": "number",
+              "value": 2.5
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00141-round-array-shape-3",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L20",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            {
+              "kind": "number",
+              "value": 1.3,
+              "bits_hex": "0x3ff4cccccccccccd",
+              "digest_payload": "number:0x3ff4cccccccccccd"
+            },
+            {
+              "kind": "error",
+              "code": "Div0",
+              "digest_payload": "error:Div0"
+            },
+            {
+              "kind": "error",
+              "code": "Value",
+              "digest_payload": "error:Value"
+            }
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff4cccccccccccd|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00141-round-array-shape-3",
+        "function_id": "FUNC.ROUND",
+        "formula_text": "=ROUND(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.3,
+                "bits_hex": "0x3ff4cccccccccccd",
+                "digest_payload": "number:0x3ff4cccccccccccd"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff4cccccccccccd|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00217-rounddown-arg0-direct-17",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "arg0-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(,A100)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "number",
+            "value": 1
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00217-rounddown-arg0-direct-17",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,A100)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00217-rounddown-arg0-direct-17",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,A100)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00268-rounddown-arg1-direct-17",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "arg1-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(A100,)",
+        "args": [
+          {
+            "kind": "number",
+            "value": 12.375
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 12.375
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00268-rounddown-arg1-direct-17",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(A100,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 12.0,
+          "bits_hex": "0x4028000000000000",
+          "digest_payload": "number:0x4028000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00268-rounddown-arg1-direct-17",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(A100,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00299-rounddown-pair-order-30",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "pair-order-30",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(,#N/A)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "NA"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00299-rounddown-pair-order-30",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,#N/A)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "NA",
+          "digest_payload": "error:NA"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00299-rounddown-pair-order-30",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,#N/A)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00301-rounddown-pair-order-32",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "pair-order-32",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(,#DIV/0!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Div0"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00301-rounddown-pair-order-32",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,#DIV/0!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Div0",
+          "digest_payload": "error:Div0"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00301-rounddown-pair-order-32",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,#DIV/0!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00302-rounddown-pair-order-33",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "pair-order-33",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(,#NUM!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Num"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00302-rounddown-pair-order-33",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,#NUM!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Num",
+          "digest_payload": "error:Num"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00302-rounddown-pair-order-33",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,#NUM!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00304-rounddown-pair-order-35",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "pair-order-35",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(,)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00304-rounddown-pair-order-35",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00304-rounddown-pair-order-35",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00307-rounddown-array-shape-2",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "array-shape-2",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "text",
+                  "value": "2.5"
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00307-rounddown-array-shape-2",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L21",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.2,
+                "bits_hex": "0x3ff3333333333333",
+                "digest_payload": "number:0x3ff3333333333333"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff3333333333333|error:Div0|error:Value|error:Ref|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00307-rounddown-array-shape-2",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.2,
+                "bits_hex": "0x3ff3333333333333",
+                "digest_payload": "number:0x3ff3333333333333"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff3333333333333|error:Div0|error:NA|error:Ref|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00308-rounddown-array-shape-3",
+        "function_id": "FUNC.ROUNDDOWN",
+        "canonical_surface_name": "ROUNDDOWN",
+        "case_tag": "array-shape-3",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDDOWN(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "number",
+                  "value": 2.5
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A102",
+            "value": {
+              "kind": "number",
+              "value": 2.5
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00308-rounddown-array-shape-3",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L20",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            {
+              "kind": "number",
+              "value": 1.2,
+              "bits_hex": "0x3ff3333333333333",
+              "digest_payload": "number:0x3ff3333333333333"
+            },
+            {
+              "kind": "error",
+              "code": "Div0",
+              "digest_payload": "error:Div0"
+            },
+            {
+              "kind": "error",
+              "code": "Value",
+              "digest_payload": "error:Value"
+            }
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff3333333333333|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00308-rounddown-array-shape-3",
+        "function_id": "FUNC.ROUNDDOWN",
+        "formula_text": "=ROUNDDOWN(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.2,
+                "bits_hex": "0x3ff3333333333333",
+                "digest_payload": "number:0x3ff3333333333333"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff3333333333333|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00384-roundup-arg0-direct-17",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "arg0-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(,A100)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "number",
+            "value": 1
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00384-roundup-arg0-direct-17",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,A100)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00384-roundup-arg0-direct-17",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,A100)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00435-roundup-arg1-direct-17",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "arg1-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(A100,)",
+        "args": [
+          {
+            "kind": "number",
+            "value": 12.375
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 12.375
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00435-roundup-arg1-direct-17",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(A100,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 13.0,
+          "bits_hex": "0x402a000000000000",
+          "digest_payload": "number:0x402a000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00435-roundup-arg1-direct-17",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(A100,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00466-roundup-pair-order-30",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "pair-order-30",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(,#N/A)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "NA"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00466-roundup-pair-order-30",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,#N/A)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "NA",
+          "digest_payload": "error:NA"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00466-roundup-pair-order-30",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,#N/A)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00468-roundup-pair-order-32",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "pair-order-32",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(,#DIV/0!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Div0"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00468-roundup-pair-order-32",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,#DIV/0!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Div0",
+          "digest_payload": "error:Div0"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00468-roundup-pair-order-32",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,#DIV/0!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00469-roundup-pair-order-33",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "pair-order-33",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(,#NUM!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Num"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00469-roundup-pair-order-33",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,#NUM!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Num",
+          "digest_payload": "error:Num"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00469-roundup-pair-order-33",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,#NUM!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00471-roundup-pair-order-35",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "pair-order-35",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(,)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00471-roundup-pair-order-35",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00471-roundup-pair-order-35",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00474-roundup-array-shape-2",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "array-shape-2",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "text",
+                  "value": "2.5"
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00474-roundup-array-shape-2",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L21",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.3,
+                "bits_hex": "0x3ff4cccccccccccd",
+                "digest_payload": "number:0x3ff4cccccccccccd"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff4cccccccccccd|error:Div0|error:Value|error:Ref|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00474-roundup-array-shape-2",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.3,
+                "bits_hex": "0x3ff4cccccccccccd",
+                "digest_payload": "number:0x3ff4cccccccccccd"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff4cccccccccccd|error:Div0|error:NA|error:Ref|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00475-roundup-array-shape-3",
+        "function_id": "FUNC.ROUNDUP",
+        "canonical_surface_name": "ROUNDUP",
+        "case_tag": "array-shape-3",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=ROUNDUP(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "number",
+                  "value": 2.5
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A102",
+            "value": {
+              "kind": "number",
+              "value": 2.5
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00475-roundup-array-shape-3",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L20",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            {
+              "kind": "number",
+              "value": 1.3,
+              "bits_hex": "0x3ff4cccccccccccd",
+              "digest_payload": "number:0x3ff4cccccccccccd"
+            },
+            {
+              "kind": "error",
+              "code": "Div0",
+              "digest_payload": "error:Div0"
+            },
+            {
+              "kind": "error",
+              "code": "Value",
+              "digest_payload": "error:Value"
+            }
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff4cccccccccccd|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00475-roundup-array-shape-3",
+        "function_id": "FUNC.ROUNDUP",
+        "formula_text": "=ROUNDUP(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.3,
+                "bits_hex": "0x3ff4cccccccccccd",
+                "digest_payload": "number:0x3ff4cccccccccccd"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff4cccccccccccd|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00551-trunc-arg0-direct-17",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "arg0-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(,A100)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "number",
+            "value": 1
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00551-trunc-arg0-direct-17",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,A100)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00551-trunc-arg0-direct-17",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,A100)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00602-trunc-arg1-direct-17",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "arg1-direct-17",
+        "axis": "typed_origins",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(A100,)",
+        "args": [
+          {
+            "kind": "number",
+            "value": 12.375
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 12.375
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00602-trunc-arg1-direct-17",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(A100,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 12.0,
+          "bits_hex": "0x4028000000000000",
+          "digest_payload": "number:0x4028000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00602-trunc-arg1-direct-17",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(A100,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00633-trunc-pair-order-30",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "pair-order-30",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(,#N/A)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "NA"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00633-trunc-pair-order-30",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,#N/A)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "NA",
+          "digest_payload": "error:NA"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00633-trunc-pair-order-30",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,#N/A)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00635-trunc-pair-order-32",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "pair-order-32",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(,#DIV/0!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Div0"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00635-trunc-pair-order-32",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,#DIV/0!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Div0",
+          "digest_payload": "error:Div0"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00635-trunc-pair-order-32",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,#DIV/0!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00636-trunc-pair-order-33",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "pair-order-33",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(,#NUM!)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "error",
+            "code": "Num"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00636-trunc-pair-order-33",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,#NUM!)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "error",
+          "code": "Num",
+          "digest_payload": "error:Num"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00636-trunc-pair-order-33",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,#NUM!)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00638-trunc-pair-order-35",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "pair-order-35",
+        "axis": "error_precedence",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(,)",
+        "args": [
+          {
+            "kind": "missing_arg"
+          },
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00638-trunc-pair-order-35",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,)",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20",
+        "outcome": {
+          "kind": "number",
+          "value": 0.0,
+          "bits_hex": "0x0000000000000000",
+          "digest_payload": "number:0x0000000000000000"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00638-trunc-pair-order-35",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(,)",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00641-trunc-array-shape-2",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "array-shape-2",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "text",
+                  "value": "2.5"
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00641-trunc-array-shape-2",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L21",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.2,
+                "bits_hex": "0x3ff3333333333333",
+                "digest_payload": "number:0x3ff3333333333333"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "Value",
+                "digest_payload": "error:Value"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff3333333333333|error:Div0|error:Value|error:Ref|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00641-trunc-array-shape-2",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2;3,4},A101,#NUM!,#REF!,\"2.5\"))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 2,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.2,
+                "bits_hex": "0x3ff3333333333333",
+                "digest_payload": "number:0x3ff3333333333333"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref",
+                "digest_payload": "error:Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:2x3:[number:0x3ff3333333333333|error:Div0|error:NA|error:Ref|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00642-trunc-array-shape-3",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "array-shape-3",
+        "axis": "broadcast_padding_order",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "args": [
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "x"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1.25
+                },
+                {
+                  "kind": "number",
+                  "value": 2.5
+                }
+              ]
+            ]
+          }
+        ],
+        "cell_fixture": [
+          {
+            "target": "A100",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A101",
+            "value": {
+              "kind": "number",
+              "value": 1.25
+            }
+          },
+          {
+            "target": "A102",
+            "value": {
+              "kind": "number",
+              "value": 2.5
+            }
+          }
+        ],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00642-trunc-array-shape-3",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "ok",
+        "formula_cell": "J20",
+        "spill_address": "J20:L20",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            {
+              "kind": "number",
+              "value": 1.2,
+              "bits_hex": "0x3ff3333333333333",
+              "digest_payload": "number:0x3ff3333333333333"
+            },
+            {
+              "kind": "error",
+              "code": "Div0",
+              "digest_payload": "error:Div0"
+            },
+            {
+              "kind": "error",
+              "code": "Value",
+              "digest_payload": "error:Value"
+            }
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff3333333333333|error:Div0|error:Value]"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00642-trunc-array-shape-3",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC(CHOOSE({1,2,3},A100,#DIV/0!,\"x\"),CHOOSE({1,2},A101,A102))",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "array",
+          "rows": 1,
+          "cols": 3,
+          "cells": [
+            [
+              {
+                "kind": "number",
+                "value": 1.2,
+                "bits_hex": "0x3ff3333333333333",
+                "digest_payload": "number:0x3ff3333333333333"
+              },
+              {
+                "kind": "error",
+                "code": "Div0",
+                "digest_payload": "error:Div0"
+              },
+              {
+                "kind": "error",
+                "code": "NA",
+                "digest_payload": "error:NA"
+              }
+            ]
+          ],
+          "digest_payload": "array:1x3:[number:0x3ff3333333333333|error:Div0|error:NA]"
+        }
+      }
+    },
+    {
+      "case": {
+        "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "tranche_id": "w111-rounding-prepared-controls-20260929",
+        "case_id": "w111roundprepared-00685-trunc-omitted-count-17",
+        "function_id": "FUNC.TRUNC",
+        "canonical_surface_name": "TRUNC",
+        "case_tag": "omitted-count-17",
+        "axis": "optional_count",
+        "expected_probe_class": "structural_exploration",
+        "formula_text": "=TRUNC()",
+        "args": [
+          {
+            "kind": "missing_arg"
+          }
+        ],
+        "cell_fixture": [],
+        "formula_cell": "J20",
+        "category": "typed_structural",
+        "blocked_or_deferred_lanes": [],
+        "known_deviation_tags": []
+      },
+      "excel": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "run_id": "w111-rounding-prepared-controls-typed-20260929",
+        "case_id": "w111roundprepared-00685-trunc-omitted-count-17",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC()",
+        "evaluator_id": "excel.com.dynamic_array_spill_capture/0.1.0",
+        "execution_status": "excel_case_harness_error",
+        "formula_cell": "J20",
+        "spill_address": null,
+        "outcome": {
+          "kind": "harness_error",
+          "message": "0x800A03EC",
+          "digest_payload": "harness_error:0x800A03EC"
+        }
+      },
+      "local": {
+        "schema_version": "oxfunc.smart_fuzzer.array_outcome.v0",
+        "case_id": "w111roundprepared-00685-trunc-omitted-count-17",
+        "function_id": "FUNC.TRUNC",
+        "formula_text": "=TRUNC()",
+        "evaluator_id": "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+        "execution_status": "ok",
+        "outcome": {
+          "kind": "error",
+          "code": "Value",
+          "digest_payload": "error:Value"
+        }
+      }
+    }
+  ]
+}

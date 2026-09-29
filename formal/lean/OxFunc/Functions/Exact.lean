@@ -1,4 +1,5 @@
 import OxFunc.FunctionCore
+import OxFunc.TextScalarBroadcast
 
 namespace OxFunc.Functions
 
@@ -19,6 +20,13 @@ def exactMeta : FunctionMeta := {
 }
 
 def evalExactCore (lhs rhs : String) : Bool := lhs = rhs
+
+def evalExactUnits (lhs rhs : List UInt16) : Bool := lhs = rhs
+
+theorem exact_raw_unit_identity :
+    evalExactUnits [0xD800] [0xD800] = true
+    ∧ evalExactUnits [0xD800] [0xFFFD] = false := by
+  native_decide
 
 theorem evalExactSeed_case_sensitive :
     evalExactCore "Abc" "abc" = false := by

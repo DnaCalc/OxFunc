@@ -1,0 +1,103 @@
+{
+  "direct_misses": [
+    {
+      "args": [
+        "0xc0000d685e592174"
+      ],
+      "candidates": {
+        "direct_fpatan": "0xbff1bc3aef431d29",
+        "half_angle_fpatan": "0xbff1bc3aef431d2a",
+        "positive_fpatan_sign_restore": "0xbff1bc3aef431d29",
+        "positive_std_sign_restore": "0xbff1bc3aef431d2a",
+        "reciprocal_fpatan": "0xbff1bc3aef431d29",
+        "std_atan": "0xbff1bc3aef431d2a"
+      },
+      "expected_bits": "0xbff1bc3aef431d2a",
+      "id": "atan-refine-01024"
+    },
+    {
+      "args": [
+        "0x40000d685e592174"
+      ],
+      "candidates": {
+        "direct_fpatan": "0x3ff1bc3aef431d29",
+        "half_angle_fpatan": "0x3ff1bc3aef431d2a",
+        "positive_fpatan_sign_restore": "0x3ff1bc3aef431d29",
+        "positive_std_sign_restore": "0x3ff1bc3aef431d2a",
+        "reciprocal_fpatan": "0x3ff1bc3aef431d29",
+        "std_atan": "0x3ff1bc3aef431d2a"
+      },
+      "expected_bits": "0x3ff1bc3aef431d2a",
+      "id": "atan-refine-01025"
+    },
+    {
+      "args": [
+        "0xc0001dc1079c3c90"
+      ],
+      "candidates": {
+        "direct_fpatan": "0xbff1c2b6c60d2616",
+        "half_angle_fpatan": "0xbff1c2b6c60d2617",
+        "positive_fpatan_sign_restore": "0xbff1c2b6c60d2616",
+        "positive_std_sign_restore": "0xbff1c2b6c60d2616",
+        "reciprocal_fpatan": "0xbff1c2b6c60d2616",
+        "std_atan": "0xbff1c2b6c60d2616"
+      },
+      "expected_bits": "0xbff1c2b6c60d2617",
+      "id": "atan-refine-03074"
+    },
+    {
+      "args": [
+        "0x40001dc1079c3c90"
+      ],
+      "candidates": {
+        "direct_fpatan": "0x3ff1c2b6c60d2616",
+        "half_angle_fpatan": "0x3ff1c2b6c60d2617",
+        "positive_fpatan_sign_restore": "0x3ff1c2b6c60d2616",
+        "positive_std_sign_restore": "0x3ff1c2b6c60d2616",
+        "reciprocal_fpatan": "0x3ff1c2b6c60d2616",
+        "std_atan": "0x3ff1c2b6c60d2616"
+      },
+      "expected_bits": "0x3ff1c2b6c60d2617",
+      "id": "atan-refine-03075"
+    },
+    {
+      "args": [
+        "0xc00422f5b8083883"
+      ],
+      "candidates": {
+        "direct_fpatan": "0xbff31503e9041d9c",
+        "half_angle_fpatan": "0xbff31503e9041d9d",
+        "positive_fpatan_sign_restore": "0xbff31503e9041d9c",
+        "positive_std_sign_restore": "0xbff31503e9041d9c",
+        "reciprocal_fpatan": "0xbff31503e9041d9c",
+        "std_atan": "0xbff31503e9041d9c"
+      },
+      "expected_bits": "0xbff31503e9041d9d",
+      "id": "atan-refine-14957"
+    },
+    {
+      "args": [
+        "0xbff188b0ca40f8e7"
+      ],
+      "candidates": {
+        "direct_fpatan": "0xbfea9872caee324c",
+        "half_angle_fpatan": "0xbfea9872caee324c",
+        "positive_fpatan_sign_restore": "0xbfea9872caee324c",
+        "positive_std_sign_restore": "0xbfea9872caee324c",
+        "reciprocal_fpatan": "0xbfea9872caee324c",
+        "std_atan": "0xbfea9872caee324c"
+      },
+      "expected_bits": "0xbfea9872caee324d",
+      "id": "atan-refine-16894"
+    }
+  ],
+  "exact": {
+    "direct_fpatan": 38194,
+    "half_angle_fpatan": 25966,
+    "positive_fpatan_sign_restore": 38194,
+    "positive_std_sign_restore": 35959,
+    "reciprocal_fpatan": 28379,
+    "std_atan": 35959
+  },
+  "rows": 38200
+}

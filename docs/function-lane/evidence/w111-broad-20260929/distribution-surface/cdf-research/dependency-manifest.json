@@ -1,0 +1,24 @@
+{
+  "generator": "gen_normal_cdf_dependencies.py",
+  "seed": 2026092935,
+  "source_race": ".tmp/w111-normal-cdf-dependency-race.json",
+  "source_bank": "smart-fuzzer/runs/w111-numeric-publication-heldout-20260929/answers/answers-norm.s.dist.json",
+  "authority": "normal_cdf_wrapper_vs_public_erfc_dependency_discovery",
+  "batches": [
+    {
+      "function": "ERFC",
+      "path": "batch-erfc.json",
+      "rows": 544
+    },
+    {
+      "function": "ERFC.PRECISE",
+      "path": "batch-erfc.precise.json",
+      "rows": 544
+    },
+    {
+      "function": "NORM.S.DIST",
+      "path": "batch-norm.s.dist.json",
+      "rows": 463
+    }
+  ]
+}

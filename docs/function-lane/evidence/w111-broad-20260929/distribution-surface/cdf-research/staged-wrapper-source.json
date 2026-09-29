@@ -1,0 +1,5 @@
+{
+  "source": "crates/oxfunc_core/src/functions/normal_log_family.rs",
+  "sha256": "663f67592354275bc14b610dce4c989a1631df075b01763b6fa7c5bc60cd6deb",
+  "authority": "production_binding_after_frozen_equation_passed_fresh_public_dependency_discriminators"
+}

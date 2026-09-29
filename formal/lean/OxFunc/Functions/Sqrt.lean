@@ -1,9 +1,12 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.NumericPublication
 
 namespace OxFunc.Functions
 
 open OxFunc
+
+abbrev sqrtExecutable := NumericPublication.sqrtWithPrimitive
 
 private instance instDecidableEqExceptSqrt [DecidableEq ε] [DecidableEq α] : DecidableEq (Except ε α)
   | .error a, .error b =>

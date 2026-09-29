@@ -244,11 +244,14 @@ function _Invoke-BulkScalarChunk {
             $argArray[$r, $c] = ConvertFrom-W109MixedScalarArg $a
         }
     }
-    $tl = $cells.Item(1, 1)
-    $br = $cells.Item($rows, $Arity)
-    $argRange = $ws.Range($tl, $br)
-    _Rel $tl; _Rel $br
-    $argRange.Value2 = $argArray
+    $argRange = $null
+    if ($Arity -gt 0) {
+        $tl = $cells.Item(1, 1)
+        $br = $cells.Item($rows, $Arity)
+        $argRange = $ws.Range($tl, $br)
+        _Rel $tl; _Rel $br
+        $argRange.Value2 = $argArray
+    }
 
     # 2) ONE relative R1C1 formula fill for the whole result column. Every
     #    arg is a RELATIVE cell reference (RC[-arity]..RC[-1]) -- no argument

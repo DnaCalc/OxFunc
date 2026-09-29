@@ -1,0 +1,11 @@
+{
+  "seed": 202609291857,
+  "rows": 3760,
+  "phase": "before_independent_oracle_capture",
+  "model": "RN64 integer significand scaled by correctly-rounded RN64 powers10 in ascending base16 exponent digits, then RN53",
+  "source_sha256": {
+    "smart-fuzzer/tools/w111/analyze_decimal_parser_scaling.py": "a46fca5063e9a9beb0aee04e1f7c5b90831d32403129d990d039cc5f8305e61a",
+    "C:\\Work\\DnaCalc\\OxFunc\\smart-fuzzer\\tools\\w111\\gen_decimal_parser_nibble_heldout.py": "9d404c1c93deaeed920c0df054398710e7088908046d2cd1894d8cade8fd6885"
+  },
+  "input_sha256": "c2679aa84b94771a55daa647006bfc9195600fe8691b9f43d0b8fdaba3ef20f0"
+}

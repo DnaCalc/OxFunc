@@ -1,5 +1,6 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.GcdLcmReduction
 
 namespace OxFunc.Functions
 
@@ -28,15 +29,9 @@ def gcdMeta : FunctionMeta := {
 }
 
 def evalGcdSurfaceClass (inputs : List CoercionInput) : Except WorksheetErrorCode String :=
-  match inputs with
-  | [] => .error .value
-  | _ =>
-      match inputs.map coerceToNumber |>.find? (fun r =>
-        match r with
-        | .ok n => n < 0
-        | .error _ => False) with
-      | some _ => .error .num
-      | none => .ok "number"
+  match gcdPreparedReduction (inputs.map GcdLcmPreparedArg.scalar) with
+  | .ok _ => .ok "number"
+  | .error code => .error code
 
 theorem evalGcd_negative_item_is_num :
     evalGcdSurfaceClass [.number (-1), .number 5] = .error .num := by

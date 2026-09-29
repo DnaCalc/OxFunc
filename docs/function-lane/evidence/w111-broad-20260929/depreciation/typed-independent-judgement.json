@@ -1,0 +1,1 @@
+{"comparison":"strict typed digest, ordinal text and exact bits; both execution_status ok","by_function":{"FUNC.DB":{"rows":116,"admitted":116,"exact":116},"FUNC.DDB":{"rows":116,"admitted":116,"exact":116},"FUNC.VDB":{"rows":137,"admitted":137,"exact":137}},"misses":[],"source_sha256":"319d373b0a30274b0c38a25346279388950565e14b9938049c49e90194dfb8af"}

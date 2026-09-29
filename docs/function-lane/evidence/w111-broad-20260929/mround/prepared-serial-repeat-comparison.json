@@ -1,0 +1,14 @@
+{
+  "provisional_run": "w111-mround-prepared-independent-typed-20260929",
+  "qualified_serial_run": "w111-mround-prepared-serial-typed-20260929",
+  "rows": 432,
+  "unchanged_excel_observations": 432,
+  "different_ids": [],
+  "prepared_frozen_sources_unchanged": {
+    "crates/oxfunc_core/src/functions/mround.rs": true,
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": true,
+    "formal/lean/OxFunc/Functions/Mround.lean": true,
+    "crates/oxfunc_core/src/coercion.rs": true,
+    "crates/oxfunc_core/src/coercion_decimal.rs": true
+  }
+}

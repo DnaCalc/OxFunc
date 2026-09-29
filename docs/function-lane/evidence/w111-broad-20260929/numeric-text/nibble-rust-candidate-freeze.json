@@ -1,0 +1,9 @@
+{
+  "phase": "Rust candidate frozen before independent nibble heldout outcomes consulted; mathematical model freeze precedes oracle capture",
+  "source_sha256": {
+    "crates/oxfunc_core/src/coercion.rs": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "crates/oxfunc_core/src/coercion_decimal_powers.rs": "a9a14c0e7c497c61cd428058b6fdafc5f7df132a0b3aa41dda7992e2a97ade13",
+    "smart-fuzzer/tools/w111/gen_decimal_text_powers.py": "1d6e088d7d5ad0b98b193cf3c7ba7195a20097f453e2214b7110f41cd744a1c5"
+  }
+}

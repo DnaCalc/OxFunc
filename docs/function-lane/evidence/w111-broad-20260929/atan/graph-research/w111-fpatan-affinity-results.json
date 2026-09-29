@@ -1,0 +1,154 @@
+{
+  "inputs": [
+    "0xc0000d685e592174",
+    "0xc0001dc1079c3c90",
+    "0xc00422f5b8083883",
+    "0xbff188b0ca40f8e7"
+  ],
+  "observations": [
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 0
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 1
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 2
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 3
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 4
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 5
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 6
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 7
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 8
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 9
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 10
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 11
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 12
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 13
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 14
+    },
+    {
+      "bits": [
+        "0xbff1bc3aef431d29",
+        "0xbff1c2b6c60d2616",
+        "0xbff31503e9041d9c",
+        "0xbfea9872caee324c"
+      ],
+      "logical_cpu": 15
+    }
+  ]
+}

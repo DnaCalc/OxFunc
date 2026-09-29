@@ -1,0 +1,1824 @@
+{
+  "rows": 768,
+  "matches": 552,
+  "by_function": {
+    "FUNC.CONFIDENCE": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.CONFIDENCE.NORM": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.NORM.INV": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.NORMINV": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.LOGNORM.INV": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.LOGNORM.DIST": {
+      "rows": 48,
+      "matches": 0
+    },
+    "FUNC.LOGNORMDIST": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.BINOM.DIST": {
+      "rows": 48,
+      "matches": 48
+    },
+    "FUNC.BINOMDIST": {
+      "rows": 48,
+      "matches": 48
+    },
+    "FUNC.BINOM.DIST.RANGE": {
+      "rows": 48,
+      "matches": 0
+    },
+    "FUNC.BINOM.INV": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.CRITBINOM": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.POISSON": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.POISSON.DIST": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.HYPGEOM.DIST": {
+      "rows": 72,
+      "matches": 0
+    },
+    "FUNC.HYPGEOMDIST": {
+      "rows": 48,
+      "matches": 0
+    },
+    "FUNC.NEGBINOM.DIST": {
+      "rows": 48,
+      "matches": 48
+    },
+    "FUNC.NEGBINOMDIST": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 48,
+      "matches": 48
+    },
+    "FUNC.NORMDIST": {
+      "rows": 48,
+      "matches": 48
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 24,
+      "matches": 24
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 24,
+      "matches": 24
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111typed-00120-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00121-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),G7,A102,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00122-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00123-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),G7,A102,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00124-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00125-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00126-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00127-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00128-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00129-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),G7,A102,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00130-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00131-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),G7,A102,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00132-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00133-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00134-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00135-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00136-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00137-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),G7,A102,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00138-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00139-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),G7,A102,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00140-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00141-lognorm_dist-fresh-unit-1-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00142-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00143-lognorm_dist-fresh-unit-1-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00144-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00145-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00146-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00147-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00148-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00149-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00150-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00151-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00152-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00153-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00154-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00155-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00156-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00157-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00158-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00159-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00160-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00161-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00162-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00163-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00164-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00165-lognorm_dist-fresh-unit-2-padding-row",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA]",
+      "actual": "array:2x3:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00166-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00167-lognorm_dist-fresh-unit-2-padding-column",
+      "formula": "=LOGNORM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|number:0x3fd9884533d43650|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|number:0x3fd9884533d43651|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00288-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00289-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#VALUE!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00290-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00291-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#VALUE!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00292-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},A106,A107,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00293-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},A105,A106,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00294-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},A106,A107,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00295-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},A105,A106,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00296-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#N/A),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00297-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#N/A),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00298-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#N/A),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00299-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#N/A),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00300-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},A106,A107,#N/A))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00301-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},A105,A106,#N/A))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00302-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},A106,A107,#N/A))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00303-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},A105,A106,#N/A))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00304-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#NULL!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00305-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#NULL!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00306-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NULL!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00307-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NULL!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00308-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},A106,A107,#NULL!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00309-binom_dist_range-fresh-unit-1-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},A105,A106,#NULL!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00310-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},A106,A107,#NULL!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00311-binom_dist_range-fresh-unit-1-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},A105,A106,#NULL!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00312-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00313-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00314-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00315-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00316-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},A106,A107,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00317-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},A105,A106,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00318-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},A106,A107,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00319-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},A105,A106,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00320-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#N/A),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00321-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#N/A),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00322-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#N/A),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00323-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#N/A),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00324-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},A106,A107,#N/A))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00325-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},A105,A106,#N/A))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00326-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},A106,A107,#N/A))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00327-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},A105,A106,#N/A))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00328-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#NULL!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00329-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2,3},A100,A101,#NULL!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00330-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NULL!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00331-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1;2;3},A100,A101,#NULL!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00332-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},A106,A107,#NULL!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00333-binom_dist_range-fresh-unit-2-padding-row",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},A105,A106,#NULL!))",
+      "expected": "array:2x3:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA]",
+      "actual": "array:2x3:[number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00334-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},A106,A107,#NULL!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00335-binom_dist_range-fresh-unit-2-padding-column",
+      "formula": "=BINOM.DIST.RANGE(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},A105,A106,#NULL!))",
+      "expected": "array:3x2:[number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|number:0x3fdfffffffffffff|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|number:0x3fe0000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00432-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00433-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),G7,A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00434-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00435-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),G7,A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00436-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,A106,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00437-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,A105,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00438-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,A106,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00439-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,A105,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00440-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00441-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),G7,A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00442-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00443-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),G7,A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00444-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,A106,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00445-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,A105,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00446-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,A106,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00447-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,A105,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00448-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00449-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),G7,A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00450-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),CHOOSE({1},A102),A103,A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00451-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),G7,A102,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00452-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,A106,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00453-hypgeom_dist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,A105,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00454-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,A106,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00455-hypgeom_dist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,A105,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00456-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00457-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,G7,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00458-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00459-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,G7,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00460-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),A106,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00461-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,A105,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00462-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),A106,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00463-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,A105,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00464-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,CHOOSE({1},A103),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00465-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,G7,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00466-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,CHOOSE({1},A103),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00467-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,G7,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00468-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),A106,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00469-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,A105,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00470-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),A106,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00471-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,A105,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00472-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,CHOOSE({1},A103),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00473-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,G7,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00474-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,CHOOSE({1},A103),A104,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00475-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,G7,A103,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00476-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),A106,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00477-hypgeom_dist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,A105,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00478-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),A106,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00479-hypgeom_dist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,A105,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00480-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,A103,CHOOSE({1},A104),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00481-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,A103,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00482-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,A103,CHOOSE({1},A104),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00483-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,A103,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00484-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1},A106),CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00485-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,G7,CHOOSE({1,2,3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00486-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1},A106),CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00487-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,G7,CHOOSE({1;2;3},FALSE,FALSE,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00488-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,A103,CHOOSE({1},A104),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00489-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,A103,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00490-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,A103,CHOOSE({1},A104),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00491-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,A103,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00492-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1},A106),CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00493-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,G7,CHOOSE({1,2,3},FALSE,FALSE,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00494-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1},A106),CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00495-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,G7,CHOOSE({1;2;3},FALSE,FALSE,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00496-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,A103,CHOOSE({1},A104),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00497-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,A103,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00498-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,A103,CHOOSE({1},A104),CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00499-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,A103,G7,CHOOSE({1,2;3,4},FALSE,FALSE,FALSE,FALSE))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00500-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1},A106),CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00501-hypgeom_dist-fresh-unit-3-padding-row",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,G7,CHOOSE({1,2,3},FALSE,FALSE,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00502-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,CHOOSE({1},A106),CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00503-hypgeom_dist-fresh-unit-3-padding-column",
+      "formula": "=HYPGEOM.DIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,A105,G7,CHOOSE({1;2;3},FALSE,FALSE,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00504-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00505-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#VALUE!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00506-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#VALUE!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00507-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#VALUE!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00508-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},A106,A107,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00509-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},A105,A106,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00510-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},A106,A107,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00511-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},A105,A106,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00512-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#N/A),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00513-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#N/A),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00514-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#N/A),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00515-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#N/A),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00516-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},A106,A107,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00517-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},A105,A106,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00518-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},A106,A107,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00519-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},A105,A106,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00520-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#NULL!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00521-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#NULL!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00522-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NULL!),CHOOSE({1},A102),A103,CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00523-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NULL!),G7,A102,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00524-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1,2,3},A106,A107,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00525-hypgeomdist-fresh-unit-1-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1,2,3},A105,A106,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00526-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),CHOOSE({1},A104),A105,CHOOSE({1;2;3},A106,A107,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00527-hypgeomdist-fresh-unit-1-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),G7,A104,CHOOSE({1;2;3},A105,A106,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00528-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00529-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#VALUE!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00530-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00531-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#VALUE!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00532-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},A106,A107,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00533-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},A105,A106,#VALUE!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00534-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},A106,A107,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00535-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},A105,A106,#VALUE!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00536-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00537-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#N/A),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00538-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00539-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#N/A),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00540-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},A106,A107,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00541-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},A105,A106,#N/A))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00542-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},A106,A107,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00543-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},A105,A106,#N/A))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00544-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00545-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2,3},A100,A101,#NULL!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00546-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,CHOOSE({1},A103),CHOOSE({1,2;3,4},A104,A105,A106,A107))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00547-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1;2;3},A100,A101,#NULL!),A102,G7,CHOOSE({1,2;3,4},A103,A104,A105,A106))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:Null|error:Null]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00548-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1,2,3},A106,A107,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00549-hypgeomdist-fresh-unit-2-padding-row",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1,2,3},A105,A106,#NULL!))",
+      "expected": "array:2x3:[number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA]",
+      "actual": "array:2x3:[number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00550-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,CHOOSE({1},A105),CHOOSE({1;2;3},A106,A107,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00551-hypgeomdist-fresh-unit-2-padding-column",
+      "formula": "=HYPGEOMDIST(CHOOSE({1,2;3,4},A100,A101,A102,A103),A104,G7,CHOOSE({1;2;3},A105,A106,#NULL!))",
+      "expected": "array:3x2:[number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|number:0x3fe5555555555554|error:NA|error:NA]",
+      "actual": "array:3x2:[number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|number:0x3fe5555555555555|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

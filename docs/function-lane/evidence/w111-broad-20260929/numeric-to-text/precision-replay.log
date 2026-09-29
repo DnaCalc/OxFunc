@@ -1,0 +1,70 @@
+   Compiling oxfunc_core v0.1.0 (C:\Work\DnaCalc\OxFunc\crates\oxfunc_core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.69s
+     Running tests\w111_numeric_to_text_live_replay.rs (target\debug\deps\w111_numeric_to_text_live_replay-36c413545fafc23c.exe)
+
+running 1 test
+test numeric_rendering_precision_open_reproduction ... FAILED
+
+failures:
+
+---- numeric_rendering_precision_open_reproduction stdout ----
+
+thread 'numeric_rendering_precision_open_reproduction' (30380) panicked at crates\oxfunc_core\tests\w111_numeric_to_text_live_replay.rs:121:5:
+48 differing rows:
+"w111renderprecision-00074-round-8-center-1" expected=number:0x0202cf5e7bb9a317 actual=number:0x0202cf5e7bb9a30d
+"w111renderprecision-00077-round-8-center--1" expected=number:0x8202cf5e7bb9a317 actual=number:0x8202cf5e7bb9a30d
+"w111renderprecision-00128-round-15-center-1" expected=number:0x0376c46f39729053 actual=number:0x0376c46f39729047
+"w111renderprecision-00131-round-15-center--1" expected=number:0x8376c46f39729053 actual=number:0x8376c46f39729047
+"w111renderprecision-00212-round-27-center-1" expected=number:0x069a649c29b00473 actual=number:0x069a649c29b00469
+"w111renderprecision-00215-round-27-center--1" expected=number:0x869a649c29b00473 actual=number:0x869a649c29b00469
+"w111renderprecision-00248-round-31-center-1" expected=number:0x073e0aa1958b6f82 actual=number:0x073e0aa1958b6f78
+"w111renderprecision-00251-round-31-center--1" expected=number:0x873e0aa1958b6f82 actual=number:0x873e0aa1958b6f78
+"w111renderprecision-00314-round-40-center-1" expected=number:0x0ae19b189344f368 actual=number:0x0ae19b189344f358
+"w111renderprecision-00317-round-40-center--1" expected=number:0x8ae19b189344f368 actual=number:0x8ae19b189344f358
+"w111renderprecision-00320-round-41-center-1" expected=number:0x0b1601deb8163043 actual=number:0x0b1601deb816302d
+"w111renderprecision-00323-round-41-center--1" expected=number:0x8b1601deb8163043 actual=number:0x8b1601deb816302d
+"w111renderprecision-00326-round-42-center-1" expected=number:0x0b4b8256661bbc53 actual=number:0x0b4b8256661bbc39
+"w111renderprecision-00329-round-42-center--1" expected=number:0x8b4b8256661bbc53 actual=number:0x8b4b8256661bbc39
+"w111renderprecision-00402-left-51-center-1" expected=text:5.9802935697678E-242 actual=text:5.9802935697677E-242
+"w111renderprecision-00403-address-51-center-1" expected=text:'5.9802935697678E-242'!$A$1 actual=text:'5.9802935697677E-242'!$A$1
+"w111renderprecision-00404-round-51-center-1" expected=number:0x0dd98565585f43f3 actual=number:0x0dd98565585f43e7
+"w111renderprecision-00405-left-51-center--1" expected=text:-5.9802935697678E-242 actual=text:-5.9802935697677E-242
+"w111renderprecision-00406-address-51-center--1" expected=text:'-5.9802935697678E-242'!$A$1 actual=text:'-5.9802935697677E-242'!$A$1
+"w111renderprecision-00407-round-51-center--1" expected=number:0x8dd98565585f43f3 actual=number:0x8dd98565585f43e7
+"w111renderprecision-00470-round-60-center-1" expected=number:0x108a253472020847 actual=number:0x108a253472020839
+"w111renderprecision-00473-round-60-center--1" expected=number:0x908a253472020847 actual=number:0x908a253472020839
+"w111renderprecision-00488-round-63-center-1" expected=number:0x10f46d10f9119677 actual=number:0x10f46d10f911966d
+"w111renderprecision-00491-round-63-center--1" expected=number:0x90f46d10f9119677 actual=number:0x90f46d10f911966d
+"w111renderprecision-00518-round-66-center-1" expected=number:0x11cbdd5bb9827221 actual=number:0x11cbdd5bb9827213
+"w111renderprecision-00521-round-66-center--1" expected=number:0x91cbdd5bb9827221 actual=number:0x91cbdd5bb9827213
+"w111renderprecision-00530-round-68-center-1" expected=number:0x126c0d553da3ba2f actual=number:0x126c0d553da3ba23
+"w111renderprecision-00533-round-68-center--1" expected=number:0x926c0d553da3ba2f actual=number:0x926c0d553da3ba23
+"w111renderprecision-00788-round-101-center-1" expected=number:0x1afe4e021a11a2cc actual=number:0x1afe4e021a11a2cd
+"w111renderprecision-00791-round-101-center--1" expected=number:0x9afe4e021a11a2cc actual=number:0x9afe4e021a11a2cd
+"w111renderprecision-01296-left-168-center-1" expected=text:9.49441308142316E-94 actual=text:9.49441308142315E-94
+"w111renderprecision-01297-address-168-center-1" expected=text:'9.49441308142316E-94'!$A$1 actual=text:'9.49441308142315E-94'!$A$1
+"w111renderprecision-01298-round-168-center-1" expected=number:0x2c9faffa307ac347 actual=number:0x2c9faffa307ac33d
+"w111renderprecision-01299-left-168-center--1" expected=text:-9.49441308142316E-94 actual=text:-9.49441308142315E-94
+"w111renderprecision-01300-address-168-center--1" expected=text:'-9.49441308142316E-94'!$A$1 actual=text:'-9.49441308142315E-94'!$A$1
+"w111renderprecision-01301-round-168-center--1" expected=number:0xac9faffa307ac347 actual=number:0xac9faffa307ac33d
+"w111renderprecision-01752-left-226-center-1" expected=text:6.56809060701061E-21 actual=text:6.5680906070106E-21
+"w111renderprecision-01753-address-226-center-1" expected=text:'6.56809060701061E-21'!$A$1 actual=text:'6.5680906070106E-21'!$A$1
+"w111renderprecision-01754-round-226-center-1" expected=number:0x3bbf04559605494d actual=number:0x3bbf04559605493f
+"w111renderprecision-01755-left-226-center--1" expected=text:-6.56809060701061E-21 actual=text:-6.5680906070106E-21
+"w111renderprecision-01756-address-226-center--1" expected=text:'-6.56809060701061E-21'!$A$1 actual=text:'-6.5680906070106E-21'!$A$1
+"w111renderprecision-01757-round-226-center--1" expected=number:0xbbbf04559605494d actual=number:0xbbbf04559605493f
+"w111renderprecision-02852-round-369-center-1" expected=number:0x6f3b627d11b9d60c actual=number:0x6f3b627d11b9d600
+"w111renderprecision-02855-round-369-center--1" expected=number:0xef3b627d11b9d60c actual=number:0xef3b627d11b9d600
+"w111renderprecision-02888-round-373-center-1" expected=number:0x71ecd98c719a1f64 actual=number:0x71ecd98c719a1f56
+"w111renderprecision-02891-round-373-center--1" expected=number:0xf1ecd98c719a1f64 actual=number:0xf1ecd98c719a1f56
+"w111renderprecision-03062-round-396-center-1" expected=number:0x7a5ef950aa1fe92c actual=number:0x7a5ef950aa1fe90c
+"w111renderprecision-03065-round-396-center--1" expected=number:0xfa5ef950aa1fe92c actual=number:0xfa5ef950aa1fe90c
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    numeric_rendering_precision_open_reproduction
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.39s
+
+error: test failed, to rerun pass `-p oxfunc_core --test w111_numeric_to_text_live_replay`

@@ -1,6 +1,8 @@
 import OxFunc.FunctionCore
+import OxFunc.ElementaryPublication
 namespace OxFunc.Functions
 open OxFunc
+abbrev fisherNumericBinding := OxFunc.ElementaryPublication.fisher
 def fisherMeta : FunctionMeta := {
   functionId := "FUNC.FISHER", arity := { min := 1, max := 1 }, determinism := .deterministic, volatility := .nonvolatile,
   hostInteraction := .none, threadSafety := .safePure, argPreparationProfile := .valuesOnlyPreAdapter,

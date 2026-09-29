@@ -1,13 +1,14 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{parse_excel_logical_text, CoercionError};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::coerce_prepared_to_number;
+use crate::functions::distribution_common::run_distribution_lifted;
 use crate::functions::special_math_common::{regularized_beta, regularized_gamma_q};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
+use crate::value::{CalcValue, CoreValue};
 
 const DISCRETE_DIST_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.DISCRETE_DIST_BASE",
@@ -40,29 +41,23 @@ pub const BINOM_INV_META: FunctionMeta = FunctionMeta {
     ..DISCRETE_DIST_BASE_META
 };
 
-// The legacy compatibility surfaces (BINOMDIST/CRITBINOM/POISSON/HYPGEOMDIST/NEGBINOMDIST/
-// EXPONDIST) are scalar-shaped by-index and broadcast their leading arguments over an array:
-// BINOMDIST lifts its four arguments (`[0,1,2,3]`), the others their first three (`[0,1,2]`).
-// The modern `.`-named surfaces lift natively and carry the default. Verified live Excel 16.0
-// build 20026.
+// W111: legacy aliases use the native prepared evaluator for every argument.
+// A second by-index lift is observably wrong for unit-array plus padding cases.
 pub const BINOMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BINOMDIST",
     arity: Arity::exact(4),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2, 3]),
     ..DISCRETE_DIST_BASE_META
 };
 
 pub const CRITBINOM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CRITBINOM",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
 pub const POISSON_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.POISSON",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -81,7 +76,6 @@ pub const HYPGEOM_DIST_META: FunctionMeta = FunctionMeta {
 pub const HYPGEOMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.HYPGEOMDIST",
     arity: Arity::exact(4),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -94,7 +88,6 @@ pub const NEGBINOM_DIST_META: FunctionMeta = FunctionMeta {
 pub const NEGBINOMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NEGBINOMDIST",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -107,7 +100,6 @@ pub const EXPON_DIST_META: FunctionMeta = FunctionMeta {
 pub const EXPONDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.EXPONDIST",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -130,11 +122,21 @@ fn prepared_len_error(meta: &FunctionMeta, actual: usize) -> DiscreteDistEvalErr
 }
 
 fn number(prepared: &CalcValue) -> Result<f64, DiscreteDistEvalError> {
+    if prepared.is_missing() {
+        return Ok(0.0);
+    }
     coerce_prepared_to_number(prepared).map_err(DiscreteDistEvalError::Coercion)
 }
 
-fn cumulative_flag(value: f64) -> bool {
-    value != 0.0
+fn cumulative(prepared: &CalcValue) -> Result<bool, DiscreteDistEvalError> {
+    match prepared.core() {
+        CoreValue::Text(text) => {
+            let text = text.to_string_lossy();
+            parse_excel_logical_text(&text)
+                .ok_or_else(|| DiscreteDistEvalError::Coercion(CoercionError::NonNumericText(text)))
+        }
+        _ => number(prepared).map(|value| value != 0.0),
+    }
 }
 
 fn trunc_i64(value: f64) -> Result<i64, WorksheetErrorCode> {
@@ -146,6 +148,13 @@ fn trunc_i64(value: f64) -> Result<i64, WorksheetErrorCode> {
 
 fn validate_probability_closed_unit(value: f64) -> Result<(), WorksheetErrorCode> {
     if !value.is_finite() || !(0.0..=1.0).contains(&value) {
+        return Err(WorksheetErrorCode::Num);
+    }
+    Ok(())
+}
+
+fn validate_probability_open_unit(value: f64) -> Result<(), WorksheetErrorCode> {
+    if !value.is_finite() || value <= 0.0 || value >= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
     Ok(())
@@ -387,8 +396,10 @@ pub fn binom_inv_kernel(
     probability_s: f64,
     alpha: f64,
 ) -> Result<f64, WorksheetErrorCode> {
-    validate_probability_closed_unit(probability_s)?;
-    validate_probability_closed_unit(alpha)?;
+    // W111 endpoint and adjacent-normal controls distinguish this inverse
+    // surface from BINOM.DIST's closed probability interval.
+    validate_probability_open_unit(probability_s)?;
+    validate_probability_open_unit(alpha)?;
     let trials = trunc_i64(trials)?;
     if trials < 0 {
         return Err(WorksheetErrorCode::Num);
@@ -403,12 +414,25 @@ pub fn binom_inv_kernel(
 }
 
 pub fn poisson_dist_kernel(x: f64, mean: f64, cumulative: bool) -> Result<f64, WorksheetErrorCode> {
+    // Public zero-count controls distinguish the raw count guard from its
+    // truncated value, and put the elementary exponential before mean < 0.
+    if x < 0.0 || !mean.is_finite() {
+        return Err(WorksheetErrorCode::Num);
+    }
     let x = trunc_i64(x)?;
-    if x < 0 || !mean.is_finite() || mean < 0.0 {
+    if x == 0 {
+        let value = crate::excel_numeric::excel_exp(-mean);
+        return if value.is_finite() {
+            Ok(value) // This branch preserves observed subnormal outputs.
+        } else {
+            Err(WorksheetErrorCode::Num)
+        };
+    }
+    if mean < 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
     let x = x as u64;
-    if cumulative {
+    let value = if cumulative {
         // Inverse-problem identity, live Excel 16.0 b20228 (70 pairs, k in
         // {0,1,2,3,5}): POISSON.DIST(k,μ,TRUE) == CHIDIST(2μ, 2(k+1)) ==
         // CHISQ.DIST.RT(2μ, 2(k+1)) bit-exactly. Worksheet 2*μ / μ*2 / μ+μ
@@ -417,26 +441,28 @@ pub fn poisson_dist_kernel(x: f64, mean: f64, cumulative: bool) -> Result<f64, W
         // graph (45/70). k=0 is the identified CHIDIST(df=2) elementary
         // EXP(-μ); k≥1 is GRATIO Q(k+1, μ), i.e. CHIDIST internals after
         // the exact 2μ / 2 recovery.
-        if x == 0 {
-            Ok(crate::excel_numeric::excel_exp(-mean))
-        } else {
-            Ok(regularized_gamma_q((x + 1) as f64, mean))
-        }
+        regularized_gamma_q((x + 1) as f64, mean)
     } else if mean == 0.0 {
-        Ok(if x == 0 { 1.0 } else { 0.0 })
-    } else if x == 0 {
-        Ok(crate::excel_numeric::excel_exp(-mean))
+        0.0
     } else if x == 1 {
         // k=1: log-composed λ^1 e^{-λ} / 1! with native ln scored 1087/3999
         // on b24, above λ*e^{-λ} multiply (1027/3999).
-        Ok(crate::excel_numeric::excel_exp(-mean + mean.ln()))
+        crate::excel_numeric::excel_exp(-mean + mean.ln())
     } else {
         // Public R `dpois_raw` (nmath/dpois.c) for k>=2:
         //   exp(-stirlerr(x) - bd0(x, lambda)) / sqrt(2*pi*x)
         let xf = x as f64;
         let arg = -binom_stirlerr(xf) - binom_bd0(xf, mean);
-        Ok(crate::excel_numeric::excel_exp(arg) / (2.0 * std::f64::consts::PI * xf).sqrt())
-    }
+        crate::excel_numeric::excel_exp(arg) / (2.0 * std::f64::consts::PI * xf).sqrt()
+    };
+    // W111 positive-count PDF/CDF boundary observations publish subnormal
+    // final probabilities as +0. The earlier zero-count exponential branch
+    // deliberately preserves its separately observed subnormal results.
+    Ok(if value.abs() < f64::MIN_POSITIVE {
+        0.0
+    } else {
+        value
+    })
 }
 
 pub fn hypergeom_dist_kernel(
@@ -446,6 +472,14 @@ pub fn hypergeom_dist_kernel(
     number_pop: f64,
     cumulative: bool,
 ) -> Result<f64, WorksheetErrorCode> {
+    // Negative fractions are rejected before integer conversion. Positive
+    // population/count comparisons use the converted integers (e.g.7.9→7).
+    if [sample_s, number_sample, population_s, number_pop]
+        .iter()
+        .any(|value| *value < 0.0)
+    {
+        return Err(WorksheetErrorCode::Num);
+    }
     let sample_s = trunc_i64(sample_s)?;
     let number_sample = trunc_i64(number_sample)?;
     let population_s = trunc_i64(population_s)?;
@@ -456,9 +490,6 @@ pub fn hypergeom_dist_kernel(
         || number_pop < 0
         || population_s > number_pop
         || number_sample > number_pop
-        || sample_s > number_sample
-        || sample_s > population_s
-        || number_sample - sample_s > number_pop - population_s
     {
         return Err(WorksheetErrorCode::Num);
     }
@@ -467,6 +498,16 @@ pub fn hypergeom_dist_kernel(
     let population_s = population_s as u64;
     let number_pop = number_pop as u64;
     let lower = number_sample.saturating_sub(number_pop - population_s);
+    let upper = number_sample.min(population_s);
+    // Valid populations can have an impossible outcome. Public HYPGEOM
+    // observations return probability zero there, or one for the CDF above
+    // the support; these are distinct from invalid population parameters.
+    if sample_s < lower {
+        return Ok(0.0);
+    }
+    if sample_s > upper {
+        return Ok(if cumulative { 1.0 } else { 0.0 });
+    }
     if cumulative {
         let mut sum = 0.0;
         for x in lower..=sample_s {
@@ -497,7 +538,7 @@ pub fn negbinom_dist_kernel(
     probability_s: f64,
     cumulative: bool,
 ) -> Result<f64, WorksheetErrorCode> {
-    validate_probability_closed_unit(probability_s)?;
+    validate_probability_open_unit(probability_s)?;
     let number_f = trunc_i64(number_f)?;
     let number_s = trunc_i64(number_s)?;
     if number_f < 0 || number_s <= 0 {
@@ -515,10 +556,6 @@ pub fn negbinom_dist_kernel(
             number_s as f64,
             (number_f + 1) as f64,
         ))
-    } else if probability_s == 0.0 {
-        Ok(0.0)
-    } else if probability_s == 1.0 {
-        Ok(if number_f == 0 { 1.0 } else { 0.0 })
     } else if number_f == 0 {
         // Live Excel 16.0 b20326: NEGBINOM.DIST(0,s,p,FALSE)=BINOM.DIST(s,s,p,FALSE)
         // 8/8. Worksheet POWER(p,s) is 0/8 (1-16 ULP).
@@ -543,18 +580,23 @@ pub fn expon_dist_kernel(x: f64, lambda: f64, cumulative: bool) -> Result<f64, W
     // both the inner `λ·x` product (14/14) and the pdf's outer `λ·e` product
     // (24/24) are RN53(RN64(·)) spills, like WEIBULL's body.
     let lx = crate::excel_numeric::excel_x87_mul(lambda, x);
-    if cumulative {
+    if !lx.is_finite() {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let result = if cumulative {
         // W109: Excel's cdf is -expm1(-lambda*x) via its Kahan-correction
         // internal expm1 (identified 17,992/18,000), NOT 1 - exp(...).
-        Ok(-crate::excel_numeric::excel_expm1_internal(-lx))
+        -crate::excel_numeric::excel_expm1_internal(-lx)
     } else {
         // pdf site = the chain exp, nearest-published (bit-identical to the
         // POISSON k=0 window).
-        Ok(crate::excel_numeric::excel_x87_mul(
-            lambda,
-            crate::excel_numeric::excel_exp(-lx),
-        ))
-    }
+        crate::excel_numeric::excel_x87_mul(lambda, crate::excel_numeric::excel_exp(-lx))
+    };
+    Ok(if result.abs() < f64::MIN_POSITIVE {
+        0.0
+    } else {
+        result
+    })
 }
 
 fn eval_binom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
@@ -564,9 +606,9 @@ fn eval_binom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDis
     let number_s = number(&args[0])?;
     let trials = number(&args[1])?;
     let probability_s = number(&args[2])?;
-    let cumulative = number(&args[3])?;
+    let cumulative = cumulative(&args[3])?;
     Ok(
-        match binom_dist_kernel(number_s, trials, probability_s, cumulative_flag(cumulative)) {
+        match binom_dist_kernel(number_s, trials, probability_s, cumulative) {
             Ok(value) => CalcValue::number(value),
             Err(code) => CalcValue::error(code),
         },
@@ -580,7 +622,7 @@ fn eval_binom_dist_range_prepared(args: &[CalcValue]) -> Result<CalcValue, Discr
     let trials = number(&args[0])?;
     let probability_s = number(&args[1])?;
     let number_s = number(&args[2])?;
-    let number_s2 = if args.len() == 4 {
+    let number_s2 = if args.len() == 4 && !args[3].is_missing() {
         Some(number(&args[3])?)
     } else {
         None
@@ -612,13 +654,11 @@ fn eval_poisson_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteD
     }
     let x = number(&args[0])?;
     let mean = number(&args[1])?;
-    let cumulative = number(&args[2])?;
-    Ok(
-        match poisson_dist_kernel(x, mean, cumulative_flag(cumulative)) {
-            Ok(value) => CalcValue::number(value),
-            Err(code) => CalcValue::error(code),
-        },
-    )
+    let cumulative = cumulative(&args[2])?;
+    Ok(match poisson_dist_kernel(x, mean, cumulative) {
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
+    })
 }
 
 fn eval_hypgeom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
@@ -629,14 +669,14 @@ fn eval_hypgeom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteD
     let number_sample = number(&args[1])?;
     let population_s = number(&args[2])?;
     let number_pop = number(&args[3])?;
-    let cumulative = number(&args[4])?;
+    let cumulative = cumulative(&args[4])?;
     Ok(
         match hypergeom_dist_kernel(
             sample_s,
             number_sample,
             population_s,
             number_pop,
-            cumulative_flag(cumulative),
+            cumulative,
         ) {
             Ok(value) => CalcValue::number(value),
             Err(code) => CalcValue::error(code),
@@ -651,14 +691,9 @@ fn eval_negbinom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, Discrete
     let number_f = number(&args[0])?;
     let number_s = number(&args[1])?;
     let probability_s = number(&args[2])?;
-    let cumulative = number(&args[3])?;
+    let cumulative = cumulative(&args[3])?;
     Ok(
-        match negbinom_dist_kernel(
-            number_f,
-            number_s,
-            probability_s,
-            cumulative_flag(cumulative),
-        ) {
+        match negbinom_dist_kernel(number_f, number_s, probability_s, cumulative) {
             Ok(value) => CalcValue::number(value),
             Err(code) => CalcValue::error(code),
         },
@@ -669,25 +704,41 @@ fn eval_expon_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDis
     if !EXPON_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&EXPON_DIST_META, args.len()));
     }
-    let x = number(&args[0])?;
-    let lambda = number(&args[1])?;
-    let cumulative = number(&args[2])?;
-    Ok(
-        match expon_dist_kernel(x, lambda, cumulative_flag(cumulative)) {
-            Ok(value) => CalcValue::number(value),
-            Err(code) => CalcValue::error(code),
-        },
-    )
+    let x = if args[0].is_missing() {
+        0.0
+    } else {
+        number(&args[0])?
+    };
+    let lambda = if args[1].is_missing() {
+        0.0
+    } else {
+        number(&args[1])?
+    };
+    let cumulative = match args[2].core() {
+        CoreValue::Missing => false,
+        CoreValue::Text(text) => {
+            let text = text.to_string_lossy();
+            parse_excel_logical_text(&text).ok_or_else(|| {
+                DiscreteDistEvalError::Coercion(CoercionError::NonNumericText(text))
+            })?
+        }
+        _ => number(&args[2])? != 0.0,
+    };
+    Ok(match expon_dist_kernel(x, lambda, cumulative) {
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
+    })
 }
 
 pub fn eval_binom_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_binom_dist_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -696,10 +747,11 @@ pub fn eval_binom_dist_range_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_binom_dist_range_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -708,10 +760,11 @@ pub fn eval_binom_inv_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_binom_inv_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -734,10 +787,11 @@ pub fn eval_poisson_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_poisson_dist_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -753,10 +807,11 @@ pub fn eval_hypgeom_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_hypgeom_dist_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -765,7 +820,7 @@ pub fn eval_hypgeomdist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         |prepared| {
@@ -789,6 +844,7 @@ pub fn eval_hypgeomdist_surface(
                 },
             )
         },
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -797,10 +853,11 @@ pub fn eval_negbinom_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_negbinom_dist_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -809,7 +866,7 @@ pub fn eval_negbinomdist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         |prepared| {
@@ -826,6 +883,7 @@ pub fn eval_negbinomdist_surface(
                 },
             )
         },
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -834,10 +892,11 @@ pub fn eval_expon_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DiscreteDistEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_expon_dist_prepared,
+        map_discrete_dist_error_to_ws,
         DiscreteDistEvalError::Coercion,
     )
 }
@@ -933,7 +992,11 @@ mod tests {
             (binom_dist_range_kernel(4.0, 0.25, 2.0, Some(3.0)).unwrap() - 0.2578125).abs() < 1e-12
         );
         assert_eq!(binom_inv_kernel(6.0, 0.5, 0.7).unwrap(), 4.0);
-        assert_eq!(binom_inv_kernel(6.0, 0.5, 0.0).unwrap(), 0.0);
+        // W111 independent final capture, fresh-binom.inv-00500-old-seed-exact-input.
+        assert_eq!(
+            binom_inv_kernel(6.0, 0.5, 0.0),
+            Err(WorksheetErrorCode::Num)
+        );
     }
 
     #[test]
@@ -1087,7 +1150,11 @@ mod tests {
     fn negbinom_family_matches_seed_lanes() {
         assert!((negbinom_dist_kernel(3.0, 2.0, 0.5, false).unwrap() - 0.125).abs() < 1e-12);
         assert!((negbinom_dist_kernel(3.0, 2.0, 0.5, true).unwrap() - 0.8125).abs() < 1e-12);
-        assert_eq!(negbinom_dist_kernel(0.0, 2.0, 1.0, false).unwrap(), 1.0);
+        // W111 independent final capture, fresh-negbinom.dist-00180-old-seed-exact-input.
+        assert_eq!(
+            negbinom_dist_kernel(0.0, 2.0, 1.0, false),
+            Err(WorksheetErrorCode::Num)
+        );
     }
 
     #[test]
@@ -1112,7 +1179,8 @@ mod tests {
         );
         assert_eq!(
             hypergeom_dist_kernel(4.0, 5.0, 2.0, 10.0, false),
-            Err(WorksheetErrorCode::Num)
+            // W111 independent final capture, fresh-hypgeom.dist-01000-old-seed-exact-input.
+            Ok(0.0)
         );
         assert_eq!(
             negbinom_dist_kernel(1.0, 0.0, 0.5, false),

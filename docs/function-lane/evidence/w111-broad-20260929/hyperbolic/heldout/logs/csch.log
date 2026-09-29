@@ -1,0 +1,2 @@
+answered 23100 probes for CSCH (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-hyperbolic-heldout-20260929\answers\answers-csch.json
+BULK throughput: 23100 live probes | compute 2.41s (9573.1/s) | +excel startup 1.60s (5761.7/s incl startup) | total wall 5.44s

@@ -92,10 +92,11 @@
 //!   `TRUE` in `E1` -> `#VALUE!`, `=OR({"TRUE"})` -> `#VALUE!`, `=OR({"TRUE",FALSE})` ->
 //!   `FALSE`), a coerced spelling is a seen value (`=OR("FALSE","FALSE")` -> `FALSE`,
 //!   `=XOR("TRUE","TRUE")` -> `FALSE`), and neither an ignored nor a coerced text masks an
-//!   error (`=OR("TRUE",1/0)` -> `#DIV/0!`). Both probes' rows are pinned through real
-//!   dispatch below (`logical_folds_coerce_only_direct_true_false_spellings_and_ignore_other_direct_text`,
-//!   `logical_folds_direct_text_rule_whitespace_case_computed_reference_and_error_rows`); the
-//!   shared primitive is `coercion::parse_excel_logical_text`.
+//!   error (`=OR("TRUE",1/0)` -> `#DIV/0!`). The rule family is pinned through real dispatch
+//!   below by a retained 540-case Excel replay (16.0 build 20430, Compatibility Version 2,
+//!   2026-09-29) plus computed-text/reference and parity regressions. The shared primitive is
+//!   `coercion::parse_excel_logical_text`. These checks bind the prepared-value function seam;
+//!   they do not evaluate formula expressions or claim whole-function semantic coverage.
 //! * `LET`, `LAMBDA`, `_XLFN.SINGLE` — NOT on this axis. They are formula-language forms
 //!   (binding scopes, implicit intersection) owned by OxFml's evaluator, carry no `FunctionMeta`
 //!   in OxFunc's catalog, and are out of scope by the handoff's own terms. The test below pins
@@ -649,6 +650,307 @@ fn logical_folds_publish_the_first_error_in_argument_order() {
             &CoreValue::Error(expected),
             "{formula}: the first error in argument order must be published; got {:?}",
             got.core()
+        );
+    }
+}
+
+/// Replay the independently captured Excel outcomes, not expectations calculated from the
+/// Rust truth helper. Every retained case passes through the same dispatch entry point used
+/// by the evaluator. The corpus covers three functions, twenty text values, both argument
+/// orders, direct/array origins, all-ignored inputs, and both-order #N/A / #DIV/0! propagation.
+#[test]
+fn logical_folds_coerce_only_direct_true_false_spellings_and_ignore_other_direct_text() {
+    use std::collections::{BTreeMap, BTreeSet};
+
+    use crate::value::{CalcArray, ExcelText};
+    use serde_json::Value;
+
+    fn prepared(value: &Value) -> CalcValue {
+        match value["kind"].as_str().expect("typed value kind") {
+            "text" => CalcValue::text(ExcelText::from_utf16_code_units(
+                value["value"]
+                    .as_str()
+                    .expect("text")
+                    .encode_utf16()
+                    .collect(),
+            )),
+            "logical" => CalcValue::logical(value["value"].as_bool().expect("logical")),
+            "error" => CalcValue::error(match value["code"].as_str().expect("error code") {
+                "NA" => WorksheetErrorCode::NA,
+                "Div0" => WorksheetErrorCode::Div0,
+                "Value" => WorksheetErrorCode::Value,
+                other => panic!("unexpected logical-corpus error: {other}"),
+            }),
+            "array" => CalcValue::array(
+                CalcArray::from_rows(
+                    value["rows"]
+                        .as_array()
+                        .expect("array rows")
+                        .iter()
+                        .map(|row| {
+                            row.as_array()
+                                .expect("array row")
+                                .iter()
+                                .map(prepared)
+                                .collect()
+                        })
+                        .collect(),
+                )
+                .expect("rectangular corpus array"),
+            ),
+            other => panic!("unexpected logical-corpus value kind: {other}"),
+        }
+    }
+
+    let cases = include_str!(
+        "../../../../docs/function-lane/evidence/w111-broad-20260929/logical/cases.jsonl"
+    );
+    let oracle = include_str!(
+        "../../../../docs/function-lane/evidence/w111-broad-20260929/logical/excel.jsonl"
+    );
+    let mut expected = BTreeMap::new();
+    for line in oracle.lines().filter(|line| !line.is_empty()) {
+        let outcome: Value = serde_json::from_str(line).expect("retained oracle JSON");
+        assert_eq!(
+            outcome["execution_status"], "ok",
+            "oracle evaluation succeeded"
+        );
+        let id = outcome["case_id"]
+            .as_str()
+            .expect("oracle case id")
+            .to_owned();
+        assert!(
+            expected.insert(id, outcome).is_none(),
+            "oracle IDs are unique"
+        );
+    }
+    let mut counts = BTreeMap::new();
+    let mut seen = BTreeSet::new();
+    for line in cases.lines().filter(|line| !line.is_empty()) {
+        let case: Value = serde_json::from_str(line).expect("retained case JSON");
+        let id = case["case_id"].as_str().expect("case id");
+        assert!(seen.insert(id.to_owned()), "case IDs are unique");
+        let oracle = expected.get(id).expect("every case has an Excel outcome");
+        assert_eq!(case["function_id"], oracle["function_id"]);
+        assert_eq!(case["formula_text"], oracle["formula_text"]);
+        let function_id = case["function_id"].as_str().expect("function id");
+        let args: Vec<_> = case["args"]
+            .as_array()
+            .expect("prepared args")
+            .iter()
+            .map(prepared)
+            .collect();
+        assert_eq!(
+            eval(function_id, &args),
+            prepared(&oracle["outcome"]),
+            "{id}: {}",
+            case["formula_text"]
+        );
+        *counts.entry(function_id.to_owned()).or_insert(0) += 1;
+    }
+    assert_eq!(seen.len(), expected.len(), "no unbound oracle rows");
+    assert_eq!(
+        counts,
+        BTreeMap::from([
+            (sd::FUNC_ID_AND.to_owned(), 180),
+            (sd::FUNC_ID_OR.to_owned(), 180),
+            (sd::FUNC_ID_XOR.to_owned(), 180),
+        ])
+    );
+}
+
+/// The spelling probe also exercises actual cell references and expressions whose results
+/// are text. OxFml evaluates those expressions first; this test supplies the resulting scalar
+/// value and checks that dispatch preserves its distinction from a reference to identical text.
+#[test]
+fn logical_folds_direct_text_rule_whitespace_case_computed_reference_and_error_rows() {
+    use crate::resolver::{
+        ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+        ReferenceSystemProvider,
+    };
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
+
+    fn text(value: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_utf16_code_units(
+            value.encode_utf16().collect(),
+        ))
+    }
+    struct TextReferences;
+    impl ReferenceSystemProvider for TextReferences {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
+        }
+        fn dereference(
+            &self,
+            request: &ReferenceDereferenceRequest,
+        ) -> Result<CalcValue, ReferenceResolutionError> {
+            Ok(match request.reference.target() {
+                "E1" => text("TRUE"),
+                "E2" => text("FALSE"),
+                "E1:E2" => CalcValue::array(
+                    CalcArray::from_rows(vec![vec![text("TRUE")], vec![text("FALSE")]]).unwrap(),
+                ),
+                target => {
+                    return Err(ReferenceResolutionError::UnresolvedReference {
+                        target: target.to_owned(),
+                    });
+                }
+            })
+        }
+    }
+    let reference = |target: &str| {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_owned()))
+    };
+    let t = CalcValue::logical(true);
+    let f = CalcValue::logical(false);
+    let locale = test_current_excel_host_context();
+    for (formula, function_id, args, expected) in [
+        (
+            "=OR(E1)",
+            sd::FUNC_ID_OR,
+            vec![reference("E1")],
+            CalcValue::error(WorksheetErrorCode::Value),
+        ),
+        (
+            "=OR(FALSE,E1)",
+            sd::FUNC_ID_OR,
+            vec![f.clone(), reference("E1")],
+            f.clone(),
+        ),
+        (
+            "=AND(TRUE,E2)",
+            sd::FUNC_ID_AND,
+            vec![t.clone(), reference("E2")],
+            t.clone(),
+        ),
+        (
+            "=OR(E1:E2)",
+            sd::FUNC_ID_OR,
+            vec![reference("E1:E2")],
+            CalcValue::error(WorksheetErrorCode::Value),
+        ),
+        (
+            "=OR(FALSE,E1:E2)",
+            sd::FUNC_ID_OR,
+            vec![f.clone(), reference("E1:E2")],
+            f.clone(),
+        ),
+    ] {
+        let got = eval_surface_value_call(
+            function_id,
+            &args,
+            &TextReferences,
+            None,
+            None,
+            Some(&locale),
+            None,
+        )
+        .unwrap_or_else(CalcValue::error);
+        assert_eq!(got, expected, "{formula}");
+    }
+
+    for (formula, result) in [
+        ("=OR(FALSE,TRIM(\" TRUE \"))", "TRUE"),
+        ("=OR(FALSE,\"TR\"&\"UE\")", "TRUE"),
+        ("=OR(FALSE,LOWER(\"TRUE\"))", "true"),
+        ("=OR(FALSE,LEFT(\"TRUEx\",4))", "TRUE"),
+        ("=OR(FALSE,IF(TRUE,\"TRUE\"))", "TRUE"),
+        ("=OR(FALSE,INDEX({\"TRUE\"},1))", "TRUE"),
+        ("=OR(FALSE,E1&\"\")", "TRUE"),
+        ("=OR(FALSE,T(E1))", "TRUE"),
+        ("=OR(FALSE,VALUETOTEXT(E1))", "TRUE"),
+    ] {
+        assert_eq!(
+            eval(sd::FUNC_ID_OR, &[f.clone(), text(result)]),
+            t,
+            "{formula}"
+        );
+    }
+    for ignored in [
+        "FALſE",
+        "ＴＲＵＥ",
+        "TRUE.",
+        "TRUE1",
+        "T",
+        "Yes",
+        "On",
+        "=TRUE",
+        "TRUE()",
+        "1.5",
+        " 1 ",
+        "1e0",
+        "$1",
+        "1/2",
+        "12/31/2020",
+    ] {
+        for (function_id, neutral) in [
+            (sd::FUNC_ID_AND, t.clone()),
+            (sd::FUNC_ID_OR, f.clone()),
+            (sd::FUNC_ID_XOR, f.clone()),
+        ] {
+            assert_eq!(
+                eval(function_id, &[neutral.clone(), text(ignored)]),
+                neutral,
+                "{function_id}: {ignored:?}"
+            );
+        }
+    }
+    for (function_id, args, expected) in [
+        (
+            sd::FUNC_ID_OR,
+            vec![text("FALSE"), text("FALSE")],
+            f.clone(),
+        ),
+        (sd::FUNC_ID_AND, vec![text("TRUE"), text("TRUE")], t.clone()),
+        (sd::FUNC_ID_XOR, vec![text("TRUE"), text("TRUE")], f.clone()),
+        (
+            sd::FUNC_ID_XOR,
+            vec![text("TRUE"), text("TRUE"), text("TRUE")],
+            t.clone(),
+        ),
+        (
+            sd::FUNC_ID_OR,
+            vec![text("TRUE"), CalcValue::number(0.0)],
+            t.clone(),
+        ),
+        (
+            sd::FUNC_ID_AND,
+            vec![text("FALSE"), CalcValue::number(1.0)],
+            f.clone(),
+        ),
+        (
+            sd::FUNC_ID_OR,
+            vec![CalcValue::number(0.0), text("x")],
+            f.clone(),
+        ),
+        (
+            sd::FUNC_ID_AND,
+            vec![CalcValue::number(1.0), text("x")],
+            t.clone(),
+        ),
+        (
+            sd::FUNC_ID_OR,
+            vec![
+                text("TRUE"),
+                text("x"),
+                CalcValue::error(WorksheetErrorCode::NA),
+            ],
+            CalcValue::error(WorksheetErrorCode::NA),
+        ),
+        (
+            sd::FUNC_ID_AND,
+            vec![
+                text("FALSE"),
+                text("x"),
+                CalcValue::error(WorksheetErrorCode::Div0),
+            ],
+            CalcValue::error(WorksheetErrorCode::Div0),
+        ),
+    ] {
+        assert_eq!(
+            eval(function_id, &args),
+            expected,
+            "{function_id}: {args:?}"
         );
     }
 }

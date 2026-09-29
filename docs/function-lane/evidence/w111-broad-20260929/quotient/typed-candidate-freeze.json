@@ -1,0 +1,11 @@
+{
+  "seed": 202609291822,
+  "count": 288,
+  "phase": "before_independent_oracle_capture",
+  "input_sha256": "1c744b880cc15f726735414a2f25d379da360705d49068fcd913bcd7f856cf66",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/quotient_fn.rs": "8de326cd7c8f64929ac8d6ed2a36ae0c8fb6648749768213d785ce78e3fd504c",
+    "crates/oxfunc_core/src/coercion.rs": "7cc14fe1e19f99dbbd2a4d64673afc00c77fad0c92f9c0d5bd1e6c69e54d0aa5",
+    "C:\\Work\\DnaCalc\\OxFunc\\smart-fuzzer\\tools\\w111\\gen_quotient_typed_validation.py": "f68343dff89025ebdeb42bcb6756754d1b20c63336eb33bb9feaa347cafd12a9"
+  }
+}

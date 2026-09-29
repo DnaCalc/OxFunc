@@ -1,0 +1,2 @@
+answered 24608 probes for INT (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-thresholds-20260929\answers\answers-int.json
+BULK throughput: 24608 live probes | compute 3.33s (7388.3/s) | +excel startup 2.39s (4299.5/s incl startup) | total wall 7.93s

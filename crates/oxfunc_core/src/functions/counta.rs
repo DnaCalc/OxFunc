@@ -152,7 +152,7 @@ mod tests {
             CalcValue::empty(),
         ];
         let got = eval_counta_surface(&args, &MockResolver { resolved: None });
-        assert_eq!(got, Ok(CalcValue::number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]

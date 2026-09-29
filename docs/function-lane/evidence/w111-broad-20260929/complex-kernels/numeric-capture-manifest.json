@@ -1,0 +1,84 @@
+{
+  "generator": "gen_complex_kernel_probes.py",
+  "seed": 2026092906,
+  "batches": [
+    {
+      "function": "IMSQRT",
+      "rows": 827,
+      "path": "batch-imsqrt.json",
+      "sha256": "3db9c02b5befbfc7a9ddcbc601f50f6473305906cda74f5b5ec272e13ab54d56"
+    },
+    {
+      "function": "IMDIV",
+      "rows": 852,
+      "path": "batch-imdiv.json",
+      "sha256": "59bcae6734d7278fc8ae8506ed032f40182595de5e724d4efc23318d7b2804ee"
+    }
+  ],
+  "started_utc": "2026-09-29T13:10:26.214241+00:00",
+  "source_commit": "11b23504fe8180d08397be5435bd215e1bbb9722",
+  "source_status": " M .beads/issues.jsonl\n M crates/oxfunc_core/Cargo.toml\n M crates/oxfunc_core/src/functions/argument_laziness_golden.rs\n M crates/oxfunc_core/src/functions/base_fn.rs\n M crates/oxfunc_core/src/functions/bit_common.rs\n M crates/oxfunc_core/src/functions/bitand_fn.rs\n M crates/oxfunc_core/src/functions/bitlshift_fn.rs\n M crates/oxfunc_core/src/functions/bitor_fn.rs\n M crates/oxfunc_core/src/functions/bitrshift_fn.rs\n M crates/oxfunc_core/src/functions/bitxor_fn.rs\n M crates/oxfunc_core/src/functions/complex_family.rs\n M crates/oxfunc_core/src/functions/depreciation_family.rs\n M crates/oxfunc_core/src/functions/engineering_radix_family.rs\n M crates/oxfunc_core/src/functions/fact.rs\n M crates/oxfunc_core/src/functions/reference_metadata_family.rs\n M docs/IN_PROGRESS_FEATURE_WORKLIST.md\n M docs/bugs/BUG_REPORT_REGISTER.csv\n M docs/bugs/BUG_STREAM_REGISTER.csv\n M formal/lean/OxFunc/Functions/AndFn.lean\n M formal/lean/OxFunc/Functions/BaseFn.lean\n M formal/lean/OxFunc/Functions/BitAndFn.lean\n M formal/lean/OxFunc/Functions/BitLshiftFn.lean\n M formal/lean/OxFunc/Functions/BitOrFn.lean\n M formal/lean/OxFunc/Functions/BitRshiftFn.lean\n M formal/lean/OxFunc/Functions/BitXorFn.lean\n M formal/lean/OxFunc/Functions/ComplexFamily.lean\n M formal/lean/OxFunc/Functions/DepreciationFamily.lean\n M formal/lean/OxFunc/Functions/EngineeringRadixFamily.lean\n M formal/lean/OxFunc/Functions/Fact.lean\n M formal/lean/OxFunc/Functions/OrFn.lean\n M formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean\n M formal/lean/OxFunc/Functions/XorFn.lean\n M smart-fuzzer/tools/Run-ArraySupportTranche.ps1\n M smart-fuzzer/tools/Run-W109BulkBatch.ps1\n M smart-fuzzer/tools/pmt_ppmt_local_eval/Cargo.lock\n M smart-fuzzer/tools/pmt_ppmt_local_eval/Cargo.toml\n M smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/array_tranche_local_eval.rs\n?? crates/oxfunc_core/src/functions/address_name_classes.rs\n?? crates/oxfunc_core/src/functions/complex_decimal.rs\n?? crates/oxfunc_core/src/functions/complex_decimal_powers.rs\n?? crates/oxfunc_core/tests/bitwise_excel_parity_20260929.rs\n?? crates/oxfunc_core/tests/sln_excel_parity_20260929.rs\n?? crates/oxfunc_core/tests/typed_json_ingress_20260929.rs\n?? crates/oxfunc_core/tests/w111_address_live_replay.rs\n?? crates/oxfunc_core/tests/w111_complex_live_replay.rs\n?? crates/oxfunc_core/tests/w111_fact_live_replay.rs\n?? crates/oxfunc_core/tests/w111_radix_live_replay.rs\n?? crates/oxfunc_core/tests/w111_radix_typed_replay.rs\n?? docs/bugs/reports/BUGREP-FUNC-028_fact_negative_fraction.md\n?? docs/bugs/reports/BUGREP-FUNC-029_bitwise_admission_shift.md\n?? docs/bugs/reports/BUGREP-FUNC-030_address_coordinate_text.md\n?? docs/bugs/reports/BUGREP-FUNC-031_complex_decimal_presentation.md\n?? docs/bugs/reports/BUGREP-FUNC-032_radix_bounds_and_types.md\n?? docs/bugs/reports/BUGREP-FUNC-033_sln_arithmetic_admission.md\n?? docs/bugs/streams/BUG-FUNC-050_fact_negative_fraction.md\n?? docs/bugs/streams/BUG-FUNC-051_bitwise_admission_shift.md\n?? docs/bugs/streams/BUG-FUNC-052_address_coordinate_text.md\n?? docs/bugs/streams/BUG-FUNC-053_complex_decimal_presentation.md\n?? docs/bugs/streams/BUG-FUNC-054_radix_bounds_and_types.md\n?? docs/bugs/streams/BUG-FUNC-055_sln_arithmetic_admission.md\n?? docs/function-lane/evidence/w111-broad-20260929/\n?? formal/lean/OxFunc/Functions/Bitwise.lean\n?? formal/lean/OxFunc/Functions/LogicalFold.lean\n?? smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/array_tranche_local_eval/\n?? smart-fuzzer/tools/w111/Capture-LocaleProfile20260929.ps1\n?? smart-fuzzer/tools/w111/Test-AddressTextValue2Ingress.ps1\n?? smart-fuzzer/tools/w111/Test-NumericValue2Ingress20260929.ps1\n?? smart-fuzzer/tools/w111/Test-TypedFixtureIngress20260929.ps1\n?? smart-fuzzer/tools/w111/complex_binary_scaling_candidate.py\n?? smart-fuzzer/tools/w111/complex_format_candidate_20260929.py\n?? smart-fuzzer/tools/w111/complex_kernel_probe/\n?? smart-fuzzer/tools/w111/derive_address_name_classes_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_grammar_validation_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_numeric_sheet_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_probe_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_refinement_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_tokens_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_unicode_20260929.py\n?? smart-fuzzer/tools/w111/gen_bitwise_20260929.py\n?? smart-fuzzer/tools/w111/gen_bitwise_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_bitwise_typed_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_broad_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_decimal_powers.py\n?? smart-fuzzer/tools/w111/gen_complex_extremes_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_format_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_holdout_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_kernel_probes.py\n?? smart-fuzzer/tools/w111/gen_complex_midpoint_search_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_scaling_holdout.py\n?? smart-fuzzer/tools/w111/gen_extended_numeric_20260929.py\n?? smart-fuzzer/tools/w111/gen_locale_profile_20260929.py\n?? smart-fuzzer/tools/w111/gen_logical_text_20260929.py\n?? smart-fuzzer/tools/w111/gen_radix_bounds_20260929.py\n?? smart-fuzzer/tools/w111/gen_radix_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_radix_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_sln_20260929.py\n?? smart-fuzzer/tools/w111/gen_sln_typed_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_switch_scale_20260929.py\n?? smart-fuzzer/tools/w111/gen_w111_broad_20260929.py\n?? smart-fuzzer/tools/w111/replay_typed_campaign_20260929.py\n?? smart-fuzzer/tools/w111/retain_bitwise_20260929.py\n?? smart-fuzzer/tools/w111/retain_numeric_campaign.py\n?? smart-fuzzer/tools/w111/retain_radix_20260929.py\n?? smart-fuzzer/tools/w111/run_numeric_campaign.py\n?? smart-fuzzer/tools/w111/summarize_numeric_campaign.py\n",
+  "runner": "smart-fuzzer/tools/Run-W109BulkBatch.ps1",
+  "cache": "disabled",
+  "captures": [
+    {
+      "function": "IMSQRT",
+      "rows": 827,
+      "sha256": "43e1ae4181c791f3f2df7434f23350bfb5c156f425d6fa6bbf41f4a13703164a",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T13:10:29.8246899Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "IMDIV",
+      "rows": 852,
+      "sha256": "395783b3a3361cc5d3c9fc69883c781df0b36b57e09509b9a5779bd6a107cbc6",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T13:10:34.2692771Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    }
+  ],
+  "finished_utc": "2026-09-29T13:10:34.467494+00:00"
+}

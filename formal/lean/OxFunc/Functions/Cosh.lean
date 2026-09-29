@@ -1,3 +1,4 @@
+import OxFunc.HyperbolicComposition
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 
@@ -27,11 +28,14 @@ def evalCoshSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Str
 
 theorem evalCosh_numeric_text_admitted :
     evalCoshSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalCoshSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalCoshSurfaceClass, coerceToNumber, parsed]
 
 theorem coshMeta_profiles :
     coshMeta.kernelSignatureClass = KernelSignatureClass.numToNum
     ∧ coshMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter := by
   simp [coshMeta]
+
+abbrev coshCompositionBinding := OxFunc.HyperbolicComposition.cosh
 
 end OxFunc.Functions

@@ -27,13 +27,14 @@
 
 ## 4. Pre-call Coercion Policy
 1. surface preparation resolves references before adapter entry.
-2. prepared values are coerced numerically for truthiness.
-3. numeric zero is false; all other admitted numeric values are true in the current seed.
+2. Numeric zero is false; other finite numeric values are true. Logical values retain their truth value.
+3. Direct text contributes only when it is ASCII-case-insensitive `TRUE` or `FALSE`, without whitespace trimming. Other direct text, and all text inside arrays or references, is ignored. Blank cells and omitted items are ignored.
 
 ## 5. Core Outcome Model
-1. admitted call returns `FALSE` as soon as any argument coerces to numeric zero.
-2. admitted call returns `TRUE` when all arguments coerce to non-zero numeric values.
-3. coercion failures terminate evaluation with error.
+1. All arguments are evaluated eagerly. A false value does not suppress a later worksheet error.
+2. The first worksheet error in argument order wins; array and range cells are visited in row-major order.
+3. Without an error, any contributing false value yields `FALSE`; otherwise at least one contributing true value yields `TRUE`.
+4. If every item is ignored, the outcome is `#VALUE!`.
 
 ## 6. Post-call Adaptation Policy
 1. successful evaluation returns a scalar logical `EvalValue`.
@@ -45,6 +46,7 @@
 2. Workbook Compatibility Version scope:
    - bounded dual-run workbook lanes: `default` and `compat_template`.
    - `compat_template` is the `.xls` compatibility template emitted by `tools/w12-probe/new-w12-compat-template.ps1`.
+3. Current corroborating replay: Excel 16.0 build 20430, 64-bit, Compatibility Version 2, 1900 date system, 2026-09-29. Update channel is unverified. This does not extend the observations to every locale or alternate build.
 
 ## 8. Evidence Posture
 1. `spec_anchor`:
@@ -52,14 +54,14 @@
    - public reference ids linked there: `XLS-CF-FN-001`, `XLS-CF-FN-002`, `XLS-CF-FN-007`, `XLS-CF-TV-007`, `XLS-CF-TV-008`
 2. `empirical_anchor`:
    - `W12-MODERATE-BL-20260309`
+   - `evidence/w111-broad-20260929/logical/`: 540 typed AND/OR/XOR observations with exact dispatch replay, plus spelling and error-precedence observations.
 3. policy decision anchors:
    - `docs/function-lane/W12_PROFILE_SYSTEM_SIDE_NOTES.md` (note 4)
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
-## 9. W12 Seed Coverage
-1. direct numeric/logical truthiness is implemented over prepared values.
-2. direct text yields `#VALUE!`, array-like text and blank cells are ignored, and the all-ignored lane returns `#VALUE!`.
-3. no known current-phase semantic gap remains in the admitted logical-fold lane, so this slice is `function-phase-complete` for the current reference baseline.
+## 9. Current Evidence and Review State
+1. The earlier text-rejection and short-circuit descriptions were stale. The runtime repair predates the 2026-09-29 campaign; its direct-text rule is now exercised by the retained typed replay and the Lean logical-fold bindings.
+2. Current campaign state is `scope_partial`, `target_partial`, integration `partial`. Open lanes: canonical status reconciliation, the required completion checklist and self-audit, and combined repository validation. Passing this corpus is not a new function-phase completion claim.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/and_fn.rs`

@@ -25,7 +25,7 @@
     "caller_col": 1,
     "snapshot_surface_name": "ACOS",
     "cell_fixture": {},
-    "expected_value_summary": "Number(1.0471975511965979)",
+    "expected_value_summary": "Number(1.0471975511965976)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
       "DirectScalar"
@@ -212,7 +212,7 @@
     "caller_col": 1,
     "snapshot_surface_name": "COTH",
     "cell_fixture": {},
-    "expected_value_summary": "Number(1.3130352854993312)",
+    "expected_value_summary": "Number(1.3130352854993315)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
       "DirectScalar"
@@ -1732,9 +1732,9 @@
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
       "DirectScalar",
+      "Omitted",
       "DirectScalar",
-      "DirectScalar",
-      "DirectScalar"
+      "Omitted"
     ],
     "expected_prepared_argument_sources": null,
     "now_serial": null,
@@ -1753,11 +1753,11 @@
     "expected_prepared_argument_structures": [
       "DirectScalar",
       "DirectScalar",
+      "Omitted",
       "DirectScalar",
       "DirectScalar",
-      "DirectScalar",
-      "DirectScalar",
-      "DirectScalar"
+      "Omitted",
+      "Omitted"
     ],
     "expected_prepared_argument_sources": null,
     "now_serial": null,
@@ -1775,11 +1775,11 @@
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
       "DirectScalar",
+      "Omitted",
       "DirectScalar",
       "DirectScalar",
-      "DirectScalar",
-      "DirectScalar",
-      "DirectScalar"
+      "Omitted",
+      "Omitted"
     ],
     "expected_prepared_argument_sources": null,
     "now_serial": null,

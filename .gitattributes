@@ -1,0 +1,3 @@
+# These retained oracle artifacts carry byte-level SHA-256 manifests.
+# Preserve their bytes across checkouts, including Windows core.autocrlf.
+docs/function-lane/evidence/w111-broad-20260929/** -text whitespace=cr-at-eol

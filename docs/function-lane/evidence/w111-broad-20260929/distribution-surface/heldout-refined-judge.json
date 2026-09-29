@@ -1,0 +1,27 @@
+{
+  "rows": 1296,
+  "matches": 1296,
+  "by_function": {
+    "FUNC.NORM.S.DIST": {
+      "rows": 240,
+      "matches": 240
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 271,
+      "matches": 271
+    },
+    "FUNC.NORMDIST": {
+      "rows": 271,
+      "matches": 271
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 257,
+      "matches": 257
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 257,
+      "matches": 257
+    }
+  },
+  "misses": []
+}

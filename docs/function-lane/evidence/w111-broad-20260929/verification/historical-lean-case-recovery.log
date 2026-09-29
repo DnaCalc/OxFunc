@@ -1,0 +1,8 @@
+✔ [518/526] Built OxFunc.Functions.HarMeanFn (996ms)
+✔ [519/526] Built OxFunc.Functions.DevSqFn (1.0s)
+✔ [520/526] Built OxFunc.Functions.HarMeanFn:c.o (161ms)
+✔ [521/526] Built OxFunc.Functions.DevSqFn:c.o (878ms)
+✔ [522/526] Built OxFunc (921ms)
+✔ [524/526] Built Main (995ms)
+✔ [526/526] Built oxfunc_formal_check:exe (833ms)
+Build completed successfully (526 jobs).

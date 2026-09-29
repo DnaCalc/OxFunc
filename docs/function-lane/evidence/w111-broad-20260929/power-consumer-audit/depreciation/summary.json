@@ -1,0 +1,44 @@
+{
+  "old_executable": ".tmp\\sf-snapshot-1735.exe",
+  "old_sha256": "13e760982df3b51ec41c6761e858fcc1def00386172748237bcf97dca2f0ce3a",
+  "new_executable": ".tmp\\sf-power-consumer-current-20260929.exe",
+  "new_sha256": "ef46a5e55717395b63dc0802d5cde965aac0daca011217b08bc94ad1a4e62449",
+  "banks": [
+    {
+      "path": "smart-fuzzer\\cache\\w111-depreciation-20260929\\eighth-heldout-db-answers.json",
+      "sha256": "4629a933edf2ed8843b8f6ea8f0139a756b5a1282bdc1b01272e15b1368cc8bc",
+      "function": "DB",
+      "rows": 35783,
+      "old_exact": 35783,
+      "new_exact": 35783,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": [],
+      "value2_ingress_qualification_ids": []
+    },
+    {
+      "path": "smart-fuzzer\\cache\\w111-depreciation-20260929\\sixth-heldout-ddb-answers.json",
+      "sha256": "37276e89ddfdaa8b12b2ebbf750f8bb0c590625a552001a960b4f99610932d91",
+      "function": "DDB",
+      "rows": 19002,
+      "old_exact": 19002,
+      "new_exact": 19002,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": [],
+      "value2_ingress_qualification_ids": []
+    },
+    {
+      "path": "smart-fuzzer\\cache\\w111-depreciation-20260929\\fifth-heldout-vdb-noswitch-answers.json",
+      "sha256": "6ec50540daa4b24b348cb647984856cc1b8129e3695100c22df17a775666e95f",
+      "function": "VDB",
+      "rows": 16975,
+      "old_exact": 16975,
+      "new_exact": 16975,
+      "newly_exact": [],
+      "regressions": [],
+      "changed_misses": [],
+      "value2_ingress_qualification_ids": []
+    }
+  ]
+}

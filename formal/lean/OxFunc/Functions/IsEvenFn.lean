@@ -1,8 +1,10 @@
 import OxFunc.FunctionCore
+import OxFunc.IntegerPreparation
 
 namespace OxFunc.Functions
 
 open OxFunc
+abbrev isEvenExecutable := IntegerPreparation.isEvenKernel
 
 def isEvenMeta : FunctionMeta := {
   functionId := "FUNC.ISEVEN"

@@ -1,0 +1,23 @@
+{
+  "state": "scope_partial",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/reference_metadata_family.rs": "a178f2be22f11b84d0c0f2b1d8ef4c71a43627a87687038d8b1f01399e0bd0e1",
+    "crates/oxfunc_core/src/functions/address_name_classes.rs": "7922c81f5ecfd1e45603b9db53090fe8d516c0cc8568098aedafe4f45122fa36",
+    "crates/oxfunc_core/src/functions/round_fn.rs": "99cc24e69e4c301e468175f051dc708362aa4aa7e13d33e5908094a8ced1be19",
+    "crates/oxfunc_core/tests/w111_address_live_replay.rs": "f5f8e21650373a666ea993bcc2a726790d3a6f928f4051d60d5f968a1ca6246d",
+    "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean": "f2c6b5c6216c7ab317c6bd69c9c7c69e50e2500936ecf8e21a137b666e01e00d"
+  },
+  "validation": {
+    "admitted_equivalence_rows": 41015,
+    "rust_integration_tests_passed": 8,
+    "explicitly_ignored_open_numeric_text_reproductions": 2,
+    "existing_reference_metadata_unit_tests_passed": 7,
+    "lean_module": "OxFunc/Functions/ReferenceMetadataFamily.lean",
+    "lean_compile": "passed"
+  },
+  "open_lanes": [
+    "shared numeric text syntax and locale/date/year preparation context",
+    "final function-level claim audit"
+  ],
+  "freeze_relation": "Rust formatting only after refined-candidate-freeze; retained numeric/text heldout excludes numeric text coercion. Shared coercion grammar is a separate ongoing candidate."
+}

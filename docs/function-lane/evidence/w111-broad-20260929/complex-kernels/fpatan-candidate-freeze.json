@@ -1,0 +1,23 @@
+{
+  "schema_version": "oxfunc.w111.fpatan_candidate_freeze.v0",
+  "manifest_written_utc": "2026-09-29T14:25:23.6556367Z",
+  "freeze_provenance": "These source hashes were announced to the campaign owner before independent capture; retained source copies were written at generation.",
+  "sources": [
+    {
+      "path": "fpatan-frozen-complex-family.rs",
+      "sha256": "0f8a3ba237cdd75b3cec3d327a1a9a26a6ce7215d2fc20f07629880998b77046"
+    },
+    {
+      "path": "fpatan-frozen-numeric-mod.rs",
+      "sha256": "f7fca56494ecc0d56371afed2b3d43615bb5c4674320bcf842d2e919a0eda9e4"
+    },
+    {
+      "path": "fpatan-frozen-x87.rs",
+      "sha256": "9020f6665e9fcc31daf3b8891a580a989a983252e0680d6457930b506f59abd8"
+    }
+  ],
+  "independent_case_sets": [
+    "w111-imargument-heldout2-20260929/typed.json",
+    "w111-imsqrt-heldout2-20260929/typed.json"
+  ]
+}

@@ -2,10 +2,8 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::binary_numeric::{
-    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
-};
-use crate::functions::bit_common::coerce_bit_operand;
+use crate::functions::binary_numeric::{BinaryNumericSurfaceError, map_binary_numeric_error_to_ws};
+use crate::functions::bit_common::{coerce_bit_operand, eval_bitwise_surface};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -31,7 +29,7 @@ pub fn eval_bitor_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, BinaryNumericSurfaceError> {
-    eval_binary_numeric_surface(args, resolver, bitor_kernel)
+    eval_bitwise_surface(args, resolver, bitor_kernel)
 }
 
 pub fn map_bitor_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetErrorCode {

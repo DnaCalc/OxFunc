@@ -1,0 +1,363 @@
+{
+  "ROUND": {
+    "rows": 6780,
+    "unresolved_payload_count": 10,
+    "unresolved_payload_rows": [
+      {
+        "id": "w111roundheldout-ROUND-05123",
+        "args": [
+          "0x7fefffffffffffff",
+          "0x408b837c525da294"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05125",
+        "args": [
+          "0x7fefffffffffffff",
+          "0x40e4614000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05126",
+        "args": [
+          "0x7fefffffffffffff",
+          "0xc05bb80000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05131",
+        "args": [
+          "0xffeffffffffffffe",
+          "0x4068c8eb7c46ac08"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05132",
+        "args": [
+          "0x7feffffffffffffe",
+          "0x856400f40c444c17"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05134",
+        "args": [
+          "0x7feffffffffffffe",
+          "0x40efffffffffffff"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05142",
+        "args": [
+          "0x7feffffffffffffd",
+          "0x4072afe3d193e86c"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05147",
+        "args": [
+          "0x7feffffffffffffc",
+          "0xc06e280000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05149",
+        "args": [
+          "0xffeffffffffffffc",
+          "0xc0412291f8699710"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUND-05150",
+        "args": [
+          "0xffeffffffffffffc",
+          "0x408ee6db123698b6"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      }
+    ],
+    "finite_error_mismatches": 0,
+    "misses": []
+  },
+  "ROUNDDOWN": {
+    "rows": 6780,
+    "unresolved_payload_count": 15,
+    "unresolved_payload_rows": [
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05123",
+        "args": [
+          "0x7fefffffffffffff",
+          "0x408b837c525da294"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05124",
+        "args": [
+          "0xffefffffffffffff",
+          "0xc1e0000000000001"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05125",
+        "args": [
+          "0x7fefffffffffffff",
+          "0x40e4614000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05126",
+        "args": [
+          "0x7fefffffffffffff",
+          "0xc05bb80000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05131",
+        "args": [
+          "0xffeffffffffffffe",
+          "0x4068c8eb7c46ac08"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05132",
+        "args": [
+          "0x7feffffffffffffe",
+          "0x856400f40c444c17"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05133",
+        "args": [
+          "0xffeffffffffffffe",
+          "0xee72f4c9f7a4db3b"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05134",
+        "args": [
+          "0x7feffffffffffffe",
+          "0x40efffffffffffff"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05140",
+        "args": [
+          "0x7feffffffffffffd",
+          "0xc1dfffffffffffff"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05141",
+        "args": [
+          "0x7feffffffffffffd",
+          "0x552437f2dcefb7e4"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05142",
+        "args": [
+          "0x7feffffffffffffd",
+          "0x4072afe3d193e86c"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05147",
+        "args": [
+          "0x7feffffffffffffc",
+          "0xc06e280000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05148",
+        "args": [
+          "0x7feffffffffffffc",
+          "0xfbcf51c805161db9"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05149",
+        "args": [
+          "0xffeffffffffffffc",
+          "0xc0412291f8699710"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-ROUNDDOWN-05150",
+        "args": [
+          "0xffeffffffffffffc",
+          "0x408ee6db123698b6"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      }
+    ],
+    "finite_error_mismatches": 0,
+    "misses": []
+  },
+  "ROUNDUP": {
+    "rows": 6780,
+    "unresolved_payload_count": 0,
+    "unresolved_payload_rows": [],
+    "finite_error_mismatches": 1,
+    "misses": [
+      {
+        "id": "w111roundheldout-ROUNDUP-04118",
+        "args": [
+          "0x0210be08d0527f0a",
+          "0x4073100000000000"
+        ],
+        "expected_bits": "0x0210be08d0527e1d",
+        "actual": "0x0210be08ec6943e2"
+      }
+    ]
+  },
+  "TRUNC": {
+    "rows": 6780,
+    "unresolved_payload_count": 15,
+    "unresolved_payload_rows": [
+      {
+        "id": "w111roundheldout-TRUNC-05123",
+        "args": [
+          "0x7fefffffffffffff",
+          "0x408b837c525da294"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05124",
+        "args": [
+          "0xffefffffffffffff",
+          "0xc1e0000000000001"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05125",
+        "args": [
+          "0x7fefffffffffffff",
+          "0x40e4614000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05126",
+        "args": [
+          "0x7fefffffffffffff",
+          "0xc05bb80000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05131",
+        "args": [
+          "0xffeffffffffffffe",
+          "0x4068c8eb7c46ac08"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05132",
+        "args": [
+          "0x7feffffffffffffe",
+          "0x856400f40c444c17"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05133",
+        "args": [
+          "0xffeffffffffffffe",
+          "0xee72f4c9f7a4db3b"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05134",
+        "args": [
+          "0x7feffffffffffffe",
+          "0x40efffffffffffff"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05140",
+        "args": [
+          "0x7feffffffffffffd",
+          "0xc1dfffffffffffff"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05141",
+        "args": [
+          "0x7feffffffffffffd",
+          "0x552437f2dcefb7e4"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05142",
+        "args": [
+          "0x7feffffffffffffd",
+          "0x4072afe3d193e86c"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05147",
+        "args": [
+          "0x7feffffffffffffc",
+          "0xc06e280000000000"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05148",
+        "args": [
+          "0x7feffffffffffffc",
+          "0xfbcf51c805161db9"
+        ],
+        "expected_bits": "0x7ff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05149",
+        "args": [
+          "0xffeffffffffffffc",
+          "0xc0412291f8699710"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      },
+      {
+        "id": "w111roundheldout-TRUNC-05150",
+        "args": [
+          "0xffeffffffffffffc",
+          "0x408ee6db123698b6"
+        ],
+        "expected_bits": "0xfff000000000000a"
+      }
+    ],
+    "finite_error_mismatches": 0,
+    "misses": []
+  }
+}

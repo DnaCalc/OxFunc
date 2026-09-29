@@ -1,0 +1,28 @@
+{
+  "schema_version": "w111.numeric_snapshot.v2",
+  "tag": "1735",
+  "captured_utc": "2026-09-29T17:33:23.115556+00:00",
+  "binary_sha256": "13e760982df3b51ec41c6761e858fcc1def00386172748237bcf97dca2f0ce3a",
+  "groups": {
+    "numeric": {
+      "functions": 113,
+      "raw_rows": 140114,
+      "admitted_rows": 138345,
+      "admitted_agree": 132624,
+      "withheld_rows": 1769,
+      "qualified_report": "smart-fuzzer/cache/w111-snapshot-1735/numeric-qualified.json",
+      "sha256": "5abf335f864f3d4d6b5e01f3bac2dce1a375402afbcf3958226625ebcd4e6cfc",
+      "functions_with_misses": 26
+    },
+    "extended": {
+      "functions": 72,
+      "raw_rows": 83245,
+      "admitted_rows": 83245,
+      "admitted_agree": 81455,
+      "withheld_rows": 0,
+      "qualified_report": "smart-fuzzer/cache/w111-snapshot-1735/extended-qualified.json",
+      "sha256": "935af1025eda0c146c37f0a54c42dcb880a562a225dfc2e054f0be27b56e7632",
+      "functions_with_misses": 21
+    }
+  }
+}

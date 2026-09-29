@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "path": "discovery/manifest.json",
+      "sha256": "635846104098ceb5e857f65fb4a64c5a192cb76ce68c8404eb87c13f4b7a5272"
+    },
+    {
+      "path": "discovery/outcomes/local.jsonl",
+      "sha256": "96b806bc8040fbb72511b0d5557d637a52eb3f94126b8b0d1112c70be2001437"
+    },
+    {
+      "path": "discovery/rollup.json",
+      "sha256": "f72c821ff1a41ba409bdbd02d549b974d8ca560ec46e29ef95331476c816ceed"
+    },
+    {
+      "path": "discovery/typed-run/manifest.json",
+      "sha256": "635846104098ceb5e857f65fb4a64c5a192cb76ce68c8404eb87c13f4b7a5272"
+    },
+    {
+      "path": "discovery/typed-run/outcomes/local.jsonl",
+      "sha256": "96b806bc8040fbb72511b0d5557d637a52eb3f94126b8b0d1112c70be2001437"
+    },
+    {
+      "path": "discovery/typed-run/rollup.json",
+      "sha256": "f72c821ff1a41ba409bdbd02d549b974d8ca560ec46e29ef95331476c816ceed"
+    },
+    {
+      "path": "heldout/candidate/coercion.rs",
+      "sha256": "96564e9e279de1ad5962f846b41d52242ccfafdfaa568b8f00b61ef335667908"
+    },
+    {
+      "path": "heldout/candidate/functions/distribution_common.rs",
+      "sha256": "20c45413d25e8aaea096e3650f2dfbc4ef307391ff9a5c1380de6cf6b08a22d8"
+    },
+    {
+      "path": "heldout/candidate/functions/permutationa_fn.rs",
+      "sha256": "8d600cf52bacdc55fa2bceecbae9f7dfaaa48aea991d6cde2b224d3531885a4f"
+    },
+    {
+      "path": "heldout/candidate-freeze.json",
+      "sha256": "bb8d68cca2a34694efc8642dda110befbb1e8aae16b4adc7dd7fbb00417992f9"
+    },
+    {
+      "path": "heldout/manifest.json",
+      "sha256": "1d2c1a0105187a7c069a35b482c91c65782476eda285ae51aa08236522be98a8"
+    },
+    {
+      "path": "heldout/typed-run/manifest.json",
+      "sha256": "2b4905849b87b5ce621831293c3dda9595b02ed964e090c3fbe831826fd37e8e"
+    },
+    {
+      "path": "heldout/typed-run/outcomes/local.jsonl",
+      "sha256": "4c8803e535f0dbc0663ef2d48ffac4dfcf23003b809f44b0b6ae6e3cdc689c92"
+    },
+    {
+      "path": "heldout/typed-run/rollup.json",
+      "sha256": "8f27fb055041bc2a75ce14d4c1c4d8c89fdf484dd44c5d60e3a97756415734a4"
+    },
+    {
+      "path": "heldout/typed.json",
+      "sha256": "598e7cea1995d6207db2a3ca31da147f02ac573b84d36245cf5726ba66092257"
+    },
+    {
+      "path": "typed-discovery.json",
+      "sha256": "58905be823108c9c602093182b642e22e2fb4053acd6e4e23cadcb256afc1c39"
+    },
+    {
+      "path": "typed-heldout.json",
+      "sha256": "4db563a6aa5a4b8a1f261ba201ac3fcfa9825297cedcbe330d8516a6e844c20e"
+    }
+  ]
+}

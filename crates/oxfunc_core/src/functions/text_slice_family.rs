@@ -5,10 +5,60 @@ use crate::function::{
 };
 use crate::functions::adapters::{
     coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
-    run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcArray, CalcValue, CoreValue, ExcelText, WorksheetErrorCode};
+use crate::value::{ArrayShape, CalcArray, CalcValue, CoreValue, ExcelText, WorksheetErrorCode};
+
+/// Text scalar functions evaluate error precedence after shape expansion.
+/// A missing coordinate is an argument #N/A, not an unconditional result #N/A:
+/// an earlier explicit argument error can still be the cell's result.
+pub(crate) fn run_text_lifted<E>(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    on_cell: impl Fn(&[CalcValue]) -> Result<CalcValue, E>,
+    map_error: impl Fn(&E) -> WorksheetErrorCode,
+    map_preparation_error: impl FnOnce(CoercionError) -> E,
+) -> Result<CalcValue, E> {
+    let prepared = prepare_args_values_only(args, resolver).map_err(map_preparation_error)?;
+    let shape = prepared
+        .iter()
+        .fold(ArrayShape { rows: 1, cols: 1 }, |out, arg| {
+            let shape = match arg.core() {
+                CoreValue::Array(a) => a.shape(),
+                _ => ArrayShape { rows: 1, cols: 1 },
+            };
+            ArrayShape {
+                rows: out.rows.max(shape.rows),
+                cols: out.cols.max(shape.cols),
+            }
+        });
+    if shape.rows == 1 && shape.cols == 1 {
+        return on_cell(&prepared);
+    }
+    let mut cells = Vec::with_capacity(shape.cell_count());
+    for row in 0..shape.rows {
+        for col in 0..shape.cols {
+            let values = prepared
+                .iter()
+                .map(|arg| match arg.core() {
+                    CoreValue::Array(a) => a
+                        .get(
+                            if a.shape().rows == 1 { 0 } else { row },
+                            if a.shape().cols == 1 { 0 } else { col },
+                        )
+                        .cloned()
+                        .unwrap_or_else(|| CalcValue::error(WorksheetErrorCode::NA)),
+                    _ => arg.clone(),
+                })
+                .collect::<Vec<_>>();
+            cells
+                .push(on_cell(&values).unwrap_or_else(|error| CalcValue::error(map_error(&error))));
+        }
+    }
+    Ok(CalcValue::array(
+        CalcArray::new(shape, cells).expect("text broadcast shape preserved"),
+    ))
+}
 
 const TEXT_SLICE_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.TEXT_SLICE_BASE",
@@ -61,12 +111,18 @@ fn domain_value_error() -> TextSliceEvalError {
     TextSliceEvalError::Domain(WorksheetErrorCode::Value)
 }
 
-fn nonnegative_count_from_number(n: f64) -> Result<usize, TextSliceEvalError> {
-    if !n.is_finite() {
+fn nonnegative_count_from_number(n: f64, tolerant: bool) -> Result<usize, TextSliceEvalError> {
+    if !n.is_finite() || n < 0.0 || (!tolerant && n >= 2147483648.0) {
         return Err(domain_value_error());
     }
 
-    let truncated = n.trunc();
+    // LEFT/RIGHT share the characterized ADDRESS/DATE integer boundary.
+    // MID/MIDB use plain truncation and signed-32-bit admission instead.
+    let truncated = if tolerant {
+        crate::functions::date_fn::date_integer_floor(n)
+    } else {
+        n.trunc()
+    };
     if truncated < 0.0 {
         return Err(domain_value_error());
     }
@@ -78,7 +134,7 @@ fn nonnegative_count_from_number(n: f64) -> Result<usize, TextSliceEvalError> {
 }
 
 fn one_based_start_from_number(n: f64) -> Result<usize, TextSliceEvalError> {
-    if !n.is_finite() {
+    if !n.is_finite() || n >= 2147483648.0 {
         return Err(domain_value_error());
     }
 
@@ -93,80 +149,98 @@ fn one_based_start_from_number(n: f64) -> Result<usize, TextSliceEvalError> {
     Ok(truncated as usize)
 }
 
+fn character_boundary(text: &ExcelText, count: usize) -> usize {
+    let units = text.utf16_code_units();
+    let (mut offset, mut seen) = (0, 0);
+    while offset < units.len() && seen < count {
+        let paired = (0xD800..=0xDBFF).contains(&units[offset])
+            && units
+                .get(offset + 1)
+                .is_some_and(|next| (0xDC00..=0xDFFF).contains(next));
+        offset += if paired { 2 } else { 1 };
+        seen += 1;
+    }
+    offset
+}
+
 fn take_left_units(text: &ExcelText, count: usize) -> ExcelText {
-    let end = count.min(text.len_utf16_code_units());
+    // If the forward character scan stops at an unmatched final high surrogate
+    // before reaching count, Excel falls back to the original raw-unit count.
+    // It can therefore split an earlier pair; the maximum-length heldout is a
+    // strong discriminator from clipping to the successfully scanned prefix.
+    let end = if character_scan_end(text) < text.len_utf16_code_units()
+        && count > len_character_count(text)
+    {
+        count.min(text.len_utf16_code_units())
+    } else {
+        character_boundary(text, count)
+    };
     ExcelText::from_utf16_code_units(text.utf16_code_units()[..end].to_vec())
 }
 
 fn take_right_units(text: &ExcelText, count: usize) -> ExcelText {
-    let take_count = count.min(text.len_utf16_code_units());
-    let start = text.len_utf16_code_units() - take_count;
+    let start = character_boundary(text, slice_character_count(text).saturating_sub(count));
     ExcelText::from_utf16_code_units(text.utf16_code_units()[start..].to_vec())
 }
 
-fn take_mid_units(text: &ExcelText, start_one_based: usize, count: usize) -> ExcelText {
+fn take_mid_units(
+    text: &ExcelText,
+    start_one_based: usize,
+    count: usize,
+    raw_units: bool,
+) -> ExcelText {
     if count == 0 {
         return ExcelText::from_utf16_code_units(Vec::new());
     }
 
-    let start_index = start_one_based.saturating_sub(1);
-    if start_index >= text.len_utf16_code_units() {
+    let start_index = if raw_units {
+        start_one_based.saturating_sub(1)
+    } else {
+        character_boundary(text, start_one_based.saturating_sub(1))
+    };
+    let scan_end = if raw_units {
+        text.len_utf16_code_units()
+    } else {
+        character_scan_end(text)
+    };
+    if start_index >= scan_end {
         return ExcelText::from_utf16_code_units(Vec::new());
     }
 
-    let end_index = start_index
-        .saturating_add(count)
-        .min(text.len_utf16_code_units());
+    let end_index = if raw_units {
+        start_index
+            .saturating_add(count)
+            .min(text.len_utf16_code_units())
+    } else {
+        character_boundary(
+            text,
+            start_one_based.saturating_sub(1).saturating_add(count),
+        )
+        .min(scan_end)
+    };
     ExcelText::from_utf16_code_units(text.utf16_code_units()[start_index..end_index].to_vec())
 }
 
-fn len_character_count(text: &ExcelText) -> usize {
+fn slice_character_count(text: &ExcelText) -> usize {
     std::char::decode_utf16(text.utf16_code_units().iter().copied()).count()
 }
 
-fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
-    cell.clone()
+fn character_scan_end(text: &ExcelText) -> usize {
+    text.len_utf16_code_units()
+        - usize::from(
+            text.utf16_code_units()
+                .last()
+                .is_some_and(|unit| (0xD800..=0xDBFF).contains(unit)),
+        )
 }
 
-fn text_slice_result_to_array_cell(result: Result<CalcValue, TextSliceEvalError>) -> CalcValue {
-    match result {
-        Ok(value) if matches!(value.core(), CoreValue::Text(_) | CoreValue::Error(_)) => value,
-        Ok(_) => CalcValue::error(WorksheetErrorCode::Value),
-        Err(err) => CalcValue::error(map_text_slice_error_to_ws(&err)),
-    }
-}
-
-fn eval_text_slice_with_single_array_lift(
-    prepared: &[CalcValue],
-    eval_scalar: impl Fn(&[CalcValue]) -> Result<CalcValue, TextSliceEvalError>,
-) -> Result<CalcValue, TextSliceEvalError> {
-    let array_args = prepared
-        .iter()
-        .enumerate()
-        .filter_map(|(idx, arg)| match arg.core() {
-            CoreValue::Array(array) => Some((idx, array)),
-            _ => None,
-        })
-        .collect::<Vec<_>>();
-
-    match array_args.as_slice() {
-        [] => eval_scalar(prepared),
-        [(arg_index, array)] => {
-            let cells = array
-                .iter_row_major()
-                .map(|cell| {
-                    let mut scalar_args = prepared.to_vec();
-                    scalar_args[*arg_index] = prepared_from_array_cell(cell);
-                    text_slice_result_to_array_cell(eval_scalar(&scalar_args))
-                })
-                .collect();
-            Ok(CalcValue::array(
-                CalcArray::new(array.shape(), cells)
-                    .expect("text-slice lifted array shape remains valid"),
-            ))
-        }
-        _ => eval_scalar(prepared),
-    }
+fn len_character_count(text: &ExcelText) -> usize {
+    // The CV2 forward count does not count a trailing unmatched high surrogate.
+    // RIGHT traverses from the end and preserves it; LEFT has a raw-count
+    // fallback when the character scan does not reach count. Raw probes bind all
+    // three paths separately instead of routing through lossy Rust strings.
+    slice_character_count(text)
+        - usize::from(character_scan_end(text) < text.len_utf16_code_units())
 }
 
 fn eval_left_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSliceEvalError> {
@@ -197,7 +271,18 @@ fn eval_right_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSl
     Ok(CalcValue::text(take_right_units(&text, count)))
 }
 
-fn eval_mid_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSliceEvalError> {
+fn numeric_slot(arg: &CalcValue) -> Result<f64, TextSliceEvalError> {
+    if matches!(arg.core(), CoreValue::Missing) {
+        Ok(0.0)
+    } else {
+        coerce_prepared_to_number(arg).map_err(TextSliceEvalError::Coercion)
+    }
+}
+
+fn eval_mid_prepared_value(
+    prepared: &[CalcValue],
+    raw_units: bool,
+) -> Result<CalcValue, TextSliceEvalError> {
     if !MID_META.arity.accepts(prepared.len()) {
         return Err(TextSliceEvalError::ArityMismatch {
             expected_min: MID_META.arity.min,
@@ -207,18 +292,20 @@ fn eval_mid_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSlic
     }
 
     let text = coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
-    let start = coerce_prepared_to_number(&prepared[1]).map_err(TextSliceEvalError::Coercion)?;
-    let count = coerce_prepared_to_number(&prepared[2]).map_err(TextSliceEvalError::Coercion)?;
+    let start = numeric_slot(&prepared[1])?;
+    let count = numeric_slot(&prepared[2])?;
     let start = one_based_start_from_number(start)?;
-    let count = nonnegative_count_from_number(count)?;
-    Ok(CalcValue::text(take_mid_units(&text, start, count)))
+    let count = nonnegative_count_from_number(count, false)?;
+    Ok(CalcValue::text(take_mid_units(
+        &text, start, count, raw_units,
+    )))
 }
 
 pub fn eval_len_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, TextSliceEvalError> {
-    run_values_only_prepared(
+    run_text_lifted(
         args,
         resolver,
         |prepared| {
@@ -234,6 +321,7 @@ pub fn eval_len_surface(
                 coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
             Ok(CalcValue::number(len_character_count(&text) as f64))
         },
+        map_text_slice_error_to_ws,
         TextSliceEvalError::Coercion,
     )
 }
@@ -243,35 +331,60 @@ fn resolve_optional_count(prepared: &[CalcValue]) -> Result<usize, TextSliceEval
         return Ok(1);
     }
 
-    let count = coerce_prepared_to_number(&prepared[1]).map_err(TextSliceEvalError::Coercion)?;
-    nonnegative_count_from_number(count)
+    let count = numeric_slot(&prepared[1])?;
+    nonnegative_count_from_number(count, true)
 }
 
 pub fn eval_left_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, TextSliceEvalError> {
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
-    eval_text_slice_with_single_array_lift(&prepared, eval_left_prepared_value)
+    run_text_lifted(
+        args,
+        resolver,
+        eval_left_prepared_value,
+        map_text_slice_error_to_ws,
+        TextSliceEvalError::Coercion,
+    )
 }
 
 pub fn eval_right_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, TextSliceEvalError> {
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
-    eval_text_slice_with_single_array_lift(&prepared, eval_right_prepared_value)
+    run_text_lifted(
+        args,
+        resolver,
+        eval_right_prepared_value,
+        map_text_slice_error_to_ws,
+        TextSliceEvalError::Coercion,
+    )
 }
 
 pub fn eval_mid_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, TextSliceEvalError> {
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
-    eval_text_slice_with_single_array_lift(&prepared, eval_mid_prepared_value)
+    run_text_lifted(
+        args,
+        resolver,
+        |prepared| eval_mid_prepared_value(prepared, false),
+        map_text_slice_error_to_ws,
+        TextSliceEvalError::Coercion,
+    )
+}
+
+pub(crate) fn eval_mid_utf16_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, TextSliceEvalError> {
+    run_text_lifted(
+        args,
+        resolver,
+        |prepared| eval_mid_prepared_value(prepared, true),
+        map_text_slice_error_to_ws,
+        TextSliceEvalError::Coercion,
+    )
 }
 
 pub fn map_text_slice_error_to_ws(e: &TextSliceEvalError) -> WorksheetErrorCode {
@@ -287,6 +400,7 @@ pub fn map_text_slice_error_to_ws(e: &TextSliceEvalError) -> WorksheetErrorCode 
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::CalcArray;
 
     struct NoResolver;
 
@@ -333,12 +447,12 @@ mod tests {
         assert!(dangling_tail.has_dangling_high_surrogate_tail());
         assert_eq!(
             eval_len_surface(&[(CalcValue::text(dangling_tail.clone()))], &NoResolver,),
-            Ok(CalcValue::number(16_384.0))
+            Ok(CalcValue::number(16_383.0))
         );
     }
 
     #[test]
-    fn left_defaults_to_one_and_slices_utf16_code_units() {
+    fn left_defaults_to_one_and_preserves_surrogate_pairs() {
         assert_eq!(
             eval_left_surface(&[text_value("ABC".encode_utf16().collect())], &NoResolver),
             Ok(CalcValue::text(ExcelText::from_utf16_code_units(
@@ -351,7 +465,7 @@ mod tests {
                 &NoResolver
             ),
             Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
-                0xD83D
+                0xD83D, 0xDE00
             ])))
         );
         assert_eq!(
@@ -366,7 +480,7 @@ mod tests {
     }
 
     #[test]
-    fn right_defaults_to_one_and_slices_utf16_code_units() {
+    fn right_defaults_to_one_and_preserves_surrogate_pairs() {
         assert_eq!(
             eval_right_surface(&[text_value("ABC".encode_utf16().collect())], &NoResolver),
             Ok(CalcValue::text(ExcelText::from_utf16_code_units(
@@ -379,7 +493,7 @@ mod tests {
                 &NoResolver
             ),
             Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
-                0xDE00
+                0xD83D, 0xDE00
             ])))
         );
         assert_eq!(
@@ -394,7 +508,7 @@ mod tests {
     }
 
     #[test]
-    fn mid_uses_one_based_truncated_offsets_and_raw_code_units() {
+    fn mid_uses_one_based_character_offsets() {
         assert_eq!(
             eval_mid_surface(
                 &[
@@ -430,9 +544,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
-                0xDE00
-            ])))
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![])))
         );
     }
 

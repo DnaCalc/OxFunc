@@ -1,0 +1,3667 @@
+{
+  "function": "POISSON.DIST",
+  "matches": 734,
+  "misses": [
+    {
+      "actual": "0x0010167ca29ceda1",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cecd2",
+      "id": "poisson-publication-heldout-00001-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cefa4",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ceed5",
+      "id": "poisson-publication-heldout-00003-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cf1a8",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cf0d9",
+      "id": "poisson-publication-heldout-00005-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cf3ab",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98baf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cf2dc",
+      "id": "poisson-publication-heldout-00007-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cf5af",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bae",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cf4e0",
+      "id": "poisson-publication-heldout-00009-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cf7b2",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bad",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cf6e3",
+      "id": "poisson-publication-heldout-00011-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cf9b6",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cf8e8",
+      "id": "poisson-publication-heldout-00013-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cfbba",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bab",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cfaeb",
+      "id": "poisson-publication-heldout-00015-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cfdbe",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98baa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cfced",
+      "id": "poisson-publication-heldout-00017-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cffc1",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cfef1",
+      "id": "poisson-publication-heldout-00019-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d01c5",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d00f4",
+      "id": "poisson-publication-heldout-00021-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d03c7",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d02f8",
+      "id": "poisson-publication-heldout-00023-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d05cb",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d04fb",
+      "id": "poisson-publication-heldout-00025-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d07cf",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d0700",
+      "id": "poisson-publication-heldout-00027-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d09d1",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d0903",
+      "id": "poisson-publication-heldout-00029-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d0bd5",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d0b06",
+      "id": "poisson-publication-heldout-00031-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d0dd9",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d0d09",
+      "id": "poisson-publication-heldout-00033-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d0fdd",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d0f0d",
+      "id": "poisson-publication-heldout-00035-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d11e1",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98ba0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d1111",
+      "id": "poisson-publication-heldout-00037-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d13e4",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98b9f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d1315",
+      "id": "poisson-publication-heldout-00039-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d15e8",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98b9e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d1518",
+      "id": "poisson-publication-heldout-00041-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d17ea",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98b9d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d171b",
+      "id": "poisson-publication-heldout-00043-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d19ee",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98b9c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d191e",
+      "id": "poisson-publication-heldout-00045-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d1bf2",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98b9b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d1b21",
+      "id": "poisson-publication-heldout-00047-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29d1df5",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98b9a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29d1d24",
+      "id": "poisson-publication-heldout-00049-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ceb9e",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ceace",
+      "id": "poisson-publication-heldout-00051-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ce99a",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ce8ca",
+      "id": "poisson-publication-heldout-00053-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ce797",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ce6c6",
+      "id": "poisson-publication-heldout-00055-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ce593",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ce4c3",
+      "id": "poisson-publication-heldout-00057-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ce38f",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ce2c0",
+      "id": "poisson-publication-heldout-00059-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ce18b",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ce0bd",
+      "id": "poisson-publication-heldout-00061-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cdf88",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bb9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cdeb8",
+      "id": "poisson-publication-heldout-00063-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cdd84",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cdcb4",
+      "id": "poisson-publication-heldout-00065-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cdb81",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bbb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cdab1",
+      "id": "poisson-publication-heldout-00067-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cd97e",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bbc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cd8ac",
+      "id": "poisson-publication-heldout-00069-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cd77b",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bbd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cd6a9",
+      "id": "poisson-publication-heldout-00071-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cd577",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bbe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cd4a6",
+      "id": "poisson-publication-heldout-00073-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cd373",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bbf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cd2a2",
+      "id": "poisson-publication-heldout-00075-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cd170",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cd09f",
+      "id": "poisson-publication-heldout-00077-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ccf6c",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cce9b",
+      "id": "poisson-publication-heldout-00079-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ccd69",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29ccc98",
+      "id": "poisson-publication-heldout-00081-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29ccb65",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cca94",
+      "id": "poisson-publication-heldout-00083-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cc961",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cc891",
+      "id": "poisson-publication-heldout-00085-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cc75e",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cc68e",
+      "id": "poisson-publication-heldout-00087-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cc55b",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cc48a",
+      "id": "poisson-publication-heldout-00089-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cc358",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cc287",
+      "id": "poisson-publication-heldout-00091-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cc154",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cc083",
+      "id": "poisson-publication-heldout-00093-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cc153",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bc9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cbe81",
+      "id": "poisson-publication-heldout-00095-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010167ca29cbd4c",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dccb5bf98bca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010167ca29cbc7d",
+      "id": "poisson-publication-heldout-00097-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020f5981140b8ff",
+      "args": [
+        "0x4011800000000000",
+        "0x4086d6cb5bf98bb2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020f5981140b822",
+      "id": "poisson-publication-heldout-00099-boundary-controls"
+    },
+    {
+      "actual": "0x001237ac368606e5",
+      "args": [
+        "0x4011800000000000",
+        "0x4086dbcb5bf98bb2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001237ac368605fa",
+      "id": "poisson-publication-heldout-00101-boundary-controls"
+    },
+    {
+      "actual": "0x0010000000000331",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7ce",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000264",
+      "id": "poisson-publication-heldout-00111-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000532",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7cd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000463",
+      "id": "poisson-publication-heldout-00113-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000732",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7cc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000663",
+      "id": "poisson-publication-heldout-00115-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000934",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7cb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000864",
+      "id": "poisson-publication-heldout-00117-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000b33",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7ca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000a64",
+      "id": "poisson-publication-heldout-00119-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000d35",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c65",
+      "id": "poisson-publication-heldout-00121-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000f36",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000e66",
+      "id": "poisson-publication-heldout-00123-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001135",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001067",
+      "id": "poisson-publication-heldout-00125-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001336",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001267",
+      "id": "poisson-publication-heldout-00127-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001538",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001468",
+      "id": "poisson-publication-heldout-00129-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001739",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001669",
+      "id": "poisson-publication-heldout-00131-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001939",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000186a",
+      "id": "poisson-publication-heldout-00133-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001b39",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001a6a",
+      "id": "poisson-publication-heldout-00135-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001d3b",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001c6c",
+      "id": "poisson-publication-heldout-00137-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001f3a",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e6d",
+      "id": "poisson-publication-heldout-00139-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000213c",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7bf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000206e",
+      "id": "poisson-publication-heldout-00141-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000233d",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7be",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000226f",
+      "id": "poisson-publication-heldout-00143-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000253c",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7bd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000246f",
+      "id": "poisson-publication-heldout-00145-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000273d",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7bc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002670",
+      "id": "poisson-publication-heldout-00147-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000293f",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7bb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002872",
+      "id": "poisson-publication-heldout-00149-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002b40",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7ba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002a72",
+      "id": "poisson-publication-heldout-00151-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002b40",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7b9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002c72",
+      "id": "poisson-publication-heldout-00153-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002f40",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7b8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002c73",
+      "id": "poisson-publication-heldout-00155-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002f41",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7b7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000003074",
+      "id": "poisson-publication-heldout-00157-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000003343",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7b6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000003075",
+      "id": "poisson-publication-heldout-00159-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000131",
+      "args": [
+        "0x4010000000000000",
+        "0x4086dcd6a22dc7cf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000062",
+      "id": "poisson-publication-heldout-00161-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020dde39dfb089b",
+      "args": [
+        "0x4011800000000000",
+        "0x4086d6d6a22dc7ce",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020dde39dfb07c2",
+      "id": "poisson-publication-heldout-00209-boundary-controls"
+    },
+    {
+      "actual": "0x00121e358c34070e",
+      "args": [
+        "0x4011800000000000",
+        "0x4086dbd6a22dc7ce",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00121e358c340621",
+      "id": "poisson-publication-heldout-00211-boundary-controls"
+    },
+    {
+      "actual": "0x01e53b0078b9ea3a",
+      "args": [
+        "0x4010000000000000",
+        "0x408638db7d8a7e07",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x01e53b0078b9e926",
+      "id": "poisson-publication-heldout-00227-fresh-near-underflow"
+    },
+    {
+      "actual": "0x00b7c64c06a2b7b2",
+      "args": [
+        "0x4010000000000000",
+        "0x4086a1e51b61c200",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00b7c64c06a2b67d",
+      "id": "poisson-publication-heldout-00233-fresh-near-underflow"
+    },
+    {
+      "actual": "0x026346a00c1c9f01",
+      "args": [
+        "0x4010000000000000",
+        "0x40860d057d8b7271",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x026346a00c1c9e05",
+      "id": "poisson-publication-heldout-00237-fresh-near-underflow"
+    },
+    {
+      "actual": "0x022ba2fc302f8e6b",
+      "args": [
+        "0x4010000000000000",
+        "0x4086206df5276bd5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x022ba2fc302f8d00",
+      "id": "poisson-publication-heldout-00253-fresh-near-underflow"
+    },
+    {
+      "actual": "0x02603eebc4c4d138",
+      "args": [
+        "0x4010000000000000",
+        "0x40860e65bc386983",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x02603eebc4c4d067",
+      "id": "poisson-publication-heldout-00255-fresh-near-underflow"
+    },
+    {
+      "actual": "0x00103bc2f0b2430c",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f004",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b2436c",
+      "id": "poisson-publication-heldout-00261-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b24514",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f003",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24575",
+      "id": "poisson-publication-heldout-00263-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2471c",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f002",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24780",
+      "id": "poisson-publication-heldout-00265-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b24925",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f001",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24988",
+      "id": "poisson-publication-heldout-00267-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b24b2c",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24b8f",
+      "id": "poisson-publication-heldout-00269-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b24d35",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2efff",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24d98",
+      "id": "poisson-publication-heldout-00271-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b24f3d",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2effe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24f9f",
+      "id": "poisson-publication-heldout-00273-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b25146",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2effd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b251a6",
+      "id": "poisson-publication-heldout-00275-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2534d",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2effc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b253ac",
+      "id": "poisson-publication-heldout-00277-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b25555",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2effb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b255b6",
+      "id": "poisson-publication-heldout-00279-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2575e",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2effa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b257be",
+      "id": "poisson-publication-heldout-00281-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b25967",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b259c6",
+      "id": "poisson-publication-heldout-00283-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b25b6e",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b25bd1",
+      "id": "poisson-publication-heldout-00285-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b25d76",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b25dd8",
+      "id": "poisson-publication-heldout-00287-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b25f7e",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b25fe0",
+      "id": "poisson-publication-heldout-00289-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b26187",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b261e8",
+      "id": "poisson-publication-heldout-00291-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2638f",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b263f1",
+      "id": "poisson-publication-heldout-00293-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b26597",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b265f6",
+      "id": "poisson-publication-heldout-00295-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2679f",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b267ff",
+      "id": "poisson-publication-heldout-00297-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b269a7",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b26a07",
+      "id": "poisson-publication-heldout-00299-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b26baf",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2eff0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b26c10",
+      "id": "poisson-publication-heldout-00301-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b26db6",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2efef",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b26e19",
+      "id": "poisson-publication-heldout-00303-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b26fbf",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2efee",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b27022",
+      "id": "poisson-publication-heldout-00305-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b271c8",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2efed",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b2722a",
+      "id": "poisson-publication-heldout-00307-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b273d0",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2efec",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b27432",
+      "id": "poisson-publication-heldout-00309-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b24105",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f005",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b24163",
+      "id": "poisson-publication-heldout-00311-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b23efc",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f006",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b23f5c",
+      "id": "poisson-publication-heldout-00313-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b23cf4",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f007",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b23d55",
+      "id": "poisson-publication-heldout-00315-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b23aeb",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f008",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b23b4e",
+      "id": "poisson-publication-heldout-00317-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b238e3",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f009",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b23946",
+      "id": "poisson-publication-heldout-00319-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b236db",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f00a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b2373c",
+      "id": "poisson-publication-heldout-00321-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b234d3",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f00b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b23535",
+      "id": "poisson-publication-heldout-00323-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b232cb",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f00c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b2332d",
+      "id": "poisson-publication-heldout-00325-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b230c3",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f00d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b23122",
+      "id": "poisson-publication-heldout-00327-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b22ebc",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f00e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b22f1a",
+      "id": "poisson-publication-heldout-00329-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b22cb2",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f00f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b22d14",
+      "id": "poisson-publication-heldout-00331-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b22aab",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f010",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b22b0a",
+      "id": "poisson-publication-heldout-00333-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b228a2",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f011",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b22905",
+      "id": "poisson-publication-heldout-00335-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2269a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f012",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b226fc",
+      "id": "poisson-publication-heldout-00337-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b22492",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f013",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b224f4",
+      "id": "poisson-publication-heldout-00339-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b2228a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f014",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b222eb",
+      "id": "poisson-publication-heldout-00341-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b22082",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f015",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b222ea",
+      "id": "poisson-publication-heldout-00343-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21e7a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f016",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b21eda",
+      "id": "poisson-publication-heldout-00345-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21c70",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f017",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b21ed7",
+      "id": "poisson-publication-heldout-00347-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21a68",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f018",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b21aca",
+      "id": "poisson-publication-heldout-00349-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21a68",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f019",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b21aca",
+      "id": "poisson-publication-heldout-00351-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21658",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f01a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b216ba",
+      "id": "poisson-publication-heldout-00353-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21657",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f01b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b216bb",
+      "id": "poisson-publication-heldout-00355-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x00103bc2f0b21247",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df5659e2f01c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00103bc2f0b214b2",
+      "id": "poisson-publication-heldout-00357-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020ffa98dd47a26",
+      "args": [
+        "0x4026c00000000000",
+        "0x4087d95659e2f004",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020ffa98dd47cac",
+      "id": "poisson-publication-heldout-00359-boundary-controls"
+    },
+    {
+      "actual": "0x00125ca304245beb",
+      "args": [
+        "0x4026c00000000000",
+        "0x4087de5659e2f004",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00125ca304245c5a",
+      "id": "poisson-publication-heldout-00361-boundary-controls"
+    },
+    {
+      "actual": "0x001000000000044d",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c65e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000004ad",
+      "id": "poisson-publication-heldout-00371-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000064e",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c65d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000006ae",
+      "id": "poisson-publication-heldout-00373-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000084f",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c65c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000008b0",
+      "id": "poisson-publication-heldout-00375-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000a4f",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c65b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000ab0",
+      "id": "poisson-publication-heldout-00377-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000c50",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c65a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000cb1",
+      "id": "poisson-publication-heldout-00379-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000000e51",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c659",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000eb3",
+      "id": "poisson-publication-heldout-00381-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001051",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c658",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000010b3",
+      "id": "poisson-publication-heldout-00383-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001251",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c657",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000012b5",
+      "id": "poisson-publication-heldout-00385-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001452",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c656",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000014b3",
+      "id": "poisson-publication-heldout-00387-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001653",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c655",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000016b4",
+      "id": "poisson-publication-heldout-00389-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001854",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c654",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000018b4",
+      "id": "poisson-publication-heldout-00391-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001a54",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c653",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001ab4",
+      "id": "poisson-publication-heldout-00393-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001c55",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c652",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001cb6",
+      "id": "poisson-publication-heldout-00395-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000001e57",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c651",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001eb7",
+      "id": "poisson-publication-heldout-00397-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002056",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c650",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000020b8",
+      "id": "poisson-publication-heldout-00399-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002057",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c64f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000022ba",
+      "id": "poisson-publication-heldout-00401-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002458",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c64e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000024b9",
+      "id": "poisson-publication-heldout-00403-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002459",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c64d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000026b9",
+      "id": "poisson-publication-heldout-00405-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000285a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c64c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000028b9",
+      "id": "poisson-publication-heldout-00407-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000285a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c64b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002abb",
+      "id": "poisson-publication-heldout-00409-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002c5a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c64a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002cbb",
+      "id": "poisson-publication-heldout-00411-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002c5b",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c649",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002ebc",
+      "id": "poisson-publication-heldout-00413-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0010000000002e5c",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c648",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000030bd",
+      "id": "poisson-publication-heldout-00415-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000305d",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c647",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000032be",
+      "id": "poisson-publication-heldout-00417-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000325d",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c646",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000034bf",
+      "id": "poisson-publication-heldout-00419-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000024b",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c65f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000002ab",
+      "id": "poisson-publication-heldout-00421-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x001000000000004c",
+      "args": [
+        "0x4026000000000000",
+        "0x4087df7472e3c660",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00100000000000ac",
+      "id": "poisson-publication-heldout-00423-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0020c115a7ee41fb",
+      "args": [
+        "0x4026c00000000000",
+        "0x4087d97472e3c65e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0020c115a7ee447a",
+      "id": "poisson-publication-heldout-00469-boundary-controls"
+    },
+    {
+      "actual": "0x0012190a393819ec",
+      "args": [
+        "0x4026c00000000000",
+        "0x4087de7472e3c65e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0012190a39381a57",
+      "id": "poisson-publication-heldout-00471-boundary-controls"
+    },
+    {
+      "actual": "0x00fc7adbb6c61fa1",
+      "args": [
+        "0x4026000000000000",
+        "0x40878c004d440fc5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00fc7adbb6c62044",
+      "id": "poisson-publication-heldout-00481-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0299dc58c8d1854d",
+      "args": [
+        "0x4026000000000000",
+        "0x4086fa734bdc6b6e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0299dc58c8d185e4",
+      "id": "poisson-publication-heldout-00485-fresh-near-underflow"
+    },
+    {
+      "actual": "0x001acaaa16ce827a",
+      "args": [
+        "0x4026000000000000",
+        "0x4087db454ada2a7f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001acaaa16ce831c",
+      "id": "poisson-publication-heldout-00495-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0202fb87247b57a1",
+      "args": [
+        "0x4026000000000000",
+        "0x40872f9f1384faa9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0202fb87247b5814",
+      "id": "poisson-publication-heldout-00501-fresh-near-underflow"
+    },
+    {
+      "actual": "0x045d3e92552a68d6",
+      "args": [
+        "0x4026000000000000",
+        "0x40865bcc90c7e574",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x045d3e92552a6982",
+      "id": "poisson-publication-heldout-00503-fresh-near-underflow"
+    },
+    {
+      "actual": "0x045669ae22e7dbcd",
+      "args": [
+        "0x4026000000000000",
+        "0x40865df5f14067c9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x045669ae22e7dc55",
+      "id": "poisson-publication-heldout-00505-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0399366b0256a5ac",
+      "args": [
+        "0x4026000000000000",
+        "0x4086a093df8ebc9a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0399366b0256a641",
+      "id": "poisson-publication-heldout-00507-fresh-near-underflow"
+    },
+    {
+      "actual": "0x049cb54df9c573c1",
+      "args": [
+        "0x4026000000000000",
+        "0x4086456c154b3d81",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x049cb54df9c5746f",
+      "id": "poisson-publication-heldout-00509-fresh-near-underflow"
+    },
+    {
+      "actual": "0x02d3304628d3e2a4",
+      "args": [
+        "0x4026000000000000",
+        "0x4086e65b33379aa7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x02d3304628d3e317",
+      "id": "poisson-publication-heldout-00515-fresh-near-underflow"
+    },
+    {
+      "actual": "0x05c8b339c7e05b8e",
+      "args": [
+        "0x4026000000000000",
+        "0x4085db9eefa116f8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x05c8b339c7e05c23",
+      "id": "poisson-publication-heldout-00519-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701a336",
+      "id": "poisson-publication-heldout-00521-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0af",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701a54a",
+      "id": "poisson-publication-heldout-00523-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0ae",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701a75c",
+      "id": "poisson-publication-heldout-00525-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0ad",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701a96f",
+      "id": "poisson-publication-heldout-00527-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0ac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701ab83",
+      "id": "poisson-publication-heldout-00529-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0ab",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701ad95",
+      "id": "poisson-publication-heldout-00531-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0aa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701afa8",
+      "id": "poisson-publication-heldout-00533-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701b1bc",
+      "id": "poisson-publication-heldout-00535-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701b3ce",
+      "id": "poisson-publication-heldout-00537-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701b5e1",
+      "id": "poisson-publication-heldout-00539-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701b7f5",
+      "id": "poisson-publication-heldout-00541-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701ba08",
+      "id": "poisson-publication-heldout-00543-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701bc1a",
+      "id": "poisson-publication-heldout-00545-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701be2e",
+      "id": "poisson-publication-heldout-00547-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701c041",
+      "id": "poisson-publication-heldout-00549-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701c254",
+      "id": "poisson-publication-heldout-00551-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701c467",
+      "id": "poisson-publication-heldout-00553-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb09f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701c67a",
+      "id": "poisson-publication-heldout-00555-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb09e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701c88e",
+      "id": "poisson-publication-heldout-00557-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb09d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701caa0",
+      "id": "poisson-publication-heldout-00559-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb09c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701ccb3",
+      "id": "poisson-publication-heldout-00561-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb09b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701ccb4",
+      "id": "poisson-publication-heldout-00563-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb09a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701cec8",
+      "id": "poisson-publication-heldout-00565-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb099",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701d0da",
+      "id": "poisson-publication-heldout-00567-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb098",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701d2ef",
+      "id": "poisson-publication-heldout-00569-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701a123",
+      "id": "poisson-publication-heldout-00571-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7019f10",
+      "id": "poisson-publication-heldout-00573-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7019cfd",
+      "id": "poisson-publication-heldout-00575-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7019aea",
+      "id": "poisson-publication-heldout-00577-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7019ae9",
+      "id": "poisson-publication-heldout-00579-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c70196c4",
+      "id": "poisson-publication-heldout-00581-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c70196c3",
+      "id": "poisson-publication-heldout-00583-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c70194b0",
+      "id": "poisson-publication-heldout-00585-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0b9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701929d",
+      "id": "poisson-publication-heldout-00587-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0ba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701908a",
+      "id": "poisson-publication-heldout-00589-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0bb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7018e77",
+      "id": "poisson-publication-heldout-00591-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0bc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7018c63",
+      "id": "poisson-publication-heldout-00593-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0bd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7018a50",
+      "id": "poisson-publication-heldout-00595-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0be",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701883c",
+      "id": "poisson-publication-heldout-00597-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0bf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7018629",
+      "id": "poisson-publication-heldout-00599-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7018417",
+      "id": "poisson-publication-heldout-00601-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7018203",
+      "id": "poisson-publication-heldout-00603-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7017ff0",
+      "id": "poisson-publication-heldout-00605-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7017ddd",
+      "id": "poisson-publication-heldout-00607-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7017bca",
+      "id": "poisson-publication-heldout-00609-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c70179b6",
+      "id": "poisson-publication-heldout-00611-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c70177a3",
+      "id": "poisson-publication-heldout-00613-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c7017591",
+      "id": "poisson-publication-heldout-00615-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a0114f55fb0c8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001093b5c701737d",
+      "id": "poisson-publication-heldout-00617-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d600000000000",
+        "0x4089fb14f55fb0b0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0021182b72a4fe5a",
+      "id": "poisson-publication-heldout-00619-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d600000000000",
+        "0x408a0014f55fb0b0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0012b3e00d73c17f",
+      "id": "poisson-publication-heldout-00621-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5ac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000017f",
+      "id": "poisson-publication-heldout-00631-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5ab",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000381",
+      "id": "poisson-publication-heldout-00633-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5aa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000580",
+      "id": "poisson-publication-heldout-00635-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000581",
+      "id": "poisson-publication-heldout-00637-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000982",
+      "id": "poisson-publication-heldout-00639-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000982",
+      "id": "poisson-publication-heldout-00641-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000b83",
+      "id": "poisson-publication-heldout-00643-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000d84",
+      "id": "poisson-publication-heldout-00645-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000f85",
+      "id": "poisson-publication-heldout-00647-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001185",
+      "id": "poisson-publication-heldout-00649-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001385",
+      "id": "poisson-publication-heldout-00651-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001586",
+      "id": "poisson-publication-heldout-00653-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c5a0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001786",
+      "id": "poisson-publication-heldout-00655-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c59f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001987",
+      "id": "poisson-publication-heldout-00657-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c59e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001b88",
+      "id": "poisson-publication-heldout-00659-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c59d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001d89",
+      "id": "poisson-publication-heldout-00661-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c59c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001f89",
+      "id": "poisson-publication-heldout-00663-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c59b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002189",
+      "id": "poisson-publication-heldout-00665-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c59a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000238a",
+      "id": "poisson-publication-heldout-00667-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c599",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000258b",
+      "id": "poisson-publication-heldout-00669-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c598",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000278b",
+      "id": "poisson-publication-heldout-00671-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c597",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000298c",
+      "id": "poisson-publication-heldout-00673-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c596",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002b8c",
+      "id": "poisson-publication-heldout-00675-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c595",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002d8d",
+      "id": "poisson-publication-heldout-00677-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x408a01602121c594",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002f8e",
+      "id": "poisson-publication-heldout-00679-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d600000000000",
+        "0x4089fb602121c5ac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00207fdaa0896caa",
+      "id": "poisson-publication-heldout-00729-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d600000000000",
+        "0x408a00602121c5ac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00120d39b168591f",
+      "id": "poisson-publication-heldout-00731-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x4089f3758b073a67",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0035707bcfdec8f7",
+      "id": "poisson-publication-heldout-00741-fresh-near-underflow"
+    },
+    {
+      "actual": "0x040189f3ed80b93d",
+      "args": [
+        "0x403d000000000000",
+        "0x4088964cf214c0db",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x040189f3ed80bb6f",
+      "id": "poisson-publication-heldout-00745-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0b196f9bf97762f3",
+      "args": [
+        "0x403d000000000000",
+        "0x408607432775ce3f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0b196f9bf97762ef",
+      "id": "poisson-publication-heldout-00749-fresh-near-underflow"
+    },
+    {
+      "actual": "0x083200aa43ecbc4c",
+      "args": [
+        "0x403d000000000000",
+        "0x408713e2de917c28",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x083200aa43ecbc49",
+      "id": "poisson-publication-heldout-00753-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x403d000000000000",
+        "0x4089eeb01ec278ca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00430fc01465acb0",
+      "id": "poisson-publication-heldout-00755-fresh-near-underflow"
+    },
+    {
+      "actual": "0x02b13cf88ca40e33",
+      "args": [
+        "0x403d000000000000",
+        "0x40890f4ca78564e6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x02b13cf88ca40e30",
+      "id": "poisson-publication-heldout-00759-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0a5fe40312f98d25",
+      "args": [
+        "0x403d000000000000",
+        "0x40864ac050b74448",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0a5fe40312f98d1d",
+      "id": "poisson-publication-heldout-00761-fresh-near-underflow"
+    },
+    {
+      "actual": "0x04332f02a6004711",
+      "args": [
+        "0x403d000000000000",
+        "0x40888448a61f7ee7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x04332f02a600470d",
+      "id": "poisson-publication-heldout-00763-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0bd4c4e313ac81b7",
+      "args": [
+        "0x403d000000000000",
+        "0x4085c38b089cf6c2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0bd4c4e313ac81b0",
+      "id": "poisson-publication-heldout-00765-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0a4585743ef4bd9c",
+      "args": [
+        "0x403d000000000000",
+        "0x408653cf5d2516ca",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0a4585743ef4bd9a",
+      "id": "poisson-publication-heldout-00769-fresh-near-underflow"
+    },
+    {
+      "actual": "0x046c76cf515ca581",
+      "args": [
+        "0x403d000000000000",
+        "0x40886fbb4b8a5ab3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x046c76cf515ca57c",
+      "id": "poisson-publication-heldout-00771-fresh-near-underflow"
+    },
+    {
+      "actual": "0x007150fc22251de9",
+      "args": [
+        "0x403d000000000000",
+        "0x4089de3efb02acc6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x007150fc22251bbb",
+      "id": "poisson-publication-heldout-00773-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0531ef57b1f5a53d",
+      "args": [
+        "0x403d000000000000",
+        "0x408828b18266f801",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0531ef57b1f5a539",
+      "id": "poisson-publication-heldout-00775-fresh-near-underflow"
+    },
+    {
+      "actual": "0x04f4650abe26459b",
+      "args": [
+        "0x403d000000000000",
+        "0x40883eaaeacda95d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x04f4650abe264599",
+      "id": "poisson-publication-heldout-00777-fresh-near-underflow"
+    },
+    {
+      "actual": "0x04b2ab023a0ee8c4",
+      "args": [
+        "0x403d000000000000",
+        "0x408856711ccee9e6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x04b2ab023a0ee66b",
+      "id": "poisson-publication-heldout-00779-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563eff8e2",
+      "id": "poisson-publication-heldout-00781-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563effb15",
+      "id": "poisson-publication-heldout-00783-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563effd46",
+      "id": "poisson-publication-heldout-00785-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efff78",
+      "id": "poisson-publication-heldout-00787-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f001aa",
+      "id": "poisson-publication-heldout-00789-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf9f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f003db",
+      "id": "poisson-publication-heldout-00791-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf9e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f0060f",
+      "id": "poisson-publication-heldout-00793-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf9d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f00840",
+      "id": "poisson-publication-heldout-00795-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf9c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f00a73",
+      "id": "poisson-publication-heldout-00797-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf9b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f00ca5",
+      "id": "poisson-publication-heldout-00799-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf9a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f00ed7",
+      "id": "poisson-publication-heldout-00801-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf99",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f01109",
+      "id": "poisson-publication-heldout-00803-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf98",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f0110a",
+      "id": "poisson-publication-heldout-00805-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf97",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f0133b",
+      "id": "poisson-publication-heldout-00807-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf96",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f0156d",
+      "id": "poisson-publication-heldout-00809-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf95",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f017a0",
+      "id": "poisson-publication-heldout-00811-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf94",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f019d0",
+      "id": "poisson-publication-heldout-00813-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf93",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f01c03",
+      "id": "poisson-publication-heldout-00815-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf92",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f01e36",
+      "id": "poisson-publication-heldout-00817-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf91",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f02068",
+      "id": "poisson-publication-heldout-00819-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf90",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f02299",
+      "id": "poisson-publication-heldout-00821-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf8f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f0229a",
+      "id": "poisson-publication-heldout-00823-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf8e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f026fd",
+      "id": "poisson-publication-heldout-00825-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf8d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f026fd",
+      "id": "poisson-publication-heldout-00827-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcf8c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563f02930",
+      "id": "poisson-publication-heldout-00829-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563eff8e1",
+      "id": "poisson-publication-heldout-00831-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563eff6af",
+      "id": "poisson-publication-heldout-00833-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563eff47d",
+      "id": "poisson-publication-heldout-00835-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563eff24c",
+      "id": "poisson-publication-heldout-00837-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfa9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563eff019",
+      "id": "poisson-publication-heldout-00839-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfaa",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efede7",
+      "id": "poisson-publication-heldout-00841-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfab",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efebb5",
+      "id": "poisson-publication-heldout-00843-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfac",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efe983",
+      "id": "poisson-publication-heldout-00845-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfad",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efe981",
+      "id": "poisson-publication-heldout-00847-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfae",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efe51f",
+      "id": "poisson-publication-heldout-00849-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfaf",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efe51e",
+      "id": "poisson-publication-heldout-00851-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efe2eb",
+      "id": "poisson-publication-heldout-00853-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb1",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efe0ba",
+      "id": "poisson-publication-heldout-00855-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb2",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efde88",
+      "id": "poisson-publication-heldout-00857-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb3",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efdc56",
+      "id": "poisson-publication-heldout-00859-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efda24",
+      "id": "poisson-publication-heldout-00861-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efd7f2",
+      "id": "poisson-publication-heldout-00863-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb6",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efd5c1",
+      "id": "poisson-publication-heldout-00865-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efd38e",
+      "id": "poisson-publication-heldout-00867-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb8",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efd38d",
+      "id": "poisson-publication-heldout-00869-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfb9",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efcf2b",
+      "id": "poisson-publication-heldout-00871-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfba",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efcf2b",
+      "id": "poisson-publication-heldout-00873-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfbb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efcac6",
+      "id": "poisson-publication-heldout-00875-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f93ade29fcfbc",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00118b2563efcac6",
+      "id": "poisson-publication-heldout-00877-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056580000000000",
+        "0x408f8dade29fcfa4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00216232dfeda323",
+      "id": "poisson-publication-heldout-00879-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056580000000000",
+        "0x408f92ade29fcfa4",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0013a977f27f0a69",
+      "id": "poisson-publication-heldout-00881-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22580",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000235",
+      "id": "poisson-publication-heldout-00891-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2257f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000435",
+      "id": "poisson-publication-heldout-00893-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2257e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000636",
+      "id": "poisson-publication-heldout-00895-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2257d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000837",
+      "id": "poisson-publication-heldout-00897-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2257c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000a37",
+      "id": "poisson-publication-heldout-00899-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2257b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c38",
+      "id": "poisson-publication-heldout-00901-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2257a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000c39",
+      "id": "poisson-publication-heldout-00903-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22579",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001039",
+      "id": "poisson-publication-heldout-00905-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22578",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001039",
+      "id": "poisson-publication-heldout-00907-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22577",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000123a",
+      "id": "poisson-publication-heldout-00909-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22576",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000143a",
+      "id": "poisson-publication-heldout-00911-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22575",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000163b",
+      "id": "poisson-publication-heldout-00913-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22574",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000183b",
+      "id": "poisson-publication-heldout-00915-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22573",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001a3c",
+      "id": "poisson-publication-heldout-00917-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22572",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001c3e",
+      "id": "poisson-publication-heldout-00919-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22571",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e3d",
+      "id": "poisson-publication-heldout-00921-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22570",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000001e3e",
+      "id": "poisson-publication-heldout-00923-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2256f",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000203f",
+      "id": "poisson-publication-heldout-00925-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2256e",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000223f",
+      "id": "poisson-publication-heldout-00927-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2256d",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001000000000243f",
+      "id": "poisson-publication-heldout-00929-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2256c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002640",
+      "id": "poisson-publication-heldout-00931-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2256b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002841",
+      "id": "poisson-publication-heldout-00933-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e2256a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002a40",
+      "id": "poisson-publication-heldout-00935-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22569",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002c41",
+      "id": "poisson-publication-heldout-00937-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22568",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000002c42",
+      "id": "poisson-publication-heldout-00939-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056400000000000",
+        "0x408f947cb1e22581",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0010000000000034",
+      "id": "poisson-publication-heldout-00941-normal-subnormal-boundary"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056580000000000",
+        "0x408f8e7cb1e22580",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x001fb55d3d0dc438",
+      "id": "poisson-publication-heldout-00989-boundary-controls"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4056580000000000",
+        "0x408f937cb1e22580",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0011ee9cb7dbc1c8",
+      "id": "poisson-publication-heldout-00991-boundary-controls"
+    },
+    {
+      "actual": "0x0aa10c4ccd021c30",
+      "args": [
+        "0x4056400000000000",
+        "0x408b89699a77bab5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0aa10c4ccd021a0c",
+      "id": "poisson-publication-heldout-01001-fresh-near-underflow"
+    },
+    {
+      "actual": "0x1522c2ec2b9f3865",
+      "args": [
+        "0x4056400000000000",
+        "0x408772c7d8c2e7cd",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1522c2ec2b9f3737",
+      "id": "poisson-publication-heldout-01003-fresh-near-underflow"
+    },
+    {
+      "actual": "0x10f1b6ba31af3223",
+      "args": [
+        "0x4056400000000000",
+        "0x408916db72143ef0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x10f1b6ba31af3221",
+      "id": "poisson-publication-heldout-01005-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0f0d86617b3d414b",
+      "args": [
+        "0x4056400000000000",
+        "0x4089d3391c19f863",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0f0d86617b3d4143",
+      "id": "poisson-publication-heldout-01007-fresh-near-underflow"
+    },
+    {
+      "actual": "0x18272097126b6183",
+      "args": [
+        "0x4056400000000000",
+        "0x408641e16b128ffe",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x18272097126b600d",
+      "id": "poisson-publication-heldout-01009-fresh-near-underflow"
+    },
+    {
+      "actual": "0x1762bcefd1c72654",
+      "args": [
+        "0x4056400000000000",
+        "0x40868fc1a16e0368",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1762bcefd1c72524",
+      "id": "poisson-publication-heldout-01011-fresh-near-underflow"
+    },
+    {
+      "actual": "0x19317525499b9f51",
+      "args": [
+        "0x4056400000000000",
+        "0x4085d89b19134e6a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x19317525499b9e36",
+      "id": "poisson-publication-heldout-01013-fresh-near-underflow"
+    },
+    {
+      "actual": "0x1022386eebf72143",
+      "args": [
+        "0x4056400000000000",
+        "0x4089679a03ff4df0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1022386eebf72387",
+      "id": "poisson-publication-heldout-01015-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0c6d0a2f7f4c3cb6",
+      "args": [
+        "0x4056400000000000",
+        "0x408ad7bbe0726298",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0c6d0a2f7f4c404e",
+      "id": "poisson-publication-heldout-01017-fresh-near-underflow"
+    },
+    {
+      "actual": "0x12207ae63010df37",
+      "args": [
+        "0x4056400000000000",
+        "0x4088a0e5a53148b7",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x12207ae63010df33",
+      "id": "poisson-publication-heldout-01019-fresh-near-underflow"
+    },
+    {
+      "actual": "0x181789e783d768c1",
+      "args": [
+        "0x4056400000000000",
+        "0x4086480df4355f2b",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x181789e783d76a34",
+      "id": "poisson-publication-heldout-01021-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0e05564d9365fe18",
+      "args": [
+        "0x4056400000000000",
+        "0x408a39748cdc7beb",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0e05564d9365fb66",
+      "id": "poisson-publication-heldout-01023-fresh-near-underflow"
+    },
+    {
+      "actual": "0x15d08bc2f17ecfec",
+      "args": [
+        "0x4056400000000000",
+        "0x40872ead62804e47",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x15d08bc2f17ecdd9",
+      "id": "poisson-publication-heldout-01025-fresh-near-underflow"
+    },
+    {
+      "actual": "0x12ceb2f541b1631a",
+      "args": [
+        "0x4056400000000000",
+        "0x40885cbdb9e45156",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x12ceb2f541b16501",
+      "id": "poisson-publication-heldout-01027-fresh-near-underflow"
+    },
+    {
+      "actual": "0x119260907b84a88b",
+      "args": [
+        "0x4056400000000000",
+        "0x4088d8223f4260b5",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x119260907b84a88a",
+      "id": "poisson-publication-heldout-01029-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0e368cedaf9f24ef",
+      "args": [
+        "0x4056400000000000",
+        "0x408a2659d8a8169a",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0e368cedaf9f221a",
+      "id": "poisson-publication-heldout-01031-fresh-near-underflow"
+    },
+    {
+      "actual": "0x0ca8f4b48f588514",
+      "args": [
+        "0x4056400000000000",
+        "0x408ac05741105445",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0ca8f4b48f58850d",
+      "id": "poisson-publication-heldout-01033-fresh-near-underflow"
+    },
+    {
+      "actual": "0x12e00bc27e2013ca",
+      "args": [
+        "0x4056400000000000",
+        "0x40885614d4efda99",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x12e00bc27e2014c9",
+      "id": "poisson-publication-heldout-01035-fresh-near-underflow"
+    },
+    {
+      "actual": "0x12e09a241db1842e",
+      "args": [
+        "0x4056400000000000",
+        "0x408855c60ebf8fa0",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x12e09a241db18534",
+      "id": "poisson-publication-heldout-01037-fresh-near-underflow"
+    },
+    {
+      "actual": "0x17e82e1a4436217a",
+      "args": [
+        "0x4056400000000000",
+        "0x40865aceedfc321c",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x17e82e1a44361ff4",
+      "id": "poisson-publication-heldout-01039-fresh-near-underflow"
+    }
+  ],
+  "rows": 1100
+}

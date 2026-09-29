@@ -1,0 +1,17 @@
+{
+  "generator": "gen_tanh_dependency_controls.py",
+  "source": "docs/function-lane/evidence/w111-broad-20260929/tanh-coth/independent-replay.json",
+  "authority": "dependency_discovery_after_failed_frozen_tanh_holdout",
+  "batches": [
+    {
+      "function": "SINH",
+      "path": "batch-sinh.json",
+      "rows": 244
+    },
+    {
+      "function": "COSH",
+      "path": "batch-cosh.json",
+      "rows": 244
+    }
+  ]
+}

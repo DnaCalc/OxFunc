@@ -1,4 +1,5 @@
 import OxFunc.FunctionCore
+import OxFunc.Functions.ConditionalSelection
 
 namespace OxFunc.Functions
 
@@ -22,5 +23,7 @@ theorem ifNaMeta_profiles :
     ifNaMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
     ∧ ifNaMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
   simp [ifNaMeta]
+
+def evalIfNaPreparedValues := conditionalFallback true
 
 end OxFunc.Functions

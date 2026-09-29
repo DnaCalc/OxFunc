@@ -1,0 +1,361 @@
+{
+  "rows": 534,
+  "model_differences": {
+    "decimal17then15-nibble64": 17,
+    "decimal18then15-nibble64": 17,
+    "decimal19then15-nibble64": 17,
+    "decimal20then15-nibble64": 17,
+    "decimal21then15-nibble64": 17,
+    "decimal22then15-nibble64": 17,
+    "decimal23then15-nibble64": 17,
+    "decimal24then15-nibble64": 17,
+    "decimal25then15-nibble64": 17,
+    "decimal26then15-nibble64": 17,
+    "decimal27then15-nibble64": 17,
+    "decimal28then15-nibble64": 17,
+    "decimal29then15-nibble64": 17,
+    "decimal30then15-nibble64": 17,
+    "decimal31then15-nibble64": 17,
+    "decimal17then15-nearest": 18,
+    "decimal18then15-nearest": 18,
+    "decimal19then15-nearest": 18,
+    "decimal20then15-nearest": 18,
+    "decimal21then15-nearest": 18,
+    "decimal22then15-nearest": 18,
+    "decimal23then15-nearest": 18,
+    "decimal24then15-nearest": 18,
+    "decimal25then15-nearest": 18,
+    "decimal26then15-nearest": 18,
+    "decimal27then15-nearest": 18,
+    "decimal28then15-nearest": 18,
+    "decimal29then15-nearest": 18,
+    "decimal30then15-nearest": 18,
+    "decimal31then15-nearest": 18,
+    "rn80-signed-nibble64": 32,
+    "rn80-split-nibble64": 32,
+    "rn80-signed-nearest": 33,
+    "rn80-split-nearest": 33,
+    "rn64-signed-nibble64": 34,
+    "rn64-split-nibble64": 34,
+    "rn64-signed-nearest": 35,
+    "rn64-split-nearest": 35,
+    "rn96-signed-nibble64": 36,
+    "rn96-signed-nearest": 37,
+    "rn96-split-nibble64": 41,
+    "rn96-split-nearest": 42,
+    "decimal16then15-nibble64": 48,
+    "decimal16then15-nearest": 49,
+    "rn53-signed-nibble64": 49,
+    "rn53-signed-nearest": 50,
+    "rn53-split-nibble64": 54,
+    "rn53-split-nearest": 55,
+    "rn100-signed-nibble64": 60,
+    "rn100-signed-nearest": 61,
+    "rn100-split-nibble64": 61,
+    "rn100-split-nearest": 62,
+    "rn101-split-nearest": 88,
+    "rn101-split-nibble64": 88,
+    "rn101-signed-nearest": 98,
+    "rn101-signed-nibble64": 98,
+    "rn102-split-nearest": 165,
+    "rn102-split-nibble64": 165,
+    "rn102-signed-nearest": 171,
+    "rn102-signed-nibble64": 171,
+    "rn103-signed-nearest": 230,
+    "rn103-signed-nibble64": 230,
+    "rn103-split-nearest": 232,
+    "rn103-split-nibble64": 232,
+    "rn104-signed-nearest": 305,
+    "rn104-signed-nibble64": 305,
+    "rn104-split-nearest": 310,
+    "rn104-split-nibble64": 310,
+    "rn105-split-nearest": 349,
+    "rn105-split-nibble64": 349,
+    "rn105-signed-nearest": 354,
+    "rn105-signed-nibble64": 354,
+    "decimal32then15-nearest": 356,
+    "decimal32then15-nibble64": 356,
+    "rn106-signed-nearest": 375,
+    "rn106-signed-nibble64": 375,
+    "rn106-split-nearest": 378,
+    "rn106-split-nibble64": 378,
+    "rn107-signed-nearest": 382,
+    "rn107-signed-nibble64": 382,
+    "rn107-split-nearest": 382,
+    "rn107-split-nibble64": 382,
+    "rn108-signed-nearest": 388,
+    "rn108-signed-nibble64": 388,
+    "rn108-split-nearest": 389,
+    "rn108-split-nibble64": 389,
+    "decimal33then15-nearest": 393,
+    "decimal33then15-nibble64": 393,
+    "exact15-nearest": 397,
+    "exact15-nibble64": 397,
+    "decimal34then15-nearest": 397,
+    "decimal34then15-nibble64": 397,
+    "decimal35then15-nearest": 397,
+    "decimal35then15-nibble64": 397,
+    "decimal36then15-nearest": 397,
+    "decimal36then15-nibble64": 397,
+    "rn112-signed-nearest": 397,
+    "rn112-signed-nibble64": 397,
+    "rn112-split-nearest": 397,
+    "rn112-split-nibble64": 397,
+    "rn113-signed-nearest": 397,
+    "rn113-signed-nibble64": 397,
+    "rn113-split-nearest": 397,
+    "rn113-split-nibble64": 397,
+    "rn128-signed-nearest": 397,
+    "rn128-signed-nibble64": 397,
+    "rn128-split-nearest": 397,
+    "rn128-split-nibble64": 397
+  },
+  "decimal31_residuals": [
+    {
+      "case_id": "w111renderprecision-00074-round-8-center-1",
+      "bits": "0x0202cf5e7bb9a312",
+      "final": "nearest",
+      "expected": "0x0202cf5e7bb9a317",
+      "actual": "0x0202cf5e7bb9a30d"
+    },
+    {
+      "case_id": "w111renderprecision-00074-round-8-center-1",
+      "bits": "0x0202cf5e7bb9a312",
+      "final": "nibble64",
+      "expected": "0x0202cf5e7bb9a317",
+      "actual": "0x0202cf5e7bb9a30d"
+    },
+    {
+      "case_id": "w111renderprecision-00128-round-15-center-1",
+      "bits": "0x0376c46f3972904d",
+      "final": "nearest",
+      "expected": "0x0376c46f39729053",
+      "actual": "0x0376c46f39729047"
+    },
+    {
+      "case_id": "w111renderprecision-00128-round-15-center-1",
+      "bits": "0x0376c46f3972904d",
+      "final": "nibble64",
+      "expected": "0x0376c46f39729053",
+      "actual": "0x0376c46f39729047"
+    },
+    {
+      "case_id": "w111renderprecision-00212-round-27-center-1",
+      "bits": "0x069a649c29b0046e",
+      "final": "nearest",
+      "expected": "0x069a649c29b00473",
+      "actual": "0x069a649c29b00469"
+    },
+    {
+      "case_id": "w111renderprecision-00212-round-27-center-1",
+      "bits": "0x069a649c29b0046e",
+      "final": "nibble64",
+      "expected": "0x069a649c29b00473",
+      "actual": "0x069a649c29b00469"
+    },
+    {
+      "case_id": "w111renderprecision-00248-round-31-center-1",
+      "bits": "0x073e0aa1958b6f7d",
+      "final": "nearest",
+      "expected": "0x073e0aa1958b6f82",
+      "actual": "0x073e0aa1958b6f78"
+    },
+    {
+      "case_id": "w111renderprecision-00248-round-31-center-1",
+      "bits": "0x073e0aa1958b6f7d",
+      "final": "nibble64",
+      "expected": "0x073e0aa1958b6f82",
+      "actual": "0x073e0aa1958b6f78"
+    },
+    {
+      "case_id": "w111renderprecision-00314-round-40-center-1",
+      "bits": "0x0ae19b189344f360",
+      "final": "nearest",
+      "expected": "0x0ae19b189344f368",
+      "actual": "0x0ae19b189344f358"
+    },
+    {
+      "case_id": "w111renderprecision-00314-round-40-center-1",
+      "bits": "0x0ae19b189344f360",
+      "final": "nibble64",
+      "expected": "0x0ae19b189344f368",
+      "actual": "0x0ae19b189344f358"
+    },
+    {
+      "case_id": "w111renderprecision-00320-round-41-center-1",
+      "bits": "0x0b1601deb8163038",
+      "final": "nearest",
+      "expected": "0x0b1601deb8163043",
+      "actual": "0x0b1601deb816302d"
+    },
+    {
+      "case_id": "w111renderprecision-00320-round-41-center-1",
+      "bits": "0x0b1601deb8163038",
+      "final": "nibble64",
+      "expected": "0x0b1601deb8163043",
+      "actual": "0x0b1601deb816302d"
+    },
+    {
+      "case_id": "w111renderprecision-00326-round-42-center-1",
+      "bits": "0x0b4b8256661bbc46",
+      "final": "nearest",
+      "expected": "0x0b4b8256661bbc53",
+      "actual": "0x0b4b8256661bbc39"
+    },
+    {
+      "case_id": "w111renderprecision-00326-round-42-center-1",
+      "bits": "0x0b4b8256661bbc46",
+      "final": "nibble64",
+      "expected": "0x0b4b8256661bbc53",
+      "actual": "0x0b4b8256661bbc39"
+    },
+    {
+      "case_id": "w111renderprecision-00404-round-51-center-1",
+      "bits": "0x0dd98565585f43ed",
+      "final": "nearest",
+      "expected": "0x0dd98565585f43f3",
+      "actual": "0x0dd98565585f43e7"
+    },
+    {
+      "case_id": "w111renderprecision-00404-round-51-center-1",
+      "bits": "0x0dd98565585f43ed",
+      "final": "nibble64",
+      "expected": "0x0dd98565585f43f3",
+      "actual": "0x0dd98565585f43e7"
+    },
+    {
+      "case_id": "w111renderprecision-00470-round-60-center-1",
+      "bits": "0x108a253472020840",
+      "final": "nearest",
+      "expected": "0x108a253472020847",
+      "actual": "0x108a253472020839"
+    },
+    {
+      "case_id": "w111renderprecision-00470-round-60-center-1",
+      "bits": "0x108a253472020840",
+      "final": "nibble64",
+      "expected": "0x108a253472020847",
+      "actual": "0x108a253472020839"
+    },
+    {
+      "case_id": "w111renderprecision-00488-round-63-center-1",
+      "bits": "0x10f46d10f9119672",
+      "final": "nearest",
+      "expected": "0x10f46d10f9119677",
+      "actual": "0x10f46d10f911966d"
+    },
+    {
+      "case_id": "w111renderprecision-00488-round-63-center-1",
+      "bits": "0x10f46d10f9119672",
+      "final": "nibble64",
+      "expected": "0x10f46d10f9119677",
+      "actual": "0x10f46d10f911966d"
+    },
+    {
+      "case_id": "w111renderprecision-00518-round-66-center-1",
+      "bits": "0x11cbdd5bb982721a",
+      "final": "nearest",
+      "expected": "0x11cbdd5bb9827221",
+      "actual": "0x11cbdd5bb9827213"
+    },
+    {
+      "case_id": "w111renderprecision-00518-round-66-center-1",
+      "bits": "0x11cbdd5bb982721a",
+      "final": "nibble64",
+      "expected": "0x11cbdd5bb9827221",
+      "actual": "0x11cbdd5bb9827213"
+    },
+    {
+      "case_id": "w111renderprecision-00530-round-68-center-1",
+      "bits": "0x126c0d553da3ba29",
+      "final": "nearest",
+      "expected": "0x126c0d553da3ba2f",
+      "actual": "0x126c0d553da3ba23"
+    },
+    {
+      "case_id": "w111renderprecision-00530-round-68-center-1",
+      "bits": "0x126c0d553da3ba29",
+      "final": "nibble64",
+      "expected": "0x126c0d553da3ba2f",
+      "actual": "0x126c0d553da3ba23"
+    },
+    {
+      "case_id": "w111renderprecision-00788-round-101-center-1",
+      "bits": "0x1afe4e021a11a2f1",
+      "final": "nearest",
+      "expected": "0x1afe4e021a11a2cc",
+      "actual": "0x1afe4e021a11a2cd"
+    },
+    {
+      "case_id": "w111renderprecision-01298-round-168-center-1",
+      "bits": "0x2c9faffa307ac342",
+      "final": "nearest",
+      "expected": "0x2c9faffa307ac347",
+      "actual": "0x2c9faffa307ac33d"
+    },
+    {
+      "case_id": "w111renderprecision-01298-round-168-center-1",
+      "bits": "0x2c9faffa307ac342",
+      "final": "nibble64",
+      "expected": "0x2c9faffa307ac347",
+      "actual": "0x2c9faffa307ac33d"
+    },
+    {
+      "case_id": "w111renderprecision-01754-round-226-center-1",
+      "bits": "0x3bbf045596054946",
+      "final": "nearest",
+      "expected": "0x3bbf04559605494d",
+      "actual": "0x3bbf04559605493f"
+    },
+    {
+      "case_id": "w111renderprecision-01754-round-226-center-1",
+      "bits": "0x3bbf045596054946",
+      "final": "nibble64",
+      "expected": "0x3bbf04559605494d",
+      "actual": "0x3bbf04559605493f"
+    },
+    {
+      "case_id": "w111renderprecision-02852-round-369-center-1",
+      "bits": "0x6f3b627d11b9d606",
+      "final": "nearest",
+      "expected": "0x6f3b627d11b9d60c",
+      "actual": "0x6f3b627d11b9d600"
+    },
+    {
+      "case_id": "w111renderprecision-02852-round-369-center-1",
+      "bits": "0x6f3b627d11b9d606",
+      "final": "nibble64",
+      "expected": "0x6f3b627d11b9d60c",
+      "actual": "0x6f3b627d11b9d600"
+    },
+    {
+      "case_id": "w111renderprecision-02888-round-373-center-1",
+      "bits": "0x71ecd98c719a1f5d",
+      "final": "nearest",
+      "expected": "0x71ecd98c719a1f64",
+      "actual": "0x71ecd98c719a1f56"
+    },
+    {
+      "case_id": "w111renderprecision-02888-round-373-center-1",
+      "bits": "0x71ecd98c719a1f5d",
+      "final": "nibble64",
+      "expected": "0x71ecd98c719a1f64",
+      "actual": "0x71ecd98c719a1f56"
+    },
+    {
+      "case_id": "w111renderprecision-03062-round-396-center-1",
+      "bits": "0x7a5ef950aa1fe91c",
+      "final": "nearest",
+      "expected": "0x7a5ef950aa1fe92c",
+      "actual": "0x7a5ef950aa1fe90c"
+    },
+    {
+      "case_id": "w111renderprecision-03062-round-396-center-1",
+      "bits": "0x7a5ef950aa1fe91c",
+      "final": "nibble64",
+      "expected": "0x7a5ef950aa1fe92c",
+      "actual": "0x7a5ef950aa1fe90c"
+    }
+  ],
+  "research_only": true
+}

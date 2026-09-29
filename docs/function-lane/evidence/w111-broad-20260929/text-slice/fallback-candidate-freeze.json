@@ -1,0 +1,10 @@
+{
+  "seed": 202609292201,
+  "rows": 6812,
+  "phase": "before_independent_fallback_heldout_oracle",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/text_slice_family.rs": "07c9e41c1f9cc3e059540222624ee8eb1324d2f0a78a24aea6ae80bc16908c16",
+    "formal/lean/OxFunc/Functions/TextSliceFamily.lean": "2bf26ede217f99c64dfcfb08d6f221d481adf24327fecab965f3d2fd1f95e479",
+    "smart-fuzzer\\tools\\w111\\Test-TextSliceUtf16FallbackHeldout.ps1": "c341d3378d6fa168a565269ecade59783ec5f5e6bb504075f048cd852be19112"
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "function_id": "FUNC.FV",
+  "rows_judged": 54,
+  "rows_agree": 44,
+  "severity": "gross",
+  "worst_ulp": 9246589774487968976,
+  "misses_by_severity": {
+    "gross": 3,
+    "last_bit": 5,
+    "numeric": 2
+  },
+  "misses": [
+    {
+      "id": "fvadv-022",
+      "args": [
+        "0x3cd203af9ee75616",
+        "0x401c000000000000",
+        "0xc040a66666666666",
+        "0x406f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4621139629699429440
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13848822181643315344
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "gross",
+        "ulp": 9246589774487968976
+      }
+    },
+    {
+      "id": "fvadv-021",
+      "args": [
+        "0x3cd203af9ee75616",
+        "0x4024000000000000",
+        "0xc05e000000000000",
+        "0x408f400000000000",
+        "0x0000000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4644552930147194684
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4641240890982006392
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "gross",
+        "ulp": 3312039165188292
+      }
+    },
+    {
+      "id": "fvadv-023",
+      "args": [
+        "0x3cd203af9ee75616",
+        "0x4076800000000000",
+        "0x404bc00000000000",
+        "0xc0af400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13894099151292208230
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13893382749089168529
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "gross",
+        "ulp": 716402203039701
+      }
+    },
+    {
+      "id": "fvadv-001",
+      "args": [
+        "0x3e112e0be826d695",
+        "0x401c000000000000",
+        "0xc040a66666666666",
+        "0x406f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13848822176641538128
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13848822176641538136
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 8
+      }
+    },
+    {
+      "id": "fvadv-025",
+      "args": [
+        "0xbe601b2b29a4692b",
+        "0x401c000000000000",
+        "0xc040a66666666666",
+        "0x406f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13848822174609550576
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13848822174609550568
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 8
+      }
+    },
+    {
+      "id": "fvadv-005",
+      "args": [
+        "0xbe112e0be826d695",
+        "0x4076800000000000",
+        "0x404bc00000000000",
+        "0xc0af400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13893382747608009463
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13893382747608009461
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "fvadv-008",
+      "args": [
+        "0x3d719799812dea11",
+        "0x4076800000000000",
+        "0x404bc00000000000",
+        "0xc0af400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13893383725583156435
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13893383725583156437
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "fvadv-026",
+      "args": [
+        "0xbe601b2b29a4692b",
+        "0x4076800000000000",
+        "0x404bc00000000000",
+        "0xc0af400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13893382713379068208
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13893382713379068210
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "fvadv-028",
+      "args": [
+        "0x4087480000000000",
+        "0x401c000000000000",
+        "0xc040a66666666666",
+        "0x406f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14165958958340429528
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14165958958340429529
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "fvho-037",
+      "args": [
+        "0x3fd3d70a3d70a3d7",
+        "0x407f400000000000",
+        "0xbff8000000000000",
+        "0x4059000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 14736946412320921077
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 14736946412320921078
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    }
+  ],
+  "capture_provenance": null
+}

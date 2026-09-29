@@ -1,0 +1,40 @@
+{
+  "recorded_utc": "2026-09-29T16:07:24.512765+00:00",
+  "numeric_observations_exact": 181495,
+  "typed_observations_exact": 841,
+  "latest_frozen_independent_numeric": 112498,
+  "comparison": "exact result bits and error code",
+  "whole_function_promotion": false,
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "primitive formal identity",
+    "alternate arithmetic targets",
+    "contextual text and evaluator carriers",
+    "combined campaign verification"
+  ],
+  "current_source_sha256": {
+    "crates/oxfunc_core/src/functions/atan.rs": "1e5aff8d4cb42dff11393fe0d7926b2d46a965864ec899084e085a993bb5cc15",
+    "crates/oxfunc_core/src/excel_numeric/mod.rs": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "crates/oxfunc_core/src/excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd",
+    "crates/oxfunc_core/tests/w111_atan_live_replay.rs": "660f6e31faf06c15d88fde094484e93f55dbca0536f415ba52de396f4d6e989b",
+    "crates/oxfunc_core/tests/w111_atan_typed_replay.rs": "bf1c1427d04351cb1e471ae9fd4e9afa9e314e2526d868bf914fb3ff57d425c6",
+    "formal/lean/OxFunc/Functions/Atan.lean": "ba626a2ccdd63a1b10cffceee8d8bb8df9eea39de42bc42f71561d9e4a645155"
+  },
+  "source_note": "Shared numeric files also contain later unrelated SQRT/depreciation changes and a corrected caller comment. Exact pre-generation ATAN source copies remain under second-heldout/candidate.",
+  "validation_logs": [
+    {
+      "path": "validation/w111-atan-second-heldout-validation.log",
+      "sha256": "990bcf0be7e5e1888e2d0c1a705e2f877a9fe7de6f68081edd2c654b525f41ba"
+    },
+    {
+      "path": "validation/w111-atan-typed-validation.log",
+      "sha256": "2ed7b1e0e1a9a54423dc7f6cde6eaeb3ba4467f5b7d43f731eaeede9958481e4"
+    },
+    {
+      "path": "validation/w111-atan-formal-pinned.log",
+      "sha256": "9e050f0ccfc40ea2d6652656f4b69e46d7cf8b5569a7161b7ad3e08a414b28b5"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "artifacts": [
+    {
+      "path": "answers-beta.dist.json",
+      "sha256": "143f0c2e7dce0bcbba36346fcef418690daaac100cf4b008ef7f08591a907eef"
+    },
+    {
+      "path": "answers-negbinom.dist.json",
+      "sha256": "47a234742eb181e2121fd2bc478f4fe531475e7eeb6302c975d341bf6746a915"
+    },
+    {
+      "path": "batch-beta.dist.json",
+      "sha256": "236bc3e5341748e4ad2e32b27b973165561c12a0d1df57c1e96adee86051f6d4"
+    },
+    {
+      "path": "batch-negbinom.dist.json",
+      "sha256": "5423ddcd37a7f2c9c7fcd23a248f3cb3b753f4c449e9a6b3e70046c84134780d"
+    },
+    {
+      "path": "current-frozen-judgement.json",
+      "sha256": "d731ab6a46e0e22f825783624c447fa5afd933b0395812eab27f1da40fa53ad7"
+    },
+    {
+      "path": "gen_negbinom_seed_recheck.py",
+      "sha256": "9f5e0386850ee49384913dacfee16c5b5a61761b179f05fec6d80bffb15cb9a0"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "a78e20cd1a5a47dc1d566b192e86194db6f1c1b78b8d172d292bfb4e2c404cb0"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8748b35bf5256f59439f84ae2a6929018fd3d773b14a9c2a7c4e90d57a583205"
+    },
+    {
+      "path": "validation.json",
+      "sha256": "d5450d076a1c2ea6b8fb6242f095c8b2fbbce3ff8016a905440107dc55a2b242"
+    },
+    {
+      "path": "w111-negbinom-seed-baseline.json",
+      "sha256": "d731ab6a46e0e22f825783624c447fa5afd933b0395812eab27f1da40fa53ad7"
+    },
+    {
+      "path": "w111-negbinom-seed-current.json",
+      "sha256": "d731ab6a46e0e22f825783624c447fa5afd933b0395812eab27f1da40fa53ad7"
+    }
+  ]
+}

@@ -1,0 +1,2717 @@
+{
+  "function": "ERFC.PRECISE",
+  "witnesses": [
+    {
+      "id": "cdf-z-ERFC.PRECISE-00000-z-staging-discriminator",
+      "args": [
+        "0x3fe4089dc809890b"
+      ],
+      "expected_bits": "0x3fd80fac43602946"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00001-z-staging-discriminator",
+      "args": [
+        "0x3fe4089dc809890a"
+      ],
+      "expected_bits": "0x3fd80fac43602947"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00002-z-staging-discriminator",
+      "args": [
+        "0x3ff506bf3f446547"
+      ],
+      "expected_bits": "0x3fb02755984db36e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00003-z-staging-discriminator",
+      "args": [
+        "0x3ff506bf3f446548"
+      ],
+      "expected_bits": "0x3fb02755984db36a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00004-z-staging-discriminator",
+      "args": [
+        "0x40363041ce4067a3"
+      ],
+      "expected_bits": "0x133565eaea3b4706"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00005-z-staging-discriminator",
+      "args": [
+        "0x40363041ce4067a2"
+      ],
+      "expected_bits": "0x133565eaea3b4b06"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00006-z-staging-discriminator",
+      "args": [
+        "0x4021ed50b25f9a43"
+      ],
+      "expected_bits": "0x38710413ac2f8a62"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00007-z-staging-discriminator",
+      "args": [
+        "0x4021ed50b25f9a44"
+      ],
+      "expected_bits": "0x38710413ac2f89da"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00008-z-staging-discriminator",
+      "args": [
+        "0x4024c273a86b3f2d"
+      ],
+      "expected_bits": "0x35f47a29218d631e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00009-z-staging-discriminator",
+      "args": [
+        "0x4024c273a86b3f2e"
+      ],
+      "expected_bits": "0x35f47a29218d622b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00010-z-staging-discriminator",
+      "args": [
+        "0x4013cb537c802fd5"
+      ],
+      "expected_bits": "0x3d86c937dea350d6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00011-z-staging-discriminator",
+      "args": [
+        "0x4013cb537c802fd4"
+      ],
+      "expected_bits": "0x3d86c937dea35104"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00012-z-staging-discriminator",
+      "args": [
+        "0x3fd791a1d15fa329"
+      ],
+      "expected_bits": "0x3fe347b5c86a1e8c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00013-z-staging-discriminator",
+      "args": [
+        "0x3fd791a1d15fa32a"
+      ],
+      "expected_bits": "0x3fe347b5c86a1e8c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00014-z-staging-discriminator",
+      "args": [
+        "0x3ff031bad41eabad"
+      ],
+      "expected_bits": "0x3fc37f3b4a040c42"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00015-z-staging-discriminator",
+      "args": [
+        "0x3ff031bad41eabac"
+      ],
+      "expected_bits": "0x3fc37f3b4a040c44"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00016-z-staging-discriminator",
+      "args": [
+        "0x3fde574d857a90db"
+      ],
+      "expected_bits": "0x3fe01511fbcba4ec"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00017-z-staging-discriminator",
+      "args": [
+        "0x3fde574d857a90dc"
+      ],
+      "expected_bits": "0x3fe01511fbcba4ea"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00018-z-staging-discriminator",
+      "args": [
+        "0x3fe2db570ad6b29b"
+      ],
+      "expected_bits": "0x3fd9e5a516834097"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00019-z-staging-discriminator",
+      "args": [
+        "0x3fe2db570ad6b29a"
+      ],
+      "expected_bits": "0x3fd9e5a516834098"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00020-z-staging-discriminator",
+      "args": [
+        "0x3fdad8f07d7001b9"
+      ],
+      "expected_bits": "0x3fe1b24a7197bede"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00021-z-staging-discriminator",
+      "args": [
+        "0x3fdad8f07d7001b8"
+      ],
+      "expected_bits": "0x3fe1b24a7197bee0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00022-z-staging-discriminator",
+      "args": [
+        "0x3fe7867e7fa166cb"
+      ],
+      "expected_bits": "0x3fd31a67be094fa1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00023-z-staging-discriminator",
+      "args": [
+        "0x3fe7867e7fa166ca"
+      ],
+      "expected_bits": "0x3fd31a67be094fa2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00024-z-staging-discriminator",
+      "args": [
+        "0x3fffb68455aca199"
+      ],
+      "expected_bits": "0x3f74bbfc8377997a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00025-z-staging-discriminator",
+      "args": [
+        "0x3fffb68455aca19a"
+      ],
+      "expected_bits": "0x3f74bbfc83779976"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00026-z-staging-discriminator",
+      "args": [
+        "0x4038268421c53261"
+      ],
+      "expected_bits": "0x0b01927788cac517"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00027-z-staging-discriminator",
+      "args": [
+        "0x4038268421c53260"
+      ],
+      "expected_bits": "0x0b01927788cac97f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00028-z-staging-discriminator",
+      "args": [
+        "0x3fee560b718e116b"
+      ],
+      "expected_bits": "0x3fc70b0b7aa0b974"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00029-z-staging-discriminator",
+      "args": [
+        "0x3fee560b718e116c"
+      ],
+      "expected_bits": "0x3fc70b0b7aa0b973"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00030-z-staging-discriminator",
+      "args": [
+        "0x401c98f23ea0638b"
+      ],
+      "expected_bits": "0x3b17f1e5d29879ff"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00031-z-staging-discriminator",
+      "args": [
+        "0x401c98f23ea0638c"
+      ],
+      "expected_bits": "0x3b17f1e5d29879a1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00032-z-staging-discriminator",
+      "args": [
+        "0x402b35df302875f1"
+      ],
+      "expected_bits": "0x2ef483d165ca8f56"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00033-z-staging-discriminator",
+      "args": [
+        "0x402b35df302875f0"
+      ],
+      "expected_bits": "0x2ef483d165ca909f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00034-z-staging-discriminator",
+      "args": [
+        "0x3fe26230e0a1b459"
+      ],
+      "expected_bits": "0x3fdaa885314ee64e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00035-z-staging-discriminator",
+      "args": [
+        "0x3fe26230e0a1b45a"
+      ],
+      "expected_bits": "0x3fdaa885314ee64c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00036-z-staging-discriminator",
+      "args": [
+        "0x402cc4c5ec55aa69"
+      ],
+      "expected_bits": "0x2cfc35dd272aceb5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00037-z-staging-discriminator",
+      "args": [
+        "0x402cc4c5ec55aa68"
+      ],
+      "expected_bits": "0x2cfc35dd272acf93"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00038-z-staging-discriminator",
+      "args": [
+        "0x3ff16f0381488883"
+      ],
+      "expected_bits": "0x3fbf92c90043f7b5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00039-z-staging-discriminator",
+      "args": [
+        "0x3ff16f0381488884"
+      ],
+      "expected_bits": "0x3fbf92c90043f7b0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00040-z-staging-discriminator",
+      "args": [
+        "0x401c769a1e4d2b77"
+      ],
+      "expected_bits": "0x3b23685b73450b46"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00041-z-staging-discriminator",
+      "args": [
+        "0x401c769a1e4d2b78"
+      ],
+      "expected_bits": "0x3b23685b73450af8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00042-z-staging-discriminator",
+      "args": [
+        "0x3fde1e53d8953115"
+      ],
+      "expected_bits": "0x3fe02ec980dda18c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00043-z-staging-discriminator",
+      "args": [
+        "0x3fde1e53d8953116"
+      ],
+      "expected_bits": "0x3fe02ec980dda18c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00044-z-staging-discriminator",
+      "args": [
+        "0x401324cdcd4ef7ed"
+      ],
+      "expected_bits": "0x3daca54c155b9c57"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00045-z-staging-discriminator",
+      "args": [
+        "0x401324cdcd4ef7ee"
+      ],
+      "expected_bits": "0x3daca54c155b9c1b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00046-z-staging-discriminator",
+      "args": [
+        "0x4011c3ce68434007"
+      ],
+      "expected_bits": "0x3df7248c068486fb"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00047-z-staging-discriminator",
+      "args": [
+        "0x4011c3ce68434006"
+      ],
+      "expected_bits": "0x3df7248c06848742"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00048-z-staging-discriminator",
+      "args": [
+        "0x3ff2a850a4c5121d"
+      ],
+      "expected_bits": "0x3fb960584906ff26"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00049-z-staging-discriminator",
+      "args": [
+        "0x3ff2a850a4c5121e"
+      ],
+      "expected_bits": "0x3fb960584906ff22"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00050-z-staging-discriminator",
+      "args": [
+        "0x400581b74e90188f"
+      ],
+      "expected_bits": "0x3f22d26a98e58d2c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00051-z-staging-discriminator",
+      "args": [
+        "0x400581b74e90188e"
+      ],
+      "expected_bits": "0x3f22d26a98e58d36"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00052-z-staging-discriminator",
+      "args": [
+        "0x3fe9af6c23e6980d"
+      ],
+      "expected_bits": "0x3fd067814b41b031"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00053-z-staging-discriminator",
+      "args": [
+        "0x3fe9af6c23e6980e"
+      ],
+      "expected_bits": "0x3fd067814b41b030"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00054-z-staging-discriminator",
+      "args": [
+        "0x4038da69806f9ba3"
+      ],
+      "expected_bits": "0x07e54fe832436b95"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00055-z-staging-discriminator",
+      "args": [
+        "0x4038da69806f9ba4"
+      ],
+      "expected_bits": "0x07e54fe832436641"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00056-z-staging-discriminator",
+      "args": [
+        "0x40232268c8c0428f"
+      ],
+      "expected_bits": "0x376cf81aa006432f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00057-z-staging-discriminator",
+      "args": [
+        "0x40232268c8c04290"
+      ],
+      "expected_bits": "0x376cf81aa0064245"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00058-z-staging-discriminator",
+      "args": [
+        "0x3fe3389e6ab79cb7"
+      ],
+      "expected_bits": "0x3fd951e4b1e86189"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00059-z-staging-discriminator",
+      "args": [
+        "0x3fe3389e6ab79cb6"
+      ],
+      "expected_bits": "0x3fd951e4b1e8618b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00060-z-staging-discriminator",
+      "args": [
+        "0x402400b8fc1ea879"
+      ],
+      "expected_bits": "0x36a72de94e2ae433"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00061-z-staging-discriminator",
+      "args": [
+        "0x402400b8fc1ea87a"
+      ],
+      "expected_bits": "0x36a72de94e2ae31d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00062-z-staging-discriminator",
+      "args": [
+        "0x40143400d4be7277"
+      ],
+      "expected_bits": "0x3d7013d953e4f144"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00063-z-staging-discriminator",
+      "args": [
+        "0x40143400d4be7278"
+      ],
+      "expected_bits": "0x3d7013d953e4f112"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00064-z-staging-discriminator",
+      "args": [
+        "0x403a1f35acbcb289"
+      ],
+      "expected_bits": "0x021069d6ec28b11d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00065-z-staging-discriminator",
+      "args": [
+        "0x403a1f35acbcb288"
+      ],
+      "expected_bits": "0x021069d6ec28b536"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00066-z-staging-discriminator",
+      "args": [
+        "0x403222b35c16184b"
+      ],
+      "expected_bits": "0x21f67ef343ab37f8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00067-z-staging-discriminator",
+      "args": [
+        "0x403222b35c16184c"
+      ],
+      "expected_bits": "0x21f67ef343ab33c3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00068-z-staging-discriminator",
+      "args": [
+        "0x402fbdb9a8cae653"
+      ],
+      "expected_bits": "0x28ebf3dd1c7c18fa"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00069-z-staging-discriminator",
+      "args": [
+        "0x402fbdb9a8cae654"
+      ],
+      "expected_bits": "0x28ebf3dd1c7c173a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00070-z-staging-discriminator",
+      "args": [
+        "0x3ff411aebbe168d9"
+      ],
+      "expected_bits": "0x3fb37a42ba14b984"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00071-z-staging-discriminator",
+      "args": [
+        "0x3ff411aebbe168d8"
+      ],
+      "expected_bits": "0x3fb37a42ba14b986"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00072-z-staging-discriminator",
+      "args": [
+        "0x3fe21a31866f776b"
+      ],
+      "expected_bits": "0x3fdb1dea966237ab"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00073-z-staging-discriminator",
+      "args": [
+        "0x3fe21a31866f776a"
+      ],
+      "expected_bits": "0x3fdb1dea966237ad"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00074-z-staging-discriminator",
+      "args": [
+        "0x4014dc4e7a8b1d93"
+      ],
+      "expected_bits": "0x3d4712ad5be3840c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00075-z-staging-discriminator",
+      "args": [
+        "0x4014dc4e7a8b1d94"
+      ],
+      "expected_bits": "0x3d4712ad5be383df"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00076-z-staging-discriminator",
+      "args": [
+        "0x40027b37f854e5c7"
+      ],
+      "expected_bits": "0x3f51cddca3aaa540"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00077-z-staging-discriminator",
+      "args": [
+        "0x40027b37f854e5c8"
+      ],
+      "expected_bits": "0x3f51cddca3aaa535"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00078-z-staging-discriminator",
+      "args": [
+        "0x4004d0893074d779"
+      ],
+      "expected_bits": "0x3f2ea050a8f85ea4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00079-z-staging-discriminator",
+      "args": [
+        "0x4004d0893074d77a"
+      ],
+      "expected_bits": "0x3f2ea050a8f85e8d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00080-z-staging-discriminator",
+      "args": [
+        "0x40267da6a7f8c891"
+      ],
+      "expected_bits": "0x3442d5164c26be2e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00081-z-staging-discriminator",
+      "args": [
+        "0x40267da6a7f8c890"
+      ],
+      "expected_bits": "0x3442d5164c26bf12"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00082-z-staging-discriminator",
+      "args": [
+        "0x40121891073de399"
+      ],
+      "expected_bits": "0x3de5a6ef4781c85a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00083-z-staging-discriminator",
+      "args": [
+        "0x40121891073de39a"
+      ],
+      "expected_bits": "0x3de5a6ef4781c82e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00084-z-staging-discriminator",
+      "args": [
+        "0x403000f79b909271"
+      ],
+      "expected_bits": "0x2889664a883401bd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00085-z-staging-discriminator",
+      "args": [
+        "0x403000f79b909272"
+      ],
+      "expected_bits": "0x2889664a8833fe92"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00086-z-staging-discriminator",
+      "args": [
+        "0x40378f1e076d42c3"
+      ],
+      "expected_bits": "0x0d8d63e28d30f0ee"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00087-z-staging-discriminator",
+      "args": [
+        "0x40378f1e076d42c2"
+      ],
+      "expected_bits": "0x0d8d63e28d30f848"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00088-z-staging-discriminator",
+      "args": [
+        "0x4010ae782d29b44d"
+      ],
+      "expected_bits": "0x3e2fa45a16222ac9"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00089-z-staging-discriminator",
+      "args": [
+        "0x4010ae782d29b44c"
+      ],
+      "expected_bits": "0x3e2fa45a16222b07"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00090-z-staging-discriminator",
+      "args": [
+        "0x4038489a3e951e7b"
+      ],
+      "expected_bits": "0x0a6c5006b909425a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00091-z-staging-discriminator",
+      "args": [
+        "0x4038489a3e951e7c"
+      ],
+      "expected_bits": "0x0a6c5006b9093b43"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00092-z-staging-discriminator",
+      "args": [
+        "0x4028bc2aab4c2243"
+      ],
+      "expected_bits": "0x31dd4e559592df2f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00093-z-staging-discriminator",
+      "args": [
+        "0x4028bc2aab4c2242"
+      ],
+      "expected_bits": "0x31dd4e559592e105"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00094-z-staging-discriminator",
+      "args": [
+        "0x3fdec9e7eff952cb"
+      ],
+      "expected_bits": "0x3fdfc33285a0b30a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00095-z-staging-discriminator",
+      "args": [
+        "0x3fdec9e7eff952cc"
+      ],
+      "expected_bits": "0x3fdfc33285a0b308"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00096-z-staging-discriminator",
+      "args": [
+        "0x40156731795bba97"
+      ],
+      "expected_bits": "0x3d257a843d1ff35f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00097-z-staging-discriminator",
+      "args": [
+        "0x40156731795bba98"
+      ],
+      "expected_bits": "0x3d257a843d1ff31c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00098-z-staging-discriminator",
+      "args": [
+        "0x3fe39abd1beb9ed5"
+      ],
+      "expected_bits": "0x3fd8b8a3dc1b9bf8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00099-z-staging-discriminator",
+      "args": [
+        "0x3fe39abd1beb9ed4"
+      ],
+      "expected_bits": "0x3fd8b8a3dc1b9bf9"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00100-z-staging-discriminator",
+      "args": [
+        "0x401c92233e7d9171"
+      ],
+      "expected_bits": "0x3b1a5b250abedcfb"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00101-z-staging-discriminator",
+      "args": [
+        "0x401c92233e7d9172"
+      ],
+      "expected_bits": "0x3b1a5b250abedcc5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00102-z-staging-discriminator",
+      "args": [
+        "0x3fff254980968d8b"
+      ],
+      "expected_bits": "0x3f7831b0986f1d17"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00103-z-staging-discriminator",
+      "args": [
+        "0x3fff254980968d8c"
+      ],
+      "expected_bits": "0x3f7831b0986f1d10"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00104-z-staging-discriminator",
+      "args": [
+        "0x3fed630c5658b187"
+      ],
+      "expected_bits": "0x3fc8d630cbbb3832"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00105-z-staging-discriminator",
+      "args": [
+        "0x3fed630c5658b188"
+      ],
+      "expected_bits": "0x3fc8d630cbbb3831"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00106-z-staging-discriminator",
+      "args": [
+        "0x3ff2525584b11f27"
+      ],
+      "expected_bits": "0x3fbaf8b4f8cb198d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00107-z-staging-discriminator",
+      "args": [
+        "0x3ff2525584b11f28"
+      ],
+      "expected_bits": "0x3fbaf8b4f8cb1985"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00108-z-staging-discriminator",
+      "args": [
+        "0x3fe055e6c353e471"
+      ],
+      "expected_bits": "0x3fde19f26c8548ce"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00109-z-staging-discriminator",
+      "args": [
+        "0x3fe055e6c353e472"
+      ],
+      "expected_bits": "0x3fde19f26c8548cc"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00110-z-staging-discriminator",
+      "args": [
+        "0x3fe0076c03d0c267"
+      ],
+      "expected_bits": "0x3fdea31764c930e6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00111-z-staging-discriminator",
+      "args": [
+        "0x3fe0076c03d0c266"
+      ],
+      "expected_bits": "0x3fdea31764c930e8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00112-z-staging-discriminator",
+      "args": [
+        "0x3fd7f9fa0f46e04d"
+      ],
+      "expected_bits": "0x3fe3146d5792c250"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00113-z-staging-discriminator",
+      "args": [
+        "0x3fd7f9fa0f46e04c"
+      ],
+      "expected_bits": "0x3fe3146d5792c251"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00114-z-staging-discriminator",
+      "args": [
+        "0x4025e4ffd97763c7"
+      ],
+      "expected_bits": "0x34dc3c74bfcfb5b5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00115-z-staging-discriminator",
+      "args": [
+        "0x4025e4ffd97763c8"
+      ],
+      "expected_bits": "0x34dc3c74bfcfb45f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00116-z-staging-discriminator",
+      "args": [
+        "0x4003185b0f6e22b3"
+      ],
+      "expected_bits": "0x3f48232b5222e14d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00117-z-staging-discriminator",
+      "args": [
+        "0x4003185b0f6e22b4"
+      ],
+      "expected_bits": "0x3f48232b5222e140"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00118-z-staging-discriminator",
+      "args": [
+        "0x4030528371e7bd77"
+      ],
+      "expected_bits": "0x279b86cd33f413cf"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00119-z-staging-discriminator",
+      "args": [
+        "0x4030528371e7bd76"
+      ],
+      "expected_bits": "0x279b86cd33f41745"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00120-z-staging-discriminator",
+      "args": [
+        "0x4003a42234939e4b"
+      ],
+      "expected_bits": "0x3f40ebf536c8018f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00121-z-staging-discriminator",
+      "args": [
+        "0x4003a42234939e4c"
+      ],
+      "expected_bits": "0x3f40ebf536c80181"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00122-z-staging-discriminator",
+      "args": [
+        "0x40054206c387eff5"
+      ],
+      "expected_bits": "0x3f26754d1d4ab7d9"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00123-z-staging-discriminator",
+      "args": [
+        "0x40054206c387eff4"
+      ],
+      "expected_bits": "0x3f26754d1d4ab7e5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00124-z-staging-discriminator",
+      "args": [
+        "0x403089c7c54c86a3"
+      ],
+      "expected_bits": "0x26f71702cb16c20b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00125-z-staging-discriminator",
+      "args": [
+        "0x403089c7c54c86a2"
+      ],
+      "expected_bits": "0x26f71702cb16c4f3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00126-z-staging-discriminator",
+      "args": [
+        "0x3ff07b2e2612d001"
+      ],
+      "expected_bits": "0x3fc2957e27caadfd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00127-z-staging-discriminator",
+      "args": [
+        "0x3ff07b2e2612d000"
+      ],
+      "expected_bits": "0x3fc2957e27caae01"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00128-z-staging-discriminator",
+      "args": [
+        "0x40075a22418f0325"
+      ],
+      "expected_bits": "0x3f032d3a4da21df3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00129-z-staging-discriminator",
+      "args": [
+        "0x40075a22418f0324"
+      ],
+      "expected_bits": "0x3f032d3a4da21dfe"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00130-z-staging-discriminator",
+      "args": [
+        "0x3feba053072a12af"
+      ],
+      "expected_bits": "0x3fcc6e4e883fc8a6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00131-z-staging-discriminator",
+      "args": [
+        "0x3feba053072a12b0"
+      ],
+      "expected_bits": "0x3fcc6e4e883fc8a5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00132-z-staging-discriminator",
+      "args": [
+        "0x4007ef4143724d99"
+      ],
+      "expected_bits": "0x3ef8631ed33bf8a2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00133-z-staging-discriminator",
+      "args": [
+        "0x4007ef4143724d98"
+      ],
+      "expected_bits": "0x3ef8631ed33bf8bd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00134-z-staging-discriminator",
+      "args": [
+        "0x402b2f4be7aa44cf"
+      ],
+      "expected_bits": "0x2efd1e57ed0d0b8c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00135-z-staging-discriminator",
+      "args": [
+        "0x402b2f4be7aa44ce"
+      ],
+      "expected_bits": "0x2efd1e57ed0d0d5f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00136-z-staging-discriminator",
+      "args": [
+        "0x402de27927a97b1b"
+      ],
+      "expected_bits": "0x2b81cf0270d9cb91"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00137-z-staging-discriminator",
+      "args": [
+        "0x402de27927a97b1a"
+      ],
+      "expected_bits": "0x2b81cf0270d9ccb0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00138-z-staging-discriminator",
+      "args": [
+        "0x3fea3d20b62806a9"
+      ],
+      "expected_bits": "0x3fcf83d94568d4ae"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00139-z-staging-discriminator",
+      "args": [
+        "0x3fea3d20b62806aa"
+      ],
+      "expected_bits": "0x3fcf83d94568d4ac"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00140-z-staging-discriminator",
+      "args": [
+        "0x4012ca1ca2182d41"
+      ],
+      "expected_bits": "0x3dc0e30e48d85047"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00141-z-staging-discriminator",
+      "args": [
+        "0x4012ca1ca2182d42"
+      ],
+      "expected_bits": "0x3dc0e30e48d85024"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00142-z-staging-discriminator",
+      "args": [
+        "0x403317e5944729b1"
+      ],
+      "expected_bits": "0x1ebf6f5e8754fa03"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00143-z-staging-discriminator",
+      "args": [
+        "0x403317e5944729b2"
+      ],
+      "expected_bits": "0x1ebf6f5e8754f41d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00144-z-staging-discriminator",
+      "args": [
+        "0x402457ce70d7029b"
+      ],
+      "expected_bits": "0x3657992b472426be"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00145-z-staging-discriminator",
+      "args": [
+        "0x402457ce70d7029a"
+      ],
+      "expected_bits": "0x3657992b4724277c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00146-z-staging-discriminator",
+      "args": [
+        "0x3fdbfc20481db2cf"
+      ],
+      "expected_bits": "0x3fe1298d3133f028"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00147-z-staging-discriminator",
+      "args": [
+        "0x3fdbfc20481db2ce"
+      ],
+      "expected_bits": "0x3fe1298d3133f028"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00148-z-staging-discriminator",
+      "args": [
+        "0x3ff9456dbca66ea1"
+      ],
+      "expected_bits": "0x3f9a1dc113bfe7d4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00149-z-staging-discriminator",
+      "args": [
+        "0x3ff9456dbca66ea2"
+      ],
+      "expected_bits": "0x3f9a1dc113bfe7d0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00150-z-staging-discriminator",
+      "args": [
+        "0x401e8e13a85971f5"
+      ],
+      "expected_bits": "0x3a70875637167824"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00151-z-staging-discriminator",
+      "args": [
+        "0x401e8e13a85971f4"
+      ],
+      "expected_bits": "0x3a70875637167867"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00152-z-staging-discriminator",
+      "args": [
+        "0x40217b1fe8f111c7"
+      ],
+      "expected_bits": "0x38cc450bc76ba272"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00153-z-staging-discriminator",
+      "args": [
+        "0x40217b1fe8f111c8"
+      ],
+      "expected_bits": "0x38cc450bc76ba18e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00154-z-staging-discriminator",
+      "args": [
+        "0x40228a80c5f3aa43"
+      ],
+      "expected_bits": "0x37ef39899674dd77"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00155-z-staging-discriminator",
+      "args": [
+        "0x40228a80c5f3aa44"
+      ],
+      "expected_bits": "0x37ef39899674dbfe"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00156-z-staging-discriminator",
+      "args": [
+        "0x3ffe1361637a34a7"
+      ],
+      "expected_bits": "0x3f801508c3bd6f2d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00157-z-staging-discriminator",
+      "args": [
+        "0x3ffe1361637a34a8"
+      ],
+      "expected_bits": "0x3f801508c3bd6f28"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00158-z-staging-discriminator",
+      "args": [
+        "0x402c7c01bc53e8cb"
+      ],
+      "expected_bits": "0x2d5a06f6a5f9bc77"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00159-z-staging-discriminator",
+      "args": [
+        "0x402c7c01bc53e8ca"
+      ],
+      "expected_bits": "0x2d5a06f6a5f9be19"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00160-z-staging-discriminator",
+      "args": [
+        "0x40002d9d357b940b"
+      ],
+      "expected_bits": "0x3f715b3ee613f043"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00161-z-staging-discriminator",
+      "args": [
+        "0x40002d9d357b940c"
+      ],
+      "expected_bits": "0x3f715b3ee613f039"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00162-z-staging-discriminator",
+      "args": [
+        "0x402d7333e17710bd"
+      ],
+      "expected_bits": "0x2c16461525effaa2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00163-z-staging-discriminator",
+      "args": [
+        "0x402d7333e17710bc"
+      ],
+      "expected_bits": "0x2c16461525effc07"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00164-z-staging-discriminator",
+      "args": [
+        "0x4004bca3c707c60b"
+      ],
+      "expected_bits": "0x3f3028c3a7a53fd4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00165-z-staging-discriminator",
+      "args": [
+        "0x4004bca3c707c60c"
+      ],
+      "expected_bits": "0x3f3028c3a7a53fcd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00166-z-staging-discriminator",
+      "args": [
+        "0x4034e3530b69bc69"
+      ],
+      "expected_bits": "0x1844180320c9b71e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00167-z-staging-discriminator",
+      "args": [
+        "0x4034e3530b69bc6a"
+      ],
+      "expected_bits": "0x1844180320c9b49a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00168-z-staging-discriminator",
+      "args": [
+        "0x3fe1a75d27b6221b"
+      ],
+      "expected_bits": "0x3fdbdb93d844fa3e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00169-z-staging-discriminator",
+      "args": [
+        "0x3fe1a75d27b6221a"
+      ],
+      "expected_bits": "0x3fdbdb93d844fa3e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00170-z-staging-discriminator",
+      "args": [
+        "0x3fe8ca98d65378e1"
+      ],
+      "expected_bits": "0x3fd17cbd1f6ac8e5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00171-z-staging-discriminator",
+      "args": [
+        "0x3fe8ca98d65378e2"
+      ],
+      "expected_bits": "0x3fd17cbd1f6ac8e5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00172-z-staging-discriminator",
+      "args": [
+        "0x4029fd52279b15d1"
+      ],
+      "expected_bits": "0x306cdbc841497965"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00173-z-staging-discriminator",
+      "args": [
+        "0x4029fd52279b15d2"
+      ],
+      "expected_bits": "0x306cdbc841497795"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00174-z-staging-discriminator",
+      "args": [
+        "0x3ff8f4f141a0f02f"
+      ],
+      "expected_bits": "0x3f9c0c8df491efde"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00175-z-staging-discriminator",
+      "args": [
+        "0x3ff8f4f141a0f02e"
+      ],
+      "expected_bits": "0x3f9c0c8df491efe6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00176-z-staging-discriminator",
+      "args": [
+        "0x4010bf60f333545d"
+      ],
+      "expected_bits": "0x3e2b75c121486dcd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00177-z-staging-discriminator",
+      "args": [
+        "0x4010bf60f333545c"
+      ],
+      "expected_bits": "0x3e2b75c121486e05"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00178-z-staging-discriminator",
+      "args": [
+        "0x4026904560e70327"
+      ],
+      "expected_bits": "0x34308c4e86d8979a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00179-z-staging-discriminator",
+      "args": [
+        "0x4026904560e70326"
+      ],
+      "expected_bits": "0x34308c4e86d89820"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00180-z-staging-discriminator",
+      "args": [
+        "0x4010917f6f4cbca9"
+      ],
+      "expected_bits": "0x3e34253e9fe0cf41"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00181-z-staging-discriminator",
+      "args": [
+        "0x4010917f6f4cbca8"
+      ],
+      "expected_bits": "0x3e34253e9fe0cf6c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00182-z-staging-discriminator",
+      "args": [
+        "0x4031a8fc9faa7f33"
+      ],
+      "expected_bits": "0x2380f1fb22677719"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00183-z-staging-discriminator",
+      "args": [
+        "0x4031a8fc9faa7f34"
+      ],
+      "expected_bits": "0x2380f1fb226774fa"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00184-z-staging-discriminator",
+      "args": [
+        "0x401c6187f5be2d37"
+      ],
+      "expected_bits": "0x3b2a12e3e572d168"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00185-z-staging-discriminator",
+      "args": [
+        "0x401c6187f5be2d38"
+      ],
+      "expected_bits": "0x3b2a12e3e572d100"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00186-z-staging-discriminator",
+      "args": [
+        "0x400ebf9893ee3e79"
+      ],
+      "expected_bits": "0x3e6d51ad92e06f3e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00187-z-staging-discriminator",
+      "args": [
+        "0x400ebf9893ee3e78"
+      ],
+      "expected_bits": "0x3e6d51ad92e06f5f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00188-z-staging-discriminator",
+      "args": [
+        "0x3ffca9e7c0cfb2df"
+      ],
+      "expected_bits": "0x3f872027d1173b73"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00189-z-staging-discriminator",
+      "args": [
+        "0x3ffca9e7c0cfb2e0"
+      ],
+      "expected_bits": "0x3f872027d1173b6e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00190-z-staging-discriminator",
+      "args": [
+        "0x3fe5e6c6c54392cf"
+      ],
+      "expected_bits": "0x3fd55146602c7e9e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00191-z-staging-discriminator",
+      "args": [
+        "0x3fe5e6c6c54392ce"
+      ],
+      "expected_bits": "0x3fd55146602c7ea2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00192-z-staging-discriminator",
+      "args": [
+        "0x402887ec61c5e749"
+      ],
+      "expected_bits": "0x3216cdc72f00647f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00193-z-staging-discriminator",
+      "args": [
+        "0x402887ec61c5e74a"
+      ],
+      "expected_bits": "0x3216cdc72f0063c6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00194-z-staging-discriminator",
+      "args": [
+        "0x4013e4ef72241df1"
+      ],
+      "expected_bits": "0x3d81b151fe4aa3fb"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00195-z-staging-discriminator",
+      "args": [
+        "0x4013e4ef72241df0"
+      ],
+      "expected_bits": "0x3d81b151fe4aa432"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00196-z-staging-discriminator",
+      "args": [
+        "0x40336f2537db57c7"
+      ],
+      "expected_bits": "0x1d900ebe8cbe78e1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00197-z-staging-discriminator",
+      "args": [
+        "0x40336f2537db57c6"
+      ],
+      "expected_bits": "0x1d900ebe8cbe7ae1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00198-z-staging-discriminator",
+      "args": [
+        "0x40074640429edf3f"
+      ],
+      "expected_bits": "0x3f045abd5d9e2552"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00199-z-staging-discriminator",
+      "args": [
+        "0x40074640429edf3e"
+      ],
+      "expected_bits": "0x3f045abd5d9e255b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00200-z-staging-discriminator",
+      "args": [
+        "0x402b2f0a340badc1"
+      ],
+      "expected_bits": "0x2efd84e46fad7ea0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00201-z-staging-discriminator",
+      "args": [
+        "0x402b2f0a340badc2"
+      ],
+      "expected_bits": "0x2efd84e46fad7cc7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00202-z-staging-discriminator",
+      "args": [
+        "0x3fd75176350d0447"
+      ],
+      "expected_bits": "0x3fe3675e4563185e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00203-z-staging-discriminator",
+      "args": [
+        "0x3fd75176350d0448"
+      ],
+      "expected_bits": "0x3fe3675e4563185d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00204-z-staging-discriminator",
+      "args": [
+        "0x40176700eebedd95"
+      ],
+      "expected_bits": "0x3ca2abcbc687f250"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00205-z-staging-discriminator",
+      "args": [
+        "0x40176700eebedd96"
+      ],
+      "expected_bits": "0x3ca2abcbc687f228"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00206-z-staging-discriminator",
+      "args": [
+        "0x4001ba45df5c3d3d"
+      ],
+      "expected_bits": "0x3f5c44d86726cfbc"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00207-z-staging-discriminator",
+      "args": [
+        "0x4001ba45df5c3d3c"
+      ],
+      "expected_bits": "0x3f5c44d86726cfcc"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00208-z-staging-discriminator",
+      "args": [
+        "0x3fec4c3480d7c6fd"
+      ],
+      "expected_bits": "0x3fcb04c65f8a7440"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00209-z-staging-discriminator",
+      "args": [
+        "0x3fec4c3480d7c6fc"
+      ],
+      "expected_bits": "0x3fcb04c65f8a7442"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00210-z-staging-discriminator",
+      "args": [
+        "0x3fe46af4d8325ad9"
+      ],
+      "expected_bits": "0x3fd77ad56d9bb220"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00211-z-staging-discriminator",
+      "args": [
+        "0x3fe46af4d8325ad8"
+      ],
+      "expected_bits": "0x3fd77ad56d9bb222"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00212-z-staging-discriminator",
+      "args": [
+        "0x3ff529f86fb78361"
+      ],
+      "expected_bits": "0x3faf6f0cd9f4de79"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00213-z-staging-discriminator",
+      "args": [
+        "0x3ff529f86fb78362"
+      ],
+      "expected_bits": "0x3faf6f0cd9f4de73"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00214-z-staging-discriminator",
+      "args": [
+        "0x402bfeaf180c10a7"
+      ],
+      "expected_bits": "0x2df9f9cffb80bda4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00215-z-staging-discriminator",
+      "args": [
+        "0x402bfeaf180c10a6"
+      ],
+      "expected_bits": "0x2df9f9cffb80bf43"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00216-z-staging-discriminator",
+      "args": [
+        "0x3ff325139284e8bb"
+      ],
+      "expected_bits": "0x3fb73253c0249881"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00217-z-staging-discriminator",
+      "args": [
+        "0x3ff325139284e8bc"
+      ],
+      "expected_bits": "0x3fb73253c024987e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00218-z-staging-discriminator",
+      "args": [
+        "0x3ff141c43c01c5d3"
+      ],
+      "expected_bits": "0x3fc0478077f432f2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00219-z-staging-discriminator",
+      "args": [
+        "0x3ff141c43c01c5d2"
+      ],
+      "expected_bits": "0x3fc0478077f432f5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00220-z-staging-discriminator",
+      "args": [
+        "0x400077789d3d471b"
+      ],
+      "expected_bits": "0x3f6d854879bc6b4c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00221-z-staging-discriminator",
+      "args": [
+        "0x400077789d3d471a"
+      ],
+      "expected_bits": "0x3f6d854879bc6b5c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00222-z-staging-discriminator",
+      "args": [
+        "0x4033b0b2a4077905"
+      ],
+      "expected_bits": "0x1ca7264ed309489a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00223-z-staging-discriminator",
+      "args": [
+        "0x4033b0b2a4077906"
+      ],
+      "expected_bits": "0x1ca7264ed3094442"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00224-z-staging-discriminator",
+      "args": [
+        "0x3fd9780239cf61ed"
+      ],
+      "expected_bits": "0x3fe25ac5d4437ba4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00225-z-staging-discriminator",
+      "args": [
+        "0x3fd9780239cf61ec"
+      ],
+      "expected_bits": "0x3fe25ac5d4437ba5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00226-z-staging-discriminator",
+      "args": [
+        "0x3ff1cf24bd3ec499"
+      ],
+      "expected_bits": "0x3fbd8ebdcbc2b24b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00227-z-staging-discriminator",
+      "args": [
+        "0x3ff1cf24bd3ec49a"
+      ],
+      "expected_bits": "0x3fbd8ebdcbc2b247"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00228-z-staging-discriminator",
+      "args": [
+        "0x3ff60b77843239d3"
+      ],
+      "expected_bits": "0x3faa4b2e3f8f362c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00229-z-staging-discriminator",
+      "args": [
+        "0x3ff60b77843239d4"
+      ],
+      "expected_bits": "0x3faa4b2e3f8f3629"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00230-z-staging-discriminator",
+      "args": [
+        "0x400adc866c13f5c3"
+      ],
+      "expected_bits": "0x3ec1316b81dc0328"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00231-z-staging-discriminator",
+      "args": [
+        "0x400adc866c13f5c2"
+      ],
+      "expected_bits": "0x3ec1316b81dc0332"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00232-z-staging-discriminator",
+      "args": [
+        "0x3ffe382cd1257c8d"
+      ],
+      "expected_bits": "0x3f7ef8d75f96e26b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00233-z-staging-discriminator",
+      "args": [
+        "0x3ffe382cd1257c8e"
+      ],
+      "expected_bits": "0x3f7ef8d75f96e263"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00234-z-staging-discriminator",
+      "args": [
+        "0x3fd97766852b32c9"
+      ],
+      "expected_bits": "0x3fe25b10cfc04fe6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00235-z-staging-discriminator",
+      "args": [
+        "0x3fd97766852b32c8"
+      ],
+      "expected_bits": "0x3fe25b10cfc04fe6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00236-z-staging-discriminator",
+      "args": [
+        "0x3ff1a810c000e173"
+      ],
+      "expected_bits": "0x3fbe5d4e341ac418"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00237-z-staging-discriminator",
+      "args": [
+        "0x3ff1a810c000e174"
+      ],
+      "expected_bits": "0x3fbe5d4e341ac415"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00238-z-staging-discriminator",
+      "args": [
+        "0x4012f3841131fe0d"
+      ],
+      "expected_bits": "0x3db6df89c5c126c1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00239-z-staging-discriminator",
+      "args": [
+        "0x4012f3841131fe0c"
+      ],
+      "expected_bits": "0x3db6df89c5c126f0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00240-z-staging-discriminator",
+      "args": [
+        "0x4014ddeca6ce574f"
+      ],
+      "expected_bits": "0x3d46b06c1ebef49a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00241-z-staging-discriminator",
+      "args": [
+        "0x4014ddeca6ce574e"
+      ],
+      "expected_bits": "0x3d46b06c1ebef4c8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00242-z-staging-discriminator",
+      "args": [
+        "0x3fec3a6fdf3e8249"
+      ],
+      "expected_bits": "0x3fcb2988e7543d07"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00243-z-staging-discriminator",
+      "args": [
+        "0x3fec3a6fdf3e824a"
+      ],
+      "expected_bits": "0x3fcb2988e7543d05"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00244-z-staging-discriminator",
+      "args": [
+        "0x3fdaba0d91c95965"
+      ],
+      "expected_bits": "0x3fe1c0ea94126904"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00245-z-staging-discriminator",
+      "args": [
+        "0x3fdaba0d91c95966"
+      ],
+      "expected_bits": "0x3fe1c0ea94126904"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00246-z-staging-discriminator",
+      "args": [
+        "0x3fe7b35450dc3051"
+      ],
+      "expected_bits": "0x3fd2dfb4d2d52b4e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00247-z-staging-discriminator",
+      "args": [
+        "0x3fe7b35450dc3052"
+      ],
+      "expected_bits": "0x3fd2dfb4d2d52b4c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00248-z-staging-discriminator",
+      "args": [
+        "0x3ff56d534675482f"
+      ],
+      "expected_bits": "0x3fadd160eaf14a10"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00249-z-staging-discriminator",
+      "args": [
+        "0x3ff56d5346754830"
+      ],
+      "expected_bits": "0x3fadd160eaf14a07"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00250-z-staging-discriminator",
+      "args": [
+        "0x3fed70734c03938d"
+      ],
+      "expected_bits": "0x3fc8bc33d2be13ae"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00251-z-staging-discriminator",
+      "args": [
+        "0x3fed70734c03938c"
+      ],
+      "expected_bits": "0x3fc8bc33d2be13b0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00252-z-staging-discriminator",
+      "args": [
+        "0x402d006405448d01"
+      ],
+      "expected_bits": "0x2caf002841b030da"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00253-z-staging-discriminator",
+      "args": [
+        "0x402d006405448d02"
+      ],
+      "expected_bits": "0x2caf002841b02ee7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00254-z-staging-discriminator",
+      "args": [
+        "0x403082da5518b0ab"
+      ],
+      "expected_bits": "0x270c48178b88d920"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00255-z-staging-discriminator",
+      "args": [
+        "0x403082da5518b0ac"
+      ],
+      "expected_bits": "0x270c48178b88d595"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00256-fresh-control",
+      "args": [
+        "0x4000bfb6aa11f83b"
+      ],
+      "expected_bits": "0x3f6922ad76f324d1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00257-fresh-control",
+      "args": [
+        "0x3ff7ac91e3f72ffd"
+      ],
+      "expected_bits": "0x3fa2a209aab68de1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00258-fresh-control",
+      "args": [
+        "0x3ff622db9b192023"
+      ],
+      "expected_bits": "0x3fa9cda29a667bce"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00259-fresh-control",
+      "args": [
+        "0x3fd7c2ac95cbe94e"
+      ],
+      "expected_bits": "0x3fe32f93ac73cff4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00260-fresh-control",
+      "args": [
+        "0x3ff076b1d2f9f66f"
+      ],
+      "expected_bits": "0x3fc2a385c7b2463d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00261-fresh-control",
+      "args": [
+        "0x3fdd4bbcdc860a1d"
+      ],
+      "expected_bits": "0x3fe08e91dc16c696"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00262-fresh-control",
+      "args": [
+        "0x3fff0ff96e15df30"
+      ],
+      "expected_bits": "0x3f78be521e7c3edd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00263-fresh-control",
+      "args": [
+        "0x4015dcb839da0d80"
+      ],
+      "expected_bits": "0x3d08527af0cc2d45"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00264-fresh-control",
+      "args": [
+        "0x4024c5fd0803cf42"
+      ],
+      "expected_bits": "0x35f1baa81578b6f7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00265-fresh-control",
+      "args": [
+        "0x3fe0b7186b0b729d"
+      ],
+      "expected_bits": "0x3fdd71f340403ba3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00266-fresh-control",
+      "args": [
+        "0x3fe68abdad597f37"
+      ],
+      "expected_bits": "0x3fd46cd170dbf56c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00267-fresh-control",
+      "args": [
+        "0x3ff67f21d8276ae0"
+      ],
+      "expected_bits": "0x3fa7f15a349fb7df"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00268-fresh-control",
+      "args": [
+        "0x400127c2aadb31e3"
+      ],
+      "expected_bits": "0x3f63dbae1fc5a421"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00269-fresh-control",
+      "args": [
+        "0x3fe9b52bd818609d"
+      ],
+      "expected_bits": "0x3fd060b2737fe341"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00270-fresh-control",
+      "args": [
+        "0x4011c7f079e30789"
+      ],
+      "expected_bits": "0x3df64edb91496217"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00271-fresh-control",
+      "args": [
+        "0x4002089ac31135d1"
+      ],
+      "expected_bits": "0x3f577a66027ad1bd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00272-fresh-control",
+      "args": [
+        "0x3fea7266dbbc8c12"
+      ],
+      "expected_bits": "0x3fcf09bf7e89edd9"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00273-fresh-control",
+      "args": [
+        "0x40275bb2185eb26e"
+      ],
+      "expected_bits": "0x335c98daa9f9c362"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00274-fresh-control",
+      "args": [
+        "0x3ff567f2d7d2f87e"
+      ],
+      "expected_bits": "0x3fadf1bd066d43f6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00275-fresh-control",
+      "args": [
+        "0x3fea93ea3d55fcf6"
+      ],
+      "expected_bits": "0x3fcebd9b65453098"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00276-fresh-control",
+      "args": [
+        "0x3fe563ae8ebc8669"
+      ],
+      "expected_bits": "0x3fd60c7f992762f6"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00277-fresh-control",
+      "args": [
+        "0x4013116642e773d4"
+      ],
+      "expected_bits": "0x3db13b0cde5118c2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00278-fresh-control",
+      "args": [
+        "0x40204e5e90501ace"
+      ],
+      "expected_bits": "0x39b2da74718b0928"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00279-fresh-control",
+      "args": [
+        "0x403312b6b8330037"
+      ],
+      "expected_bits": "0x1ed10997a33fde39"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00280-fresh-control",
+      "args": [
+        "0x403262e3b0debe40"
+      ],
+      "expected_bits": "0x21232a9ed7cb073b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00281-fresh-control",
+      "args": [
+        "0x400107c9ff04acc9"
+      ],
+      "expected_bits": "0x3f655c43b55d40be"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00282-fresh-control",
+      "args": [
+        "0x40310a6e46fe32c6"
+      ],
+      "expected_bits": "0x2571a479a06717c5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00283-fresh-control",
+      "args": [
+        "0x4030a09de93da935"
+      ],
+      "expected_bits": "0x26b311c31494b798"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00284-fresh-control",
+      "args": [
+        "0x401524437e3b52d7"
+      ],
+      "expected_bits": "0x3d35c7ab87bf7240"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00285-fresh-control",
+      "args": [
+        "0x4010225bdfa218bd"
+      ],
+      "expected_bits": "0x3e4916220d878365"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00286-fresh-control",
+      "args": [
+        "0x3ff4372f5d66fb5a"
+      ],
+      "expected_bits": "0x3fb2ef77fb3025c5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00287-fresh-control",
+      "args": [
+        "0x402096230f8c15a8"
+      ],
+      "expected_bits": "0x397d951a67308977"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00288-fresh-control",
+      "args": [
+        "0x3fe040f8f02aaadf"
+      ],
+      "expected_bits": "0x3fde3e640a27b2a0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00289-fresh-control",
+      "args": [
+        "0x3ff4d70477d8ff32"
+      ],
+      "expected_bits": "0x3fb0c2ed872b373d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00290-fresh-control",
+      "args": [
+        "0x40381eaa5636e098"
+      ],
+      "expected_bits": "0x0b2354296d3e1274"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00291-fresh-control",
+      "args": [
+        "0x40269c5e35091956"
+      ],
+      "expected_bits": "0x34235e78592da6d3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00292-fresh-control",
+      "args": [
+        "0x3fe6d588b1426bde"
+      ],
+      "expected_bits": "0x3fd406b759a39307"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00293-fresh-control",
+      "args": [
+        "0x40353178f68c06a0"
+      ],
+      "expected_bits": "0x171b60e2c2e3276b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00294-fresh-control",
+      "args": [
+        "0x402511708c4f0fd1"
+      ],
+      "expected_bits": "0x35a9a2b3faed5bd3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00295-fresh-control",
+      "args": [
+        "0x3fd8e83a66d40215"
+      ],
+      "expected_bits": "0x3fe2a0408357ae98"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00296-fresh-control",
+      "args": [
+        "0x402facdb4aaa4e0d"
+      ],
+      "expected_bits": "0x2903e79f5184a2ac"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00297-fresh-control",
+      "args": [
+        "0x3ff0d74ec715cb25"
+      ],
+      "expected_bits": "0x3fc17c488301a515"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00298-fresh-control",
+      "args": [
+        "0x4025a47d98762f4b"
+      ],
+      "expected_bits": "0x351bb89adc631836"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00299-fresh-control",
+      "args": [
+        "0x3ff1633f6d442f88"
+      ],
+      "expected_bits": "0x3fbfd3ca6eaa2bc8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00300-fresh-control",
+      "args": [
+        "0x3fe2bd68e69b4c25"
+      ],
+      "expected_bits": "0x3fda157a2e68d29b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00301-fresh-control",
+      "args": [
+        "0x400ae011ec0514b9"
+      ],
+      "expected_bits": "0x3ec0fc772e55e7f8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00302-fresh-control",
+      "args": [
+        "0x3ffef408a7db7f98"
+      ],
+      "expected_bits": "0x3f797b0a415f77f3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00303-fresh-control",
+      "args": [
+        "0x402061bd0929207b"
+      ],
+      "expected_bits": "0x39a439ea8823c206"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00304-fresh-control",
+      "args": [
+        "0x3fe2e5ba9475b991"
+      ],
+      "expected_bits": "0x3fd9d5171925aec4"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00305-fresh-control",
+      "args": [
+        "0x3fe5891fce1cfdb1"
+      ],
+      "expected_bits": "0x3fd5d69c8749d3d7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00306-fresh-control",
+      "args": [
+        "0x40356e2c93a11822"
+      ],
+      "expected_bits": "0x163219f20e27fc1d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00307-fresh-control",
+      "args": [
+        "0x3ff3e49f5ba1ef7a"
+      ],
+      "expected_bits": "0x3fb4254ab5e42e73"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00308-fresh-control",
+      "args": [
+        "0x4015f5de138165c5"
+      ],
+      "expected_bits": "0x3d02810a300093ab"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00309-fresh-control",
+      "args": [
+        "0x4037e7668c88a16d"
+      ],
+      "expected_bits": "0x0c12ed7cfd184615"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00310-fresh-control",
+      "args": [
+        "0x3ff48e67785bd121"
+      ],
+      "expected_bits": "0x3fb1b8def480fffd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00311-fresh-control",
+      "args": [
+        "0x3fe627b355b7cd2c"
+      ],
+      "expected_bits": "0x3fd4f60e04eb581f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00312-fresh-control",
+      "args": [
+        "0x401038639fef2baf"
+      ],
+      "expected_bits": "0x3e44f94bef5fea96"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00313-fresh-control",
+      "args": [
+        "0x4032d8d66f4f7351"
+      ],
+      "expected_bits": "0x1f9640b60a459fa2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00314-fresh-control",
+      "args": [
+        "0x400d75d0535448eb"
+      ],
+      "expected_bits": "0x3e89a31dfe2b88a8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00315-fresh-control",
+      "args": [
+        "0x3fe5ad2174c308dd"
+      ],
+      "expected_bits": "0x3fd5a31a4d9756a5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00316-fresh-control",
+      "args": [
+        "0x40169bbee9098749"
+      ],
+      "expected_bits": "0x3cd7ac069b4c302a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00317-fresh-control",
+      "args": [
+        "0x40246e39798f83b6"
+      ],
+      "expected_bits": "0x36433f9390558789"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00318-fresh-control",
+      "args": [
+        "0x3ff6f72b7e3619bd"
+      ],
+      "expected_bits": "0x3fa5b14fdc51646e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00319-fresh-control",
+      "args": [
+        "0x3fe9f765bad0f509"
+      ],
+      "expected_bits": "0x3fd012d293ab774c"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00320-fresh-control",
+      "args": [
+        "0x40162874e18b4a05"
+      ],
+      "expected_bits": "0x3cf54680bf461d85"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00321-fresh-control",
+      "args": [
+        "0x402f8322b9d6451e"
+      ],
+      "expected_bits": "0x294069442c60197b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00322-fresh-control",
+      "args": [
+        "0x40098e591a527d52"
+      ],
+      "expected_bits": "0x3eda38107c21cdc7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00323-fresh-control",
+      "args": [
+        "0x40097f324ec9298f"
+      ],
+      "expected_bits": "0x3edb8b949d4f6677"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00324-fresh-control",
+      "args": [
+        "0x4004b62198a71631"
+      ],
+      "expected_bits": "0x3f3072065e3b4200"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00325-fresh-control",
+      "args": [
+        "0x4032c99040633170"
+      ],
+      "expected_bits": "0x1fca5ab05dd10ffd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00326-fresh-control",
+      "args": [
+        "0x403316ff563da934"
+      ],
+      "expected_bits": "0x1ec1fa2af5e2ebf2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00327-fresh-control",
+      "args": [
+        "0x3ff6ed3890ab3599"
+      ],
+      "expected_bits": "0x3fa5df3f928db9b3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00328-fresh-control",
+      "args": [
+        "0x3fe58482f4e91486"
+      ],
+      "expected_bits": "0x3fd5dd3b6f582f8a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00329-fresh-control",
+      "args": [
+        "0x4034b8898a2a2537"
+      ],
+      "expected_bits": "0x18e4b99834f7b671"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00330-fresh-control",
+      "args": [
+        "0x40158412c3c7f050"
+      ],
+      "expected_bits": "0x3d1f944d1c5f9933"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00331-fresh-control",
+      "args": [
+        "0x3fe65fe90cd39f0a"
+      ],
+      "expected_bits": "0x3fd4a7e1e9fd2dd3"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00332-fresh-control",
+      "args": [
+        "0x400f113363753d63"
+      ],
+      "expected_bits": "0x3e65574f68e2f297"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00333-fresh-control",
+      "args": [
+        "0x400b81b5c513b2f1"
+      ],
+      "expected_bits": "0x3eb37164bd336ae0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00334-fresh-control",
+      "args": [
+        "0x3fe285b83fc8780b"
+      ],
+      "expected_bits": "0x3fda6f05d40d48be"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00335-fresh-control",
+      "args": [
+        "0x401650723780e19d"
+      ],
+      "expected_bits": "0x3ceb60799f48226e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00336-fresh-control",
+      "args": [
+        "0x4018b80bcf3f33c8"
+      ],
+      "expected_bits": "0x3c459a75499e6242"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00337-fresh-control",
+      "args": [
+        "0x40344f4182a321f7"
+      ],
+      "expected_bits": "0x1a6ad65d6856e947"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00338-fresh-control",
+      "args": [
+        "0x4028e05def844eeb"
+      ],
+      "expected_bits": "0x31b42d6f44a268cb"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00339-fresh-control",
+      "args": [
+        "0x4021bbf4932225b6"
+      ],
+      "expected_bits": "0x3897fcaec236a9dc"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00340-fresh-control",
+      "args": [
+        "0x401dac3da5386cd0"
+      ],
+      "expected_bits": "0x3abd6e10678a6673"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00341-fresh-control",
+      "args": [
+        "0x3ff49b80df4b51e2"
+      ],
+      "expected_bits": "0x3fb18baaaf8ab2cf"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00342-fresh-control",
+      "args": [
+        "0x4003e2e48c559755"
+      ],
+      "expected_bits": "0x3f3cc5ca0fd34c1a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00343-fresh-control",
+      "args": [
+        "0x3febccd920c63185"
+      ],
+      "expected_bits": "0x3fcc0f61e844060d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00344-fresh-control",
+      "args": [
+        "0x3ff4054876d5eb83"
+      ],
+      "expected_bits": "0x3fb3a8db4419eec0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00345-fresh-control",
+      "args": [
+        "0x3fe3c0bb6292d37c"
+      ],
+      "expected_bits": "0x3fd87de5c32342a7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00346-fresh-control",
+      "args": [
+        "0x3ff64b9e91f74a2b"
+      ],
+      "expected_bits": "0x3fa8f78c02d8002b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00347-fresh-control",
+      "args": [
+        "0x3ffdba6b7c9411b6"
+      ],
+      "expected_bits": "0x3f819bf9c858daea"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00348-fresh-control",
+      "args": [
+        "0x4020f7194ece7641"
+      ],
+      "expected_bits": "0x39334ecf7e470158"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00349-fresh-control",
+      "args": [
+        "0x4038bbb24c9916cc"
+      ],
+      "expected_bits": "0x08700b2063effc96"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00350-fresh-control",
+      "args": [
+        "0x401b15b2d45a17ed"
+      ],
+      "expected_bits": "0x3b931263eab85d60"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00351-fresh-control",
+      "args": [
+        "0x4002c6e7b4a95569"
+      ],
+      "expected_bits": "0x3f4d9151e7d27f3b"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00352-fresh-control",
+      "args": [
+        "0x3fe156a902fde6b9"
+      ],
+      "expected_bits": "0x3fdc62a4f70caf72"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00353-fresh-control",
+      "args": [
+        "0x401b6f6d9a25452f"
+      ],
+      "expected_bits": "0x3b76d17a70204a7a"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00354-fresh-control",
+      "args": [
+        "0x4025b713b1d6148f"
+      ],
+      "expected_bits": "0x3509279f4da2f305"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00355-fresh-control",
+      "args": [
+        "0x3ff3726fc0aae9c1"
+      ],
+      "expected_bits": "0x3fb5ec239c032f18"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00356-fresh-control",
+      "args": [
+        "0x3fe2be26e2cbc371"
+      ],
+      "expected_bits": "0x3fda1449ecd947f0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00357-fresh-control",
+      "args": [
+        "0x40343c653f984be5"
+      ],
+      "expected_bits": "0x1ab0b0a5c25f42d1"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00358-fresh-control",
+      "args": [
+        "0x4015a7f6e603bbe2"
+      ],
+      "expected_bits": "0x3d157f42c313c018"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00359-fresh-control",
+      "args": [
+        "0x4031ddf57cc077d8"
+      ],
+      "expected_bits": "0x22d60357b734fe7e"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00360-fresh-control",
+      "args": [
+        "0x3feacac442758c37"
+      ],
+      "expected_bits": "0x3fce421914345b47"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00361-fresh-control",
+      "args": [
+        "0x40260dc9cc2998e2"
+      ],
+      "expected_bits": "0x34b379849908f29f"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00362-fresh-control",
+      "args": [
+        "0x3fe2201f42c31637"
+      ],
+      "expected_bits": "0x3fdb1434760dac12"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00363-fresh-control",
+      "args": [
+        "0x4028432da1cc2c4d"
+      ],
+      "expected_bits": "0x32631073b6dc5b07"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00364-fresh-control",
+      "args": [
+        "0x4014ac9609b04142"
+      ],
+      "expected_bits": "0x3d52e13159d6cb93"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00365-fresh-control",
+      "args": [
+        "0x40295f7f48a9eb19"
+      ],
+      "expected_bits": "0x3123c80d0e671481"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00366-fresh-control",
+      "args": [
+        "0x3ffb4c1b88d78a7c"
+      ],
+      "expected_bits": "0x3f90364b801f2337"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00367-fresh-control",
+      "args": [
+        "0x3ff5db44a6b12383"
+      ],
+      "expected_bits": "0x3fab542e2c016bb7"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00368-fresh-control",
+      "args": [
+        "0x4001163ec55fd0e0"
+      ],
+      "expected_bits": "0x3f64ab30ddf183b9"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00369-fresh-control",
+      "args": [
+        "0x401d99a5d70a8fbf"
+      ],
+      "expected_bits": "0x3ac34deb0a89e8ce"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00370-fresh-control",
+      "args": [
+        "0x4012b699602281bd"
+      ],
+      "expected_bits": "0x3dc444e18c8d7245"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00371-fresh-control",
+      "args": [
+        "0x4029157376f8469c"
+      ],
+      "expected_bits": "0x317805a4dc6fe272"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00372-fresh-control",
+      "args": [
+        "0x4015e315e4311030"
+      ],
+      "expected_bits": "0x3d06b2c934364b9d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00373-fresh-control",
+      "args": [
+        "0x403604b48ad306ad"
+      ],
+      "expected_bits": "0x13e36f1ffdbfdae0"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00374-fresh-control",
+      "args": [
+        "0x3fe9d3cf01fb0249"
+      ],
+      "expected_bits": "0x3fd03c8b6aa3b663"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00375-fresh-control",
+      "args": [
+        "0x3fe16c6056a4e928"
+      ],
+      "expected_bits": "0x3fdc3e282f3179dd"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00376-fresh-control",
+      "args": [
+        "0x4002f0b151a15d43"
+      ],
+      "expected_bits": "0x3f4aa7789f1637c2"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00377-fresh-control",
+      "args": [
+        "0x3ff4f55d82c358f3"
+      ],
+      "expected_bits": "0x3fb05f72cbf51b5d"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00378-fresh-control",
+      "args": [
+        "0x4025d8afdbbf305d"
+      ],
+      "expected_bits": "0x34e7f0c8195c45ac"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00379-fresh-control",
+      "args": [
+        "0x3fddf2f536f2e172"
+      ],
+      "expected_bits": "0x3fe0426b5b9f22f8"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00380-fresh-control",
+      "args": [
+        "0x4022bc9a8173a370"
+      ],
+      "expected_bits": "0x37c3f35cab502e04"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00381-fresh-control",
+      "args": [
+        "0x401b415aa0c449a7"
+      ],
+      "expected_bits": "0x3b853e58457c45b5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00382-fresh-control",
+      "args": [
+        "0x402273cf6f8cd864"
+      ],
+      "expected_bits": "0x3801cdfed554eaa5"
+    },
+    {
+      "id": "cdf-z-ERFC.PRECISE-00383-fresh-control",
+      "args": [
+        "0x40161e3e2a701617"
+      ],
+      "expected_bits": "0x3cf7ccec32c62c24"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T17:46:54.2774349Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

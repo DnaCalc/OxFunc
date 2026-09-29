@@ -1,0 +1,2 @@
+answered 6160 probes for ROUND (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-thresholds-20260929\answers\answers-round.json
+BULK throughput: 6160 live probes | compute 0.97s (6355.4/s) | +excel startup 1.49s (2500.7/s incl startup) | total wall 2.97s

@@ -1,0 +1,2 @@
+answered 23102 probes for TANH (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-hyperbolic-heldout-20260929\answers\answers-tanh.json
+BULK throughput: 23102 live probes | compute 2.35s (9815.6/s) | +excel startup 1.50s (5992.3/s incl startup) | total wall 5.22s

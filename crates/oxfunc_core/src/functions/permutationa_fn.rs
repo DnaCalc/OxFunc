@@ -3,11 +3,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::binary_numeric::{
-    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
+    BinaryNumericSurfaceError, map_binary_numeric_error_to_ws,
 };
-use crate::functions::factorial_common::trunc_nonnegative;
+use crate::functions::adapters::coerce_prepared_to_number;
+use crate::functions::distribution_common::run_distribution_lifted;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::WorksheetErrorCode;
 
 pub const PERMUTATIONA_META: FunctionMeta = function_spec! {
@@ -17,7 +18,7 @@ pub const PERMUTATIONA_META: FunctionMeta = function_spec! {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOnly,
+    coercion_lift_profile: CoercionLiftProfile::Custom,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -26,18 +27,51 @@ pub const PERMUTATIONA_META: FunctionMeta = function_spec! {
 };
 
 pub fn permutationa_kernel(n: f64, k: f64) -> Result<f64, WorksheetErrorCode> {
-    let n = trunc_nonnegative(n)?;
-    let k = trunc_nonnegative(k)?;
+    // W111 distinguishes raw-base admission from exponent truncation:
+    // a negative fractional base is invalid, but -1 < k < 0 truncates to zero.
+    if !n.is_finite() || !k.is_finite() || n < 0.0 || n >= 2147483647.0
+        || k >= 2147483647.0 || k.trunc() < 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let n = n.trunc();
+    let mut k = k.trunc() as u32;
+    // The base-ten branch agrees with decimal power conversion, distinguishable
+    // from repeated squaring at 10^99, 10^100 and later powers. Fresh validation
+    // covers the full finite decimal exponent range before any parity promotion.
+    let result = if n == 10.0 {
+        if k > 308 { f64::INFINITY }
+        else { crate::coercion::scale_decimal_pair_to_binary(1, k as i32).unwrap_or(f64::INFINITY) }
+    } else {
+        let mut result = 1.0;
+        let mut base = n;
+        while k > 0 {
+            if k & 1 != 0 { result = crate::excel_numeric::excel_x87_mul(result, base); }
+            k >>= 1;
+            if k > 0 { base = crate::excel_numeric::excel_x87_mul(base, base); }
+        }
+        result
+    };
     PERMUTATIONA_META
         .real_result_policy
-        .publish(n as f64, (n as f64).powi(k as i32))
+        .publish(n, result)
 }
 
 pub fn eval_permutationa_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, BinaryNumericSurfaceError> {
-    eval_binary_numeric_surface(args, resolver, permutationa_kernel)
+    run_distribution_lifted(args, resolver, |values| {
+        if values.len() != 2 {
+            return Err(BinaryNumericSurfaceError::ArityMismatch { expected: 2, actual: values.len() });
+        }
+        let number = |value: &CalcValue| {
+            if matches!(value.core(), CoreValue::Missing) { Ok(0.0) }
+            else { coerce_prepared_to_number(value).map_err(BinaryNumericSurfaceError::Coercion) }
+        };
+        let n = number(&values[0])?;
+        let k = number(&values[1])?;
+        permutationa_kernel(n, k).map(CalcValue::number).map_err(BinaryNumericSurfaceError::Domain)
+    }, map_binary_numeric_error_to_ws, BinaryNumericSurfaceError::Coercion)
 }
 
 pub fn map_permutationa_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetErrorCode {

@@ -1,0 +1,7197 @@
+{
+  "function": "LOG10",
+  "witnesses": [
+    {
+      "id": "w111logomissionheldout-LOG10-00000-omitted",
+      "args": [
+        "0x174d5d0d043ac01a"
+      ],
+      "expected_bits": "0xc068769e6e28c092"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00001-omitted",
+      "args": [
+        "0x3be53d297be73ca4"
+      ],
+      "expected_bits": "0xc03371a5e178f641"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00002-omitted",
+      "args": [
+        "0x10dbf94849448d73"
+      ],
+      "expected_bits": "0xc06c577ccff50127"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00003-omitted",
+      "args": [
+        "0x7fde3aafdbda4e5b"
+      ],
+      "expected_bits": "0x40733edd083374b8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00004-omitted",
+      "args": [
+        "0x1ba281b2dff2cf20"
+      ],
+      "expected_bits": "0xc065daba1f44d258"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00005-omitted",
+      "args": [
+        "0x12d7af84b8dc2e46"
+      ],
+      "expected_bits": "0xc06b258b9be7716a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00006-omitted",
+      "args": [
+        "0x46004e49cdd54325"
+      ],
+      "expected_bits": "0x403d354824b954b4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00007-omitted",
+      "args": [
+        "0x33389819aa32681f"
+      ],
+      "expected_bits": "0xc04e9c989d58004c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00008-omitted",
+      "args": [
+        "0x01fb5cd17695b126"
+      ],
+      "expected_bits": "0xc072a638312e4359"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00009-omitted",
+      "args": [
+        "0x0809032bb1858944"
+      ],
+      "expected_bits": "0xc070d3a51d22bb46"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00010-omitted",
+      "args": [
+        "0x61850d405a1c630e"
+      ],
+      "expected_bits": "0x406438b67c80e7f9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00011-omitted",
+      "args": [
+        "0x5a4acefe7ea96066"
+      ],
+      "expected_bits": "0x405fbd4c4c423e95"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00012-omitted",
+      "args": [
+        "0x6fde5664ed63bf46"
+      ],
+      "expected_bits": "0x406cdbbd1f31b552"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00013-omitted",
+      "args": [
+        "0x21f202be4ae2da16"
+      ],
+      "expected_bits": "0xc0620e2cf2e7bdd4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00014-omitted",
+      "args": [
+        "0x5c817129878d1b72"
+      ],
+      "expected_bits": "0x40613376410b56fe"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00015-omitted",
+      "args": [
+        "0x504c5b2869c430f8"
+      ],
+      "expected_bits": "0x4053b44f8c05d540"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00016-omitted",
+      "args": [
+        "0x0ff48ae2c04422fb"
+      ],
+      "expected_bits": "0xc06ce2a3dd15b831"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00017-omitted",
+      "args": [
+        "0x0860817f58aed0e7"
+      ],
+      "expected_bits": "0xc070b9a26633f685"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00018-omitted",
+      "args": [
+        "0x6f73bd1e5369a255"
+      ],
+      "expected_bits": "0x406c9bf7c6f4676c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00019-omitted",
+      "args": [
+        "0x2074670c93d8ef5f"
+      ],
+      "expected_bits": "0xc062f3a23b44762d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00020-omitted",
+      "args": [
+        "0x1859fecc4ecc7bdd"
+      ],
+      "expected_bits": "0xc067d48d3fc22a2a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00021-omitted",
+      "args": [
+        "0x09098e21da185a39"
+      ],
+      "expected_bits": "0xc070866e9eb3a16e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00022-omitted",
+      "args": [
+        "0x3dd0f05770a6dcb6"
+      ],
+      "expected_bits": "0xc0246ba6b74de4f8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00023-omitted",
+      "args": [
+        "0x018b1c20c9cdd1ae"
+      ],
+      "expected_bits": "0xc072c7ffd418d960"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00024-omitted",
+      "args": [
+        "0x7cf5f6cecf186a92"
+      ],
+      "expected_bits": "0x40725f15fddeb460"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00025-omitted",
+      "args": [
+        "0x47ca343eb4f02417"
+      ],
+      "expected_bits": "0x4042ebe75f4f340f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00026-omitted",
+      "args": [
+        "0x1be28ff940b043f4"
+      ],
+      "expected_bits": "0xc065b427448953d5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00027-omitted",
+      "args": [
+        "0x7885a0c4d034090c"
+      ],
+      "expected_bits": "0x4071090238decffa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00028-omitted",
+      "args": [
+        "0x4c19fa0f989126dd"
+      ],
+      "expected_bits": "0x404d4e1dd03f4bb7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00029-omitted",
+      "args": [
+        "0x06e09d4cf2c96293"
+      ],
+      "expected_bits": "0xc0712d2f2f8157c5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00030-omitted",
+      "args": [
+        "0x1b435705b8cb77d8"
+      ],
+      "expected_bits": "0xc06613e9a80d1217"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00031-omitted",
+      "args": [
+        "0x27d2ed4b14b6bad9"
+      ],
+      "expected_bits": "0xc05d07f9bea1ff2a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00032-omitted",
+      "args": [
+        "0x7e6df6746677a16b"
+      ],
+      "expected_bits": "0x4072d005d8238745"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00033-omitted",
+      "args": [
+        "0x453101109d839dc0"
+      ],
+      "expected_bits": "0x4039501dcec9238b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00034-omitted",
+      "args": [
+        "0x1c5dedb9da264c9e"
+      ],
+      "expected_bits": "0xc0656a158d5092cc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00035-omitted",
+      "args": [
+        "0x18b9c6f54ad568c1"
+      ],
+      "expected_bits": "0xc0679adf005b1107"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00036-omitted",
+      "args": [
+        "0x6e869b4a082e6abc"
+      ],
+      "expected_bits": "0x406c0d5bd947e7f4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00037-omitted",
+      "args": [
+        "0x0bcf1062b9a4dec1"
+      ],
+      "expected_bits": "0xc06f624d13e1e029"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00038-omitted",
+      "args": [
+        "0x4cba9f224459447b"
+      ],
+      "expected_bits": "0x404ed0cc42df2e15"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00039-omitted",
+      "args": [
+        "0x19a54fcb3f0a8a90"
+      ],
+      "expected_bits": "0xc0670d053cc690d6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00040-omitted",
+      "args": [
+        "0x7c875bff40823f8c"
+      ],
+      "expected_bits": "0x40723dcc6b18942e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00041-omitted",
+      "args": [
+        "0x0de2bed98a90bfe9"
+      ],
+      "expected_bits": "0xc06e21cccb5fefb5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00042-omitted",
+      "args": [
+        "0x5364d065b52f7374"
+      ],
+      "expected_bits": "0x40576f031e3008da"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00043-omitted",
+      "args": [
+        "0x0fd9bd2eda1de333"
+      ],
+      "expected_bits": "0xc06cf2c5a1dfa4cd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00044-omitted",
+      "args": [
+        "0x5af4b83dd4388915"
+      ],
+      "expected_bits": "0x40604507f551c0db"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00045-omitted",
+      "args": [
+        "0x38f8e32742603340"
+      ],
+      "expected_bits": "0xc040c302180fa288"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00046-omitted",
+      "args": [
+        "0x32055e61e2506174"
+      ],
+      "expected_bits": "0xc050c0420c7d5529"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00047-omitted",
+      "args": [
+        "0x0a78f78c1debe3d4"
+      ],
+      "expected_bits": "0xc07017d09c36b374"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00048-omitted",
+      "args": [
+        "0x5e5a047db0f1e6e2"
+      ],
+      "expected_bits": "0x406250600b683388"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00049-omitted",
+      "args": [
+        "0x570863a14aa224ba"
+      ],
+      "expected_bits": "0x405bd0d760b368ae"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00050-omitted",
+      "args": [
+        "0x3907bf95c133782e"
+      ],
+      "expected_bits": "0xc0409f1494535706"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00051-omitted",
+      "args": [
+        "0x29da2835d4faffe3"
+      ],
+      "expected_bits": "0xc05a96793b09bc48"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00052-omitted",
+      "args": [
+        "0x7ba3d76ab726a55f"
+      ],
+      "expected_bits": "0x4071f93bccf72173"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00053-omitted",
+      "args": [
+        "0x67f9c44c858fcbeb"
+      ],
+      "expected_bits": "0x40681bb76635ae32"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00054-omitted",
+      "args": [
+        "0x1315769a9c8c2239"
+      ],
+      "expected_bits": "0xc06b0061fadca50f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00055-omitted",
+      "args": [
+        "0x02a9365324996a45"
+      ],
+      "expected_bits": "0xc07271ce94cdd3b6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00056-omitted",
+      "args": [
+        "0x350be294e5c935a5"
+      ],
+      "expected_bits": "0xc04a38310feb47c9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00057-omitted",
+      "args": [
+        "0x17ac1145212f8562"
+      ],
+      "expected_bits": "0xc0683d72cd9b6e4a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00058-omitted",
+      "args": [
+        "0x546fa41be4821ebe"
+      ],
+      "expected_bits": "0x4058aee87b0e0c16"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00059-omitted",
+      "args": [
+        "0x04ac0542ff7a024f"
+      ],
+      "expected_bits": "0xc071d6f21c718847"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00060-omitted",
+      "args": [
+        "0x370615534bf6abf0"
+      ],
+      "expected_bits": "0xc0457423e46d54a1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00061-omitted",
+      "args": [
+        "0x242f8d3c6da45b1e"
+      ],
+      "expected_bits": "0xc060b53af1850005"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00062-omitted",
+      "args": [
+        "0x31d094852f868c86"
+      ],
+      "expected_bits": "0xc051011b9ce6d32a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00063-omitted",
+      "args": [
+        "0x47cd069dd0762047"
+      ],
+      "expected_bits": "0x4042f196cb294291"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00064-omitted",
+      "args": [
+        "0x0b2998619a74a68b"
+      ],
+      "expected_bits": "0xc06fc55263517b3e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00065-omitted",
+      "args": [
+        "0x34358a2ab2d7e8dc"
+      ],
+      "expected_bits": "0xc04c3b755dc3ffb7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00066-omitted",
+      "args": [
+        "0x625e7d5b46717a5e"
+      ],
+      "expected_bits": "0x4064bb16c6f30ef6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00067-omitted",
+      "args": [
+        "0x04dd847a69863075"
+      ],
+      "expected_bits": "0xc071c822793fe6b2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00068-omitted",
+      "args": [
+        "0x207ba4fe7ac07f75"
+      ],
+      "expected_bits": "0xc062ef698113b2a1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00069-omitted",
+      "args": [
+        "0x376d82f8285dce35"
+      ],
+      "expected_bits": "0xc0447cd48deebbe2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00070-omitted",
+      "args": [
+        "0x5751110f6724d72d"
+      ],
+      "expected_bits": "0x405c273f6e1020c7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00071-omitted",
+      "args": [
+        "0x5e8f246f85ddf564"
+      ],
+      "expected_bits": "0x40626fc5d406acc2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00072-omitted",
+      "args": [
+        "0x111a19b132996dde"
+      ],
+      "expected_bits": "0xc06c31eb46b115ab"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00073-omitted",
+      "args": [
+        "0x5e566cac0bf80de6"
+      ],
+      "expected_bits": "0x40624e4f4ddcf8d3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00074-omitted",
+      "args": [
+        "0x27441633c55b155a"
+      ],
+      "expected_bits": "0xc05db3b73d7188d6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00075-omitted",
+      "args": [
+        "0x7bc2e11df5705f9b"
+      ],
+      "expected_bits": "0x407202856b7d6a88"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00076-omitted",
+      "args": [
+        "0x119447e2684802d2"
+      ],
+      "expected_bits": "0xc06be85c8071fcb4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00077-omitted",
+      "args": [
+        "0x002e90a5f78b7174"
+      ],
+      "expected_bits": "0xc0733120da4ebbc1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00078-omitted",
+      "args": [
+        "0x5ea8d4ff3d34ea49"
+      ],
+      "expected_bits": "0x40627fe44f7b7f3a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00079-omitted",
+      "args": [
+        "0x12c36df0d3a82f88"
+      ],
+      "expected_bits": "0xc06b31ee5b2b4a89"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00080-omitted",
+      "args": [
+        "0x5da8374eb33417eb"
+      ],
+      "expected_bits": "0x4061e56a577a5972"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00081-omitted",
+      "args": [
+        "0x432a5d51b57c4da9"
+      ],
+      "expected_bits": "0x402f238c4d69b90a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00082-omitted",
+      "args": [
+        "0x6b88b10ba02fe96d"
+      ],
+      "expected_bits": "0x406a4033e76e0e89"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00083-omitted",
+      "args": [
+        "0x5318e2dc2e13acef"
+      ],
+      "expected_bits": "0x405713a629c25220"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00084-omitted",
+      "args": [
+        "0x2bd7e50b2b903dbc"
+      ],
+      "expected_bits": "0xc058307a80b30d3c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00085-omitted",
+      "args": [
+        "0x4dceb5a811d00890"
+      ],
+      "expected_bits": "0x4050b3e3df0c3d42"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00086-omitted",
+      "args": [
+        "0x2e05ff7ea9fce38f"
+      ],
+      "expected_bits": "0xc0559078573c87fb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00087-omitted",
+      "args": [
+        "0x7f5f7394832a7110"
+      ],
+      "expected_bits": "0x4073189b63975f73"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00088-omitted",
+      "args": [
+        "0x06d42b69b82ea614"
+      ],
+      "expected_bits": "0xc07130a746ecd1e7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00089-omitted",
+      "args": [
+        "0x5041019d2311d445"
+      ],
+      "expected_bits": "0x4053a619b41ee434"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00090-omitted",
+      "args": [
+        "0x4738f7c653c5e72e"
+      ],
+      "expected_bits": "0x40418e6e4c2038fb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00091-omitted",
+      "args": [
+        "0x0b1b37ea63c60ccc"
+      ],
+      "expected_bits": "0xc06fce19ab36d06c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00092-omitted",
+      "args": [
+        "0x73f2ff5f8ceb04f3"
+      ],
+      "expected_bits": "0x406f510253afd6e3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00093-omitted",
+      "args": [
+        "0x0668c1591aa309d0"
+      ],
+      "expected_bits": "0xc07150f1fc2faf91"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00094-omitted",
+      "args": [
+        "0x0abae2cefcbc557c"
+      ],
+      "expected_bits": "0xc0700408cf07c5a6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00095-omitted",
+      "args": [
+        "0x5aae4348c9fc3307"
+      ],
+      "expected_bits": "0x40601a21917dadbf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00096-omitted",
+      "args": [
+        "0x6fea28b5718ffd60"
+      ],
+      "expected_bits": "0x406ce34ff04caf30"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00097-omitted",
+      "args": [
+        "0x2c2ba25d8d4ddaea"
+      ],
+      "expected_bits": "0xc057cc1b8af96071"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00098-omitted",
+      "args": [
+        "0x2c7903611d4d6f3a"
+      ],
+      "expected_bits": "0xc0576e8c3c92ded2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00099-omitted",
+      "args": [
+        "0x1b223fc8765f9fbc"
+      ],
+      "expected_bits": "0xc06627fc453913d9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00100-omitted",
+      "args": [
+        "0x5d8efebb7c2f0473"
+      ],
+      "expected_bits": "0x4061d5945c049465"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00101-omitted",
+      "args": [
+        "0x451c5e87f1f8f189"
+      ],
+      "expected_bits": "0x4038eee56393200c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00102-omitted",
+      "args": [
+        "0x6c39ca886adf066e"
+      ],
+      "expected_bits": "0x406aaac5534384a9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00103-omitted",
+      "args": [
+        "0x29f9515897b02669"
+      ],
+      "expected_bits": "0xc05a70d923fedf66"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00104-omitted",
+      "args": [
+        "0x4332403fa734c737"
+      ],
+      "expected_bits": "0x402f6be43fa1a948"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00105-omitted",
+      "args": [
+        "0x69593dbdab7edc25"
+      ],
+      "expected_bits": "0x4068ef5ae782e842"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00106-omitted",
+      "args": [
+        "0x1aa1e72534289d61"
+      ],
+      "expected_bits": "0xc0667550b8c576a1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00107-omitted",
+      "args": [
+        "0x128b530edfa1980a"
+      ],
+      "expected_bits": "0xc06b53b9590c87a5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00108-omitted",
+      "args": [
+        "0x1231b19ee1b57afd"
+      ],
+      "expected_bits": "0xc06b89ed9bc6a827"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00109-omitted",
+      "args": [
+        "0x2e9211d0c408f1e0"
+      ],
+      "expected_bits": "0xc054e88b6f5b787e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00110-omitted",
+      "args": [
+        "0x64c2a22d8910da88"
+      ],
+      "expected_bits": "0x40662bee527f08e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00111-omitted",
+      "args": [
+        "0x653ef06051786228"
+      ],
+      "expected_bits": "0x406676688e89e401"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00112-omitted",
+      "args": [
+        "0x090681f3cea26481"
+      ],
+      "expected_bits": "0xc0708750834e2a47"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00113-omitted",
+      "args": [
+        "0x2d9c4d944844f09d"
+      ],
+      "expected_bits": "0xc0561053a64914c8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00114-omitted",
+      "args": [
+        "0x5f5775ccb3e1d52d"
+      ],
+      "expected_bits": "0x4062e910898c8902"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00115-omitted",
+      "args": [
+        "0x0d7d8f89792ff50b"
+      ],
+      "expected_bits": "0xc06e5ee689d2c06d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00116-omitted",
+      "args": [
+        "0x6836fdb5f63c8297"
+      ],
+      "expected_bits": "0x406840aa08dc0001"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00117-omitted",
+      "args": [
+        "0x62f50632ff60ac3e"
+      ],
+      "expected_bits": "0x40651640b208062d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00118-omitted",
+      "args": [
+        "0x524ef69c710f27e7"
+      ],
+      "expected_bits": "0x40561f43da021f0c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00119-omitted",
+      "args": [
+        "0x69715e3b7781c11e"
+      ],
+      "expected_bits": "0x4068fd6cf2b2d9a3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00120-omitted",
+      "args": [
+        "0x38ffb1edb21338aa"
+      ],
+      "expected_bits": "0xc040b591062f24fc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00121-omitted",
+      "args": [
+        "0x79c7d247c57deb3b"
+      ],
+      "expected_bits": "0x40716a026e4101c0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00122-omitted",
+      "args": [
+        "0x2b449f059115ce17"
+      ],
+      "expected_bits": "0xc058e1f79031562f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00123-omitted",
+      "args": [
+        "0x7104c168594b08ae"
+      ],
+      "expected_bits": "0x406d8d7d6af0911b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00124-omitted",
+      "args": [
+        "0x4f991ab5d9c4d1af"
+      ],
+      "expected_bits": "0x4052dd000b4ddfce"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00125-omitted",
+      "args": [
+        "0x4418bc5d40352583"
+      ],
+      "expected_bits": "0x40340ea3b815f7a2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00126-omitted",
+      "args": [
+        "0x48697fbfd6618e36"
+      ],
+      "expected_bits": "0x40446bb4bad89ca0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00127-omitted",
+      "args": [
+        "0x7d386a5b6085aed8"
+      ],
+      "expected_bits": "0x4072731648e7e75f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00128-omitted",
+      "args": [
+        "0x76871e320f2d8fe3"
+      ],
+      "expected_bits": "0x40706f5820b7d0f1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00129-omitted",
+      "args": [
+        "0x2255433ed3af924c"
+      ],
+      "expected_bits": "0xc061d2122fa11c59"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00130-omitted",
+      "args": [
+        "0x539c8935cda6258d"
+      ],
+      "expected_bits": "0x4057b1948b42cdf5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00131-omitted",
+      "args": [
+        "0x206b8dda405143f5"
+      ],
+      "expected_bits": "0xc062f91731d65cbd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00132-omitted",
+      "args": [
+        "0x6aec62414fcc0582"
+      ],
+      "expected_bits": "0x4069e1cf52203f0e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00133-omitted",
+      "args": [
+        "0x61cee4c9e828fdee"
+      ],
+      "expected_bits": "0x4064649345eccd16"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00134-omitted",
+      "args": [
+        "0x1c0e51998224c3ac"
+      ],
+      "expected_bits": "0xc0659a11a9ea74eb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00135-omitted",
+      "args": [
+        "0x4efe927c0cbecf2b"
+      ],
+      "expected_bits": "0x405221d166542652"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00136-omitted",
+      "args": [
+        "0x63f1a1e3a719eea6"
+      ],
+      "expected_bits": "0x4065adef5b8ae1ee"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00137-omitted",
+      "args": [
+        "0x58f57a545971750f"
+      ],
+      "expected_bits": "0x405e228d3709d1d6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00138-omitted",
+      "args": [
+        "0x2720ee76db735604"
+      ],
+      "expected_bits": "0xc05ddeff4efd9203"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00139-omitted",
+      "args": [
+        "0x30be01440f221fd6"
+      ],
+      "expected_bits": "0xc0524b68624d4d1c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00140-omitted",
+      "args": [
+        "0x1809a01329441664"
+      ],
+      "expected_bits": "0xc06804ea711935f3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00141-omitted",
+      "args": [
+        "0x2c41f74d15d99a82"
+      ],
+      "expected_bits": "0xc057b18b20eecb38"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00142-omitted",
+      "args": [
+        "0x666f3b8e536a1b0b"
+      ],
+      "expected_bits": "0x40672d90e2573056"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00143-omitted",
+      "args": [
+        "0x65c87696a9d983d4"
+      ],
+      "expected_bits": "0x4066c9d760ddee46"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00144-omitted",
+      "args": [
+        "0x2c3b1c0679833dfc"
+      ],
+      "expected_bits": "0xc057b95fe3447686"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00145-omitted",
+      "args": [
+        "0x4757f9ac809d9db6"
+      ],
+      "expected_bits": "0x4041d93d4dcbabe4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00146-omitted",
+      "args": [
+        "0x3b1e99b2a10abf73"
+      ],
+      "expected_bits": "0xc03732e027128686"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00147-omitted",
+      "args": [
+        "0x36e1847b214c8ce0"
+      ],
+      "expected_bits": "0xc045ce1462d4ccad"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00148-omitted",
+      "args": [
+        "0x495c65caac2047a2"
+      ],
+      "expected_bits": "0x4046b3ab2cfba347"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00149-omitted",
+      "args": [
+        "0x2ab3bedfb264a841"
+      ],
+      "expected_bits": "0xc0599090f7d9fab8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00150-omitted",
+      "args": [
+        "0x30a163f11143fcbb"
+      ],
+      "expected_bits": "0xc0526dd58e5214a4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00151-omitted",
+      "args": [
+        "0x2e93df22d2de2c24"
+      ],
+      "expected_bits": "0xc054e5e705545521"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00152-omitted",
+      "args": [
+        "0x552887135046ecdd"
+      ],
+      "expected_bits": "0x40598f05651d406f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00153-omitted",
+      "args": [
+        "0x1a7eaa596b505727"
+      ],
+      "expected_bits": "0xc0668abc28276c33"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00154-omitted",
+      "args": [
+        "0x7e4575505e81c80e"
+      ],
+      "expected_bits": "0x4072c411f0eb30ed"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00155-omitted",
+      "args": [
+        "0x253fdb42a920bd0f"
+      ],
+      "expected_bits": "0xc0601156199cbe00"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00156-omitted",
+      "args": [
+        "0x1faf472e8550e717"
+      ],
+      "expected_bits": "0xc0636aeca692628c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00157-omitted",
+      "args": [
+        "0x35a971664ca441be"
+      ],
+      "expected_bits": "0xc048bbf7db817100"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00158-omitted",
+      "args": [
+        "0x797cadb8c0e04701"
+      ],
+      "expected_bits": "0x407153376f682db8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00159-omitted",
+      "args": [
+        "0x2c4ae186d39efcf5"
+      ],
+      "expected_bits": "0xc057a6580b49ade0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00160-omitted",
+      "args": [
+        "0x4b823c2ff8431570"
+      ],
+      "expected_bits": "0x404bdfa8c195c25d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00161-omitted",
+      "args": [
+        "0x54f44eebf3b5bc75"
+      ],
+      "expected_bits": "0x40594ff9f7f436aa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00162-omitted",
+      "args": [
+        "0x72b2e1530c133fd3"
+      ],
+      "expected_bits": "0x406e904385b9c106"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00163-omitted",
+      "args": [
+        "0x333dfdb2545b666b"
+      ],
+      "expected_bits": "0xc04e919158a7bf01"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00164-omitted",
+      "args": [
+        "0x08e0b0c13f8e4071"
+      ],
+      "expected_bits": "0xc070930676cf4604"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00165-omitted",
+      "args": [
+        "0x093e60c01856ae78"
+      ],
+      "expected_bits": "0xc07076c80a5862ce"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00166-omitted",
+      "args": [
+        "0x09b5add5602a6e6b"
+      ],
+      "expected_bits": "0xc0705298073035e5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00167-omitted",
+      "args": [
+        "0x0e8a8a0d10491693"
+      ],
+      "expected_bits": "0xc06dbca37e5bf049"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00168-omitted",
+      "args": [
+        "0x056a2910676297f5"
+      ],
+      "expected_bits": "0xc0719da013d9b4cd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00169-omitted",
+      "args": [
+        "0x3e2e5d191f8e8568"
+      ],
+      "expected_bits": "0xc020e73cca6c93b0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00170-omitted",
+      "args": [
+        "0x295dffc4da4f526e"
+      ],
+      "expected_bits": "0xc05b2ccaac7a9973"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00171-omitted",
+      "args": [
+        "0x581fa2febaa1df33"
+      ],
+      "expected_bits": "0x405d1f97f41e6f10"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00172-omitted",
+      "args": [
+        "0x5399dc4d9fd9c03a"
+      ],
+      "expected_bits": "0x4057aed80c7da634"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00173-omitted",
+      "args": [
+        "0x7700f67c667eac98"
+      ],
+      "expected_bits": "0x407093b9915f26bd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00174-omitted",
+      "args": [
+        "0x73e756122dfb0065"
+      ],
+      "expected_bits": "0x406f4a3c1a72637b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00175-omitted",
+      "args": [
+        "0x47131866ba628208"
+      ],
+      "expected_bits": "0x4041327602caa6e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00176-omitted",
+      "args": [
+        "0x680245d76b08209c"
+      ],
+      "expected_bits": "0x40682092bdcec15d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00177-omitted",
+      "args": [
+        "0x369f301b47f483cb"
+      ],
+      "expected_bits": "0xc0466eac4b121ab2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00178-omitted",
+      "args": [
+        "0x3ffb67c5603a04a2"
+      ],
+      "expected_bits": "0x3fcdea6359f91bdf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00179-omitted",
+      "args": [
+        "0x7fc3e96bdc9cad5b"
+      ],
+      "expected_bits": "0x4073372556fbd6fd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00180-omitted",
+      "args": [
+        "0x7d149cebf5891508"
+      ],
+      "expected_bits": "0x407268471791fdd6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00181-omitted",
+      "args": [
+        "0x0a3e3aa14eecbb69"
+      ],
+      "expected_bits": "0xc07029c07ad1e2eb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00182-omitted",
+      "args": [
+        "0x731770bbf6e479a5"
+      ],
+      "expected_bits": "0x406ecd1174d131a9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00183-omitted",
+      "args": [
+        "0x501ec2b83c45d111"
+      ],
+      "expected_bits": "0x40537cc679f2d195"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00184-omitted",
+      "args": [
+        "0x6448a9375668a8e1"
+      ],
+      "expected_bits": "0x4065e2c31e5eb72c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00185-omitted",
+      "args": [
+        "0x00e3c878de1c5dc1"
+      ],
+      "expected_bits": "0xc072fa5a7c7f6fe7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00186-omitted",
+      "args": [
+        "0x07eb8bbd020129c0"
+      ],
+      "expected_bits": "0xc070dc9b864bafb7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00187-omitted",
+      "args": [
+        "0x02d6a9490d4ff789"
+      ],
+      "expected_bits": "0xc07264194743bc9b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00188-omitted",
+      "args": [
+        "0x4cc35c666559de93"
+      ],
+      "expected_bits": "0x404ee5a0558b1360"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00189-omitted",
+      "args": [
+        "0x3e9dbfa9fe5d8cba"
+      ],
+      "expected_bits": "0xc01969caa406bd9d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00190-omitted",
+      "args": [
+        "0x70788737aca28f06"
+      ],
+      "expected_bits": "0x406d391d4378d255"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00191-omitted",
+      "args": [
+        "0x2e153ecbdd8acaad"
+      ],
+      "expected_bits": "0xc0557e2c018672e9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00192-omitted",
+      "args": [
+        "0x691ce990f5514d83"
+      ],
+      "expected_bits": "0x4068cab5de837b42"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00193-omitted",
+      "args": [
+        "0x2ffe893cf0f2da62"
+      ],
+      "expected_bits": "0xc053321c6f3792ea"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00194-omitted",
+      "args": [
+        "0x078be2dd1d4b0e2a"
+      ],
+      "expected_bits": "0xc070f96bcb4ff572"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00195-omitted",
+      "args": [
+        "0x6d0d5a448bec34a3"
+      ],
+      "expected_bits": "0x406b29cc029e4483"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00196-omitted",
+      "args": [
+        "0x1721831d4c17d8fb"
+      ],
+      "expected_bits": "0xc068911158480428"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00197-omitted",
+      "args": [
+        "0x5f84e0ea903769a6"
+      ],
+      "expected_bits": "0x40630457e3db7623"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00198-omitted",
+      "args": [
+        "0x6a4ebcbb1100000a"
+      ],
+      "expected_bits": "0x406982965683c915"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00199-omitted",
+      "args": [
+        "0x29661eee9e1bdc3f"
+      ],
+      "expected_bits": "0xc05b21fe501afc04"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00200-omitted",
+      "args": [
+        "0x7b093a1165afcd18"
+      ],
+      "expected_bits": "0x4071cabcc75d07d1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00201-omitted",
+      "args": [
+        "0x2f45e0b5ddc4bafe"
+      ],
+      "expected_bits": "0xc0540f4dd5c37067"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00202-omitted",
+      "args": [
+        "0x417aecae44ea5485"
+      ],
+      "expected_bits": "0x401dcd90e9ac6f22"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00203-omitted",
+      "args": [
+        "0x128debb702f304b1"
+      ],
+      "expected_bits": "0xc06b527668a2c6b7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00204-omitted",
+      "args": [
+        "0x5c7244962ca575c5"
+      ],
+      "expected_bits": "0x40612a78ced2320b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00205-omitted",
+      "args": [
+        "0x3dc5138846c73e22"
+      ],
+      "expected_bits": "0xc024d52f2b4d3f8b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00206-omitted",
+      "args": [
+        "0x6919db98d86216e7"
+      ],
+      "expected_bits": "0x4068c9289f422267"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00207-omitted",
+      "args": [
+        "0x111af41b44bee5fe"
+      ],
+      "expected_bits": "0xc06c3178d6e1a00d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00208-omitted",
+      "args": [
+        "0x1ccdf4a357812931"
+      ],
+      "expected_bits": "0xc06526a4146a8d2b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00209-omitted",
+      "args": [
+        "0x01b13bfdad639b9b"
+      ],
+      "expected_bits": "0xc072bcb296fb515b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00210-omitted",
+      "args": [
+        "0x2b8ec3c40f662375"
+      ],
+      "expected_bits": "0xc05889c8b74d17e7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00211-omitted",
+      "args": [
+        "0x7e0903f82ba474db"
+      ],
+      "expected_bits": "0x4072b1deb850b74b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00212-omitted",
+      "args": [
+        "0x7385b3eaa8665f9b"
+      ],
+      "expected_bits": "0x406f0f6db578119b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00213-omitted",
+      "args": [
+        "0x2f1e108150049089"
+      ],
+      "expected_bits": "0xc05440443e2cb56a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00214-omitted",
+      "args": [
+        "0x23146bb5c7c829b5"
+      ],
+      "expected_bits": "0xc0615f0979409737"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00215-omitted",
+      "args": [
+        "0x2c7080e8ded1df65"
+      ],
+      "expected_bits": "0xc0577a1b0d8164ea"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00216-omitted",
+      "args": [
+        "0x7a7db54ea4c5fa62"
+      ],
+      "expected_bits": "0x4071a0867ba37e51"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00217-omitted",
+      "args": [
+        "0x6c67dc017c3956c0"
+      ],
+      "expected_bits": "0x406ac69675274d22"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00218-omitted",
+      "args": [
+        "0x2b32deaed1b1f691"
+      ],
+      "expected_bits": "0xc058f7b328a0d140"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00219-omitted",
+      "args": [
+        "0x1b60306901c9afe6"
+      ],
+      "expected_bits": "0xc066031e444dce88"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00220-omitted",
+      "args": [
+        "0x333639356cf208b9"
+      ],
+      "expected_bits": "0xc04ea23b0def9e8d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00221-omitted",
+      "args": [
+        "0x44e81f82f6d8bd32"
+      ],
+      "expected_bits": "0x4037f5adc31b9ccd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00222-omitted",
+      "args": [
+        "0x4349baf7e7a04925"
+      ],
+      "expected_bits": "0x40302931c06fb1b0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00223-omitted",
+      "args": [
+        "0x0e5edcc8e0fc7f7f"
+      ],
+      "expected_bits": "0xc06dd770b101fb4b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00224-omitted",
+      "args": [
+        "0x404d3e934a8fd9fa"
+      ],
+      "expected_bits": "0x3ffc45ee9478673e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00225-omitted",
+      "args": [
+        "0x772fc7c9d0c2f23c"
+      ],
+      "expected_bits": "0x4070a1b86d0a943b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00226-omitted",
+      "args": [
+        "0x25a99c70dbc0cb35"
+      ],
+      "expected_bits": "0xc05fa1e060e335d0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00227-omitted",
+      "args": [
+        "0x17a013cc75f40b55"
+      ],
+      "expected_bits": "0xc06845312d433e13"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00228-omitted",
+      "args": [
+        "0x194b56df43bc6875"
+      ],
+      "expected_bits": "0xc067435b5593efeb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00229-omitted",
+      "args": [
+        "0x1b699e9e18a27a71"
+      ],
+      "expected_bits": "0xc065fcbd31f163d2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00230-omitted",
+      "args": [
+        "0x10175e37b6ead02e"
+      ],
+      "expected_bits": "0xc06ccd954b5fd29d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00231-omitted",
+      "args": [
+        "0x43bdb65e4a54fa46"
+      ],
+      "expected_bits": "0x403254a353399a35"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00232-omitted",
+      "args": [
+        "0x13ba6ec45207349c"
+      ],
+      "expected_bits": "0xc06a9d28adc02f08"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00233-omitted",
+      "args": [
+        "0x6f147407e7a372e7"
+      ],
+      "expected_bits": "0x406c62aa0ebd717d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00234-omitted",
+      "args": [
+        "0x3b9fb0b9533d577b"
+      ],
+      "expected_bits": "0xc034c679993cbf29"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00235-omitted",
+      "args": [
+        "0x2ada467876591848"
+      ],
+      "expected_bits": "0xc0596217f0df3221"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00236-omitted",
+      "args": [
+        "0x76a6830c193cf017"
+      ],
+      "expected_bits": "0x407078cae8d17a9a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00237-omitted",
+      "args": [
+        "0x19b46b775be649e4"
+      ],
+      "expected_bits": "0xc06703fb4c5abe38"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00238-omitted",
+      "args": [
+        "0x281db3c7a92aa96c"
+      ],
+      "expected_bits": "0xc05cae62f05d9af3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00239-omitted",
+      "args": [
+        "0x545bedbb7767902f"
+      ],
+      "expected_bits": "0x4058982c5feef759"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00240-omitted",
+      "args": [
+        "0x18836c231856cf11"
+      ],
+      "expected_bits": "0xc067bbb42d01f6bd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00241-omitted",
+      "args": [
+        "0x679271ce08ae5fcd"
+      ],
+      "expected_bits": "0x4067dd45c1f3372b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00242-omitted",
+      "args": [
+        "0x6b0b929c78c20535"
+      ],
+      "expected_bits": "0x4069f4ac3f6714b8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00243-omitted",
+      "args": [
+        "0x3ba2a4a9a55a566d"
+      ],
+      "expected_bits": "0xc034b4652e7b73d5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00244-omitted",
+      "args": [
+        "0x4992b9b4f781b33d"
+      ],
+      "expected_bits": "0x404736a5aba2dffd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00245-omitted",
+      "args": [
+        "0x78f54faf3e384583"
+      ],
+      "expected_bits": "0x40712a9f1c4cca36"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00246-omitted",
+      "args": [
+        "0x69ce1c872c009b22"
+      ],
+      "expected_bits": "0x4069353cdaeaa916"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00247-omitted",
+      "args": [
+        "0x06faecf4f052e1b7"
+      ],
+      "expected_bits": "0xc071250351ce1f0d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00248-omitted",
+      "args": [
+        "0x02a3008b91b451e1"
+      ],
+      "expected_bits": "0xc07273c59aed0644"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00249-omitted",
+      "args": [
+        "0x469c95a86ba17484"
+      ],
+      "expected_bits": "0x404014a1edefcd54"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00250-omitted",
+      "args": [
+        "0x7161d6c1b4b5d9f1"
+      ],
+      "expected_bits": "0x406dc52ee521fdac"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00251-omitted",
+      "args": [
+        "0x448748f8377fbaf5"
+      ],
+      "expected_bits": "0x4036235d940e9fd4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00252-omitted",
+      "args": [
+        "0x67c2558db02dfe9f"
+      ],
+      "expected_bits": "0x4067fa16853237af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00253-omitted",
+      "args": [
+        "0x610d3a7c85d3efea"
+      ],
+      "expected_bits": "0x4063f035b0186f7c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00254-omitted",
+      "args": [
+        "0x2969501a3cd9b34d"
+      ],
+      "expected_bits": "0xc05b1e3f2f5dbee6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00255-omitted",
+      "args": [
+        "0x07ee1114846e8b3c"
+      ],
+      "expected_bits": "0xc070dbffc12343d2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00256-omitted",
+      "args": [
+        "0x46ae5ffd360c3093"
+      ],
+      "expected_bits": "0x40403e8a9dc1184d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00257-omitted",
+      "args": [
+        "0x53c967ed37b88cf9"
+      ],
+      "expected_bits": "0x4057e82614ddefe4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00258-omitted",
+      "args": [
+        "0x59a5b31adf639471"
+      ],
+      "expected_bits": "0x405ef6c3246ccae6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00259-omitted",
+      "args": [
+        "0x256ff9337e34a169"
+      ],
+      "expected_bits": "0xc05fe8c5e5f1d3ff"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00260-omitted",
+      "args": [
+        "0x4dae1ea798aa2691"
+      ],
+      "expected_bits": "0x40508cd1b8956d18"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00261-omitted",
+      "args": [
+        "0x2bba1a14075d01b4"
+      ],
+      "expected_bits": "0xc058548dfffa3ab4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00262-omitted",
+      "args": [
+        "0x541ab033b71375c0"
+      ],
+      "expected_bits": "0x405849d8d4e83d78"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00263-omitted",
+      "args": [
+        "0x4af02ecd3a3f3972"
+      ],
+      "expected_bits": "0x404a7e3c3de1aabe"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00264-omitted",
+      "args": [
+        "0x2d72314585481c5e"
+      ],
+      "expected_bits": "0xc0564324921d75b0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00265-omitted",
+      "args": [
+        "0x47c3b29d5aa27c3a"
+      ],
+      "expected_bits": "0x4042dc09ad17beba"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00266-omitted",
+      "args": [
+        "0x6dd010151cfa6331"
+      ],
+      "expected_bits": "0x406b9ea5a1a84e02"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00267-omitted",
+      "args": [
+        "0x26d21c842d8db76e"
+      ],
+      "expected_bits": "0xc05e3d74597b2c19"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00268-omitted",
+      "args": [
+        "0x6ad64e77b7a0026c"
+      ],
+      "expected_bits": "0x4069d4d414a6502f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00269-omitted",
+      "args": [
+        "0x710d070b42d18863"
+      ],
+      "expected_bits": "0x406d9226cd1e8c2a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00270-omitted",
+      "args": [
+        "0x6e006ac891d2a29f"
+      ],
+      "expected_bits": "0x406bbbd95d904285"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00271-omitted",
+      "args": [
+        "0x00db23e1406c77cc"
+      ],
+      "expected_bits": "0xc072fcf90cd89660"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00272-omitted",
+      "args": [
+        "0x747571448705d641"
+      ],
+      "expected_bits": "0x406f9fc15681820b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00273-omitted",
+      "args": [
+        "0x2209cf6f5f3d1e03"
+      ],
+      "expected_bits": "0xc061ff8ad02ca7ea"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00274-omitted",
+      "args": [
+        "0x3cff3b3e271036fa"
+      ],
+      "expected_bits": "0xc02c516443c1cb13"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00275-omitted",
+      "args": [
+        "0x2f778c2643ed9972"
+      ],
+      "expected_bits": "0xc053d37649ff40a9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00276-omitted",
+      "args": [
+        "0x494918ffa379a034"
+      ],
+      "expected_bits": "0x404686450e826383"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00277-omitted",
+      "args": [
+        "0x591f638c2a6113dc"
+      ],
+      "expected_bits": "0x405e53a132d8902f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00278-omitted",
+      "args": [
+        "0x7ecf95f981ab4920"
+      ],
+      "expected_bits": "0x4072ed49cd509024"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00279-omitted",
+      "args": [
+        "0x41ccc5e9cdc8e4bf"
+      ],
+      "expected_bits": "0x4021f82f62e497e9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00280-omitted",
+      "args": [
+        "0x418a6c9c479130f0"
+      ],
+      "expected_bits": "0x401ef97adc34cb54"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00281-omitted",
+      "args": [
+        "0x1ba614190b5a2760"
+      ],
+      "expected_bits": "0xc065d84644dd07c5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00282-omitted",
+      "args": [
+        "0x4ffa98574a64d926"
+      ],
+      "expected_bits": "0x40535232f54afb7b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00283-omitted",
+      "args": [
+        "0x2a88ae3fdd54053a"
+      ],
+      "expected_bits": "0xc059c429ce91646c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00284-omitted",
+      "args": [
+        "0x4a1ed416d3814ab6"
+      ],
+      "expected_bits": "0x4048869dd2541149"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00285-omitted",
+      "args": [
+        "0x69b45d0af0b9edf7"
+      ],
+      "expected_bits": "0x4069262b28b89c9e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00286-omitted",
+      "args": [
+        "0x36781190dbbc6b37"
+      ],
+      "expected_bits": "0xc046ca24264408a9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00287-omitted",
+      "args": [
+        "0x09eb6bee3cc8464b"
+      ],
+      "expected_bits": "0xc0704282f6843b11"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00288-omitted",
+      "args": [
+        "0x13a71ccd852e6ad0"
+      ],
+      "expected_bits": "0xc06aa8a8430935c4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00289-omitted",
+      "args": [
+        "0x4efb441eded6e4c8"
+      ],
+      "expected_bits": "0x40521ea30d72e055"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00290-omitted",
+      "args": [
+        "0x55214e20b59dc50a"
+      ],
+      "expected_bits": "0x405985538e41472c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00291-omitted",
+      "args": [
+        "0x48671f0b3e24217a"
+      ],
+      "expected_bits": "0x40446643b31b607f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00292-omitted",
+      "args": [
+        "0x6a11255fef2d9aff"
+      ],
+      "expected_bits": "0x40695d93894456c3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00293-omitted",
+      "args": [
+        "0x42c5c8f675d127d1"
+      ],
+      "expected_bits": "0x402b5c5bc370e244"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00294-omitted",
+      "args": [
+        "0x20fc70a86dfd6ca6"
+      ],
+      "expected_bits": "0xc062a1f4432384f9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00295-omitted",
+      "args": [
+        "0x68ad93a5467af015"
+      ],
+      "expected_bits": "0x406887986ec5a910"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00296-omitted",
+      "args": [
+        "0x3a922853d1e69584"
+      ],
+      "expected_bits": "0xc039d5699e636127"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00297-omitted",
+      "args": [
+        "0x0f7641fce3ed8a7f"
+      ],
+      "expected_bits": "0xc06d2e96db304913"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00298-omitted",
+      "args": [
+        "0x205142bf3a151bd5"
+      ],
+      "expected_bits": "0xc06309394032969c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00299-omitted",
+      "args": [
+        "0x61d7f4a1fc13783c"
+      ],
+      "expected_bits": "0x40646aac65d9d295"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00300-omitted",
+      "args": [
+        "0x4af89992ead4097f"
+      ],
+      "expected_bits": "0x404a95840e9a5112"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00301-omitted",
+      "args": [
+        "0x65d22d316c377435"
+      ],
+      "expected_bits": "0x4066cf58a007bde8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00302-omitted",
+      "args": [
+        "0x58fe2c8c74558451"
+      ],
+      "expected_bits": "0x405e2c002ff147c3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00303-omitted",
+      "args": [
+        "0x6adb6f76c9c448d9"
+      ],
+      "expected_bits": "0x4069d7b460038dc6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00304-omitted",
+      "args": [
+        "0x1f1231c191b41169"
+      ],
+      "expected_bits": "0xc063c92697848e46"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00305-omitted",
+      "args": [
+        "0x339ab44333c76ce3"
+      ],
+      "expected_bits": "0xc04db0d4592fad55"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00306-omitted",
+      "args": [
+        "0x01f1666fed477d6e"
+      ],
+      "expected_bits": "0xc072a95d7b71ff4c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00307-omitted",
+      "args": [
+        "0x10db078d700c5f98"
+      ],
+      "expected_bits": "0xc06c57f6fa582f71"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00308-omitted",
+      "args": [
+        "0x3d943f30c34e1e07"
+      ],
+      "expected_bits": "0xc026ac7e7fd977e5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00309-omitted",
+      "args": [
+        "0x721a5b2432dd6a62"
+      ],
+      "expected_bits": "0x406e3491f3ab9be7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00310-omitted",
+      "args": [
+        "0x7508e3cb86fc2f13"
+      ],
+      "expected_bits": "0x406ff8861688ffc4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00311-omitted",
+      "args": [
+        "0x26ec5d11d1fb2613"
+      ],
+      "expected_bits": "0xc05e1db886ce498f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00312-omitted",
+      "args": [
+        "0x280373dcedc105ad"
+      ],
+      "expected_bits": "0xc05ccd6a97b03911"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00313-omitted",
+      "args": [
+        "0x4f5b9415adfac1f0"
+      ],
+      "expected_bits": "0x4052928c8e7f424d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00314-omitted",
+      "args": [
+        "0x0377556d9823db15"
+      ],
+      "expected_bits": "0xc07233bb12ada504"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00315-omitted",
+      "args": [
+        "0x3604529a1a73ab38"
+      ],
+      "expected_bits": "0xc047e144afd89e40"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00316-omitted",
+      "args": [
+        "0x4aadaeaf7d5eca9c"
+      ],
+      "expected_bits": "0x4049df4c07ed60ee"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00317-omitted",
+      "args": [
+        "0x4c47fb2cb9c57850"
+      ],
+      "expected_bits": "0x404dbd44b450d06e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00318-omitted",
+      "args": [
+        "0x7d38c4aed09bcb23"
+      ],
+      "expected_bits": "0x4072732fcece689e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00319-omitted",
+      "args": [
+        "0x39a4f1c5a8c6521f"
+      ],
+      "expected_bits": "0xc03e497e269d18d6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00320-omitted",
+      "args": [
+        "0x6dff7f3447c0425d"
+      ],
+      "expected_bits": "0x406bbb456c5b63c5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00321-omitted",
+      "args": [
+        "0x411a7ec02ae8582d"
+      ],
+      "expected_bits": "0x40168ce34c7b61c6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00322-omitted",
+      "args": [
+        "0x0080c16947312c4b"
+      ],
+      "expected_bits": "0xc07318681212cca3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00323-omitted",
+      "args": [
+        "0x6080315cc60c9f48"
+      ],
+      "expected_bits": "0x40639af046170b04"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00324-omitted",
+      "args": [
+        "0x3f91ab56a7caf924"
+      ],
+      "expected_bits": "0xbffc35943f69fb07"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00325-omitted",
+      "args": [
+        "0x1e32ff294f2fd6c3"
+      ],
+      "expected_bits": "0xc0644f699609a9e5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00326-omitted",
+      "args": [
+        "0x7b5e0a200cefb928"
+      ],
+      "expected_bits": "0x4071e40879dd0fa8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00327-omitted",
+      "args": [
+        "0x4183750ccf9c2074"
+      ],
+      "expected_bits": "0x401e715e2f480d20"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00328-omitted",
+      "args": [
+        "0x768324e29659a643"
+      ],
+      "expected_bits": "0x40706e089ad5fb31"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00329-omitted",
+      "args": [
+        "0x36b9ad515ed00a2b"
+      ],
+      "expected_bits": "0xc0462c6afa1027c3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00330-omitted",
+      "args": [
+        "0x4c6684bdef6d2e29"
+      ],
+      "expected_bits": "0x404e06d573e4538e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00331-omitted",
+      "args": [
+        "0x6d8039120da40ffc"
+      ],
+      "expected_bits": "0x406b6e9ebad4681e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00332-omitted",
+      "args": [
+        "0x3663ea3e6071e5c8"
+      ],
+      "expected_bits": "0xc046fb3423ed199d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00333-omitted",
+      "args": [
+        "0x6bba72393a1ac865"
+      ],
+      "expected_bits": "0x406a5e0e411914d8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00334-omitted",
+      "args": [
+        "0x3355492b65ae83dd"
+      ],
+      "expected_bits": "0xc04e5790386396f8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00335-omitted",
+      "args": [
+        "0x6e4e2d6b13bab9fb"
+      ],
+      "expected_bits": "0x406bead75bb23c5a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00336-omitted",
+      "args": [
+        "0x305f59e4e16d2eda"
+      ],
+      "expected_bits": "0xc052bdc88c214be7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00337-omitted",
+      "args": [
+        "0x39b0ca84ca64ba92"
+      ],
+      "expected_bits": "0xc03e15009e6bbd64"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00338-omitted",
+      "args": [
+        "0x7b898b6f614a7b38"
+      ],
+      "expected_bits": "0x4071f15b33c0c4cf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00339-omitted",
+      "args": [
+        "0x4c6e7a7863ad5c5b"
+      ],
+      "expected_bits": "0x404e17a8e14e765c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00340-omitted",
+      "args": [
+        "0x7decc27e1b79623c"
+      ],
+      "expected_bits": "0x4072a934cccd432c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00341-omitted",
+      "args": [
+        "0x5c2b2d7e6c5ee332"
+      ],
+      "expected_bits": "0x4060ffd3ef4432f5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00342-omitted",
+      "args": [
+        "0x4e39cba1de1c7018"
+      ],
+      "expected_bits": "0x405135e79ea66c58"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00343-omitted",
+      "args": [
+        "0x2403af48a54d6fdc"
+      ],
+      "expected_bits": "0xc060cf0d829cac11"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00344-omitted",
+      "args": [
+        "0x6c1efd9db0b8d52d"
+      ],
+      "expected_bits": "0x406a9a0ea60e2287"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00345-omitted",
+      "args": [
+        "0x26249b11b726931b"
+      ],
+      "expected_bits": "0xc05f0dcb14618190"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00346-omitted",
+      "args": [
+        "0x55f7eb4da6efe476"
+      ],
+      "expected_bits": "0x405a88c7a0a7b540"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00347-omitted",
+      "args": [
+        "0x5ee19dad75766767"
+      ],
+      "expected_bits": "0x4062a1a6fb158b5a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00348-omitted",
+      "args": [
+        "0x3da7a9d6ffed2af6"
+      ],
+      "expected_bits": "0xc025efb19e7581a2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00349-omitted",
+      "args": [
+        "0x413524fb97739963"
+      ],
+      "expected_bits": "0x40189113ac67c1e0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00350-omitted",
+      "args": [
+        "0x51985806ee8f440e"
+      ],
+      "expected_bits": "0x405544a794042893"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00351-omitted",
+      "args": [
+        "0x607685f921ae6389"
+      ],
+      "expected_bits": "0x406395e43b862877"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00352-omitted",
+      "args": [
+        "0x0f588b70bebb3a7b"
+      ],
+      "expected_bits": "0xc06d407ef7e9e0f9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00353-omitted",
+      "args": [
+        "0x176bff06b4ea4631"
+      ],
+      "expected_bits": "0xc0686403ffb53245"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00354-omitted",
+      "args": [
+        "0x259108341a3f2b41"
+      ],
+      "expected_bits": "0xc05fc07b10e98faf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00355-omitted",
+      "args": [
+        "0x72670ea9d497546a"
+      ],
+      "expected_bits": "0x406e62e06a9460b0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00356-omitted",
+      "args": [
+        "0x50079ac76de4e48b"
+      ],
+      "expected_bits": "0x40536226446d8c99"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00357-omitted",
+      "args": [
+        "0x0e404f4d59db1066"
+      ],
+      "expected_bits": "0xc06de9efc4af6526"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00358-omitted",
+      "args": [
+        "0x6b137d913e7ec7b5"
+      ],
+      "expected_bits": "0x4069f97c1bbf96e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00359-omitted",
+      "args": [
+        "0x597bb49c9ea6c151"
+      ],
+      "expected_bits": "0x405ec3c17c85029b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00360-omitted",
+      "args": [
+        "0x2962b1470841b2c8"
+      ],
+      "expected_bits": "0xc05b26ac8b4bd25a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00361-omitted",
+      "args": [
+        "0x7e41724f1457b4f7"
+      ],
+      "expected_bits": "0x4072c2a1c4f85ae5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00362-omitted",
+      "args": [
+        "0x0a64509a1ff1ec80"
+      ],
+      "expected_bits": "0xc0701e106f869240"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00363-omitted",
+      "args": [
+        "0x7e65a51aef8b1803"
+      ],
+      "expected_bits": "0x4072cdc3634b965a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00364-omitted",
+      "args": [
+        "0x0600f358ffcd7c07"
+      ],
+      "expected_bits": "0xc0717079d2348034"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00365-omitted",
+      "args": [
+        "0x3d0fb5a80e57a0b4"
+      ],
+      "expected_bits": "0xc02bb3e2b72002bb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00366-omitted",
+      "args": [
+        "0x1d8708752cc77b67"
+      ],
+      "expected_bits": "0xc064b6b28e4d420b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00367-omitted",
+      "args": [
+        "0x7ed3f73720c48b2c"
+      ],
+      "expected_bits": "0x4072eeeadd35d883"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00368-omitted",
+      "args": [
+        "0x125eeb9244ad22bd"
+      ],
+      "expected_bits": "0xc06b6ee79ff4360a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00369-omitted",
+      "args": [
+        "0x1057adacac013450"
+      ],
+      "expected_bits": "0xc06ca6de3337d354"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00370-omitted",
+      "args": [
+        "0x025461213ff5effe"
+      ],
+      "expected_bits": "0xc0728b5e3977a46d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00371-omitted",
+      "args": [
+        "0x26f79eba225ce3d4"
+      ],
+      "expected_bits": "0xc05e0f8aa7bfabab"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00372-omitted",
+      "args": [
+        "0x177b3559e95d3647"
+      ],
+      "expected_bits": "0xc0685ac78249b1df"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00373-omitted",
+      "args": [
+        "0x03892f15e03ca8d4"
+      ],
+      "expected_bits": "0xc0722e625043fa94"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00374-omitted",
+      "args": [
+        "0x5313b11af601551b"
+      ],
+      "expected_bits": "0x40570d245d3d798a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00375-omitted",
+      "args": [
+        "0x0752aa6ab581fdb8"
+      ],
+      "expected_bits": "0xc0710aa8f7d83452"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00376-omitted",
+      "args": [
+        "0x3abcdabc588aba25"
+      ],
+      "expected_bits": "0xc03907ca10b8ecfe"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00377-omitted",
+      "args": [
+        "0x18a4674d41e54733"
+      ],
+      "expected_bits": "0xc067a7c0c664f67d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00378-omitted",
+      "args": [
+        "0x78b555f54176f3ef"
+      ],
+      "expected_bits": "0x4071175d14566fc4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00379-omitted",
+      "args": [
+        "0x3cfc70c926d35536"
+      ],
+      "expected_bits": "0xc02c6634c9a9e645"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00380-omitted",
+      "args": [
+        "0x16bdb2404b812248"
+      ],
+      "expected_bits": "0xc068cd28ac17f352"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00381-omitted",
+      "args": [
+        "0x3e98dbcbfa76e7d5"
+      ],
+      "expected_bits": "0xc019b9a7a33be535"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00382-omitted",
+      "args": [
+        "0x7b0d4a8f244ce799"
+      ],
+      "expected_bits": "0x4071cbc681f3cd97"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00383-omitted",
+      "args": [
+        "0x2e293af3df9a2057"
+      ],
+      "expected_bits": "0xc0556620b666962c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00384-omitted",
+      "args": [
+        "0x25163a84a01e5f66"
+      ],
+      "expected_bits": "0xc060299a787a8cde"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00385-omitted",
+      "args": [
+        "0x7e7e55de7eae792d"
+      ],
+      "expected_bits": "0x4072d4ecdaba70df"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00386-omitted",
+      "args": [
+        "0x323f060172ac6a92"
+      ],
+      "expected_bits": "0xc0507c190c42acfa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00387-omitted",
+      "args": [
+        "0x661180d0c5efc7e5"
+      ],
+      "expected_bits": "0x4066f55a79ef3777"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00388-omitted",
+      "args": [
+        "0x34f520ce662ef858"
+      ],
+      "expected_bits": "0xc04a6e2619f0ca8d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00389-omitted",
+      "args": [
+        "0x7a377fb1146240c0"
+      ],
+      "expected_bits": "0x40718ba14e952f18"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00390-omitted",
+      "args": [
+        "0x4dfe5fa2043b1db9"
+      ],
+      "expected_bits": "0x4050ed61cf462b15"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00391-omitted",
+      "args": [
+        "0x6347a9bba3ea72ad"
+      ],
+      "expected_bits": "0x4065480f8bd2b506"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00392-omitted",
+      "args": [
+        "0x4e52ed3938572376"
+      ],
+      "expected_bits": "0x405153d4a12301c2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00393-omitted",
+      "args": [
+        "0x3f13bf23de70746f"
+      ],
+      "expected_bits": "0xc0107dfff3936836"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00394-omitted",
+      "args": [
+        "0x471c3943349848c6"
+      ],
+      "expected_bits": "0x4041482e4eb04bd0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00395-omitted",
+      "args": [
+        "0x5e647af28e1f62c6"
+      ],
+      "expected_bits": "0x406256aeae82dabb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00396-omitted",
+      "args": [
+        "0x79060c7d1c4db5b7"
+      ],
+      "expected_bits": "0x40712faca636f700"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00397-omitted",
+      "args": [
+        "0x18078221b7b71c3d"
+      ],
+      "expected_bits": "0xc068061d355f569d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00398-omitted",
+      "args": [
+        "0x4f5ef893f569dc18"
+      ],
+      "expected_bits": "0x405295c612247783"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00399-omitted",
+      "args": [
+        "0x5b51da5c02b2f1a0"
+      ],
+      "expected_bits": "0x40607cc2624973f4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00400-omitted",
+      "args": [
+        "0x7bdf3612feeaf454"
+      ],
+      "expected_bits": "0x40720ad4b11a4193"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00401-omitted",
+      "args": [
+        "0x0521a5f5474e7973"
+      ],
+      "expected_bits": "0xc071b3a0551c1a39"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00402-omitted",
+      "args": [
+        "0x7c70cdc687270806"
+      ],
+      "expected_bits": "0x407236b1741563f7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00403-omitted",
+      "args": [
+        "0x1583dda7b5183db0"
+      ],
+      "expected_bits": "0xc06989c5ac7c7ec2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00404-omitted",
+      "args": [
+        "0x6ed9cf7cbfa44b29"
+      ],
+      "expected_bits": "0x406c3f5d940dfeda"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00405-omitted",
+      "args": [
+        "0x47ecae9422a3ed15"
+      ],
+      "expected_bits": "0x40433dfd7afd4280"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00406-omitted",
+      "args": [
+        "0x1769529e563f28d5"
+      ],
+      "expected_bits": "0xc06865691379b18e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00407-omitted",
+      "args": [
+        "0x6a697c93e101ff01"
+      ],
+      "expected_bits": "0x4069933ff9bbe44b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00408-omitted",
+      "args": [
+        "0x58fac0aafacfc215"
+      ],
+      "expected_bits": "0x405e28a7d83ac2af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00409-omitted",
+      "args": [
+        "0x3ae44a37e026fb55"
+      ],
+      "expected_bits": "0xc03847bfbc4aab37"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00410-omitted",
+      "args": [
+        "0x07609ed1d43fdde7"
+      ],
+      "expected_bits": "0xc07106a66642ff72"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00411-omitted",
+      "args": [
+        "0x01b7b9ee754c48b6"
+      ],
+      "expected_bits": "0xc072ba79eba44c6a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00412-omitted",
+      "args": [
+        "0x5b16a5c89d2a0413"
+      ],
+      "expected_bits": "0x406059888fe4315c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00413-omitted",
+      "args": [
+        "0x04052a2f5f7c4280"
+      ],
+      "expected_bits": "0xc072090f732ebd32"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00414-omitted",
+      "args": [
+        "0x591791d019552635"
+      ],
+      "expected_bits": "0x405e4baaa44b1fe1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00415-omitted",
+      "args": [
+        "0x0143dff9f90d59b4"
+      ],
+      "expected_bits": "0xc072dd6c22efd706"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00416-omitted",
+      "args": [
+        "0x4f9c367cf65ec4ae"
+      ],
+      "expected_bits": "0x4052e03eae96e490"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00417-omitted",
+      "args": [
+        "0x016c28237fdc399c"
+      ],
+      "expected_bits": "0xc072d15e76c1e4d3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00418-omitted",
+      "args": [
+        "0x0b9977011a09dc0d"
+      ],
+      "expected_bits": "0xc06f81f64af90274"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00419-omitted",
+      "args": [
+        "0x28338bc133f2cc8a"
+      ],
+      "expected_bits": "0xc05c937c4f65e28d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00420-omitted",
+      "args": [
+        "0x6dcd7e6ae6e6d12c"
+      ],
+      "expected_bits": "0x406b9d75899cc3f6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00421-omitted",
+      "args": [
+        "0x5ae46fb8988de0bc"
+      ],
+      "expected_bits": "0x40603b34f166b514"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00422-omitted",
+      "args": [
+        "0x117bb2d4baa9880f"
+      ],
+      "expected_bits": "0xc06bf74b9bd9d0c6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00423-omitted",
+      "args": [
+        "0x669efe9eb023c1b5"
+      ],
+      "expected_bits": "0x40674a5bc770469e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00424-omitted",
+      "args": [
+        "0x628a2f118f6d222a"
+      ],
+      "expected_bits": "0x4064d5df3e27e696"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00425-omitted",
+      "args": [
+        "0x0392f2022e2e0097"
+      ],
+      "expected_bits": "0xc0722b8ba55f48ff"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00426-omitted",
+      "args": [
+        "0x25baa0ea49fd04ee"
+      ],
+      "expected_bits": "0xc05f8d8717068c71"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00427-omitted",
+      "args": [
+        "0x79760652b9fe4e6c"
+      ],
+      "expected_bits": "0x40715161d650459f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00428-omitted",
+      "args": [
+        "0x288bda0d83abf668"
+      ],
+      "expected_bits": "0xc05c29502090a6c3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00429-omitted",
+      "args": [
+        "0x64de6011d3d6a612"
+      ],
+      "expected_bits": "0x40663c5ae96d727c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00430-omitted",
+      "args": [
+        "0x3571dba4bcf7af87"
+      ],
+      "expected_bits": "0xc049433de91e91b8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00431-omitted",
+      "args": [
+        "0x7ac898295d6ec308"
+      ],
+      "expected_bits": "0x4071b74b89aae419"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00432-omitted",
+      "args": [
+        "0x389100f8188a7710"
+      ],
+      "expected_bits": "0xc041bf5fe3ffe600"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00433-omitted",
+      "args": [
+        "0x075b5394e8182b34"
+      ],
+      "expected_bits": "0xc0710802eac8ad61"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00434-omitted",
+      "args": [
+        "0x525b583b01e7e6e4"
+      ],
+      "expected_bits": "0x40562f1398e179e7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00435-omitted",
+      "args": [
+        "0x677a66f509a6cae5"
+      ],
+      "expected_bits": "0x4067cefdc37dce71"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00436-omitted",
+      "args": [
+        "0x5387293505a6f39a"
+      ],
+      "expected_bits": "0x405798837c9d93e7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00437-omitted",
+      "args": [
+        "0x0658a0a0ae905502"
+      ],
+      "expected_bits": "0xc07155cc365629b2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00438-omitted",
+      "args": [
+        "0x40de41cc06e8ee65"
+      ],
+      "expected_bits": "0x4011f6e9c2ba80e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00439-omitted",
+      "args": [
+        "0x0e87afdc5337a2c6"
+      ],
+      "expected_bits": "0xc06dbe3802debfa5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00440-omitted",
+      "args": [
+        "0x7374638844628999"
+      ],
+      "expected_bits": "0x406f04ed78628c42"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00441-omitted",
+      "args": [
+        "0x44b2beb22839569f"
+      ],
+      "expected_bits": "0x4036f2716832a02d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00442-omitted",
+      "args": [
+        "0x6c83c0a24f1f19e7"
+      ],
+      "expected_bits": "0x406ad73a7a7bac07"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00443-omitted",
+      "args": [
+        "0x5b5f2b8d1c5f72a0"
+      ],
+      "expected_bits": "0x4060848114069416"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00444-omitted",
+      "args": [
+        "0x6d110a5b419d71d7"
+      ],
+      "expected_bits": "0x406b2bdf614af296"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00445-omitted",
+      "args": [
+        "0x2f8e2f8056c1fbc4"
+      ],
+      "expected_bits": "0xc053b94b1db508eb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00446-omitted",
+      "args": [
+        "0x05d7c64dfc7eb647"
+      ],
+      "expected_bits": "0xc0717c930e375446"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00447-omitted",
+      "args": [
+        "0x45e1eaf1eebcd53c"
+      ],
+      "expected_bits": "0x403ca5a2a7d56898"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00448-omitted",
+      "args": [
+        "0x62fd66ffd34b5c39"
+      ],
+      "expected_bits": "0x40651ae9f59d197a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00449-omitted",
+      "args": [
+        "0x2556d911a0315d6f"
+      ],
+      "expected_bits": "0xc06002b08c7e3223"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00450-omitted",
+      "args": [
+        "0x01cef567fe4cef90"
+      ],
+      "expected_bits": "0xc072b3cf9a22085a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00451-omitted",
+      "args": [
+        "0x3ac3eb2209728765"
+      ],
+      "expected_bits": "0xc038e3ee30d3454f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00452-omitted",
+      "args": [
+        "0x03feb24f569f5f4f"
+      ],
+      "expected_bits": "0xc0720b4b10de0f2b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00453-omitted",
+      "args": [
+        "0x2686115c19666ec7"
+      ],
+      "expected_bits": "0xc05e984adb919d93"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00454-omitted",
+      "args": [
+        "0x2998764fe7a553a7"
+      ],
+      "expected_bits": "0xc05ae56636f1a5dd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00455-omitted",
+      "args": [
+        "0x15a73b5f9eb9334f"
+      ],
+      "expected_bits": "0xc0697454b8527c3e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00456-omitted",
+      "args": [
+        "0x6c09d127be6d0633"
+      ],
+      "expected_bits": "0x406a8de2c759ee85"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00457-omitted",
+      "args": [
+        "0x73a3f3dc05cca935"
+      ],
+      "expected_bits": "0x406f2186a38b4fa0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00458-omitted",
+      "args": [
+        "0x425ec3a5c0ac6b4c"
+      ],
+      "expected_bits": "0x40277235ba23f338"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00459-omitted",
+      "args": [
+        "0x403c1c0304a722c0"
+      ],
+      "expected_bits": "0x3ff72e7f54b1b17d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00460-omitted",
+      "args": [
+        "0x60d6961ee1170746"
+      ],
+      "expected_bits": "0x4063cfba6885eab4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00461-omitted",
+      "args": [
+        "0x0a129b683c6054be"
+      ],
+      "expected_bits": "0xc07036c1bc138892"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00462-omitted",
+      "args": [
+        "0x03268ade2d4a4d20"
+      ],
+      "expected_bits": "0xc0724c0d891f283e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00463-omitted",
+      "args": [
+        "0x30e1d7f8b2291704"
+      ],
+      "expected_bits": "0xc052200e2e416301"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00464-omitted",
+      "args": [
+        "0x54ed08dc3377337d"
+      ],
+      "expected_bits": "0x405946a563a90afc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00465-omitted",
+      "args": [
+        "0x68b75787bfd1ea52"
+      ],
+      "expected_bits": "0x40688df0383487b1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00466-omitted",
+      "args": [
+        "0x7d516444684e8022"
+      ],
+      "expected_bits": "0x40727a5ce29323c6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00467-omitted",
+      "args": [
+        "0x048d31f50d9e31ed"
+      ],
+      "expected_bits": "0xc071e04b19ddf838"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00468-omitted",
+      "args": [
+        "0x5206ecd2487b0df4"
+      ],
+      "expected_bits": "0x4055c9d8d653feb9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00469-omitted",
+      "args": [
+        "0x225288829fd45546"
+      ],
+      "expected_bits": "0xc061d3faf9677f6d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00470-omitted",
+      "args": [
+        "0x2115c9e3f28ad079"
+      ],
+      "expected_bits": "0xc062926401abb0ba"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00471-omitted",
+      "args": [
+        "0x73e2fc5d1a3bc64b"
+      ],
+      "expected_bits": "0x406f475e163e473e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00472-omitted",
+      "args": [
+        "0x1180669b7fd34934"
+      ],
+      "expected_bits": "0xc06bf4f200ed32bb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00473-omitted",
+      "args": [
+        "0x489d64d99fc298a4"
+      ],
+      "expected_bits": "0x4044e7341842e3bb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00474-omitted",
+      "args": [
+        "0x3870ea32036adbc5"
+      ],
+      "expected_bits": "0xc0420cbad7502d74"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00475-omitted",
+      "args": [
+        "0x2cbae7a0a4fc3135"
+      ],
+      "expected_bits": "0xc0571f7535e21374"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00476-omitted",
+      "args": [
+        "0x0c144e59069b97ba"
+      ],
+      "expected_bits": "0xc06f380b652dffa1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00477-omitted",
+      "args": [
+        "0x35cec54ea55b1e8e"
+      ],
+      "expected_bits": "0xc0486455e6628400"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00478-omitted",
+      "args": [
+        "0x3f54b38c4d41951f"
+      ],
+      "expected_bits": "0xc0072ff762d195c0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00479-omitted",
+      "args": [
+        "0x2d7ce69cfc87f39f"
+      ],
+      "expected_bits": "0xc05636471450f81c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00480-omitted",
+      "args": [
+        "0x36eb886c9d40b2b6"
+      ],
+      "expected_bits": "0xc045b4f1693b8b91"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00481-omitted",
+      "args": [
+        "0x1b177945ed90f326"
+      ],
+      "expected_bits": "0xc0662e1e99cb422a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00482-omitted",
+      "args": [
+        "0x08c072996d8f9034"
+      ],
+      "expected_bits": "0xc0709cc291ab6005"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00483-omitted",
+      "args": [
+        "0x34061cd7e094b7e3"
+      ],
+      "expected_bits": "0xc04cad98392f6199"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00484-omitted",
+      "args": [
+        "0x6ee955fde6bffb35"
+      ],
+      "expected_bits": "0x406c48bd96ca1d80"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00485-omitted",
+      "args": [
+        "0x4715aa3e3a578015"
+      ],
+      "expected_bits": "0x4041397abf5e474b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00486-omitted",
+      "args": [
+        "0x6c6e77a2f2d2c520"
+      ],
+      "expected_bits": "0x406ac9fc3e1b13f0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00487-omitted",
+      "args": [
+        "0x68294ddbdb6ca541"
+      ],
+      "expected_bits": "0x4068385d0d026788"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00488-omitted",
+      "args": [
+        "0x4a8c33cf239bef63"
+      ],
+      "expected_bits": "0x40498f63dc95a1e6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00489-omitted",
+      "args": [
+        "0x1a2e1cd1593a4c50"
+      ],
+      "expected_bits": "0xc066bb2712762bf8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00490-omitted",
+      "args": [
+        "0x04a59425f7371b63"
+      ],
+      "expected_bits": "0xc071d8c2cecd853d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00491-omitted",
+      "args": [
+        "0x2208493d6a0244d8"
+      ],
+      "expected_bits": "0xc06200635ef805ce"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00492-omitted",
+      "args": [
+        "0x583688bfa841e3b3"
+      ],
+      "expected_bits": "0x405d3cb1ee16801c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00493-omitted",
+      "args": [
+        "0x16569a67fa0c6dd9"
+      ],
+      "expected_bits": "0xc0690abfec6202d2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00494-omitted",
+      "args": [
+        "0x2c8f061a53e68dc2"
+      ],
+      "expected_bits": "0xc057554bd3a104a6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00495-omitted",
+      "args": [
+        "0x5c9316c365d0c7cf"
+      ],
+      "expected_bits": "0x40613e5949a14412"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00496-omitted",
+      "args": [
+        "0x7f9b92148ac71eb2"
+      ],
+      "expected_bits": "0x40732af53218dd27"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00497-omitted",
+      "args": [
+        "0x0cbd0751ac85176e"
+      ],
+      "expected_bits": "0xc06ed2bf9d676b25"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00498-omitted",
+      "args": [
+        "0x18b1dda42cdb7016"
+      ],
+      "expected_bits": "0xc0679ff746ca975c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00499-omitted",
+      "args": [
+        "0x02f483790824a46a"
+      ],
+      "expected_bits": "0xc0725b285d4b4ce5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00500-omitted",
+      "args": [
+        "0x49f1a2c39d23138b"
+      ],
+      "expected_bits": "0x40481a816a2905b2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00501-omitted",
+      "args": [
+        "0x4f09622f170700ef"
+      ],
+      "expected_bits": "0x40522fea0fdc27dd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00502-omitted",
+      "args": [
+        "0x3be397265c46d19d"
+      ],
+      "expected_bits": "0xc0337aa16e84d39f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00503-omitted",
+      "args": [
+        "0x0fdbba9860e6ff1b"
+      ],
+      "expected_bits": "0xc06cf1bcb23607f7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00504-omitted",
+      "args": [
+        "0x1abe7fabdec60186"
+      ],
+      "expected_bits": "0xc066644766702b17"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00505-omitted",
+      "args": [
+        "0x75ac46fac8a8cb31"
+      ],
+      "expected_bits": "0x40702d5036fa8088"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00506-omitted",
+      "args": [
+        "0x6684f7ae255fe260"
+      ],
+      "expected_bits": "0x40673b4b3c4646d7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00507-omitted",
+      "args": [
+        "0x0b8f17305626495b"
+      ],
+      "expected_bits": "0xc06f88d22faec7f8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00508-omitted",
+      "args": [
+        "0x47ddf50249f120ed"
+      ],
+      "expected_bits": "0x404319e056817283"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00509-omitted",
+      "args": [
+        "0x0e9b652b31dfecec"
+      ],
+      "expected_bits": "0xc06db2908672afe4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00510-omitted",
+      "args": [
+        "0x430229377b171f9b"
+      ],
+      "expected_bits": "0x402d9c69230a9789"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00511-omitted",
+      "args": [
+        "0x478c58ded2733350"
+      ],
+      "expected_bits": "0x404256257bae8a06"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00512-omitted",
+      "args": [
+        "0x114cc05294712e6e"
+      ],
+      "expected_bits": "0xc06c13ad038ecf58"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00513-omitted",
+      "args": [
+        "0x21231eb23572fa45"
+      ],
+      "expected_bits": "0xc0628a92d150d4e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00514-omitted",
+      "args": [
+        "0x7a56cf79b6160633"
+      ],
+      "expected_bits": "0x4071950e754dabb1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00515-omitted",
+      "args": [
+        "0x27b34ef56b5d1b0f"
+      ],
+      "expected_bits": "0xc05d2df3e59c620f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00516-omitted",
+      "args": [
+        "0x50025505c66b69b0"
+      ],
+      "expected_bits": "0x40535b1f90a8fd6c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00517-omitted",
+      "args": [
+        "0x0d8218cb7a8210eb"
+      ],
+      "expected_bits": "0xc06e5c164f57eb37"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00518-omitted",
+      "args": [
+        "0x19fab5020deda618"
+      ],
+      "expected_bits": "0xc066d9b82a8a29b3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00519-omitted",
+      "args": [
+        "0x35a16f8412204c53"
+      ],
+      "expected_bits": "0xc048d0fa17152e48"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00520-omitted",
+      "args": [
+        "0x19bcb960d3e8d907"
+      ],
+      "expected_bits": "0xc066ff3d4783521a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00521-omitted",
+      "args": [
+        "0x50407955d655d118"
+      ],
+      "expected_bits": "0x4053a537695a35d2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00522-omitted",
+      "args": [
+        "0x0474dabde630dee1"
+      ],
+      "expected_bits": "0xc071e77297e8c51e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00523-omitted",
+      "args": [
+        "0x3b5efe9b2261ea69"
+      ],
+      "expected_bits": "0xc035fd32a8f97c68"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00524-omitted",
+      "args": [
+        "0x37e765cf75edaca1"
+      ],
+      "expected_bits": "0xc043557b01453cae"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00525-omitted",
+      "args": [
+        "0x1ef7400549ea47ef"
+      ],
+      "expected_bits": "0xc063d90251f9324b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00526-omitted",
+      "args": [
+        "0x37eaf7aff219812c"
+      ],
+      "expected_bits": "0xc0434d96444a1106"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00527-omitted",
+      "args": [
+        "0x28734b33626d4cd2"
+      ],
+      "expected_bits": "0xc05c46c86739b95e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00528-omitted",
+      "args": [
+        "0x5d70721efa4b06f8"
+      ],
+      "expected_bits": "0x4061c323930ef6f2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00529-omitted",
+      "args": [
+        "0x708464893c78468d"
+      ],
+      "expected_bits": "0x406d402e619f616a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00530-omitted",
+      "args": [
+        "0x62fbd3e556f4a307"
+      ],
+      "expected_bits": "0x40651a2622a1e4e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00531-omitted",
+      "args": [
+        "0x0a48ad638959589d"
+      ],
+      "expected_bits": "0xc07026586d4e098a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00532-omitted",
+      "args": [
+        "0x1bb05de75b67d6bf"
+      ],
+      "expected_bits": "0xc065d2cd3cc321c0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00533-omitted",
+      "args": [
+        "0x6a8fa8d4f93c9b43"
+      ],
+      "expected_bits": "0x4069a987ab2b8587"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00534-omitted",
+      "args": [
+        "0x516ef849f30ca76d"
+      ],
+      "expected_bits": "0x4055118c4d1d59ee"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00535-omitted",
+      "args": [
+        "0x4a194a08f8e798a2"
+      ],
+      "expected_bits": "0x40487b9b37f638fa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00536-omitted",
+      "args": [
+        "0x3e69590b73b3ca7d"
+      ],
+      "expected_bits": "0xc01d4dc059bade72"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00537-omitted",
+      "args": [
+        "0x5bc6425c7c6b80c7"
+      ],
+      "expected_bits": "0x4060c3417043cb6f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00538-omitted",
+      "args": [
+        "0x39da977dde37229c"
+      ],
+      "expected_bits": "0xc03d47c28dc13c2a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00539-omitted",
+      "args": [
+        "0x0e3bf33a70a46928"
+      ],
+      "expected_bits": "0xc06dec1567dcfaa3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00540-omitted",
+      "args": [
+        "0x4677f57444eab7d6"
+      ],
+      "expected_bits": "0x403f7b82ceebef38"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00541-omitted",
+      "args": [
+        "0x3514a07a881bfdeb"
+      ],
+      "expected_bits": "0xc04a226b82364bc6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00542-omitted",
+      "args": [
+        "0x2732ce3a16be7003"
+      ],
+      "expected_bits": "0xc05dc8d044a0ea80"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00543-omitted",
+      "args": [
+        "0x1606addc06ac4349"
+      ],
+      "expected_bits": "0xc0693ade2bd972cc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00544-omitted",
+      "args": [
+        "0x01c983ede4d767c0"
+      ],
+      "expected_bits": "0xc072b527959b3401"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00545-omitted",
+      "args": [
+        "0x689ba0aff7842f5e"
+      ],
+      "expected_bits": "0x40687d03dd377a9e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00546-omitted",
+      "args": [
+        "0x4ec4dfcd7dac85c4"
+      ],
+      "expected_bits": "0x4051dd6a13c454c5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00547-omitted",
+      "args": [
+        "0x6b32c232cbd729ee"
+      ],
+      "expected_bits": "0x406a0c38028c2f0f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00548-omitted",
+      "args": [
+        "0x311dabbfcefd10b8"
+      ],
+      "expected_bits": "0xc051d81f97dc8c4a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00549-omitted",
+      "args": [
+        "0x0efaef6332e33c47"
+      ],
+      "expected_bits": "0xc06d79008e564858"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00550-omitted",
+      "args": [
+        "0x661627f077095626"
+      ],
+      "expected_bits": "0x4066f8a120d8b8ba"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00551-omitted",
+      "args": [
+        "0x0f63122ff14a5792"
+      ],
+      "expected_bits": "0xc06d3a5ea29a4d10"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00552-omitted",
+      "args": [
+        "0x11e6e146dd252640"
+      ],
+      "expected_bits": "0xc06bb6854ac45de5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00553-omitted",
+      "args": [
+        "0x1711200f34b72c8c"
+      ],
+      "expected_bits": "0xc0689b02df6f47d5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00554-omitted",
+      "args": [
+        "0x12e6c280979c7b65"
+      ],
+      "expected_bits": "0xc06b1c776e2a84cb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00555-omitted",
+      "args": [
+        "0x05027cee439d2472"
+      ],
+      "expected_bits": "0xc071bcefae2bc808"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00556-omitted",
+      "args": [
+        "0x0b64bf25f0d83b33"
+      ],
+      "expected_bits": "0xc06fa1b56f7905e6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00557-omitted",
+      "args": [
+        "0x5684d05308a40d5b"
+      ],
+      "expected_bits": "0x405b324ecaff4111"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00558-omitted",
+      "args": [
+        "0x460e214defddd2ab"
+      ],
+      "expected_bits": "0x403d798bd823a7af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00559-omitted",
+      "args": [
+        "0x0a67648e747bdfe4"
+      ],
+      "expected_bits": "0xc0701d157ad1de5c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00560-omitted",
+      "args": [
+        "0x41bdaff04ba472bb"
+      ],
+      "expected_bits": "0x402165033278a7ee"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00561-omitted",
+      "args": [
+        "0x1a4fcf8afac31fe5"
+      ],
+      "expected_bits": "0xc066a71fd1394b75"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00562-omitted",
+      "args": [
+        "0x662f37f0ad3b1ac1"
+      ],
+      "expected_bits": "0x406707071fbc8004"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00563-omitted",
+      "args": [
+        "0x1dc7eb828679886b"
+      ],
+      "expected_bits": "0xc0648fa3fb03ed0f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00564-omitted",
+      "args": [
+        "0x0ce067a7156735ed"
+      ],
+      "expected_bits": "0xc06ebdc7e8ddd65d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00565-omitted",
+      "args": [
+        "0x4ff376209215a132"
+      ],
+      "expected_bits": "0x40534984da966e27"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00566-omitted",
+      "args": [
+        "0x750a4701e8da819a"
+      ],
+      "expected_bits": "0x406ff94717ac1a25"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00567-omitted",
+      "args": [
+        "0x0dbb73e3236d44e8"
+      ],
+      "expected_bits": "0xc06e39659833049f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00568-omitted",
+      "args": [
+        "0x74c4ca6f5fdf3969"
+      ],
+      "expected_bits": "0x406fcf7db87c8839"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00569-omitted",
+      "args": [
+        "0x0b08beed61601576"
+      ],
+      "expected_bits": "0xc06fd90e89b1dc71"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00570-omitted",
+      "args": [
+        "0x1c2383bf22f233f1"
+      ],
+      "expected_bits": "0xc0658ced22624a5b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00571-omitted",
+      "args": [
+        "0x336a3216114eea24"
+      ],
+      "expected_bits": "0xc04e257e66979486"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00572-omitted",
+      "args": [
+        "0x671e86bb85fed0bb"
+      ],
+      "expected_bits": "0x40679735ea4fc538"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00573-omitted",
+      "args": [
+        "0x681433aee4f9ef42"
+      ],
+      "expected_bits": "0x40682b99d6cbad73"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00574-omitted",
+      "args": [
+        "0x410d8f72092cb7d1"
+      ],
+      "expected_bits": "0x40158951522ce625"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00575-omitted",
+      "args": [
+        "0x554093685df289d0"
+      ],
+      "expected_bits": "0x4059aaa94d229cb6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00576-omitted",
+      "args": [
+        "0x5f5bc9bd46de5e93"
+      ],
+      "expected_bits": "0x4062eb6adf13b9f4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00577-omitted",
+      "args": [
+        "0x2b55ab8411206db5"
+      ],
+      "expected_bits": "0xc058cd527e29cfc8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00578-omitted",
+      "args": [
+        "0x457cdf8dcc22d80c"
+      ],
+      "expected_bits": "0x403abf3c6707aa38"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00579-omitted",
+      "args": [
+        "0x36abbacf4b67e883"
+      ],
+      "expected_bits": "0xc0464eaca59af345"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00580-omitted",
+      "args": [
+        "0x1f4aaa2498b88f43"
+      ],
+      "expected_bits": "0xc063a6f09e2e0de8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00581-omitted",
+      "args": [
+        "0x7385fcd0bcd1dd4e"
+      ],
+      "expected_bits": "0x406f0f9c160ad438"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00582-omitted",
+      "args": [
+        "0x156b8a96378c55b3"
+      ],
+      "expected_bits": "0xc069987f7b5182de"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00583-omitted",
+      "args": [
+        "0x5dc7833d26c07a88"
+      ],
+      "expected_bits": "0x4061f8458be711a4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00584-omitted",
+      "args": [
+        "0x553a72ad0d679216"
+      ],
+      "expected_bits": "0x4059a461d28c44a6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00585-omitted",
+      "args": [
+        "0x230972e4db16d4f2"
+      ],
+      "expected_bits": "0xc061659c63ddb194"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00586-omitted",
+      "args": [
+        "0x5341a9fb5f7f49fd"
+      ],
+      "expected_bits": "0x405743eb50d5d955"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00587-omitted",
+      "args": [
+        "0x544d4853632382a4"
+      ],
+      "expected_bits": "0x4058863921ecae5a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00588-omitted",
+      "args": [
+        "0x6b103b2c816ffe6c"
+      ],
+      "expected_bits": "0x4069f6f10f56abec"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00589-omitted",
+      "args": [
+        "0x34007b7f1402056c"
+      ],
+      "expected_bits": "0xc04cbdee179e76a5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00590-omitted",
+      "args": [
+        "0x4101788505adca78"
+      ],
+      "expected_bits": "0x40149f7067f2515f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00591-omitted",
+      "args": [
+        "0x782841072e3b74f1"
+      ],
+      "expected_bits": "0x4070ece7f49fab3a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00592-omitted",
+      "args": [
+        "0x0dc09fabba12a1f3"
+      ],
+      "expected_bits": "0xc06e36bc3d47f637"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00593-omitted",
+      "args": [
+        "0x5a65d81551eccc55"
+      ],
+      "expected_bits": "0x405fde234181bde5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00594-omitted",
+      "args": [
+        "0x4b2a95d6d643316e"
+      ],
+      "expected_bits": "0x404b0d6d1125ea56"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00595-omitted",
+      "args": [
+        "0x571edb2870e0afe8"
+      ],
+      "expected_bits": "0x405beaa4f97b8c67"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00596-omitted",
+      "args": [
+        "0x62aff19bda039b02"
+      ],
+      "expected_bits": "0x4064ebe6b8239e42"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00597-omitted",
+      "args": [
+        "0x71fbdebe762d794a"
+      ],
+      "expected_bits": "0x406e22149a4a4d48"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00598-omitted",
+      "args": [
+        "0x47b87192e66d63e5"
+      ],
+      "expected_bits": "0x4042c18188238ef2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00599-omitted",
+      "args": [
+        "0x037740717d5a205f"
+      ],
+      "expected_bits": "0xc07233c1554aef1f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00600-omitted",
+      "args": [
+        "0x52df41c429e01bdd"
+      ],
+      "expected_bits": "0x4056ccebad66b8c7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00601-omitted",
+      "args": [
+        "0x3026f2212bf4eb81"
+      ],
+      "expected_bits": "0xc05300419f90d477"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00602-omitted",
+      "args": [
+        "0x5d89bdc5f3321a6e"
+      ],
+      "expected_bits": "0x4061d2ff93efe9f4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00603-omitted",
+      "args": [
+        "0x504ec7a1d5110a4c"
+      ],
+      "expected_bits": "0x4053b69723e290a3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00604-omitted",
+      "args": [
+        "0x1fcf2ab63da7346f"
+      ],
+      "expected_bits": "0xc06357b53f58b122"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00605-omitted",
+      "args": [
+        "0x545d291ead53084d"
+      ],
+      "expected_bits": "0x4058995f868ffae5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00606-omitted",
+      "args": [
+        "0x586ce1115c676152"
+      ],
+      "expected_bits": "0x405d7d636b3b7385"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00607-omitted",
+      "args": [
+        "0x3befb3dcd466e21b"
+      ],
+      "expected_bits": "0xc033451d148b2155"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00608-omitted",
+      "args": [
+        "0x313a903fe02dd20d"
+      ],
+      "expected_bits": "0xc051b4aa9fcd8e3a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00609-omitted",
+      "args": [
+        "0x1c6be3eb000fb8e3"
+      ],
+      "expected_bits": "0xc065616e768a3188"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00610-omitted",
+      "args": [
+        "0x60044a532da2a313"
+      ],
+      "expected_bits": "0x4063510283b30741"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00611-omitted",
+      "args": [
+        "0x42563198d1e18d17"
+      ],
+      "expected_bits": "0x40272999a3fa432e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00612-omitted",
+      "args": [
+        "0x49f6750083c8c108"
+      ],
+      "expected_bits": "0x404827f0a89c9313"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00613-omitted",
+      "args": [
+        "0x0263314934c8957a"
+      ],
+      "expected_bits": "0xc07286f7f21e0812"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00614-omitted",
+      "args": [
+        "0x564df9228210d7bc"
+      ],
+      "expected_bits": "0x405aef616cb91fb6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00615-omitted",
+      "args": [
+        "0x015d40ebb657854f"
+      ],
+      "expected_bits": "0xc072d5eb814fe14f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00616-omitted",
+      "args": [
+        "0x4ef86c7d865cced7"
+      ],
+      "expected_bits": "0x40521b93bc353654"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00617-omitted",
+      "args": [
+        "0x41667b595629fcd3"
+      ],
+      "expected_bits": "0x401c491d8136f13d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00618-omitted",
+      "args": [
+        "0x5ca0d1ce5ab5d31e"
+      ],
+      "expected_bits": "0x40614639097a8de0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00619-omitted",
+      "args": [
+        "0x5ce4131065b1cb13"
+      ],
+      "expected_bits": "0x40616f3693625432"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00620-omitted",
+      "args": [
+        "0x5ab35a12cca64b61"
+      ],
+      "expected_bits": "0x40601d8cd3608175"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00621-omitted",
+      "args": [
+        "0x1b4fe73d6a045c80"
+      ],
+      "expected_bits": "0xc0660cf4e041c4fb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00622-omitted",
+      "args": [
+        "0x6c5644068a491819"
+      ],
+      "expected_bits": "0x406abbfe79758fec"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00623-omitted",
+      "args": [
+        "0x4a22c7a5a676c4cc"
+      ],
+      "expected_bits": "0x404891985a31db77"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00624-omitted",
+      "args": [
+        "0x318ff9c2452ee8b0"
+      ],
+      "expected_bits": "0xc0514f2ec6bbe92f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00625-omitted",
+      "args": [
+        "0x2ebbebf637564bf0"
+      ],
+      "expected_bits": "0xc054b5eaceca8eb4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00626-omitted",
+      "args": [
+        "0x42724620be961dab"
+      ],
+      "expected_bits": "0x402832a496fdbc16"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00627-omitted",
+      "args": [
+        "0x4f7c26feb0ac485b"
+      ],
+      "expected_bits": "0x4052b9a740410245"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00628-omitted",
+      "args": [
+        "0x1a7b6bb70c2d24ea"
+      ],
+      "expected_bits": "0xc0668c4a09c67caa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00629-omitted",
+      "args": [
+        "0x1e6011bd3106b4d8"
+      ],
+      "expected_bits": "0xc06434d6e225c3a4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00630-omitted",
+      "args": [
+        "0x09792974adea84ab"
+      ],
+      "expected_bits": "0xc07064d3135cc622"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00631-omitted",
+      "args": [
+        "0x06d2d71a73137252"
+      ],
+      "expected_bits": "0xc07131208f92105c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00632-omitted",
+      "args": [
+        "0x7174c42437073a05"
+      ],
+      "expected_bits": "0x406dd0ed830950a4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00633-omitted",
+      "args": [
+        "0x006321673f986a9f"
+      ],
+      "expected_bits": "0xc073211e4f1d1acd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00634-omitted",
+      "args": [
+        "0x5b50ac124e704988"
+      ],
+      "expected_bits": "0x40607bceedb95dd8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00635-omitted",
+      "args": [
+        "0x72b7a5e45c6257b0"
+      ],
+      "expected_bits": "0x406e93649b8c77bd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00636-omitted",
+      "args": [
+        "0x1a2df2a88b7f6ea6"
+      ],
+      "expected_bits": "0xc066bb3a952e2dad"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00637-omitted",
+      "args": [
+        "0x70437ed248a22a39"
+      ],
+      "expected_bits": "0x406d19062233bde6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00638-omitted",
+      "args": [
+        "0x1bdf603b70e69537"
+      ],
+      "expected_bits": "0xc065b67dd6beb235"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00639-omitted",
+      "args": [
+        "0x73a84f274eb02bec"
+      ],
+      "expected_bits": "0x406f24454793fcc8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00640-omitted",
+      "args": [
+        "0x5100468fcc680e8a"
+      ],
+      "expected_bits": "0x40548c1221c826e1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00641-omitted",
+      "args": [
+        "0x613af2b2da5759e7"
+      ],
+      "expected_bits": "0x40640bfacc23ab3d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00642-omitted",
+      "args": [
+        "0x46248119ddb727e8"
+      ],
+      "expected_bits": "0x403de8e1be0c5ddf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00643-omitted",
+      "args": [
+        "0x11259a91d70f4566"
+      ],
+      "expected_bits": "0xc06c2ae9f0040d32"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00644-omitted",
+      "args": [
+        "0x4d7edecf16bcad65"
+      ],
+      "expected_bits": "0x405053b4a4b5aa04"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00645-omitted",
+      "args": [
+        "0x7fb0a8a7249b27ed"
+      ],
+      "expected_bits": "0x40733117044886ac"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00646-omitted",
+      "args": [
+        "0x6af3ec13b657ccb7"
+      ],
+      "expected_bits": "0x4069e685f8689664"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00647-omitted",
+      "args": [
+        "0x246e0994553789d0"
+      ],
+      "expected_bits": "0xc0608f61c6733815"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00648-omitted",
+      "args": [
+        "0x1030f76bbf2189c6"
+      ],
+      "expected_bits": "0xc06cbec427b7a235"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00649-omitted",
+      "args": [
+        "0x46bdc30d651a0e72"
+      ],
+      "expected_bits": "0x404063f09de2004b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00650-omitted",
+      "args": [
+        "0x4a6a26d07a165898"
+      ],
+      "expected_bits": "0x40493e21308b89da"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00651-omitted",
+      "args": [
+        "0x2a6527e8e91ac8fa"
+      ],
+      "expected_bits": "0xc059eefa767226e6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00652-omitted",
+      "args": [
+        "0x59e0db5840c1615a"
+      ],
+      "expected_bits": "0x405f3cce7ff3b54d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00653-omitted",
+      "args": [
+        "0x7dcecb10c4089c81"
+      ],
+      "expected_bits": "0x4072a00c4aab8363"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00654-omitted",
+      "args": [
+        "0x25e3dc95fbb5aff3"
+      ],
+      "expected_bits": "0xc05f5be11379b225"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00655-omitted",
+      "args": [
+        "0x4588c65bd37a2463"
+      ],
+      "expected_bits": "0x403afb478bf5b6ed"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00656-omitted",
+      "args": [
+        "0x5101c21793a10f6b"
+      ],
+      "expected_bits": "0x40548e7e6fdabf11"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00657-omitted",
+      "args": [
+        "0x71136a376ebd05f3"
+      ],
+      "expected_bits": "0x406d9631e7c0b38e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00658-omitted",
+      "args": [
+        "0x64f9fe6e2e368a85"
+      ],
+      "expected_bits": "0x40664d74cdf901d9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00659-omitted",
+      "args": [
+        "0x0bfdc007e4aafae2"
+      ],
+      "expected_bits": "0xc06f4600b7cf05ee"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00660-omitted",
+      "args": [
+        "0x15dfc914deff9ef4"
+      ],
+      "expected_bits": "0xc069531351d5e4e8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00661-omitted",
+      "args": [
+        "0x3971e84fc7447345"
+      ],
+      "expected_bits": "0xc03f4219bf2bbfda"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00662-omitted",
+      "args": [
+        "0x41c8c12998bd5552"
+      ],
+      "expected_bits": "0x4021d6bc38cd5356"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00663-omitted",
+      "args": [
+        "0x193db007a314fe16"
+      ],
+      "expected_bits": "0xc0674bd833f50bab"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00664-omitted",
+      "args": [
+        "0x65020046b8ab8930"
+      ],
+      "expected_bits": "0x406651fba017e6d3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00665-omitted",
+      "args": [
+        "0x605cbbee74355e7c"
+      ],
+      "expected_bits": "0x40638602959c088e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00666-omitted",
+      "args": [
+        "0x4fe733bf86dc97f5"
+      ],
+      "expected_bits": "0x40533b23bfe06666"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00667-omitted",
+      "args": [
+        "0x4d796ff1e8845d63"
+      ],
+      "expected_bits": "0x40504e533a609fac"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00668-omitted",
+      "args": [
+        "0x723473423d385e4a"
+      ],
+      "expected_bits": "0x406e444f6b4b843d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00669-omitted",
+      "args": [
+        "0x022b20dac8f6332e"
+      ],
+      "expected_bits": "0xc07297d46dc5e4f1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00670-omitted",
+      "args": [
+        "0x1a610482a460fd93"
+      ],
+      "expected_bits": "0xc0669c8d4cecd0e3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00671-omitted",
+      "args": [
+        "0x2adf43a9565ba132"
+      ],
+      "expected_bits": "0xc0595d42ecc59b1e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00672-omitted",
+      "args": [
+        "0x68d693a878a08a6d"
+      ],
+      "expected_bits": "0x4068a0bdb8b4bb0c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00673-omitted",
+      "args": [
+        "0x4fd2a4f09e77fe72"
+      ],
+      "expected_bits": "0x405321cb7ce9965d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00674-omitted",
+      "args": [
+        "0x5c427b54216d7c3c"
+      ],
+      "expected_bits": "0x40610dbc1921d995"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00675-omitted",
+      "args": [
+        "0x2f05485fd07186b7"
+      ],
+      "expected_bits": "0xc0545d225ac801b4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00676-omitted",
+      "args": [
+        "0x4ce421f0bc97239f"
+      ],
+      "expected_bits": "0x404f34dccf027dc5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00677-omitted",
+      "args": [
+        "0x2101c1d3cbb3f397"
+      ],
+      "expected_bits": "0xc0629eddf60dbc34"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00678-omitted",
+      "args": [
+        "0x78269eed924d34e1"
+      ],
+      "expected_bits": "0x4070ec6bf281f987"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00679-omitted",
+      "args": [
+        "0x295c3f3c6d9cffe6"
+      ],
+      "expected_bits": "0xc05b2e76e132dd66"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00680-omitted",
+      "args": [
+        "0x4e8578784a0552ca"
+      ],
+      "expected_bits": "0x4051912235433fc5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00681-omitted",
+      "args": [
+        "0x4b9ef4fdad3b9ec9"
+      ],
+      "expected_bits": "0x404c239ca5e68fb4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00682-omitted",
+      "args": [
+        "0x22e02d0d30a9f932"
+      ],
+      "expected_bits": "0xc0617f2c9fcfa1ce"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00683-omitted",
+      "args": [
+        "0x69bfef67189498dd"
+      ],
+      "expected_bits": "0x40692c6c05b2a644"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00684-omitted",
+      "args": [
+        "0x507b062f657f568b"
+      ],
+      "expected_bits": "0x4053ecc571eccda4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00685-omitted",
+      "args": [
+        "0x3a91044ec77df005"
+      ],
+      "expected_bits": "0xc039dca04d79b909"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00686-omitted",
+      "args": [
+        "0x29482fe5099c98e8"
+      ],
+      "expected_bits": "0xc05b460b0e5f6fcd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00687-omitted",
+      "args": [
+        "0x154e11492912216b"
+      ],
+      "expected_bits": "0xc069aa8b573ecaaf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00688-omitted",
+      "args": [
+        "0x70aabebe6b1fe314"
+      ],
+      "expected_bits": "0x406d57373862248d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00689-omitted",
+      "args": [
+        "0x510fb69e0eafb915"
+      ],
+      "expected_bits": "0x40549e9ca58198a1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00690-omitted",
+      "args": [
+        "0x4e2b4c334519ff98"
+      ],
+      "expected_bits": "0x405124364da544ce"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00691-omitted",
+      "args": [
+        "0x5d3c1f2be9f20059"
+      ],
+      "expected_bits": "0x4061a4100f8f61d1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00692-omitted",
+      "args": [
+        "0x27b1ec85c89b2d29"
+      ],
+      "expected_bits": "0xc05d300554ca2d98"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00693-omitted",
+      "args": [
+        "0x389b3f31a78894db"
+      ],
+      "expected_bits": "0xc041a529f6d9b519"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00694-omitted",
+      "args": [
+        "0x107e0c25c62f85d7"
+      ],
+      "expected_bits": "0xc06c904a9f0ddcbc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00695-omitted",
+      "args": [
+        "0x553567dc379f257d"
+      ],
+      "expected_bits": "0x40599e80bf16544b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00696-omitted",
+      "args": [
+        "0x5a01cf58a1bba63f"
+      ],
+      "expected_bits": "0x405f64de043dc4f4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00697-omitted",
+      "args": [
+        "0x5575056e8dac6860"
+      ],
+      "expected_bits": "0x4059eb10144fc44b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00698-omitted",
+      "args": [
+        "0x08eecd472ec7930b"
+      ],
+      "expected_bits": "0xc0708ec47b4366af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00699-omitted",
+      "args": [
+        "0x58c8a9348f5b537d"
+      ],
+      "expected_bits": "0x405dec9857a96567"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00700-omitted",
+      "args": [
+        "0x3132fc39cef44e9d"
+      ],
+      "expected_bits": "0xc051be008837cd7a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00701-omitted",
+      "args": [
+        "0x581f0cdb5e04f5be"
+      ],
+      "expected_bits": "0x405d1f12cf4cf85d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00702-omitted",
+      "args": [
+        "0x0d15233f5f1cdc75"
+      ],
+      "expected_bits": "0xc06e9d5bfcf469a8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00703-omitted",
+      "args": [
+        "0x0a1fee4bb215020a"
+      ],
+      "expected_bits": "0xc070330116c825fa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00704-omitted",
+      "args": [
+        "0x149fcad2a95ad9b6"
+      ],
+      "expected_bits": "0xc06a13bb50183ee8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00705-omitted",
+      "args": [
+        "0x3017c1dfaa0e7137"
+      ],
+      "expected_bits": "0xc053128e6695c3e3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00706-omitted",
+      "args": [
+        "0x281fe710d9e97a8b"
+      ],
+      "expected_bits": "0xc05cac666fc6eef7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00707-omitted",
+      "args": [
+        "0x278ca5f91bbc4634"
+      ],
+      "expected_bits": "0xc05d5cc8afc85d57"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00708-omitted",
+      "args": [
+        "0x17c793a0319bb2cb"
+      ],
+      "expected_bits": "0xc0682c9b084d123a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00709-omitted",
+      "args": [
+        "0x0b7b2d04f53d9714"
+      ],
+      "expected_bits": "0xc06f945302a31246"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00710-omitted",
+      "args": [
+        "0x7a7f86c0ac73f8e3"
+      ],
+      "expected_bits": "0x4071a0f0260ad01b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00711-omitted",
+      "args": [
+        "0x5ec0b8b99ccee791"
+      ],
+      "expected_bits": "0x40628da98914dcd1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00712-omitted",
+      "args": [
+        "0x5df264ec1b8932f4"
+      ],
+      "expected_bits": "0x406211c23a6a08aa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00713-omitted",
+      "args": [
+        "0x0b5d4b244bd240e0"
+      ],
+      "expected_bits": "0xc06fa68c1f39497e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00714-omitted",
+      "args": [
+        "0x5924ab829e16fb36"
+      ],
+      "expected_bits": "0x405e5b48a11da92e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00715-omitted",
+      "args": [
+        "0x74bed6d4b6e0e6cd"
+      ],
+      "expected_bits": "0x406fcb566b545666"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00716-omitted",
+      "args": [
+        "0x0f285a477b8ae80e"
+      ],
+      "expected_bits": "0xc06d5d8106cc0f12"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00717-omitted",
+      "args": [
+        "0x7081f88175d77c0c"
+      ],
+      "expected_bits": "0x406d3e6c8fff0678"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00718-omitted",
+      "args": [
+        "0x278a067a501dae59"
+      ],
+      "expected_bits": "0xc05d5f73f518d224"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00719-omitted",
+      "args": [
+        "0x49dc3470e15ac5b4"
+      ],
+      "expected_bits": "0x4047e78b72733283"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00720-omitted",
+      "args": [
+        "0x10fcb8ba895aedc1"
+      ],
+      "expected_bits": "0xc06c43dae0047d91"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00721-omitted",
+      "args": [
+        "0x09d540e7651a0f64"
+      ],
+      "expected_bits": "0xc0704919409dd93f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00722-omitted",
+      "args": [
+        "0x08eb4fa9d442f713"
+      ],
+      "expected_bits": "0xc0708f9a713452ff"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00723-omitted",
+      "args": [
+        "0x446eb428d9920443"
+      ],
+      "expected_bits": "0x4035a7fccbb5fbf0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00724-omitted",
+      "args": [
+        "0x6f75edf82c5c5085"
+      ],
+      "expected_bits": "0x406c9d6e3cf466f0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00725-omitted",
+      "args": [
+        "0x685a13d549d6be35"
+      ],
+      "expected_bits": "0x406855ae442366e1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00726-omitted",
+      "args": [
+        "0x66d8dbe29cf077c6"
+      ],
+      "expected_bits": "0x40676dd31af62729"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00727-omitted",
+      "args": [
+        "0x688a85eaf918ccce"
+      ],
+      "expected_bits": "0x406872d0aa264f6d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00728-omitted",
+      "args": [
+        "0x6daa3ba3719f84d9"
+      ],
+      "expected_bits": "0x406b88909f84d648"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00729-omitted",
+      "args": [
+        "0x66ecfaeebcd333df"
+      ],
+      "expected_bits": "0x40677996e2f83d50"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00730-omitted",
+      "args": [
+        "0x429b090b9cc89714"
+      ],
+      "expected_bits": "0x4029bdfd179d3219"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00731-omitted",
+      "args": [
+        "0x567a4fba192a9414"
+      ],
+      "expected_bits": "0x405b258e81e83591"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00732-omitted",
+      "args": [
+        "0x479b01f184747c11"
+      ],
+      "expected_bits": "0x404279fcbc07d8ce"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00733-omitted",
+      "args": [
+        "0x014cb3ac42935ea6"
+      ],
+      "expected_bits": "0xc072dade6541d666"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00734-omitted",
+      "args": [
+        "0x16c74793c454095d"
+      ],
+      "expected_bits": "0xc068c6e8bf86cfe5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00735-omitted",
+      "args": [
+        "0x4cd63125e4d1ba76"
+      ],
+      "expected_bits": "0x404f13bea2f0a85d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00736-omitted",
+      "args": [
+        "0x589411ff078c48a6"
+      ],
+      "expected_bits": "0x405dad12777f3de4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00737-omitted",
+      "args": [
+        "0x741950b6c7647858"
+      ],
+      "expected_bits": "0x406f6843d2ee3e55"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00738-omitted",
+      "args": [
+        "0x5cdafd345a6ab5c5"
+      ],
+      "expected_bits": "0x406169b1921195b9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00739-omitted",
+      "args": [
+        "0x59fd71a40f14c258"
+      ],
+      "expected_bits": "0x405f5f931b59ffd0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00740-omitted",
+      "args": [
+        "0x524dd9311e551722"
+      ],
+      "expected_bits": "0x40561e3ee9a6b1c8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00741-omitted",
+      "args": [
+        "0x335aa10dcca81b13"
+      ],
+      "expected_bits": "0xc04e4b1cfe9c0b1d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00742-omitted",
+      "args": [
+        "0x44152e028237273c"
+      ],
+      "expected_bits": "0x4033fd6239ed31e9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00743-omitted",
+      "args": [
+        "0x1261d35fec40a1e3"
+      ],
+      "expected_bits": "0xc06b6ced14f4d6fc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00744-omitted",
+      "args": [
+        "0x624e1a4236168442"
+      ],
+      "expected_bits": "0x4064b14747d940d4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00745-omitted",
+      "args": [
+        "0x0e338824a0a0a1f5"
+      ],
+      "expected_bits": "0xc06df1106ad428db"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00746-omitted",
+      "args": [
+        "0x6a4eb3dd41ef772b"
+      ],
+      "expected_bits": "0x4069829253ac37a3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00747-omitted",
+      "args": [
+        "0x37d3a3e5a5107826"
+      ],
+      "expected_bits": "0xc04385be661242cc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00748-omitted",
+      "args": [
+        "0x4fb66f18fe547ff6"
+      ],
+      "expected_bits": "0x40530067f58620ec"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00749-omitted",
+      "args": [
+        "0x47476116635d0eac"
+      ],
+      "expected_bits": "0x4041b14ee3f4596e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00750-omitted",
+      "args": [
+        "0x7d1f40abd95ccbdf"
+      ],
+      "expected_bits": "0x40726b2b6d40cf8a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00751-omitted",
+      "args": [
+        "0x707506e92b65938b"
+      ],
+      "expected_bits": "0x406d36f950749952"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00752-omitted",
+      "args": [
+        "0x2a3a402732ee0a4f"
+      ],
+      "expected_bits": "0xc05a22c7619e8418"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00753-omitted",
+      "args": [
+        "0x731926c47b189ade"
+      ],
+      "expected_bits": "0x406ece0c1e359322"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00754-omitted",
+      "args": [
+        "0x42b6bbe3dea037c0"
+      ],
+      "expected_bits": "0x402acbb639c22d9f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00755-omitted",
+      "args": [
+        "0x61a79477ade1ac70"
+      ],
+      "expected_bits": "0x40644d8e0dd5c82a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00756-omitted",
+      "args": [
+        "0x0b2533d01d5110a1"
+      ],
+      "expected_bits": "0xc06fc7f0486d95a8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00757-omitted",
+      "args": [
+        "0x44a741bf516a2509"
+      ],
+      "expected_bits": "0x4036bd5bad4316bd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00758-omitted",
+      "args": [
+        "0x3317c2387c4d5fcf"
+      ],
+      "expected_bits": "0xc04eeb94bf1c13df"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00759-omitted",
+      "args": [
+        "0x369fa20e070fef96"
+      ],
+      "expected_bits": "0xc0466de2a056a05d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00760-omitted",
+      "args": [
+        "0x69cf0936d27dcce5"
+      ],
+      "expected_bits": "0x406935a8733af45d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00761-omitted",
+      "args": [
+        "0x335708189a50a278"
+      ],
+      "expected_bits": "0xc04e532e6ecfa5bb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00762-omitted",
+      "args": [
+        "0x032fde98a472d618"
+      ],
+      "expected_bits": "0xc07249a59a3a8d44"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00763-omitted",
+      "args": [
+        "0x6c08a6393049cfee"
+      ],
+      "expected_bits": "0x406a8d3e1c0a00df"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00764-omitted",
+      "args": [
+        "0x10c9c3d4f4a98a7b"
+      ],
+      "expected_bits": "0xc06c62437a7272d6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00765-omitted",
+      "args": [
+        "0x2e2aa57c9317e2dc"
+      ],
+      "expected_bits": "0xc055649c2260a51a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00766-omitted",
+      "args": [
+        "0x09f36477765f8edf"
+      ],
+      "expected_bits": "0xc070401a3aaa61f7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00767-omitted",
+      "args": [
+        "0x261fc750524a0ed6"
+      ],
+      "expected_bits": "0xc05f150491905e2c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00768-omitted",
+      "args": [
+        "0x3d15614b3302f202"
+      ],
+      "expected_bits": "0xc02b71674469de10"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00769-omitted",
+      "args": [
+        "0x344a6a6e27970f0f"
+      ],
+      "expected_bits": "0xc04c09953857e19e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00770-omitted",
+      "args": [
+        "0x74b17f6569f6bb0a"
+      ],
+      "expected_bits": "0x406fc3762d3b1b5e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00771-omitted",
+      "args": [
+        "0x2be030b9887796d4"
+      ],
+      "expected_bits": "0xc058280813376ff2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00772-omitted",
+      "args": [
+        "0x72646f74b840e17f"
+      ],
+      "expected_bits": "0x406e6132f27312fa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00773-omitted",
+      "args": [
+        "0x1901b1c8e0a63a90"
+      ],
+      "expected_bits": "0xc0676fef5e20a6ca"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00774-omitted",
+      "args": [
+        "0x656b776771906850"
+      ],
+      "expected_bits": "0x406691a71ce02d42"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00775-omitted",
+      "args": [
+        "0x312c81078eff703e"
+      ],
+      "expected_bits": "0xc051c5f900438937"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00776-omitted",
+      "args": [
+        "0x294101ba5d6de904"
+      ],
+      "expected_bits": "0xc05b4fd530a0efe7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00777-omitted",
+      "args": [
+        "0x2c8fc352a4066345"
+      ],
+      "expected_bits": "0xc05754a449f2fa40"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00778-omitted",
+      "args": [
+        "0x034fd83079c4795a"
+      ],
+      "expected_bits": "0xc0724004f653e001"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00779-omitted",
+      "args": [
+        "0x6178c190cff0d6e1"
+      ],
+      "expected_bits": "0x406431551dd48128"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00780-omitted",
+      "args": [
+        "0x6f2b8dd3b4648d2e"
+      ],
+      "expected_bits": "0x406c70705344d087"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00781-omitted",
+      "args": [
+        "0x37ffa1814d6aba06"
+      ],
+      "expected_bits": "0xc0431e3045ca57ef"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00782-omitted",
+      "args": [
+        "0x4ee22c1c3d1864a1"
+      ],
+      "expected_bits": "0x40520017e7925201"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00783-omitted",
+      "args": [
+        "0x05b7408a6d7e9bc3"
+      ],
+      "expected_bits": "0xc071865ca00175fa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00784-omitted",
+      "args": [
+        "0x3b43aed29a2d2b9f"
+      ],
+      "expected_bits": "0xc0367cbe6b04249f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00785-omitted",
+      "args": [
+        "0x7196fa93761ba7f5"
+      ],
+      "expected_bits": "0x406de599cc4313f3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00786-omitted",
+      "args": [
+        "0x04b65a46438b58e5"
+      ],
+      "expected_bits": "0xc071d3b31b3e2420"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00787-omitted",
+      "args": [
+        "0x5e5ba0f2feab3bdd"
+      ],
+      "expected_bits": "0x40625135cf1bb959"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00788-omitted",
+      "args": [
+        "0x5a04b3800a8bb2ca"
+      ],
+      "expected_bits": "0x405f690c6bed37ed"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00789-omitted",
+      "args": [
+        "0x563c53b707aa22ef"
+      ],
+      "expected_bits": "0x405ada8b6a4ffdfb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00790-omitted",
+      "args": [
+        "0x72bf5153c5a38288"
+      ],
+      "expected_bits": "0x406e974bfd7a6bff"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00791-omitted",
+      "args": [
+        "0x7815e4b4edd3dfcc"
+      ],
+      "expected_bits": "0x4070e760c8db989b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00792-omitted",
+      "args": [
+        "0x21f19d136022cbcd"
+      ],
+      "expected_bits": "0xc0620e7c46832109"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00793-omitted",
+      "args": [
+        "0x1fa740d241c6273f"
+      ],
+      "expected_bits": "0xc0636f0b6d3b87e0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00794-omitted",
+      "args": [
+        "0x5cc09273a76fde8a"
+      ],
+      "expected_bits": "0x406159486044efed"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00795-omitted",
+      "args": [
+        "0x738590a61790633b"
+      ],
+      "expected_bits": "0x406f0f570d958feb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00796-omitted",
+      "args": [
+        "0x59dd0e0a35040248"
+      ],
+      "expected_bits": "0x405f38ac4e7bf727"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00797-omitted",
+      "args": [
+        "0x1256a3311748831e"
+      ],
+      "expected_bits": "0xc06b733cf0a760f0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00798-omitted",
+      "args": [
+        "0x7386daf481c9404b"
+      ],
+      "expected_bits": "0x406f1025caaaad86"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00799-omitted",
+      "args": [
+        "0x5d300a1e11ab4762"
+      ],
+      "expected_bits": "0x40619c426ea0394d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00800-omitted",
+      "args": [
+        "0x0e6d9d57883976d2"
+      ],
+      "expected_bits": "0xc06dce617d004d9b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00801-omitted",
+      "args": [
+        "0x51376d595fbfe9b6"
+      ],
+      "expected_bits": "0x4054cffe01133290"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00802-omitted",
+      "args": [
+        "0x5f283477b8ac615a"
+      ],
+      "expected_bits": "0x4062cc999df41504"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00803-omitted",
+      "args": [
+        "0x72c9438ed966fc4d"
+      ],
+      "expected_bits": "0x406e9df1cd57264d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00804-omitted",
+      "args": [
+        "0x72b6e70f5aaa43a6"
+      ],
+      "expected_bits": "0x406e92f2a776764b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00805-omitted",
+      "args": [
+        "0x428106f09c108933"
+      ],
+      "expected_bits": "0x4028bd0e6f4cb3d1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00806-omitted",
+      "args": [
+        "0x7162362901c5d90b"
+      ],
+      "expected_bits": "0x406dc5787421a0af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00807-omitted",
+      "args": [
+        "0x50d02107c5e9aa74"
+      ],
+      "expected_bits": "0x40545205854dc0e2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00808-omitted",
+      "args": [
+        "0x472abf2fb14c61c3"
+      ],
+      "expected_bits": "0x40416bb99abc1004"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00809-omitted",
+      "args": [
+        "0x46f68c516c46e472"
+      ],
+      "expected_bits": "0x4040eea303cf46f3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00810-omitted",
+      "args": [
+        "0x6cef48ebae4b8eaf"
+      ],
+      "expected_bits": "0x406b176abfd4187a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00811-omitted",
+      "args": [
+        "0x6d7699058e1df849"
+      ],
+      "expected_bits": "0x406b6997d02f7a93"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00812-omitted",
+      "args": [
+        "0x669e41e2e9d7713d"
+      ],
+      "expected_bits": "0x40674a0621b50667"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00813-omitted",
+      "args": [
+        "0x353b69760b7ae3df"
+      ],
+      "expected_bits": "0xc049c58c23747cdc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00814-omitted",
+      "args": [
+        "0x1954b8c6dd117f58"
+      ],
+      "expected_bits": "0xc0673d934b1c888c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00815-omitted",
+      "args": [
+        "0x7e3ecdfe8e2d7381"
+      ],
+      "expected_bits": "0x4072c1c415a294d2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00816-omitted",
+      "args": [
+        "0x276a45e6cd3a70de"
+      ],
+      "expected_bits": "0xc05d85b8b148c750"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00817-omitted",
+      "args": [
+        "0x0d240fdeb4b1b123"
+      ],
+      "expected_bits": "0xc06e9473c5cd4466"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00818-omitted",
+      "args": [
+        "0x2a10b7b322cc90e1"
+      ],
+      "expected_bits": "0xc05a55da3cab9f33"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00819-omitted",
+      "args": [
+        "0x453ef26ea7298b5f"
+      ],
+      "expected_bits": "0x403992b152779e99"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00820-omitted",
+      "args": [
+        "0x626235ce9f9ba742"
+      ],
+      "expected_bits": "0x4064bd8f215d3e25"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00821-omitted",
+      "args": [
+        "0x518e3c4b7bafa9f4"
+      ],
+      "expected_bits": "0x40553769b2dfef64"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00822-omitted",
+      "args": [
+        "0x3ffebf42d147fb32"
+      ],
+      "expected_bits": "0x3fd227e27825c751"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00823-omitted",
+      "args": [
+        "0x21c7d52f891a878d"
+      ],
+      "expected_bits": "0xc062272e8f656b1e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00824-omitted",
+      "args": [
+        "0x6fb3d423bd136a4b"
+      ],
+      "expected_bits": "0x406cc2901986b6b6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00825-omitted",
+      "args": [
+        "0x7c4500f47e8ff659"
+      ],
+      "expected_bits": "0x407229cb40b9cb9d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00826-omitted",
+      "args": [
+        "0x4ab98b9ded1362d8"
+      ],
+      "expected_bits": "0x4049fd7c2963940e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00827-omitted",
+      "args": [
+        "0x1c38fd97b1f22cb1"
+      ],
+      "expected_bits": "0xc0657fdb24aea5be"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00828-omitted",
+      "args": [
+        "0x3cef91ef0c0a146e"
+      ],
+      "expected_bits": "0xc02ce91ef9aea720"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00829-omitted",
+      "args": [
+        "0x52d7bd9d556869fb"
+      ],
+      "expected_bits": "0x4056c5469070a75a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00830-omitted",
+      "args": [
+        "0x0c03414ea8a06209"
+      ],
+      "expected_bits": "0xc06f426a7fedf60a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00831-omitted",
+      "args": [
+        "0x538bd9f466f66dff"
+      ],
+      "expected_bits": "0x40579da3af0c53c3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00832-omitted",
+      "args": [
+        "0x105d2dc18d46f2b1"
+      ],
+      "expected_bits": "0xc06ca3f712933f39"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00833-omitted",
+      "args": [
+        "0x04b95a56ef5ed4ec"
+      ],
+      "expected_bits": "0xc071d2d30f760923"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00834-omitted",
+      "args": [
+        "0x56f7e8b60657646c"
+      ],
+      "expected_bits": "0x405bbd05d25fb6c4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00835-omitted",
+      "args": [
+        "0x643c34ed2127cb3c"
+      ],
+      "expected_bits": "0x4065daff05486dd9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00836-omitted",
+      "args": [
+        "0x32b4ca123009c0bd"
+      ],
+      "expected_bits": "0xc04fda3196fdf7d3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00837-omitted",
+      "args": [
+        "0x72f4b406b2ca7f57"
+      ],
+      "expected_bits": "0x406eb8139db02b0b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00838-omitted",
+      "args": [
+        "0x6b973f2497527c4d"
+      ],
+      "expected_bits": "0x406a48ff67c2c84e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00839-omitted",
+      "args": [
+        "0x23266a0e5820e698"
+      ],
+      "expected_bits": "0xc061541c0ae54e6c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00840-omitted",
+      "args": [
+        "0x331f5651a705dc5e"
+      ],
+      "expected_bits": "0xc04edc30cbba1797"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00841-omitted",
+      "args": [
+        "0x20b9f2a8f0f6d607"
+      ],
+      "expected_bits": "0xc062c9c2b069ac82"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00842-omitted",
+      "args": [
+        "0x0a4fcc79a5cb7b5e"
+      ],
+      "expected_bits": "0xc07024956858ebfd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00843-omitted",
+      "args": [
+        "0x55f61e0290a53aea"
+      ],
+      "expected_bits": "0x405a869a52d14f1a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00844-omitted",
+      "args": [
+        "0x03e2e1dd4f1b9e6d"
+      ],
+      "expected_bits": "0xc072137c7b9916d0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00845-omitted",
+      "args": [
+        "0x65374709c8aebb21"
+      ],
+      "expected_bits": "0x406672744637ad17"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00846-omitted",
+      "args": [
+        "0x12459808ada330fa"
+      ],
+      "expected_bits": "0xc06b7d86e3dfc958"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00847-omitted",
+      "args": [
+        "0x4b6d860f0bbe8a46"
+      ],
+      "expected_bits": "0x404bad618d14d826"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00848-omitted",
+      "args": [
+        "0x67f6084505e71a64"
+      ],
+      "expected_bits": "0x4068198a56e753c5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00849-omitted",
+      "args": [
+        "0x36baee255f763587"
+      ],
+      "expected_bits": "0xc04629c4d0c0c440"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00850-omitted",
+      "args": [
+        "0x2681f39d1313911d"
+      ],
+      "expected_bits": "0xc05e9e07c6f3958c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00851-omitted",
+      "args": [
+        "0x377c6c7ba1624f73"
+      ],
+      "expected_bits": "0xc0445862e38132b3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00852-omitted",
+      "args": [
+        "0x40c8bf550bde961c"
+      ],
+      "expected_bits": "0x401069443e37b79d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00853-omitted",
+      "args": [
+        "0x0f255c3b31960120"
+      ],
+      "expected_bits": "0xc06d5f537954b53a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00854-omitted",
+      "args": [
+        "0x59d2b47cc69ae834"
+      ],
+      "expected_bits": "0x405f2c6eb342e429"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00855-omitted",
+      "args": [
+        "0x474528a90af84ba6"
+      ],
+      "expected_bits": "0x4041abc2c2ec31d0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00856-omitted",
+      "args": [
+        "0x3352eda97fe54bba"
+      ],
+      "expected_bits": "0xc04e5e16a41103aa"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00857-omitted",
+      "args": [
+        "0x4fc49aa44238509e"
+      ],
+      "expected_bits": "0x4053114e97b6bc5d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00858-omitted",
+      "args": [
+        "0x741b4c93546d9a29"
+      ],
+      "expected_bits": "0x406f69503dcefa29"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00859-omitted",
+      "args": [
+        "0x7586f0b62e90b7a6"
+      ],
+      "expected_bits": "0x4070223a1a108cd6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00860-omitted",
+      "args": [
+        "0x12dc9e069f0ca415"
+      ],
+      "expected_bits": "0xc06b22eaaffc66cc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00861-omitted",
+      "args": [
+        "0x0af4211bf6f0c70e"
+      ],
+      "expected_bits": "0xc06fe58f2bc3282f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00862-omitted",
+      "args": [
+        "0x0f2530aeaf36fca5"
+      ],
+      "expected_bits": "0xc06d5f6febcf9b67"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00863-omitted",
+      "args": [
+        "0x7428fa5c4e40bbb2"
+      ],
+      "expected_bits": "0x406f71b623240f1e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00864-omitted",
+      "args": [
+        "0x0262ea643962c40a"
+      ],
+      "expected_bits": "0xc0728711cce0febc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00865-omitted",
+      "args": [
+        "0x00cfd8fd60b6a5d8"
+      ],
+      "expected_bits": "0xc07300ad8ac4985f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00866-omitted",
+      "args": [
+        "0x591ff5950c78204d"
+      ],
+      "expected_bits": "0x405e542159f5a31f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00867-omitted",
+      "args": [
+        "0x65594db43f29458a"
+      ],
+      "expected_bits": "0x406686e144ab21be"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00868-omitted",
+      "args": [
+        "0x632f3f391885c7b0"
+      ],
+      "expected_bits": "0x406538a88dc6ac76"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00869-omitted",
+      "args": [
+        "0x38be66c199bd91c9"
+      ],
+      "expected_bits": "0xc0415202a79c7e68"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00870-omitted",
+      "args": [
+        "0x72e665f7ef28aaa0"
+      ],
+      "expected_bits": "0x406eaf898efff382"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00871-omitted",
+      "args": [
+        "0x27b692bd672ac83d"
+      ],
+      "expected_bits": "0xc05d299c4e2b82df"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00872-omitted",
+      "args": [
+        "0x026ec20ca03c7c08"
+      ],
+      "expected_bits": "0xc07283b0fa6562f1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00873-omitted",
+      "args": [
+        "0x5777a9f922c0b88b"
+      ],
+      "expected_bits": "0x405c56dd1d5b056e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00874-omitted",
+      "args": [
+        "0x14b0ef769fe78037"
+      ],
+      "expected_bits": "0xc06a0937f6899b9b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00875-omitted",
+      "args": [
+        "0x4a6d8c53d90e75a4"
+      ],
+      "expected_bits": "0x404944eaef68f927"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00876-omitted",
+      "args": [
+        "0x136a9cf5a3c8d463"
+      ],
+      "expected_bits": "0xc06acd3aa9cdef44"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00877-omitted",
+      "args": [
+        "0x4614196dca589af0"
+      ],
+      "expected_bits": "0x403d9999add504f1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00878-omitted",
+      "args": [
+        "0x43b93dfceb0c20be"
+      ],
+      "expected_bits": "0x40324282a4507a8a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00879-omitted",
+      "args": [
+        "0x7e72ef88bd1523b8"
+      ],
+      "expected_bits": "0x4072d1a68786ce36"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00880-omitted",
+      "args": [
+        "0x4b3e171964d969c5"
+      ],
+      "expected_bits": "0x404b3ad79b0b4509"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00881-omitted",
+      "args": [
+        "0x158c0e82891f39fc"
+      ],
+      "expected_bits": "0xc06984f973e4cb15"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00882-omitted",
+      "args": [
+        "0x0b24171df33581cc"
+      ],
+      "expected_bits": "0xc06fc8aff6930efb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00883-omitted",
+      "args": [
+        "0x2d1fbcea024fcc02"
+      ],
+      "expected_bits": "0xc056a74538596524"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00884-omitted",
+      "args": [
+        "0x5d8090c5bc5c3ae5"
+      ],
+      "expected_bits": "0x4061ccdf6b8e5548"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00885-omitted",
+      "args": [
+        "0x478ce58f780528bb"
+      ],
+      "expected_bits": "0x40425736bd93e6bb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00886-omitted",
+      "args": [
+        "0x606586fa79aea518"
+      ],
+      "expected_bits": "0x40638ba1459ba501"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00887-omitted",
+      "args": [
+        "0x1bf6a0ecc5c1a7c6"
+      ],
+      "expected_bits": "0xc065a7c485bd0669"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00888-omitted",
+      "args": [
+        "0x551672aa92b742bb"
+      ],
+      "expected_bits": "0x4059794ade25b5ef"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00889-omitted",
+      "args": [
+        "0x52a76ff118aeb1a7"
+      ],
+      "expected_bits": "0x40568b1ed09d1083"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00890-omitted",
+      "args": [
+        "0x1d4623a013ec2856"
+      ],
+      "expected_bits": "0xc064ddc7871884cb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00891-omitted",
+      "args": [
+        "0x2ec785a6275fb698"
+      ],
+      "expected_bits": "0xc054a76acbcc4470"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00892-omitted",
+      "args": [
+        "0x7ee922f80e44eb4d"
+      ],
+      "expected_bits": "0x4072f55592ffcfb0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00893-omitted",
+      "args": [
+        "0x35b531923fdbf9a2"
+      ],
+      "expected_bits": "0xc0489f983fad5a55"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00894-omitted",
+      "args": [
+        "0x26f04427a36be7b9"
+      ],
+      "expected_bits": "0xc05e19e8c1b99803"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00895-omitted",
+      "args": [
+        "0x4ecf1325372e6d3c"
+      ],
+      "expected_bits": "0x4051e87931dfbfa1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00896-omitted",
+      "args": [
+        "0x19362bde8b7a71f8"
+      ],
+      "expected_bits": "0xc0674fe6cefd5035"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00897-omitted",
+      "args": [
+        "0x72a3518d92147145"
+      ],
+      "expected_bits": "0x406e86f326669860"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00898-omitted",
+      "args": [
+        "0x59ddddf1ab458e80"
+      ],
+      "expected_bits": "0x405f397077422041"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00899-omitted",
+      "args": [
+        "0x0f8b37897bc25685"
+      ],
+      "expected_bits": "0xc06d22292f03bd84"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00900-omitted",
+      "args": [
+        "0x1cd80c9db89685c3"
+      ],
+      "expected_bits": "0xc065200f5d13e108"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00901-omitted",
+      "args": [
+        "0x20cb33a36ead0a7b"
+      ],
+      "expected_bits": "0xc062bf78c351645f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00902-omitted",
+      "args": [
+        "0x466869003f6fd1e7"
+      ],
+      "expected_bits": "0x403f3085b4d4f245"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00903-omitted",
+      "args": [
+        "0x7bfc0104b1e3b788"
+      ],
+      "expected_bits": "0x407213b5d823fbfb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00904-omitted",
+      "args": [
+        "0x28c95aaf74221dc0"
+      ],
+      "expected_bits": "0xc05bdedc5415f0d8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00905-omitted",
+      "args": [
+        "0x328d2aa3e4c779a2"
+      ],
+      "expected_bits": "0xc0501d7bd7de00d4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00906-omitted",
+      "args": [
+        "0x035734edc2d9765e"
+      ],
+      "expected_bits": "0xc0723d66d0b92bdc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00907-omitted",
+      "args": [
+        "0x4222dcdbec0bf378"
+      ],
+      "expected_bits": "0x4025370ec0c10cd6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00908-omitted",
+      "args": [
+        "0x412c4d78cda5ea6d"
+      ],
+      "expected_bits": "0x4017de7dc4d8ac23"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00909-omitted",
+      "args": [
+        "0x116d0b54e08da4b8"
+      ],
+      "expected_bits": "0xc06c0044dd742130"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00910-omitted",
+      "args": [
+        "0x65d79e58046e93b7"
+      ],
+      "expected_bits": "0x4066d2fc65ce4a8f"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00911-omitted",
+      "args": [
+        "0x2df2944ac25ecd3e"
+      ],
+      "expected_bits": "0xc055a86e4473c6c3"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00912-omitted",
+      "args": [
+        "0x6b23b04d38b2a3de"
+      ],
+      "expected_bits": "0x406a0342238888f0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00913-omitted",
+      "args": [
+        "0x01ce10159f5aea4c"
+      ],
+      "expected_bits": "0xc072b403d5441fdc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00914-omitted",
+      "args": [
+        "0x3051936e44fbfda1"
+      ],
+      "expected_bits": "0xc052cdde6f1977cf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00915-omitted",
+      "args": [
+        "0x6cdfb9b4f0254e8f"
+      ],
+      "expected_bits": "0x406b0dfa76d6f070"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00916-omitted",
+      "args": [
+        "0x6ff58c206793cbe9"
+      ],
+      "expected_bits": "0x406cea3ffcbd6e46"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00917-omitted",
+      "args": [
+        "0x679b5d382019c1c6"
+      ],
+      "expected_bits": "0x4067e2c128d1e930"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00918-omitted",
+      "args": [
+        "0x1b64d6db9fe4b8b2"
+      ],
+      "expected_bits": "0xc065ff9bee5abfc9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00919-omitted",
+      "args": [
+        "0x0597db9e1fada714"
+      ],
+      "expected_bits": "0xc0718fd0e9a0cf0e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00920-omitted",
+      "args": [
+        "0x465c4110b92236f6"
+      ],
+      "expected_bits": "0x403ef3b7b6aeee1c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00921-omitted",
+      "args": [
+        "0x6bbae4365bddbb61"
+      ],
+      "expected_bits": "0x406a5e49a81197ef"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00922-omitted",
+      "args": [
+        "0x4f854ab3d48adbd1"
+      ],
+      "expected_bits": "0x4052c527eb34499b"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00923-omitted",
+      "args": [
+        "0x63c227c8ca8518d6"
+      ],
+      "expected_bits": "0x406591713e0e4aa7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00924-omitted",
+      "args": [
+        "0x60a705ea15e4811d"
+      ],
+      "expected_bits": "0x4063b3186ce2aef6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00925-omitted",
+      "args": [
+        "0x60918da7a79ed7c9"
+      ],
+      "expected_bits": "0x4063a5b1561c0b36"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00926-omitted",
+      "args": [
+        "0x238d661fc822887e"
+      ],
+      "expected_bits": "0xc061168abe9e5619"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00927-omitted",
+      "args": [
+        "0x0c5d9eb1ea9107d3"
+      ],
+      "expected_bits": "0xc06f0c4419299223"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00928-omitted",
+      "args": [
+        "0x5d602b3bc1645505"
+      ],
+      "expected_bits": "0x4061b9451f9de23d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00929-omitted",
+      "args": [
+        "0x22f15e7b9b2ecc96"
+      ],
+      "expected_bits": "0xc061748d679a56e7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00930-omitted",
+      "args": [
+        "0x163dc2b458bcc937"
+      ],
+      "expected_bits": "0xc0691a31484e4882"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00931-omitted",
+      "args": [
+        "0x684f781906b6afea"
+      ],
+      "expected_bits": "0x40684ea8da7612f0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00932-omitted",
+      "args": [
+        "0x72ae7025350c33d1"
+      ],
+      "expected_bits": "0x406e8d4498ab8a54"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00933-omitted",
+      "args": [
+        "0x3b422650921be955"
+      ],
+      "expected_bits": "0xc03685c2a01bdf93"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00934-omitted",
+      "args": [
+        "0x02c018308546f68c"
+      ],
+      "expected_bits": "0xc0726b4afddcd049"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00935-omitted",
+      "args": [
+        "0x70dc1bc16277bee8"
+      ],
+      "expected_bits": "0x406d74ce37b87e92"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00936-omitted",
+      "args": [
+        "0x5b1ce0379f44f367"
+      ],
+      "expected_bits": "0x40605ce8ec197690"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00937-omitted",
+      "args": [
+        "0x504a394960b979f6"
+      ],
+      "expected_bits": "0x4053b2234afeb4b0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00938-omitted",
+      "args": [
+        "0x42e82e485f1d8b83"
+      ],
+      "expected_bits": "0x402ca7d033bfe2cc"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00939-omitted",
+      "args": [
+        "0x06a8261f0a8bafca"
+      ],
+      "expected_bits": "0xc0713dda06140547"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00940-omitted",
+      "args": [
+        "0x0c3f507dec45e65d"
+      ],
+      "expected_bits": "0xc06f1ec23fab463e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00941-omitted",
+      "args": [
+        "0x35693b9f67016166"
+      ],
+      "expected_bits": "0xc049568e71d40082"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00942-omitted",
+      "args": [
+        "0x3eb23786a4ac2fa0"
+      ],
+      "expected_bits": "0xc017db6329ac58d5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00943-omitted",
+      "args": [
+        "0x65ea8cbed3d01c76"
+      ],
+      "expected_bits": "0x4066de3ea7e7f886"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00944-omitted",
+      "args": [
+        "0x32b19e32f91cab1f"
+      ],
+      "expected_bits": "0xc04fe3651dadecef"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00945-omitted",
+      "args": [
+        "0x052514d8718d0349"
+      ],
+      "expected_bits": "0xc071b264215df9af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00946-omitted",
+      "args": [
+        "0x3c0b37457b68c2e4"
+      ],
+      "expected_bits": "0xc032bbf3acf90c1e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00947-omitted",
+      "args": [
+        "0x036048f7f664b8ac"
+      ],
+      "expected_bits": "0xc0723b0bddda3d81"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00948-omitted",
+      "args": [
+        "0x2985579adeaff5a2"
+      ],
+      "expected_bits": "0xc05afc7521806824"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00949-omitted",
+      "args": [
+        "0x07555fed1ef98c64"
+      ],
+      "expected_bits": "0xc07109b7e4a43592"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00950-omitted",
+      "args": [
+        "0x35b5515b89e91cd3"
+      ],
+      "expected_bits": "0xc0489f451e5067f9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00951-omitted",
+      "args": [
+        "0x5245fa5fa5268251"
+      ],
+      "expected_bits": "0x405615bcf22dba61"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00952-omitted",
+      "args": [
+        "0x7f5253d9140f4673"
+      ],
+      "expected_bits": "0x407314dab9862ba4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00953-omitted",
+      "args": [
+        "0x4f5071dc03a0582b"
+      ],
+      "expected_bits": "0x4052842da7c39a33"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00954-omitted",
+      "args": [
+        "0x2a8208e47c672f63"
+      ],
+      "expected_bits": "0xc059cce213ed0231"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00955-omitted",
+      "args": [
+        "0x49f6f03676a63e7f"
+      ],
+      "expected_bits": "0x4048291e6dfebddb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00956-omitted",
+      "args": [
+        "0x4a675655eb3d29a1"
+      ],
+      "expected_bits": "0x404937ccd8ea55dd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00957-omitted",
+      "args": [
+        "0x52851a7d000165c7"
+      ],
+      "expected_bits": "0x405661ac52009841"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00958-omitted",
+      "args": [
+        "0x4c11db75215232d7"
+      ],
+      "expected_bits": "0x404d394822b10a6c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00959-omitted",
+      "args": [
+        "0x77d21d5cd97bf525"
+      ],
+      "expected_bits": "0x4070d2cbaeca3846"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00960-omitted",
+      "args": [
+        "0x755ec784d9e36986"
+      ],
+      "expected_bits": "0x407015d1f1de0fe8"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00961-omitted",
+      "args": [
+        "0x206a28863b4b96ef"
+      ],
+      "expected_bits": "0xc062f9d02514a37a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00962-omitted",
+      "args": [
+        "0x4d02c5011718e711"
+      ],
+      "expected_bits": "0x404f7e0777f45351"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00963-omitted",
+      "args": [
+        "0x6e5eabb6e0ef8d18"
+      ],
+      "expected_bits": "0x406bf4b31686a17e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00964-omitted",
+      "args": [
+        "0x246e90991c913a37"
+      ],
+      "expected_bits": "0xc0608f23d9212b24"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00965-omitted",
+      "args": [
+        "0x4177c8c87de4152a"
+      ],
+      "expected_bits": "0x401d966a73abaf62"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00966-omitted",
+      "args": [
+        "0x590a7e93b5908940"
+      ],
+      "expected_bits": "0x405e3ba6ebc27de2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00967-omitted",
+      "args": [
+        "0x384d58079d3322cf"
+      ],
+      "expected_bits": "0xc04261b38e597afd"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00968-omitted",
+      "args": [
+        "0x711895da52f34dd9"
+      ],
+      "expected_bits": "0x406d9979ec63d461"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00969-omitted",
+      "args": [
+        "0x7d0e3ab2d1ec166d"
+      ],
+      "expected_bits": "0x4072661f2f96b3ed"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00970-omitted",
+      "args": [
+        "0x2f82cb6251a6db28"
+      ],
+      "expected_bits": "0xc053c6766fb64dd0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00971-omitted",
+      "args": [
+        "0x6a12dc50f49fbdf1"
+      ],
+      "expected_bits": "0x40695ee6a0c6db0d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00972-omitted",
+      "args": [
+        "0x76d67d3ad6fa30d9"
+      ],
+      "expected_bits": "0x4070873c2b62a0d0"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00973-omitted",
+      "args": [
+        "0x7bed17e4dc59d61c"
+      ],
+      "expected_bits": "0x40720f28b632073e"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00974-omitted",
+      "args": [
+        "0x093e7f1235b34e6e"
+      ],
+      "expected_bits": "0xc07076c11e4671e5"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00975-omitted",
+      "args": [
+        "0x45c3af85bc4d58d5"
+      ],
+      "expected_bits": "0x403c15f83c6355d6"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00976-omitted",
+      "args": [
+        "0x3172931ee8bca1b6"
+      ],
+      "expected_bits": "0xc051718bcb73886d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00977-omitted",
+      "args": [
+        "0x2e9625590ce30fd1"
+      ],
+      "expected_bits": "0xc054e2e3fe6a5abb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00978-omitted",
+      "args": [
+        "0x1d47739bf5c34679"
+      ],
+      "expected_bits": "0xc064dcfaa2a10538"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00979-omitted",
+      "args": [
+        "0x24f0c61190ac15ff"
+      ],
+      "expected_bits": "0xc06040c84978066d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00980-omitted",
+      "args": [
+        "0x7c880262e4c4e5ba"
+      ],
+      "expected_bits": "0x40723dfd3cf2ba86"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00981-omitted",
+      "args": [
+        "0x002df5a1d3b1e24b"
+      ],
+      "expected_bits": "0xc073314472bd5c18"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00982-omitted",
+      "args": [
+        "0x501d8785662fec50"
+      ],
+      "expected_bits": "0x40537ba3cf8f12b1"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00983-omitted",
+      "args": [
+        "0x103d67fe537b31a1"
+      ],
+      "expected_bits": "0xc06cb71f84963f61"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00984-omitted",
+      "args": [
+        "0x2f87177e8c6570bb"
+      ],
+      "expected_bits": "0xc053c0bd42a12714"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00985-omitted",
+      "args": [
+        "0x0a5c1aac3b91dafe"
+      ],
+      "expected_bits": "0xc07020a017c8545c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00986-omitted",
+      "args": [
+        "0x697c30984c199824"
+      ],
+      "expected_bits": "0x406904280e06ae56"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00987-omitted",
+      "args": [
+        "0x075d9d3551c2c9ed"
+      ],
+      "expected_bits": "0xc0710773e82cd5f2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00988-omitted",
+      "args": [
+        "0x600a1f417a7e7571"
+      ],
+      "expected_bits": "0x4063548554bf443c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00989-omitted",
+      "args": [
+        "0x64b594bfcb98dbf3"
+      ],
+      "expected_bits": "0x40662456c0fca222"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00990-omitted",
+      "args": [
+        "0x02de8277dbe79ca1"
+      ],
+      "expected_bits": "0xc072620844b23e45"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00991-omitted",
+      "args": [
+        "0x611260a36219cdc8"
+      ],
+      "expected_bits": "0x4063f364e04cdf40"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00992-omitted",
+      "args": [
+        "0x1a1d23647bb6da76"
+      ],
+      "expected_bits": "0xc066c53e2081db4c"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00993-omitted",
+      "args": [
+        "0x0f8d301c88021df1"
+      ],
+      "expected_bits": "0xc06d213070fa12f7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00994-omitted",
+      "args": [
+        "0x3707f9cb5882ddbb"
+      ],
+      "expected_bits": "0xc0456f91cd1612c2"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00995-omitted",
+      "args": [
+        "0x4864140a0f29095b"
+      ],
+      "expected_bits": "0x40445e6b823b5c73"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00996-omitted",
+      "args": [
+        "0x5ffd74dc44d644fa"
+      ],
+      "expected_bits": "0x40634c8eb1bbd956"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00997-omitted",
+      "args": [
+        "0x241ca397c07def17"
+      ],
+      "expected_bits": "0xc060c03592b38746"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00998-omitted",
+      "args": [
+        "0x5e354d587445a841"
+      ],
+      "expected_bits": "0x40623a548ca3f894"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-00999-omitted",
+      "args": [
+        "0x51094a6c2372f4cb"
+      ],
+      "expected_bits": "0x4054985268ed42e7"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01000-omitted",
+      "args": [
+        "0x05c61c3467af14bf"
+      ],
+      "expected_bits": "0xc07181e52fc88f13"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01001-omitted",
+      "args": [
+        "0x65a7436c3241792a"
+      ],
+      "expected_bits": "0x4066b5e0610bc7cb"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01002-omitted",
+      "args": [
+        "0x3c2367e4f6681d51"
+      ],
+      "expected_bits": "0xc032476dadff8428"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01003-omitted",
+      "args": [
+        "0x332f3414f66abd9b"
+      ],
+      "expected_bits": "0xc04eb5e5823ce461"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01004-omitted",
+      "args": [
+        "0x3d84a8280ecdbf9d"
+      ],
+      "expected_bits": "0xc0274229d7a17fd9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01005-omitted",
+      "args": [
+        "0x2dd886518e7f40a2"
+      ],
+      "expected_bits": "0xc055c73eeb8ef808"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01006-omitted",
+      "args": [
+        "0x2bbb6f435472bfd6"
+      ],
+      "expected_bits": "0xc058532ba8302cbf"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01007-omitted",
+      "args": [
+        "0x5d00cd3a89a53414"
+      ],
+      "expected_bits": "0x406180017aad2c05"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01008-omitted",
+      "args": [
+        "0x626da8b8116b5661"
+      ],
+      "expected_bits": "0x4064c4568c646829"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01009-omitted",
+      "args": [
+        "0x374e04cb4672e7e8"
+      ],
+      "expected_bits": "0xc044c8f2637a4cf9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01010-omitted",
+      "args": [
+        "0x319790f168f6e97a"
+      ],
+      "expected_bits": "0xc0514466115f8ee9"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01011-omitted",
+      "args": [
+        "0x064c5d95c340ed84"
+      ],
+      "expected_bits": "0xc07159a1d9fa281d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01012-omitted",
+      "args": [
+        "0x41d674fb1ba3c622"
+      ],
+      "expected_bits": "0x40225b33f56144af"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01013-omitted",
+      "args": [
+        "0x11f65d4c214c2db9"
+      ],
+      "expected_bits": "0xc06bad345616eea4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01014-omitted",
+      "args": [
+        "0x185748c361511f64"
+      ],
+      "expected_bits": "0xc067d61518db7b75"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01015-omitted",
+      "args": [
+        "0x4c14c1e5df2ef01a"
+      ],
+      "expected_bits": "0x404d41a5cdae8952"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01016-omitted",
+      "args": [
+        "0x7f31041d16d04c6b"
+      ],
+      "expected_bits": "0x40730ab49cd0deec"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01017-omitted",
+      "args": [
+        "0x45be19699f738f55"
+      ],
+      "expected_bits": "0x403bf81d331c181a"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01018-omitted",
+      "args": [
+        "0x662839f2ca0793a5"
+      ],
+      "expected_bits": "0x40670380fcd0521d"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01019-omitted",
+      "args": [
+        "0x5edac9fec8fc7491"
+      ],
+      "expected_bits": "0x40629dd84f7ce799"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01020-omitted",
+      "args": [
+        "0x32413b9eee651691"
+      ],
+      "expected_bits": "0xc050792c550859d4"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01021-omitted",
+      "args": [
+        "0x2f5f0da37139d2b8"
+      ],
+      "expected_bits": "0xc053f24daef22e69"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01022-omitted",
+      "args": [
+        "0x1ec1fbeb6b1b9dee"
+      ],
+      "expected_bits": "0xc063f97a245b6201"
+    },
+    {
+      "id": "w111logomissionheldout-LOG10-01023-omitted",
+      "args": [
+        "0x32a2db535f5bdbcd"
+      ],
+      "expected_bits": "0xc050031320891ea0"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T19:00:10.4251272Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_rollup.v1",
+  "run_id": "w111-quotient-reference-heldout-run-typed-20260929",
+  "tranche_id": "w111-quotient-reference-heldout-20260929",
+  "generated_utc": "2026-09-29T19:36:54.3135038Z",
+  "total_cases": 512,
+  "by_classification": {
+    "exact_typed_bit_match": 507,
+    "unexpected_mismatch": 5
+  },
+  "by_severity_class": {
+    "match": 507,
+    "structural_mismatch": 5
+  },
+  "by_severity_sub_tag": {
+    "array_element_drift": 5
+  },
+  "by_function": {
+    "FUNC.QUOTIENT": {
+      "exact_typed_bit_match": 507,
+      "unexpected_mismatch": 5
+    }
+  },
+  "mismatch_case_ids": [
+    "w111quotientreferenceheldout-00049-quotient-fresh-materialized-24",
+    "w111quotientreferenceheldout-00105-quotient-fresh-materialized-52",
+    "w111quotientreferenceheldout-00113-quotient-fresh-materialized-56",
+    "w111quotientreferenceheldout-00161-quotient-fresh-materialized-80",
+    "w111quotientreferenceheldout-00201-quotient-fresh-materialized-100"
+  ],
+  "axis_witness_pairs": {
+    "total_pairs": 0,
+    "differentiated_pairs": 0,
+    "not_differentiated_pairs": 0,
+    "blocked_or_incomplete_pairs": 0,
+    "by_axis_tag": {},
+    "pairs": []
+  },
+  "excel_environment": {
+    "available": true,
+    "version": "16.0",
+    "build": "20430",
+    "calculation": "-4105",
+    "workbook_compatibility_version": "2",
+    "channel": "unavailable_not_queried",
+    "bitness": "64-bit",
+    "operating_system": "Windows (64-bit) NT 10.00",
+    "workbook_date_system": "1900",
+    "precision_as_displayed": false,
+    "excel_input_plumbing": "typed_value2_with_fixture_readback",
+    "fixture_readback_policy": "numeric_exact_bits_text_ordinal_logical_blank_error_code"
+  },
+  "comparison_policy": "exact_typed_bit_match_no_tolerance_with_1x1_publication_seam_classification",
+  "failure_packet_dir": "smart-fuzzer/runs/w111-quotient-reference-heldout-run-typed-20260929/failure_packets"
+}

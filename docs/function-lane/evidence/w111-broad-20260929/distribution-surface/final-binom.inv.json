@@ -1,0 +1,4538 @@
+{
+  "function": "BINOM.INV",
+  "witnesses": [
+    {
+      "id": "fresh-binom.inv-00000-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00001-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00002-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00003-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00004-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00005-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00006-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00007-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00008-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00009-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00010-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00011-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00012-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00013-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00014-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00015-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00016-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00017-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00018-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00019-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00020-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00021-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00022-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00023-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00024-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00025-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00026-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00027-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00028-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00029-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00030-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00031-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00032-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00033-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00034-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00035-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00036-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00037-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00038-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00039-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00040-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00041-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00042-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00043-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00044-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00045-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00046-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00047-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00048-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00049-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00050-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00051-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00052-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00053-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00054-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00055-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00056-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00057-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00058-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00059-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00060-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00061-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00062-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00063-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00064-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00065-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00066-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00067-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00068-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00069-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00070-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00071-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00072-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00073-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00074-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00075-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00076-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00077-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00078-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00079-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00080-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00081-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00082-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00083-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00084-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00085-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00086-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00087-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00088-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00089-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00090-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00091-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00092-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00093-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00094-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00095-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00096-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00097-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00098-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00099-fresh-endpoints",
+      "args": [
+        "0x4008000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00100-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00101-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00102-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00103-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00104-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00105-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00106-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00107-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00108-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00109-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00110-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00111-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00112-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00113-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00114-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00115-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00116-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00117-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00118-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00119-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00120-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00121-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00122-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00123-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00124-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00125-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00126-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00127-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00128-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00129-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00130-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00131-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00132-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00133-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00134-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00135-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00136-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00137-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00138-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00139-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00140-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00141-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00142-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00143-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00144-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00145-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00146-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00147-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00148-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00149-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00150-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00151-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00152-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00153-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00154-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00155-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00156-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00157-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00158-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00159-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00160-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00161-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00162-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00163-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00164-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00165-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00166-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00167-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00168-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00169-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00170-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00171-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00172-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00173-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00174-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00175-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00176-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00177-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00178-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00179-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00180-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00181-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00182-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00183-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00184-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00185-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00186-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00187-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00188-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00189-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00190-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00191-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00192-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00193-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00194-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00195-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00196-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00197-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00198-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00199-fresh-endpoints",
+      "args": [
+        "0x4010000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00200-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00201-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00202-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00203-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00204-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00205-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00206-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00207-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00208-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00209-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00210-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00211-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00212-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00213-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00214-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00215-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00216-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00217-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00218-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00219-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00220-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00221-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00222-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00223-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00224-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00225-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00226-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00227-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00228-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00229-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00230-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00231-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00232-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00233-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00234-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00235-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00236-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00237-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00238-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00239-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00240-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00241-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00242-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00243-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00244-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00245-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00246-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00247-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00248-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00249-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00250-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00251-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00252-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00253-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00254-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00255-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00256-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00257-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00258-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00259-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00260-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00261-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00262-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00263-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00264-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4014000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00265-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4018000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00266-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4020000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00267-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00268-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00269-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00270-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00271-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00272-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00273-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x4020000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00274-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00275-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00276-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00277-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00278-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00279-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00280-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00281-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00282-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00283-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00284-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00285-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00286-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00287-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00288-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00289-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00290-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00291-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00292-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00293-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00294-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00295-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00296-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00297-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00298-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00299-fresh-endpoints",
+      "args": [
+        "0x4022000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00300-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00301-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00302-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00303-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00304-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00305-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00306-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00307-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00308-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00309-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00310-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00311-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00312-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00313-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00314-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00315-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00316-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00317-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00318-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00319-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00320-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00321-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00322-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00323-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00324-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00325-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00326-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00327-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00328-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00329-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00330-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00331-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00332-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00333-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00334-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00335-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00336-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00337-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00338-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00339-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00340-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00341-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00342-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00343-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00344-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00345-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00346-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00347-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00348-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00349-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00350-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00351-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00352-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00353-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00354-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4008000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00355-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00356-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4018000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00357-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00358-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00359-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00360-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00361-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00362-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00363-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00364-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4020000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00365-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4022000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00366-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4026000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00367-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00368-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00369-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00370-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00371-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00372-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00373-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x4028000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00374-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00375-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00376-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00377-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x402a000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00378-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00379-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00380-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00381-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00382-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00383-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00384-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00385-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00386-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00387-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00388-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00389-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00390-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00391-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00392-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00393-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00394-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00395-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00396-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00397-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00398-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00399-fresh-endpoints",
+      "args": [
+        "0x402a000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00400-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00401-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00402-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00403-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00404-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00405-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00406-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00407-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00408-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00409-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0xbcb0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00410-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00411-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00412-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00413-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00414-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00415-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00416-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00417-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00418-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00419-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0000000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00420-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00421-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00422-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00423-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00424-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00425-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00426-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00427-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00428-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00429-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x0010000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00430-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00431-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00432-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00433-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00434-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00435-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00436-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00437-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00438-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00439-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00440-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00441-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00442-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00443-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00444-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00445-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00446-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00447-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4034000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00448-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00449-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00450-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00451-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00452-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00453-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00454-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4018000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00455-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4020000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00456-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4024000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00457-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4037000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00458-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00459-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00460-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00461-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00462-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00463-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00464-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x402e000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00465-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4031000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00466-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4033000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00467-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4037000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00468-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00469-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00470-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00471-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00472-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "0x4010000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00473-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "0x4036000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00474-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "0x4037000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00475-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "0x4037000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00476-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "0x4037000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00477-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0x4037000000000000"
+    },
+    {
+      "id": "fresh-binom.inv-00478-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00479-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3fefffffffffffff",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00480-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00481-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00482-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00483-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00484-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00485-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00486-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00487-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00488-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00489-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000000",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00490-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0xbcb0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00491-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00492-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x0010000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00493-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3cc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00494-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3fc0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00495-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3fd8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00496-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3fe8000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00497-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00498-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00499-fresh-endpoints",
+      "args": [
+        "0x4037000000000000",
+        "0x3ff0000000000001",
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "fresh-binom.inv-00500-old-seed-exact-input",
+      "args": [
+        "0x4018000000000000",
+        "0x3fe0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T16:44:40.6904064Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

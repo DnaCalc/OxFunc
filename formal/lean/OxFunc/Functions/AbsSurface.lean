@@ -83,7 +83,8 @@ theorem evalAbsSurfaceScalar_prepared_logical_true (resolver : ReferenceResolver
 theorem evalAbsSurfaceScalar_prepared_text_bad (resolver : ReferenceResolver) :
     evalAbsSurfaceScalar resolver [.prepared (.text "asd")] =
       Except.error (AbsSurfaceError.coercion (.coercion (.nonNumericText "asd"))) := by
-  simp [evalAbsSurfaceScalar, prepareAbsSurfaceArgValuesOnly, evalAbsAdapterArg, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "asd" = none := by native_decide
+  simp [evalAbsSurfaceScalar, prepareAbsSurfaceArgValuesOnly, evalAbsAdapterArg, coerceToNumber, parsed]
 
 theorem evalAbsSurfaceLift_length (resolver : ReferenceResolver) (args : List AbsSurfaceArg) :
     (evalAbsSurfaceLift resolver args).length = args.length := by

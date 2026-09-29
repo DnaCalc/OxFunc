@@ -1,0 +1,836 @@
+{
+  "artifacts": [
+    {
+      "path": "baseline-extended-judgement.json",
+      "sha256": "6faa192f441255a08bc79c63eae7c9d9d06ba18f747b529afb0cfb2eb2f04d18"
+    },
+    {
+      "path": "baseline-numeric-judgement.json",
+      "sha256": "1ae102b80d525b26269959343595b2703cf8d808009f0007c99a76e1fef12d08"
+    },
+    {
+      "path": "baseline-summary.json",
+      "sha256": "b06f2031108ce24a1d7e7c332dba6485a7a9d10654d63a403a0a6064b88cb14e"
+    },
+    {
+      "path": "extended-qualified.json",
+      "sha256": "92344198bf8a297d4c59c34148992bc7b229c2222b1085184491f27e8d24ebde"
+    },
+    {
+      "path": "inputs/extended/answers-acosh.json",
+      "sha256": "e3ae4ef52cc7d33fb17e42da2e0f7c33366694856e0c30d6e79759b9f9b658c8"
+    },
+    {
+      "path": "inputs/extended/answers-acot.json",
+      "sha256": "855431f6b6f01455200e8a5acc4132b188d39b5c504339e1fbc38e003491dfe5"
+    },
+    {
+      "path": "inputs/extended/answers-acoth.json",
+      "sha256": "9a991063a125e14f432cc66c7117e767c016652643a529367a1686af841e456b"
+    },
+    {
+      "path": "inputs/extended/answers-asin.json",
+      "sha256": "3b3235bac69783e6c355721a246c11abaae05ba90f1da2abc52691b9d114e0c3"
+    },
+    {
+      "path": "inputs/extended/answers-atan.json",
+      "sha256": "3c6f069462ecc317a3ba6732749fda216e462551211b1f03b861ca47578f838e"
+    },
+    {
+      "path": "inputs/extended/answers-atanh.json",
+      "sha256": "6f4cef3b17e3907337865ee321e21e3606a87a96638de1134e5224437e6c7a4a"
+    },
+    {
+      "path": "inputs/extended/answers-besseli.json",
+      "sha256": "b4332ca7ec037be3d546ff732094dc4b40b5b9cb146d9549ba3f7e54acea4ae1"
+    },
+    {
+      "path": "inputs/extended/answers-besselk.json",
+      "sha256": "140fdf9e94b4502556cc546cae7ab8dcefb98ce7375e2ccf5626d29c74204598"
+    },
+    {
+      "path": "inputs/extended/answers-binom.dist.range.json",
+      "sha256": "9eaac6a46439e19b50f18b6633ad86b375be6053d6c7f529ce527ba057db939f"
+    },
+    {
+      "path": "inputs/extended/answers-binom.inv.json",
+      "sha256": "d8258f626ea3153e475bb555858abc1cbb50d5fe38dd4a7cc91b87f0c3d2b8a6"
+    },
+    {
+      "path": "inputs/extended/answers-combin.json",
+      "sha256": "2325d28912f2ea7e61c1ad4a820c2be1dc2392c22f972a6bf5374cdb908db701"
+    },
+    {
+      "path": "inputs/extended/answers-combina.json",
+      "sha256": "b9d9872b5dd3ea2cb1bc68c7b194da554177a968e2859da5640643e47174abf6"
+    },
+    {
+      "path": "inputs/extended/answers-cos.json",
+      "sha256": "f7b452c942f057acdbca14e87e22f5c1a1daebfa3282179b169a7feb4a8ff22d"
+    },
+    {
+      "path": "inputs/extended/answers-cosh.json",
+      "sha256": "7d10e65274111445b0410fca11f6b195c4e4e1a810198700b4e846ca36d00a12"
+    },
+    {
+      "path": "inputs/extended/answers-cot.json",
+      "sha256": "5f53b2c0f36003db90e9ff1a641cf71a6bf87b73fc65dcd9446f0372118de0b6"
+    },
+    {
+      "path": "inputs/extended/answers-coth.json",
+      "sha256": "6b3b227eadcc7eb284dd2c58562153e01279e1ae1c4ae56466a26052b3faa1d4"
+    },
+    {
+      "path": "inputs/extended/answers-critbinom.json",
+      "sha256": "7a2f30391008754913267eefc442b4e37330d8e8a8ac4baea2810f7a3a4538e9"
+    },
+    {
+      "path": "inputs/extended/answers-csc.json",
+      "sha256": "a4866eeaa80c2f0eb72336b0d91ea67bcf91735d1cb4304ab2df331efaddfea6"
+    },
+    {
+      "path": "inputs/extended/answers-csch.json",
+      "sha256": "c7c6d087774f15e57334db724f06789febc8e8b2ce0f3ac3122b18ab71f34a89"
+    },
+    {
+      "path": "inputs/extended/answers-db.json",
+      "sha256": "c76805dc17f823b951e1d7ea36ac420d1dee30fb1258e8f5d503865cf41203ee"
+    },
+    {
+      "path": "inputs/extended/answers-ddb.json",
+      "sha256": "c1fafb69257dbc3c3cb6f1d008a93e06ccef515a5e45468844f3e3d09964aace"
+    },
+    {
+      "path": "inputs/extended/answers-dollarde.json",
+      "sha256": "94569ebd8b01ace0e2d826e09b6481464ea1ce0e30ebd31c02af625735b53b1b"
+    },
+    {
+      "path": "inputs/extended/answers-dollarfr.json",
+      "sha256": "bbfbfa06bfd16ff6dbc23224c0fe6f1f8d0cda2cccded21f7a5b3af8b68cde37"
+    },
+    {
+      "path": "inputs/extended/answers-effect.json",
+      "sha256": "490854197a2d75142d87602842f87b889813ed4710c8f0820db4fef7f37e7aaa"
+    },
+    {
+      "path": "inputs/extended/answers-exp.json",
+      "sha256": "9fdc2ce51d76727e50cc9a533381cc933591f7ebcd3aa797e072d6aa96fc541d"
+    },
+    {
+      "path": "inputs/extended/answers-expon.dist.json",
+      "sha256": "7d6c735e1ada56cd8cd93e62f13789ee00abb7720fc2047712bc165e1114fbaf"
+    },
+    {
+      "path": "inputs/extended/answers-expondist.json",
+      "sha256": "3354a470f26283ef5cd65718210ee03b8a87a6336eb87df7031f0a9d3cf46c1f"
+    },
+    {
+      "path": "inputs/extended/answers-false.json",
+      "sha256": "141f0d6b22c0994375b07f8e078d87758d70a6ed79c7924757cfe28db73fc9eb"
+    },
+    {
+      "path": "inputs/extended/answers-fisher.json",
+      "sha256": "d060ca1d33d72a90da6af31e2d50007e28df020c3b83231519b5925eff209664"
+    },
+    {
+      "path": "inputs/extended/answers-fv.json",
+      "sha256": "6a127f5e63981542954244003989880ffdc08a99af84c34cecf3bb566f729ba3"
+    },
+    {
+      "path": "inputs/extended/answers-imabs.json",
+      "sha256": "1322ed7c5537d7a40e49277fa4b50f007f1241882a7f6ad41f5573a8dadf1cc5"
+    },
+    {
+      "path": "inputs/extended/answers-imaginary.json",
+      "sha256": "8d5e0e02585da4e72e8a3683521c7473ae503ec8b710f343880aff9290b9e880"
+    },
+    {
+      "path": "inputs/extended/answers-imargument.json",
+      "sha256": "3803009699ba250331fef8031265ddf1154899da98f0b5d0c3687b7cc74eafb7"
+    },
+    {
+      "path": "inputs/extended/answers-imconjugate.json",
+      "sha256": "49d1f26fa4779bfddc22a740eea47f53f9f1cc386ebb18180d4438d13c00d911"
+    },
+    {
+      "path": "inputs/extended/answers-imcos.json",
+      "sha256": "23bafeea98dfe2b3aa1d4a96d2ad5e02a91e4ddcfb0ba740c659c14bdcd1e8f2"
+    },
+    {
+      "path": "inputs/extended/answers-imcosh.json",
+      "sha256": "307b6208cd09d18f70a60c202478a5a6ec88ad57fb86ea677bc4a06e480109f4"
+    },
+    {
+      "path": "inputs/extended/answers-imcot.json",
+      "sha256": "d7a77731a1a8e03e91923347932d0b71a054203688332e6633197f046b1b7df9"
+    },
+    {
+      "path": "inputs/extended/answers-imcsc.json",
+      "sha256": "3b04554cd882ed47c71e43d86aaf5392a11cc11e6aeb23dda53df808995846e1"
+    },
+    {
+      "path": "inputs/extended/answers-imcsch.json",
+      "sha256": "38d713b5dd9585b736550e773d65fc53a45dc3989f10a0636e329a9b4035736f"
+    },
+    {
+      "path": "inputs/extended/answers-imdiv.json",
+      "sha256": "04a988b8ef504e7e899a719b3ad62662c20d3aca981c62d2313fe29babd57337"
+    },
+    {
+      "path": "inputs/extended/answers-imln.json",
+      "sha256": "6d6efdcda7ffa722a55db8c52d99de31fa70602e94e093a0e15b3d735e323d2c"
+    },
+    {
+      "path": "inputs/extended/answers-imlog10.json",
+      "sha256": "21f8d6a8105e99d1e75a4513ad31af5cc8555cab1b2db7cd50ca3f1fecf48174"
+    },
+    {
+      "path": "inputs/extended/answers-imlog2.json",
+      "sha256": "a7b10c9223885b5984c6151600d8d4daa914730043ee8f7df4083d0e708d22e5"
+    },
+    {
+      "path": "inputs/extended/answers-improduct.json",
+      "sha256": "d28157bdfc03eb8ed6f983f8eafc9a76159a04cbae7f09f5d13b96d22f4b3d1f"
+    },
+    {
+      "path": "inputs/extended/answers-imreal.json",
+      "sha256": "3668d97276eea23d98f001384c846cd4f3f58eb85c195f6fd113ab7f7cfa3134"
+    },
+    {
+      "path": "inputs/extended/answers-imsech.json",
+      "sha256": "817da04f69b68cc059b3983e1e466a2597d1ff7d25a926b83c7fa9fa573c4ae5"
+    },
+    {
+      "path": "inputs/extended/answers-imsin.json",
+      "sha256": "961860882ce3dde8e0c791330fa66600cc7274955f2d98b2c43828dd539a87ae"
+    },
+    {
+      "path": "inputs/extended/answers-imsinh.json",
+      "sha256": "047bd6b6c758f7a06b5d120fd0497bea1bf087f216c69d0bf6ec0f7acaf6ce17"
+    },
+    {
+      "path": "inputs/extended/answers-imsqrt.json",
+      "sha256": "6b468ed8da1dd1e8f454bf46ea5b37d9f281c19d85512ddb1df948ea4e9945b8"
+    },
+    {
+      "path": "inputs/extended/answers-imsub.json",
+      "sha256": "587a7a921d975dcb6e80c97071505f380f286675a6f92431c3bcbf64c202fc3a"
+    },
+    {
+      "path": "inputs/extended/answers-imsum.json",
+      "sha256": "32ed8aa83daac0cf7865d9358ac398f16994b25990d0b7ca18aac1a760769cde"
+    },
+    {
+      "path": "inputs/extended/answers-imtan.json",
+      "sha256": "2f1750edf9a7149c1d78470e327968084ea55b7b3d9fccf5693e8f698417a05c"
+    },
+    {
+      "path": "inputs/extended/answers-ln.json",
+      "sha256": "14e846afd29c26c704e8db159b658d8fdbbb62640a5fdb29148f15c8d5f8f2fe"
+    },
+    {
+      "path": "inputs/extended/answers-log.json",
+      "sha256": "7af807d7f8ea2c36413fcde6880e3c8186fe284f8fb9004e0330ee033b16d2dd"
+    },
+    {
+      "path": "inputs/extended/answers-log10.json",
+      "sha256": "d1f93f46ae313056a934eef41088224c1405a6e60228eb8aeb228adb75da94fc"
+    },
+    {
+      "path": "inputs/extended/answers-mround.json",
+      "sha256": "062ffc1ae501ef4657df3f77d45340931da4712c3fc15dd1103e056cc4668af1"
+    },
+    {
+      "path": "inputs/extended/answers-na.json",
+      "sha256": "5f12f0959d600119a2c88f6e4aa7931470743c5c4bead70d7d5a78198d8bcb85"
+    },
+    {
+      "path": "inputs/extended/answers-nominal.json",
+      "sha256": "6b0dd27a295cc7adc39c9e96b31b8beaded2d11edbf339f19f0906069a12199a"
+    },
+    {
+      "path": "inputs/extended/answers-nper.json",
+      "sha256": "6efe556b45e3f1638ec25aaf3d972c0607ff61f6c939ad04520e8547c7f13042"
+    },
+    {
+      "path": "inputs/extended/answers-pduration.json",
+      "sha256": "4b2a82f9e720a3c0a7b7689b33b3fdfc50580d7a853369c1a8db28b1f3da9fb6"
+    },
+    {
+      "path": "inputs/extended/answers-phi.json",
+      "sha256": "3cd0356f0d52f6a6b2a35f45c55eb6ca1445a92a27f764578f27c3585477fd53"
+    },
+    {
+      "path": "inputs/extended/answers-pi.json",
+      "sha256": "83a82fa8c44af1b7fe4f40af6a5ed57937e895625bb9211bc8975a9b531e0319"
+    },
+    {
+      "path": "inputs/extended/answers-power.json",
+      "sha256": "2feb537f80d6f184f491d7f121802fc6f7b712f3d69f346cabf55a157b49af05"
+    },
+    {
+      "path": "inputs/extended/answers-pv.json",
+      "sha256": "6224433c403747b1af5b89cab6af1083e8dc17793ae3fe58606a0ab20c50389d"
+    },
+    {
+      "path": "inputs/extended/answers-sec.json",
+      "sha256": "29ca1890c254a069dc6f38272860825acba147393def02d12de67ac7998dc2a5"
+    },
+    {
+      "path": "inputs/extended/answers-sech.json",
+      "sha256": "d609c0409e5884465f46d10e2df198e615eb189a3f06ffa17a2eb82dfe501623"
+    },
+    {
+      "path": "inputs/extended/answers-sin.json",
+      "sha256": "8dbb2e0bb2c84173d3296fd2782904d4b48803fadce66e9e91f5232901323010"
+    },
+    {
+      "path": "inputs/extended/answers-sinh.json",
+      "sha256": "2f1cdacd358e9479a90d012a8ea5c195c44d2a744245466a7402ec19f61eb4ea"
+    },
+    {
+      "path": "inputs/extended/answers-sqrtpi.json",
+      "sha256": "fd779ec561202302437bc7874ce6152d9f819def67275200705347c1307a2c1f"
+    },
+    {
+      "path": "inputs/extended/answers-tan.json",
+      "sha256": "e68b16b507bb7d41c534e16dd4a09014ac8f19d59d7ca1eb07efb302b2d4c4f5"
+    },
+    {
+      "path": "inputs/extended/answers-true.json",
+      "sha256": "5a75261de9a5999919be61d4e901249e6ecc2c91e1eb2701fb5903b539d4000c"
+    },
+    {
+      "path": "inputs/extended/answers-vdb.json",
+      "sha256": "b36656b6bcb50f89c541b62a746ff6a4605d51e04def944bc065b0390ea25768"
+    },
+    {
+      "path": "inputs/numeric/answers-abs.json",
+      "sha256": "ec355fd911bdb533505cc28896b5a20c7685634ab59105c571717778a77d1b7a"
+    },
+    {
+      "path": "inputs/numeric/answers-address.json",
+      "sha256": "dc5b3723cc2ce24c332fe1d3fdb13c0b7e7d155b2bbfd01dd33162dbc322fa1b"
+    },
+    {
+      "path": "inputs/numeric/answers-and.json",
+      "sha256": "de55e9b995240b69b1d217c625af0b9472ce26a33ed1c123da9ce6c64b701397"
+    },
+    {
+      "path": "inputs/numeric/answers-avedev.json",
+      "sha256": "6764bb4715720259dbf65ad363ab31fe4ac0219c13c71fe30300f5124d05227f"
+    },
+    {
+      "path": "inputs/numeric/answers-average.json",
+      "sha256": "6459eb282010ae2e4138c70790545101e2cb6202a5b14b6d4f616749b7a86745"
+    },
+    {
+      "path": "inputs/numeric/answers-averagea.json",
+      "sha256": "30fe73c77e0b5e5c0d1a7fdef204c187b3a92e122091592738f543859300bde3"
+    },
+    {
+      "path": "inputs/numeric/answers-base.json",
+      "sha256": "80a3d2630945a29da5478383f66c3f7dd6e326565c7ccc80fdb8f2dab901f019"
+    },
+    {
+      "path": "inputs/numeric/answers-bin2dec.json",
+      "sha256": "023f285b50e2bd71100aeaead682ce874b4717558672f0e69d01017670fac2b5"
+    },
+    {
+      "path": "inputs/numeric/answers-bin2hex.json",
+      "sha256": "42dbee5fd2268145eed83e6f3ca80e7a71569deb5c08636f209d2a01dcc85265"
+    },
+    {
+      "path": "inputs/numeric/answers-bin2oct.json",
+      "sha256": "22e8a4e31b4dbdb3ab77ab5cd3dd087878f5964ab5f52f94af927e9767487861"
+    },
+    {
+      "path": "inputs/numeric/answers-bitand.json",
+      "sha256": "7cc4c809c6f78310bf4844a8e0c7ac3ea55ded6f1b71c07efaa5240bc96d0ee3"
+    },
+    {
+      "path": "inputs/numeric/answers-bitlshift.json",
+      "sha256": "911d79ab4bc10d3d80efd53dcdae00f024f20b077884aeec486357fe9909d34f"
+    },
+    {
+      "path": "inputs/numeric/answers-bitor.json",
+      "sha256": "c7d4f3400c70f698f94c046f61a6195b236e781ff5a29f302c71cca2eedb47b8"
+    },
+    {
+      "path": "inputs/numeric/answers-bitrshift.json",
+      "sha256": "12f835faaa635c9224235d138fcdcb6fae6d3bc678ef8101ccdaa959458912a8"
+    },
+    {
+      "path": "inputs/numeric/answers-bitxor.json",
+      "sha256": "26398470031c142fa80934c68e3b69aa2084ad1a0bf1a099205ba81034572cf9"
+    },
+    {
+      "path": "inputs/numeric/answers-ceiling.json",
+      "sha256": "82091a1fecafffadab9ed5ee737bae414c8ad1ad8272cddc164e4f59b93b5e23"
+    },
+    {
+      "path": "inputs/numeric/answers-ceiling.math.json",
+      "sha256": "aa0f94b946bf4d29356f917deee414e944b42d8212073201cb38256f8219cabd"
+    },
+    {
+      "path": "inputs/numeric/answers-ceiling.precise.json",
+      "sha256": "e608c26c63ddeb58cc5ddb10ff0094561e38f774047ac53dcbb1850317e76317"
+    },
+    {
+      "path": "inputs/numeric/answers-complex.json",
+      "sha256": "ece608cdde1f430b5882ac2874fb1fbc0ac66018c9637d812f5e81192895b018"
+    },
+    {
+      "path": "inputs/numeric/answers-count.json",
+      "sha256": "468b14cc7ffa9e03beac8f97ee67c085341f09ed57e554218d48f2d1acde23b9"
+    },
+    {
+      "path": "inputs/numeric/answers-counta.json",
+      "sha256": "695605f0955c66adeb04af882227ac1f1d7479023cc693e54f752251a33d45a6"
+    },
+    {
+      "path": "inputs/numeric/answers-date.json",
+      "sha256": "dc2e386f9c13277b2518b35fa18e06761060a93325775cb9e5cd281287f938bf"
+    },
+    {
+      "path": "inputs/numeric/answers-day.json",
+      "sha256": "3fa7dc07e745fe9c3000b18a532d1c8679d1c1370c2e1c7bb8a1d4044af36800"
+    },
+    {
+      "path": "inputs/numeric/answers-days.json",
+      "sha256": "f6b21925ae07c5aae6be52a5fa50bbe4d7d05a1c4c7465a7d3755a2c414701d6"
+    },
+    {
+      "path": "inputs/numeric/answers-dec2bin.json",
+      "sha256": "17fa6acf796aa3c15eb0240eddff2205a651c96f559eeee0cfae01aa5b3f109d"
+    },
+    {
+      "path": "inputs/numeric/answers-dec2hex.json",
+      "sha256": "d754cff24a1c99434728830cdc79a833b72209d775b2689e758042b83fc417d5"
+    },
+    {
+      "path": "inputs/numeric/answers-dec2oct.json",
+      "sha256": "f0f4ddfadd4892c7cefd9ae5e3e32f403c6eb2deb42c6e776c62dd1c9066bf74"
+    },
+    {
+      "path": "inputs/numeric/answers-decimal.json",
+      "sha256": "ef1ddef33c9989706351ab03ba56130fbfda131aa9feb7becdca0589347518b1"
+    },
+    {
+      "path": "inputs/numeric/answers-degrees.json",
+      "sha256": "8a7058073c8fdf51a2a6041b6e341612060e865fa5723aa33abaa60c9692562f"
+    },
+    {
+      "path": "inputs/numeric/answers-delta.json",
+      "sha256": "3b181acd7185452db7f81a25307bbf420b349c5c4f5d3a379c3c98d89101b17a"
+    },
+    {
+      "path": "inputs/numeric/answers-devsq.json",
+      "sha256": "22721e1c89b4406b215344d5ba40478233fde55df82ccc778f02cef83ddbfa95"
+    },
+    {
+      "path": "inputs/numeric/answers-edate.json",
+      "sha256": "e489bdcd8bd83a8336d86ed22f1818fcd4a66e00f582d2a8840a42517b8eaa17"
+    },
+    {
+      "path": "inputs/numeric/answers-eomonth.json",
+      "sha256": "931dcd07267e09c64ec19ca448dafb982542397a95f96e0f74078297dfe9946d"
+    },
+    {
+      "path": "inputs/numeric/answers-error.type.json",
+      "sha256": "7337cdeed34edb2790801c85d561207494cdbf5c0572bd0275e76359f9b4e542"
+    },
+    {
+      "path": "inputs/numeric/answers-even.json",
+      "sha256": "bf279f6ddf8762b08eca9cabf6cd59a28537fc4a1aa9c86701e0179ea046cd13"
+    },
+    {
+      "path": "inputs/numeric/answers-fact.json",
+      "sha256": "f77b947e1412b37c3746be4f869883a4e9f531c25c4f457b20fb649a11889eb5"
+    },
+    {
+      "path": "inputs/numeric/answers-factdouble.json",
+      "sha256": "46dbe8d728b79cf8c79a4e9ac1cb64294a03b79a0e0ffefeb812afa209a2f287"
+    },
+    {
+      "path": "inputs/numeric/answers-floor.json",
+      "sha256": "7c9cc62f23aef79dd2a8606650d8f75998924191c947f58349eda3bd964d6232"
+    },
+    {
+      "path": "inputs/numeric/answers-floor.math.json",
+      "sha256": "9529990c39d11d768d886a55be0d36f0ff0df9f1fed17e564117dd70916577ce"
+    },
+    {
+      "path": "inputs/numeric/answers-floor.precise.json",
+      "sha256": "a93771d0f411d38fb19a3639831c45389d3f88ada8426987b14547a35c333f43"
+    },
+    {
+      "path": "inputs/numeric/answers-gcd.json",
+      "sha256": "6ec400dce4bc36bf9a8ad40715c21084c619e0a316e3dc6ccaefe8574bd0f4f3"
+    },
+    {
+      "path": "inputs/numeric/answers-geomean.json",
+      "sha256": "72e84dea957e3e0058027d9684d0295d084b571dc6a591103af82265f71dee99"
+    },
+    {
+      "path": "inputs/numeric/answers-gestep.json",
+      "sha256": "3c5bc0e1e7fb49fecbeaeb0c215f868ddaadd23d9dcad7ee8d399af05705c79c"
+    },
+    {
+      "path": "inputs/numeric/answers-harmean.json",
+      "sha256": "9e07eb72573dbae9aa18aa498570e09851e068f2985bedace34fbd2cbc49e867"
+    },
+    {
+      "path": "inputs/numeric/answers-hex2bin.json",
+      "sha256": "aac0f46e5750446c89e57b80ec79e359d0bd4eb925bc1dee535c7d32f871d1a4"
+    },
+    {
+      "path": "inputs/numeric/answers-hex2dec.json",
+      "sha256": "8701d2767f9924bcc56e84478d07bc2019b3e2be106de1ac3d85c7400d93f88b"
+    },
+    {
+      "path": "inputs/numeric/answers-hex2oct.json",
+      "sha256": "2c881ae93265a3f30eca1095b9454aef88ab11c007b73eb2a25c9e14731935aa"
+    },
+    {
+      "path": "inputs/numeric/answers-hour.json",
+      "sha256": "ef90ef4660c015660d1d897a3c25491806808566ee180a1f2431e8fafa964f1b"
+    },
+    {
+      "path": "inputs/numeric/answers-ifs.json",
+      "sha256": "d45cf46eec35ab3ba81b1f6de603556550f8fb776c665f7ab51729b6da9caa6a"
+    },
+    {
+      "path": "inputs/numeric/answers-int.json",
+      "sha256": "274cf71a81f406b3c70b274736d81f6b25706d24f5f857726b340ca434f934ae"
+    },
+    {
+      "path": "inputs/numeric/answers-isblank.json",
+      "sha256": "0a19f65b0a4be343317bad7e220bdde4cd493b2729d9260e98b2c7ee1ffab63b"
+    },
+    {
+      "path": "inputs/numeric/answers-iserr.json",
+      "sha256": "10eb87ed802eccb118af4f8163b1d3abdc6286c01e0f21055bebac9f773ba224"
+    },
+    {
+      "path": "inputs/numeric/answers-iserror.json",
+      "sha256": "01b4d911fdafb6d8c7bf33e0705c8653c47607f1cb59e64f4e29ccacbea482be"
+    },
+    {
+      "path": "inputs/numeric/answers-iseven.json",
+      "sha256": "2c765499d50c7c6a629deaa747c3583f56a4ca4910fb168f38f6bd72c0e23031"
+    },
+    {
+      "path": "inputs/numeric/answers-islogical.json",
+      "sha256": "cd33a16ca8304faf010d4a767bc27a5a44e7725ec7107a9b8ea78fc9b94825cc"
+    },
+    {
+      "path": "inputs/numeric/answers-isna.json",
+      "sha256": "3966a8d4ef50ff2dd677962cffa087985f9b15cc363afdbee732af66bacd57c6"
+    },
+    {
+      "path": "inputs/numeric/answers-isnontext.json",
+      "sha256": "7a3290aa3275d505161b2c59edbcca53e146bd3ef9e3f071f14c3d90a1d1a500"
+    },
+    {
+      "path": "inputs/numeric/answers-isnumber.json",
+      "sha256": "cc353262fadeec137d91e3390b0b528a5f34340093db660379272ec731f1b853"
+    },
+    {
+      "path": "inputs/numeric/answers-iso.ceiling.json",
+      "sha256": "efad34aee3258a182f2c9281be8e957c9d1533bdef8842190487cbb9b0ff950d"
+    },
+    {
+      "path": "inputs/numeric/answers-isodd.json",
+      "sha256": "35db6474b2c97b4013667e58731a426f372f3e7922f96623260ede13c528c565"
+    },
+    {
+      "path": "inputs/numeric/answers-isoweeknum.json",
+      "sha256": "4e4ada56e8e7462f5a95cb2e4a0c0abc29b162ce60257f764c35fc9c400792e8"
+    },
+    {
+      "path": "inputs/numeric/answers-isref.json",
+      "sha256": "2acb66c40dfc7d68f075ea7d7de13816bcde77fb9560731cadc5e6393b90b084"
+    },
+    {
+      "path": "inputs/numeric/answers-istext.json",
+      "sha256": "c85b1d0528027f2bb12d6a2a6ea7d85add6d29fa4b85ea532a459e90b0ecb13b"
+    },
+    {
+      "path": "inputs/numeric/answers-lcm.json",
+      "sha256": "45c75a00f53c4db65ccc9a966c6955b1f2ba477c4d0cc9232cbaea66cc66c1a9"
+    },
+    {
+      "path": "inputs/numeric/answers-max.json",
+      "sha256": "26ad39d5c719993c1ddd22b325143ce1743c54c03f563fe803eac7cea587bf2e"
+    },
+    {
+      "path": "inputs/numeric/answers-maxa.json",
+      "sha256": "4f1467fe1c9981f9dc1012e97bf1da1505c79035b1f0fc7ae6e591bbec04b03a"
+    },
+    {
+      "path": "inputs/numeric/answers-median.json",
+      "sha256": "9696529244d5eefb40b201fbf5512a4c76dfd25c1cd6d075305eab76804cb1bb"
+    },
+    {
+      "path": "inputs/numeric/answers-min.json",
+      "sha256": "c2ea2b6a68e5eabcb460a5d94ebf3b53dc71723ff28251aaddbc4e94334402aa"
+    },
+    {
+      "path": "inputs/numeric/answers-mina.json",
+      "sha256": "002e7209ad55ab0975d458a59b627c94d8e734dd44ee2f8dae9d26e7458cbe6c"
+    },
+    {
+      "path": "inputs/numeric/answers-minute.json",
+      "sha256": "4199808869a529ea1ff2f1f45bb4b107a8d98bd2da2fd497f68447f38a6a395b"
+    },
+    {
+      "path": "inputs/numeric/answers-mod.json",
+      "sha256": "d2420008544bf6ee1a73c2571fa42425ce8ce27d912bcb0c8d25f05103043f31"
+    },
+    {
+      "path": "inputs/numeric/answers-month.json",
+      "sha256": "33b6efdc42d9f7d9178e7cbd747d5dea1030ad968bdfb05d5032d09b94cb3e02"
+    },
+    {
+      "path": "inputs/numeric/answers-n.json",
+      "sha256": "30d3b14f2278cf2124c1bc8ec857c495ab51acb3e718dbf458799b655fc772b9"
+    },
+    {
+      "path": "inputs/numeric/answers-not.json",
+      "sha256": "1fa274f94968508349851644dfb51172210bc15fafde9349247d423df64437e6"
+    },
+    {
+      "path": "inputs/numeric/answers-oct2bin.json",
+      "sha256": "a9a6aee097629f3ee3328e21a2ab5e77b6d9a556249d293c87d94577875c7cd8"
+    },
+    {
+      "path": "inputs/numeric/answers-oct2dec.json",
+      "sha256": "3c52d9a2d25cc0830b25c07439a5fcbbf31cf574988893a8b3fdf35a05289c9d"
+    },
+    {
+      "path": "inputs/numeric/answers-oct2hex.json",
+      "sha256": "a72ceb5d874ef3f67b8485c34d7a373d1f8cd9c8dd4be9c2b1ec3637adfba8f6"
+    },
+    {
+      "path": "inputs/numeric/answers-odd.json",
+      "sha256": "5518faf2c7966468d8d16494a5ecc9150fb7bb37c8477958777a249e9dba1c5f"
+    },
+    {
+      "path": "inputs/numeric/answers-or.json",
+      "sha256": "e7970f844a52c983d5a78fe41c12c1744bbfb79589e2d38567fd69e2be42f6f8"
+    },
+    {
+      "path": "inputs/numeric/answers-permut.json",
+      "sha256": "75904aac2ba9fad33681e8b589a8f5dc7de84adf483db6a959dab2e879e2dafd"
+    },
+    {
+      "path": "inputs/numeric/answers-permutationa.json",
+      "sha256": "31774e6e9886b63bf2fe3e984efde1f4d6b788fccda2abf5f61b42de7a83cf85"
+    },
+    {
+      "path": "inputs/numeric/answers-product.json",
+      "sha256": "aeaf269a083b214f52e14de668cd5e788263120841610fef6337a0f640f9816e"
+    },
+    {
+      "path": "inputs/numeric/answers-quotient.json",
+      "sha256": "0fbcb9cf683c0e3c176f8274b36417c9928068a710eb873ab79cafc58db5aa8f"
+    },
+    {
+      "path": "inputs/numeric/answers-radians.json",
+      "sha256": "25f3f90fa3428749b4f6346605a210d62f12854bc12e8d85cfa3eb4401d39037"
+    },
+    {
+      "path": "inputs/numeric/answers-second.json",
+      "sha256": "8821409450acfe8d83572ee854b4957ea181d5a68a3882a29aa44b8b51c4d5a0"
+    },
+    {
+      "path": "inputs/numeric/answers-sign.json",
+      "sha256": "3ab671fae55c2a03dfcffd00bb4fa0e4260afe6b212ddf3c67b48ca1f154f875"
+    },
+    {
+      "path": "inputs/numeric/answers-sln.json",
+      "sha256": "bb937e0b91400f97d3f8d56c54bb66681d3834b6e2f862e2390c4c703dcadb1b"
+    },
+    {
+      "path": "inputs/numeric/answers-sqrt.json",
+      "sha256": "51252145e055eb8cc90f827bb722d5095c3121bfd00cd0ac466fcb4d15fb8b8f"
+    },
+    {
+      "path": "inputs/numeric/answers-standardize.json",
+      "sha256": "dcbb40b529f1dfee5e589bf1a84544ff538638c444b0f689f3a1bb4571127402"
+    },
+    {
+      "path": "inputs/numeric/answers-stdev.json",
+      "sha256": "ff7d3cfbaf78bf0316762dd765c439e18bb51e80da20a7e77628f9736a80f158"
+    },
+    {
+      "path": "inputs/numeric/answers-stdev.p.json",
+      "sha256": "a90aea8dafb5ceb550b17cf3101f8a9d88533dda555299498fc7c8bc81054380"
+    },
+    {
+      "path": "inputs/numeric/answers-stdev.s.json",
+      "sha256": "cd1f8f19681c1cfe9e617240362b9906b9569b3980a7745932172e04baa85d59"
+    },
+    {
+      "path": "inputs/numeric/answers-stdeva.json",
+      "sha256": "67f4d76c3b7de74b19d857a869aa71a6404e9a0115c7af625de666922b269a96"
+    },
+    {
+      "path": "inputs/numeric/answers-stdevp.json",
+      "sha256": "950a781cbd6a4340d1fdb55342ed2f13dd717db1204e59ee4508790808aa5cda"
+    },
+    {
+      "path": "inputs/numeric/answers-stdevpa.json",
+      "sha256": "3f160234072350903c95f7672a91dbff02ba21c7dab04c2d0ab505a9f3b4876e"
+    },
+    {
+      "path": "inputs/numeric/answers-sum.json",
+      "sha256": "9e44f78849c83fccc77a81328e36658a5cdb3c6f4338e215657061491e830330"
+    },
+    {
+      "path": "inputs/numeric/answers-sumsq.json",
+      "sha256": "1b96228c0bafc2309fb3ebf5203f206a0bfe065d523f86b7a7c96907a814d034"
+    },
+    {
+      "path": "inputs/numeric/answers-switch.json",
+      "sha256": "dc4b15b8b77230bca1ba15bf40dd6dd20b6f337ba53428f6a913ad13da5f8bbe"
+    },
+    {
+      "path": "inputs/numeric/answers-syd.json",
+      "sha256": "524244b17086dead8964d74fb73ba95b45329301f6ae0c3a2f2b7896270184a2"
+    },
+    {
+      "path": "inputs/numeric/answers-t.json",
+      "sha256": "38d988518a14b3ceead64328da933df8d22b8163bd675eb3fefc36c552fa73f7"
+    },
+    {
+      "path": "inputs/numeric/answers-time.json",
+      "sha256": "6b9eeb6c1fc263f5ea91267f8056e1b93bffd3439dd4ab0cf8342b55a9672df0"
+    },
+    {
+      "path": "inputs/numeric/answers-trunc.json",
+      "sha256": "57debd3d98e14a4cfc823e2dae26196ea1ceb9849b59040e1b2ef8095d29430b"
+    },
+    {
+      "path": "inputs/numeric/answers-type.json",
+      "sha256": "05170a89e864e7dd5b43c0f891f145fd02e9069bee8df76cd0899e32d006eb9a"
+    },
+    {
+      "path": "inputs/numeric/answers-var.json",
+      "sha256": "fe0cd5e04d5013366cab5c94b8d38b23e4dc89bbe4ca4462bb92fdb843f24339"
+    },
+    {
+      "path": "inputs/numeric/answers-var.p.json",
+      "sha256": "446906645bb40c33549f964911ca9f268eb2635c136a12113e256b74a7584a6a"
+    },
+    {
+      "path": "inputs/numeric/answers-var.s.json",
+      "sha256": "084581789a522b48ee099e214d2fc60edeb9d00a0add41f45f37e2ac209aba55"
+    },
+    {
+      "path": "inputs/numeric/answers-vara.json",
+      "sha256": "64d6a4362c3aeeed82279e3c6f399fe2b565b3f2b546c1d379df623e00050301"
+    },
+    {
+      "path": "inputs/numeric/answers-varp.json",
+      "sha256": "8b25f15c0e2bb9032b73c66950133a38a73169568daa1aae00c84e6d90fc556b"
+    },
+    {
+      "path": "inputs/numeric/answers-varpa.json",
+      "sha256": "35f66ada20e3e51e2c634106c60e6bff7acf5f8f5cd5ca69e766877388cafdde"
+    },
+    {
+      "path": "inputs/numeric/answers-weekday.json",
+      "sha256": "6cca881c4963cd1f23875d40a895cec1689edbd035d220cbd6f2e1dcddeb33f0"
+    },
+    {
+      "path": "inputs/numeric/answers-weeknum.json",
+      "sha256": "9cef4606feeba82ad964d2533a0b663f5e5857584bda1f7f9eead58b1ed4d2ff"
+    },
+    {
+      "path": "inputs/numeric/answers-xor.json",
+      "sha256": "b638c2ff23db336a076867c5117ed59a4518584e7c6f687fce26eb0171f05ffb"
+    },
+    {
+      "path": "inputs/numeric/answers-year.json",
+      "sha256": "a58a03fd60315b7cf117d9d4431ee7bafe1189f9b601c00dc8eee3a4f446a9d7"
+    },
+    {
+      "path": "ledger-changes.json",
+      "sha256": "f1e6e60fae94c2128a1d81db7d2066dde6208b8c7955274c4f17df2756adc364"
+    },
+    {
+      "path": "numeric-input-hashes.json",
+      "sha256": "4b9b1e1ac46e43a51e389b4d5c55d769d4bb65543b0ede023edcd70fe792ea2f"
+    },
+    {
+      "path": "numeric-qualified.json",
+      "sha256": "b8c85b0f9a9a86ff4fb2d036e33496ddafa8ff93686b6626709d23f90bf867d6"
+    },
+    {
+      "path": "numeric-summary.json",
+      "sha256": "375b81d1c96591573517bfc4e2b5c575251a53494bc4a93b4385db1bc2aa67b9"
+    },
+    {
+      "path": "regression-summary.json",
+      "sha256": "d1dd5e0bc33f524baa5beeea3636043c8d1776c8fe19d130e9f50c44410de64b"
+    },
+    {
+      "path": "report.json",
+      "sha256": "ca43d9d065f6a44bb4b856e4547b2f492a85a1577d19080a1b9c20ee3a13f711"
+    },
+    {
+      "path": "source-freeze.json",
+      "sha256": "7d150d3e9c385c591a5bc5beee55feedaa8069c17f2292c17a273c6516b2e5e9"
+    },
+    {
+      "path": "typed-raw-transitions.json",
+      "sha256": "4fd3bc8ab14ebe0eb3d471133296137789221336c7c4bf06219681371a9e2909"
+    },
+    {
+      "path": "typed-summary.json",
+      "sha256": "ca77f76978bc27fe483fd1668fcbe625ce3bce60f7099340e2f43dd1ab9ff6f7"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/cases/cases.jsonl",
+      "sha256": "6b29bdc003f19c7d086431079e17846c2638b8a037eadadb349ed51982511d13"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/manifest.json",
+      "sha256": "39a77229d630bac23c93c53ead2d66860a568bc53c4927ba20aaaed13a5c3ecb"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/outcomes/excel.jsonl",
+      "sha256": "bd0276ca12ea325000d5ef4ec3536071a53b4efa8a0c9f0518b866634db6d671"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/outcomes/local-snapshot-1735.jsonl",
+      "sha256": "b63736e31c1eed57defcb5edee65eac2467f68d765df88b0efc905f4199bff5f"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/outcomes/local-snapshot-wrap-1952.jsonl",
+      "sha256": "b63736e31c1eed57defcb5edee65eac2467f68d765df88b0efc905f4199bff5f"
+    },
+    {
+      "path": "w111-numeric-text-20260929/cases/cases.jsonl",
+      "sha256": "59095b31d5b2f34296dc62fa37214f3fd80162c97f4d0ee8e26f6de90e7dc87e"
+    },
+    {
+      "path": "w111-numeric-text-20260929/manifest.json",
+      "sha256": "c3fe2cfd693f3ab7dbe43c0e5e3d840c3ab71e39c1e796c181f058c2315bd1aa"
+    },
+    {
+      "path": "w111-numeric-text-20260929/outcomes/excel.jsonl",
+      "sha256": "3785eab28b2e50af27c42723249e2da933b09715fd969c70ad32cc6df5d8de95"
+    },
+    {
+      "path": "w111-numeric-text-20260929/outcomes/local-snapshot-1735.jsonl",
+      "sha256": "74b1ba5a2b48694eef1c99e6d1c601448d375ee980da0bec629a892a41413491"
+    },
+    {
+      "path": "w111-numeric-text-20260929/outcomes/local-snapshot-wrap-1952.jsonl",
+      "sha256": "74b1ba5a2b48694eef1c99e6d1c601448d375ee980da0bec629a892a41413491"
+    }
+  ]
+}

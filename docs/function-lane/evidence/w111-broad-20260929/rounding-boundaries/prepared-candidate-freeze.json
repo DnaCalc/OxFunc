@@ -1,0 +1,26 @@
+{
+  "phase": "independent_prepared_validation",
+  "seed": 202609293034,
+  "rows": 928,
+  "by_function": {
+    "ROUND": 224,
+    "ROUNDDOWN": 224,
+    "ROUNDUP": 224,
+    "TRUNC": 256
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/round_fn.rs": "7b8381bddb8dd66e1c2dd650907b1ff540008149728e35139365a2226a6eedbb",
+    "crates/oxfunc_core/src/functions/rounddown_fn.rs": "581e63f12f21b6a02ed73a171af3a25a4bd443ce0685f1c5ae53b2141a56065a",
+    "crates/oxfunc_core/src/functions/roundup_fn.rs": "b1bc689a5bf76f866e72783f1d0e12fd0f82e1e0bb6bc35764cfb51f575d6492",
+    "crates/oxfunc_core/src/functions/trunc_fn.rs": "5d91158d5aaf0796040a4999ecdce96f1493f5e203674b4e63d7132bc2f64c4f",
+    "formal/lean/OxFunc/DecimalRounding.lean": "ed98a52106934b6d37d0f66b014a8b1b76b1165085044d674a909de82e4d9e80",
+    "formal/lean/OxFunc/Functions/Round.lean": "1ccca87f175ce78f859ad3e8e0f59ec470b80bc0b5bfe218b5cde9276633612b"
+  },
+  "open_lanes": [
+    "initial15_precision",
+    "ROUNDUP_tiny_positive_residual",
+    "raw_overflow_numeric_publication_HO029",
+    "contextual_numeric_text_HO022",
+    "receiving_acknowledgement_HO028"
+  ]
+}

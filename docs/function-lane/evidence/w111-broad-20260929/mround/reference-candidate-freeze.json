@@ -1,0 +1,20 @@
+{
+  "frozen_utc": "2026-09-29T19:30:22.881423+00:00",
+  "numeric_matches": 47964,
+  "typed_matches": 1130,
+  "typed_before_origin_refinement": {
+    "rows": 1130,
+    "matches": 920,
+    "differences": 210
+  },
+  "numeric_body_unchanged": true,
+  "sources": {
+    "crates/oxfunc_core/src/functions/mround.rs": "58de58fe220ff01beeaeecbe6e757f67d7a8ff1d9c64f39ba5e4836e2987317f",
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": "f3f88e498d0671c554634e8f67fc28f871c602315c10d105be490ec7797a1d3d",
+    "formal/lean/OxFunc/Functions/Mround.lean": "dc4526a2c7a4775035ec9b3c18be32c2e20c71c93aac517e72b27017e6829320",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "crates/oxfunc_core/src/excel_numeric/mod.rs": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "crates/oxfunc_core/src/excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+  }
+}

@@ -1,0 +1,899 @@
+[
+  {
+    "function_id": "FUNC.FISHER",
+    "rows_judged": 24600,
+    "rows_agree": 24600,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T18:13:47.8710259Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.LOG",
+    "rows_judged": 12671,
+    "rows_agree": 12671,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T18:13:09.9271349Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.MEDIAN",
+    "rows_judged": 31611,
+    "rows_agree": 31611,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T18:14:13.6279789Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.POWER",
+    "rows_judged": 23264,
+    "rows_agree": 23226,
+    "severity": "structural",
+    "worst_ulp": 124113433,
+    "misses_by_severity": {
+      "gross": 8,
+      "numeric": 4,
+      "structural": 26
+    },
+    "misses": [
+      {
+        "id": "w111lpm-heldout-POWER-23007",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23040",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Div0"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23046",
+        "args": [
+          "0xbff0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23050",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23079",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23081",
+        "args": [
+          "0xc000000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23083",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "error",
+          "code": "Div0"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23085",
+        "args": [
+          "0xc024000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23090",
+        "args": [
+          "0xbff0000000000000",
+          "0x4340000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23094",
+        "args": [
+          "0xbfe0000000000000",
+          "0x4340000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23101",
+        "args": [
+          "0xbff0000000000000",
+          "0x433fffffffffffff"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13830554455654793216
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23105",
+        "args": [
+          "0xbfe0000000000000",
+          "0x433fffffffffffff"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23112",
+        "args": [
+          "0xbff0000000000000",
+          "0x4340000000000001"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23116",
+        "args": [
+          "0xbfe0000000000000",
+          "0x4340000000000001"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23123",
+        "args": [
+          "0xbff0000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23125",
+        "args": [
+          "0xc000000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23127",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "error",
+          "code": "Div0"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23129",
+        "args": [
+          "0xc024000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23134",
+        "args": [
+          "0xbff0000000000000",
+          "0x43e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13830554455654793216
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23138",
+        "args": [
+          "0xbfe0000000000000",
+          "0x43e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23145",
+        "args": [
+          "0xbff0000000000000",
+          "0x43dfffffffffffff"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23149",
+        "args": [
+          "0xbfe0000000000000",
+          "0x43dfffffffffffff"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23167",
+        "args": [
+          "0xbff0000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182418800017408
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23169",
+        "args": [
+          "0xc000000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23171",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "error",
+          "code": "Div0"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23173",
+        "args": [
+          "0xc024000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": {
+          "kind": "error",
+          "code": "Num"
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23098",
+        "args": [
+          "0x3ff0000000000001",
+          "0x4340000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4620005356000828844
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4620005355876715411
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 124113433
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23109",
+        "args": [
+          "0x3ff0000000000001",
+          "0x433fffffffffffff"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4620005356000828842
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4620005355876715409
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 124113433
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23120",
+        "args": [
+          "0x3ff0000000000001",
+          "0x4340000000000001"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4620005356000828846
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4620005355876715415
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 124113431
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23131",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc340000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4594043987739771341
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4594043987812514280
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 72742939
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23097",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x4340000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4600298746774613816
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4600298746725302051
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 49311765
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23108",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x433fffffffffffff"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4600298746774613817
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4600298746725302053
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 49311764
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23119",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x4340000000000001"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4600298746774613814
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4600298746725302050
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 49311764
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23130",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc340000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4613303445314885481
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4613303445360431406
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 45545925
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23087",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4607182410210086912
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182410210086976
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "numeric",
+          "ulp": 64
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23053",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41f0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4607182414505051136
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182414505051104
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "numeric",
+          "ulp": 32
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23054",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41f0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4607182423094986752
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182423094986720
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "numeric",
+          "ulp": 32
+        }
+      },
+      {
+        "id": "w111lpm-heldout-POWER-23086",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4607182420947501568
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607182420947501584
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "numeric",
+          "ulp": 16
+        }
+      }
+    ],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T18:13:30.4135744Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  }
+]

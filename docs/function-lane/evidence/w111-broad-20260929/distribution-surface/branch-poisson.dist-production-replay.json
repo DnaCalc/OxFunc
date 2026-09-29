@@ -1,0 +1,127 @@
+{
+  "function": "POISSON.DIST",
+  "matches": 300,
+  "misses": [
+    {
+      "actual": "0x3fa13fc7ec08542a",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa13fc7ec085429",
+      "id": "poisson.dist-branch-00234-count-mean-order"
+    },
+    {
+      "actual": "0x3fa4b2efe809fe99",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa4b2efe809fe98",
+      "id": "poisson.dist-branch-00235-count-mean-order"
+    },
+    {
+      "actual": "0x0081dab0943dc5e4",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0081dab0943dc520",
+      "id": "poisson.dist-branch-00236-count-mean-order"
+    },
+    {
+      "actual": "0x0081e1209a3815d5",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0081e1209a3814dd",
+      "id": "poisson.dist-branch-00237-count-mean-order"
+    },
+    {
+      "actual": "0x3fa13fc7ec08542a",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa13fc7ec085429",
+      "id": "poisson.dist-branch-00258-count-mean-order"
+    },
+    {
+      "actual": "0x3fa4b2efe809fe99",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa4b2efe809fe98",
+      "id": "poisson.dist-branch-00259-count-mean-order"
+    },
+    {
+      "actual": "0x0081dab0943dc5e4",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4086300000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x0081dab0943dc520",
+      "id": "poisson.dist-branch-00260-count-mean-order"
+    },
+    {
+      "actual": "0x0081e1209a3815d5",
+      "args": [
+        "0x3ff199999999999a",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0081e1209a3814dd",
+      "id": "poisson.dist-branch-00261-count-mean-order"
+    },
+    {
+      "actual": "0x3f7287f4397e3022",
+      "args": [
+        "0x4000000000000000",
+        "0x3fb999999999999a",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f7287f4397e3027",
+      "id": "poisson.dist-branch-00278-count-mean-order"
+    },
+    {
+      "actual": "0x3fc78b56362cef38",
+      "args": [
+        "0x4000000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc78b56362cef37",
+      "id": "poisson.dist-branch-00280-count-mean-order"
+    },
+    {
+      "actual": "0x0108d423fe2be08c",
+      "args": [
+        "0x4000000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0108d423fe2bdf36",
+      "id": "poisson.dist-branch-00285-count-mean-order"
+    },
+    {
+      "actual": "0x0186fc6b4a297ff3",
+      "args": [
+        "0x4008000000000000",
+        "0x4086300000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0186fc6b4a297f6a",
+      "id": "poisson.dist-branch-00309-count-mean-order"
+    }
+  ],
+  "rows": 312
+}

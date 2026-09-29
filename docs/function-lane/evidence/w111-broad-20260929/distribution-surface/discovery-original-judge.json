@@ -1,0 +1,400 @@
+{
+  "rows": 132,
+  "matches": 85,
+  "by_function": {
+    "FUNC.NORM.S.DIST": {
+      "rows": 22,
+      "matches": 13
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 44,
+      "matches": 24
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 33,
+      "matches": 28
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 33,
+      "matches": 20
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111pub-heldout-00082-norm_s_dist-axis-0",
+      "formula": "=NORM.S.DIST(,A100)",
+      "expected": "number:0x3fd9884533d43651",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00085-norm_s_dist-axis-0",
+      "formula": "=NORM.S.DIST(CHOOSE({1,2},A100,A101),A102)",
+      "expected": "array:1x2:[number:0x3fa55c73f6773b11|number:0x3fd345d5efad3415]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00086-norm_s_dist-axis-0",
+      "formula": "=NORM.S.DIST(CHOOSE({1;2},\"2.125\",#DIV/0!),A100)",
+      "expected": "array:2x1:[number:0x3fa55c73f6773b11|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00087-norm_s_dist-reference-0",
+      "formula": "=NORM.S.DIST(B2:B3,A100)",
+      "expected": "array:2x1:[number:0x3fa55c73f6773b11|number:0x3fd9884533d43651]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00088-norm_s_dist-axis-1",
+      "formula": "=NORM.S.DIST(A100,\"3.25\")",
+      "expected": "error:Value",
+      "actual": "number:0x3f913243b7f38024",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00093-norm_s_dist-axis-1",
+      "formula": "=NORM.S.DIST(A100,)",
+      "expected": "number:0x3fa55c73f6773b11",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00096-norm_s_dist-axis-1",
+      "formula": "=NORM.S.DIST(A100,CHOOSE({1,2},A101,A102))",
+      "expected": "array:1x2:[number:0x3f913243b7f38024|number:0x3f913243b7f38024]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00097-norm_s_dist-axis-1",
+      "formula": "=NORM.S.DIST(A100,CHOOSE({1;2},\"2.125\",#DIV/0!))",
+      "expected": "array:2x1:[error:Value|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00098-norm_s_dist-reference-1",
+      "formula": "=NORM.S.DIST(A100,B2:B3)",
+      "expected": "array:2x1:[number:0x3f913243b7f38024|number:0x3fa55c73f6773b11]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00104-norm_dist-axis-0",
+      "formula": "=NORM.DIST(,A100,A101,A102)",
+      "expected": "number:0x3fb30d093fd6669c",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00107-norm_dist-axis-0",
+      "formula": "=NORM.DIST(CHOOSE({1,2},A100,A101),A102,A103,A104)",
+      "expected": "array:1x2:[number:0x3faca72108af6564|number:0x3fb421f4a63c6b49]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00108-norm_dist-axis-0",
+      "formula": "=NORM.DIST(CHOOSE({1;2},\"2.125\",#DIV/0!),A100,A101,A102)",
+      "expected": "array:2x1:[number:0x3faca72108af6564|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00109-norm_dist-reference-0",
+      "formula": "=NORM.DIST(B2:B3,A100,A101,A102)",
+      "expected": "array:2x1:[number:0x3faca72108af6564|number:0x3fb30d093fd6669c]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00112-norm_dist-axis-1",
+      "formula": "=NORM.DIST(A100,FALSE,A101,A102)",
+      "expected": "number:0x3fb0c66dfcd19333",
+      "actual": "number:0x3fb0c66dfcd19334",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00114-norm_dist-axis-1",
+      "formula": "=NORM.DIST(A100,A101,A102,A103)",
+      "expected": "number:0x3fb0c66dfcd19333",
+      "actual": "number:0x3fb0c66dfcd19334",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00115-norm_dist-axis-1",
+      "formula": "=NORM.DIST(A100,,A101,A102)",
+      "expected": "number:0x3fb0c66dfcd19333",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00118-norm_dist-axis-1",
+      "formula": "=NORM.DIST(A100,CHOOSE({1,2},A101,A102),A103,A104)",
+      "expected": "array:1x2:[number:0x3fb4662c7ea28d39|number:0x3fadec6ce28d43a6]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00119-norm_dist-axis-1",
+      "formula": "=NORM.DIST(A100,CHOOSE({1;2},\"2.125\",#DIV/0!),A101,A102)",
+      "expected": "array:2x1:[number:0x3fb4662c7ea28d39|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00120-norm_dist-reference-1",
+      "formula": "=NORM.DIST(A100,B2:B3,A101,A102)",
+      "expected": "array:2x1:[number:0x3fb4662c7ea28d39|number:0x3fb0c66dfcd19333]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00126-norm_dist-axis-2",
+      "formula": "=NORM.DIST(A100,A101,,A102)",
+      "expected": "error:Num",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00129-norm_dist-axis-2",
+      "formula": "=NORM.DIST(A100,A101,CHOOSE({1,2},A102,A103),A104)",
+      "expected": "array:1x2:[number:0x3f7f60a9a271ea22|error:Num]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00130-norm_dist-axis-2",
+      "formula": "=NORM.DIST(A100,A101,CHOOSE({1;2},\"2.125\",#DIV/0!),A102)",
+      "expected": "array:2x1:[number:0x3f7f60a9a271ea22|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00131-norm_dist-reference-2",
+      "formula": "=NORM.DIST(A100,A101,B2:B3,A102)",
+      "expected": "array:2x1:[number:0x3f7f60a9a271ea22|error:Num]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00132-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,\"3.25\")",
+      "expected": "error:Value",
+      "actual": "number:0x3febad3174db57a0",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00135-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,TRUE)",
+      "expected": "number:0x3febad3174db579f",
+      "actual": "number:0x3febad3174db57a0",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00137-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,)",
+      "expected": "number:0x3fa6d0c7af4ca36b",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00140-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,CHOOSE({1,2},A103,A104))",
+      "expected": "array:1x2:[number:0x3febad3174db579f|number:0x3febad3174db579f]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00141-norm_dist-axis-3",
+      "formula": "=NORM.DIST(A100,A101,A102,CHOOSE({1;2},\"2.125\",#DIV/0!))",
+      "expected": "array:2x1:[error:Value|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00142-norm_dist-reference-3",
+      "formula": "=NORM.DIST(A100,A101,A102,B2:B3)",
+      "expected": "array:2x1:[number:0x3febad3174db579f|number:0x3fa6d0c7af4ca36b]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00148-expondist-axis-0",
+      "formula": "=EXPONDIST(,A100,A101)",
+      "expected": "number:0x4007000000000000",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00159-expondist-axis-1",
+      "formula": "=EXPONDIST(A100,,A101)",
+      "expected": "error:Num",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00165-expondist-axis-2",
+      "formula": "=EXPONDIST(A100,A101,\"3.25\")",
+      "expected": "error:Value",
+      "actual": "number:0x3fefff487a1326f0",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00170-expondist-axis-2",
+      "formula": "=EXPONDIST(A100,A101,)",
+      "expected": "number:0x3f307d0847806562",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00174-expondist-axis-2",
+      "formula": "=EXPONDIST(A100,A101,CHOOSE({1;2},\"2.125\",#DIV/0!))",
+      "expected": "array:2x1:[error:Value|error:Div0]",
+      "actual": "array:2x1:[number:0x3fefff487a1326f0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00181-expon_dist-axis-0",
+      "formula": "=EXPON.DIST(,A100,A101)",
+      "expected": "number:0x4007000000000000",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00184-expon_dist-axis-0",
+      "formula": "=EXPON.DIST(CHOOSE({1,2},A100,A101),A102,A103)",
+      "expected": "array:1x2:[number:0x3f7a2a61cb877b00|error:Num]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00185-expon_dist-axis-0",
+      "formula": "=EXPON.DIST(CHOOSE({1;2},\"2.125\",#DIV/0!),A100,A101)",
+      "expected": "array:2x1:[number:0x3f7a2a61cb877b00|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00186-expon_dist-reference-0",
+      "formula": "=EXPON.DIST(B2:B3,A100,A101)",
+      "expected": "array:2x1:[number:0x3f7a2a61cb877b00|number:0x4007000000000000]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00192-expon_dist-axis-1",
+      "formula": "=EXPON.DIST(A100,,A101)",
+      "expected": "error:Num",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00195-expon_dist-axis-1",
+      "formula": "=EXPON.DIST(A100,CHOOSE({1,2},A101,A102),A103)",
+      "expected": "array:1x2:[number:0x3f616f29479b9779|error:Num]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00196-expon_dist-axis-1",
+      "formula": "=EXPON.DIST(A100,CHOOSE({1;2},\"2.125\",#DIV/0!),A101)",
+      "expected": "array:2x1:[number:0x3f616f29479b9779|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00197-expon_dist-reference-1",
+      "formula": "=EXPON.DIST(A100,B2:B3,A101)",
+      "expected": "array:2x1:[number:0x3f616f29479b9779|error:Num]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00198-expon_dist-axis-2",
+      "formula": "=EXPON.DIST(A100,A101,\"3.25\")",
+      "expected": "error:Value",
+      "actual": "number:0x3fefff487a1326f0",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00203-expon_dist-axis-2",
+      "formula": "=EXPON.DIST(A100,A101,)",
+      "expected": "number:0x3f307d0847806562",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00206-expon_dist-axis-2",
+      "formula": "=EXPON.DIST(A100,A101,CHOOSE({1,2},A102,A103))",
+      "expected": "array:1x2:[number:0x3fefff487a1326f0|number:0x3fefff487a1326f0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00207-expon_dist-axis-2",
+      "formula": "=EXPON.DIST(A100,A101,CHOOSE({1;2},\"2.125\",#DIV/0!))",
+      "expected": "array:2x1:[error:Value|error:Div0]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111pub-heldout-00208-expon_dist-reference-2",
+      "formula": "=EXPON.DIST(A100,A101,B2:B3)",
+      "expected": "array:2x1:[number:0x3fefff487a1326f0|number:0x3f307d0847806562]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

@@ -25,6 +25,11 @@ pub const PHI_META: FunctionMeta = function_spec! {
 };
 
 pub fn phi_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
+    // W111 square-overflow observations distinguish worksheet density admission
+    // from the unguarded internal primitive used in other numerical graphs.
+    if !crate::excel_numeric::excel_x87_mul(x, x).is_finite() {
+        return Err(WorksheetErrorCode::Num);
+    }
     Ok(phi_kernel_impl(x))
 }
 

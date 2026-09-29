@@ -1,0 +1,13 @@
+{
+  "seed": 202609292147,
+  "rows": 2100,
+  "phase": "before_fresh_oracle_capture",
+  "input_sha256": "4dadc8f9ac82ec3fada0307fed9481a3021a7ea852b48deddd4ebe3349ea5472",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/text_slice_family.rs": "a2858c5b0ca04aef9f9b896addb652f57b4bfaa7ae4d0ea525146a15adc75645",
+    "crates/oxfunc_core/src/functions/text_b_compat_family.rs": "fd848cc6796561809996bc1636dac63e15ad9404788ac86118715b24728a70a1",
+    "crates/oxfunc_core/src/functions/exact_fn.rs": "bbf5c9ec8163429aec0d36d700902222f32ab319c8412331ed1089e1b754423f",
+    "crates/oxfunc_core/src/functions/web_text_xml_family.rs": "bece3daec654f59a398cc400151dec6afa1e4081841523dbb2495361ae684033",
+    "crates/oxfunc_core/src/functions/date_fn.rs": "d9b40673fd06871da1a24c5fe994b07ffa10eecf4441a049c225e754b111e2c0"
+  }
+}

@@ -1,4 +1,4 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{CoercionError, parse_excel_logical_text};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -45,6 +45,12 @@ fn eval_not_prepared(args: &[CalcValue]) -> Result<CalcValue, NotEvalError> {
                 CalcArray::new(array.shape(), cells).expect("input array shape is valid"),
             ))
         }
+        CoreValue::Text(text) => {
+            let raw = text.to_string_lossy();
+            let value = parse_excel_logical_text(&raw)
+                .ok_or_else(|| NotEvalError::Coercion(CoercionError::NonNumericText(raw)))?;
+            Ok(CalcValue::logical(!value))
+        }
         _ => {
             let value = coerce_prepared_to_number(&args[0]).map_err(NotEvalError::Coercion)?;
             Ok(CalcValue::logical(value == 0.0))
@@ -58,7 +64,11 @@ fn not_cell(cell: &CalcValue) -> CalcValue {
         CoreValue::Logical(b) => CalcValue::logical(!b),
         CoreValue::Error(_) => cell.clone(),
         CoreValue::Empty => CalcValue::logical(true),
-        CoreValue::Text(_) | CoreValue::Missing | CoreValue::Array(_) | CoreValue::Reference(_) => {
+        CoreValue::Text(text) => match parse_excel_logical_text(&text.to_string_lossy()) {
+            Some(value) => CalcValue::logical(!value),
+            None => CalcValue::error(WorksheetErrorCode::Value),
+        },
+        CoreValue::Missing | CoreValue::Array(_) | CoreValue::Reference(_) => {
             CalcValue::error(WorksheetErrorCode::Value)
         }
     }

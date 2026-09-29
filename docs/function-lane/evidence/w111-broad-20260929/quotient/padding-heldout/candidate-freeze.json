@@ -1,0 +1,23 @@
+{
+  "seed": 202609293041,
+  "phase": "independent_after_positional_refinement",
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/quotient_fn.rs": "c3cbf33841621d1d77e892e10c70d67c36107dd78780e5821aff309c859da475",
+    "crates/oxfunc_core/src/functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95",
+    "crates/oxfunc_core/src/functions/binary_numeric.rs": "84fe212a7d54f986a58f08a7335e3d301e92b8e861f5a3edd55e3b18c5860207",
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": "f3f88e498d0671c554634e8f67fc28f871c602315c10d105be490ec7797a1d3d",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "formal/lean/OxFunc/Functions/QuotientFn.lean": "39d4c9325d2ba77340c916d9f0077802de196e185bcb07e4cfd0431cd0e9da69"
+  },
+  "golden_row": "FUNC.QUOTIENT => FunctionMeta { function_id: \"FUNC.QUOTIENT\", arity: Arity { min: 2, max: 2 }, determinism: Deterministic, volatility: NonVolatile, host_interaction: None, thread_safety: SafePure, arg_preparation_profile: RefsVisibleInAdapter, coercion_lift_profile: Custom, lift_broadcast_profile: SurfaceNative, kernel_signature_class: NumsToNum, fec_dependency_profile: None, surface_fec_dependency_profile: RefOnly, real_result_policy: ExcelRealPolicy { arg_domain_guard: None, non_finite: Allow }, error_collapse_profile: None, precision_rounding_profile: Default, argument_laziness_profile: Eager, excel_parity: ExcelParity { status: Unverified, as_of: \"\" } }",
+  "golden_row_sha256": "d7d96f4d0f088076f43375d7d4354c78a393d373a5fe2cfd792e9f63f2446077",
+  "previous_failed_freeze": "w111-quotient-reference-heldout-20260929/candidate-freeze.json",
+  "previous_failed_rows": 5,
+  "open_lanes": [
+    "independent_positional_validation",
+    "contextual_numeric_text",
+    "multi_area_and_unresolved_references",
+    "HO_FN_027_receiving_acknowledgment"
+  ]
+}

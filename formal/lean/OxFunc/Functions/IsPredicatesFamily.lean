@@ -1,8 +1,10 @@
 import OxFunc.FunctionCore
+import OxFunc.IntegerPreparation
 
 namespace OxFunc.Functions
 
 open OxFunc
+abbrev isOddExecutable := IntegerPreparation.isOddKernel
 
 def informationPredicateBaseMeta : FunctionMeta := {
   functionId := "FUNC.INFORMATION_PREDICATE_BASE"

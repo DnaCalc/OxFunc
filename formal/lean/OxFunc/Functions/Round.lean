@@ -1,9 +1,12 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.DecimalRounding
 
 namespace OxFunc.Functions
 
 open OxFunc
+
+abbrev roundExecutable := DecimalRounding.eval .nearest
 
 private instance instDecidableEqExceptRound [DecidableEq ε] [DecidableEq α] :
     DecidableEq (Except ε α)
@@ -22,7 +25,7 @@ def roundMeta : FunctionMeta := {
   hostInteraction := HostInteractionClass.none
   threadSafety := ThreadSafetyClass.safePure
   argPreparationProfile := ArgPreparationProfile.valuesOnlyPreAdapter
-  coercionLiftProfile := CoercionLiftProfile.unaryNumericScalarOnly
+  coercionLiftProfile := CoercionLiftProfile.custom
   kernelSignatureClass := KernelSignatureClass.numsToNum
   fecDependencyProfile := FecDependencyProfile.none
   surfaceFecDependencyProfile := FecDependencyProfile.refOnly
@@ -49,6 +52,8 @@ def roundHalfAwayFromZeroInt (q : Rat) : Int :=
 def truncateDigitsTowardZero (digits : Rat) : Int :=
   truncTowardZeroInt digits
 
+-- Exact-rational reference for ordinary counts; roundExecutable is the
+-- binary64 substrate binding used for current runtime alignment.
 def roundKernel (n : Rat) (digits : Int) : Rat :=
   if digits ≥ 0 then
     let factor := ratPow10 digits.toNat
@@ -58,7 +63,7 @@ def roundKernel (n : Rat) (digits : Int) : Rat :=
     (roundHalfAwayFromZeroInt (n / factor) : Rat) * factor
 
 def evalRoundPrepared (value digits : CoercionInput) : Except CoercionError Rat :=
-  match coerceToNumber value, coerceToNumber digits with
+  match DecimalRounding.coercePreparedNumber value, DecimalRounding.coercePreparedNumber digits with
   | .ok lhs, .ok rhs => .ok (roundKernel lhs (truncateDigitsTowardZero rhs))
   | .error e, _ => .error e
   | _, .error e => .error e

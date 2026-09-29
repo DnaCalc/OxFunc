@@ -1,0 +1,575 @@
+{
+  "phase": "discovery_not_holdout",
+  "seed": 202609292147,
+  "generator_sha256": "5235e6edd958f987dd5eb793fd2374ec102ec90a65a3278eee3b4ec7074345e2",
+  "batches": [
+    {
+      "function": "INT",
+      "path": "batch-int.json",
+      "rows": 4533,
+      "sha256": "6634c886821e2c1b0a06835ae8e1061b878abd1390a94c241b3bbda4ee225880"
+    },
+    {
+      "function": "ISEVEN",
+      "path": "batch-iseven.json",
+      "rows": 4533,
+      "sha256": "12c6f2c8b8252887a1a8a6ef10b4e4b7cdec9032e5084e54e1526857547a914d"
+    },
+    {
+      "function": "ISODD",
+      "path": "batch-isodd.json",
+      "rows": 4533,
+      "sha256": "079f577cfca31f7c8de2a3122699e2c8c67e983b4a8d811fd998e7cdb304917f"
+    },
+    {
+      "function": "TRUNC",
+      "path": "batch-trunc.json",
+      "rows": 4878,
+      "sha256": "493267371ed04f2108778145912d84a3dfa436aed187e75164dabb868cef7b1e"
+    },
+    {
+      "function": "SQRT",
+      "path": "batch-sqrt.json",
+      "rows": 5676,
+      "sha256": "ec9289e96c96b094f84cdac5583e3de7c321051e49ad109b753f70952222ad62"
+    },
+    {
+      "function": "PHI",
+      "path": "batch-phi.json",
+      "rows": 3293,
+      "sha256": "5fa0559acdc6053e33df37881a6334a81e744e78eb176c0c409bdbab3e21aea1"
+    },
+    {
+      "function": "NORM.S.DIST",
+      "path": "batch-norm_s_dist.json",
+      "rows": 860,
+      "sha256": "03bfd39ed444956036c8b4bc5b8da62f1bd6c5419dfd2d8201d6b5c6e8d166dd"
+    },
+    {
+      "function": "NORM.DIST",
+      "path": "batch-norm_dist.json",
+      "rows": 860,
+      "sha256": "2a5c93d1e3da02d401cf6b7070c616bec21ee18bfcd7f4cda3d976871c20c4c5"
+    },
+    {
+      "function": "RADIANS",
+      "path": "batch-radians.json",
+      "rows": 2200,
+      "sha256": "c23f117f3f869179f95780774d9c854423577a6e7864280e7bf3583d69190fa5"
+    },
+    {
+      "function": "STANDARDIZE",
+      "path": "batch-standardize.json",
+      "rows": 2502,
+      "sha256": "535aa24025d2c56edfd3ef39153cca8711ec6e756790bb3f850cc902b75ac218"
+    },
+    {
+      "function": "SECH",
+      "path": "batch-sech.json",
+      "rows": 1600,
+      "sha256": "2875d8c73c8a9603ed43c49d0ef687fbf733d0ffe4702d2913d7d2fbca9def3e"
+    },
+    {
+      "function": "EXPONDIST",
+      "path": "batch-expondist.json",
+      "rows": 2000,
+      "sha256": "6aefc1055679ac8fefd27025d82afbb0a0afa3620ccb3549aae42a851f88bbe9"
+    },
+    {
+      "function": "EXPON.DIST",
+      "path": "batch-expon_dist.json",
+      "rows": 2000,
+      "sha256": "18cd8da2759d6cfc30108313ee53c45964fa05aaaf514c04639ce61e6258ef40"
+    },
+    {
+      "function": "PERMUTATIONA",
+      "path": "batch-permutationa.json",
+      "rows": 2200,
+      "sha256": "283b3f7269f6d6f9c5c3e4976208c7901bc526763a97b7cb565d0db4d6bc0e55"
+    },
+    {
+      "function": "LCM",
+      "path": "batch-lcm.json",
+      "rows": 2110,
+      "sha256": "38ea1938226a58d5aff2bcd566fed6c82b80d81f8824144e3a72c05e658bd031"
+    },
+    {
+      "function": "GCD",
+      "path": "batch-gcd.json",
+      "rows": 2110,
+      "sha256": "6a854d09871fc28a67d6460650965905f34fb8f08ff1f0ee26993ed915db03a6"
+    }
+  ],
+  "started_utc": "2026-09-29T15:45:46.631214+00:00",
+  "source_commit": "11b23504fe8180d08397be5435bd215e1bbb9722",
+  "source_status": " M .beads/issues.jsonl\n M crates/oxfunc_core/Cargo.toml\n M crates/oxfunc_core/src/coercion.rs\n M crates/oxfunc_core/src/excel_numeric/mod.rs\n M crates/oxfunc_core/src/excel_numeric/x87.rs\n M crates/oxfunc_core/src/functions/acot.rs\n M crates/oxfunc_core/src/functions/adapters.rs\n M crates/oxfunc_core/src/functions/aggregate_common.rs\n M crates/oxfunc_core/src/functions/argument_laziness_golden.rs\n M crates/oxfunc_core/src/functions/atan.rs\n M crates/oxfunc_core/src/functions/base_fn.rs\n M crates/oxfunc_core/src/functions/bit_common.rs\n M crates/oxfunc_core/src/functions/bitand_fn.rs\n M crates/oxfunc_core/src/functions/bitlshift_fn.rs\n M crates/oxfunc_core/src/functions/bitor_fn.rs\n M crates/oxfunc_core/src/functions/bitrshift_fn.rs\n M crates/oxfunc_core/src/functions/bitxor_fn.rs\n M crates/oxfunc_core/src/functions/complex_family.rs\n M crates/oxfunc_core/src/functions/count.rs\n M crates/oxfunc_core/src/functions/counta.rs\n M crates/oxfunc_core/src/functions/countblank_fn.rs\n M crates/oxfunc_core/src/functions/date_fn.rs\n M crates/oxfunc_core/src/functions/date_parts_family.rs\n M crates/oxfunc_core/src/functions/date_week_family.rs\n M crates/oxfunc_core/src/functions/depreciation_family.rs\n M crates/oxfunc_core/src/functions/engineering_radix_family.rs\n M crates/oxfunc_core/src/functions/exact_fn.rs\n M crates/oxfunc_core/src/functions/fact.rs\n M crates/oxfunc_core/src/functions/if_fn.rs\n M crates/oxfunc_core/src/functions/iferror.rs\n M crates/oxfunc_core/src/functions/ifna_fn.rs\n M crates/oxfunc_core/src/functions/mod.rs\n M crates/oxfunc_core/src/functions/not_fn.rs\n M crates/oxfunc_core/src/functions/quotient_fn.rs\n M crates/oxfunc_core/src/functions/reference_metadata_family.rs\n M crates/oxfunc_core/src/functions/round_fn.rs\n M crates/oxfunc_core/src/functions/text_b_compat_family.rs\n M crates/oxfunc_core/src/functions/text_slice_family.rs\n M crates/oxfunc_core/src/functions/web_text_xml_family.rs\n M docs/IN_PROGRESS_FEATURE_WORKLIST.md\n M docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md\n M docs/WORKSET_REGISTER.md\n M docs/bugs/BUG_REPORT_REGISTER.csv\n M docs/bugs/BUG_STREAM_REGISTER.csv\n M docs/bugs/streams/BUG-FUNC-011_countblank_range_only_parity_gap.md\n M docs/function-lane/EXCEL_PARITY_LEDGER.csv\n M docs/function-lane/FUNCTION_SLICE_AND_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_COMPLEX_NUMBER_FAMILY_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_CORRELATION_LEDGER.csv\n M docs/function-lane/FUNCTION_SLICE_DATE_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_DATE_TIME_AND_BUSINESS_DAY_FAMILY_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_IFERROR_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_IF_CONTRACT_PRELIM.md\n M docs/function-lane/FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md\n M docs/handoffs/HANDOFF_REGISTER.csv\n M docs/upstream/NOTES_FOR_OXFML.md\n M formal/lean/OxFunc/CoercionPrimitives.lean\n M formal/lean/OxFunc/Functions/Abs.lean\n M formal/lean/OxFunc/Functions/AbsSurface.lean\n M formal/lean/OxFunc/Functions/Acot.lean\n M formal/lean/OxFunc/Functions/AndFn.lean\n M formal/lean/OxFunc/Functions/Asinh.lean\n M formal/lean/OxFunc/Functions/Atan.lean\n M formal/lean/OxFunc/Functions/BaseFn.lean\n M formal/lean/OxFunc/Functions/BitAndFn.lean\n M formal/lean/OxFunc/Functions/BitLshiftFn.lean\n M formal/lean/OxFunc/Functions/BitOrFn.lean\n M formal/lean/OxFunc/Functions/BitRshiftFn.lean\n M formal/lean/OxFunc/Functions/BitXorFn.lean\n M formal/lean/OxFunc/Functions/ComplexFamily.lean\n M formal/lean/OxFunc/Functions/Cos.lean\n M formal/lean/OxFunc/Functions/Cosh.lean\n M formal/lean/OxFunc/Functions/Count.lean\n M formal/lean/OxFunc/Functions/CountA.lean\n M formal/lean/OxFunc/Functions/CountBlankFn.lean\n M formal/lean/OxFunc/Functions/Date.lean\n M formal/lean/OxFunc/Functions/DatePartsFamily.lean\n M formal/lean/OxFunc/Functions/DateWeekFamily.lean\n M formal/lean/OxFunc/Functions/Degrees.lean\n M formal/lean/OxFunc/Functions/DepreciationFamily.lean\n M formal/lean/OxFunc/Functions/EngineeringRadixFamily.lean\n M formal/lean/OxFunc/Functions/Even.lean\n M formal/lean/OxFunc/Functions/Exact.lean\n M formal/lean/OxFunc/Functions/Exp.lean\n M formal/lean/OxFunc/Functions/Fact.lean\n M formal/lean/OxFunc/Functions/IfError.lean\n M formal/lean/OxFunc/Functions/IfFn.lean\n M formal/lean/OxFunc/Functions/IfNaFn.lean\n M formal/lean/OxFunc/Functions/IntFn.lean\n M formal/lean/OxFunc/Functions/NotFn.lean\n M formal/lean/OxFunc/Functions/Odd.lean\n M formal/lean/OxFunc/Functions/OrFn.lean\n M formal/lean/OxFunc/Functions/QuotientFn.lean\n M formal/lean/OxFunc/Functions/Radians.lean\n M formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean\n M formal/lean/OxFunc/Functions/Sec.lean\n M formal/lean/OxFunc/Functions/Sech.lean\n M formal/lean/OxFunc/Functions/Sign.lean\n M formal/lean/OxFunc/Functions/Sin.lean\n M formal/lean/OxFunc/Functions/Sinh.lean\n M formal/lean/OxFunc/Functions/Tan.lean\n M formal/lean/OxFunc/Functions/Tanh.lean\n M formal/lean/OxFunc/Functions/TextBCompatFamily.lean\n M formal/lean/OxFunc/Functions/TextSliceFamily.lean\n M formal/lean/OxFunc/Functions/WebTextXmlFamily.lean\n M formal/lean/OxFunc/Functions/XorFn.lean\n M smart-fuzzer/tools/CellRefBatch.psm1\n M smart-fuzzer/tools/Run-ArraySupportTranche.ps1\n M smart-fuzzer/tools/Run-W109BulkBatch.ps1\n M smart-fuzzer/tools/Test-CellRefBatchHelpers.ps1\n M smart-fuzzer/tools/pmt_ppmt_local_eval/Cargo.lock\n M smart-fuzzer/tools/pmt_ppmt_local_eval/Cargo.toml\n M smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/array_tranche_local_eval.rs\n?? crates/oxfunc_core/examples/support/\n?? crates/oxfunc_core/examples/w111_atan_graphs.rs\n?? crates/oxfunc_core/examples/w111_fpatan_affinity.rs\n?? crates/oxfunc_core/examples/w111_fpatan_controls.rs\n?? crates/oxfunc_core/examples/w111_fpatan_reduction.rs\n?? crates/oxfunc_core/src/coercion_decimal.rs\n?? crates/oxfunc_core/src/coercion_decimal_powers.rs\n?? crates/oxfunc_core/src/functions/address_name_classes.rs\n?? crates/oxfunc_core/src/functions/complex_decimal.rs\n?? crates/oxfunc_core/src/functions/complex_decimal_powers.rs\n?? crates/oxfunc_core/src/functions/conditional_common.rs\n?? crates/oxfunc_core/src/functions/numeric_text.rs\n?? crates/oxfunc_core/tests/bitwise_excel_parity_20260929.rs\n?? crates/oxfunc_core/tests/db_ddb_excel_parity_20260929.rs\n?? crates/oxfunc_core/tests/sln_excel_parity_20260929.rs\n?? crates/oxfunc_core/tests/typed_json_ingress_20260929.rs\n?? crates/oxfunc_core/tests/w111_acot_live_replay.rs\n?? crates/oxfunc_core/tests/w111_address_live_replay.rs\n?? crates/oxfunc_core/tests/w111_atan_live_replay.rs\n?? crates/oxfunc_core/tests/w111_atan_typed_replay.rs\n?? crates/oxfunc_core/tests/w111_complex_kernel_live_replay.rs\n?? crates/oxfunc_core/tests/w111_complex_live_replay.rs\n?? crates/oxfunc_core/tests/w111_conditional_live_replay.rs\n?? crates/oxfunc_core/tests/w111_date_live_replay.rs\n?? crates/oxfunc_core/tests/w111_date_typed_replay.rs\n?? crates/oxfunc_core/tests/w111_fact_live_replay.rs\n?? crates/oxfunc_core/tests/w111_not_live_replay.rs\n?? crates/oxfunc_core/tests/w111_numeric_text_live_replay.rs\n?? crates/oxfunc_core/tests/w111_numeric_to_text_live_replay.rs\n?? crates/oxfunc_core/tests/w111_quotient_live_replay.rs\n?? crates/oxfunc_core/tests/w111_radix_live_replay.rs\n?? crates/oxfunc_core/tests/w111_radix_typed_replay.rs\n?? crates/oxfunc_core/tests/w111_text_slice_live_replay.rs\n?? docs/bugs/reports/BUGREP-FUNC-028_fact_negative_fraction.md\n?? docs/bugs/reports/BUGREP-FUNC-029_bitwise_admission_shift.md\n?? docs/bugs/reports/BUGREP-FUNC-030_address_coordinate_text.md\n?? docs/bugs/reports/BUGREP-FUNC-031_complex_decimal_presentation.md\n?? docs/bugs/reports/BUGREP-FUNC-032_radix_bounds_and_types.md\n?? docs/bugs/reports/BUGREP-FUNC-033_sln_arithmetic_admission.md\n?? docs/bugs/reports/BUGREP-FUNC-034_date_bounds_rollover.md\n?? docs/bugs/reports/BUGREP-FUNC-035_implicit_numeric_text.md\n?? docs/bugs/reports/BUGREP-FUNC-036_depreciation_period_arithmetic.md\n?? docs/bugs/reports/BUGREP-FUNC-037_count_error_and_omission.md\n?? docs/bugs/reports/BUGREP-FUNC-038_countblank_origin_reopening.md\n?? docs/bugs/reports/BUGREP-FUNC-039_conditional_prepared_values.md\n?? docs/bugs/reports/BUGREP-FUNC-040_atan_last_bit_graph.md\n?? docs/bugs/reports/BUGREP-FUNC-041_text_slice_defaults_unicode_arrays.md\n?? docs/bugs/streams/BUG-FUNC-050_fact_negative_fraction.md\n?? docs/bugs/streams/BUG-FUNC-051_bitwise_admission_shift.md\n?? docs/bugs/streams/BUG-FUNC-052_address_coordinate_text.md\n?? docs/bugs/streams/BUG-FUNC-053_complex_decimal_presentation.md\n?? docs/bugs/streams/BUG-FUNC-054_radix_bounds_and_types.md\n?? docs/bugs/streams/BUG-FUNC-055_sln_arithmetic_admission.md\n?? docs/bugs/streams/BUG-FUNC-056_date_bounds_rollover.md\n?? docs/bugs/streams/BUG-FUNC-057_implicit_numeric_text.md\n?? docs/bugs/streams/BUG-FUNC-058_depreciation_period_arithmetic.md\n?? docs/bugs/streams/BUG-FUNC-059_count_error_and_omission.md\n?? docs/bugs/streams/BUG-FUNC-060_conditional_prepared_values.md\n?? docs/bugs/streams/BUG-FUNC-061_atan_last_bit_graph.md\n?? docs/bugs/streams/BUG-FUNC-062_text_slice_defaults_unicode_arrays.md\n?? docs/function-lane/evidence/w111-broad-20260929/\n?? docs/handoffs/HO-FN-022_W111_IMPLICIT_TEXT_COERCION_CONTEXT.md\n?? docs/handoffs/HO-FN-023_W111_CONDITIONAL_PREPARED_VALUES.md\n?? formal/lean/OxFunc/DecimalTextConversion.lean\n?? formal/lean/OxFunc/Functions/Bitwise.lean\n?? formal/lean/OxFunc/Functions/ConditionalSelection.lean\n?? formal/lean/OxFunc/Functions/LogicalFold.lean\n?? formal/lean/OxFunc/NumericTextRendering.lean\n?? formal/lean/OxFunc/TextScalarBroadcast.lean\n?? smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/array_tranche_local_eval/\n?? smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/depreciation_graph_explorer.rs\n?? smart-fuzzer/tools/w111/Capture-LocaleProfile20260929.ps1\n?? smart-fuzzer/tools/w111/Probe-ExactNumericControls.ps1\n?? smart-fuzzer/tools/w111/Probe-WeeknumDeterminism.ps1\n?? smart-fuzzer/tools/w111/Test-AddressTextValue2Ingress.ps1\n?? smart-fuzzer/tools/w111/Test-AddressUtf16Units.ps1\n?? smart-fuzzer/tools/w111/Test-ArrayDigestOrdinal20260929.ps1\n?? smart-fuzzer/tools/w111/Test-NumericValue2Ingress20260929.ps1\n?? smart-fuzzer/tools/w111/Test-TextSliceUtf16FallbackHeldout.ps1\n?? smart-fuzzer/tools/w111/Test-TextSliceUtf16Heldout.ps1\n?? smart-fuzzer/tools/w111/Test-TextSliceUtf16Tail.ps1\n?? smart-fuzzer/tools/w111/Test-TextSliceUtf16Units.ps1\n?? smart-fuzzer/tools/w111/Test-TypedFixtureIngress20260929.ps1\n?? smart-fuzzer/tools/w111/analyze_asin_signed_capture.py\n?? smart-fuzzer/tools/w111/analyze_decimal_parser_scaling.py\n?? smart-fuzzer/tools/w111/analyze_numeric_text_20260929.py\n?? smart-fuzzer/tools/w111/analyze_numeric_to_text_discovery.py\n?? smart-fuzzer/tools/w111/compare_asin_public_runtime.py\n?? smart-fuzzer/tools/w111/complex_binary_scaling_candidate.py\n?? smart-fuzzer/tools/w111/complex_format_candidate_20260929.py\n?? smart-fuzzer/tools/w111/complex_kernel_probe/\n?? smart-fuzzer/tools/w111/complex_staged_scaling_research.py\n?? smart-fuzzer/tools/w111/derive_address_name_classes_20260929.py\n?? smart-fuzzer/tools/w111/gen_acot_holdout.py\n?? smart-fuzzer/tools/w111/gen_address_blank_numeric_text_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_final_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_grammar_validation_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_numeric_format_discriminators_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_numeric_sheet_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_numeric_text_syntax_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_probe_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_refinement_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_tokens_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_address_unicode_20260929.py\n?? smart-fuzzer/tools/w111/gen_asin_signed_probes.py\n?? smart-fuzzer/tools/w111/gen_atan_heldout2_20260929.py\n?? smart-fuzzer/tools/w111/gen_atan_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_atan_refinement_20260929.py\n?? smart-fuzzer/tools/w111/gen_bitwise_20260929.py\n?? smart-fuzzer/tools/w111/gen_bitwise_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_bitwise_typed_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_broad_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_decimal_powers.py\n?? smart-fuzzer/tools/w111/gen_complex_extremes_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_format_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_holdout_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_kernel_probes.py\n?? smart-fuzzer/tools/w111/gen_complex_midpoint_search_20260929.py\n?? smart-fuzzer/tools/w111/gen_complex_parser_edges.py\n?? smart-fuzzer/tools/w111/gen_complex_parser_probes.py\n?? smart-fuzzer/tools/w111/gen_complex_scaling_holdout.py\n?? smart-fuzzer/tools/w111/gen_complex_trig_holdout.py\n?? smart-fuzzer/tools/w111/gen_complex_trig_probes.py\n?? smart-fuzzer/tools/w111/gen_conditional_holdout.py\n?? smart-fuzzer/tools/w111/gen_conditional_shape_controls.py\n?? smart-fuzzer/tools/w111/gen_conditional_surface_probes.py\n?? smart-fuzzer/tools/w111/gen_count_family_heldout.py\n?? smart-fuzzer/tools/w111/gen_count_origin_probe.py\n?? smart-fuzzer/tools/w111/gen_countblank_computed_probe.py\n?? smart-fuzzer/tools/w111/gen_countblank_origin_refinement.py\n?? smart-fuzzer/tools/w111/gen_date_array_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_date_boundaries_20260929.py\n?? smart-fuzzer/tools/w111/gen_date_conversion_20260929.py\n?? smart-fuzzer/tools/w111/gen_date_heldout2_20260929.py\n?? smart-fuzzer/tools/w111/gen_date_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_date_integer_20260929.py\n?? smart-fuzzer/tools/w111/gen_date_refinement_20260929.py\n?? smart-fuzzer/tools/w111/gen_db_fifth_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_db_final_publication_20260929.py\n?? smart-fuzzer/tools/w111/gen_db_seventh_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_db_sixth_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_ddb_fifth_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_ddb_fourth_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_decimal_parser_midpoints.py\n?? smart-fuzzer/tools/w111/gen_decimal_parser_nibble_heldout.py\n?? smart-fuzzer/tools/w111/gen_decimal_parser_shared_edges.py\n?? smart-fuzzer/tools/w111/gen_decimal_text_powers.py\n?? smart-fuzzer/tools/w111/gen_depreciation_20260929.py\n?? smart-fuzzer/tools/w111/gen_depreciation_fourth_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_depreciation_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_depreciation_second_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_depreciation_third_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_extended_numeric_20260929.py\n?? smart-fuzzer/tools/w111/gen_imargument_holdout.py\n?? smart-fuzzer/tools/w111/gen_imdiv_holdout.py\n?? smart-fuzzer/tools/w111/gen_imsqrt_boundary_probes.py\n?? smart-fuzzer/tools/w111/gen_imsqrt_holdout.py\n?? smart-fuzzer/tools/w111/gen_imsqrt_output_probes.py\n?? smart-fuzzer/tools/w111/gen_integer_publication_boundaries_20260929.py\n?? smart-fuzzer/tools/w111/gen_locale_profile_20260929.py\n?? smart-fuzzer/tools/w111/gen_logical_text_20260929.py\n?? smart-fuzzer/tools/w111/gen_not_holdout.py\n?? smart-fuzzer/tools/w111/gen_not_text_probes.py\n?? smart-fuzzer/tools/w111/gen_numeric_text_20260929.py\n?? smart-fuzzer/tools/w111/gen_numeric_text_core_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_numeric_text_percent_bounds.py\n?? smart-fuzzer/tools/w111/gen_numeric_text_precision_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_numeric_to_text_discovery.py\n?? smart-fuzzer/tools/w111/gen_numeric_to_text_heldout.py\n?? smart-fuzzer/tools/w111/gen_quotient_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_quotient_typed_refinement.py\n?? smart-fuzzer/tools/w111/gen_quotient_typed_validation.py\n?? smart-fuzzer/tools/w111/gen_radix_bounds_20260929.py\n?? smart-fuzzer/tools/w111/gen_radix_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_radix_typed_20260929.py\n?? smart-fuzzer/tools/w111/gen_sln_20260929.py\n?? smart-fuzzer/tools/w111/gen_sln_typed_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_switch_scale_20260929.py\n?? smart-fuzzer/tools/w111/gen_text_slice_discovery.py\n?? smart-fuzzer/tools/w111/gen_text_slice_heldout.py\n?? smart-fuzzer/tools/w111/gen_text_slice_numeric_boundaries.py\n?? smart-fuzzer/tools/w111/gen_vdb_large_index_oracle_20260929.py\n?? smart-fuzzer/tools/w111/gen_vdb_noswitch_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_vdb_noswitch_second_heldout_20260929.py\n?? smart-fuzzer/tools/w111/gen_w111_broad_20260929.py\n?? smart-fuzzer/tools/w111/judge_typed_capture.py\n?? smart-fuzzer/tools/w111/probe_documented_numeric_text_api.py\n?? smart-fuzzer/tools/w111/reconcile_campaign_snapshot_20260929.py\n?? smart-fuzzer/tools/w111/replay_typed_campaign_20260929.py\n?? smart-fuzzer/tools/w111/retain_atan_20260929.py\n?? smart-fuzzer/tools/w111/retain_bitwise_20260929.py\n?? smart-fuzzer/tools/w111/retain_date_20260929.py\n?? smart-fuzzer/tools/w111/retain_depreciation_20260929.py\n?? smart-fuzzer/tools/w111/retain_locale_profile_20260929.py\n?? smart-fuzzer/tools/w111/retain_numeric_campaign.py\n?? smart-fuzzer/tools/w111/retain_numeric_to_text_evidence.py\n?? smart-fuzzer/tools/w111/retain_radix_20260929.py\n?? smart-fuzzer/tools/w111/run_numeric_campaign.py\n?? smart-fuzzer/tools/w111/snapshot_numeric_20260929.py\n?? smart-fuzzer/tools/w111/summarize_numeric_campaign.py\n",
+  "runner": "smart-fuzzer/tools/Run-W109BulkBatch.ps1",
+  "cache": "disabled",
+  "captures": [
+    {
+      "function": "INT",
+      "rows": 4533,
+      "sha256": "64a528138d58ce020350f80db0acda52d4318c0ea4d0f1283b44573fc3a55763",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:45:52.7728731Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "ISEVEN",
+      "rows": 4533,
+      "sha256": "be8afaa370ac86f30b17ba2fdc710716c4a9a139e28c789c5b640718848d415b",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:45:59.0611953Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "ISODD",
+      "rows": 4533,
+      "sha256": "e40c3b7f6e5966b1f768c159602a96460f5b8d856bba51d4c7edfdd35b6f8f1f",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:05.3769220Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "TRUNC",
+      "rows": 4878,
+      "sha256": "01eb78e440b8bc95d2a5d34691baa841b7985e59e66770d0c558ebe965d2ea11",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:12.0467507Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "SQRT",
+      "rows": 5676,
+      "sha256": "98cc405d91387f76b0eed615d0c62595b708ff3fea31ab27a2dfcb4c0b49b376",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:19.5154681Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "PHI",
+      "rows": 3293,
+      "sha256": "dce22747286895668d920fe8e77eea104996d44a59bfa844a1d5ede26a6f0965",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:26.4107714Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "NORM.S.DIST",
+      "rows": 860,
+      "sha256": "fe8b615809b3373ac2361be5224901a84416194b31598293a0420ae7b0afbbee",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:32.6321154Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "NORM.DIST",
+      "rows": 860,
+      "sha256": "09bd2c92a1f1fe0c4d4a35e01e59911ff8b62bfc5e9e5557fe15867eba8d74df",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:37.6937664Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "RADIANS",
+      "rows": 2200,
+      "sha256": "e872a81de23b7c916695c1132a82801326a87b768572a325553df6a776b70069",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:42.5120003Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "STANDARDIZE",
+      "rows": 2502,
+      "sha256": "76debfb1265058e51ed5c26dd8ae63dd3b5cbea446360b23ceaf115fb8cb05cd",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:48.3047546Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "SECH",
+      "rows": 1600,
+      "sha256": "de003cad95b5fcc1021dbb37e43d0063cdebeb2edd6ee3668ad6082570a98f78",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:53.1781739Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "EXPONDIST",
+      "rows": 2000,
+      "sha256": "cab27e80baf14ce37f9cea2b06c5061f553c2d29068d057ba6c48038c747737a",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:46:59.1389166Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "EXPON.DIST",
+      "rows": 2000,
+      "sha256": "3aacba09289de61417a0778b03cf31cbb68cba288736753a147bf78fe8a825d1",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:47:06.2093466Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "PERMUTATIONA",
+      "rows": 2200,
+      "sha256": "7b607d4922c3b4db1024b0f26b0ebf1cfa0543176892e8655382a59aa242f885",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:47:11.3716106Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "LCM",
+      "rows": 2110,
+      "sha256": "3290dd3c1a1cd9795634556f1c35c758a0cdedaced49f752e9c8dd1b5dce10ee",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:47:16.8847479Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    },
+    {
+      "function": "GCD",
+      "rows": 2110,
+      "sha256": "6f54a7fc6168b726a1b330b3157db061fc4a516530f48f0f2a0b297dd9d6d3b4",
+      "provenance": {
+        "schema_version": "w109-capture-provenance-v1",
+        "captured_utc": "2026-09-29T15:47:22.1424868Z",
+        "environment": {
+          "excel_version": "16.0",
+          "excel_build": "20430",
+          "excel_bitness": "64-bit",
+          "workbook_compatibility": "2",
+          "excel_operating_system": "Windows (64-bit) NT 10.00",
+          "excel_input_plumbing": "cell_value2_bulk"
+        },
+        "oracle_cache": {
+          "mode": "no_cache",
+          "root": null,
+          "hits": 0,
+          "misses": 0
+        },
+        "runner": {
+          "name": "Run-W109BulkBatch.ps1",
+          "version": "w109-bulk-batch-v2",
+          "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+          "powershell_version": "7.6.5"
+        }
+      }
+    }
+  ],
+  "finished_utc": "2026-09-29T15:47:22.298105+00:00"
+}

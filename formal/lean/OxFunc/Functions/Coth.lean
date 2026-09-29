@@ -1,3 +1,4 @@
+import OxFunc.HyperbolicComposition
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 
@@ -43,5 +44,7 @@ theorem cothMeta_profiles :
     ∧ cothMeta.coercionLiftProfile = CoercionLiftProfile.unaryNumericScalarOrArrayElementwise
     ∧ cothMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
   simp [cothMeta]
+
+abbrev cothCompositionBinding := OxFunc.HyperbolicComposition.coth
 
 end OxFunc.Functions

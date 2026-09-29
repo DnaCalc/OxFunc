@@ -1,5 +1,6 @@
 import OxFunc.FunctionCore
 import OxFunc.ValueUniverse
+import OxFunc.NumericTextRendering
 
 namespace OxFunc.Functions
 
@@ -34,6 +35,19 @@ def textsplitMeta : FunctionMeta := {
 
 def arrayToTextFormatAccepted (n : Int) : Bool :=
   n = 0 ∨ n = 1
+
+-- Both serializer modes share Number rendering; quoting/separators are
+-- independent of this numeric fragment binding.
+def arrayToTextNumericFragment (_strict : Bool) (number : Rat) : String :=
+  numericTextRuntimeForRat number
+
+theorem arrayToText_numeric_fragment_same_both_modes (number : Rat) :
+    arrayToTextNumericFragment true number = arrayToTextNumericFragment false number := by
+  rfl
+
+theorem arrayToText_numeric_fragment_observed_midpoint :
+    arrayToTextNumericFragment true (200000000000001 / 2) = "100000000000000" := by
+  native_decide
 
 def textSplitDefaultPad : WorksheetErrorCode :=
   WorksheetErrorCode.na

@@ -1,0 +1,35 @@
+{
+  "seed": 202609292307,
+  "numbers": 2312,
+  "rows": 8208,
+  "functions": {
+    "LEFT": 2584,
+    "LEN": 2312,
+    "EXACT": 850,
+    "LEFTB": 211,
+    "RIGHTB": 211,
+    "MIDB": 211,
+    "LENB": 211,
+    "CONCATENATE": 211,
+    "UNICODE": 211,
+    "CODE": 211,
+    "FIND": 211,
+    "SEARCH": 211,
+    "REPLACE": 211,
+    "CONCAT": 272,
+    "ADDRESS": 80
+  },
+  "excluded_all_discovery_bits": true,
+  "candidate_sha256": {
+    "crates\\oxfunc_core\\src\\functions\\numeric_text.rs": "3b0260ac9d687f635afdd8e6c911458590ea6b8ad201a935b369e80fda808ca3",
+    "crates\\oxfunc_core\\src\\functions\\adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95",
+    "crates\\oxfunc_core\\src\\functions\\reference_metadata_family.rs": "7b2d463cf786467260285b8c818d05a80c34a4395f075389ff3ccda1c77c45a2",
+    "crates\\oxfunc_core\\src\\functions\\round_fn.rs": "99cc24e69e4c301e468175f051dc708362aa4aa7e13d33e5908094a8ced1be19"
+  },
+  "open_lanes": [
+    "unobservable nonfinite/subnormal carriers",
+    "locale/context",
+    "unexercised consumers",
+    "upstream acknowledgement"
+  ]
+}

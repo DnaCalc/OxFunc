@@ -1,0 +1,181 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "recommendation": "retain Divergent/Structural",
+  "open_lanes": [
+    "current-baseline shared numeric text context",
+    "remaining array precedence coverage",
+    "canonical contract and completion review",
+    "other baseline/locale/platform phases"
+  ],
+  "functions": {
+    "BITAND": {
+      "discovery": {
+        "raw": 1235,
+        "qualified": 1235,
+        "ingress_excluded": 0
+      },
+      "discriminator": {
+        "raw": 289,
+        "qualified": 256,
+        "ingress_excluded": 33
+      },
+      "heldout": {
+        "raw": 4500,
+        "qualified": 4500,
+        "ingress_excluded": 0
+      },
+      "typed-discovery": 34,
+      "typed-heldout": 144
+    },
+    "BITOR": {
+      "discovery": {
+        "raw": 1235,
+        "qualified": 1235,
+        "ingress_excluded": 0
+      },
+      "discriminator": {
+        "raw": 289,
+        "qualified": 256,
+        "ingress_excluded": 33
+      },
+      "heldout": {
+        "raw": 4500,
+        "qualified": 4500,
+        "ingress_excluded": 0
+      },
+      "typed-discovery": 34,
+      "typed-heldout": 138
+    },
+    "BITXOR": {
+      "discovery": {
+        "raw": 1235,
+        "qualified": 1235,
+        "ingress_excluded": 0
+      },
+      "discriminator": {
+        "raw": 289,
+        "qualified": 256,
+        "ingress_excluded": 33
+      },
+      "heldout": {
+        "raw": 4500,
+        "qualified": 4500,
+        "ingress_excluded": 0
+      },
+      "typed-discovery": 34,
+      "typed-heldout": 136
+    },
+    "BITLSHIFT": {
+      "discovery": {
+        "raw": 1270,
+        "qualified": 1270,
+        "ingress_excluded": 0
+      },
+      "discriminator": {
+        "raw": 442,
+        "qualified": 400,
+        "ingress_excluded": 42
+      },
+      "heldout": {
+        "raw": 6468,
+        "qualified": 6468,
+        "ingress_excluded": 0
+      },
+      "typed-discovery": 34,
+      "typed-heldout": 140
+    },
+    "BITRSHIFT": {
+      "discovery": {
+        "raw": 1270,
+        "qualified": 1270,
+        "ingress_excluded": 0
+      },
+      "discriminator": {
+        "raw": 442,
+        "qualified": 400,
+        "ingress_excluded": 42
+      },
+      "heldout": {
+        "raw": 6465,
+        "qualified": 6465,
+        "ingress_excluded": 0
+      },
+      "typed-discovery": 34,
+      "typed-heldout": 134
+    }
+  },
+  "frozen_source_checks": [
+    {
+      "path": "crates/oxfunc_core/src/functions/bit_common.rs",
+      "frozen_sha256": "8f5cd87418d16ef5cb08540cf646b61aa7fdece45c58643f5a581179a5205229",
+      "current_sha256": "8f5cd87418d16ef5cb08540cf646b61aa7fdece45c58643f5a581179a5205229",
+      "equal": true
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/bitand_fn.rs",
+      "frozen_sha256": "db76a36a040159e2a9a5e7bd07f0f68477eda8c1143370fdcea6e7fb1dc1414f",
+      "current_sha256": "db76a36a040159e2a9a5e7bd07f0f68477eda8c1143370fdcea6e7fb1dc1414f",
+      "equal": true
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/bitor_fn.rs",
+      "frozen_sha256": "46ac52cce8719726031633f5991ab6a306787fd282555750196035ca16029402",
+      "current_sha256": "46ac52cce8719726031633f5991ab6a306787fd282555750196035ca16029402",
+      "equal": true
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/bitxor_fn.rs",
+      "frozen_sha256": "d563c1c80733c1d2d2717b219638399526f132aee62627b685b5b86c28cfe2d0",
+      "current_sha256": "d563c1c80733c1d2d2717b219638399526f132aee62627b685b5b86c28cfe2d0",
+      "equal": true
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/bitlshift_fn.rs",
+      "frozen_sha256": "fbf4bab5e97fddc0f4b46d025bf720a030904824edf2f025dd674b01e340b7ed",
+      "current_sha256": "fbf4bab5e97fddc0f4b46d025bf720a030904824edf2f025dd674b01e340b7ed",
+      "equal": true
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/bitrshift_fn.rs",
+      "frozen_sha256": "66f9fad2de895a687c0101e999c89a6b14d6dfc7bba28994f8e465d4ed789397",
+      "current_sha256": "66f9fad2de895a687c0101e999c89a6b14d6dfc7bba28994f8e465d4ed789397",
+      "equal": true
+    },
+    {
+      "path": "formal/lean/OxFunc/Functions/Bitwise.lean",
+      "frozen_sha256": "7a6e228712c0631c8d828db4d479ad857c75e856e1064af1044c09d43231ec12",
+      "current_sha256": "7a6e228712c0631c8d828db4d479ad857c75e856e1064af1044c09d43231ec12",
+      "equal": true
+    }
+  ],
+  "current_text_rows": 240,
+  "current_text_exact": 190,
+  "current_text_admitted": 240,
+  "current_text_misses_by_function": {
+    "FUNC.BITAND": 10,
+    "FUNC.BITOR": 10,
+    "FUNC.BITXOR": 10,
+    "FUNC.BITLSHIFT": 10,
+    "FUNC.BITRSHIFT": 10
+  },
+  "source_manifest": [
+    {
+      "path": "smart-fuzzer/runs/w111-numeric-text-20260929/cases/cases.jsonl",
+      "sha256": "59095b31d5b2f34296dc62fa37214f3fd80162c97f4d0ee8e26f6de90e7dc87e"
+    },
+    {
+      "path": "smart-fuzzer/runs/w111-numeric-text-20260929/outcomes/excel.jsonl",
+      "sha256": "3785eab28b2e50af27c42723249e2da933b09715fd969c70ad32cc6df5d8de95"
+    },
+    {
+      "path": "smart-fuzzer/runs/w111-numeric-text-20260929/outcomes/local-bitwise-promotion-audit-v1.jsonl",
+      "sha256": "74b1ba5a2b48694eef1c99e6d1c601448d375ee980da0bec629a892a41413491"
+    },
+    {
+      "path": "smart-fuzzer/cache/w111-typed-bitwise-promotion-audit-v1-replay.json",
+      "sha256": "13094116a6412b3e10d05d3062ef540c860b3be71a449a936e76d91bd3fe970c"
+    }
+  ]
+}

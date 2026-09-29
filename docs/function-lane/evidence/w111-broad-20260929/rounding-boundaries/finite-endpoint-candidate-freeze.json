@@ -1,0 +1,38 @@
+{
+  "seed": 202609293033,
+  "phase": "independent_after_finite_endpoint_refinement",
+  "rows_per_function": 6780,
+  "cohorts": {
+    "full_binary64_normals": 4096,
+    "decimal_carry_and_midpoint_neighbors": 1023,
+    "normal_endpoint_neighbors": 1149,
+    "signed_count_plus_decimal_point": 512
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/round_fn.rs": "df18ef8510a1ec12192001e78a51bcf0d9dd7a3770c083ca5d081f7982bf45d9",
+    "crates/oxfunc_core/src/functions/rounddown_fn.rs": "7a388232a509ec1238036e48abf39ce10b980db4a97e1ae10a448b41dcca20d2",
+    "crates/oxfunc_core/src/functions/roundup_fn.rs": "bf956e3385540d45af1815460cab5985df40b9422080613774bd3f63ba506e56",
+    "crates/oxfunc_core/src/functions/trunc_fn.rs": "424848e28c91480150f4a4cdd0a3c18532ad4b71d3a15bd1e61d75f8e9646a3d",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "crates/oxfunc_core/src/coercion_decimal_powers.rs": "fd1e7a40afdb899af32a95bba538a2f91193dcfe5e6c4e6ec41a4b89414dc4c7",
+    "formal/lean/OxFunc/DecimalRounding.lean": "4f345e1469557b29c1b3cfcbbc46c37267767b5fd520e5e783225ed15bf456bc"
+  },
+  "source_admission": "All source numbers are normal finite binary64; counts are finite normals or positive zero. Exact hexadecimal arguments require Value2 readback qualification.",
+  "comparison_policy": "Keep every raw output bit. Report finite/error comparison separately from unresolved nonfinite-encoding numeric payloads. Do not recode those payloads as errors.",
+  "open_lanes_at_freeze": [
+    "initial15_precision",
+    "raw_overflow_numeric_publication",
+    "historical_TRUNC_MAX_capture_conflict",
+    "contextual_numeric_text",
+    "evaluator_declaration_review"
+  ],
+  "previous_freeze": "candidate-freeze.json",
+  "supersession_reason": "Pre-oracle local endpoint replay found 24 ROUND negative-zero rows in the pre-existing no-digits-dropped branch. Positive-zero publication corrected from retained evidence before any new packet capture.",
+  "batch_sha256": {
+    "smart-fuzzer/runs/w111-rounding-refined-heldout-20260929/batches/batch-round.json": "5c52eb37ef707ea022bc0ff67050adeaf1bf0c2b4ea91ac93a967c0085a4b96c",
+    "smart-fuzzer/runs/w111-rounding-refined-heldout-20260929/batches/batch-rounddown.json": "9da1f653cf54f92d2863c314b2a4b3b00aeae41ca1520fb70c28b2aed19b00d6",
+    "smart-fuzzer/runs/w111-rounding-refined-heldout-20260929/batches/batch-roundup.json": "5073e77455f42a4b4188e77c2d85e5a865741ddd23b706c71952c2b36c590e50",
+    "smart-fuzzer/runs/w111-rounding-refined-heldout-20260929/batches/batch-trunc.json": "9a996b3e0989eb7e6318c353479f5efdd740f2564521322b837c603cdc712e81"
+  }
+}

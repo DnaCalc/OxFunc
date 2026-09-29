@@ -1,3 +1,4 @@
+import OxFunc.HyperbolicComposition
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 
@@ -27,11 +28,14 @@ def evalTanhSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Str
 
 theorem evalTanh_numeric_text_admitted :
     evalTanhSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalTanhSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalTanhSurfaceClass, coerceToNumber, parsed]
 
 theorem tanhMeta_profiles :
     tanhMeta.kernelSignatureClass = KernelSignatureClass.numToNum
     ∧ tanhMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter := by
   simp [tanhMeta]
+
+abbrev tanhCompositionBinding := OxFunc.HyperbolicComposition.tanh
 
 end OxFunc.Functions

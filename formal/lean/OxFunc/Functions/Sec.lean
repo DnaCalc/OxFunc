@@ -27,7 +27,8 @@ def evalSecSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalSec_numeric_text_admitted :
     evalSecSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalSecSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalSecSurfaceClass, coerceToNumber, parsed]
 
 theorem secMeta_profiles :
     secMeta.kernelSignatureClass = KernelSignatureClass.numToNum

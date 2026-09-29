@@ -1,0 +1,17 @@
+{
+  "generator": "gen_tanh_composition_holdout.py",
+  "seed": 2026092934,
+  "authority": "independent_after_tanh_coth_composition_source_freeze",
+  "batches": [
+    {
+      "function": "TANH",
+      "path": "batch-tanh.json",
+      "rows": 7142
+    },
+    {
+      "function": "COTH",
+      "path": "batch-coth.json",
+      "rows": 7142
+    }
+  ]
+}

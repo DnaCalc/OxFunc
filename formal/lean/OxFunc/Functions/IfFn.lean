@@ -1,5 +1,6 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.Functions.ConditionalSelection
 
 namespace OxFunc.Functions
 
@@ -24,10 +25,10 @@ def ifConditionTruthy : CoercionInput → Except CoercionError Bool
   | .number n => Except.ok (n ≠ 0)
   | .missingArg => Except.ok false
   | .emptyCell => Except.ok false
-  | other =>
-      match coerceToNumber other with
-      | Except.ok n => Except.ok (n ≠ 0)
-      | Except.error e => Except.error e
+  | .text text => match parseLogicalFoldText text with
+    | some b => .ok b
+    | none => .error (.nonNumericText text)
+  | .error code => .error (.worksheetError code)
 
 def evalIfAdapter (cond : CoercionInput) (thenVal elseVal : Rat) : Except CoercionError Rat :=
   match ifConditionTruthy cond with
@@ -46,7 +47,10 @@ theorem evalIfAdapter_false_branch :
 theorem evalIfAdapter_text_bad_errors :
     evalIfAdapter (.text "bad") 10 20 =
       Except.error (CoercionError.nonNumericText "bad") := by
-  simp [evalIfAdapter, ifConditionTruthy, coerceToNumber, parseSimpleNumber]
+  rfl
+
+/-- Array/reference preparation binds to the common prepared-value selection model. -/
+def evalIfPreparedValues := conditionalIf
 
 theorem ifMeta_profiles :
     ifMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter

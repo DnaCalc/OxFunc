@@ -1,0 +1,26 @@
+{
+  "authority": "prepared_distribution_candidate_before_independent_capture",
+  "utc": "2026-09-29T16:12:22.136085+00:00",
+  "sources": [
+    {
+      "source": "crates\\oxfunc_core\\src\\functions\\normal_log_family.rs",
+      "retained": "candidate-normal_log_family.rs",
+      "sha256": "00a90599d08361659de89ab9a4f8bae53dc7f10f4f948e6df3addbecdd1ca86c"
+    },
+    {
+      "source": "crates\\oxfunc_core\\src\\functions\\discrete_dist_family.rs",
+      "retained": "candidate-discrete_dist_family.rs",
+      "sha256": "9b0b97bd2231dda7f6fb3a10379d83a9e50508a643d5ffbef01cb382c8a7b3d4"
+    },
+    {
+      "source": "crates\\oxfunc_core\\src\\functions\\adapters.rs",
+      "retained": "candidate-adapters.rs",
+      "sha256": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95"
+    },
+    {
+      "source": "crates\\oxfunc_core\\src\\coercion.rs",
+      "retained": "candidate-coercion.rs",
+      "sha256": "ad0fc50306514238af2bced70f1e1d87956718a910b824deb90db6a91dd95c35"
+    }
+  ]
+}

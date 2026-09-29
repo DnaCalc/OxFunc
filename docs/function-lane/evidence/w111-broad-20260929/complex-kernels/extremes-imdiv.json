@@ -1,0 +1,6845 @@
+{
+  "function": "IMDIV",
+  "witnesses": [
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0000",
+      "args": [
+        "0xe757496f6b38ec63",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0001",
+      "args": [
+        "0x96024e32fcb4e777",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "text:-1.16770651730217E-202"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0002",
+      "args": [
+        "0x06d0d9b149084b89",
+        "0xbff0000000000000"
+      ],
+      "expected_bits": "text:-7.60454441158431E-276"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0003",
+      "args": [
+        "0xf3f50dff46795cba",
+        "0x3fb999999999999a"
+      ],
+      "expected_bits": "text:-3.76864284781928E+251"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0004",
+      "args": [
+        "0xd6f13328d77413c0",
+        "0xbfb999999999999a"
+      ],
+      "expected_bits": "text:6.46312979543913E+111"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0005",
+      "args": [
+        "0x46f12e2294aae58c",
+        "0x000730d67819e8d1"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0006",
+      "args": [
+        "0xc57095a96f6b254b",
+        "0x800730d67819e8d1"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0007",
+      "args": [
+        "0xe726bbe9e3d24ade",
+        "0x000730d67819e8d2"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0008",
+      "args": [
+        "0x9e938f40ac04340d",
+        "0x800730d67819e8d2"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0009",
+      "args": [
+        "0x4249a3c331067971",
+        "0x000730d67819e8d3"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0010",
+      "args": [
+        "0x41fd2c27de4fccaa",
+        "0x800730d67819e8d3"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0011",
+      "args": [
+        "0x3f681b63af41729a",
+        "0x01a56e1fc2f8f358"
+      ],
+      "expected_bits": "text:2.94274778029398E+297"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0012",
+      "args": [
+        "0x8c044d1f6e81848e",
+        "0x81a56e1fc2f8f358"
+      ],
+      "expected_bits": "text:8.86087545324632E+49"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0013",
+      "args": [
+        "0x399ddd209cd382e5",
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:3.68099494369794E+269"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0014",
+      "args": [
+        "0x4f40af8797d4d457",
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0015",
+      "args": [
+        "0xfb404018875c4d13",
+        "0x01a56e1fc2f8f35a"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0016",
+      "args": [
+        "0xfd785182eeb40be1",
+        "0x81a56e1fc2f8f35a"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0017",
+      "args": [
+        "0xacf6efbc5b836cee",
+        "0x16687e92154ef7ab"
+      ],
+      "expected_bits": "text:-4.39833064350175E+108"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0018",
+      "args": [
+        "0xe6617cb74aa1a07e",
+        "0x96687e92154ef7ab"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0019",
+      "args": [
+        "0xf65c035ecaf3d3a1",
+        "0x16687e92154ef7ac"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0020",
+      "args": [
+        "0x7aba67dd8f386d91",
+        "0x96687e92154ef7ac"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0021",
+      "args": [
+        "0x10146880812bc0dc",
+        "0x16687e92154ef7ad"
+      ],
+      "expected_bits": "text:3.28630805099716E-31"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0022",
+      "args": [
+        "0xd0bbaa1936fb6e76",
+        "0x96687e92154ef7ad"
+      ],
+      "expected_bits": "text:8.20050980944946E+280"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0023",
+      "args": [
+        "0xd89d80264cacedda",
+        "0x1ca3529ba7d19eae"
+      ],
+      "expected_bits": "text:-7.43924614074604E+288"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0024",
+      "args": [
+        "0x5494399804000e40",
+        "0x9ca3529ba7d19eae"
+      ],
+      "expected_bits": "text:-2.76481831441063E+269"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0025",
+      "args": [
+        "0x1001f4f4a45e3b59",
+        "0x1ca3529ba7d19eaf"
+      ],
+      "expected_bits": "text:1.44578491795725E-61"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0026",
+      "args": [
+        "0x4f2346edf019b4ff",
+        "0x9ca3529ba7d19eaf"
+      ],
+      "expected_bits": "text:-1.7029815633975E+243"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0027",
+      "args": [
+        "0x1997741dbd4271ec",
+        "0x1ca3529ba7d19eb0"
+      ],
+      "expected_bits": "text:2.15611440365784E-15"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0028",
+      "args": [
+        "0x3a182ff8026c1253",
+        "0x9ca3529ba7d19eb0"
+      ],
+      "expected_bits": "text:-7.63219078497006E+141"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0029",
+      "args": [
+        "0x521a164c34a3a50a",
+        "0x1e1708d0f84d3de6"
+      ],
+      "expected_bits": "text:3.24343028812096E+250"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0030",
+      "args": [
+        "0x9a4700d8adb1be46",
+        "0x9e1708d0f84d3de6"
+      ],
+      "expected_bits": "text:4.33094724205897E-19"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0031",
+      "args": [
+        "0x9d302472b9996780",
+        "0x1e1708d0f84d3de7"
+      ],
+      "expected_bits": "text:-0.0000427730161232142"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0032",
+      "args": [
+        "0xe9822e5c96b03386",
+        "0x9e1708d0f84d3de7"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0033",
+      "args": [
+        "0x8864340eed869f90",
+        "0x1e1708d0f84d3de8"
+      ],
+      "expected_bits": "text:-3.05940744641234E-105"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0034",
+      "args": [
+        "0xb22b58048208b1e2",
+        "0x9e1708d0f84d3de8"
+      ],
+      "expected_bits": "text:5.07119304117571E+96"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0035",
+      "args": [
+        "0xced10ebbc82cb2d5",
+        "0x1e4ccb0536608d60"
+      ],
+      "expected_bits": "text:-4.7090761157751E+233"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0036",
+      "args": [
+        "0x16f373d03fe2b8e4",
+        "0x9e4ccb0536608d60"
+      ],
+      "expected_bits": "text:-4.06608049959794E-36"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0037",
+      "args": [
+        "0x4f773ef7fd19a376",
+        "0x1e4ccb0536608d61"
+      ],
+      "expected_bits": "text:6.571532243966E+236"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0038",
+      "args": [
+        "0xad315bc5d30cb063",
+        "0x9e4ccb0536608d61"
+      ],
+      "expected_bits": "text:5.32590228911151E+71"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0039",
+      "args": [
+        "0xaa0d8ab2beccf672",
+        "0x1e4ccb0536608d62"
+      ],
+      "expected_bits": "text:-4.02520816492629E+56"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0040",
+      "args": [
+        "0xf390e6706efc6f7c",
+        "0x9e4ccb0536608d62"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0041",
+      "args": [
+        "0x0a5ee7e551a865c2",
+        "0x1e81fee341fc585c"
+      ],
+      "expected_bits": "text:1.00504227548258E-97"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0042",
+      "args": [
+        "0xb0b26d21ee9b2e7c",
+        "0x9e81fee341fc585c"
+      ],
+      "expected_bits": "text:4.07379517734028E+87"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0043",
+      "args": [
+        "0x89a40dc664c41856",
+        "0x1e81fee341fc585d"
+      ],
+      "expected_bits": "text:-3.18427559757946E-101"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0044",
+      "args": [
+        "0x93fad394393e66df",
+        "0x9e81fee341fc585d"
+      ],
+      "expected_bits": "text:1.99217170942045E-51"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0045",
+      "args": [
+        "0x65e153001871a74e",
+        "0x1e81fee341fc585e"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0046",
+      "args": [
+        "0xb853a16ad460e836",
+        "0x9e81fee341fc585e"
+      ],
+      "expected_bits": "text:2.3075584571738E+124"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0047",
+      "args": [
+        "0xc8009c008159a9d6",
+        "0x1eb67e9c127b6e73"
+      ],
+      "expected_bits": "text:-7.06485007701521E+198"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0048",
+      "args": [
+        "0xf1d6e8db668204ab",
+        "0x9eb67e9c127b6e73"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0049",
+      "args": [
+        "0xa1a611b374916f97",
+        "0x1eb67e9c127b6e74"
+      ],
+      "expected_bits": "text:-138075816159791"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0050",
+      "args": [
+        "0xfb4042006ab00130",
+        "0x9eb67e9c127b6e74"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0051",
+      "args": [
+        "0x9a2c221bb2d90355",
+        "0x1eb67e9c127b6e75"
+      ],
+      "expected_bits": "text:-1.32419613772405E-22"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0052",
+      "args": [
+        "0x87a4817fd37715d0",
+        "0x9eb67e9c127b6e75"
+      ],
+      "expected_bits": "text:7.58109331950971E-112"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0053",
+      "args": [
+        "0x5094b679b96a6dbb",
+        "0x1fc1297872d9cbb4"
+      ],
+      "expected_bits": "text:1.53496178648045E+235"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0054",
+      "args": [
+        "0x5a0b96d3e39191bc",
+        "0x9fc1297872d9cbb4"
+      ],
+      "expected_bits": "text:-5.83615550223265E+280"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0055",
+      "args": [
+        "0x34bd638c85d6dee0",
+        "0x1fc1297872d9cbb5"
+      ],
+      "expected_bits": "text:1.19857049230424E+101"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0056",
+      "args": [
+        "0x85bb070cb2dca1a0",
+        "0x9fc1297872d9cbb5"
+      ],
+      "expected_bits": "text:4.65297305280674E-126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0057",
+      "args": [
+        "0xe7f6d7864d4c95fa",
+        "0x1fc1297872d9cbb6"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0058",
+      "args": [
+        "0x64cc347260cacc1d",
+        "0x9fc1297872d9cbb6"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0059",
+      "args": [
+        "0xf4983a908507e988",
+        "0x1ff573d68f903ea1"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0060",
+      "args": [
+        "0x9abe1365abcebc15",
+        "0x9ff573d68f903ea1"
+      ],
+      "expected_bits": "text:7.24801958902743E-26"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0061",
+      "args": [
+        "0xd5b27736b6e8a23b",
+        "0x1ff573d68f903ea2"
+      ],
+      "expected_bits": "text:-6.61734505842606E+258"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0062",
+      "args": [
+        "0xa61dc7202bbe48b8",
+        "0x9ff573d68f903ea2"
+      ],
+      "expected_bits": "text:4.39900976802761E+29"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0063",
+      "args": [
+        "0x579331097d77bf50",
+        "0x1ff573d68f903ea3"
+      ],
+      "expected_bits": "text:7.38462513367694E+267"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0064",
+      "args": [
+        "0x543d3bfe32f49fd0",
+        "0x9ff573d68f903ea3"
+      ],
+      "expected_bits": "text:-6.24441873054939E+251"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0065",
+      "args": [
+        "0xa726b670dc755559",
+        "0x202ad0cc33744e4a"
+      ],
+      "expected_bits": "text:-4.39784310136992E+33"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0066",
+      "args": [
+        "0x988952ef74569886",
+        "0xa02ad0cc33744e4a"
+      ],
+      "expected_bits": "text:1.77616979383004E-37"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0067",
+      "args": [
+        "0x9dd89f9c6b20d94e",
+        "0x202ad0cc33744e4b"
+      ],
+      "expected_bits": "text:-6.68115926983184E-12"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0068",
+      "args": [
+        "0x11337f9ed50fc3a3",
+        "0xa02ad0cc33744e4b"
+      ],
+      "expected_bits": "text:-8.23085308061121E-73"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0069",
+      "args": [
+        "0x8b18253b96d38c55",
+        "0x202ad0cc33744e4c"
+      ],
+      "expected_bits": "text:-3.21616868254834E-102"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0070",
+      "args": [
+        "0x09a7d4077bc94e96",
+        "0xa02ad0cc33744e4c"
+      ],
+      "expected_bits": "text:-3.78360452574602E-109"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0071",
+      "args": [
+        "0xe7a3dfa6326ad0a5",
+        "0x20ca2fe76a3f9474"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0072",
+      "args": [
+        "0xb11c4a1ef5bb6694",
+        "0xa0ca2fe76a3f9474"
+      ],
+      "expected_bits": "text:4.00282733497237E+78"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0073",
+      "args": [
+        "0x2fd9e23ec2bf7f07",
+        "0x20ca2fe76a3f9475"
+      ],
+      "expected_bits": "text:3.49275940439035E+72"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0074",
+      "args": [
+        "0xb560470a56427a17",
+        "0xa0ca2fe76a3f9475"
+      ],
+      "expected_bits": "text:1.359560360079E+99"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0075",
+      "args": [
+        "0xfdf72544718a6e61",
+        "0x20ca2fe76a3f9476"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0076",
+      "args": [
+        "0x56da2086045f2f55",
+        "0xa0ca2fe76a3f9476"
+      ],
+      "expected_bits": "text:-2.45441910398712E+260"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0077",
+      "args": [
+        "0x8da17efc16deec38",
+        "0x2b2bff2ee48e052f"
+      ],
+      "expected_bits": "text:-5.12475518801948E-143"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0078",
+      "args": [
+        "0xa2a299bc359fcab5",
+        "0xab2bff2ee48e052f"
+      ],
+      "expected_bits": "text:7.62671162729964E-42"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0079",
+      "args": [
+        "0x2cc4714cdada7a25",
+        "0x2b2bff2ee48e0530"
+      ],
+      "expected_bits": "text:49001235.7418825"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0080",
+      "args": [
+        "0x2267357ee391f1b5",
+        "0xab2bff2ee48e0530"
+      ],
+      "expected_bits": "text:-5.94768401043889E-43"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0081",
+      "args": [
+        "0x8aedc899f3667410",
+        "0x2b2bff2ee48e0531"
+      ],
+      "expected_bits": "text:-4.9589630935352E-156"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0082",
+      "args": [
+        "0xc7305becadde7a6e",
+        "0xab2bff2ee48e0531"
+      ],
+      "expected_bits": "text:8.49412006667093E+134"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0083",
+      "args": [
+        "0x6f778fb7704e97e7",
+        "0x3bc79ca10c924222"
+      ],
+      "expected_bits": "text:8.93053921034107E+248"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0084",
+      "args": [
+        "0xfd169c7d5458a47b",
+        "0xbbc79ca10c924222"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0085",
+      "args": [
+        "0x64a76efeac28e7e6",
+        "0x3bc79ca10c924223"
+      ],
+      "expected_bits": "text:7.41866897946483E+196"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0086",
+      "args": [
+        "0x636392d8ac7aee27",
+        "0xbbc79ca10c924223"
+      ],
+      "expected_bits": "text:-5.9096081130041E+190"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0087",
+      "args": [
+        "0xd7216347a22c84fc",
+        "0x3bc79ca10c924224"
+      ],
+      "expected_bits": "text:-5.22701010059183E+131"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0088",
+      "args": [
+        "0x6284657ef220bce0",
+        "0xbbc79ca10c924224"
+      ],
+      "expected_bits": "text:-3.75856957632519E+186"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0089",
+      "args": [
+        "0x4dca0c6bd77ec506",
+        "0x4415af1d78b58c3f"
+      ],
+      "expected_bits": "text:5.48645878422088E+46"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0090",
+      "args": [
+        "0x65762794c6b7a2b9",
+        "0xc415af1d78b58c3f"
+      ],
+      "expected_bits": "text:-5.74568220505724E+160"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0091",
+      "args": [
+        "0xa053f9d8b68c7f08",
+        "0x4415af1d78b58c40"
+      ],
+      "expected_bits": "text:-5.95950154822368E-173"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0092",
+      "args": [
+        "0x0ee83e8645832e03",
+        "0xc415af1d78b58c40"
+      ],
+      "expected_bits": "text:-7.44632401222302E-257"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0093",
+      "args": [
+        "0x99abdc039dc0967c",
+        "0x4415af1d78b58c41"
+      ],
+      "expected_bits": "text:-5.12229875329197E-205"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0094",
+      "args": [
+        "0xe5ea51c1a568c2c5",
+        "0xc415af1d78b58c41"
+      ],
+      "expected_bits": "text:8.73700787700619E+162"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0095",
+      "args": [
+        "0x8b04aa4fc3c87bbc",
+        "0x54b249ad2594c37c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0096",
+      "args": [
+        "0x8716c6e96d491ba6",
+        "0xd4b249ad2594c37c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0097",
+      "args": [
+        "0x29287b538239dfcf",
+        "0x54b249ad2594c37d"
+      ],
+      "expected_bits": "text:2.03598200139668E-210"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0098",
+      "args": [
+        "0x9b5b0b096414e336",
+        "0xd4b249ad2594c37d"
+      ],
+      "expected_bits": "text:6.6735854520395E-277"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0099",
+      "args": [
+        "0x9cd51e24a58924b7",
+        "0x54b249ad2594c37e"
+      ],
+      "expected_bits": "text:-8.74319229447814E-270"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0100",
+      "args": [
+        "0xe1e57e74c8ae5fe1",
+        "0xd4b249ad2594c37e"
+      ],
+      "expected_bits": "text:3.86798063191324E+63"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0101",
+      "args": [
+        "0x06bc1eb33725d875",
+        "0x5f138d352e5096ae"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0102",
+      "args": [
+        "0xcf75bfa745baf941",
+        "0xdf138d352e5096ae"
+      ],
+      "expected_bits": "text:6.14824505074258E-76"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0103",
+      "args": [
+        "0x22ffaf841177a55d",
+        "0x5f138d352e5096af"
+      ],
+      "expected_bits": "text:4.15742178374222E-290"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0104",
+      "args": [
+        "0x1c83809afb2a6bb4",
+        "0xdf138d352e5096af"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0105",
+      "args": [
+        "0x79468215d13d54f2",
+        "0x5f138d352e5096b0"
+      ],
+      "expected_bits": "text:1.55856799322773E+126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0106",
+      "args": [
+        "0xb0d1afc083a78d11",
+        "0xdf138d352e5096b0"
+      ],
+      "expected_bits": "text:1.56409718097703E-223"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0107",
+      "args": [
+        "0xdb80eddb1cb3bc18",
+        "0x5fb317e5ef3ab326"
+      ],
+      "expected_bits": "text:-6.00817546560943E-21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0108",
+      "args": [
+        "0xfbb36b79e99ca160",
+        "0xdfb317e5ef3ab326"
+      ],
+      "expected_bits": "text:7.39266920054937E+134"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0109",
+      "args": [
+        "0x21efeac8a87b59d9",
+        "0x5fb317e5ef3ab327"
+      ],
+      "expected_bits": "text:3.19503675040567E-298"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0110",
+      "args": [
+        "0xfb45c7d430ae5673",
+        "0xdfb317e5ef3ab327"
+      ],
+      "expected_bits": "text:6.47761859782561E+132"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0111",
+      "args": [
+        "0x35bac975970befae",
+        "0x5fb317e5ef3ab328"
+      ],
+      "expected_bits": "text:7.15952160713134E-203"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0112",
+      "args": [
+        "0x0bf1ab9cd49b8a84",
+        "0xdfb317e5ef3ab328"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0113",
+      "args": [
+        "0xfca713b8a87cbfb7",
+        "0x5fe7dddf6b095ff0"
+      ],
+      "expected_bits": "text:-2.8786299682066E+138"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0114",
+      "args": [
+        "0x48612fe8b091e035",
+        "0xdfe7dddf6b095ff0"
+      ],
+      "expected_bits": "text:-4.67878571807247E-114"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0115",
+      "args": [
+        "0x4f3ed5ad1988b6eb",
+        "0x5fe7dddf6b095ff1"
+      ],
+      "expected_bits": "text:5.44801506750397E-81"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0116",
+      "args": [
+        "0x3801ab20a93c7289",
+        "0xdfe7dddf6b095ff1"
+      ],
+      "expected_bits": "text:-6.4903697767177E-193"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0117",
+      "args": [
+        "0x6fe9a6a14dc5ad5e",
+        "0x5fe7dddf6b095ff2"
+      ],
+      "expected_bits": "text:1.24448388974188E+77"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0118",
+      "args": [
+        "0x397adbc6ad12cef8",
+        "0xdfe7dddf6b095ff2"
+      ],
+      "expected_bits": "text:-8.27641440017236E-186"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0119",
+      "args": [
+        "0xf21ed66ed146f162",
+        "0x601dd55745cbb7ec"
+      ],
+      "expected_bits": "text:-5.1406437879569E+86"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0120",
+      "args": [
+        "0x88395bd0daf3df03",
+        "0xe01dd55745cbb7ec"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0121",
+      "args": [
+        "0x275a66dab726d398",
+        "0x601dd55745cbb7ed"
+      ],
+      "expected_bits": "text:4.08973199019232E-274"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0122",
+      "args": [
+        "0x6ad2bde5d13cb864",
+        "0xe01dd55745cbb7ed"
+      ],
+      "expected_bits": "text:-3.76069457378072E+51"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0123",
+      "args": [
+        "0x38a726b18d642dd0",
+        "0x601dd55745cbb7ee"
+      ],
+      "expected_bits": "text:8.70849350399547E-191"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0124",
+      "args": [
+        "0xfa1ac372c829c25b",
+        "0xe01dd55745cbb7ee"
+      ],
+      "expected_bits": "text:1.51816302074716E+125"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0125",
+      "args": [
+        "0xd57568e834af7fb0",
+        "0x6126c2d4256ffcc2"
+      ],
+      "expected_bits": "text:-4.79524717045982E-57"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0126",
+      "args": [
+        "0xe356d8f5d936428b",
+        "0xe126c2d4256ffcc2"
+      ],
+      "expected_bits": "text:34490244638.6277"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0127",
+      "args": [
+        "0x6de3f62144c474f1",
+        "0x6126c2d4256ffcc3"
+      ],
+      "expected_bits": "text:2.25485598832923E+61"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0128",
+      "args": [
+        "0x6c110833ffd90b43",
+        "0xe126c2d4256ffcc3"
+      ],
+      "expected_bits": "text:-3.58363452869408E+52"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0129",
+      "args": [
+        "0x8447e17ddbe534ac",
+        "0x6126c2d4256ffcc4"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0130",
+      "args": [
+        "0xdfd2903a914bd1a9",
+        "0xe126c2d4256ffcc4"
+      ],
+      "expected_bits": "text:3.88897526338292E-07"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0131",
+      "args": [
+        "0xe967759fbc1b4df3",
+        "0x6974e718d7d76259"
+      ],
+      "expected_bits": "text:-0.561158199452772"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0132",
+      "args": [
+        "0x8eec99a6455cdd36",
+        "0xe974e718d7d76259"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0133",
+      "args": [
+        "0xb09d5b506a6fc608",
+        "0x6974e718d7d7625a"
+      ],
+      "expected_bits": "text:-1.62258798800391E-274"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0134",
+      "args": [
+        "0xf3925bdb9285f7bd",
+        "0xe974e718d7d7625a"
+      ],
+      "expected_bits": "text:5.13453572197738E+48"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0135",
+      "args": [
+        "0x4c8e64b6d89a7f16",
+        "0x6974e718d7d7625b"
+      ],
+      "expected_bits": "text:6.10504185935214E-140"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0136",
+      "args": [
+        "0xdea9bc9355838427",
+        "0xe974e718d7d7625b"
+      ],
+      "expected_bits": "text:1.02839380447011E-52"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0137",
+      "args": [
+        "0x28bf68df6d6e8fcf",
+        "0x7e37e43c8800759b"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0138",
+      "args": [
+        "0x24e508b6d4ed2777",
+        "0xfe37e43c8800759b"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0139",
+      "args": [
+        "0xced53c62e0196ec9",
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:-5.86258731505354E-229"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0140",
+      "args": [
+        "0x91153ef5db278424",
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0141",
+      "args": [
+        "0x6540805a714a9abd",
+        "0x7e37e43c8800759d"
+      ],
+      "expected_bits": "text:5.34943229682809E-121"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0142",
+      "args": [
+        "0x26b7be911ef3f89f",
+        "0xfe37e43c8800759d"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0143",
+      "args": [
+        "0x4a0afe9e166fccc3",
+        "0x7fe1ccf385ebc89f"
+      ],
+      "expected_bits": "text:4.93158146233099E-260"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0144",
+      "args": [
+        "0x7f69895b651c1a84",
+        "0xffe1ccf385ebc89f"
+      ],
+      "expected_bits": "text:-0.00560386744491123"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0145",
+      "args": [
+        "0x8b4a449cc45dfa8d",
+        "0x7fe1ccf385ebc8a0"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0146",
+      "args": [
+        "0x9b9354d3e1114c9e",
+        "0xffe1ccf385ebc8a0"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0147",
+      "args": [
+        "0x7d1d16fdcf9ef773",
+        "0x7fe1ccf385ebc8a1"
+      ],
+      "expected_bits": "text:4.64468928726947E-14"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0148",
+      "args": [
+        "0x1059086077d0034c",
+        "0xffe1ccf385ebc8a1"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0149",
+      "args": [
+        "0xbbf2c33e88bbd513",
+        "0x1ffffffffffffffa"
+      ],
+      "expected_bits": "text:-4.26169914613661E+134"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0150",
+      "args": [
+        "0x2c5e48db8e1c4482",
+        "0x9ffffffffffffffa"
+      ],
+      "expected_bits": "text:-3.80199032254429E+59"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0151",
+      "args": [
+        "0x9f7f443701117e5d",
+        "0x1ffffffffffffffb"
+      ],
+      "expected_bits": "text:-0.00381670706751418"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0152",
+      "args": [
+        "0xe2383b22247ad2d6",
+        "0x9ffffffffffffffb"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0153",
+      "args": [
+        "0x1dec41a2bb78c1ce",
+        "0x1ffffffffffffffc"
+      ],
+      "expected_bits": "text:1.02796145613002E-10"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0154",
+      "args": [
+        "0xa4f264689927ed57",
+        "0x9ffffffffffffffc"
+      ],
+      "expected_bits": "text:6.9483846558701E+23"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0155",
+      "args": [
+        "0xb0efe39c57fef0c0",
+        "0x1ffffffffffffffd"
+      ],
+      "expected_bits": "text:-3.78112616289528E+81"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0156",
+      "args": [
+        "0x4543767d9f5ae9ae",
+        "0x9ffffffffffffffd"
+      ],
+      "expected_bits": "text:-3.15474285654238E+179"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0157",
+      "args": [
+        "0x1f1e74a25d1a69f5",
+        "0x1ffffffffffffffe"
+      ],
+      "expected_bits": "text:0.0000580894517387582"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0158",
+      "args": [
+        "0x42ab2143f3f59e24",
+        "0x9ffffffffffffffe"
+      ],
+      "expected_bits": "text:-9.99876816016621E+166"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0159",
+      "args": [
+        "0x45810a078ec08da8",
+        "0x1fffffffffffffff"
+      ],
+      "expected_bits": "text:4.4190208528697E+180"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0160",
+      "args": [
+        "0x61582e152e7d44f7",
+        "0x9fffffffffffffff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0161",
+      "args": [
+        "0x5e865a1aed8e4142",
+        "0x2000000000000000"
+      ],
+      "expected_bits": "text:1.49689574204836E+301"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0162",
+      "args": [
+        "0x6ab141c9820e4584",
+        "0xa000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0163",
+      "args": [
+        "0xccfee1328ea24618",
+        "0x2000000000000001"
+      ],
+      "expected_bits": "text:-5.32254887939838E+216"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0164",
+      "args": [
+        "0x38f87007ae37294e",
+        "0xa000000000000001"
+      ],
+      "expected_bits": "text:-1.97200106325024E+120"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0165",
+      "args": [
+        "0x5ef88b1ffc755edf",
+        "0x2000000000000002"
+      ],
+      "expected_bits": "text:2.10388201863238E+303"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0166",
+      "args": [
+        "0x34d3d5ee0d915534",
+        "0xa000000000000002"
+      ],
+      "expected_bits": "text:-2.16927848480488E+100"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0167",
+      "args": [
+        "0xbe30b2ffce278d7b",
+        "0x2000000000000003"
+      ],
+      "expected_bits": "text:-2.60653763247174E+145"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0168",
+      "args": [
+        "0xf61831aac483aacd",
+        "0xa000000000000003"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0169",
+      "args": [
+        "0x89804d56d8ff5d55",
+        "0x2000000000000004"
+      ],
+      "expected_bits": "text:-4.33835715804467E-109"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0170",
+      "args": [
+        "0xb0baa5d3e2838daf",
+        "0xa000000000000004"
+      ],
+      "expected_bits": "text:3.94956839457085E+80"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0171",
+      "args": [
+        "0xa1e500d9b2c241b1",
+        "0x2000000000000005"
+      ],
+      "expected_bits": "text:-1409509067.03526"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0172",
+      "args": [
+        "0xb8d20b74d1934216",
+        "0xa000000000000005"
+      ],
+      "expected_bits": "text:3.64031693314936E+119"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0173",
+      "args": [
+        "0x68656be59454921c",
+        "0x2000000000000006"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0174",
+      "args": [
+        "0x7852e1fed0e9214a",
+        "0xa000000000000006"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0175",
+      "args": [
+        "0x1c8826e1d5fcaba8",
+        "0x5feffffffffffff9"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0176",
+      "args": [
+        "0x83c0b132335759af",
+        "0xdfeffffffffffff9"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0177",
+      "args": [
+        "0xd5eabdde0b0bd740",
+        "0x5feffffffffffffa"
+      ],
+      "expected_bits": "text:-5.71793521225911E-49"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0178",
+      "args": [
+        "0x9760eb9fcf0d0240",
+        "0xdfeffffffffffffa"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0179",
+      "args": [
+        "0xd983277f0f80c69a",
+        "0x5feffffffffffffb"
+      ],
+      "expected_bits": "text:-1.18047380184151E-31"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0180",
+      "args": [
+        "0x27d2ebd327b15089",
+        "0xdfeffffffffffffb"
+      ],
+      "expected_bits": "text:-5.59618901164939E-271"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0181",
+      "args": [
+        "0x130d02d8a4aebc8d",
+        "0x5feffffffffffffc"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0182",
+      "args": [
+        "0xc256d124a2a38ef2",
+        "0xdfeffffffffffffc"
+      ],
+      "expected_bits": "text:2.92361346760366E-143"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0183",
+      "args": [
+        "0x528d85329e8f1f14",
+        "0x5feffffffffffffd"
+      ],
+      "expected_bits": "text:3.50390053864955E-65"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0184",
+      "args": [
+        "0xcf343f1a5427fe44",
+        "0xdfeffffffffffffd"
+      ],
+      "expected_bits": "text:2.66803203951228E-81"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0185",
+      "args": [
+        "0x9be9e1f6a188d8ef",
+        "0x5feffffffffffffe"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0186",
+      "args": [
+        "0x7917b6ea8fa44f3e",
+        "0xdfeffffffffffffe"
+      ],
+      "expected_bits": "text:-1.53092019116632E+121"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0187",
+      "args": [
+        "0xa4178c6bac0dab2e",
+        "0x5fefffffffffffff"
+      ],
+      "expected_bits": "text:-6.04098490773724E-289"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0188",
+      "args": [
+        "0xb6e1fbaa8ecaca4a",
+        "0xdfefffffffffffff"
+      ],
+      "expected_bits": "text:1.8794757700475E-198"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0189",
+      "args": [
+        "0x7a308e50a5447465",
+        "0x5ff0000000000000"
+      ],
+      "expected_bits": "text:2.80176344276131E+126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0190",
+      "args": [
+        "0x54740a82af12b2c4",
+        "0xdff0000000000000"
+      ],
+      "expected_bits": "text:-5.10835921992841E-56"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0191",
+      "args": [
+        "0xe40541e196c935a5",
+        "0x5ff0000000000001"
+      ],
+      "expected_bits": "text:-49016108352632300000"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0192",
+      "args": [
+        "0x50dde005421f85ee",
+        "0xdff0000000000001"
+      ],
+      "expected_bits": "text:-2.64198377992278E-73"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0193",
+      "args": [
+        "0x2f146f5d9d1a6daf",
+        "0x5ff0000000000002"
+      ],
+      "expected_bits": "text:5.02109596179336E-236"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0194",
+      "args": [
+        "0x819f7c5bdab8816b",
+        "0xdff0000000000002"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0195",
+      "args": [
+        "0x1adbd70871899680",
+        "0x5ff0000000000003"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0196",
+      "args": [
+        "0x3e8c9480f40b114a",
+        "0xdff0000000000003"
+      ],
+      "expected_bits": "text:-1.58816627614511E-161"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0197",
+      "args": [
+        "0xd18df512cfd7612d",
+        "0x5ff0000000000004"
+      ],
+      "expected_bits": "text:-5.42567721110944E-70"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0198",
+      "args": [
+        "0xa793b0bb042c28ca",
+        "0xdff0000000000004"
+      ],
+      "expected_bits": "text:3.6397993629479E-272"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0199",
+      "args": [
+        "0x58596f9fc274a9c3",
+        "0x5ff0000000000005"
+      ],
+      "expected_bits": "text:2.98999113213934E-37"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0200",
+      "args": [
+        "0x72a9e25ec9ecf47c",
+        "0xdff0000000000005"
+      ],
+      "expected_bits": "text:-1.64772395382487E+90"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0201",
+      "args": [
+        "0x291d563d255cf2a9",
+        "0x1e5ffffffffffffa"
+      ],
+      "expected_bits": "text:5.48811318900829E+51"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0202",
+      "args": [
+        "0x1a7503bc09712143",
+        "0x9e5ffffffffffffa"
+      ],
+      "expected_bits": "text:-1.42400387035481E-19"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0203",
+      "args": [
+        "0x785cee7f14f27e21",
+        "0x1e5ffffffffffffb"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0204",
+      "args": [
+        "0x8bf0129030ee6df5",
+        "0x9e5ffffffffffffb"
+      ],
+      "expected_bits": "text:1.57802933957829E-89"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0205",
+      "args": [
+        "0xa29cf67ffce814bc",
+        "0x1e5ffffffffffffc"
+      ],
+      "expected_bits": "text:-267135513796475000000"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0206",
+      "args": [
+        "0x4503a17a1596e4cf",
+        "0x9e5ffffffffffffc"
+      ],
+      "expected_bits": "text:-1.33461085466299E+186"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0207",
+      "args": [
+        "0x458627d61c79078f",
+        "0x1e5ffffffffffffd"
+      ],
+      "expected_bits": "text:3.85603556632061E+188"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0208",
+      "args": [
+        "0x03a8c418babe9ec5",
+        "0x9e5ffffffffffffd"
+      ],
+      "expected_bits": "text:-2.23304658271211E-129"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0209",
+      "args": [
+        "0x2bb0f622acb2cce9",
+        "0x1e5ffffffffffffe"
+      ],
+      "expected_bits": "text:1.39550852883699E+64"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0210",
+      "args": [
+        "0x7898cfc23ce19e78",
+        "0x9e5ffffffffffffe"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0211",
+      "args": [
+        "0x51bcab683e45a657",
+        "0x1e5fffffffffffff"
+      ],
+      "expected_bits": "text:2.50569078475222E+247"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0212",
+      "args": [
+        "0x4a2180c15f4bde10",
+        "0x9e5fffffffffffff"
+      ],
+      "expected_bits": "text:-5.75424368580792E+210"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0213",
+      "args": [
+        "0x1f67d4af214a16b3",
+        "0x1e60000000000000"
+      ],
+      "expected_bits": "text:97610.9456272971"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0214",
+      "args": [
+        "0xcb4c93dc3b2b5fb4",
+        "0x9e60000000000000"
+      ],
+      "expected_bits": "text:2.46287483508804E+216"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0215",
+      "args": [
+        "0x49039acfedc4b98a",
+        "0x1e60000000000001"
+      ],
+      "expected_bits": "text:2.45865754327418E+205"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0216",
+      "args": [
+        "0x6c8e357c0a7bb486",
+        "0x9e60000000000001"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0217",
+      "args": [
+        "0xcc50756ea04d6792",
+        "0x1e60000000000002"
+      ],
+      "expected_bits": "text:-1.85918611861406E+221"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0218",
+      "args": [
+        "0xc11f5b22de62d0c3",
+        "0x9e60000000000002"
+      ],
+      "expected_bits": "text:2.31125720365666E+167"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0219",
+      "args": [
+        "0xfe288cf8aa809db4",
+        "0x1e60000000000003"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0220",
+      "args": [
+        "0x544037ec17452467",
+        "0x9e60000000000003"
+      ],
+      "expected_bits": "text:-3.1170626014164E+259"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0221",
+      "args": [
+        "0x6fe1db8a857af31d",
+        "0x1e60000000000004"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0222",
+      "args": [
+        "0x571695e9b1fd4437",
+        "0x9e60000000000004"
+      ],
+      "expected_bits": "text:-1.52727647493028E+273"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0223",
+      "args": [
+        "0xb70a056a6eb4c484",
+        "0x1e60000000000005"
+      ],
+      "expected_bits": "text:-6.56182861817184E+118"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0224",
+      "args": [
+        "0x55b107c54cff0a06",
+        "0x9e60000000000005"
+      ],
+      "expected_bits": "text:-2.74567964201975E+266"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0225",
+      "args": [
+        "0x260fd5d277cc0181",
+        "0x1e60000000000006"
+      ],
+      "expected_bits": "text:1.05790739743763E+37"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0226",
+      "args": [
+        "0xec54892113e8b703",
+        "0x9e60000000000006"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0227",
+      "args": [
+        "0xa02cd552a49811ff",
+        "0x3124603da72a98ba"
+      ],
+      "expected_bits": "text:-1.86473767219676E-82"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0228",
+      "args": [
+        "0x504f9c55d5deed42",
+        "0x4e0106f536da337f"
+      ],
+      "expected_bits": "text:127576605196.009"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0229",
+      "args": [
+        "0x5a33ca0458f0919e",
+        "0x1ced67582bc2e52a"
+      ],
+      "expected_bits": "text:1.37546834431023E+295"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0230",
+      "args": [
+        "0x33a9493b15207c97",
+        "0x2a5263089c372707"
+      ],
+      "expected_bits": "text:9.81393424185052E+44"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0231",
+      "args": [
+        "0xb6da43d5bf8b93af",
+        "0x475b82c447ea4214"
+      ],
+      "expected_bits": "text:-3.22073420596344E-80"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0232",
+      "args": [
+        "0x31a6fd494e3696ec",
+        "0x18e3df68f7338cde"
+      ],
+      "expected_bits": "text:1.86702073025518E+119"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0233",
+      "args": [
+        "0x770c06a8f84ad7c6",
+        "0x145053255870317c"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0234",
+      "args": [
+        "0x1fd9630b433a8d69",
+        "0x3d7ca907bc5d5650"
+      ],
+      "expected_bits": "text:1.81598068256088E-143"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0235",
+      "args": [
+        "0x1b811b02b1273002",
+        "0x2429485ea715cc7c"
+      ],
+      "expected_bits": "text:1.94166037578267E-42"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0236",
+      "args": [
+        "0x32172408f11d761f",
+        "0x74d3446fd3583742"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0237",
+      "args": [
+        "0xfde8f70c09191d96",
+        "0x32fe63cb094fb6fa"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0238",
+      "args": [
+        "0x2f39aef68a0fba12",
+        "0x6a74ed2b825bd0b6"
+      ],
+      "expected_bits": "text:5.15848298000786E-286"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0239",
+      "args": [
+        "0xda21e7dae7d0a6b7",
+        "0xb40601567927b985"
+      ],
+      "expected_bits": "text:3.4575020202038E+183"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0240",
+      "args": [
+        "0x77669b1c09d52bc9",
+        "0x7fa6a4b19afde9c4"
+      ],
+      "expected_bits": "text:1.83367310927911E-40"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0241",
+      "args": [
+        "0x7016aed336fb1180",
+        "0x46b9f792f54ba1b1"
+      ],
+      "expected_bits": "text:1.67160125151367E+199"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0242",
+      "args": [
+        "0x5b66207c1771fe47",
+        "0xc8c22283874b1056"
+      ],
+      "expected_bits": "text:-6.21363755012198E+89"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0243",
+      "args": [
+        "0x2970d7088d6ea7ec",
+        "0x83f5aace2d31a9eb"
+      ],
+      "expected_bits": "text:-3.22504559446946E+180"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0244",
+      "args": [
+        "0xa1baa104aaa0fe15",
+        "0x74da074ea3fdfabe"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0245",
+      "args": [
+        "0x5b82726dadeb54b6",
+        "0xfabcea57428e1d71"
+      ],
+      "expected_bits": "text:-3.89788004212854E-151"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0246",
+      "args": [
+        "0x84ab6d8c637c53bc",
+        "0xc791809ee9927465"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0247",
+      "args": [
+        "0x4c4e948d0b8fb2e9",
+        "0x5b7a5c501cdbc364"
+      ],
+      "expected_bits": "text:8.20724168297675E-74"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0248",
+      "args": [
+        "0xc4689d8c82715745",
+        "0x3e27f476588a9b2b"
+      ],
+      "expected_bits": "text:-1.30260274352178E+30"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0249",
+      "args": [
+        "0xe682fdd4c2b15c56",
+        "0x9dfc1b17453c8fd6"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0250",
+      "args": [
+        "0x943585c0db034b55",
+        "0x5f584d9d9e37653e"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0251",
+      "args": [
+        "0x59a1359089366ec8",
+        "0xde04ccb7c6599b0b"
+      ],
+      "expected_bits": "text:-7.00818043884004E-22"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0252",
+      "args": [
+        "0xe437f54e4c3bc114",
+        "0xa1c4cb22d0716c00"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0253",
+      "args": [
+        "0xb728ef8464f4086e",
+        "0x3b8d3f21896dba9b"
+      ],
+      "expected_bits": "text:-7.22179077157161E-22"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0254",
+      "args": [
+        "0xf6810948b54faaf4",
+        "0x2c295e2ff162a250"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0255",
+      "args": [
+        "0x638edc335d1b36d3",
+        "0xfaab2ce7c12ea05f"
+      ],
+      "expected_bits": "text:-4.72197446634296E-112"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0256",
+      "args": [
+        "0x829c007625ff822a",
+        "0xdc82bf047435bc78"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0257",
+      "args": [
+        "0x620ba86c525d6758",
+        "0xcf104240f4ffd70f"
+      ],
+      "expected_bits": "text:-2.77216672574871E+91"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0258",
+      "args": [
+        "0x301c5d515e3ba794",
+        "0x8e44465141a1c8cc"
+      ],
+      "expected_bits": "text:-1.00704571067574E+163"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0259",
+      "args": [
+        "0xd1e2b01d245d949d",
+        "0x79b05ca1a8892c2e"
+      ],
+      "expected_bits": "text:-2.0027286693709E-192"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0260",
+      "args": [
+        "0x69a181cab642912c",
+        "0x8381d06ff8dc97ae"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0261",
+      "args": [
+        "0xcaad890df9965f85",
+        "0x33e7deec92985f3c"
+      ],
+      "expected_bits": "text:-4.64936781394358E+109"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0262",
+      "args": [
+        "0xd037270448b803b5",
+        "0xd7599e1f740e8ffb"
+      ],
+      "expected_bits": "text:4.3514810738008E-35"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0263",
+      "args": [
+        "0xce3727875d743c5f",
+        "0x042a08593cc2c24f"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0264",
+      "args": [
+        "0x3766373f590c4f5d",
+        "0xb89ee01af35b61a5"
+      ],
+      "expected_bits": "text:-0.0000013723961504144"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0265",
+      "args": [
+        "0xe8951853b330316c",
+        "0xfe9eedabed590041"
+      ],
+      "expected_bits": "text:7.43471108478008E-107"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0266",
+      "args": [
+        "0xf040fb6c522a560d",
+        "0xc7ed9b7b8a277db4"
+      ],
+      "expected_bits": "text:1.67482544945142E+194"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0267",
+      "args": [
+        "0x44670803686cb27d",
+        "0xbdf68781727b99b6"
+      ],
+      "expected_bits": "text:-1.03671642663057E+31"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0268",
+      "args": [
+        "0x4fe1c1bed09c3596",
+        "0x2d2ee024ddd41edf"
+      ],
+      "expected_bits": "text:1.35652514999172E+167"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0269",
+      "args": [
+        "0xd8245dbb6d5ab2d4",
+        "0xc833009130669457"
+      ],
+      "expected_bits": "text:6.20516603986222E+76"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0270",
+      "args": [
+        "0x3574ba019381b27f",
+        "0xc6e7b0686024ab66"
+      ],
+      "expected_bits": "text:-9.00763060064321E-85"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0271",
+      "args": [
+        "0xdcb788b65056c7f0",
+        "0x87566229917e9be0"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0272",
+      "args": [
+        "0x04b2a25bcc6f8a05",
+        "0x76c3d5676e4b36a5"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0273",
+      "args": [
+        "0x09b29cd5466fa96d",
+        "0x2520db6d47588132"
+      ],
+      "expected_bits": "text:7.77778324232481E-133"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0274",
+      "args": [
+        "0x2441ca2bc9ecb46d",
+        "0xd061717f1c727759"
+      ],
+      "expected_bits": "text:-3.02944200901261E-213"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0275",
+      "args": [
+        "0x92856b9984cf5374",
+        "0xff934aab102ba65b"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0276",
+      "args": [
+        "0xde258591088fbee5",
+        "0xcbaa339ee9f62ef4"
+      ],
+      "expected_bits": "text:1.04574945940673E+89"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0277",
+      "args": [
+        "0x0e3fb176549e64f5",
+        "0x09984cd93dc398f4"
+      ],
+      "expected_bits": "text:2.46363443706274E+22"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0278",
+      "args": [
+        "0xee9d4c6174f1e5cb",
+        "0xc1c0525bd246df10"
+      ],
+      "expected_bits": "text:1.23761191072678E+216"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0279",
+      "args": [
+        "0x329cbeaa92b44ae3",
+        "0x92d296656d549feb"
+      ],
+      "expected_bits": "text:-1.29591437230297E+153"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0280",
+      "args": [
+        "0xfd339766d1f7769a",
+        "0xcbe0a30f2402efba"
+      ],
+      "expected_bits": "text:3.83405753458788E+237"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0281",
+      "args": [
+        "0x37c2f5106e934f04",
+        "0xe262dfe330bfcb8c"
+      ],
+      "expected_bits": "text:-5.00543910002569E-206"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0282",
+      "args": [
+        "0xe293506eea79e156",
+        "0xbaf142b88fa3302f"
+      ],
+      "expected_bits": "text:7.97695597970002E+190"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0283",
+      "args": [
+        "0x0081acfd8e245782",
+        "0xaeb006a508a2ce3d"
+      ],
+      "expected_bits": "text:-3.81405514267488E-223"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0284",
+      "args": [
+        "0x17a0c9b04c2126b0",
+        "0x2396056137cf22cb"
+      ],
+      "expected_bits": "text:2.42900543782648E-58"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0285",
+      "args": [
+        "0x84efb7a13a379d6e",
+        "0x24125f86f423d545"
+      ],
+      "expected_bits": "text:-1.05473834674055E-150"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0286",
+      "args": [
+        "0xd557b376e9071b72",
+        "0x67256737332510f2"
+      ],
+      "expected_bits": "text:-1.78131238593754E-86"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0287",
+      "args": [
+        "0x77547127a4e191b5",
+        "0xf95cf7a0d23f24a3"
+      ],
+      "expected_bits": "text:-1.64306890814334E-10"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0288",
+      "args": [
+        "0x85fa864f0ebae461",
+        "0x68066a87131e715d"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0289",
+      "args": [
+        "0x72defe5caf2a1d3a",
+        "0xa59348a587e93343"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0290",
+      "args": [
+        "0x10b40a0338d920d9",
+        "0x366b5d89ff4629ad"
+      ],
+      "expected_bits": "text:2.20591862184415E-182"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0291",
+      "args": [
+        "0x758540c5ee3e2ed5",
+        "0xada20a244be2fb8d"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0292",
+      "args": [
+        "0x4a171c2fb2e699a3",
+        "0xe1b9ba946806aef2"
+      ],
+      "expected_bits": "text:-1.4589604869281E-114"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0293",
+      "args": [
+        "0x74c823f11393a4fe",
+        "0xfaaa8913393c4b50"
+      ],
+      "expected_bits": "text:-4.59302036052975E-29"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0294",
+      "args": [
+        "0x3830ba963a5f9983",
+        "0x041c8759e8fbae15"
+      ],
+      "expected_bits": "text:6.71738708147951E+250"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0295",
+      "args": [
+        "0xc1877ebf179dbf43",
+        "0x376656f55391d547"
+      ],
+      "expected_bits": "text:-6.1483657126391E+48"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0296",
+      "args": [
+        "0xd0f2307c6b3e7588",
+        "0xb0bad01e1a10a884"
+      ],
+      "expected_bits": "text:1.45529605038034E+155"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0297",
+      "args": [
+        "0xcab0046925001000",
+        "0x2060fcb176e58989"
+      ],
+      "expected_bits": "text:-5.91256126030643E+203"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0298",
+      "args": [
+        "0x7f82e0b3d509a7ac",
+        "0x8f172902a88be4b4"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0299",
+      "args": [
+        "0x42bfe030c5b64622",
+        "0x50a71a761ec861a7"
+      ],
+      "expected_bits": "text:1.02351936286139E-67"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0300",
+      "args": [
+        "0x97989904b634098e",
+        "0x387159dc6d1c74d0"
+      ],
+      "expected_bits": "text:-6.45345484390883E-159"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0301",
+      "args": [
+        "0xc8d50daae50afe88",
+        "0x0adea016e2592e68"
+      ],
+      "expected_bits": "text:-2.87737630105432E+298"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0302",
+      "args": [
+        "0x0cd7b890818414c5",
+        "0x59ef0ca069b0c9de"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0303",
+      "args": [
+        "0x78943fed619e9d08",
+        "0x7dab7c471941feae"
+      ],
+      "expected_bits": "text:3.04709698817713E-25"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0304",
+      "args": [
+        "0xd862cc7f19190802",
+        "0xff711ab4d821d345"
+      ],
+      "expected_bits": "text:7.89363982580816E-189"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0305",
+      "args": [
+        "0x751179b853d863b9",
+        "0xb516b58fc9f0549c"
+      ],
+      "expected_bits": "text:-1.38338186357697E+308"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0306",
+      "args": [
+        "0xb7ac1f67817dabaf",
+        "0x157e7be4e60f2b71"
+      ],
+      "expected_bits": "text:-4.25003809844583E+164"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0307",
+      "args": [
+        "0x68ccfbba3d0811bd",
+        "0xc3701a2f3ac1d175"
+      ],
+      "expected_bits": "text:-9.3361525983972E+179"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0308",
+      "args": [
+        "0x53d676874aa78cde",
+        "0x2a6d6ce3021fc59d"
+      ],
+      "expected_bits": "text:2.92168536931705E+199"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0309",
+      "args": [
+        "0xaaf1ef7799fdcd27",
+        "0xb8a358e7fd553cb5"
+      ],
+      "expected_bits": "text:1.10032842198158E-66"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0310",
+      "args": [
+        "0x5125cfd6ac51c4e0",
+        "0xc6c573bc4477e8cf"
+      ],
+      "expected_bits": "text:-9.51048201339472E+49"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0311",
+      "args": [
+        "0xfe9847f494d44045",
+        "0x8f21d0740f24f7f9"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0312",
+      "args": [
+        "0x03f37d81a3fcf85a",
+        "0x74d476a0225148da"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0313",
+      "args": [
+        "0x1a851799aa3006d8",
+        "0xa6ac9f3a88227138"
+      ],
+      "expected_bits": "text:-2.9349635140049E-59"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0314",
+      "args": [
+        "0x4f0f09c20b6f2f72",
+        "0x8f4326abc5bad1f1"
+      ],
+      "expected_bits": "text:-1.82095058816379E+307"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0315",
+      "args": [
+        "0xde60b32ea69e61a7",
+        "0x0d0e0e6ab70af47b"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0316",
+      "args": [
+        "0x4854f73aaf1dd3c0",
+        "0x6294a4559db314ae"
+      ],
+      "expected_bits": "text:3.75112615184443E-127"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0317",
+      "args": [
+        "0x5ae8f429a1c6fcd3",
+        "0x8c2f6c5834de6e38"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0318",
+      "args": [
+        "0xa6babef2e35410e3",
+        "0x4fa7c635e17e9464"
+      ],
+      "expected_bits": "text:-7.52493845485726E-198"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0319",
+      "args": [
+        "0x77f56c8b562be318",
+        "0xc38ef175d0e32b35"
+      ],
+      "expected_bits": "text:-2.53805871043562E+252"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0320",
+      "args": [
+        "0xa761328fe1e43a3c",
+        "0x0944a0e7ad9cf45c"
+      ],
+      "expected_bits": "text:-1.04101033337285E+145"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0321",
+      "args": [
+        "0x81d20f817b59677a",
+        "0xbc5f9a87c2ecedef"
+      ],
+      "expected_bits": "text:9.83826405156398E-283"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0322",
+      "args": [
+        "0xac65251a0b4a8c81",
+        "0x3cfeb89c6a774742"
+      ],
+      "expected_bits": "text:-1.16096757951957E-80"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0323",
+      "args": [
+        "0xfd3e501860f85781",
+        "0x44dd27b232ca7d35"
+      ],
+      "expected_bits": "text:-3.51535502869158E+271"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0324",
+      "args": [
+        "0xda75ce2c7c4af280",
+        "0xbe7c799d49d7ae07"
+      ],
+      "expected_bits": "text:5.56591862865036E+134"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0325",
+      "args": [
+        "0x958200301b447b56",
+        "0x3cc9f417d9a834e8"
+      ],
+      "expected_bits": "text:-6.22668921957313E-190"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0326",
+      "args": [
+        "0x3855868df4d7515f",
+        "0xb42f935d50b0696c"
+      ],
+      "expected_bits": "text:-100603444248242000000"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0327",
+      "args": [
+        "0xa471423d2410b09e",
+        "0x15f82b8a825cf162"
+      ],
+      "expected_bits": "text:-4.92822002476807E+69"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0328",
+      "args": [
+        "0xea25aeb58c93a573",
+        "0xcb4e853177628090"
+      ],
+      "expected_bits": "text:3.63360543561901E+148"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0329",
+      "args": [
+        "0xc649c1bfa84fc55c",
+        "0x6df48aae64e3092a"
+      ],
+      "expected_bits": "text:-8.79444215839235E-192"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0330",
+      "args": [
+        "0xaf276e1bcdf4f917",
+        "0x4bcc397139ba16c5"
+      ],
+      "expected_bits": "text:-1.11535180630033E-138"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0331",
+      "args": [
+        "0x7101c808c47b2d2e",
+        "0xc7b95f680a61c51e"
+      ],
+      "expected_bits": "text:-6.70542524750536E+198"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0332",
+      "args": [
+        "0x25eab29781a0cdc1",
+        "0x22a262cad19d39ec"
+      ],
+      "expected_bits": "text:6539541894983390"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0333",
+      "args": [
+        "0x73685551c96b548b",
+        "0x7e5b1a0376b14357"
+      ],
+      "expected_bits": "text:1.87480551005978E-53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0334",
+      "args": [
+        "0x489c5239658a9e4b",
+        "0x070f78538188a238"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0335",
+      "args": [
+        "0x20f78c78d0f17e02",
+        "0x39731e0fc32d8acf"
+      ],
+      "expected_bits": "text:1.22117952624777E-118"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0336",
+      "args": [
+        "0x49004afe565d5d83",
+        "0x642a29adf3629627"
+      ],
+      "expected_bits": "text:1.4037734819373E-131"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0337",
+      "args": [
+        "0x62e1b97efd9fec58",
+        "0x8168da1742446cd5"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0338",
+      "args": [
+        "0x59fe0d45795620e1",
+        "0xfa69fe73e856ccac"
+      ],
+      "expected_bits": "text:-6.73644791702529E-157"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0339",
+      "args": [
+        "0xf75b2196cefda581",
+        "0x6ad18aff52c5961e"
+      ],
+      "expected_bits": "text:-2.48522331932997E+60"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0340",
+      "args": [
+        "0xe1bae84959aae79f",
+        "0x8f821146c8e905a3"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0341",
+      "args": [
+        "0x20778e7064f8626f",
+        "0x869bb2f96f6af511"
+      ],
+      "expected_bits": "text:-3.59800052015087E+124"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0342",
+      "args": [
+        "0xcf3152d15b52a067",
+        "0x46585a2f0f2c81d1"
+      ],
+      "expected_bits": "text:-3.96602604788661E+42"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0343",
+      "args": [
+        "0xd823e1b7b16efc9a",
+        "0xaa42e5dc0b4f9259"
+      ],
+      "expected_bits": "text:9.50730099970806E+220"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0344",
+      "args": [
+        "0x08e0739240466a30",
+        "0x03e509d9e19619b2"
+      ],
+      "expected_bits": "text:9.45343119318486E+23"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0345",
+      "args": [
+        "0x49d2536b3d4f047e",
+        "0xd36adc2c33e8a445"
+      ],
+      "expected_bits": "text:-5.97541541669733E-47"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0346",
+      "args": [
+        "0xaa182d39ce0571d7",
+        "0xfe00e4ade1e68cd5"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0347",
+      "args": [
+        "0x05758eca0d8c9dee",
+        "0xd8b1816b9caaee97"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0348",
+      "args": [
+        "0xd5798ab4c735b496",
+        "0x1c00952cf4343bae"
+      ],
+      "expected_bits": "text:-6.82593545354604E+276"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0349",
+      "args": [
+        "0x5f3a3d0a247d91e9",
+        "0xab86cc65710468c4"
+      ],
+      "expected_bits": "text:-1.03000552397826E+249"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0350",
+      "args": [
+        "0x5341e69ec11458b4",
+        "0xbdff4bc679bcec6d"
+      ],
+      "expected_bits": "text:-2.56220349965916E+102"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0351",
+      "args": [
+        "0x35ae8259b1f40829",
+        "0xfcbbb5a20aca6e3f"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0352",
+      "args": [
+        "0x5444c330a5e2f7b5",
+        "0x7d2a6305bc064c47"
+      ],
+      "expected_bits": "text:1.05262780699509E-197"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0353",
+      "args": [
+        "0xc154b28a75ef0e1b",
+        "0xa541b48063703a6a"
+      ],
+      "expected_bits": "text:1.69936387933966E+135"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0354",
+      "args": [
+        "0x0fc0662b1846696b",
+        "0xe1f45554fc1be7e9"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0355",
+      "args": [
+        "0x2e615a074b43b42f",
+        "0x576007125579e871"
+      ],
+      "expected_bits": "text:3.62072121689777E-198"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0356",
+      "args": [
+        "0x2713262555b3d009",
+        "0xee221db37a9bdba3"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0357",
+      "args": [
+        "0x46628de6c526780f",
+        "0xc1e789ab1d28f1f0"
+      ],
+      "expected_bits": "text:-3.7225372928715E+21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0358",
+      "args": [
+        "0x59887388c3056739",
+        "0xec59fe7ea5a53a21"
+      ],
+      "expected_bits": "text:-2.30886339830756E-91"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0359",
+      "args": [
+        "0x63c90032a8ac3f3a",
+        "0x72e7a5482f697ee2"
+      ],
+      "expected_bits": "text:1.49604117529241E-73"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0360",
+      "args": [
+        "0x82e106b7ae779c11",
+        "0xf767cd89f6c69d9b"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0361",
+      "args": [
+        "0x4fd1da344b61d1f9",
+        "0xcd00200fc6e62874"
+      ],
+      "expected_bits": "text:-38952850563983.5"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0362",
+      "args": [
+        "0x77590a8e96605f77",
+        "0x2310c1e9b9980196"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0363",
+      "args": [
+        "0xe29045db90496cb1",
+        "0x943f4c6e692f9c81"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0364",
+      "args": [
+        "0xbf1727c9e6f597a0",
+        "0x41b51191cd4d7040"
+      ],
+      "expected_bits": "text:-2.49894451121903E-13"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0365",
+      "args": [
+        "0x0bb500668aad4f6d",
+        "0x59a4e2bfc35ebbc5"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0366",
+      "args": [
+        "0xe78f2646b26a55f0",
+        "0xf5a36a06f4ef59f7"
+      ],
+      "expected_bits": "text:1.48783060628438E-68"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0367",
+      "args": [
+        "0x37798c4d2ef851b4",
+        "0x966176521871422b"
+      ],
+      "expected_bits": "text:-2.57114634322018E+159"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0368",
+      "args": [
+        "0x32cdc9d7ded303ad",
+        "0x98629c7ac01b3fae"
+      ],
+      "expected_bits": "text:-1.7335268864367E+127"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0369",
+      "args": [
+        "0x7c0002aacae79de6",
+        "0x3e9c862ffb204007"
+      ],
+      "expected_bits": "text:4.58854942243396E+295"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0370",
+      "args": [
+        "0xd2be53efa224f762",
+        "0x0b637c96a6896fe5"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0371",
+      "args": [
+        "0x7e3032c4bfd8609c",
+        "0xe619ef36c43dca3e"
+      ],
+      "expected_bits": "text:-9.84399670620993E+115"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0372",
+      "args": [
+        "0x1b03aee4ca191732",
+        "0x4a45b258e92eabc6"
+      ],
+      "expected_bits": "text:2.39345597278959E-228"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0373",
+      "args": [
+        "0x9840545d0eb70fd0",
+        "0x4aaa68eda4d93d85"
+      ],
+      "expected_bits": "text:-1.44887597981232E-243"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0374",
+      "args": [
+        "0x3cb18b498d661695",
+        "0xea0165b2670795cc"
+      ],
+      "expected_bits": "text:-5.71351439680517E-219"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0375",
+      "args": [
+        "0x9588f24ee8562b09",
+        "0x2ea16ceb9d4a249c"
+      ],
+      "expected_bits": "text:-1.38601250319173E-121"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0376",
+      "args": [
+        "0x23aa1fd8efac93c5",
+        "0x78c5dbb95369aea5"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0377",
+      "args": [
+        "0xc010e14e9015cf39",
+        "0x4b0228692a60537f"
+      ],
+      "expected_bits": "text:-1.94116014798923E-53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0378",
+      "args": [
+        "0x8730623d52b02ffc",
+        "0x9486e02a2e1a02c7"
+      ],
+      "expected_bits": "text:5.4406509808295E-65"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0379",
+      "args": [
+        "0x96c38dd8b7add00d",
+        "0x91a83b180cfe2205"
+      ],
+      "expected_bits": "text:3.90237336212817E+24"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0380",
+      "args": [
+        "0x2965a7e1d0c530f3",
+        "0x664116af99c0e93d"
+      ],
+      "expected_bits": "text:7.93690766667053E-294"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0381",
+      "args": [
+        "0xf863c90c1b7da0a1",
+        "0xc0136e9fd3929cf5"
+      ],
+      "expected_bits": "text:1.72127122764602E+271"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0382",
+      "args": [
+        "0xf7dc3ada4a088263",
+        "0xe705f24efd4ddb9e"
+      ],
+      "expected_bits": "text:1.22014782311742E+81"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0383",
+      "args": [
+        "0x8b4a9eee19f10a52",
+        "0x1ca8cae322b05464"
+      ],
+      "expected_bits": "text:-2.21086297588812E-84"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0384",
+      "args": [
+        "0x274d177490be329a",
+        "0x68aa621d664d3faf"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0385",
+      "args": [
+        "0x5e00b8b8678ac326",
+        "0x35d0bd7396af759e"
+      ],
+      "expected_bits": "text:3.64592290427869E+193"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0386",
+      "args": [
+        "0x2585e1339ad4b925",
+        "0xa7f3eccdfb2647da"
+      ],
+      "expected_bits": "text:-1.99743512945718E-12"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0387",
+      "args": [
+        "0xa0f49eba7adf690f",
+        "0xa159e0aacdf99194"
+      ],
+      "expected_bits": "text:0.0124504566458259"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0388",
+      "args": [
+        "0x724528b414cf0e61",
+        "0xc2326cf0381d5e96"
+      ],
+      "expected_bits": "text:-3.56567309556032E+231"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0389",
+      "args": [
+        "0x6178f2a3dc0ff709",
+        "0xd7be856290c33896"
+      ],
+      "expected_bits": "text:-7.46642212648424E+46"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0390",
+      "args": [
+        "0x85b331c14c1c8e89",
+        "0x3901d47afba05d1f"
+      ],
+      "expected_bits": "text:-7.69831571351862E-248"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0391",
+      "args": [
+        "0xddf748b6084a2957",
+        "0x77896c552dbec9c1"
+      ],
+      "expected_bits": "text:-6.92723780078573E-124"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0392",
+      "args": [
+        "0x2f81df4e1a06fa69",
+        "0xcf48f2f75d7f4f15"
+      ],
+      "expected_bits": "text:-8.54845516966956E-154"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0393",
+      "args": [
+        "0x30ecd52dd747dab0",
+        "0x42cdf914650ddb39"
+      ],
+      "expected_bits": "text:7.73708332622099E-87"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0394",
+      "args": [
+        "0x8f1a9356a3cc70cb",
+        "0xdae03e6fe94d19c1"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0395",
+      "args": [
+        "0x4e519af8e3e22d73",
+        "0x23039756754ab926"
+      ],
+      "expected_bits": "text:3.69293525635083E+208"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0396",
+      "args": [
+        "0x1231d6338741c81a",
+        "0x2942ccecdab85c2b"
+      ],
+      "expected_bits": "text:7.89000972344645E-112"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0397",
+      "args": [
+        "0x5828b87542bfed7a",
+        "0x312090cd8b435b9c"
+      ],
+      "expected_bits": "text:1.03888412768749E+188"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0398",
+      "args": [
+        "0x7db2ae4bdbe5393e",
+        "0x6034879f4118a138"
+      ],
+      "expected_bits": "text:1.10960985933684E+142"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0399",
+      "args": [
+        "0x3dadc3184fd432f5",
+        "0x56f117002af8a6cc"
+      ],
+      "expected_bits": "text:2.10754579641677E-122"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0400",
+      "args": [
+        "0x73f5b78af390bacb",
+        "0x9131bf49e6aab7c2"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0401",
+      "args": [
+        "0x12a2b6a50789dc3f",
+        "0xe4722ba80ea55465"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0402",
+      "args": [
+        "0xe333ea1fe1219c82",
+        "0x021438c9663749d9"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0403",
+      "args": [
+        "0xeebe250f63a06ce5",
+        "0xf522b794c1e5c3a9"
+      ],
+      "expected_bits": "text:1.58812063305815E-31"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0404",
+      "args": [
+        "0x27858fbc814119fb",
+        "0x08c00243bf14e0b8"
+      ],
+      "expected_bits": "text:1.72217072431652E+148"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0405",
+      "args": [
+        "0x08e46fa3f6a38b5a",
+        "0x76af7c8bce4121e6"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0406",
+      "args": [
+        "0xa0f28e63bbdc0d0d",
+        "0x2554e7b93f763ca2"
+      ],
+      "expected_bits": "text:-7.51858050462844E-22"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0407",
+      "args": [
+        "0x9971f630693a04bd",
+        "0x9c31d52aa5748046"
+      ],
+      "expected_bits": "text:5.72546005371725E-14"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0408",
+      "args": [
+        "0xf15243c6f6e96662",
+        "0x9606085965b2f45d"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0409",
+      "args": [
+        "0x46e6539bdc122392",
+        "0x2baf72e08adc2951"
+      ],
+      "expected_bits": "text:1.25978783328093E+131"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0410",
+      "args": [
+        "0xb38598795fafd90f",
+        "0xbfa5f98c629cb4e9"
+      ],
+      "expected_bits": "text:3.91400393399317E-59"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0411",
+      "args": [
+        "0xa47a2a2ba46b4e45",
+        "0x8bd44bf811ffccd6"
+      ],
+      "expected_bits": "text:5.20125246883467E+118"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0412",
+      "args": [
+        "0xa6b323abd4ec9573",
+        "0xb80736089b50419b"
+      ],
+      "expected_bits": "text:3.39565090014922E-84"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0413",
+      "args": [
+        "0xe0738a355d8dc796",
+        "0x45af8e1a3f01891d"
+      ],
+      "expected_bits": "text:-8.58460991072771E+128"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0414",
+      "args": [
+        "0xdc1594fd10c31f08",
+        "0xe59c51ce5e1e0986"
+      ],
+      "expected_bits": "text:1.33489051643723E-46"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0415",
+      "args": [
+        "0xaf791d04fc69a540",
+        "0xa447e06785971689"
+      ],
+      "expected_bits": "text:8.05938470679952E+53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0416",
+      "args": [
+        "0x253ecd09dd32bb74",
+        "0x19b73321e6093ddb"
+      ],
+      "expected_bits": "text:3.25536742863473E+55"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0417",
+      "args": [
+        "0x0a4955c89a7c9e0f",
+        "0x0f87c2cbbbee4e8b"
+      ],
+      "expected_bits": "text:5.51238546539249E-26"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0418",
+      "args": [
+        "0x485bcdd0f41936de",
+        "0xb625da2347942c09"
+      ],
+      "expected_bits": "text:-5.0622355338893E+87"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0419",
+      "args": [
+        "0x8919683584658c11",
+        "0xa11c5f44c9138b47"
+      ],
+      "expected_bits": "text:2.27271012097502E-116"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0420",
+      "args": [
+        "0x08e56272bacb0afe",
+        "0xfdfec7e3386f3b94"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0421",
+      "args": [
+        "0x4e803e8b8ef3af7b",
+        "0x5f6d98ae7104fcf8"
+      ],
+      "expected_bits": "text:2.89310080121182E-82"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0422",
+      "args": [
+        "0xc90bb5a3d455f58d",
+        "0xf30d892a51b2b888"
+      ],
+      "expected_bits": "text:4.78766023747097E-203"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0423",
+      "args": [
+        "0x77581e76301c875b",
+        "0x439933fc9d7e3c4b"
+      ],
+      "expected_bits": "text:1.71293956266918E+249"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0424",
+      "args": [
+        "0xf6353905e8d7584b",
+        "0x90131dd195537442"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0425",
+      "args": [
+        "0x9a13cf38fd990c4b",
+        "0x3b1984f167b00b62"
+      ],
+      "expected_bits": "text:-8.83417701298705E-160"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0426",
+      "args": [
+        "0x8122d710a76a3a1f",
+        "0x210078995aa40582"
+      ],
+      "expected_bits": "text:-3.41242429836506E-154"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0427",
+      "args": [
+        "0xc232ecaf389dfdd3",
+        "0x9dc3e3ef5745d8fc"
+      ],
+      "expected_bits": "text:3.01210511313245E+175"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0428",
+      "args": [
+        "0x7dff5b6288f19676",
+        "0xe5e34d7349037d5b"
+      ],
+      "expected_bits": "text:-1.28017099575215E+116"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0429",
+      "args": [
+        "0x279e78b09c8a4934",
+        "0x94809547d11a2f50"
+      ],
+      "expected_bits": "text:-1.19777514363689E+92"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0430",
+      "args": [
+        "0x77c18ff85a0f8aa7",
+        "0x5108bd8d072f3a63"
+      ],
+      "expected_bits": "text:3.08868389668031E+186"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0431",
+      "args": [
+        "0x7fbafc2a9c45c6df",
+        "0x45102530925c4599"
+      ],
+      "expected_bits": "text:3.88341124538739E+282"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0432",
+      "args": [
+        "0x76df42049ebf5bd8",
+        "0xfc08ae72c4250629"
+      ],
+      "expected_bits": "text:-1.30948174893147E-25"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0433",
+      "args": [
+        "0xcb16128b95d2b698",
+        "0xbfb5d20f4ca8a49e"
+      ],
+      "expected_bits": "text:6.20074669675126E+54"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0434",
+      "args": [
+        "0x400be8f12c0ea706",
+        "0x6d6351b9830b94cf"
+      ],
+      "expected_bits": "text:4.09253051462752E-219"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0435",
+      "args": [
+        "0xe123681098d78260",
+        "0x5cba64d96fa8ea45"
+      ],
+      "expected_bits": "text:-1.73609189713122E+21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0436",
+      "args": [
+        "0xa7d4e6e7ef165395",
+        "0x71127b6682f059e0"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0437",
+      "args": [
+        "0xcd886120e0266021",
+        "0x261b8fddae49be58"
+      ],
+      "expected_bits": "text:-7.88206591037457E+189"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0438",
+      "args": [
+        "0x6de8b5b5afe5ef6f",
+        "0x95edd6b6599b8bc2"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0439",
+      "args": [
+        "0x0250b508c3ad8407",
+        "0xe0efcaddf0a9b592"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0440",
+      "args": [
+        "0x11302456666e69de",
+        "0xd1c42afb40925912"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0441",
+      "args": [
+        "0xa75e37227739fd82",
+        "0x3db101f906c9e7b3"
+      ],
+      "expected_bits": "text:-3.02582440780262E-108"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0442",
+      "args": [
+        "0x8d330157366e663b",
+        "0x1b209ea1d34319e9"
+      ],
+      "expected_bits": "text:-8.48324884668261E-68"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0443",
+      "args": [
+        "0xc54d7573d8bf228e",
+        "0x866840c078f22795"
+      ],
+      "expected_bits": "text:8.32964202113414E+302"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0444",
+      "args": [
+        "0x182eef6c5da967c8",
+        "0x50e98b3b77fe1b87"
+      ],
+      "expected_bits": "text:5.59668325717352E-274"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0445",
+      "args": [
+        "0x24b17215aeb15f9b",
+        "0x02711a136d253705"
+      ],
+      "expected_bits": "text:9.39899230428331E+164"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0446",
+      "args": [
+        "0x5d8f6f9b03b52154",
+        "0x20817806b87f0898"
+      ],
+      "expected_bits": "text:1.14931243030269E+294"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0447",
+      "args": [
+        "0x954fb48988701ff4",
+        "0xb60716d4e6e71d48"
+      ],
+      "expected_bits": "text:2.50037108287758E-158"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0448",
+      "args": [
+        "0xbc246d9c5cf2040c",
+        "0xa2d8c502de91b24e"
+      ],
+      "expected_bits": "text:6.81489378344188E+121"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0449",
+      "args": [
+        "0x64c6418d5687d2d3",
+        "0xe6b07d97fce8da91"
+      ],
+      "expected_bits": "text:-6.28466316961611E-10"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0450",
+      "args": [
+        "0x95bb5d5f3cadc90f",
+        "0xd0e7a71dccee211e"
+      ],
+      "expected_bits": "text:9.72529565099771E-286"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0451",
+      "args": [
+        "0x304f866e429db285",
+        "0x68a71e549acbddfc"
+      ],
+      "expected_bits": "text:4.03312247795842E-272"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0452",
+      "args": [
+        "0xacb3cc486b2c5fab",
+        "0x1286cab52b3f2500"
+      ],
+      "expected_bits": "text:-1.17600705370244E+126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0453",
+      "args": [
+        "0xba990bcf0ce411db",
+        "0x77c2d002734e49b5"
+      ],
+      "expected_bits": "text:-2.60571831847509E-295"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0454",
+      "args": [
+        "0xa65063e199c13e2c",
+        "0xbd94d9b34783829f"
+      ],
+      "expected_bits": "text:8.17166615084931E-113"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0455",
+      "args": [
+        "0xb0c2782915414c88",
+        "0x6a03486f433b8133"
+      ],
+      "expected_bits": "text:-1.72903104474893E-276"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0456",
+      "args": [
+        "0xc97198db0511ac6a",
+        "0x2a16a9bb35e14897"
+      ],
+      "expected_bits": "text:-1.01667251343882E+151"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0457",
+      "args": [
+        "0x08febe5022fa94cf",
+        "0x0f20b0888d970409"
+      ],
+      "expected_bits": "text:2.90627675323521E-30"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0458",
+      "args": [
+        "0xbb46c21be68028cd",
+        "0x3f8104139735a81d"
+      ],
+      "expected_bits": "text:-4.53151475726093E-21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0459",
+      "args": [
+        "0x2dd5513925fc0b9d",
+        "0xff5351317a03a5d4"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0460",
+      "args": [
+        "0xd85c0074336864df",
+        "0x0e78d68bbbeb2f23"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0461",
+      "args": [
+        "0x052406bba9be5dae",
+        "0x933472c9cfee2985"
+      ],
+      "expected_bits": "text:-1.81632079461089E-68"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0462",
+      "args": [
+        "0x6c869e3784587e82",
+        "0x1e614a70e260a7fa"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0463",
+      "args": [
+        "0x3cc8f87eeee6d562",
+        "0xae912231c42ccbe6"
+      ],
+      "expected_bits": "text:-3.14334169479895E+68"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0464",
+      "args": [
+        "0xbbc37717287aef81",
+        "0x75b020fcb32172c4"
+      ],
+      "expected_bits": "text:-1.06377373660973E-279"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0465",
+      "args": [
+        "0x1b2b53c333276300",
+        "0xa2020ba9766b5929"
+      ],
+      "expected_bits": "text:-1.16660903664254E-33"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0466",
+      "args": [
+        "0x4d2a7958e355833f",
+        "0x82d5d5bcf72be73d"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0467",
+      "args": [
+        "0x6083b5305eac017b",
+        "0x6e4fb7fe7261a00b"
+      ],
+      "expected_bits": "text:3.68742065955899E-67"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0468",
+      "args": [
+        "0xbcb496a2547a63c8",
+        "0x5106b2d42946af2e"
+      ],
+      "expected_bits": "text:-1.32701612414688E-98"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0469",
+      "args": [
+        "0xc1701379e53c4425",
+        "0x95408c8fad4eb545"
+      ],
+      "expected_bits": "text:6.54053894085026E+212"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0470",
+      "args": [
+        "0x60e23214bffe2591",
+        "0x902f86c275614b38"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0471",
+      "args": [
+        "0x79010eb79d13a603",
+        "0xb6373990e34012fe"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0472",
+      "args": [
+        "0x421e9481fe90405a",
+        "0x27cfe09a24a49b7a"
+      ],
+      "expected_bits": "text:5.19499290463393E+126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0473",
+      "args": [
+        "0xea124e2c14d2f712",
+        "0xbcae93bd02f768ff"
+      ],
+      "expected_bits": "text:4.22657705623957E+218"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0474",
+      "args": [
+        "0x8a20dbf70694ee4c",
+        "0x5cfd690b1a041a74"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0475",
+      "args": [
+        "0xd9892441c41b035d",
+        "0xf926805a59590b9e"
+      ],
+      "expected_bits": "text:5.33342843134024E-153"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0476",
+      "args": [
+        "0x55e8d14ff7593040",
+        "0x37b4d83e32dd7b5a"
+      ],
+      "expected_bits": "text:2.97339439895908E+145"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0477",
+      "args": [
+        "0xde675e37c0d7f625",
+        "0x851db335d1b7d72b"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0478",
+      "args": [
+        "0x3797f0849f2b5832",
+        "0xeb17fb15f5deeb20"
+      ],
+      "expected_bits": "text:-8.92350231726698E-249"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0479",
+      "args": [
+        "0xf9622b6170b73c8d",
+        "0x59902fb5a4f756e5"
+      ],
+      "expected_bits": "text:-1.88131001086112E+153"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0480",
+      "args": [
+        "0x3a117aaee2e3f8d3",
+        "0xa37064079e2f1e57"
+      ],
+      "expected_bits": "text:-1.00180261138948E+109"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0481",
+      "args": [
+        "0xdb46369ac45c0af3",
+        "0xb3403471416aceeb"
+      ],
+      "expected_bits": "text:6.254105296787E+192"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0482",
+      "args": [
+        "0x6728ca6a5ec61b9c",
+        "0xdc255768746ed702"
+      ],
+      "expected_bits": "text:-1.11261293089233E+53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0483",
+      "args": [
+        "0x4430af701ffa2b73",
+        "0x20ab15eaca63d406"
+      ],
+      "expected_bits": "text:1.19031797054886E+171"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0484",
+      "args": [
+        "0xb1237ecdcf335321",
+        "0x8e0027a451884783"
+      ],
+      "expected_bits": "text:1.82173477745963E+169"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0485",
+      "args": [
+        "0x66b055b693075376",
+        "0xcf6b8c35a4135c6b"
+      ],
+      "expected_bits": "text:-1.14082076321436E+112"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0486",
+      "args": [
+        "0x266a630752b5fde3",
+        "0xde4c9f72b29093c1"
+      ],
+      "expected_bits": "text:-6.98004659231369E-270"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0487",
+      "args": [
+        "0x258c968ee36da95e",
+        "0x073b54a8325e883e"
+      ],
+      "expected_bits": "text:1.04491951553693E+146"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0488",
+      "args": [
+        "0x01d10a1530a80bc7",
+        "0x8f8c5ca033de5dab"
+      ],
+      "expected_bits": "text:-7.13100593528232E-67"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0489",
+      "args": [
+        "0xd0636e14d4308559",
+        "0xf1ba3bcb817077bb"
+      ],
+      "expected_bits": "text:2.63407277016058E-161"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0490",
+      "args": [
+        "0x4fd7b13591590100",
+        "0x7671926c9c388a98"
+      ],
+      "expected_bits": "text:1.23950435128324E-186"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0491",
+      "args": [
+        "0xce91948f229a9b5b",
+        "0xeac4523458205b1b"
+      ],
+      "expected_bits": "text:1.4878221118268E-136"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0492",
+      "args": [
+        "0x7884309750a51f5a",
+        "0x9263840aab508933"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0493",
+      "args": [
+        "0xcfae3c21bca3deab",
+        "0x19e3337a237b1c10"
+      ],
+      "expected_bits": "text:-1.21053945413663E+259"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0494",
+      "args": [
+        "0x4dca03a95891a194",
+        "0xb7b3197f0165be49"
+      ],
+      "expected_bits": "text:-2.4990590590789E+106"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0495",
+      "args": [
+        "0x446c2aaf1c978573",
+        "0x7362d1aad00467a7"
+      ],
+      "expected_bits": "text:6.31804808200948E-227"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0496",
+      "args": [
+        "0x0c9632e719e29b13",
+        "0xf713fd5035546c5f"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0497",
+      "args": [
+        "0xd6804b4ddf111eb0",
+        "0x2ab887e7caae168c"
+      ],
+      "expected_bits": "text:-6.98788449026902E+210"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0498",
+      "args": [
+        "0xdfa663e0fae7ecef",
+        "0x7c7532d55b4928a5"
+      ],
+      "expected_bits": "text:-1.77387293951946E-139"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0499",
+      "args": [
+        "0xcf41f811bc3f3d6c",
+        "0x00510042c5dbd414"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0500",
+      "args": [
+        "0x9c2c054849f42099",
+        "0xea10dd7de5af278b"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0501",
+      "args": [
+        "0x14b582e437213ce4",
+        "0xd404bd98f0b17646"
+      ],
+      "expected_bits": "text:-1.18156961913276E-305"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0502",
+      "args": [
+        "0x74739be88293f034",
+        "0xfad827f53ef04e09"
+      ],
+      "expected_bits": "text:-1.60092022198451E-31"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0503",
+      "args": [
+        "0x5e67d4ebf6386751",
+        "0x7718f0741d033ac9"
+      ],
+      "expected_bits": "text:1.18419557246499E-119"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0504",
+      "args": [
+        "0x9f36ae34c2972184",
+        "0xd6a6bb5fec3a329e"
+      ],
+      "expected_bits": "text:9.66963256814678E-268"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0505",
+      "args": [
+        "0x0f5d82182d702641",
+        "0xebeaa5b587a7c487"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0506",
+      "args": [
+        "0x70e1b93a42d8bd25",
+        "0x04ff01b7d209b5da"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0507",
+      "args": [
+        "0xd57632cd854e317c",
+        "0xef091d5f0fca843f"
+      ],
+      "expected_bits": "text:6.68537619760395E-124"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0508",
+      "args": [
+        "0x0594250cfbad22ca",
+        "0x4d641c1c5341924a"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0509",
+      "args": [
+        "0x10e0ef9dd138b5bd",
+        "0x429b288431296cce"
+      ],
+      "expected_bits": "text:2.99269380399753E-240"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0510",
+      "args": [
+        "0xa3dbdf70a1469140",
+        "0xd3b6d9a560615e99"
+      ],
+      "expected_bits": "text:3.14278370414836E-231"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0511",
+      "args": [
+        "0xd517e150789612eb",
+        "0x41f8e9dec9395d71"
+      ],
+      "expected_bits": "text:-1.24962504325401E+92"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0512",
+      "args": [
+        "0x2bf5f99f04788dec",
+        "0x7cb630d8b433c82f"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0513",
+      "args": [
+        "0x2e22d9ab13976abf",
+        "0xf4a60cf1cfa1b5dc"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0514",
+      "args": [
+        "0x41b248fe586e593c",
+        "0x41411f46f3b24279"
+      ],
+      "expected_bits": "text:136.693882542939"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0515",
+      "args": [
+        "0xa332c549c541ce9b",
+        "0x991650814c31d385"
+      ],
+      "expected_bits": "text:4.91758794993801E+48"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0516",
+      "args": [
+        "0x67c28f4d63b7cfcd",
+        "0xe7f2e4edea947f30"
+      ],
+      "expected_bits": "text:-0.122787153495354"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0517",
+      "args": [
+        "0x4c84c333b72a8abd",
+        "0x656c6251d114acf5"
+      ],
+      "expected_bits": "text:1.13309678002863E-120"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0518",
+      "args": [
+        "0xd5e24c4306e1c6b9",
+        "0xe5c010faba9c1950"
+      ],
+      "expected_bits": "text:3.9342841900379E-77"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0519",
+      "args": [
+        "0xc64c3378d50a715e",
+        "0x5a04ee629d59202c"
+      ],
+      "expected_bits": "text:-1.00923632812238E-95"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0520",
+      "args": [
+        "0x831335499767b9cb",
+        "0x57b2fc54fd10e90d"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0521",
+      "args": [
+        "0x1209a4c8c2934997",
+        "0x3d377a1a2d13542a"
+      ],
+      "expected_bits": "text:1.06319173309769E-208"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0522",
+      "args": [
+        "0x8fb369287c00c6d4",
+        "0x46b0a4ab7916ad56"
+      ],
+      "expected_bits": "text:-1.44680084726579E-265"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0523",
+      "args": [
+        "0x9ea534d268294e96",
+        "0x5ad5092b5f96ec36"
+      ],
+      "expected_bits": "text:-1.29306512454234E-290"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0524",
+      "args": [
+        "0x48381afb50f087b1",
+        "0x0fe02b12a3d215ac"
+      ],
+      "expected_bits": "text:2.52044535287232E+271"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0525",
+      "args": [
+        "0xdaa688e77e4d4e1a",
+        "0xdbb0830d53a8549f"
+      ],
+      "expected_bits": "text:0.0000104122793130447"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0526",
+      "args": [
+        "0xc6c2d234dc416e32",
+        "0xde3701a174c6ffbd"
+      ],
+      "expected_bits": "text:1.0630384443431E-113"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0527",
+      "args": [
+        "0xaea6e13e59e93ea4",
+        "0x4e707e1d13124a82"
+      ],
+      "expected_bits": "text:-8.27743118971323E-154"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0528",
+      "args": [
+        "0xdb8611756574ae8f",
+        "0x4af2be891ced509b"
+      ],
+      "expected_bits": "text:-6.97986397118857E+79"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0529",
+      "args": [
+        "0x0d41b1a87d4134f2",
+        "0xa14e55fabcbb15aa"
+      ],
+      "expected_bits": "text:-2.73067855327771E-97"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0530",
+      "args": [
+        "0x86bb9fd2e8f041fc",
+        "0xdcf91cc6c5685f98"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0531",
+      "args": [
+        "0xe1460726c30991e5",
+        "0xbd20a5780bff3e41"
+      ],
+      "expected_bits": "text:1.30915757452249E+174"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0532",
+      "args": [
+        "0x8cbf16c7a924e4bb",
+        "0xa482d240afbcca5f"
+      ],
+      "expected_bits": "text:3.35373370885725E-115"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0533",
+      "args": [
+        "0x92dccf3f628b4459",
+        "0x240b21ec28bd55b7"
+      ],
+      "expected_bits": "text:-1.74903243795872E-83"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0534",
+      "args": [
+        "0x0c605ef6c686fece",
+        "0x869a3c10142af7d4"
+      ],
+      "expected_bits": "text:-6.18000426286741E+27"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0535",
+      "args": [
+        "0x6bb8dabe96d72c0f",
+        "0x03e2bb78f141a31a"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0536",
+      "args": [
+        "0x26b8468699debda7",
+        "0xb79da42f48f4a6ff"
+      ],
+      "expected_bits": "text:-4.31689287245184E-82"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0537",
+      "args": [
+        "0x3b34c142c897dd94",
+        "0xfa97cff46bef50d4"
+      ],
+      "expected_bits": "text:-4.96482334369899E-306"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0538",
+      "args": [
+        "0x85a90392b9332528",
+        "0x88562b713c7cd989"
+      ],
+      "expected_bits": "text:1.28272289276657E-13"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0539",
+      "args": [
+        "0xadf03c4f27dcc673",
+        "0x43f028976ab25d65"
+      ],
+      "expected_bits": "text:-1.09523355957561E-106"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0540",
+      "args": [
+        "0x98ab8e6728aeb29d",
+        "0x6d510d072749fee6"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0541",
+      "args": [
+        "0xf57018048130680c",
+        "0xf5d838a5f22d039b"
+      ],
+      "expected_bits": "text:0.0103820233932893"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0542",
+      "args": [
+        "0x0588a263012e046a",
+        "0xff10cdca9e4ae182"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0543",
+      "args": [
+        "0x39922f288aa798ae",
+        "0x21814bcb60d4d82e"
+      ],
+      "expected_bits": "text:8.28505392451969E+115"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0544",
+      "args": [
+        "0x7cb090ede4237588",
+        "0x802ba968e465ab08"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0545",
+      "args": [
+        "0x722141b1775584f8",
+        "0xfe8528a8da90058a"
+      ],
+      "expected_bits": "text:-2.03013477321295E-60"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0546",
+      "args": [
+        "0xb37451fd872ac846",
+        "0x036a0188a11f3ccb"
+      ],
+      "expected_bits": "text:-2.42617896602781E+231"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0547",
+      "args": [
+        "0xd6a330f928c802f7",
+        "0x682ff6456320567a"
+      ],
+      "expected_bits": "text:-3.09080605510936E-85"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0548",
+      "args": [
+        "0x3051bfcf5ae4612c",
+        "0x0b542d2147ec512e"
+      ],
+      "expected_bits": "text:1.42592386372786E+178"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0549",
+      "args": [
+        "0xfaa57f854f3edcda",
+        "0xc7f5799ce3bb225a"
+      ],
+      "expected_bits": "text:1.36707687836181E+244"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0550",
+      "args": [
+        "0xc789570b2045e3d1",
+        "0x16d0721cbdd4d70e"
+      ],
+      "expected_bits": "text:-4.89913889696516E+234"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0551",
+      "args": [
+        "0x9beb91d03258606c",
+        "0x75de72fb70d31cff"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0552",
+      "args": [
+        "0xd7ff476df75a61f9",
+        "0x23ba98e3e507698c"
+      ],
+      "expected_bits": "text:-5.38881370646716E+251"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0553",
+      "args": [
+        "0x5dbc056102285aed",
+        "0xe965999f7ab896bd"
+      ],
+      "expected_bits": "text:-6.61331278929062E-57"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0554",
+      "args": [
+        "0x6a4434c3b8dfa784",
+        "0x5971a97b80bb93f1"
+      ],
+      "expected_bits": "text:1.08520227581427E+81"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0555",
+      "args": [
+        "0x11274538fa9d4c0a",
+        "0x386bf0e627326892"
+      ],
+      "expected_bits": "text:7.47694962425972E-190"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0556",
+      "args": [
+        "0x32f1a1ab412fa890",
+        "0x34b19e982f83d384"
+      ],
+      "expected_bits": "text:3.7278295118274E-09"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0557",
+      "args": [
+        "0x8482f4aff7a69126",
+        "0x12367247a7d5d231"
+      ],
+      "expected_bits": "text:-1.00236636701508E-66"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0558",
+      "args": [
+        "0x056e14a08dc55ab1",
+        "0xe2e53dc991b5e812"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0559",
+      "args": [
+        "0x1d92be63146a9509",
+        "0x1f529a15639a0695"
+      ],
+      "expected_bits": "text:3.75368984196382E-09"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0560",
+      "args": [
+        "0xbc4897ca24ead3d4",
+        "0xdad2a58e3afe97a1"
+      ],
+      "expected_bits": "text:8.25164135329541E-148"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0561",
+      "args": [
+        "0x04b7ef7c9797da81",
+        "0xdbeb017906e580c6"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0562",
+      "args": [
+        "0x16f5a24382a419e8",
+        "0x21c2d3aafccdacb0"
+      ],
+      "expected_bits": "text:9.59770209461476E-53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0563",
+      "args": [
+        "0x8af51214fc319093",
+        "0xad7bd3d261e7189b"
+      ],
+      "expected_bits": "text:5.13625867735201E-167"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0564",
+      "args": [
+        "0xe9017d26b8a5e0e0",
+        "0xa71bc042cbc21e87"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0565",
+      "args": [
+        "0x9a20851714a6e399",
+        "0x34a70d8f39e5a468"
+      ],
+      "expected_bits": "text:-1.65410088471075E-128"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0566",
+      "args": [
+        "0x05f73d2dee925963",
+        "0x667e20bcf668f813"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0567",
+      "args": [
+        "0x82f2607f03c8a002",
+        "0xbae69b1c58dbe224"
+      ],
+      "expected_bits": "text:3.07755062760646E-270"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0568",
+      "args": [
+        "0xf2e490e2815e9221",
+        "0xaf5043697ac6eec3"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0569",
+      "args": [
+        "0x8452a4bd2e6d25c7",
+        "0xfd5caefd611e8e4f"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0570",
+      "args": [
+        "0xd37c553bd9e91a56",
+        "0x9af10985e82e0b98"
+      ],
+      "expected_bits": "text:2.24910422897083E+272"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0571",
+      "args": [
+        "0xc31ea7258ea6bf85",
+        "0x7153d8a3969d3da0"
+      ],
+      "expected_bits": "text:-2.67052496161118E-223"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0572",
+      "args": [
+        "0x98039458ebaa1073",
+        "0x1f95908e2534a91c"
+      ],
+      "expected_bits": "text:-3.41530050780216E-37"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0573",
+      "args": [
+        "0x490bf6e6e779e8c7",
+        "0x2b1c22d0ed0426ae"
+      ],
+      "expected_bits": "text:1.55135793303415E+144"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0574",
+      "args": [
+        "0xc01a81595e303d22",
+        "0xb86fcc35fd46fb70"
+      ],
+      "expected_bits": "text:8.86392364175411E+36"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0575",
+      "args": [
+        "0xda38e048a7763095",
+        "0x33884f82714b976d"
+      ],
+      "expected_bits": "text:-2.22614970188796E+186"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0576",
+      "args": [
+        "0xf5d58d46673f9e2e",
+        "0x5f031dae0e31bd3f"
+      ],
+      "expected_bits": "text:-8.47300555017142E+109"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0577",
+      "args": [
+        "0xbe68cec2e074d22f",
+        "0xf67358185be3af2c"
+      ],
+      "expected_bits": "text:1.2137540551981E-270"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0578",
+      "args": [
+        "0x46ee6302766b0616",
+        "0xdfcefb79716e0d79"
+      ],
+      "expected_bits": "text:-1.51926001586095E-120"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0579",
+      "args": [
+        "0x1c91587b6267c224",
+        "0x02424f8514c1aecb"
+      ],
+      "expected_bits": "text:5.12997402279521E+126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0580",
+      "args": [
+        "0xaf742316522547d9",
+        "0xf0e3d573cbd8082c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0581",
+      "args": [
+        "0x343edb174870b057",
+        "0xd7f0394ca97cd824"
+      ],
+      "expected_bits": "text:-1.23034341371967E-172"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0582",
+      "args": [
+        "0x0062411b6faec145",
+        "0x8d63cb26470d4d63"
+      ],
+      "expected_bits": "text:-2.24183127451328E-63"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0583",
+      "args": [
+        "0x3635874cdd281ac2",
+        "0x778a2b1872295486"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0584",
+      "args": [
+        "0xf03fe0b058988d8a",
+        "0xadb0a85500309759"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0585",
+      "args": [
+        "0x85bfe82f9b47f0e6",
+        "0xca2fd424ffa5fcfe"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0586",
+      "args": [
+        "0x5014999fce73e59e",
+        "0x2a8d9a52a63eb21e"
+      ],
+      "expected_bits": "text:5.77515271920554E+180"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0587",
+      "args": [
+        "0x0efb1cba0c20e7dd",
+        "0x9df72da8c815df5f"
+      ],
+      "expected_bits": "text:-6.62038705687106E-73"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0588",
+      "args": [
+        "0x6831541559eb23c7",
+        "0x1d15d090aca3961a"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0589",
+      "args": [
+        "0x46b4b237d2df4700",
+        "0xfd9c716aa6b0b7d6"
+      ],
+      "expected_bits": "text:-3.61058651606482E-265"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0590",
+      "args": [
+        "0xa1873e3033bd61a5",
+        "0x23cba3e0ecbba34e"
+      ],
+      "expected_bits": "text:-1.22368740796969E-11"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0591",
+      "args": [
+        "0x20880367ae5e3f21",
+        "0x75a04fcfd0db0d27"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0592",
+      "args": [
+        "0x3491967d63517963",
+        "0xe5b51761dc7b0273"
+      ],
+      "expected_bits": "text:-2.04895334371022E-237"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0593",
+      "args": [
+        "0x1d358490290cf39a",
+        "0x67b6ee5ea7067996"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0594",
+      "args": [
+        "0x179ef43b75107427",
+        "0xcbc6fce72537287a"
+      ],
+      "expected_bits": "text:-5.87721413281544E-252"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0595",
+      "args": [
+        "0xf1e249fbd9ce4a90",
+        "0x27f40b19544673d8"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0596",
+      "args": [
+        "0x38fcb0b2a1a4c58c",
+        "0x2d3176a302a89308"
+      ],
+      "expected_bits": "text:6.44530880840129E+56"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0597",
+      "args": [
+        "0xebf0dddb046d97de",
+        "0x0276ddf9304d197d"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0598",
+      "args": [
+        "0x22d9c19da4259afe",
+        "0xb5e22177f856b7dc"
+      ],
+      "expected_bits": "text:-2.17931264905739E-92"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0599",
+      "args": [
+        "0x2ac31905855e16c8",
+        "0x12372f449ec8ba7c"
+      ],
+      "expected_bits": "text:1.66176616330986E+118"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0600",
+      "args": [
+        "0x45edbcbe8aab241e",
+        "0xf0af5b85a38ef12f"
+      ],
+      "expected_bits": "text:-1.18152442201685E-206"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0601",
+      "args": [
+        "0x6a38b6508faca29b",
+        "0x1e231bba04246f9b"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0602",
+      "args": [
+        "0x86843a2e839bdfe6",
+        "0xffa93d59cdad4296"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0603",
+      "args": [
+        "0xd173c14a16a86a4d",
+        "0x15f0ab7da76c4d40"
+      ],
+      "expected_bits": "text:-4.51129349414701E+286"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0604",
+      "args": [
+        "0xc389c6a883aa95d1",
+        "0x9d5f8300d15f8dd9"
+      ],
+      "expected_bits": "text:6.95137565885198E+183"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0605",
+      "args": [
+        "0x9b5fe36e1057bfeb",
+        "0xb0aa832fe4861ec7"
+      ],
+      "expected_bits": "text:2.68506206081858E-103"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0606",
+      "args": [
+        "0x53b539208d8d03be",
+        "0x108f14675868de25"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0607",
+      "args": [
+        "0xdedbcbf0aa7eaa6a",
+        "0x52bb337a4c638ec5"
+      ],
+      "expected_bits": "text:-2.5658144797418E+58"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0608",
+      "args": [
+        "0xde9295f71cd56fce",
+        "0x06f383b04183fd05"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0609",
+      "args": [
+        "0xc68cbff7daa67453",
+        "0xe0ecc9efa3da2833"
+      ],
+      "expected_bits": "text:9.22049091989359E-128"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0610",
+      "args": [
+        "0x2c11b5d031369403",
+        "0x305a0c0cfbd44df1"
+      ],
+      "expected_bits": "text:2.30369525540458E-21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0611",
+      "args": [
+        "0x3d335befe0ca7fdb",
+        "0x2cd28432ff251fc5"
+      ],
+      "expected_bits": "text:7.74797212974536E+78"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0612",
+      "args": [
+        "0x83637e9669dd2bed",
+        "0x67b17562c9505ecf"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0613",
+      "args": [
+        "0xdc9fe577d522de3c",
+        "0xc5858af7d413bb9b"
+      ],
+      "expected_bits": "text:1.78035448585309E+111"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0614",
+      "args": [
+        "0xca16dac9572f6fa6",
+        "0x273628a3aebd5248"
+      ],
+      "expected_bits": "text:-9.73120573034805E+167"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0615",
+      "args": [
+        "0x82e05f3a1b4e015e",
+        "0x8e1cc6d1bb3cffad"
+      ],
+      "expected_bits": "text:7.42492279393392E-55"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0616",
+      "args": [
+        "0x80b7139691f89558",
+        "0x7b4d4e84bf7d41ba"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0617",
+      "args": [
+        "0x239099743e8c632c",
+        "0x96c7002f1b45b0a1"
+      ],
+      "expected_bits": "text:-3.7110847982027E+61"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0618",
+      "args": [
+        "0x5de05984ad7a0324",
+        "0xec83d37054ebaad9"
+      ],
+      "expected_bits": "text:-2.98714745859315E-71"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0619",
+      "args": [
+        "0x875edfb4cb7e013d",
+        "0x6b60767044387d6e"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0620",
+      "args": [
+        "0xf63bce637ed4186f",
+        "0x775b6d15218e0c33"
+      ],
+      "expected_bits": "text:-3.86756565910867E-06"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0621",
+      "args": [
+        "0x7fbcddd9adb4331f",
+        "0xabbe8ee37c32c89d"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0622",
+      "args": [
+        "0x3e286d1e315283aa",
+        "0x3997b359b88ec0bf"
+      ],
+      "expected_bits": "text:9.73390764492641E+21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0623",
+      "args": [
+        "0x6a107592a9e0208c",
+        "0x15d1948a33d72799"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0624",
+      "args": [
+        "0x66b4d1d0bb418f1c",
+        "0x080527882d103ea8"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0625",
+      "args": [
+        "0x2cbcd56265199b96",
+        "0x9172233a7f67d08a"
+      ],
+      "expected_bits": "text:-2.82095314304103E+131"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0626",
+      "args": [
+        "0x3692bf3abd16bf34",
+        "0x582b7325d8ee22d1"
+      ],
+      "expected_bits": "text:1.51804537013591E-162"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0627",
+      "args": [
+        "0x3731d2486e043aa0",
+        "0x3d295f95c9deca8c"
+      ],
+      "expected_bits": "text:1.77302291533429E-29"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0628",
+      "args": [
+        "0x9a4a1dd26ab2e2a8",
+        "0x44af4940f4e0af46"
+      ],
+      "expected_bits": "text:-6.65618974074766E-205"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0629",
+      "args": [
+        "0xf21518ef205f467a",
+        "0xe700d96c32433209"
+      ],
+      "expected_bits": "text:2.39859042719346E+53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0630",
+      "args": [
+        "0xad23b92e9f42a1e1",
+        "0x6a06067588441d3f"
+      ],
+      "expected_bits": "text:-5.6084754527623E-294"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0631",
+      "args": [
+        "0x4fd024b85d0edfc2",
+        "0xec24e6b00e56a8d3"
+      ],
+      "expected_bits": "text:-3.32076665109133E-137"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0632",
+      "args": [
+        "0xb5b10ae56a3c18b6",
+        "0x3fa023cc3cc6a3f6"
+      ],
+      "expected_bits": "text:-1.44499553434049E-48"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0633",
+      "args": [
+        "0x7c81010d4729182d",
+        "0x9c698495f7248b5a"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0634",
+      "args": [
+        "0x643e9210fbb6e1d2",
+        "0x9155b43b18f7bd00"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0635",
+      "args": [
+        "0xf819eaa1f4678628",
+        "0xf49efa4355e723d6"
+      ],
+      "expected_bits": "text:60284969523012700"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0636",
+      "args": [
+        "0xc11bcb5abf8b81c4",
+        "0x59c4753dcc4a8a1a"
+      ],
+      "expected_bits": "text:-1.68362614769273E-119"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0637",
+      "args": [
+        "0xcaac65f725d5bc08",
+        "0x7e654075fa2f94bd"
+      ],
+      "expected_bits": "text:-7.4655231424093E-250"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0638",
+      "args": [
+        "0xf577ce3a74a94fea",
+        "0x92a25328a3f019ca"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0639",
+      "args": [
+        "0x0ca01bfea6544922",
+        "0x834aeb91e49f574f"
+      ],
+      "expected_bits": "text:-8.54081442482305E+44"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0640",
+      "args": [
+        "0x84b57c8ec6d99662",
+        "0x2ab28ad924a9fc48"
+      ],
+      "expected_bits": "text:-1.09084744237289E-183"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0641",
+      "args": [
+        "0x7e6190364fc1c80b",
+        "0xe970f632a36a70f7"
+      ],
+      "expected_bits": "text:-7.24745853266941E+100"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0642",
+      "args": [
+        "0x1fe10f02c4f2f2aa",
+        "0xc5b44b9f2bd533ac"
+      ],
+      "expected_bits": "text:-6.32993665243804E-183"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0643",
+      "args": [
+        "0xb807256ca36d099d",
+        "0x14b208cc159b14ec"
+      ],
+      "expected_bits": "text:-1.54998041644054E+170"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0644",
+      "args": [
+        "0x18a6a4636ff1a993",
+        "0x7291310abe476392"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0645",
+      "args": [
+        "0x5c01a4e208a9ed1d",
+        "0xd40518876bd594fc"
+      ],
+      "expected_bits": "text:-2.8460464199135E+38"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0646",
+      "args": [
+        "0x9da47e3d3ac7eebf",
+        "0x6aee6e51ad84c8aa"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0647",
+      "args": [
+        "0x3d3f6985b94ae7c3",
+        "0xde031c5fdcf86c4e"
+      ],
+      "expected_bits": "text:-1.49647980147104E-158"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0648",
+      "args": [
+        "0x27c2739299dfd012",
+        "0x15520f7ee898f118"
+      ],
+      "expected_bits": "text:6.50352568312931E+88"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0649",
+      "args": [
+        "0x79ffa0076a13003b",
+        "0xce047928258bc1e8"
+      ],
+      "expected_bits": "text:-6.50027679668428E+211"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0650",
+      "args": [
+        "0x42c2dfbad7882661",
+        "0x2b73209df4d12f4b"
+      ],
+      "expected_bits": "text:1.89843131670935E+112"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0651",
+      "args": [
+        "0x185678d915722362",
+        "0x8e167a58ba93867c"
+      ],
+      "expected_bits": "text:-2.33779362589573E+49"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0652",
+      "args": [
+        "0x7f77892d167df280",
+        "0x96544547770aee5b"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0653",
+      "args": [
+        "0xfe9eb437753e57a1",
+        "0xa50fcc9104b97e98"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0654",
+      "args": [
+        "0x724c878547b70ca6",
+        "0x3731df2ec58a58ca"
+      ],
+      "expected_bits": "text:4.74755189885002E+284"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0655",
+      "args": [
+        "0x201db77c77c4cf9e",
+        "0x0a3bed8464ae6d8a"
+      ],
+      "expected_bits": "text:2.44041082538581E+105"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0656",
+      "args": [
+        "0xe015388ce5ad278f",
+        "0x20f47e4a01208f85"
+      ],
+      "expected_bits": "text:-1.13618006707607E+304"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0657",
+      "args": [
+        "0xdf582b2be7e3f7b9",
+        "0x048af57fb12fbfc1"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0658",
+      "args": [
+        "0x23745cf7c59b84f5",
+        "0x72531f3ec94730b3"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0659",
+      "args": [
+        "0x527b68ef9a61851e",
+        "0x08721feafcaf14bf"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0660",
+      "args": [
+        "0x0d6ef5ebe70ea05d",
+        "0x8c03467af86f6b95"
+      ],
+      "expected_bits": "text:-6737026.36292471"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0661",
+      "args": [
+        "0xaffbd8171805e2e9",
+        "0x2938e75fe8834496"
+      ],
+      "expected_bits": "text:-3.62833191056492E+32"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0662",
+      "args": [
+        "0x86316b30a77b1f63",
+        "0x7acf0ff2d371c9ee"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0663",
+      "args": [
+        "0x08e05e124b05d1f0",
+        "0x3c54bced700f21ec"
+      ],
+      "expected_bits": "text:1.41100386764245E-248"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0664",
+      "args": [
+        "0x8831cb578f30e606",
+        "0xa3695848285bbf46"
+      ],
+      "expected_bits": "text:7.91303649071653E-132"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0665",
+      "args": [
+        "0x536693e6a7d9b339",
+        "0xcad806c29c8fe883"
+      ],
+      "expected_bits": "text:-1.63719726331351E+41"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0666",
+      "args": [
+        "0x8522bb8471ad174b",
+        "0xe9a09eaf03ef6938"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0667",
+      "args": [
+        "0x0734b2621faabe83",
+        "0xb83b5e0c13e0c444"
+      ],
+      "expected_bits": "text:-7.43282169625636E-237"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0668",
+      "args": [
+        "0xadf3fe47460dbff9",
+        "0x6e035f6bf46b9e3f"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0669",
+      "args": [
+        "0xb8a017fd78d6c318",
+        "0xcc91889e9ab8fe9a"
+      ],
+      "expected_bits": "text:8.59438414968051E-97"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0670",
+      "args": [
+        "0x59a07f33ca63f7ba",
+        "0xc9850d5923a5e9fe"
+      ],
+      "expected_bits": "text:-3.62948097047921E+77"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0671",
+      "args": [
+        "0x4c64ecd7112ca086",
+        "0xcba9b786b576aa35"
+      ],
+      "expected_bits": "text:-3332.80621743699"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0672",
+      "args": [
+        "0x997bb0fd1ec3027c",
+        "0x21f8f4320da33079"
+      ],
+      "expected_bits": "text:-1.27387459626655E-41"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0673",
+      "args": [
+        "0xb6f127837bcdba74",
+        "0xf8f44652c4bce334"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0674",
+      "args": [
+        "0x8684b91e84b40c42",
+        "0xfd463200af195578"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0675",
+      "args": [
+        "0x6dc091f36ab663d2",
+        "0xab54607f9118ac61"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0676",
+      "args": [
+        "0xb7acda84abb6462f",
+        "0x993f609c2c428ee3"
+      ],
+      "expected_bits": "text:3.67443846684416E+146"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0677",
+      "args": [
+        "0x6274cbaa81ed5d8f",
+        "0xb888221e2ec88a7d"
+      ],
+      "expected_bits": "text:-8.4427067129261E+201"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0678",
+      "args": [
+        "0x4ecc96a67e4a5147",
+        "0xed2b86afc32bad06"
+      ],
+      "expected_bits": "text:-5.19838154608629E-147"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0679",
+      "args": [
+        "0x2089e613e1f690f6",
+        "0x8838f70e27985a2d"
+      ],
+      "expected_bits": "text:-1.30801990911372E+117"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0680",
+      "args": [
+        "0x96c0bb45244f2910",
+        "0x25d2f4ac0935a797"
+      ],
+      "expected_bits": "text:-2.49784546380884E-73"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0681",
+      "args": [
+        "0x05e05ebb9260f8e2",
+        "0x720eca2cb922b454"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0682",
+      "args": [
+        "0xc33b19da7a5fae50",
+        "0x9769c40f997cb513"
+      ],
+      "expected_bits": "text:1.10654077519791E+211"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0683",
+      "args": [
+        "0xa3aa08e8c07e0dd1",
+        "0x6820f9e046f48b3a"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0684",
+      "args": [
+        "0x508549407f184f45",
+        "0x42ca0e8d5a03b7d1"
+      ],
+      "expected_bits": "text:1.37649345072312E+66"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0685",
+      "args": [
+        "0x1aa4cc287150015c",
+        "0x09fb66b5dd9eb067"
+      ],
+      "expected_bits": "text:1.79990684626964E+80"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0686",
+      "args": [
+        "0xbf42802f3ec607ff",
+        "0x7aa9b50714e13188"
+      ],
+      "expected_bits": "text:-7.56204086278988E-287"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0687",
+      "args": [
+        "0x9842526b742f7e31",
+        "0x2157e1c56daddfde"
+      ],
+      "expected_bits": "text:-1.72009786058325E-44"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0688",
+      "args": [
+        "0x03ff7c7b85909707",
+        "0xb0b69acd3e7c5995"
+      ],
+      "expected_bits": "text:-4.04059704044444E-216"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0689",
+      "args": [
+        "0x348057b221e1ad03",
+        "0x9e31fcd00315bc67"
+      ],
+      "expected_bits": "text:-2.66720624034457E+107"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0690",
+      "args": [
+        "0x586b98d1d06dfacd",
+        "0xc503d84848035569"
+      ],
+      "expected_bits": "text:-2.9007605586365E+93"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0691",
+      "args": [
+        "0x5f4139986d151f36",
+        "0x1474b83070d4e896"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0692",
+      "args": [
+        "0x41956265813af5f4",
+        "0xaf416416931ae0e8"
+      ],
+      "expected_bits": "text:-1.95686660278136E+88"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0693",
+      "args": [
+        "0x1e68ea9e9df9dd55",
+        "0xec3efb8dd3a84466"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0694",
+      "args": [
+        "0x256c036592d2adee",
+        "0xbbf7e4ad51de676f"
+      ],
+      "expected_bits": "text:-2.49608727893385E-109"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0695",
+      "args": [
+        "0xbf74532027a59a6a",
+        "0x53c6915243d95f09"
+      ],
+      "expected_bits": "text:-1.31761701535281E-98"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0696",
+      "args": [
+        "0x42f71b15fa7515e3",
+        "0x0af24a5b76b8606c"
+      ],
+      "expected_bits": "text:6.67379125566015E+269"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0697",
+      "args": [
+        "0x1057f4578215bb3b",
+        "0x89ff017ac8ac1863"
+      ],
+      "expected_bits": "text:-3.91744844342343E+30"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0698",
+      "args": [
+        "0x88e4b87abd1ca936",
+        "0xe574b31e437acbe4"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0699",
+      "args": [
+        "0x64063dea728c14c5",
+        "0x73674f4df7fc6b91"
+      ],
+      "expected_bits": "text:8.43827944872594E-75"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0700",
+      "args": [
+        "0x29fd0d4dc7d614ac",
+        "0x027756093284808e"
+      ],
+      "expected_bits": "text:2.21873254268907E+190"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0701",
+      "args": [
+        "0x0163783703db8743",
+        "0x44a6c04ca63c5ece"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0702",
+      "args": [
+        "0x962427ef0cc4fa76",
+        "0x96f362e60d6190ad"
+      ],
+      "expected_bits": "text:0.000126916702421327"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0703",
+      "args": [
+        "0x23e005219f86d761",
+        "0x732b80cbca682128"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0704",
+      "args": [
+        "0xc1607b7813e8b68f",
+        "0xb1c68ccd5c32f59e"
+      ],
+      "expected_bits": "text:1.32242194001604E+75"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0705",
+      "args": [
+        "0xcf311d633477c901",
+        "0xca12b65b8f49a112"
+      ],
+      "expected_bits": "text:4.42286182300913E+24"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0706",
+      "args": [
+        "0xc2fed7913c16fad4",
+        "0xabf2d26b5f473cc0"
+      ],
+      "expected_bits": "text:9.85183533958679E+110"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0707",
+      "args": [
+        "0x15e2b8addcca88a2",
+        "0x44357f5035332aeb"
+      ],
+      "expected_bits": "text:7.52882721383374E-224"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0708",
+      "args": [
+        "0x621eb3bab37953e5",
+        "0x9511d7d76a0ec632"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0709",
+      "args": [
+        "0xf8826d3f68c4351a",
+        "0x5b7e6cbcd9882ab4"
+      ],
+      "expected_bits": "text:-5.76991727169894E+139"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0710",
+      "args": [
+        "0x1302a7deb503df67",
+        "0x9c35b9878e89ad17"
+      ],
+      "expected_bits": "text:-4.81336596606547E-45"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0711",
+      "args": [
+        "0x8f38cbf7b72053cd",
+        "0x9a06f58ff0a6c441"
+      ],
+      "expected_bits": "text:9.02086566487453E-53"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0712",
+      "args": [
+        "0x40207c81bbbd0bfc",
+        "0x6120bb4e87732dba"
+      ],
+      "expected_bits": "text:1.12136684853502E-159"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0713",
+      "args": [
+        "0x0cb6511cb5612045",
+        "0x3c893957fafc48d9"
+      ],
+      "expected_bits": "text:4.55902700662219E-231"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0714",
+      "args": [
+        "0xf893208f8d1a8ec0",
+        "0x1b2ab3dd03b0a869"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0715",
+      "args": [
+        "0xaec013b666a9c8fa",
+        "0x3b1cac078644b1d7"
+      ],
+      "expected_bits": "text:-2.79150291336667E-60"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0716",
+      "args": [
+        "0xeb04766e26e8de13",
+        "0x66e9789623fcc164"
+      ],
+      "expected_bits": "text:-59278092818040200000"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0717",
+      "args": [
+        "0xc5d14f133564b077",
+        "0x44420d4d2054a951"
+      ],
+      "expected_bits": "text:-32173233.6983317"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0718",
+      "args": [
+        "0x976b0399c4d309d7",
+        "0x9ac17a0a4203c793"
+      ],
+      "expected_bits": "text:8.58045408797718E-17"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0719",
+      "args": [
+        "0xeaacaf4c703797df",
+        "0xa7651e3cd4f743e8"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0720",
+      "args": [
+        "0x1e690870d72cea00",
+        "0xd3d21eed22f66f1d"
+      ],
+      "expected_bits": "text:-5.7502749194552E-258"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0721",
+      "args": [
+        "0x8dcbaee549b34cec",
+        "0x002ff7bea13e85c5"
+      ],
+      "expected_bits": "text:-3.64790082996317E+65"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0722",
+      "args": [
+        "0x5622c666d900cb7b",
+        "0x21fed5dfc6711384"
+      ],
+      "expected_bits": "text:1.39500656587184E+251"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0723",
+      "args": [
+        "0x0d0a316a309e4dce",
+        "0x31613f99314063bb"
+      ],
+      "expected_bits": "text:9.59353367735529E-176"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0724",
+      "args": [
+        "0x7846c85dc0f2bc6f",
+        "0xaf7c05daadceb4fb"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0725",
+      "args": [
+        "0xe6a83f572f19dd20",
+        "0x87d0b4078027f39b"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0726",
+      "args": [
+        "0x6552c2f3c4c8eea9",
+        "0x9f12660be5a06374"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0727",
+      "args": [
+        "0x37ff96226a9d446b",
+        "0x2d5e262fe20813dc"
+      ],
+      "expected_bits": "text:1.56792368791918E+51"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0728",
+      "args": [
+        "0xecb4227a922ae77f",
+        "0x63b134fcc69ab812"
+      ],
+      "expected_bits": "text:-2.60951298175856E+43"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0729",
+      "args": [
+        "0xe7d190f1cd47b173",
+        "0x2385c690d69b9db5"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0730",
+      "args": [
+        "0x286d17c64f56e906",
+        "0xa1ba9c2111575c8f"
+      ],
+      "expected_bits": "text:-1.77399825822694E+32"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0731",
+      "args": [
+        "0x969a74b87c747fa5",
+        "0x7c7f7ae030865a7a"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0732",
+      "args": [
+        "0x1f809fda7476f3ff",
+        "0x618afb48090032b5"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0733",
+      "args": [
+        "0x316d00b97e9e1da6",
+        "0x157dca12a15bc2b7"
+      ],
+      "expected_bits": "text:3.53824144318616E+134"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0734",
+      "args": [
+        "0x87b92793967d1cc4",
+        "0x4746cb2907c6231c"
+      ],
+      "expected_bits": "text:-7.8577630438814E-307"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0735",
+      "args": [
+        "0x002fbf6c687c5a29",
+        "0xf6e2bb1fdb76bda3"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0736",
+      "args": [
+        "0x3d8cc9ba1d0039a7",
+        "0x4de192d9571ea2f0"
+      ],
+      "expected_bits": "text:2.21050306506942E-79"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0737",
+      "args": [
+        "0x3e5980ba929db773",
+        "0xba3eedeccf5946e5"
+      ],
+      "expected_bits": "text:-60841085866758000000"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0738",
+      "args": [
+        "0x8306420215315c78",
+        "0xf331712f8398e1b3"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0739",
+      "args": [
+        "0xf4003c28dd37d91b",
+        "0xe719f2ab7ad36781"
+      ],
+      "expected_bits": "text:1.28694105052423E+62"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0740",
+      "args": [
+        "0x88f4b5f3da662e8b",
+        "0xe1f074d2d362ac2d"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0741",
+      "args": [
+        "0x85be03f89d220530",
+        "0xbb51a91a43c99d62"
+      ],
+      "expected_bits": "text:8.84311113967161E-259"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0742",
+      "args": [
+        "0xe168484d8458bb83",
+        "0x95201ebaae92fadc"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0743",
+      "args": [
+        "0x0b8d0e2430388a88",
+        "0xc02da397de9ddc85"
+      ],
+      "expected_bits": "text:-3.34275107976021E-254"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0744",
+      "args": [
+        "0xf20630db302ac5f7",
+        "0x2867e6bf2447c8f2"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0745",
+      "args": [
+        "0x3e42e0fbed1347da",
+        "0x03f6797559a65175"
+      ],
+      "expected_bits": "text:6.09919252513821E+280"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0746",
+      "args": [
+        "0xa62bcf11803ec4cd",
+        "0xb1f561b20731429b"
+      ],
+      "expected_bits": "text:1.65757563754579E-57"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0747",
+      "args": [
+        "0x7edab2f9b49d3b64",
+        "0xced07a25fe53dbc6"
+      ],
+      "expected_bits": "text:-2.5156589933482E+231"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0748",
+      "args": [
+        "0xebb286a0cc2e9dc3",
+        "0x93776dc014e7cfee"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0749",
+      "args": [
+        "0xe4e0f8a5ad25ff0d",
+        "0x13a6a84015af13ff"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0750",
+      "args": [
+        "0xd43fbb17fa832744",
+        "0xaa32049fd7a8a303"
+      ],
+      "expected_bits": "text:3.45088476111771E+202"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0751",
+      "args": [
+        "0xc3f0852b02381ed2",
+        "0x301b5a7c7f50f20e"
+      ],
+      "expected_bits": "text:-3.22508592536988E+95"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0752",
+      "args": [
+        "0x04057ede764caba3",
+        "0x9bc8143a82a46e49"
+      ],
+      "expected_bits": "text:-3.62503403366216E-115"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0753",
+      "args": [
+        "0xc5b500db1b3988de",
+        "0xcc20390c29c062ab"
+      ],
+      "expected_bits": "text:1.27665027539768E-31"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0754",
+      "args": [
+        "0x4063c42b58558719",
+        "0x92efae9385c2eaa4"
+      ],
+      "expected_bits": "text:-8.80947809739294E+218"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0755",
+      "args": [
+        "0xe542259003cc7684",
+        "0x3047d3aeafd4403d"
+      ],
+      "expected_bits": "text:-1.42944488602376E+255"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0756",
+      "args": [
+        "0x6d0a77fb0314bb59",
+        "0xc86b502ed44592aa"
+      ],
+      "expected_bits": "text:-2.45435187112017E+176"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0757",
+      "args": [
+        "0x78f6c8790b6f52d4",
+        "0x63c0d9b05da7f855"
+      ],
+      "expected_bits": "text:1.51416230647345E+102"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0758",
+      "args": [
+        "0xb627aba2ae5a6a68",
+        "0x0e484aab0dae24c3"
+      ],
+      "expected_bits": "text:-1.11144083510051E+192"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0759",
+      "args": [
+        "0x4dc665cd1bec37a2",
+        "0x048306af5d5ea74b"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0760",
+      "args": [
+        "0xe71afb5e09557806",
+        "0xf22a1c7cb5159544"
+      ],
+      "expected_bits": "text:5.39430163824763E-54"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0761",
+      "args": [
+        "0xf5de3f8370694e21",
+        "0x9c5304d5c1b770fd"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0762",
+      "args": [
+        "0x79b8e8f4ddd1fc99",
+        "0x29462683519e1add"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0763",
+      "args": [
+        "0x8bf591538ee9feb4",
+        "0x303f430f224bd9a8"
+      ],
+      "expected_bits": "text:-1.7433713780556E-175"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0764",
+      "args": [
+        "0xbfb41ccda4aa500c",
+        "0x17fe94b6dde5b84c"
+      ],
+      "expected_bits": "text:-1.87539648191389E+191"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0765",
+      "args": [
+        "0x037ad74d1c86f9de",
+        "0xe332996cf6d263a8"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0766",
+      "args": [
+        "0x236c07cda1c66357",
+        "0x216eecf62f0dd926"
+      ],
+      "expected_bits": "text:3892887400.66048"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0767",
+      "args": [
+        "0xbbd2d47c5408342a",
+        "0x7d6f1dde0eaf3a35"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0768",
+      "args": [
+        "0xd4769e3bf5352a70",
+        "0x75a779f25b35bbf6"
+      ],
+      "expected_bits": "text:-1.37055924236582E-160"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0769",
+      "args": [
+        "0x83763bb9ea8f61f8",
+        "0x8947ff822373680f"
+      ],
+      "expected_bits": "text:9.35487422908342E-29"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0770",
+      "args": [
+        "0xc361964ecea02d12",
+        "0x47950084c370cf2d"
+      ],
+      "expected_bits": "text:-5.67445718404623E-21"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0771",
+      "args": [
+        "0x1ae9ef868debd7fc",
+        "0x1cff4e0e00d3a3ea"
+      ],
+      "expected_bits": "text:9.64483696181635E-11"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0772",
+      "args": [
+        "0x7d91d1756153a6f3",
+        "0xe2f09ac75b518aeb"
+      ],
+      "expected_bits": "text:-1.85957364686471E+128"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0773",
+      "args": [
+        "0xd0a97bece2f3a22c",
+        "0x1ea5def034a3d815"
+      ],
+      "expected_bits": "text:-7.76962094542591E+240"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0774",
+      "args": [
+        "0xb6262f760a2883a7",
+        "0xac80543a5faf133a"
+      ],
+      "expected_bits": "text:3.10260500486314E+46"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0775",
+      "args": [
+        "0x8cfc4c01aec045a4",
+        "0xfcc00e090a9130d8"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0776",
+      "args": [
+        "0x711efc21b328141a",
+        "0xf1b14e7e837e7638"
+      ],
+      "expected_bits": "text:-0.00174838786951743"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0777",
+      "args": [
+        "0xed984ce20f63a4b1",
+        "0x27fa43bf7644aee4"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0778",
+      "args": [
+        "0x554f133548635aff",
+        "0xb40247e00f4df92c"
+      ],
+      "expected_bits": "text:-2.38987378366784E+160"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0779",
+      "args": [
+        "0x2c660f65ed6eb61d",
+        "0xd6432605ad49c2d1"
+      ],
+      "expected_bits": "text:-2.35166817070375E-202"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0780",
+      "args": [
+        "0x58bf7251a84ddb98",
+        "0x92340642f366a370"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0781",
+      "args": [
+        "0x85563ceaa2d821a5",
+        "0x23b05dcb142922fc"
+      ],
+      "expected_bits": "text:-6.80086774561816E-147"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0782",
+      "args": [
+        "0xb93e0aeb80d1d2f0",
+        "0xc68b0dd698eb2c00"
+      ],
+      "expected_bits": "text:8.4356172821964E-65"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0783",
+      "args": [
+        "0xfdb6fc59063078a6",
+        "0x5a4a39775885b708"
+      ],
+      "expected_bits": "text:-4.23408006055108E+170"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0784",
+      "args": [
+        "0x1e24fc7a3136a96c",
+        "0xfb80c114d28b08f7"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0785",
+      "args": [
+        "0xea3363637aaf1124",
+        "0x9b3b4fa2321a84d2"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0786",
+      "args": [
+        "0x2622fb200e5b5757",
+        "0x10f7a9aa4dbf97e5"
+      ],
+      "expected_bits": "text:8.98299898881171E+101"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0787",
+      "args": [
+        "0xcf6dccc527507554",
+        "0x81c5b02fe8db85e0"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0788",
+      "args": [
+        "0xab5b3447433a3ecf",
+        "0x930e6100f56a4292"
+      ],
+      "expected_bits": "text:1.12909927155551E+117"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0789",
+      "args": [
+        "0x7e9ae214762e1d22",
+        "0x8e05ed00540a3133"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0790",
+      "args": [
+        "0xc9ac0a33159532d4",
+        "0x7efc7743580192a1"
+      ],
+      "expected_bits": "text:-1.64007904028101E-257"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0791",
+      "args": [
+        "0xa783fef66bbd2bfa",
+        "0x6e36e34c298ec9a6"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0792",
+      "args": [
+        "0x30ea0e4a6df7da9b",
+        "0xe7b64ff06d5714db"
+      ],
+      "expected_bits": "text:-1.15892409733069E-264"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0793",
+      "args": [
+        "0xfd50ea8f5e472ab2",
+        "0x7738568c5148f15b"
+      ],
+      "expected_bits": "text:-2.20271030842506E+29"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0794",
+      "args": [
+        "0x4804fc8f706ac358",
+        "0xbf74fd91231bcf0f"
+      ],
+      "expected_bits": "text:-1.74191934291084E+41"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0795",
+      "args": [
+        "0x4fa11f7b2f66047f",
+        "0x23d24002a570a884"
+      ],
+      "expected_bits": "text:9.87057182197644E+210"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0796",
+      "args": [
+        "0xde90c238f6df41bf",
+        "0xe8f043f8b70dce28"
+      ],
+      "expected_bits": "text:1.10152100924665E-50"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0797",
+      "args": [
+        "0xae65d84ef5ae595d",
+        "0x42f71ca4b82faf3d"
+      ],
+      "expected_bits": "text:-8.64265437060363E-100"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0798",
+      "args": [
+        "0x73c9d31c7e338069",
+        "0x6251d857db68b9ac"
+      ],
+      "expected_bits": "text:1.40567375611082E+84"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0799",
+      "args": [
+        "0x94f9c238d4ab42c5",
+        "0x2d63479f8668bbaa"
+      ],
+      "expected_bits": "text:-2.64906897823629E-118"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0800",
+      "args": [
+        "0x25ab14297c4b4ebc",
+        "0x4802170cabd8ff75"
+      ],
+      "expected_bits": "text:4.0615487339974E-166"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0801",
+      "args": [
+        "0xc4462b853af614b9",
+        "0x830c00a7cc62a731"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0802",
+      "args": [
+        "0x957ca73cf6d8b902",
+        "0xd9b0cc4f702483d1"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0803",
+      "args": [
+        "0x1f07e828b3a3f6e0",
+        "0xb89b5ef6a4a97f88"
+      ],
+      "expected_bits": "text:-6.60639635359641E-124"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0804",
+      "args": [
+        "0x7e5fe64f490079fb",
+        "0xf49b9c028ad91f03"
+      ],
+      "expected_bits": "text:-1.05537795689346E+47"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0805",
+      "args": [
+        "0x0f54af74adb4a50b",
+        "0xd1e3c4db73fd94c7"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0806",
+      "args": [
+        "0xa6195fd0a06fe8cd",
+        "0x73ffbdc57a815798"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0807",
+      "args": [
+        "0xdae869612eb27359",
+        "0xf5d19bb7007be056"
+      ],
+      "expected_bits": "text:2.50007098508236E-130"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0808",
+      "args": [
+        "0x0dd50bd0bacef28b",
+        "0x59b18782ed438861"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0809",
+      "args": [
+        "0xcc5d0413ab09e4f8",
+        "0xbcfe3dbf14d04544"
+      ],
+      "expected_bits": "text:1.08496662488029E+74"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0810",
+      "args": [
+        "0x4c6034785bfe6d68",
+        "0x4292928fa34553cf"
+      ],
+      "expected_bits": "text:1.59399464366908E+47"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0811",
+      "args": [
+        "0x3372e22487202077",
+        "0xe153fe9015f59f8a"
+      ],
+      "expected_bits": "text:-1.04509220555136E-221"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0812",
+      "args": [
+        "0xa24c4e50875690e2",
+        "0x7405c4fcc5cf050d"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0813",
+      "args": [
+        "0xca90b7a74cf2703f",
+        "0x6643869f29577346"
+      ],
+      "expected_bits": "text:-3.76938291992557E-134"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0814",
+      "args": [
+        "0x5441c7892534d5eb",
+        "0x05c277b1fc9a5e45"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0815",
+      "args": [
+        "0xf1775fee4ec62564",
+        "0xb6c8a86b19df1df6"
+      ],
+      "expected_bits": "text:4.40510964826322E+282"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0816",
+      "args": [
+        "0x17b1bc98acbfd22d",
+        "0x4d660cafafced525"
+      ],
+      "expected_bits": "text:2.09269922905095E-259"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0817",
+      "args": [
+        "0x3f800d96e9598f55",
+        "0xe397aeb9e99c39e3"
+      ],
+      "expected_bits": "text:-1.37032312849952E-174"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0818",
+      "args": [
+        "0xce87a6d06c52f2df",
+        "0xc8c7d02feb9c9ac9"
+      ],
+      "expected_bits": "text:4.91815401203336E+27"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0819",
+      "args": [
+        "0xb3328d3d891717d5",
+        "0x42c87d66bd943cbf"
+      ],
+      "expected_bits": "text:-8.37392677687779E-76"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0820",
+      "args": [
+        "0xe6a4ea0550f1f7af",
+        "0x59d506f7c6f21061"
+      ],
+      "expected_bits": "text:-5.11454935758367E+61"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0821",
+      "args": [
+        "0xc1f6cf024d5bdfed",
+        "0xc0b942210fd582d4"
+      ],
+      "expected_bits": "text:946879.431842202"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0822",
+      "args": [
+        "0x79d68f0aa69373fd",
+        "0x67434e1dd5ba8e93"
+      ],
+      "expected_bits": "text:2.97543760136374E+89"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0823",
+      "args": [
+        "0x82c7843d9b94e755",
+        "0x0b5d941f1e121bd6"
+      ],
+      "expected_bits": "text:-4.56338246589996E-42"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0824",
+      "args": [
+        "0x93008d3d1cf4275c",
+        "0xa5d964012067d627"
+      ],
+      "expected_bits": "text:1.60007591101938E-91"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0825",
+      "args": [
+        "0x4762d560663a48c3",
+        "0x117c930c50fe5cf4"
+      ],
+      "expected_bits": "text:4.05359283223877E+259"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0826",
+      "args": [
+        "0x9ed942bd8a9b6ff0",
+        "0x38fde5823c7c098f"
+      ],
+      "expected_bits": "text:-1.24820712421878E-126"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0827",
+      "args": [
+        "0xfe37e43c8800759c",
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0828",
+      "args": [
+        "0xfe37e43c8800759c",
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0829",
+      "args": [
+        "0xfe37e43c8800759c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0830",
+      "args": [
+        "0xfe37e43c8800759c",
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0831",
+      "args": [
+        "0xfe37e43c8800759c",
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:-1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0832",
+      "args": [
+        "0x81a56e1fc2f8f359",
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0833",
+      "args": [
+        "0x81a56e1fc2f8f359",
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0834",
+      "args": [
+        "0x81a56e1fc2f8f359",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0835",
+      "args": [
+        "0x81a56e1fc2f8f359",
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:-1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0836",
+      "args": [
+        "0x81a56e1fc2f8f359",
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0837",
+      "args": [
+        "0x0000000000000000",
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0838",
+      "args": [
+        "0x0000000000000000",
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0839",
+      "args": [
+        "0x0000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0840",
+      "args": [
+        "0x0000000000000000",
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0841",
+      "args": [
+        "0x0000000000000000",
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0842",
+      "args": [
+        "0x01a56e1fc2f8f359",
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0843",
+      "args": [
+        "0x01a56e1fc2f8f359",
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:-1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0844",
+      "args": [
+        "0x01a56e1fc2f8f359",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0845",
+      "args": [
+        "0x01a56e1fc2f8f359",
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "text:1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0846",
+      "args": [
+        "0x01a56e1fc2f8f359",
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:0"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0847",
+      "args": [
+        "0x7e37e43c8800759c",
+        "0xfe37e43c8800759c"
+      ],
+      "expected_bits": "text:-1"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0848",
+      "args": [
+        "0x7e37e43c8800759c",
+        "0x81a56e1fc2f8f359"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0849",
+      "args": [
+        "0x7e37e43c8800759c",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0850",
+      "args": [
+        "0x7e37e43c8800759c",
+        "0x01a56e1fc2f8f359"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "complex-kernel-2026092906-IMDIV-0851",
+      "args": [
+        "0x7e37e43c8800759c",
+        "0x7e37e43c8800759c"
+      ],
+      "expected_bits": "text:1"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T13:10:34.2692771Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

@@ -1,9 +1,11 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.NumericPublication
 
 namespace OxFunc.Functions
 
 open OxFunc
+abbrev radiansExecutable := NumericPublication.radians
 
 def radiansMeta : FunctionMeta := {
   functionId := "FUNC.RADIANS"
@@ -27,7 +29,8 @@ def evalRadiansSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode 
 
 theorem evalRadians_numeric_text_admitted :
     evalRadiansSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalRadiansSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalRadiansSurfaceClass, coerceToNumber, parsed]
 
 theorem radiansMeta_profiles :
     radiansMeta.kernelSignatureClass = KernelSignatureClass.numToNum

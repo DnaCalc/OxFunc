@@ -1,0 +1,25 @@
+{
+  "phase": "independent_aggregate_origin_refinement",
+  "seed": 202609293039,
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/median_fn.rs": "8b2a3f665757878efe106fe11e8a02a82ae1329d5c16f9f2d6c49b94f974d01d",
+    "crates/oxfunc_core/src/functions/harmean_fn.rs": "eaff3788126d3f761fe263981819bd9b5426fc5555e3bfc90c5fe7b0e30e54ec",
+    "crates/oxfunc_core/src/functions/devsq_fn.rs": "e6c8400e1383c5955530b37659318decb6e6ce5f1a7d61f98f34365477f25fd3",
+    "crates/oxfunc_core/src/functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95",
+    "crates/oxfunc_core/src/functions/aggregate_common.rs": "1de9451040ed1d07d9ba0da3413cf903966dedb4cff79d959d8248cb39ebdc17",
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": "f3f88e498d0671c554634e8f67fc28f871c602315c10d105be490ec7797a1d3d",
+    "formal/lean/OxFunc/ElementaryPrepared.lean": "ece345b210f7d1f8ffdeaf2931b4a1aad9fa9f31a35b93822d3fa42499b9544e",
+    "formal/lean/OxFunc/AggregatePublication.lean": "2aee099e7dacd5714bd509a0bf1c90c04544d80c879bcd095c96dacbc8f0e1af",
+    "formal/lean/OxFunc/Functions/MedianFn.lean": "76e7b7ad6702375a390dfbe0c18ca5fb700d06b876833936fa3247023f48b40e",
+    "formal/lean/OxFunc/Functions/HarMeanFn.lean": "20f0bb88013ba7faffb14baa48af62d00aabf318ffc41b95d51d9b1598f1a749",
+    "formal/lean/OxFunc/Functions/DevSqFn.lean": "9afd4416a30295c32563f0e1be7e5a594aa032464537236b4328b452dce7fedb"
+  },
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "independent_origin_validation",
+    "contextual_numeric_text",
+    "HO_FN_030_receiving_acknowledgment"
+  ]
+}

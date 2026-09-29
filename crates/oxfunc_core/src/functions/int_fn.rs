@@ -24,7 +24,19 @@ pub const INT_META: FunctionMeta = function_spec! {
 };
 
 pub fn int_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(n.floor())
+    // Already integral binary64 values keep every bit; applying a decimal
+    // precision reduction to those would incorrectly change large integers.
+    if !n.is_finite() || n == n.floor() { return Ok(n); }
+    // Once all fifteen significant decimal positions lie in the integer
+    // part, Excel floors the input rather than discarding integer digits.
+    if n.abs() >= 1e15 {
+        return Ok(if n < 0.0 { -(n.abs() + 1.0).floor() } else { n.floor() });
+    }
+    // W111 distinguishes this initial half-away preparation from ROUND's
+    // initial tie-down rule, including exact .5 ties at 15-digit magnitudes.
+    let (digits, scale) = crate::functions::round_fn::fifteen_significant_digits(n, true);
+    let magnitude: f64 = format!("{digits}e{scale}").parse().expect("finite decimal integer preparation");
+    Ok(magnitude.copysign(n).floor())
 }
 
 pub fn eval_int_surface(

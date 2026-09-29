@@ -1,0 +1,5309 @@
+{
+  "function": "HYPGEOM.DIST",
+  "witnesses": [
+    {
+      "id": "hypgeom.dist-branch-00000-fresh-raw-negative",
+      "args": [
+        "0x401d000000000000",
+        "0x4011000000000000",
+        "0x4019000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00001-fresh-raw-negative",
+      "args": [
+        "0x401d000000000000",
+        "0x4011000000000000",
+        "0x4019000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00002-fresh-raw-negative",
+      "args": [
+        "0x4025800000000000",
+        "0x4022000000000000",
+        "0x4027800000000000",
+        "0x402e000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00003-fresh-raw-negative",
+      "args": [
+        "0x4025800000000000",
+        "0x4022000000000000",
+        "0x4027800000000000",
+        "0x402e000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00004-fresh-raw-negative",
+      "args": [
+        "0x4011000000000000",
+        "0x3ff4000000000000",
+        "0x4019000000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00005-fresh-raw-negative",
+      "args": [
+        "0x4011000000000000",
+        "0x3ff4000000000000",
+        "0x4019000000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00006-fresh-raw-negative",
+      "args": [
+        "0x4035000000000000",
+        "0x4035400000000000",
+        "0x4014000000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00007-fresh-raw-negative",
+      "args": [
+        "0x4035000000000000",
+        "0x4035400000000000",
+        "0x4014000000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00008-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x402c000000000000",
+        "0x4027800000000000",
+        "0x402c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00009-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x402c000000000000",
+        "0x4027800000000000",
+        "0x402c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00010-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x402c000000000000",
+        "0x4017000000000000",
+        "0x4030000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00011-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x402c000000000000",
+        "0x4017000000000000",
+        "0x4030000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00012-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0x4019000000000000",
+        "0x401f000000000000",
+        "0x402c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fcf5423cddfc6b7"
+    },
+    {
+      "id": "hypgeom.dist-branch-00013-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0x4019000000000000",
+        "0x401f000000000000",
+        "0x402c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fee5be5be5be5be"
+    },
+    {
+      "id": "hypgeom.dist-branch-00014-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x4045e00000000000",
+        "0x4041e00000000000",
+        "0x4048000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00015-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x4045e00000000000",
+        "0x4041e00000000000",
+        "0x4048000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00016-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4013000000000000",
+        "0xbfd0000000000000",
+        "0x4028000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00017-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4013000000000000",
+        "0xbfd0000000000000",
+        "0x4028000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00018-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x401d000000000000",
+        "0x4002000000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fddddddddddddd8"
+    },
+    {
+      "id": "hypgeom.dist-branch-00019-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x401d000000000000",
+        "0x4002000000000000",
+        "0x4024000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe111111111110d"
+    },
+    {
+      "id": "hypgeom.dist-branch-00020-fresh-raw-negative",
+      "args": [
+        "0x402a000000000000",
+        "0xbfe8000000000000",
+        "0x403d400000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00021-fresh-raw-negative",
+      "args": [
+        "0x402a000000000000",
+        "0xbfe8000000000000",
+        "0x403d400000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00022-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0xbfe8000000000000",
+        "0x400a000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00023-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0xbfe8000000000000",
+        "0x400a000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00024-fresh-raw-negative",
+      "args": [
+        "0x4041a00000000000",
+        "0x402f800000000000",
+        "0x4024000000000000",
+        "0x4047800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00025-fresh-raw-negative",
+      "args": [
+        "0x4041a00000000000",
+        "0x402f800000000000",
+        "0x4024000000000000",
+        "0x4047800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00026-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x4013000000000000",
+        "0x4017000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fe2492492492492"
+    },
+    {
+      "id": "hypgeom.dist-branch-00027-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x4013000000000000",
+        "0x4017000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feb6db6db6db6dc"
+    },
+    {
+      "id": "hypgeom.dist-branch-00028-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4019000000000000",
+        "0x4025800000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00029-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4019000000000000",
+        "0x4025800000000000",
+        "0x4024000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00030-fresh-raw-negative",
+      "args": [
+        "0x4032000000000000",
+        "0x4045200000000000",
+        "0xbfe8000000000000",
+        "0x4046800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00031-fresh-raw-negative",
+      "args": [
+        "0x4032000000000000",
+        "0x4045200000000000",
+        "0xbfe8000000000000",
+        "0x4046800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00032-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x3ff4000000000000",
+        "0x0000000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00033-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x3ff4000000000000",
+        "0x0000000000000000",
+        "0x4008000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00034-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0xbfd0000000000000",
+        "0x402c000000000000",
+        "0x4040800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00035-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0xbfd0000000000000",
+        "0x402c000000000000",
+        "0x4040800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00036-fresh-raw-negative",
+      "args": [
+        "0x4024800000000000",
+        "0x4030c00000000000",
+        "0x3fd0000000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00037-fresh-raw-negative",
+      "args": [
+        "0x4024800000000000",
+        "0x4030c00000000000",
+        "0x3fd0000000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00038-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0x4024800000000000",
+        "0x0000000000000000",
+        "0x4030000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00039-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0x4024800000000000",
+        "0x0000000000000000",
+        "0x4030000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00040-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x403f400000000000",
+        "0x400a000000000000",
+        "0x4041000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00041-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x403f400000000000",
+        "0x400a000000000000",
+        "0x4041000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00042-fresh-raw-negative",
+      "args": [
+        "0x403e000000000000",
+        "0x403c000000000000",
+        "0x403f000000000000",
+        "0x4044800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00043-fresh-raw-negative",
+      "args": [
+        "0x403e000000000000",
+        "0x403c000000000000",
+        "0x403f000000000000",
+        "0x4044800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00044-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x4036400000000000",
+        "0x403d400000000000",
+        "0x4045000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00045-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x4036400000000000",
+        "0x403d400000000000",
+        "0x4045000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00046-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x4031400000000000",
+        "0x4037400000000000",
+        "0x4046800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f943304eeaad3cd"
+    },
+    {
+      "id": "hypgeom.dist-branch-00047-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x4031400000000000",
+        "0x4037400000000000",
+        "0x4046800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f98db0957675afc"
+    },
+    {
+      "id": "hypgeom.dist-branch-00048-fresh-raw-negative",
+      "args": [
+        "0x4028800000000000",
+        "0x4024000000000000",
+        "0x4020000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00049-fresh-raw-negative",
+      "args": [
+        "0x4028800000000000",
+        "0x4024000000000000",
+        "0x4020000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00050-fresh-raw-negative",
+      "args": [
+        "0x4044a00000000000",
+        "0x403f000000000000",
+        "0x402d800000000000",
+        "0x4047000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00051-fresh-raw-negative",
+      "args": [
+        "0x4044a00000000000",
+        "0x403f000000000000",
+        "0x402d800000000000",
+        "0x4047000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00052-fresh-raw-negative",
+      "args": [
+        "0x4006000000000000",
+        "0x400a000000000000",
+        "0xbfe8000000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00053-fresh-raw-negative",
+      "args": [
+        "0x4006000000000000",
+        "0x400a000000000000",
+        "0xbfe8000000000000",
+        "0x4024000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00054-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0x4030c00000000000",
+        "0x401b000000000000",
+        "0x4031000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00055-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0x4030c00000000000",
+        "0x401b000000000000",
+        "0x4031000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00056-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0x4018000000000000",
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00057-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0x4018000000000000",
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00058-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x3fd0000000000000",
+        "0x0000000000000000",
+        "0x4000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00059-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x3fd0000000000000",
+        "0x0000000000000000",
+        "0x4000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00060-fresh-raw-negative",
+      "args": [
+        "0x4043800000000000",
+        "0x4045e00000000000",
+        "0x4030000000000000",
+        "0x4047800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00061-fresh-raw-negative",
+      "args": [
+        "0x4043800000000000",
+        "0x4045e00000000000",
+        "0x4030000000000000",
+        "0x4047800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00062-fresh-raw-negative",
+      "args": [
+        "0x403c400000000000",
+        "0x401b000000000000",
+        "0x402c800000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00063-fresh-raw-negative",
+      "args": [
+        "0x403c400000000000",
+        "0x401b000000000000",
+        "0x402c800000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00064-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x400a000000000000",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00065-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x400a000000000000",
+        "0x0000000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00066-fresh-raw-negative",
+      "args": [
+        "0x4027800000000000",
+        "0x401d000000000000",
+        "0x4008000000000000",
+        "0x4038000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00067-fresh-raw-negative",
+      "args": [
+        "0x4027800000000000",
+        "0x401d000000000000",
+        "0x4008000000000000",
+        "0x4038000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00068-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4008000000000000",
+        "0x4011000000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00069-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4008000000000000",
+        "0x4011000000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00070-fresh-raw-negative",
+      "args": [
+        "0x4042a00000000000",
+        "0x403ec00000000000",
+        "0x402a800000000000",
+        "0x4043000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00071-fresh-raw-negative",
+      "args": [
+        "0x4042a00000000000",
+        "0x403ec00000000000",
+        "0x402a800000000000",
+        "0x4043000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00072-fresh-raw-negative",
+      "args": [
+        "0x4022800000000000",
+        "0x4024800000000000",
+        "0x4002000000000000",
+        "0x403c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00073-fresh-raw-negative",
+      "args": [
+        "0x4022800000000000",
+        "0x4024800000000000",
+        "0x4002000000000000",
+        "0x403c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00074-fresh-raw-negative",
+      "args": [
+        "0x4045600000000000",
+        "0xbd70000000000000",
+        "0x402b800000000000",
+        "0x4047000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00075-fresh-raw-negative",
+      "args": [
+        "0x4045600000000000",
+        "0xbd70000000000000",
+        "0x402b800000000000",
+        "0x4047000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00076-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x401c000000000000",
+        "0x4037000000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00077-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x401c000000000000",
+        "0x4037000000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00078-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4031000000000000",
+        "0x402e800000000000",
+        "0x4041000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3e73ab91284cd6a7"
+    },
+    {
+      "id": "hypgeom.dist-branch-00079-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4031000000000000",
+        "0x402e800000000000",
+        "0x4041000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e73ab91284cd6a7"
+    },
+    {
+      "id": "hypgeom.dist-branch-00080-fresh-raw-negative",
+      "args": [
+        "0x4033000000000000",
+        "0x401f000000000000",
+        "0x4017000000000000",
+        "0x4041000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00081-fresh-raw-negative",
+      "args": [
+        "0x4033000000000000",
+        "0x401f000000000000",
+        "0x4017000000000000",
+        "0x4041000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00082-fresh-raw-negative",
+      "args": [
+        "0x3fe8000000000000",
+        "0xbfd0000000000000",
+        "0x4031c00000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00083-fresh-raw-negative",
+      "args": [
+        "0x3fe8000000000000",
+        "0xbfd0000000000000",
+        "0x4031c00000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00084-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4044800000000000",
+        "0x4037000000000000",
+        "0x4048000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00085-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4044800000000000",
+        "0x4037000000000000",
+        "0x4048000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00086-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0x400e000000000000",
+        "0x4032000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00087-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x0000000000000000",
+        "0x400e000000000000",
+        "0x4032000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00088-fresh-raw-negative",
+      "args": [
+        "0x403d000000000000",
+        "0x4026000000000000",
+        "0x4043800000000000",
+        "0x4043800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00089-fresh-raw-negative",
+      "args": [
+        "0x403d000000000000",
+        "0x4026000000000000",
+        "0x4043800000000000",
+        "0x4043800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00090-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4026800000000000",
+        "0x4014000000000000",
+        "0x4046000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00091-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4026800000000000",
+        "0x4014000000000000",
+        "0x4046000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00092-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x4008000000000000",
+        "0x4024000000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00093-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x4008000000000000",
+        "0x4024000000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00094-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x3ff0000000000000",
+        "0x4028000000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00095-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x3ff0000000000000",
+        "0x4028000000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00096-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x0000000000000000",
+        "0xbfd0000000000000",
+        "0x4000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00097-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x0000000000000000",
+        "0xbfd0000000000000",
+        "0x4000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00098-fresh-raw-negative",
+      "args": [
+        "0x4024800000000000",
+        "0x402a000000000000",
+        "0x4025800000000000",
+        "0x4034000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f595cbb0be377b2"
+    },
+    {
+      "id": "hypgeom.dist-branch-00099-fresh-raw-negative",
+      "args": [
+        "0x4024800000000000",
+        "0x402a000000000000",
+        "0x4025800000000000",
+        "0x4034000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00100-fresh-raw-negative",
+      "args": [
+        "0x4026800000000000",
+        "0x4032400000000000",
+        "0x4020800000000000",
+        "0x4041000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00101-fresh-raw-negative",
+      "args": [
+        "0x4026800000000000",
+        "0x4032400000000000",
+        "0x4020800000000000",
+        "0x4041000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00102-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4041600000000000",
+        "0x4015000000000000",
+        "0x4044800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f5a044ef04c8d87"
+    },
+    {
+      "id": "hypgeom.dist-branch-00103-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4041600000000000",
+        "0x4015000000000000",
+        "0x4044800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f5a79d7dc720b81"
+    },
+    {
+      "id": "hypgeom.dist-branch-00104-fresh-raw-negative",
+      "args": [
+        "0x4014000000000000",
+        "0x401f000000000000",
+        "0xbfe8000000000000",
+        "0x4035000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00105-fresh-raw-negative",
+      "args": [
+        "0x4014000000000000",
+        "0x401f000000000000",
+        "0xbfe8000000000000",
+        "0x4035000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00106-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x4041000000000000",
+        "0x4006000000000000",
+        "0x4045000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00107-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x4041000000000000",
+        "0x4006000000000000",
+        "0x4045000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00108-fresh-raw-negative",
+      "args": [
+        "0x4031c00000000000",
+        "0xbfd0000000000000",
+        "0x4041800000000000",
+        "0x4044800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00109-fresh-raw-negative",
+      "args": [
+        "0x4031c00000000000",
+        "0xbfd0000000000000",
+        "0x4041800000000000",
+        "0x4044800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00110-fresh-raw-negative",
+      "args": [
+        "0x4039c00000000000",
+        "0x4038000000000000",
+        "0x4036000000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00111-fresh-raw-negative",
+      "args": [
+        "0x4039c00000000000",
+        "0x4038000000000000",
+        "0x4036000000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00112-fresh-raw-negative",
+      "args": [
+        "0x402e800000000000",
+        "0x4041600000000000",
+        "0x4036c00000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00113-fresh-raw-negative",
+      "args": [
+        "0x402e800000000000",
+        "0x4041600000000000",
+        "0x4036c00000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00114-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x4035c00000000000",
+        "0x4023800000000000",
+        "0x4046000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00115-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x4035c00000000000",
+        "0x4023800000000000",
+        "0x4046000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00116-fresh-raw-negative",
+      "args": [
+        "0x4026800000000000",
+        "0x3ffc000000000000",
+        "0x3ff0000000000000",
+        "0x8010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00117-fresh-raw-negative",
+      "args": [
+        "0x4026800000000000",
+        "0x3ffc000000000000",
+        "0x3ff0000000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00118-fresh-raw-negative",
+      "args": [
+        "0x4000000000000000",
+        "0x0000000000000000",
+        "0x400e000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00119-fresh-raw-negative",
+      "args": [
+        "0x4000000000000000",
+        "0x0000000000000000",
+        "0x400e000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00120-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x4020000000000000",
+        "0x402e000000000000",
+        "0x4038000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00121-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x4020000000000000",
+        "0x402e000000000000",
+        "0x4038000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00122-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x4019000000000000",
+        "0xbfe8000000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00123-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x4019000000000000",
+        "0xbfe8000000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00124-fresh-raw-negative",
+      "args": [
+        "0x4041600000000000",
+        "0x4040200000000000",
+        "0x4030000000000000",
+        "0x4047800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00125-fresh-raw-negative",
+      "args": [
+        "0x4041600000000000",
+        "0x4040200000000000",
+        "0x4030000000000000",
+        "0x4047800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00126-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4023800000000000",
+        "0x401f000000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00127-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4023800000000000",
+        "0x401f000000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00128-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4000000000000000",
+        "0x3fe8000000000000",
+        "0x4028000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00129-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4000000000000000",
+        "0x3fe8000000000000",
+        "0x4028000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00130-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x4006000000000000",
+        "0x4025800000000000",
+        "0x4032000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00131-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x4006000000000000",
+        "0x4025800000000000",
+        "0x4032000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00132-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x4034c00000000000",
+        "0x4014000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fa24f4f7475c2ce"
+    },
+    {
+      "id": "hypgeom.dist-branch-00133-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x4034c00000000000",
+        "0x4014000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fa3487a5919eeb5"
+    },
+    {
+      "id": "hypgeom.dist-branch-00134-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x4002000000000000",
+        "0x3ff0000000000000",
+        "0x4000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00135-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x4002000000000000",
+        "0x3ff0000000000000",
+        "0x4000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00136-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x4034000000000000",
+        "0x3ff0000000000000",
+        "0x8010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00137-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x4034000000000000",
+        "0x3ff0000000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00138-fresh-raw-negative",
+      "args": [
+        "0x4037400000000000",
+        "0x4034c00000000000",
+        "0xbfd0000000000000",
+        "0x403a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00139-fresh-raw-negative",
+      "args": [
+        "0x4037400000000000",
+        "0x4034c00000000000",
+        "0xbfd0000000000000",
+        "0x403a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00140-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x4017000000000000",
+        "0xbd70000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00141-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x4017000000000000",
+        "0xbd70000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00142-fresh-raw-negative",
+      "args": [
+        "0x4024000000000000",
+        "0x4020000000000000",
+        "0x401b000000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00143-fresh-raw-negative",
+      "args": [
+        "0x4024000000000000",
+        "0x4020000000000000",
+        "0x401b000000000000",
+        "0x4024000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00144-fresh-raw-negative",
+      "args": [
+        "0x4033400000000000",
+        "0x4037000000000000",
+        "0x4027800000000000",
+        "0x4040000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00145-fresh-raw-negative",
+      "args": [
+        "0x4033400000000000",
+        "0x4037000000000000",
+        "0x4027800000000000",
+        "0x4040000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00146-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x3ffc000000000000",
+        "0x400e000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00147-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x3ffc000000000000",
+        "0x400e000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00148-fresh-raw-negative",
+      "args": [
+        "0x4041a00000000000",
+        "0x4022800000000000",
+        "0x400a000000000000",
+        "0x4043000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00149-fresh-raw-negative",
+      "args": [
+        "0x4041a00000000000",
+        "0x4022800000000000",
+        "0x400a000000000000",
+        "0x4043000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00150-fresh-raw-negative",
+      "args": [
+        "0x4034c00000000000",
+        "0x402b800000000000",
+        "0x4042000000000000",
+        "0x4047800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00151-fresh-raw-negative",
+      "args": [
+        "0x4034c00000000000",
+        "0x402b800000000000",
+        "0x4042000000000000",
+        "0x4047800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00152-fresh-raw-negative",
+      "args": [
+        "0x4011000000000000",
+        "0x4028000000000000",
+        "0x4018000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd31b497b871393"
+    },
+    {
+      "id": "hypgeom.dist-branch-00153-fresh-raw-negative",
+      "args": [
+        "0x4011000000000000",
+        "0x4028000000000000",
+        "0x4018000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fec34fd2b5d68f6"
+    },
+    {
+      "id": "hypgeom.dist-branch-00154-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x403c400000000000",
+        "0x4028000000000000",
+        "0x4040800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00155-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x403c400000000000",
+        "0x4028000000000000",
+        "0x4040800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00156-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x3fe8000000000000",
+        "0x4010000000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00157-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x3fe8000000000000",
+        "0x4010000000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00158-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0xbd70000000000000",
+        "0x4015000000000000",
+        "0x4018000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00159-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0xbd70000000000000",
+        "0x4015000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00160-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0x4042a00000000000",
+        "0x403f000000000000",
+        "0x4043800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00161-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0x4042a00000000000",
+        "0x403f000000000000",
+        "0x4043800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00162-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x3fd0000000000000",
+        "0x8010000000000000",
+        "0x4041800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00163-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x3fd0000000000000",
+        "0x8010000000000000",
+        "0x4041800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00164-fresh-raw-negative",
+      "args": [
+        "0x4019000000000000",
+        "0x400a000000000000",
+        "0x401f000000000000",
+        "0x4031000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00165-fresh-raw-negative",
+      "args": [
+        "0x4019000000000000",
+        "0x400a000000000000",
+        "0x401f000000000000",
+        "0x4031000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00166-fresh-raw-negative",
+      "args": [
+        "0x4032400000000000",
+        "0x4011000000000000",
+        "0x402c800000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00167-fresh-raw-negative",
+      "args": [
+        "0x4032400000000000",
+        "0x4011000000000000",
+        "0x402c800000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00168-fresh-raw-negative",
+      "args": [
+        "0x403c400000000000",
+        "0x4025800000000000",
+        "0x3ff0000000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00169-fresh-raw-negative",
+      "args": [
+        "0x403c400000000000",
+        "0x4025800000000000",
+        "0x3ff0000000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00170-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x4017000000000000",
+        "0x4010000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00171-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x4017000000000000",
+        "0x4010000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00172-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x400a000000000000",
+        "0x4000000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00173-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x400a000000000000",
+        "0x4000000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00174-fresh-raw-negative",
+      "args": [
+        "0x4020000000000000",
+        "0x401f000000000000",
+        "0x400a000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00175-fresh-raw-negative",
+      "args": [
+        "0x4020000000000000",
+        "0x401f000000000000",
+        "0x400a000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00176-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x402a000000000000",
+        "0x4008000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00177-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x402a000000000000",
+        "0x4008000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00178-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x402e000000000000",
+        "0x8010000000000000",
+        "0x4037000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00179-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x402e000000000000",
+        "0x8010000000000000",
+        "0x4037000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00180-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0xbd70000000000000",
+        "0x4030000000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00181-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0xbd70000000000000",
+        "0x4030000000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00182-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00183-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00184-fresh-raw-negative",
+      "args": [
+        "0x4015000000000000",
+        "0x401c000000000000",
+        "0x401f000000000000",
+        "0x4026000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd86fb586fb586f"
+    },
+    {
+      "id": "hypgeom.dist-branch-00185-fresh-raw-negative",
+      "args": [
+        "0x4015000000000000",
+        "0x401c000000000000",
+        "0x401f000000000000",
+        "0x4026000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fed3018d3018d31"
+    },
+    {
+      "id": "hypgeom.dist-branch-00186-fresh-raw-negative",
+      "args": [
+        "0x402a000000000000",
+        "0x4044600000000000",
+        "0x4043200000000000",
+        "0x4046800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00187-fresh-raw-negative",
+      "args": [
+        "0x402a000000000000",
+        "0x4044600000000000",
+        "0x4043200000000000",
+        "0x4046800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00188-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x4025800000000000",
+        "0xbd70000000000000",
+        "0x4038000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00189-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x4025800000000000",
+        "0xbd70000000000000",
+        "0x4038000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00190-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x402e800000000000",
+        "0x402d800000000000",
+        "0x402e000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00191-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x402e800000000000",
+        "0x402d800000000000",
+        "0x402e000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00192-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4036400000000000",
+        "0xbd70000000000000",
+        "0x403e000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00193-fresh-raw-negative",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4036400000000000",
+        "0xbd70000000000000",
+        "0x403e000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00194-fresh-raw-negative",
+      "args": [
+        "0x4028000000000000",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00195-fresh-raw-negative",
+      "args": [
+        "0x4028000000000000",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00196-fresh-raw-negative",
+      "args": [
+        "0x4036400000000000",
+        "0x4027800000000000",
+        "0x403f000000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00197-fresh-raw-negative",
+      "args": [
+        "0x4036400000000000",
+        "0x4027800000000000",
+        "0x403f000000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00198-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x4019000000000000",
+        "0x4024800000000000",
+        "0x403b000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd1a4848704a4e4"
+    },
+    {
+      "id": "hypgeom.dist-branch-00199-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x4019000000000000",
+        "0x4024800000000000",
+        "0x403b000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fec6d3d36fcec44"
+    },
+    {
+      "id": "hypgeom.dist-branch-00200-fresh-raw-negative",
+      "args": [
+        "0x4021800000000000",
+        "0x402c000000000000",
+        "0x402c000000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00201-fresh-raw-negative",
+      "args": [
+        "0x4021800000000000",
+        "0x402c000000000000",
+        "0x402c000000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00202-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x3ff4000000000000",
+        "0x0000000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00203-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x3ff4000000000000",
+        "0x0000000000000000",
+        "0x4008000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00204-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x4010000000000000",
+        "0x3fd0000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00205-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x4010000000000000",
+        "0x3fd0000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00206-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x401c000000000000",
+        "0x4030c00000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00207-fresh-raw-negative",
+      "args": [
+        "0x4030c00000000000",
+        "0x401c000000000000",
+        "0x4030c00000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00208-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x402a800000000000",
+        "0x8010000000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00209-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x402a800000000000",
+        "0x8010000000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00210-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4029800000000000",
+        "0x4026000000000000",
+        "0x4030000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00211-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4029800000000000",
+        "0x4026000000000000",
+        "0x4030000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00212-fresh-raw-negative",
+      "args": [
+        "0x403b000000000000",
+        "0x4041e00000000000",
+        "0x4011000000000000",
+        "0x4044800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00213-fresh-raw-negative",
+      "args": [
+        "0x403b000000000000",
+        "0x4041e00000000000",
+        "0x4011000000000000",
+        "0x4044800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00214-fresh-raw-negative",
+      "args": [
+        "0x4033c00000000000",
+        "0x402a800000000000",
+        "0x3fd0000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00215-fresh-raw-negative",
+      "args": [
+        "0x4033c00000000000",
+        "0x402a800000000000",
+        "0x3fd0000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00216-fresh-raw-negative",
+      "args": [
+        "0x4032c00000000000",
+        "0x4017000000000000",
+        "0x4036000000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00217-fresh-raw-negative",
+      "args": [
+        "0x4032c00000000000",
+        "0x4017000000000000",
+        "0x4036000000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00218-fresh-raw-negative",
+      "args": [
+        "0x4021800000000000",
+        "0x4020800000000000",
+        "0x4024000000000000",
+        "0x4031000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f5e5408d8829481"
+    },
+    {
+      "id": "hypgeom.dist-branch-00219-fresh-raw-negative",
+      "args": [
+        "0x4021800000000000",
+        "0x4020800000000000",
+        "0x4024000000000000",
+        "0x4031000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00220-fresh-raw-negative",
+      "args": [
+        "0x4031000000000000",
+        "0x402a000000000000",
+        "0x402c000000000000",
+        "0x4040000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00221-fresh-raw-negative",
+      "args": [
+        "0x4031000000000000",
+        "0x402a000000000000",
+        "0x402c000000000000",
+        "0x4040000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00222-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4024800000000000",
+        "0x4018000000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00223-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4024800000000000",
+        "0x4018000000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00224-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4030000000000000",
+        "0x4000000000000000",
+        "0x8010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00225-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4030000000000000",
+        "0x4000000000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00226-fresh-raw-negative",
+      "args": [
+        "0x4036000000000000",
+        "0x4019000000000000",
+        "0x4035c00000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00227-fresh-raw-negative",
+      "args": [
+        "0x4036000000000000",
+        "0x4019000000000000",
+        "0x4035c00000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00228-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4002000000000000",
+        "0x3ffc000000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00229-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4002000000000000",
+        "0x3ffc000000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00230-fresh-raw-negative",
+      "args": [
+        "0x401d000000000000",
+        "0xbfd0000000000000",
+        "0x4040600000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00231-fresh-raw-negative",
+      "args": [
+        "0x401d000000000000",
+        "0xbfd0000000000000",
+        "0x4040600000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00232-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x400e000000000000",
+        "0x4023800000000000",
+        "0x4026000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00233-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x400e000000000000",
+        "0x4023800000000000",
+        "0x4026000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00234-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4025800000000000",
+        "0x4033000000000000",
+        "0x403a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00235-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4025800000000000",
+        "0x4033000000000000",
+        "0x403a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00236-fresh-raw-negative",
+      "args": [
+        "0x4032400000000000",
+        "0x4035c00000000000",
+        "0x8010000000000000",
+        "0x4038000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00237-fresh-raw-negative",
+      "args": [
+        "0x4032400000000000",
+        "0x4035c00000000000",
+        "0x8010000000000000",
+        "0x4038000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00238-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x4019000000000000",
+        "0x4043600000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f93b13b13b13b15"
+    },
+    {
+      "id": "hypgeom.dist-branch-00239-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x4019000000000000",
+        "0x4043600000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f93b13b13b13b15"
+    },
+    {
+      "id": "hypgeom.dist-branch-00240-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x4018000000000000",
+        "0x4013000000000000",
+        "0x4026000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00241-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x4018000000000000",
+        "0x4013000000000000",
+        "0x4026000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00242-fresh-raw-negative",
+      "args": [
+        "0x4037400000000000",
+        "0x4026000000000000",
+        "0x4033000000000000",
+        "0x4043000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00243-fresh-raw-negative",
+      "args": [
+        "0x4037400000000000",
+        "0x4026000000000000",
+        "0x4033000000000000",
+        "0x4043000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00244-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0xbd70000000000000",
+        "0x4030000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00245-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0xbd70000000000000",
+        "0x4030000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00246-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x4015000000000000",
+        "0x4006000000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00247-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x4015000000000000",
+        "0x4006000000000000",
+        "0x4024000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00248-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00249-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00250-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0x402d800000000000",
+        "0x402d800000000000",
+        "0x4032000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00251-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0x402d800000000000",
+        "0x402d800000000000",
+        "0x4032000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00252-fresh-raw-negative",
+      "args": [
+        "0x401d000000000000",
+        "0x4023800000000000",
+        "0x4022800000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00253-fresh-raw-negative",
+      "args": [
+        "0x401d000000000000",
+        "0x4023800000000000",
+        "0x4022800000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00254-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x8010000000000000",
+        "0x4029800000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00255-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x8010000000000000",
+        "0x4029800000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00256-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x400e000000000000",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00257-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x400e000000000000",
+        "0x4022000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00258-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x3ffc000000000000",
+        "0x3fd0000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00259-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x3ffc000000000000",
+        "0x3fd0000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00260-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x3fd0000000000000",
+        "0x4006000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00261-fresh-raw-negative",
+      "args": [
+        "0x4013000000000000",
+        "0x3fd0000000000000",
+        "0x4006000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00262-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4015000000000000",
+        "0x4013000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00263-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4015000000000000",
+        "0x4013000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00264-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x403a000000000000",
+        "0x4031400000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00265-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x403a000000000000",
+        "0x4031400000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00266-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4011000000000000",
+        "0x400e000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00267-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4011000000000000",
+        "0x400e000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00268-fresh-raw-negative",
+      "args": [
+        "0x4037400000000000",
+        "0x4000000000000000",
+        "0x4040000000000000",
+        "0x4042800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00269-fresh-raw-negative",
+      "args": [
+        "0x4037400000000000",
+        "0x4000000000000000",
+        "0x4040000000000000",
+        "0x4042800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00270-fresh-raw-negative",
+      "args": [
+        "0x4006000000000000",
+        "0x402e000000000000",
+        "0x4017000000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00271-fresh-raw-negative",
+      "args": [
+        "0x4006000000000000",
+        "0x402e000000000000",
+        "0x4017000000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00272-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x401f000000000000",
+        "0x8010000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00273-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x401f000000000000",
+        "0x8010000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00274-fresh-raw-negative",
+      "args": [
+        "0x403d400000000000",
+        "0x4042600000000000",
+        "0x403c400000000000",
+        "0x8010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00275-fresh-raw-negative",
+      "args": [
+        "0x403d400000000000",
+        "0x4042600000000000",
+        "0x403c400000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00276-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0xbfe8000000000000",
+        "0x403dc00000000000",
+        "0x4043000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00277-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0xbfe8000000000000",
+        "0x403dc00000000000",
+        "0x4043000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00278-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0x4024800000000000",
+        "0x3fd0000000000000",
+        "0x4028000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00279-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0x4024800000000000",
+        "0x3fd0000000000000",
+        "0x4028000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00280-fresh-raw-negative",
+      "args": [
+        "0x4024000000000000",
+        "0x401d000000000000",
+        "0x3fd0000000000000",
+        "0x4028000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00281-fresh-raw-negative",
+      "args": [
+        "0x4024000000000000",
+        "0x401d000000000000",
+        "0x3fd0000000000000",
+        "0x4028000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00282-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4031c00000000000",
+        "0x401b000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00283-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4031c00000000000",
+        "0x401b000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00284-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x402f800000000000",
+        "0x4024800000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00285-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x402f800000000000",
+        "0x4024800000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00286-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x4026800000000000",
+        "0x4021800000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fb457b606de72a5"
+    },
+    {
+      "id": "hypgeom.dist-branch-00287-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x4026800000000000",
+        "0x4021800000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fb7617c6ef5b250"
+    },
+    {
+      "id": "hypgeom.dist-branch-00288-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0x400a000000000000",
+        "0x4010000000000000",
+        "0x4033000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00289-fresh-raw-negative",
+      "args": [
+        "0x402b800000000000",
+        "0x400a000000000000",
+        "0x4010000000000000",
+        "0x4033000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00290-fresh-raw-negative",
+      "args": [
+        "0x4030000000000000",
+        "0x4025800000000000",
+        "0x4017000000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00291-fresh-raw-negative",
+      "args": [
+        "0x4030000000000000",
+        "0x4025800000000000",
+        "0x4017000000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00292-fresh-raw-negative",
+      "args": [
+        "0x4031400000000000",
+        "0xbd70000000000000",
+        "0x4039c00000000000",
+        "0x403e000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00293-fresh-raw-negative",
+      "args": [
+        "0x4031400000000000",
+        "0xbd70000000000000",
+        "0x4039c00000000000",
+        "0x403e000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00294-fresh-raw-negative",
+      "args": [
+        "0x4036c00000000000",
+        "0x0000000000000000",
+        "0x4020800000000000",
+        "0x403c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00295-fresh-raw-negative",
+      "args": [
+        "0x4036c00000000000",
+        "0x0000000000000000",
+        "0x4020800000000000",
+        "0x403c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00296-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x401f000000000000",
+        "0x402e000000000000",
+        "0x8010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00297-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x401f000000000000",
+        "0x402e000000000000",
+        "0x8010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00298-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x4030000000000000",
+        "0xbd70000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00299-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x4030000000000000",
+        "0xbd70000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00300-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4017000000000000",
+        "0x402d800000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00301-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4017000000000000",
+        "0x402d800000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00302-fresh-raw-negative",
+      "args": [
+        "0x403e000000000000",
+        "0x401d000000000000",
+        "0x8010000000000000",
+        "0x4040000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00303-fresh-raw-negative",
+      "args": [
+        "0x403e000000000000",
+        "0x401d000000000000",
+        "0x8010000000000000",
+        "0x4040000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00304-fresh-raw-negative",
+      "args": [
+        "0x4033400000000000",
+        "0x3ff0000000000000",
+        "0x8010000000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00305-fresh-raw-negative",
+      "args": [
+        "0x4033400000000000",
+        "0x3ff0000000000000",
+        "0x8010000000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00306-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4045200000000000",
+        "0x4032000000000000",
+        "0x4048000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00307-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4045200000000000",
+        "0x4032000000000000",
+        "0x4048000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00308-fresh-raw-negative",
+      "args": [
+        "0x4034c00000000000",
+        "0x401d000000000000",
+        "0xbd70000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00309-fresh-raw-negative",
+      "args": [
+        "0x4034c00000000000",
+        "0x401d000000000000",
+        "0xbd70000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00310-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0xbd70000000000000",
+        "0x4030000000000000",
+        "0x4045000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00311-fresh-raw-negative",
+      "args": [
+        "0x4010000000000000",
+        "0xbd70000000000000",
+        "0x4030000000000000",
+        "0x4045000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00312-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x402a800000000000",
+        "0x4026800000000000",
+        "0x4043800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00313-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x402a800000000000",
+        "0x4026800000000000",
+        "0x4043800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00314-fresh-raw-negative",
+      "args": [
+        "0x4033c00000000000",
+        "0x4032c00000000000",
+        "0x4028000000000000",
+        "0x4042800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00315-fresh-raw-negative",
+      "args": [
+        "0x4033c00000000000",
+        "0x4032c00000000000",
+        "0x4028000000000000",
+        "0x4042800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00316-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x400a000000000000",
+        "0x4013000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00317-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x400a000000000000",
+        "0x4013000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00318-fresh-raw-negative",
+      "args": [
+        "0x4036c00000000000",
+        "0x4018000000000000",
+        "0x4035000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00319-fresh-raw-negative",
+      "args": [
+        "0x4036c00000000000",
+        "0x4018000000000000",
+        "0x4035000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00320-fresh-raw-negative",
+      "args": [
+        "0x4037000000000000",
+        "0x4013000000000000",
+        "0x402a800000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00321-fresh-raw-negative",
+      "args": [
+        "0x4037000000000000",
+        "0x4013000000000000",
+        "0x402a800000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00322-fresh-raw-negative",
+      "args": [
+        "0x4034c00000000000",
+        "0x4037400000000000",
+        "0x400e000000000000",
+        "0x4043000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00323-fresh-raw-negative",
+      "args": [
+        "0x4034c00000000000",
+        "0x4037400000000000",
+        "0x400e000000000000",
+        "0x4043000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00324-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x402c800000000000",
+        "0x4006000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fd369d0369d0365"
+    },
+    {
+      "id": "hypgeom.dist-branch-00325-fresh-raw-negative",
+      "args": [
+        "0x4002000000000000",
+        "0x402c800000000000",
+        "0x4006000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00326-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x4046800000000000",
+        "0x4039400000000000",
+        "0x4046800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00327-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x4046800000000000",
+        "0x4039400000000000",
+        "0x4046800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00328-fresh-raw-negative",
+      "args": [
+        "0x4033c00000000000",
+        "0xbd70000000000000",
+        "0x4035400000000000",
+        "0x4035000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00329-fresh-raw-negative",
+      "args": [
+        "0x4033c00000000000",
+        "0xbd70000000000000",
+        "0x4035400000000000",
+        "0x4035000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00330-fresh-raw-negative",
+      "args": [
+        "0x4031400000000000",
+        "0x402f800000000000",
+        "0x402d800000000000",
+        "0x4040800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00331-fresh-raw-negative",
+      "args": [
+        "0x4031400000000000",
+        "0x402f800000000000",
+        "0x402d800000000000",
+        "0x4040800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00332-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00333-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00334-fresh-raw-negative",
+      "args": [
+        "0x4029800000000000",
+        "0x4036000000000000",
+        "0x4038c00000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fc87278baed54d3"
+    },
+    {
+      "id": "hypgeom.dist-branch-00335-fresh-raw-negative",
+      "args": [
+        "0x4029800000000000",
+        "0x4036000000000000",
+        "0x4038c00000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd4dbfbaf174a59"
+    },
+    {
+      "id": "hypgeom.dist-branch-00336-fresh-raw-negative",
+      "args": [
+        "0x4033400000000000",
+        "0x4032c00000000000",
+        "0x4042800000000000",
+        "0x4048000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00337-fresh-raw-negative",
+      "args": [
+        "0x4033400000000000",
+        "0x4032c00000000000",
+        "0x4042800000000000",
+        "0x4048000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00338-fresh-raw-negative",
+      "args": [
+        "0x403bc00000000000",
+        "0x4039c00000000000",
+        "0x4019000000000000",
+        "0x403a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00339-fresh-raw-negative",
+      "args": [
+        "0x403bc00000000000",
+        "0x4039c00000000000",
+        "0x4019000000000000",
+        "0x403a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00340-fresh-raw-negative",
+      "args": [
+        "0x402d800000000000",
+        "0x4011000000000000",
+        "0x4030000000000000",
+        "0x4030000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00341-fresh-raw-negative",
+      "args": [
+        "0x402d800000000000",
+        "0x4011000000000000",
+        "0x4030000000000000",
+        "0x4030000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00342-fresh-raw-negative",
+      "args": [
+        "0x4042a00000000000",
+        "0x4034400000000000",
+        "0x4028800000000000",
+        "0x4045000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00343-fresh-raw-negative",
+      "args": [
+        "0x4042a00000000000",
+        "0x4034400000000000",
+        "0x4028800000000000",
+        "0x4045000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00344-fresh-raw-negative",
+      "args": [
+        "0x403bc00000000000",
+        "0x3ffc000000000000",
+        "0x4032c00000000000",
+        "0x4040000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00345-fresh-raw-negative",
+      "args": [
+        "0x403bc00000000000",
+        "0x3ffc000000000000",
+        "0x4032c00000000000",
+        "0x4040000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00346-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x4024000000000000",
+        "0x4035400000000000",
+        "0x4035000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00347-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x4024000000000000",
+        "0x4035400000000000",
+        "0x4035000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00348-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4033000000000000",
+        "0x403b400000000000",
+        "0x4047800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00349-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4033000000000000",
+        "0x403b400000000000",
+        "0x4047800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00350-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4013000000000000",
+        "0x401c000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00351-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4013000000000000",
+        "0x401c000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00352-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0xbd70000000000000",
+        "0x4020800000000000",
+        "0x4026000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00353-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0xbd70000000000000",
+        "0x4020800000000000",
+        "0x4026000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00354-fresh-raw-negative",
+      "args": [
+        "0x403c000000000000",
+        "0x4042200000000000",
+        "0x4031000000000000",
+        "0x4048000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00355-fresh-raw-negative",
+      "args": [
+        "0x403c000000000000",
+        "0x4042200000000000",
+        "0x4031000000000000",
+        "0x4048000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00356-fresh-raw-negative",
+      "args": [
+        "0x4044e00000000000",
+        "0x4043e00000000000",
+        "0x403d000000000000",
+        "0x4045800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00357-fresh-raw-negative",
+      "args": [
+        "0x4044e00000000000",
+        "0x4043e00000000000",
+        "0x403d000000000000",
+        "0x4045800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00358-fresh-raw-negative",
+      "args": [
+        "0x403a400000000000",
+        "0x4041800000000000",
+        "0x4017000000000000",
+        "0x4047800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00359-fresh-raw-negative",
+      "args": [
+        "0x403a400000000000",
+        "0x4041800000000000",
+        "0x4017000000000000",
+        "0x4047800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00360-fresh-raw-negative",
+      "args": [
+        "0x403b400000000000",
+        "0x0000000000000000",
+        "0x4038c00000000000",
+        "0x403a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00361-fresh-raw-negative",
+      "args": [
+        "0x403b400000000000",
+        "0x0000000000000000",
+        "0x4038c00000000000",
+        "0x403a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00362-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x4030400000000000",
+        "0x401b000000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00363-fresh-raw-negative",
+      "args": [
+        "0x4008000000000000",
+        "0x4030400000000000",
+        "0x401b000000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00364-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x401c000000000000",
+        "0xbd70000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00365-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x401c000000000000",
+        "0xbd70000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00366-fresh-raw-negative",
+      "args": [
+        "0x403a400000000000",
+        "0x4033000000000000",
+        "0x4006000000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00367-fresh-raw-negative",
+      "args": [
+        "0x403a400000000000",
+        "0x4033000000000000",
+        "0x4006000000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00368-fresh-raw-negative",
+      "args": [
+        "0x4019000000000000",
+        "0x8010000000000000",
+        "0x4022000000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00369-fresh-raw-negative",
+      "args": [
+        "0x4019000000000000",
+        "0x8010000000000000",
+        "0x4022000000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00370-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x4011000000000000",
+        "0x403d000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00371-fresh-raw-negative",
+      "args": [
+        "0x4023800000000000",
+        "0x4011000000000000",
+        "0x403d000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00372-fresh-raw-negative",
+      "args": [
+        "0x4000000000000000",
+        "0x3ff4000000000000",
+        "0x3ffc000000000000",
+        "0x4000000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00373-fresh-raw-negative",
+      "args": [
+        "0x4000000000000000",
+        "0x3ff4000000000000",
+        "0x3ffc000000000000",
+        "0x4000000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00374-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x4032400000000000",
+        "0x401f000000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f94e110a842efb4"
+    },
+    {
+      "id": "hypgeom.dist-branch-00375-fresh-raw-negative",
+      "args": [
+        "0x401c000000000000",
+        "0x4032400000000000",
+        "0x401f000000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00376-fresh-raw-negative",
+      "args": [
+        "0x403dc00000000000",
+        "0x4031400000000000",
+        "0x4002000000000000",
+        "0x4041800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00377-fresh-raw-negative",
+      "args": [
+        "0x403dc00000000000",
+        "0x4031400000000000",
+        "0x4002000000000000",
+        "0x4041800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00378-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4032400000000000",
+        "0x4021800000000000",
+        "0x4041000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00379-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4032400000000000",
+        "0x4021800000000000",
+        "0x4041000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00380-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x4021800000000000",
+        "0x4020000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00381-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x4021800000000000",
+        "0x4020000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00382-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x4002000000000000",
+        "0x4000000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00383-fresh-raw-negative",
+      "args": [
+        "0xbfd0000000000000",
+        "0x4002000000000000",
+        "0x4000000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00384-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x400a000000000000",
+        "0x3ffc000000000000",
+        "0x4008000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00385-fresh-raw-negative",
+      "args": [
+        "0x400a000000000000",
+        "0x400a000000000000",
+        "0x3ffc000000000000",
+        "0x4008000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00386-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x3fe8000000000000",
+        "0x4008000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00387-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x3fe8000000000000",
+        "0x4008000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00388-fresh-raw-negative",
+      "args": [
+        "0x4042a00000000000",
+        "0x402d800000000000",
+        "0x403d000000000000",
+        "0x4043800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00389-fresh-raw-negative",
+      "args": [
+        "0x4042a00000000000",
+        "0x402d800000000000",
+        "0x403d000000000000",
+        "0x4043800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00390-fresh-raw-negative",
+      "args": [
+        "0x403a000000000000",
+        "0xbfd0000000000000",
+        "0x4038000000000000",
+        "0x403a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00391-fresh-raw-negative",
+      "args": [
+        "0x403a000000000000",
+        "0xbfd0000000000000",
+        "0x4038000000000000",
+        "0x403a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00392-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x403cc00000000000",
+        "0x401d000000000000",
+        "0x4045000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00393-fresh-raw-negative",
+      "args": [
+        "0x4034000000000000",
+        "0x403cc00000000000",
+        "0x401d000000000000",
+        "0x4045000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00394-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4008000000000000",
+        "0x4019000000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00395-fresh-raw-negative",
+      "args": [
+        "0x3fd0000000000000",
+        "0x4008000000000000",
+        "0x4019000000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00396-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x4032c00000000000",
+        "0xbfd0000000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00397-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x4032c00000000000",
+        "0xbfd0000000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00398-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x3fd0000000000000",
+        "0x3ff4000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00399-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x3fd0000000000000",
+        "0x3ff4000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00400-fresh-raw-negative",
+      "args": [
+        "0x4014000000000000",
+        "0x4006000000000000",
+        "0x4000000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00401-fresh-raw-negative",
+      "args": [
+        "0x4014000000000000",
+        "0x4006000000000000",
+        "0x4000000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00402-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4025800000000000",
+        "0x4015000000000000",
+        "0x402c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f7475a4718cea45"
+    },
+    {
+      "id": "hypgeom.dist-branch-00403-fresh-raw-negative",
+      "args": [
+        "0x3ff4000000000000",
+        "0x4025800000000000",
+        "0x4015000000000000",
+        "0x402c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f7475a4718cea45"
+    },
+    {
+      "id": "hypgeom.dist-branch-00404-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0xbfd0000000000000",
+        "0x401b000000000000",
+        "0x4018000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00405-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0xbfd0000000000000",
+        "0x401b000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00406-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x4015000000000000",
+        "0x402c000000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00407-fresh-raw-negative",
+      "args": [
+        "0x401f000000000000",
+        "0x4015000000000000",
+        "0x402c000000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00408-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x3ffc000000000000",
+        "0x3fd0000000000000",
+        "0x4010000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00409-fresh-raw-negative",
+      "args": [
+        "0x400e000000000000",
+        "0x3ffc000000000000",
+        "0x3fd0000000000000",
+        "0x4010000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00410-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x401b000000000000",
+        "0x4025800000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00411-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x401b000000000000",
+        "0x4025800000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00412-fresh-raw-negative",
+      "args": [
+        "0x4041600000000000",
+        "0x4030000000000000",
+        "0x4035400000000000",
+        "0x4040800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00413-fresh-raw-negative",
+      "args": [
+        "0x4041600000000000",
+        "0x4030000000000000",
+        "0x4035400000000000",
+        "0x4040800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00414-fresh-raw-negative",
+      "args": [
+        "0x402d800000000000",
+        "0x4032c00000000000",
+        "0x4006000000000000",
+        "0x403c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00415-fresh-raw-negative",
+      "args": [
+        "0x402d800000000000",
+        "0x4032c00000000000",
+        "0x4006000000000000",
+        "0x403c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00416-fresh-raw-negative",
+      "args": [
+        "0x4037000000000000",
+        "0x400a000000000000",
+        "0x4018000000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00417-fresh-raw-negative",
+      "args": [
+        "0x4037000000000000",
+        "0x400a000000000000",
+        "0x4018000000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00418-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4006000000000000",
+        "0x400e000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00419-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4006000000000000",
+        "0x400e000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00420-fresh-raw-negative",
+      "args": [
+        "0x4042e00000000000",
+        "0x4006000000000000",
+        "0x4018000000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00421-fresh-raw-negative",
+      "args": [
+        "0x4042e00000000000",
+        "0x4006000000000000",
+        "0x4018000000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00422-fresh-raw-negative",
+      "args": [
+        "0x4011000000000000",
+        "0x4041a00000000000",
+        "0x4042a00000000000",
+        "0x4043800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00423-fresh-raw-negative",
+      "args": [
+        "0x4011000000000000",
+        "0x4041a00000000000",
+        "0x4042a00000000000",
+        "0x4043800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00424-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x4019000000000000",
+        "0x4020000000000000",
+        "0x4035000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00425-fresh-raw-negative",
+      "args": [
+        "0x402e000000000000",
+        "0x4019000000000000",
+        "0x4020000000000000",
+        "0x4035000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00426-fresh-raw-negative",
+      "args": [
+        "0x403ec00000000000",
+        "0x3ff4000000000000",
+        "0x4017000000000000",
+        "0x4040000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00427-fresh-raw-negative",
+      "args": [
+        "0x403ec00000000000",
+        "0x3ff4000000000000",
+        "0x4017000000000000",
+        "0x4040000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00428-fresh-raw-negative",
+      "args": [
+        "0x4029800000000000",
+        "0xbd70000000000000",
+        "0x4040600000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00429-fresh-raw-negative",
+      "args": [
+        "0x4029800000000000",
+        "0xbd70000000000000",
+        "0x4040600000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00430-fresh-raw-negative",
+      "args": [
+        "0x4041600000000000",
+        "0x403e400000000000",
+        "0xbd70000000000000",
+        "0x4042800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00431-fresh-raw-negative",
+      "args": [
+        "0x4041600000000000",
+        "0x403e400000000000",
+        "0xbd70000000000000",
+        "0x4042800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00432-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0x401d000000000000",
+        "0x4032000000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00433-fresh-raw-negative",
+      "args": [
+        "0x402a800000000000",
+        "0x401d000000000000",
+        "0x4032000000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00434-fresh-raw-negative",
+      "args": [
+        "0x4032c00000000000",
+        "0x4026000000000000",
+        "0x4033c00000000000",
+        "0xbfd0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00435-fresh-raw-negative",
+      "args": [
+        "0x4032c00000000000",
+        "0x4026000000000000",
+        "0x4033c00000000000",
+        "0xbfd0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00436-fresh-raw-negative",
+      "args": [
+        "0x4030400000000000",
+        "0x4024800000000000",
+        "0x4033400000000000",
+        "0x4036000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00437-fresh-raw-negative",
+      "args": [
+        "0x4030400000000000",
+        "0x4024800000000000",
+        "0x4033400000000000",
+        "0x4036000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00438-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x4032000000000000",
+        "0x4013000000000000",
+        "0x4032000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00439-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x4032000000000000",
+        "0x4013000000000000",
+        "0x4032000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00440-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x4036400000000000",
+        "0x4030400000000000",
+        "0x403b000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3fabb3d17fe05704"
+    },
+    {
+      "id": "hypgeom.dist-branch-00441-fresh-raw-negative",
+      "args": [
+        "0x4026000000000000",
+        "0x4036400000000000",
+        "0x4030400000000000",
+        "0x403b000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fabb3d17fe05704"
+    },
+    {
+      "id": "hypgeom.dist-branch-00442-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x4021800000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x3f9e0da77dd4b607"
+    },
+    {
+      "id": "hypgeom.dist-branch-00443-fresh-raw-negative",
+      "args": [
+        "0x0000000000000000",
+        "0x4022000000000000",
+        "0x4021800000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f9e0da77dd4b607"
+    },
+    {
+      "id": "hypgeom.dist-branch-00444-fresh-raw-negative",
+      "args": [
+        "0x4035c00000000000",
+        "0x8010000000000000",
+        "0x4033c00000000000",
+        "0x4044000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00445-fresh-raw-negative",
+      "args": [
+        "0x4035c00000000000",
+        "0x8010000000000000",
+        "0x4033c00000000000",
+        "0x4044000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00446-fresh-raw-negative",
+      "args": [
+        "0x4019000000000000",
+        "0x4020800000000000",
+        "0x4017000000000000",
+        "0xbfe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00447-fresh-raw-negative",
+      "args": [
+        "0x4019000000000000",
+        "0x4020800000000000",
+        "0x4017000000000000",
+        "0xbfe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00448-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4037400000000000",
+        "0x4031c00000000000",
+        "0x4040800000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00449-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x4037400000000000",
+        "0x4031c00000000000",
+        "0x4040800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00450-fresh-raw-negative",
+      "args": [
+        "0x403d000000000000",
+        "0x4032c00000000000",
+        "0x4023800000000000",
+        "0x403d000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00451-fresh-raw-negative",
+      "args": [
+        "0x403d000000000000",
+        "0x4032c00000000000",
+        "0x4023800000000000",
+        "0x403d000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00452-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x0000000000000000",
+        "0x4039000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00453-fresh-raw-negative",
+      "args": [
+        "0x8010000000000000",
+        "0x0000000000000000",
+        "0x4039000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00454-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x3fd0000000000000",
+        "0x4006000000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00455-fresh-raw-negative",
+      "args": [
+        "0x3ffc000000000000",
+        "0x3fd0000000000000",
+        "0x4006000000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00456-fresh-raw-negative",
+      "args": [
+        "0x4036c00000000000",
+        "0x3fe8000000000000",
+        "0x4031400000000000",
+        "0x4035000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00457-fresh-raw-negative",
+      "args": [
+        "0x4036c00000000000",
+        "0x3fe8000000000000",
+        "0x4031400000000000",
+        "0x4035000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00458-fresh-raw-negative",
+      "args": [
+        "0x4037000000000000",
+        "0x4015000000000000",
+        "0x4029800000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00459-fresh-raw-negative",
+      "args": [
+        "0x4037000000000000",
+        "0x4015000000000000",
+        "0x4029800000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00460-fresh-raw-negative",
+      "args": [
+        "0x4041800000000000",
+        "0x8010000000000000",
+        "0x403f000000000000",
+        "0x4042000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00461-fresh-raw-negative",
+      "args": [
+        "0x4041800000000000",
+        "0x8010000000000000",
+        "0x403f000000000000",
+        "0x4042000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00462-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4045200000000000",
+        "0x4038c00000000000",
+        "0xbd70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00463-fresh-raw-negative",
+      "args": [
+        "0x4018000000000000",
+        "0x4045200000000000",
+        "0x4038c00000000000",
+        "0xbd70000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00464-fresh-raw-negative",
+      "args": [
+        "0x4036400000000000",
+        "0x4032000000000000",
+        "0x4018000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00465-fresh-raw-negative",
+      "args": [
+        "0x4036400000000000",
+        "0x4032000000000000",
+        "0x4018000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00466-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x400e000000000000",
+        "0x4026800000000000",
+        "0x4031000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00467-fresh-raw-negative",
+      "args": [
+        "0x4017000000000000",
+        "0x400e000000000000",
+        "0x4026800000000000",
+        "0x4031000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00468-fresh-raw-negative",
+      "args": [
+        "0x4031c00000000000",
+        "0x4030000000000000",
+        "0x8010000000000000",
+        "0x4038000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00469-fresh-raw-negative",
+      "args": [
+        "0x4031c00000000000",
+        "0x4030000000000000",
+        "0x8010000000000000",
+        "0x4038000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00470-fresh-raw-negative",
+      "args": [
+        "0x4034400000000000",
+        "0x4025800000000000",
+        "0x401b000000000000",
+        "0x4034000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00471-fresh-raw-negative",
+      "args": [
+        "0x4034400000000000",
+        "0x4025800000000000",
+        "0x401b000000000000",
+        "0x4034000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00472-fresh-raw-negative",
+      "args": [
+        "0x4038400000000000",
+        "0x4036c00000000000",
+        "0xbfd0000000000000",
+        "0x4043000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00473-fresh-raw-negative",
+      "args": [
+        "0x4038400000000000",
+        "0x4036c00000000000",
+        "0xbfd0000000000000",
+        "0x4043000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00474-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4017000000000000",
+        "0x4006000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00475-fresh-raw-negative",
+      "args": [
+        "0xbd70000000000000",
+        "0x4017000000000000",
+        "0x4006000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00476-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x4002000000000000",
+        "0x4011000000000000",
+        "0x4014000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00477-fresh-raw-negative",
+      "args": [
+        "0x401b000000000000",
+        "0x4002000000000000",
+        "0x4011000000000000",
+        "0x4014000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "hypgeom.dist-branch-00478-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x4035000000000000",
+        "0x0000000000000000",
+        "0x4039000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "id": "hypgeom.dist-branch-00479-fresh-raw-negative",
+      "args": [
+        "0xbfe8000000000000",
+        "0x4035000000000000",
+        "0x0000000000000000",
+        "0x4039000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "error:Num"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T16:56:06.9366048Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

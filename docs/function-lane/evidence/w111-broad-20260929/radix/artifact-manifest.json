@@ -1,0 +1,30 @@
+{
+  "schema_version": "w111.radix_artifacts.v1",
+  "files": [
+    {
+      "source": "smart-fuzzer\\runs\\w111-radix-heldout-20260929\\answers\\answers-base.json",
+      "retained": "heldout/answers-base.json",
+      "sha256": "57b167e71b3e63d958b74db756d8852150b58d984e1ba5472b1787ecd8c4d16d"
+    },
+    {
+      "source": "smart-fuzzer\\runs\\w111-radix-heldout-20260929\\answers\\answers-dec2bin.json",
+      "retained": "heldout/answers-dec2bin.json",
+      "sha256": "b9b78ee19d40bb18f0a9bdbe15f189172e7c1c4a37de9269e609ce6edec817ae"
+    },
+    {
+      "source": "smart-fuzzer\\runs\\w111-radix-heldout-20260929\\answers\\answers-dec2hex.json",
+      "retained": "heldout/answers-dec2hex.json",
+      "sha256": "936083e1496b0840227de2f6101fa283edd40cabd79a8eb2b8dc8020d7f8ddf3"
+    },
+    {
+      "source": "smart-fuzzer\\runs\\w111-radix-heldout-20260929\\answers\\answers-dec2oct.json",
+      "retained": "heldout/answers-dec2oct.json",
+      "sha256": "d1de827c962204f38dc9540b249eb936933025fddf82b26162810c71254ac811"
+    },
+    {
+      "source": "smart-fuzzer\\runs\\w111-radix-heldout-20260929\\batches\\manifest.json",
+      "retained": "heldout-input-manifest.json",
+      "sha256": "6ec6cab57d095396b3396100d4801c9f8a63c09f8c3bd5dbd1e9502d83c946f0"
+    }
+  ]
+}

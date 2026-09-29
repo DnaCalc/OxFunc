@@ -1,0 +1,23 @@
+{
+  "authority": "fresh_mathematical_normal_z_discriminators_without_oracle_selection",
+  "batches": [
+    {
+      "function": "ERFC.PRECISE",
+      "path": "batch-erfc.precise.json",
+      "rows": 384
+    },
+    {
+      "function": "GAUSS",
+      "path": "batch-gauss.json",
+      "rows": 512
+    },
+    {
+      "function": "NORM.S.DIST",
+      "path": "batch-norm.s.dist.json",
+      "rows": 512
+    }
+  ],
+  "draws": 460113,
+  "generator": "normal_cdf_z_discriminators.rs",
+  "seed": 2026092936
+}

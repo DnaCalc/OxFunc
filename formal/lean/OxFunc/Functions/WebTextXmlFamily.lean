@@ -1,5 +1,6 @@
 import OxFunc.FunctionCore
 import OxFunc.ValueUniverse
+import OxFunc.TextScalarBroadcast
 
 namespace OxFunc.Functions
 

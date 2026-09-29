@@ -1,0 +1,130 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_rollup.v1",
+  "run_id": "w111-date-typed-20260929",
+  "tranche_id": "w111-date-typed-20260929",
+  "generated_utc": "2026-09-29T14:02:31.2440116Z",
+  "total_cases": 173,
+  "by_classification": {
+    "exact_typed_bit_match": 144,
+    "excel_harness_blocked": 7,
+    "unexpected_mismatch": 22
+  },
+  "by_severity_class": {
+    "match": 144,
+    "harness_blocked_excel": 7,
+    "structural_mismatch": 22
+  },
+  "by_severity_sub_tag": {
+    "kind_drift": 16,
+    "error_code_drift": 6
+  },
+  "by_function": {
+    "FUNC.DAY": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.MONTH": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.YEAR": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.HOUR": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.MINUTE": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.SECOND": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.ISOWEEKNUM": {
+      "exact_typed_bit_match": 8,
+      "excel_harness_blocked": 1
+    },
+    "FUNC.DATE": {
+      "exact_typed_bit_match": 19,
+      "unexpected_mismatch": 6
+    },
+    "FUNC.DAYS": {
+      "exact_typed_bit_match": 15,
+      "unexpected_mismatch": 2
+    },
+    "FUNC.EDATE": {
+      "exact_typed_bit_match": 13,
+      "unexpected_mismatch": 4
+    },
+    "FUNC.EOMONTH": {
+      "exact_typed_bit_match": 13,
+      "unexpected_mismatch": 4
+    },
+    "FUNC.WEEKDAY": {
+      "exact_typed_bit_match": 15,
+      "unexpected_mismatch": 2
+    },
+    "FUNC.WEEKNUM": {
+      "exact_typed_bit_match": 13,
+      "unexpected_mismatch": 4
+    }
+  },
+  "mismatch_case_ids": [
+    "w111datetyped-00008-day-missing-0",
+    "w111datetyped-00017-month-missing-0",
+    "w111datetyped-00026-year-missing-0",
+    "w111datetyped-00035-hour-missing-0",
+    "w111datetyped-00044-minute-missing-0",
+    "w111datetyped-00053-second-missing-0",
+    "w111datetyped-00062-isoweeknum-missing-0",
+    "w111datetyped-00070-date-arg1-row-array",
+    "w111datetyped-00077-date-arg2-row-array",
+    "w111datetyped-00084-date-arg3-row-array",
+    "w111datetyped-00085-date-missing-0",
+    "w111datetyped-00086-date-missing-1",
+    "w111datetyped-00087-date-missing-2",
+    "w111datetyped-00095-days-arg1-row-array",
+    "w111datetyped-00102-days-arg2-row-array",
+    "w111datetyped-00110-edate-arg1-logical",
+    "w111datetyped-00117-edate-arg2-logical",
+    "w111datetyped-00120-edate-missing-0",
+    "w111datetyped-00121-edate-missing-1",
+    "w111datetyped-00127-eomonth-arg1-logical",
+    "w111datetyped-00134-eomonth-arg2-logical",
+    "w111datetyped-00137-eomonth-missing-0",
+    "w111datetyped-00138-eomonth-missing-1",
+    "w111datetyped-00154-weekday-missing-0",
+    "w111datetyped-00155-weekday-missing-1",
+    "w111datetyped-00161-weeknum-arg1-logical",
+    "w111datetyped-00168-weeknum-arg2-logical",
+    "w111datetyped-00171-weeknum-missing-0",
+    "w111datetyped-00172-weeknum-missing-1"
+  ],
+  "axis_witness_pairs": {
+    "total_pairs": 0,
+    "differentiated_pairs": 0,
+    "not_differentiated_pairs": 0,
+    "blocked_or_incomplete_pairs": 0,
+    "by_axis_tag": {},
+    "pairs": []
+  },
+  "excel_environment": {
+    "available": true,
+    "version": "16.0",
+    "build": "20430",
+    "calculation": "-4105",
+    "workbook_compatibility_version": "2",
+    "channel": "unavailable_not_queried",
+    "bitness": "64-bit",
+    "operating_system": "Windows (64-bit) NT 10.00",
+    "workbook_date_system": "1900",
+    "precision_as_displayed": false,
+    "excel_input_plumbing": "typed_value2_with_fixture_readback",
+    "fixture_readback_policy": "numeric_exact_bits_text_ordinal_logical_blank_error_code"
+  },
+  "comparison_policy": "exact_typed_bit_match_no_tolerance_with_1x1_publication_seam_classification",
+  "failure_packet_dir": "smart-fuzzer/runs/w111-date-typed-20260929/failure_packets"
+}

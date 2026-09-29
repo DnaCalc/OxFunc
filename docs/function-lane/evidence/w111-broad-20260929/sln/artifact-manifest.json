@@ -1,0 +1,125 @@
+{
+  "schema_version": "w111.sln_evidence.v1",
+  "artifacts": [
+    {
+      "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-sln.json",
+      "source_sha256": "29a6ccfc15c3930b06af9ff9896576435a7c1bfb6eea990b88f002542445a078",
+      "path": "discovery-answers.json",
+      "retained_sha256": "bc48afeb0de6813d4debcf2c90676057a3d829f39c021c8b623672cf4c191edb"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-sln-20260929/discriminator-answers.json",
+      "source_sha256": "4b7dbefa49295cabf58ac3cbef9541354ca191064b93e6fd0c0973b4e0428ec3",
+      "path": "discriminator-answers.json",
+      "retained_sha256": "ba5982a8a94974ad11e4c58188b8c7bd8aeeddacd1272d9728abfc17439e571c"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-sln-20260929/discriminator-manifest.json",
+      "source_sha256": "1a78077271b46440c77d3d2d78a74c8539c78fae94a5d7793e3a4e51d5bc111f",
+      "path": "discriminator-manifest.json",
+      "retained_sha256": "b7fbcb6578fd0320f963801d442d813cfedd0686f14d974621ba581d37dd4b97"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-sln-20260929/heldout-answers.json",
+      "source_sha256": "5a64b46f5c05ec6f756f732c70d818124fcc4ec412e7901c4debc5eeb77ed59a",
+      "path": "heldout-answers.json",
+      "retained_sha256": "112110b20eeba69bedfd9bfc1149b06f1db9a2a46f87d2780d0f74650add33cb"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-sln-20260929/heldout-manifest.json",
+      "source_sha256": "8ccd65adfe7967db6783a16af5f5a7316ab26e0aa338058e4ddb9e8643601eb5",
+      "path": "heldout-manifest.json",
+      "retained_sha256": "730bbf3e44f03b2ca8edcc3ab868cc9ab79a32a19f1f413400ee52ed18e8eeb7"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-sln-20260929/freeze-v1.json",
+      "source_sha256": "f9b87c58a222a0b4651dbbd16eb17d827304ad98c8f73f51963e3523a0fd533d",
+      "path": "freeze-v1.json",
+      "retained_sha256": "2a56f454df0d725e58bb081294a27989e582b498d30200137c9602f799319f47"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/manifest.json",
+      "source_sha256": "3896b5a22ade69a815821d8ccbdb76b969742c7de858494704faf2edd22e6cf4",
+      "path": "typed-discovery/manifest.json",
+      "retained_sha256": "47374bc39ac3a8934b79dc50ae006f890d56e42f9f952823a41b7ed0f14a6aa8"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/rollup.json",
+      "source_sha256": "687dbf052c578edf1a8c334c23d8bf5d0ac12d26f4f21b6d59c42eb54dce90f4",
+      "path": "typed-discovery/rollup.json",
+      "retained_sha256": "31ef46f1d49879eeaa8e35438d0a35bd739e3b294269288c27b7ca5eb8e65d76"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/cases/cases.jsonl",
+      "source_sha256": "baca1f0a561afefacba0190c48ed67b39a5e0b408d28f97c5945fae31bcef357",
+      "path": "typed-discovery/cases/cases.jsonl",
+      "retained_sha256": "baca1f0a561afefacba0190c48ed67b39a5e0b408d28f97c5945fae31bcef357"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/outcomes/excel.jsonl",
+      "source_sha256": "6bb507563e0e24f0526e48df6378c5f0ed64e1ebd15357b8f8dc629c70f3c63d",
+      "path": "typed-discovery/outcomes/excel.jsonl",
+      "retained_sha256": "6bb507563e0e24f0526e48df6378c5f0ed64e1ebd15357b8f8dc629c70f3c63d"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/outcomes/local.jsonl",
+      "source_sha256": "97cb014eac29b2cc66146eb550110d2dd6f3b07f7c7ae2c505464a350d259575",
+      "path": "typed-discovery/outcomes/local.jsonl",
+      "retained_sha256": "329cc49c699a6980a7ecb686874fe0c5fc645511f6d0e2f41160ad46c799dfd3"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/outcomes/local-roundtrip-v1.jsonl",
+      "source_sha256": "87917093b17943caf7b3b79d1ef517c44b83043a06df52fb4acb85403ffa09b7",
+      "path": "typed-discovery/outcomes/local-roundtrip-v1.jsonl",
+      "retained_sha256": "542d5e58c8fb75b7a31662fe33fb84393ce3ae6b8e973ebfc2942c7690f97024"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-20260929/comparisons/comparisons.jsonl",
+      "source_sha256": "d1e6d4d2196a88d0904e3f875aaa77a16892ea3fbc04b7fbb57dc904849dfb1e",
+      "path": "typed-discovery/comparisons/comparisons.jsonl",
+      "retained_sha256": "d1e6d4d2196a88d0904e3f875aaa77a16892ea3fbc04b7fbb57dc904849dfb1e"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/manifest.json",
+      "source_sha256": "54d35c62d312886c74a17a52bf4fc783bb3b7822eae8e1fd9ff5a7df6c381434",
+      "path": "typed-heldout/manifest.json",
+      "retained_sha256": "512bd3548dd405f3897a6855e97f6412fb6edde8c8ceb9c62b15fc46978dde77"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/rollup.json",
+      "source_sha256": "1e760c20f6262191f140e80234781be1049b95a9b82709e1ff20d3a3d311e370",
+      "path": "typed-heldout/rollup.json",
+      "retained_sha256": "0d7c7e66bc9ec96d7824e2ac5ae28e5e48adde2f40ffc80572771b82816f0c94"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/cases/cases.jsonl",
+      "source_sha256": "71fe44f68e819a012ab84286cd8e36a6c0cb113402d79fdefe5a9b62cb541ac4",
+      "path": "typed-heldout/cases/cases.jsonl",
+      "retained_sha256": "d78c985c0dcedf1cc33234de488169c553feb683397f4ae2c1566104dac085c6"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/outcomes/excel.jsonl",
+      "source_sha256": "eeab761e70111ca32612d902298944753584c1e5f1bb329718cb9b6dccc48fb3",
+      "path": "typed-heldout/outcomes/excel.jsonl",
+      "retained_sha256": "57408fcd0adad631daa3de7c896a610761d0505b9a0bd7cc3dd4d113b4ba11da"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/outcomes/local.jsonl",
+      "source_sha256": "f93ae5238c390e21ad08b86e434175125527a3938a2f5b9738c88dbee7128c41",
+      "path": "typed-heldout/outcomes/local.jsonl",
+      "retained_sha256": "e8dd56e346a7cc3229c707e33f63b4b1db398d3966307f6b05ddf29822dc6a64"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/outcomes/local-roundtrip-v1.jsonl",
+      "source_sha256": "f93ae5238c390e21ad08b86e434175125527a3938a2f5b9738c88dbee7128c41",
+      "path": "typed-heldout/outcomes/local-roundtrip-v1.jsonl",
+      "retained_sha256": "e8dd56e346a7cc3229c707e33f63b4b1db398d3966307f6b05ddf29822dc6a64"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-sln-typed-heldout-20260929/comparisons/comparisons.jsonl",
+      "source_sha256": "7755d23b54bfb835814e54525da21778ff71daf8fcc2ccf0bb175b04ed6d0c5e",
+      "path": "typed-heldout/comparisons/comparisons.jsonl",
+      "retained_sha256": "7755d23b54bfb835814e54525da21778ff71daf8fcc2ccf0bb175b04ed6d0c5e"
+    }
+  ]
+}

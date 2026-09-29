@@ -1,0 +1,103 @@
+{
+  "phase": "discovery_not_holdout",
+  "seed": 202609292147,
+  "generator_sha256": "5235e6edd958f987dd5eb793fd2374ec102ec90a65a3278eee3b4ec7074345e2",
+  "batches": [
+    {
+      "function": "INT",
+      "path": "batch-int.json",
+      "rows": 4533,
+      "sha256": "6634c886821e2c1b0a06835ae8e1061b878abd1390a94c241b3bbda4ee225880"
+    },
+    {
+      "function": "ISEVEN",
+      "path": "batch-iseven.json",
+      "rows": 4533,
+      "sha256": "12c6f2c8b8252887a1a8a6ef10b4e4b7cdec9032e5084e54e1526857547a914d"
+    },
+    {
+      "function": "ISODD",
+      "path": "batch-isodd.json",
+      "rows": 4533,
+      "sha256": "079f577cfca31f7c8de2a3122699e2c8c67e983b4a8d811fd998e7cdb304917f"
+    },
+    {
+      "function": "TRUNC",
+      "path": "batch-trunc.json",
+      "rows": 4878,
+      "sha256": "493267371ed04f2108778145912d84a3dfa436aed187e75164dabb868cef7b1e"
+    },
+    {
+      "function": "SQRT",
+      "path": "batch-sqrt.json",
+      "rows": 5676,
+      "sha256": "ec9289e96c96b094f84cdac5583e3de7c321051e49ad109b753f70952222ad62"
+    },
+    {
+      "function": "PHI",
+      "path": "batch-phi.json",
+      "rows": 3293,
+      "sha256": "5fa0559acdc6053e33df37881a6334a81e744e78eb176c0c409bdbab3e21aea1"
+    },
+    {
+      "function": "NORM.S.DIST",
+      "path": "batch-norm_s_dist.json",
+      "rows": 860,
+      "sha256": "03bfd39ed444956036c8b4bc5b8da62f1bd6c5419dfd2d8201d6b5c6e8d166dd"
+    },
+    {
+      "function": "NORM.DIST",
+      "path": "batch-norm_dist.json",
+      "rows": 860,
+      "sha256": "2a5c93d1e3da02d401cf6b7070c616bec21ee18bfcd7f4cda3d976871c20c4c5"
+    },
+    {
+      "function": "RADIANS",
+      "path": "batch-radians.json",
+      "rows": 2200,
+      "sha256": "c23f117f3f869179f95780774d9c854423577a6e7864280e7bf3583d69190fa5"
+    },
+    {
+      "function": "STANDARDIZE",
+      "path": "batch-standardize.json",
+      "rows": 2502,
+      "sha256": "535aa24025d2c56edfd3ef39153cca8711ec6e756790bb3f850cc902b75ac218"
+    },
+    {
+      "function": "SECH",
+      "path": "batch-sech.json",
+      "rows": 1600,
+      "sha256": "2875d8c73c8a9603ed43c49d0ef687fbf733d0ffe4702d2913d7d2fbca9def3e"
+    },
+    {
+      "function": "EXPONDIST",
+      "path": "batch-expondist.json",
+      "rows": 2000,
+      "sha256": "6aefc1055679ac8fefd27025d82afbb0a0afa3620ccb3549aae42a851f88bbe9"
+    },
+    {
+      "function": "EXPON.DIST",
+      "path": "batch-expon_dist.json",
+      "rows": 2000,
+      "sha256": "18cd8da2759d6cfc30108313ee53c45964fa05aaaf514c04639ce61e6258ef40"
+    },
+    {
+      "function": "PERMUTATIONA",
+      "path": "batch-permutationa.json",
+      "rows": 2200,
+      "sha256": "283b3f7269f6d6f9c5c3e4976208c7901bc526763a97b7cb565d0db4d6bc0e55"
+    },
+    {
+      "function": "LCM",
+      "path": "batch-lcm.json",
+      "rows": 2110,
+      "sha256": "38ea1938226a58d5aff2bcd566fed6c82b80d81f8824144e3a72c05e658bd031"
+    },
+    {
+      "function": "GCD",
+      "path": "batch-gcd.json",
+      "rows": 2110,
+      "sha256": "6a854d09871fc28a67d6460650965905f34fb8f08ff1f0ee26993ed915db03a6"
+    }
+  ]
+}

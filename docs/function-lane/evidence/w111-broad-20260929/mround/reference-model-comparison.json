@@ -1,0 +1,895 @@
+{
+  "authority": "Public Excel comparison of offline reference-origin hypotheses; production baseline remains frozen",
+  "local_binary_sha256": "fc3415b4932dca31ddeee907bb762bf313763297c56622af85843cff6baf8f1e",
+  "rows": 80,
+  "baseline_vs_rejection_differences": 54,
+  "rejection_vs_intersection_differences": 25,
+  "cases": [
+    {
+      "case_id": "w111mroundreference-00000-mround-reference-0-B1:B3-J1",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00001-mround-unary-plus-materialized-0-B1:B3-J1",
+      "formula": "=MROUND(+B1:B3,A100)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00002-mround-reference-0-B1:B3-J2",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00003-mround-unary-plus-materialized-0-B1:B3-J2",
+      "formula": "=MROUND(+B1:B3,A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00004-mround-reference-0-B1:B3-J3",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J3",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4024000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00005-mround-unary-plus-materialized-0-B1:B3-J3",
+      "formula": "=MROUND(+B1:B3,A100)",
+      "formula_cell": "J3",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00006-mround-reference-0-B1:B3-J4",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J4",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00007-mround-unary-plus-materialized-0-B1:B3-J4",
+      "formula": "=MROUND(+B1:B3,A100)",
+      "formula_cell": "J4",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00008-mround-reference-0-B1:B3-J20",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00009-mround-unary-plus-materialized-0-B1:B3-J20",
+      "formula": "=MROUND(+B1:B3,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00010-mround-reference-0-B1:D1-B20",
+      "formula": "=MROUND(B1:D1,A100)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00011-mround-unary-plus-materialized-0-B1:D1-B20",
+      "formula": "=MROUND(+B1:D1,A100)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00012-mround-reference-0-B1:D1-C20",
+      "formula": "=MROUND(B1:D1,A100)",
+      "formula_cell": "C20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00013-mround-unary-plus-materialized-0-B1:D1-C20",
+      "formula": "=MROUND(+B1:D1,A100)",
+      "formula_cell": "C20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00014-mround-reference-0-B1:D1-D20",
+      "formula": "=MROUND(B1:D1,A100)",
+      "formula_cell": "D20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4024000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00015-mround-unary-plus-materialized-0-B1:D1-D20",
+      "formula": "=MROUND(+B1:D1,A100)",
+      "formula_cell": "D20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00016-mround-reference-0-B1:D1-E20",
+      "formula": "=MROUND(B1:D1,A100)",
+      "formula_cell": "E20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00017-mround-unary-plus-materialized-0-B1:D1-E20",
+      "formula": "=MROUND(+B1:D1,A100)",
+      "formula_cell": "E20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00018-mround-reference-0-B1:D1-J20",
+      "formula": "=MROUND(B1:D1,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00019-mround-unary-plus-materialized-0-B1:D1-J20",
+      "formula": "=MROUND(+B1:D1,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00020-mround-reference-0-B1:C2-J1",
+      "formula": "=MROUND(B1:C2,A100)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00021-mround-unary-plus-materialized-0-B1:C2-J1",
+      "formula": "=MROUND(+B1:C2,A100)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "reference_rejection": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "caller_intersection": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]"
+      },
+      "expected": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00022-mround-reference-0-B1:C2-B20",
+      "formula": "=MROUND(B1:C2,A100)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00023-mround-unary-plus-materialized-0-B1:C2-B20",
+      "formula": "=MROUND(+B1:C2,A100)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "reference_rejection": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "caller_intersection": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]"
+      },
+      "expected": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00024-mround-reference-0-B1:C2-J20",
+      "formula": "=MROUND(B1:C2,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00025-mround-unary-plus-materialized-0-B1:C2-J20",
+      "formula": "=MROUND(+B1:C2,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "reference_rejection": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]",
+        "caller_intersection": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]"
+      },
+      "expected": "array:2x2:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000|number:0x4000000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00026-mround-index-reference-0-B1:B3-J2",
+      "formula": "=MROUND(INDEX(B1:B3,0),A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00027-mround-index-reference-0-B1:B3-J20",
+      "formula": "=MROUND(INDEX(B1:B3,0),A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00028-mround-if-reference-0-B1:B3-J2",
+      "formula": "=MROUND(IF(TRUE,B1:B3,B1:B3),A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00029-mround-if-reference-0-B1:B3-J20",
+      "formula": "=MROUND(IF(TRUE,B1:B3,B1:B3),A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4020000000000000|number:0x4024000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00030-mround-reference-0-B1:B3-J2",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|number:0x0000000000000000|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x0000000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00031-mround-reference-0-B1:B3-J20",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|number:0x0000000000000000|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00032-mround-reference-0-B1:B3-J2",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|number:0x4000000000000000|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4000000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00033-mround-reference-0-B1:B3-J20",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|number:0x4000000000000000|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00034-mround-reference-0-B1:B3-J2",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|error:Value|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00035-mround-reference-0-B1:B3-J20",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|error:Value|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00036-mround-reference-0-B1:B3-J2",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|error:Div0|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Div0"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00037-mround-reference-0-B1:B3-J20",
+      "formula": "=MROUND(B1:B3,A100)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4000000000000000|error:Div0|number:0x4010000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00038-mround-reference-1-B1:B3-J1",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00039-mround-unary-plus-materialized-1-B1:B3-J1",
+      "formula": "=MROUND(A100,+B1:B3)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00040-mround-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00041-mround-unary-plus-materialized-1-B1:B3-J2",
+      "formula": "=MROUND(A100,+B1:B3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00042-mround-reference-1-B1:B3-J3",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J3",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00043-mround-unary-plus-materialized-1-B1:B3-J3",
+      "formula": "=MROUND(A100,+B1:B3)",
+      "formula_cell": "J3",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00044-mround-reference-1-B1:B3-J4",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J4",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00045-mround-unary-plus-materialized-1-B1:B3-J4",
+      "formula": "=MROUND(A100,+B1:B3)",
+      "formula_cell": "J4",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00046-mround-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00047-mround-unary-plus-materialized-1-B1:B3-J20",
+      "formula": "=MROUND(A100,+B1:B3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00048-mround-reference-1-B1:D1-B20",
+      "formula": "=MROUND(A100,B1:D1)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00049-mround-unary-plus-materialized-1-B1:D1-B20",
+      "formula": "=MROUND(A100,+B1:D1)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00050-mround-reference-1-B1:D1-C20",
+      "formula": "=MROUND(A100,B1:D1)",
+      "formula_cell": "C20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00051-mround-unary-plus-materialized-1-B1:D1-C20",
+      "formula": "=MROUND(A100,+B1:D1)",
+      "formula_cell": "C20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00052-mround-reference-1-B1:D1-D20",
+      "formula": "=MROUND(A100,B1:D1)",
+      "formula_cell": "D20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00053-mround-unary-plus-materialized-1-B1:D1-D20",
+      "formula": "=MROUND(A100,+B1:D1)",
+      "formula_cell": "D20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00054-mround-reference-1-B1:D1-E20",
+      "formula": "=MROUND(A100,B1:D1)",
+      "formula_cell": "E20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00055-mround-unary-plus-materialized-1-B1:D1-E20",
+      "formula": "=MROUND(A100,+B1:D1)",
+      "formula_cell": "E20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00056-mround-reference-1-B1:D1-J20",
+      "formula": "=MROUND(A100,B1:D1)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00057-mround-unary-plus-materialized-1-B1:D1-J20",
+      "formula": "=MROUND(A100,+B1:D1)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:1x3:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00058-mround-reference-1-B1:C2-J1",
+      "formula": "=MROUND(A100,B1:C2)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00059-mround-unary-plus-materialized-1-B1:C2-J1",
+      "formula": "=MROUND(A100,+B1:C2)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00060-mround-reference-1-B1:C2-B20",
+      "formula": "=MROUND(A100,B1:C2)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00061-mround-unary-plus-materialized-1-B1:C2-B20",
+      "formula": "=MROUND(A100,+B1:C2)",
+      "formula_cell": "B20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00062-mround-reference-1-B1:C2-J20",
+      "formula": "=MROUND(A100,B1:C2)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00063-mround-unary-plus-materialized-1-B1:C2-J20",
+      "formula": "=MROUND(A100,+B1:C2)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "caller_intersection": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]"
+      },
+      "expected": "array:2x2:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000|number:0x4020000000000000]"
+    },
+    {
+      "case_id": "w111mroundreference-00064-mround-index-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,INDEX(B1:B3,0))",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00065-mround-index-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,INDEX(B1:B3,0))",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00066-mround-if-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,IF(TRUE,B1:B3,B1:B3))",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00067-mround-if-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,IF(TRUE,B1:B3,B1:B3))",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00068-mround-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x0000000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x0000000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00069-mround-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x0000000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00070-mround-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00071-mround-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|number:0x4020000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00072-mround-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|error:Value|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00073-mround-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|error:Value|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00074-mround-reference-1-B1:B3-J2",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|error:Div0|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Div0"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00075-mround-reference-1-B1:B3-J20",
+      "formula": "=MROUND(A100,B1:B3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4020000000000000|error:Div0|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00076-mround-two-vertical-J1",
+      "formula": "=MROUND(B1:B3,F1:F3)",
+      "formula_cell": "J1",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00077-mround-two-vertical-J2",
+      "formula": "=MROUND(B1:B3,F1:F3)",
+      "formula_cell": "J2",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4018000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00078-mround-two-vertical-J3",
+      "formula": "=MROUND(B1:B3,F1:F3)",
+      "formula_cell": "J3",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "number:0x4020000000000000"
+      },
+      "expected": "error:Value"
+    },
+    {
+      "case_id": "w111mroundreference-00079-mround-two-vertical-J20",
+      "formula": "=MROUND(B1:B3,F1:F3)",
+      "formula_cell": "J20",
+      "predictions": {
+        "baseline": "array:3x1:[number:0x4018000000000000|number:0x4018000000000000|number:0x4020000000000000]",
+        "reference_rejection": "error:Value",
+        "caller_intersection": "error:Value"
+      },
+      "expected": "error:Value"
+    }
+  ],
+  "matches": {
+    "baseline": 26,
+    "reference_rejection": 80,
+    "caller_intersection": 55
+  },
+  "excel_run_id": "w111-mround-reference-controls-run-typed-20260929"
+}

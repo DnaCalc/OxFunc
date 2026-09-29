@@ -1,0 +1,8763 @@
+use crate::coercion::CoercionError;
+use crate::function::ArgPreparationProfile;
+use crate::function::FecDependencyProfile;
+use crate::function::LiftBroadcastProfile;
+use crate::functions::abs::abs_kernel;
+use crate::functions::acot::acot_kernel;
+use crate::functions::adapters::prepared_arg_to_calc_value_lossy;
+use crate::functions::amor_depreciation_family::{
+    eval_amordegrc_surface, eval_amorlinc_surface, map_amor_depreciation_error_to_ws,
+};
+use crate::functions::and_fn::{eval_and_surface, map_and_error_to_ws};
+use crate::functions::arabic_fn::{eval_arabic_surface, map_arabic_error_to_ws};
+use crate::functions::array_text_split_family::{
+    eval_arraytotext_surface, eval_textsplit_surface, map_array_text_split_error_to_ws,
+};
+use crate::functions::asin::{eval_asin_surface, map_asin_error_to_ws};
+use crate::functions::asinh::asinh_kernel;
+use crate::functions::atan::atan_kernel;
+use crate::functions::atan2::{atan2_kernel, eval_atan2_surface, map_atan2_error_to_ws};
+use crate::functions::atanh::atanh_kernel;
+use crate::functions::avedev_fn::{eval_avedev_surface, map_avedev_error_to_ws};
+use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
+use crate::functions::averagea_fn::{eval_averagea_surface, map_averagea_error_to_ws};
+use crate::functions::base_fn::{eval_base_surface, map_base_error_to_ws};
+use crate::functions::bessel_convert_family::{
+    eval_besseli_surface, eval_besselj_surface, eval_besselk_surface, eval_bessely_surface,
+    map_bessel_convert_error_to_ws,
+};
+use crate::functions::beta_gamma_stats_family::{
+    eval_beta_dist_surface, eval_beta_inv_surface, eval_betadist_surface, eval_betainv_surface,
+    eval_gamma_dist_surface, eval_gamma_inv_surface, eval_gammadist_surface, eval_gammainv_surface,
+    map_beta_gamma_stats_error_to_ws,
+};
+use crate::functions::bitand_fn::{bitand_kernel, eval_bitand_surface, map_bitand_error_to_ws};
+use crate::functions::bitlshift_fn::{
+    bitlshift_kernel, eval_bitlshift_surface, map_bitlshift_error_to_ws,
+};
+use crate::functions::bitor_fn::{bitor_kernel, eval_bitor_surface, map_bitor_error_to_ws};
+use crate::functions::bitrshift_fn::{
+    bitrshift_kernel, eval_bitrshift_surface, map_bitrshift_error_to_ws,
+};
+use crate::functions::bitxor_fn::{bitxor_kernel, eval_bitxor_surface, map_bitxor_error_to_ws};
+use crate::functions::bond_core_family::{
+    eval_accrint_surface, eval_accrintm_surface, eval_duration_surface, eval_mduration_surface,
+    eval_price_surface, eval_pricemat_surface, eval_yield_surface, eval_yielddisc_surface,
+    eval_yieldmat_surface, map_bond_core_error_to_ws,
+};
+use crate::functions::call_register_id_family::{
+    CALL_META, REGISTER_ID_META, RegisteredExternalProvider, eval_call_surface,
+    eval_register_id_surface, map_call_register_id_error_to_ws,
+};
+use crate::functions::callable_helpers::{
+    BYCOL_META, BYROW_META, CallableInvocationError, CallableInvoker, ISOMITTED_META,
+    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_calc_surface, eval_bycol_surface,
+    eval_byrow_calc_surface, eval_byrow_surface, eval_isomitted_surface,
+    eval_makearray_calc_surface, eval_makearray_surface, eval_map_calc_surface, eval_map_surface,
+    eval_reduce_calc_surface, eval_reduce_surface, eval_scan_calc_surface, eval_scan_surface,
+    map_lambda_helper_error_to_ws,
+};
+use crate::functions::cashflow_rate_family::{
+    eval_irr_surface, eval_xirr_surface, eval_xnpv_surface, map_cashflow_rate_error_to_ws,
+};
+use crate::functions::ceiling_floor_family::{
+    eval_ceiling_math_surface, eval_ceiling_precise_surface, eval_ceiling_surface,
+    eval_floor_math_surface, eval_floor_precise_surface, eval_floor_surface,
+    eval_iso_ceiling_surface, map_ceiling_floor_error_to_ws,
+};
+use crate::functions::cell::{eval_cell_surface, map_cell_error_to_ws};
+use crate::functions::chi_f_t_family::{
+    eval_chidist_surface, eval_chiinv_surface, eval_chisq_dist_rt_surface, eval_chisq_dist_surface,
+    eval_chisq_inv_rt_surface, eval_chisq_inv_surface, eval_f_dist_rt_surface, eval_f_dist_surface,
+    eval_f_inv_rt_surface, eval_f_inv_surface, eval_fdist_surface, eval_finv_surface,
+    eval_t_dist_2t_surface, eval_t_dist_rt_surface, eval_t_dist_surface, eval_t_inv_2t_surface,
+    eval_t_inv_surface, eval_tdist_surface, eval_tinv_surface, map_chi_f_t_error_to_ws,
+};
+use crate::functions::choose_ifs_family::{
+    eval_choose_surface, eval_ifs_surface, map_choose_ifs_error_to_ws,
+};
+use crate::functions::clean_fn::{eval_clean_surface, map_clean_error_to_ws};
+use crate::functions::column_fn::{eval_column_surface, map_column_error_to_ws};
+use crate::functions::columns_fn::{eval_columns_surface_with_resolver, map_columns_error_to_ws};
+use crate::functions::combin::{combin_kernel, eval_combin_surface, map_combin_error_to_ws};
+use crate::functions::combina::{combina_kernel, eval_combina_surface, map_combina_error_to_ws};
+use crate::functions::complex_family::{
+    eval_complex_surface, eval_imabs_surface, eval_imaginary_surface, eval_imargument_surface,
+    eval_imconjugate_surface, eval_imcos_surface, eval_imcosh_surface, eval_imcot_surface,
+    eval_imcsc_surface, eval_imcsch_surface, eval_imdiv_surface, eval_imexp_surface,
+    eval_imln_surface, eval_imlog2_surface, eval_imlog10_surface, eval_impower_surface,
+    eval_improduct_surface, eval_imreal_surface, eval_imsec_surface, eval_imsech_surface,
+    eval_imsin_surface, eval_imsinh_surface, eval_imsqrt_surface, eval_imsub_surface,
+    eval_imsum_surface, eval_imtan_surface, map_complex_family_error_to_ws,
+};
+use crate::functions::concat_family::{
+    eval_concat_surface, eval_concatenate_surface, map_concat_error_to_ws,
+};
+use crate::functions::confidence_test_family::{
+    eval_confidence_t_surface, eval_z_test_surface, map_confidence_test_error_to_ws,
+};
+use crate::functions::correl_fn::{eval_correl_surface, map_correl_error_to_ws};
+use crate::functions::cos::{COS_META, cos_kernel};
+use crate::functions::cosh::{COSH_META, cosh_kernel};
+use crate::functions::cot::cot_kernel;
+use crate::functions::coth::coth_kernel;
+use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
+use crate::functions::counta::{eval_counta_surface, map_counta_error_to_ws};
+use crate::functions::countblank_fn::{eval_countblank_surface, map_countblank_error_to_ws};
+use crate::functions::coupon_family::{
+    eval_coupdaybs_surface, eval_coupdays_surface, eval_coupdaysnc_surface, eval_coupncd_surface,
+    eval_coupnum_surface, eval_couppcd_surface, map_coupon_error_to_ws,
+};
+use crate::functions::covariance_p_fn::{eval_covariance_p_surface, map_covariance_p_error_to_ws};
+use crate::functions::covariance_s_fn::{eval_covariance_s_surface, map_covariance_s_error_to_ws};
+use crate::functions::criteria_family::{
+    eval_averageif_surface, eval_averageifs_surface, eval_countif_surface, eval_countifs_surface,
+    eval_maxifs_surface, eval_minifs_surface, eval_sumif_surface, eval_sumifs_surface,
+    map_criteria_error_to_ws,
+};
+use crate::functions::csc::csc_kernel;
+use crate::functions::csch::csch_kernel;
+use crate::functions::cumulative_finance_family::{
+    eval_cumipmt_surface, eval_cumprinc_surface, map_cumulative_finance_error_to_ws,
+};
+use crate::functions::database_family::{
+    eval_daverage_surface, eval_dcount_surface, eval_dcounta_surface, eval_dget_surface,
+    eval_dmax_surface, eval_dmin_surface, eval_dproduct_surface, eval_dstdev_surface,
+    eval_dstdevp_surface, eval_dsum_surface, eval_dvar_surface, eval_dvarp_surface,
+    map_database_error_to_ws,
+};
+use crate::functions::date_fn::{eval_date_surface, map_date_error_to_ws};
+use crate::functions::date_parts_family::{
+    eval_day_surface, eval_days_surface, eval_hour_surface, eval_minute_surface,
+    eval_month_surface, eval_second_surface, eval_time_surface, eval_year_surface,
+    map_date_parts_error_to_ws,
+};
+use crate::functions::date_value_family::{
+    eval_datedif_surface, eval_datevalue_surface, eval_days360_surface, eval_timevalue_surface,
+    map_date_value_family_error_to_ws,
+};
+use crate::functions::date_week_family::{
+    eval_edate_surface, eval_eomonth_surface, eval_isoweeknum_surface, eval_weekday_surface,
+    eval_weeknum_surface, map_date_week_error_to_ws,
+};
+use crate::functions::decimal_fn::{eval_decimal_surface, map_decimal_error_to_ws};
+use crate::functions::degrees::{DEGREES_META, degrees_kernel};
+use crate::functions::delta_fn::{delta_kernel, eval_delta_surface, map_delta_error_to_ws};
+use crate::functions::depreciation_family::{
+    eval_db_surface, eval_ddb_surface, eval_sln_surface, eval_syd_surface, eval_vdb_surface,
+    map_depreciation_error_to_ws,
+};
+use crate::functions::devsq_fn::{eval_devsq_surface, map_devsq_error_to_ws};
+use crate::functions::discount_bill_yearfrac_family::{
+    eval_disc_surface, eval_intrate_surface, eval_pricedisc_surface, eval_received_surface,
+    eval_tbilleq_surface, eval_tbillprice_surface, eval_tbillyield_surface, eval_yearfrac_surface,
+    map_discount_bill_yearfrac_error_to_ws,
+};
+use crate::functions::discrete_dist_family::{
+    eval_binom_dist_range_surface, eval_binom_dist_surface, eval_binom_inv_surface,
+    eval_binomdist_surface, eval_critbinom_surface, eval_expon_dist_surface,
+    eval_expondist_surface, eval_hypgeom_dist_surface, eval_hypgeomdist_surface,
+    eval_negbinom_dist_surface, eval_negbinomdist_surface, eval_poisson_dist_surface,
+    eval_poisson_surface, map_discrete_dist_error_to_ws,
+};
+use crate::functions::dollar_fn::{eval_dollar_surface, map_dollar_error_to_ws};
+use crate::functions::dollar_fraction_family::{
+    eval_dollarde_surface, eval_dollarfr_surface, map_dollar_fraction_error_to_ws,
+};
+use crate::functions::dynamic_array_reshape_family::{
+    CHOOSECOLS_META, CHOOSEROWS_META, DROP_META, EXPAND_META, FILTER_META, SORT_META, SORTBY_META,
+    TAKE_META, TOCOL_META, TOROW_META, TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META,
+    WRAPROWS_META, eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface,
+    eval_expand_surface, eval_filter_surface, eval_sort_surface, eval_sortby_surface,
+    eval_take_surface, eval_tocol_surface, eval_torow_surface, eval_transpose_surface,
+    eval_unique_surface, eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
+    map_dynamic_array_reshape_error_to_ws,
+};
+use crate::functions::engineering_radix_family::{
+    eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
+    eval_dec2hex_surface, eval_dec2oct_surface, eval_hex2bin_surface, eval_hex2dec_surface,
+    eval_hex2oct_surface, eval_oct2bin_surface, eval_oct2dec_surface, eval_oct2hex_surface,
+    map_engineering_radix_error_to_ws,
+};
+use crate::functions::error_type_fn::{eval_error_type_surface, map_error_type_error_to_ws};
+use crate::functions::even_fn::even_kernel;
+use crate::functions::exact_fn::{eval_exact_surface, map_exact_error_to_ws};
+use crate::functions::exp_fn::{EXP_META, exp_kernel};
+use crate::functions::fact::fact_kernel;
+use crate::functions::factdouble::factdouble_kernel;
+use crate::functions::false_fn::eval_false_surface;
+use crate::functions::financial_time_value_family::{
+    eval_effect_surface, eval_fv_surface, eval_fvschedule_surface, eval_ipmt_surface,
+    eval_ispmt_surface, eval_mirr_surface, eval_nominal_surface, eval_nper_surface,
+    eval_npv_surface, eval_pduration_surface, eval_pmt_surface, eval_ppmt_surface, eval_pv_surface,
+    eval_rate_surface, eval_rri_surface, map_financial_time_value_error_to_ws,
+};
+use crate::functions::fixed_fn::{eval_fixed_surface, map_fixed_error_to_ws};
+use crate::functions::gcd_fn::{eval_gcd_surface, map_gcd_error_to_ws};
+use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws};
+use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
+use crate::functions::groupby_fn::{eval_groupby_calc_surface, eval_groupby_surface};
+use crate::functions::harmean_fn::{eval_harmean_surface, map_harmean_error_to_ws};
+use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
+use crate::functions::hyperlink_fn::{
+    eval_hyperlink_calc_surface_rich, eval_hyperlink_surface, map_hyperlink_error_to_ws,
+};
+use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
+use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
+use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
+use crate::functions::image_fn::{
+    eval_image_calc_surface_rich, eval_image_surface, map_image_error_to_ws,
+};
+use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
+use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
+use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
+use crate::functions::int_fn::int_kernel;
+use crate::functions::intercept_fn::{eval_intercept_surface, map_intercept_error_to_ws};
+use crate::functions::is_predicates_family::{
+    eval_isblank_surface, eval_iserr_surface, eval_iserror_surface, eval_islogical_surface,
+    eval_isna_surface, eval_isnontext_surface, eval_isodd_surface, eval_isref_surface,
+    eval_istext_surface, map_information_predicate_error_to_ws,
+};
+use crate::functions::iseven_fn::{eval_iseven_surface, map_iseven_error_to_ws};
+use crate::functions::isnumber::{eval_isnumber_surface, map_isnumber_error_to_ws};
+use crate::functions::large_fn::{eval_large_surface, map_large_error_to_ws};
+use crate::functions::lcm_fn::{eval_lcm_surface, map_lcm_error_to_ws};
+use crate::functions::legacy_stats_alias_family::{
+    eval_covar_surface, eval_loginv_surface, eval_mode_surface, eval_percentile_surface,
+    eval_percentrank_surface, eval_quartile_surface, map_legacy_stats_alias_error_to_ws,
+};
+use crate::functions::ln_fn::ln_kernel;
+use crate::functions::log_fn::{eval_log_surface, map_log_error_to_ws};
+use crate::functions::log10_fn::log10_kernel;
+use crate::functions::lookup_prob_frequency_family::{
+    eval_frequency_surface, eval_lookup_surface, eval_mode_mult_surface, eval_prob_surface,
+    map_lookup_prob_frequency_error_to_ws,
+};
+use crate::functions::match_fn::{eval_match_surface, map_match_error_to_ws};
+use crate::functions::matrix_family::{
+    eval_mdeterm_surface, eval_minverse_surface, eval_mmult_surface, eval_munit_surface,
+    map_matrix_error_to_ws,
+};
+use crate::functions::max_fn::{eval_max_surface, map_max_error_to_ws};
+use crate::functions::maxa_fn::{eval_maxa_surface, map_maxa_error_to_ws};
+use crate::functions::median_fn::{eval_median_surface, map_median_error_to_ws};
+use crate::functions::min_fn::{eval_min_surface, map_min_error_to_ws};
+use crate::functions::mina_fn::{eval_mina_surface, map_mina_error_to_ws};
+use crate::functions::misc_conversion_family::{
+    eval_bahttext_surface, eval_convert_surface, eval_euroconvert_surface, eval_percentof_surface,
+    eval_randarray_surface, map_misc_conversion_error_to_ws,
+};
+use crate::functions::misc_switch_info_family::{
+    eval_isformula_surface, eval_switch_surface, map_misc_switch_info_error_to_ws,
+};
+use crate::functions::mod_fn::mod_kernel;
+use crate::functions::mode_sngl_fn::{eval_mode_sngl_surface, map_mode_sngl_error_to_ws};
+use crate::functions::moment_stats_family::{
+    eval_kurt_surface, eval_skew_p_surface, eval_skew_surface, eval_steyx_surface,
+    eval_trimmean_surface, map_moment_stats_error_to_ws,
+};
+use crate::functions::mround::{eval_mround_surface, map_mround_error_to_ws, mround_kernel};
+use crate::functions::multinomial::{eval_multinomial_surface, map_multinomial_error_to_ws};
+use crate::functions::n_fn::{eval_n_surface, map_n_error_to_ws};
+use crate::functions::na_fn::eval_na_surface;
+use crate::functions::normal_log_family::{
+    eval_confidence_norm_surface, eval_confidence_surface, eval_lognorm_dist_surface,
+    eval_lognorm_inv_surface, eval_lognormdist_surface, eval_norm_dist_surface,
+    eval_norm_inv_surface, eval_norm_s_dist_surface, eval_norm_s_inv_surface,
+    eval_normdist_surface, eval_norminv_surface, eval_normsdist_surface, eval_normsinv_surface,
+    map_normal_log_error_to_ws,
+};
+use crate::functions::not_fn::{eval_not_surface, map_not_error_to_ws};
+use crate::functions::now_fn::{
+    NowProvider, eval_now_calc_surface, eval_now_surface, map_now_error_to_ws,
+};
+use crate::functions::number_regex_translate_family::{
+    eval_numbervalue_surface, eval_regexextract_surface, eval_regexreplace_surface,
+    eval_regextest_surface, eval_translate_surface, map_number_regex_translate_error_to_ws,
+};
+use crate::functions::odd_bond_family::{
+    eval_oddfprice_surface, eval_oddfyield_surface, eval_oddlprice_surface, eval_oddlyield_surface,
+    map_odd_bond_error_to_ws,
+};
+use crate::functions::odd_fn::odd_kernel;
+use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
+use crate::functions::op_add::op_add_kernel;
+use crate::functions::op_implicit_intersection::{
+    OP_IMPLICIT_INTERSECTION_META, eval_op_implicit_intersection_surface,
+    map_op_implicit_intersection_error_to_ws,
+};
+use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
+use crate::functions::operator_arithmetic_family::{
+    OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
+    OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_unary_plus_surface,
+    map_operator_unary_error_to_ws, op_divide_kernel, op_multiply_kernel, op_negate_kernel,
+    op_percent_kernel, op_subtract_kernel, op_unary_plus_kernel,
+};
+use crate::functions::operator_compare_concat_family::{
+    OP_CONCAT_META, OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
+    OP_LESS_THAN_META, OP_NOT_EQUAL_META, eval_op_concat_surface, eval_op_equal_surface,
+    eval_op_greater_equal_surface, eval_op_greater_than_surface, eval_op_less_equal_surface,
+    eval_op_less_than_surface, eval_op_not_equal_surface, map_operator_compare_concat_error_to_ws,
+};
+use crate::functions::operator_reference_family::{
+    OP_INTERSECTION_REF_META, OP_RANGE_REF_META, OP_TRIM_REF_BOTH_META, OP_TRIM_REF_LEADING_META,
+    OP_TRIM_REF_TRAILING_META, OP_UNION_REF_META, eval_op_intersection_ref_surface,
+    eval_op_range_ref_surface, eval_op_trim_ref_both_surface, eval_op_trim_ref_leading_surface,
+    eval_op_trim_ref_trailing_surface, eval_op_union_ref_surface,
+    map_operator_reference_error_to_ws,
+};
+use crate::functions::or_fn::{eval_or_surface, map_or_error_to_ws};
+use crate::functions::pearson_fn::{eval_pearson_surface, map_pearson_error_to_ws};
+use crate::functions::percentile_exc_fn::{
+    eval_percentile_exc_surface, map_percentile_exc_error_to_ws,
+};
+use crate::functions::percentile_inc_fn::{
+    eval_percentile_inc_surface, map_percentile_inc_error_to_ws,
+};
+use crate::functions::percentrank_exc_fn::{
+    eval_percentrank_exc_surface, map_percentrank_exc_error_to_ws,
+};
+use crate::functions::percentrank_inc_fn::{
+    eval_percentrank_inc_surface, map_percentrank_inc_error_to_ws,
+};
+use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
+use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
+use crate::functions::pi::eval_pi;
+use crate::functions::pivotby_fn::{eval_pivotby_calc_surface, eval_pivotby_surface};
+use crate::functions::power_fn::power_kernel;
+use crate::functions::product::{eval_product_surface, map_product_error_to_ws};
+use crate::functions::quartile_exc_fn::{eval_quartile_exc_surface, map_quartile_exc_error_to_ws};
+use crate::functions::quartile_inc_fn::{eval_quartile_inc_surface, map_quartile_inc_error_to_ws};
+use crate::functions::quotient_fn::{
+    eval_quotient_surface, map_quotient_error_to_ws, quotient_kernel,
+};
+use crate::functions::radians::radians_kernel;
+use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
+use crate::functions::randbetween_fn::{eval_randbetween_surface, map_randbetween_error_to_ws};
+use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
+use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
+use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
+use crate::functions::reference_metadata_family::{
+    ADDRESS_META, AREAS_META, FORMULATEXT_META, SHEET_META, SHEETS_META, eval_address_surface,
+    eval_areas_surface, eval_formulatext_surface, eval_sheet_surface, eval_sheets_surface,
+    map_reference_metadata_error_to_ws,
+};
+use crate::functions::regression_forecast_family::{
+    eval_forecast_linear_surface, eval_forecast_surface, eval_growth_surface, eval_linest_surface,
+    eval_logest_surface, eval_trend_surface, map_regression_forecast_error_to_ws,
+};
+use crate::functions::roman_fn::{eval_roman_surface, map_roman_error_to_ws};
+use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, round_kernel};
+use crate::functions::rounddown_fn::{eval_rounddown_surface, map_rounddown_error_to_ws};
+use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws};
+use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
+use crate::functions::rows_fn::{eval_rows_surface_with_resolver, map_rows_error_to_ws};
+use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
+use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
+use crate::functions::sec::sec_kernel;
+use crate::functions::sech::sech_kernel;
+use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
+use crate::functions::sign_fn::sign_kernel;
+use crate::functions::sin::{SIN_META, sin_kernel};
+use crate::functions::sinh::{SINH_META, sinh_kernel};
+use crate::functions::slope_fn::{eval_slope_surface, map_slope_error_to_ws};
+use crate::functions::small_fn::{eval_small_surface, map_small_error_to_ws};
+use crate::functions::special_dist_family::{
+    eval_erf_precise_surface, eval_erf_surface, eval_erfc_precise_surface, eval_erfc_surface,
+    eval_gamma_surface, eval_gammaln_precise_surface, eval_gammaln_surface,
+    eval_weibull_dist_surface, eval_weibull_surface, map_special_dist_error_to_ws,
+};
+use crate::functions::sqrt_fn::sqrt_kernel;
+use crate::functions::sqrtpi::sqrtpi_kernel;
+use crate::functions::standardize_fn::{eval_standardize_surface, map_standardize_error_to_ws};
+use crate::functions::statistical_tests_family::{
+    eval_chisq_test_surface, eval_chitest_surface, eval_f_test_surface, eval_ftest_surface,
+    eval_t_test_surface, eval_ttest_surface, map_statistical_tests_error_to_ws,
+};
+use crate::functions::stdev_fn::{eval_stdev_surface, map_stdev_error_to_ws};
+use crate::functions::stdev_p_fn::{eval_stdev_p_surface, map_stdev_p_error_to_ws};
+use crate::functions::stdev_s_fn::{eval_stdev_s_surface, map_stdev_s_error_to_ws};
+use crate::functions::stdeva_fn::{eval_stdeva_surface, map_stdeva_error_to_ws};
+use crate::functions::stdevp_fn::{eval_stdevp_surface, map_stdevp_error_to_ws};
+use crate::functions::stdevpa_fn::{eval_stdevpa_surface, map_stdevpa_error_to_ws};
+use crate::functions::sum::{eval_sum_surface, map_sum_error_to_ws};
+use crate::functions::sumproduct_family::{
+    eval_seriessum_surface, eval_sumproduct_surface, eval_sumx2my2_surface, eval_sumx2py2_surface,
+    eval_sumxmy2_surface, map_sumproduct_error_to_ws,
+};
+use crate::functions::sumsq::{eval_sumsq_surface, map_sumsq_error_to_ws};
+use crate::functions::t_fn::{eval_t_surface, map_t_error_to_ws};
+use crate::functions::tan::{TAN_META, tan_kernel};
+use crate::functions::tanh::tanh_kernel;
+use crate::functions::test_alias_family::{eval_ztest_surface, map_test_alias_error_to_ws};
+use crate::functions::text_b_compat_family::{
+    eval_findb_surface, eval_leftb_surface, eval_lenb_surface, eval_midb_surface,
+    eval_replaceb_surface, eval_rightb_surface, eval_searchb_surface,
+    map_text_b_compat_error_to_ws,
+};
+use crate::functions::text_compat_locale_family::{
+    eval_asc_surface, eval_dbcs_surface, eval_jis_surface, map_text_compat_locale_error_to_ws,
+};
+use crate::functions::text_delim_family::{
+    eval_textafter_surface, eval_textbefore_surface, map_text_delim_error_to_ws,
+};
+use crate::functions::text_fn::{eval_text_surface, map_text_error_to_ws};
+use crate::functions::text_scalar_misc::{
+    eval_char_surface, eval_code_surface, eval_lower_surface, eval_rept_surface, eval_trim_surface,
+    eval_upper_surface, map_text_scalar_error_to_ws,
+};
+use crate::functions::text_search_replace_family::{
+    eval_find_surface, eval_proper_surface, eval_replace_surface, eval_search_surface,
+    eval_substitute_surface, map_text_search_replace_error_to_ws,
+};
+use crate::functions::text_slice_family::{
+    eval_left_surface, eval_len_surface, eval_mid_surface, eval_right_surface,
+    map_text_slice_error_to_ws,
+};
+use crate::functions::text_unicode_fn::{
+    eval_unichar_surface, eval_unicode_surface, map_text_unicode_error_to_ws,
+};
+use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
+use crate::functions::today_fn::{
+    TodayProvider, eval_today_calc_surface, eval_today_surface, map_today_error_to_ws,
+};
+use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error_to_ws};
+use crate::functions::true_fn::eval_true_surface;
+use crate::functions::trunc_fn::{eval_trunc_surface, map_trunc_error_to_ws, trunc_kernel};
+use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
+use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
+use crate::functions::valuetotext_fn::{eval_valuetotext_surface, map_valuetotext_error_to_ws};
+use crate::functions::var_fn::{eval_var_surface, map_var_error_to_ws};
+use crate::functions::var_p_fn::{eval_var_p_surface, map_var_p_error_to_ws};
+use crate::functions::var_s_fn::{eval_var_s_surface, map_var_s_error_to_ws};
+use crate::functions::vara_fn::{eval_vara_surface, map_vara_error_to_ws};
+use crate::functions::varp_fn::{eval_varp_surface, map_varp_error_to_ws};
+use crate::functions::varpa_fn::{eval_varpa_surface, map_varpa_error_to_ws};
+use crate::functions::vhlookup_family::{
+    eval_hlookup_surface, eval_vlookup_surface, map_vhlookup_error_to_ws,
+};
+use crate::functions::web_text_xml_family::{
+    eval_encodeurl_surface, eval_filterxml_surface, map_web_text_xml_error_to_ws,
+};
+use crate::functions::workday_networkdays_family::{
+    eval_networkdays_intl_surface, eval_networkdays_surface, eval_workday_intl_surface,
+    eval_workday_surface, map_workday_networkdays_error_to_ws,
+};
+use crate::functions::xlookup::{eval_xlookup_surface, map_xlookup_error_to_ws};
+use crate::functions::xmatch::XmatchEvalError;
+use crate::functions::xmatch_surface::eval_xmatch_surface_value;
+use crate::functions::xor_fn::{eval_xor_surface, map_xor_error_to_ws};
+use crate::host_info::HostInfoProvider;
+use crate::locale_format::LocaleFormatContext;
+use crate::resolver::ReferenceSystemProvider;
+use crate::value::CalcValue;
+use crate::value::{ArrayShape, CalcArray, CoreValue, EvalError, WorksheetErrorCode};
+
+pub const FUNC_ID_ACOS: &str = "FUNC.ACOS";
+pub const FUNC_ID_ACOT: &str = "FUNC.ACOT";
+pub const FUNC_ID_ACOSH: &str = "FUNC.ACOSH";
+pub const FUNC_ID_ACOTH: &str = "FUNC.ACOTH";
+pub const FUNC_ID_ABS: &str = "FUNC.ABS";
+pub const FUNC_ID_ACCRINT: &str = "FUNC.ACCRINT";
+pub const FUNC_ID_ACCRINTM: &str = "FUNC.ACCRINTM";
+pub const FUNC_ID_AGGREGATE: &str = "FUNC.AGGREGATE";
+pub const FUNC_ID_AMORDEGRC: &str = "FUNC.AMORDEGRC";
+pub const FUNC_ID_AMORLINC: &str = "FUNC.AMORLINC";
+pub const FUNC_ID_ATAN: &str = "FUNC.ATAN";
+pub const FUNC_ID_ASIN: &str = "FUNC.ASIN";
+pub const FUNC_ID_ASINH: &str = "FUNC.ASINH";
+pub const FUNC_ID_ATAN2: &str = "FUNC.ATAN2";
+pub const FUNC_ID_ATANH: &str = "FUNC.ATANH";
+pub const FUNC_ID_AND: &str = "FUNC.AND";
+pub const FUNC_ID_ARABIC: &str = "FUNC.ARABIC";
+pub const FUNC_ID_ADDRESS: &str = "FUNC.ADDRESS";
+pub const FUNC_ID_ARRAYTOTEXT: &str = "FUNC.ARRAYTOTEXT";
+pub const FUNC_ID_ASC: &str = "FUNC.ASC";
+pub const FUNC_ID_AREAS: &str = "FUNC.AREAS";
+pub const FUNC_ID_AVEDEV: &str = "FUNC.AVEDEV";
+pub const FUNC_ID_AVERAGE: &str = "FUNC.AVERAGE";
+pub const FUNC_ID_AVERAGEIF: &str = "FUNC.AVERAGEIF";
+pub const FUNC_ID_AVERAGEIFS: &str = "FUNC.AVERAGEIFS";
+pub const FUNC_ID_AVERAGEA: &str = "FUNC.AVERAGEA";
+pub const FUNC_ID_BAHTTEXT: &str = "FUNC.BAHTTEXT";
+pub const FUNC_ID_BASE: &str = "FUNC.BASE";
+pub const FUNC_ID_BETA_DIST: &str = "FUNC.BETA.DIST";
+pub const FUNC_ID_BETA_INV: &str = "FUNC.BETA.INV";
+pub const FUNC_ID_BETADIST: &str = "FUNC.BETADIST";
+pub const FUNC_ID_BETAINV: &str = "FUNC.BETAINV";
+pub const FUNC_ID_BESSELI: &str = "FUNC.BESSELI";
+pub const FUNC_ID_BESSELJ: &str = "FUNC.BESSELJ";
+pub const FUNC_ID_BESSELK: &str = "FUNC.BESSELK";
+pub const FUNC_ID_BESSELY: &str = "FUNC.BESSELY";
+pub const FUNC_ID_BINOM_DIST: &str = "FUNC.BINOM.DIST";
+pub const FUNC_ID_BINOM_DIST_RANGE: &str = "FUNC.BINOM.DIST.RANGE";
+pub const FUNC_ID_BINOM_INV: &str = "FUNC.BINOM.INV";
+pub const FUNC_ID_BINOMDIST: &str = "FUNC.BINOMDIST";
+pub const FUNC_ID_BIN2DEC: &str = "FUNC.BIN2DEC";
+pub const FUNC_ID_BIN2HEX: &str = "FUNC.BIN2HEX";
+pub const FUNC_ID_BIN2OCT: &str = "FUNC.BIN2OCT";
+pub const FUNC_ID_BITAND: &str = "FUNC.BITAND";
+pub const FUNC_ID_BITLSHIFT: &str = "FUNC.BITLSHIFT";
+pub const FUNC_ID_BITOR: &str = "FUNC.BITOR";
+pub const FUNC_ID_BITRSHIFT: &str = "FUNC.BITRSHIFT";
+pub const FUNC_ID_BITXOR: &str = "FUNC.BITXOR";
+pub const FUNC_ID_BYCOL: &str = "FUNC.BYCOL";
+pub const FUNC_ID_BYROW: &str = "FUNC.BYROW";
+pub const FUNC_ID_CELL: &str = "FUNC.CELL";
+pub const FUNC_ID_CEILING: &str = "FUNC.CEILING";
+pub const FUNC_ID_CEILING_MATH: &str = "FUNC.CEILING.MATH";
+pub const FUNC_ID_CEILING_PRECISE: &str = "FUNC.CEILING.PRECISE";
+pub const FUNC_ID_CHIDIST: &str = "FUNC.CHIDIST";
+pub const FUNC_ID_CHIINV: &str = "FUNC.CHIINV";
+pub const FUNC_ID_CHOOSE: &str = "FUNC.CHOOSE";
+pub const FUNC_ID_CHOOSECOLS: &str = "FUNC.CHOOSECOLS";
+pub const FUNC_ID_CHOOSEROWS: &str = "FUNC.CHOOSEROWS";
+pub const FUNC_ID_CHISQ_DIST: &str = "FUNC.CHISQ.DIST";
+pub const FUNC_ID_CHISQ_DIST_RT: &str = "FUNC.CHISQ.DIST.RT";
+pub const FUNC_ID_CHISQ_INV: &str = "FUNC.CHISQ.INV";
+pub const FUNC_ID_CHISQ_INV_RT: &str = "FUNC.CHISQ.INV.RT";
+pub const FUNC_ID_CHISQ_TEST: &str = "FUNC.CHISQ.TEST";
+pub const FUNC_ID_CHITEST: &str = "FUNC.CHITEST";
+pub const FUNC_ID_CHAR: &str = "FUNC.CHAR";
+pub const FUNC_ID_COLUMN: &str = "FUNC.COLUMN";
+pub const FUNC_ID_COLUMNS: &str = "FUNC.COLUMNS";
+pub const FUNC_ID_CODE: &str = "FUNC.CODE";
+pub const FUNC_ID_COMBIN: &str = "FUNC.COMBIN";
+pub const FUNC_ID_COMBINA: &str = "FUNC.COMBINA";
+pub const FUNC_ID_COMPLEX: &str = "FUNC.COMPLEX";
+pub const FUNC_ID_CLEAN: &str = "FUNC.CLEAN";
+pub const FUNC_ID_CONCAT: &str = "FUNC.CONCAT";
+pub const FUNC_ID_CONCATENATE: &str = "FUNC.CONCATENATE";
+pub const FUNC_ID_COS: &str = "FUNC.COS";
+pub const FUNC_ID_COSH: &str = "FUNC.COSH";
+pub const FUNC_ID_CORREL: &str = "FUNC.CORREL";
+pub const FUNC_ID_COVARIANCE_P: &str = "FUNC.COVARIANCE.P";
+pub const FUNC_ID_COVARIANCE_S: &str = "FUNC.COVARIANCE.S";
+pub const FUNC_ID_COT: &str = "FUNC.COT";
+pub const FUNC_ID_COTH: &str = "FUNC.COTH";
+pub const FUNC_ID_COUNT: &str = "FUNC.COUNT";
+pub const FUNC_ID_COUNTBLANK: &str = "FUNC.COUNTBLANK";
+pub const FUNC_ID_COUNTIF: &str = "FUNC.COUNTIF";
+pub const FUNC_ID_COUNTIFS: &str = "FUNC.COUNTIFS";
+pub const FUNC_ID_COUNTA: &str = "FUNC.COUNTA";
+pub const FUNC_ID_COUPDAYBS: &str = "FUNC.COUPDAYBS";
+pub const FUNC_ID_COUPDAYS: &str = "FUNC.COUPDAYS";
+pub const FUNC_ID_COUPDAYSNC: &str = "FUNC.COUPDAYSNC";
+pub const FUNC_ID_COUPNCD: &str = "FUNC.COUPNCD";
+pub const FUNC_ID_COUPNUM: &str = "FUNC.COUPNUM";
+pub const FUNC_ID_COUPPCD: &str = "FUNC.COUPPCD";
+pub const FUNC_ID_COVAR: &str = "FUNC.COVAR";
+pub const FUNC_ID_CRITBINOM: &str = "FUNC.CRITBINOM";
+pub const FUNC_ID_CSC: &str = "FUNC.CSC";
+pub const FUNC_ID_CSCH: &str = "FUNC.CSCH";
+pub const FUNC_ID_CUMIPMT: &str = "FUNC.CUMIPMT";
+pub const FUNC_ID_CUMPRINC: &str = "FUNC.CUMPRINC";
+pub const FUNC_ID_CONVERT: &str = "FUNC.CONVERT";
+pub const FUNC_ID_DAVERAGE: &str = "FUNC.DAVERAGE";
+pub const FUNC_ID_DATE: &str = "FUNC.DATE";
+pub const FUNC_ID_DAY: &str = "FUNC.DAY";
+pub const FUNC_ID_DAYS: &str = "FUNC.DAYS";
+pub const FUNC_ID_DAYS360: &str = "FUNC.DAYS360";
+pub const FUNC_ID_DATEDIF: &str = "FUNC.DATEDIF";
+pub const FUNC_ID_DATEVALUE: &str = "FUNC.DATEVALUE";
+pub const FUNC_ID_DBCS: &str = "FUNC.DBCS";
+pub const FUNC_ID_DB: &str = "FUNC.DB";
+pub const FUNC_ID_DEC2BIN: &str = "FUNC.DEC2BIN";
+pub const FUNC_ID_DEC2HEX: &str = "FUNC.DEC2HEX";
+pub const FUNC_ID_DEC2OCT: &str = "FUNC.DEC2OCT";
+pub const FUNC_ID_EDATE: &str = "FUNC.EDATE";
+pub const FUNC_ID_EOMONTH: &str = "FUNC.EOMONTH";
+pub const FUNC_ID_EFFECT: &str = "FUNC.EFFECT";
+pub const FUNC_ID_EUROCONVERT: &str = "FUNC.EUROCONVERT";
+pub const FUNC_ID_EXPAND: &str = "FUNC.EXPAND";
+pub const FUNC_ID_DECIMAL: &str = "FUNC.DECIMAL";
+pub const FUNC_ID_ENCODEURL: &str = "FUNC.ENCODEURL";
+pub const FUNC_ID_DDB: &str = "FUNC.DDB";
+pub const FUNC_ID_DCOUNT: &str = "FUNC.DCOUNT";
+pub const FUNC_ID_DCOUNTA: &str = "FUNC.DCOUNTA";
+pub const FUNC_ID_DISC: &str = "FUNC.DISC";
+pub const FUNC_ID_DGET: &str = "FUNC.DGET";
+pub const FUNC_ID_DMAX: &str = "FUNC.DMAX";
+pub const FUNC_ID_DMIN: &str = "FUNC.DMIN";
+pub const FUNC_ID_DPRODUCT: &str = "FUNC.DPRODUCT";
+pub const FUNC_ID_DSTDEV: &str = "FUNC.DSTDEV";
+pub const FUNC_ID_DSTDEVP: &str = "FUNC.DSTDEVP";
+pub const FUNC_ID_DSUM: &str = "FUNC.DSUM";
+pub const FUNC_ID_DVAR: &str = "FUNC.DVAR";
+pub const FUNC_ID_DVARP: &str = "FUNC.DVARP";
+pub const FUNC_ID_DROP: &str = "FUNC.DROP";
+pub const FUNC_ID_DEVSQ: &str = "FUNC.DEVSQ";
+pub const FUNC_ID_DEGREES: &str = "FUNC.DEGREES";
+pub const FUNC_ID_DELTA: &str = "FUNC.DELTA";
+pub const FUNC_ID_DURATION: &str = "FUNC.DURATION";
+pub const FUNC_ID_DOLLAR: &str = "FUNC.DOLLAR";
+pub const FUNC_ID_DOLLARDE: &str = "FUNC.DOLLARDE";
+pub const FUNC_ID_DOLLARFR: &str = "FUNC.DOLLARFR";
+pub const FUNC_ID_EVEN: &str = "FUNC.EVEN";
+pub const FUNC_ID_ERROR_TYPE: &str = "FUNC.ERROR.TYPE";
+pub const FUNC_ID_ERF: &str = "FUNC.ERF";
+pub const FUNC_ID_ERF_PRECISE: &str = "FUNC.ERF.PRECISE";
+pub const FUNC_ID_ERFC: &str = "FUNC.ERFC";
+pub const FUNC_ID_ERFC_PRECISE: &str = "FUNC.ERFC.PRECISE";
+pub const FUNC_ID_EXACT: &str = "FUNC.EXACT";
+pub const FUNC_ID_EXPON_DIST: &str = "FUNC.EXPON.DIST";
+pub const FUNC_ID_EXPONDIST: &str = "FUNC.EXPONDIST";
+pub const FUNC_ID_EXP: &str = "FUNC.EXP";
+pub const FUNC_ID_FACT: &str = "FUNC.FACT";
+pub const FUNC_ID_FACTDOUBLE: &str = "FUNC.FACTDOUBLE";
+pub const FUNC_ID_FALSE: &str = "FUNC.FALSE";
+pub const FUNC_ID_FTEST: &str = "FUNC.FTEST";
+pub const FUNC_ID_FREQUENCY: &str = "FUNC.FREQUENCY";
+pub const FUNC_ID_FV: &str = "FUNC.FV";
+pub const FUNC_ID_FVSCHEDULE: &str = "FUNC.FVSCHEDULE";
+pub const FUNC_ID_F_DIST: &str = "FUNC.F.DIST";
+pub const FUNC_ID_F_DIST_RT: &str = "FUNC.F.DIST.RT";
+pub const FUNC_ID_F_INV: &str = "FUNC.F.INV";
+pub const FUNC_ID_F_INV_RT: &str = "FUNC.F.INV.RT";
+pub const FUNC_ID_F_TEST: &str = "FUNC.F.TEST";
+pub const FUNC_ID_FDIST: &str = "FUNC.FDIST";
+pub const FUNC_ID_FINV: &str = "FUNC.FINV";
+pub const FUNC_ID_FISHER: &str = "FUNC.FISHER";
+pub const FUNC_ID_FISHERINV: &str = "FUNC.FISHERINV";
+pub const FUNC_ID_FIND: &str = "FUNC.FIND";
+pub const FUNC_ID_FINDB: &str = "FUNC.FINDB";
+pub const FUNC_ID_FILTER: &str = "FUNC.FILTER";
+pub const FUNC_ID_FILTERXML: &str = "FUNC.FILTERXML";
+pub const FUNC_ID_FIXED: &str = "FUNC.FIXED";
+pub const FUNC_ID_FLOOR: &str = "FUNC.FLOOR";
+pub const FUNC_ID_FLOOR_MATH: &str = "FUNC.FLOOR.MATH";
+pub const FUNC_ID_FLOOR_PRECISE: &str = "FUNC.FLOOR.PRECISE";
+pub const FUNC_ID_FORMULATEXT: &str = "FUNC.FORMULATEXT";
+pub const FUNC_ID_IRR: &str = "FUNC.IRR";
+pub const FUNC_ID_GAUSS: &str = "FUNC.GAUSS";
+pub const FUNC_ID_GAMMA: &str = "FUNC.GAMMA";
+pub const FUNC_ID_GAMMA_DIST: &str = "FUNC.GAMMA.DIST";
+pub const FUNC_ID_GAMMA_INV: &str = "FUNC.GAMMA.INV";
+pub const FUNC_ID_GAMMADIST: &str = "FUNC.GAMMADIST";
+pub const FUNC_ID_GAMMAINV: &str = "FUNC.GAMMAINV";
+pub const FUNC_ID_GAMMALN: &str = "FUNC.GAMMALN";
+pub const FUNC_ID_GAMMALN_PRECISE: &str = "FUNC.GAMMALN.PRECISE";
+pub const FUNC_ID_GCD: &str = "FUNC.GCD";
+pub const FUNC_ID_GEOMEAN: &str = "FUNC.GEOMEAN";
+pub const FUNC_ID_GESTEP: &str = "FUNC.GESTEP";
+pub const FUNC_ID_GROUPBY: &str = "FUNC.GROUPBY";
+pub const FUNC_ID_GROWTH: &str = "FUNC.GROWTH";
+pub const FUNC_ID_FORECAST: &str = "FUNC.FORECAST";
+pub const FUNC_ID_FORECAST_LINEAR: &str = "FUNC.FORECAST.LINEAR";
+pub const FUNC_ID_HARMEAN: &str = "FUNC.HARMEAN";
+pub const FUNC_ID_HYPERLINK: &str = "FUNC.HYPERLINK";
+pub const FUNC_ID_IMAGE: &str = "FUNC.IMAGE";
+pub const FUNC_ID_HYPGEOM_DIST: &str = "FUNC.HYPGEOM.DIST";
+pub const FUNC_ID_HYPGEOMDIST: &str = "FUNC.HYPGEOMDIST";
+pub const FUNC_ID_HOUR: &str = "FUNC.HOUR";
+pub const FUNC_ID_HSTACK: &str = "FUNC.HSTACK";
+pub const FUNC_ID_INFO: &str = "FUNC.INFO";
+pub const FUNC_ID_ISOMITTED: &str = "FUNC.ISOMITTED";
+pub const FUNC_ID_IMABS: &str = "FUNC.IMABS";
+pub const FUNC_ID_IMAGINARY: &str = "FUNC.IMAGINARY";
+pub const FUNC_ID_IMARGUMENT: &str = "FUNC.IMARGUMENT";
+pub const FUNC_ID_IMCONJUGATE: &str = "FUNC.IMCONJUGATE";
+pub const FUNC_ID_IMCOS: &str = "FUNC.IMCOS";
+pub const FUNC_ID_IMCOSH: &str = "FUNC.IMCOSH";
+pub const FUNC_ID_IMCOT: &str = "FUNC.IMCOT";
+pub const FUNC_ID_IMCSC: &str = "FUNC.IMCSC";
+pub const FUNC_ID_IMCSCH: &str = "FUNC.IMCSCH";
+pub const FUNC_ID_IMDIV: &str = "FUNC.IMDIV";
+pub const FUNC_ID_IMEXP: &str = "FUNC.IMEXP";
+pub const FUNC_ID_IMLN: &str = "FUNC.IMLN";
+pub const FUNC_ID_IMLOG10: &str = "FUNC.IMLOG10";
+pub const FUNC_ID_IMLOG2: &str = "FUNC.IMLOG2";
+pub const FUNC_ID_IMPOWER: &str = "FUNC.IMPOWER";
+pub const FUNC_ID_IMPRODUCT: &str = "FUNC.IMPRODUCT";
+pub const FUNC_ID_IMREAL: &str = "FUNC.IMREAL";
+pub const FUNC_ID_IMSEC: &str = "FUNC.IMSEC";
+pub const FUNC_ID_IMSECH: &str = "FUNC.IMSECH";
+pub const FUNC_ID_IMSIN: &str = "FUNC.IMSIN";
+pub const FUNC_ID_IMSINH: &str = "FUNC.IMSINH";
+pub const FUNC_ID_IMSQRT: &str = "FUNC.IMSQRT";
+pub const FUNC_ID_IMSUB: &str = "FUNC.IMSUB";
+pub const FUNC_ID_IMSUM: &str = "FUNC.IMSUM";
+pub const FUNC_ID_IMTAN: &str = "FUNC.IMTAN";
+pub const FUNC_ID_ISFORMULA: &str = "FUNC.ISFORMULA";
+pub const FUNC_ID_IF: &str = "FUNC.IF";
+pub const FUNC_ID_IFERROR: &str = "FUNC.IFERROR";
+pub const FUNC_ID_IFNA: &str = "FUNC.IFNA";
+pub const FUNC_ID_IFS: &str = "FUNC.IFS";
+pub const FUNC_ID_INDEX: &str = "FUNC.INDEX";
+pub const FUNC_ID_INDIRECT: &str = "FUNC.INDIRECT";
+pub const FUNC_ID_IPMT: &str = "FUNC.IPMT";
+pub const FUNC_ID_ISPMT: &str = "FUNC.ISPMT";
+pub const FUNC_ID_HEX2BIN: &str = "FUNC.HEX2BIN";
+pub const FUNC_ID_HEX2DEC: &str = "FUNC.HEX2DEC";
+pub const FUNC_ID_HEX2OCT: &str = "FUNC.HEX2OCT";
+pub const FUNC_ID_ISNUMBER: &str = "FUNC.ISNUMBER";
+pub const FUNC_ID_ISBLANK: &str = "FUNC.ISBLANK";
+pub const FUNC_ID_ISERR: &str = "FUNC.ISERR";
+pub const FUNC_ID_ISERROR: &str = "FUNC.ISERROR";
+pub const FUNC_ID_ISLOGICAL: &str = "FUNC.ISLOGICAL";
+pub const FUNC_ID_ISNA: &str = "FUNC.ISNA";
+pub const FUNC_ID_ISNONTEXT: &str = "FUNC.ISNONTEXT";
+pub const FUNC_ID_ISODD: &str = "FUNC.ISODD";
+pub const FUNC_ID_ISREF: &str = "FUNC.ISREF";
+pub const FUNC_ID_ISTEXT: &str = "FUNC.ISTEXT";
+pub const FUNC_ID_ISOWEEKNUM: &str = "FUNC.ISOWEEKNUM";
+pub const FUNC_ID_ISO_CEILING: &str = "FUNC.ISO.CEILING";
+pub const FUNC_ID_INTERCEPT: &str = "FUNC.INTERCEPT";
+pub const FUNC_ID_INT: &str = "FUNC.INT";
+pub const FUNC_ID_INTRATE: &str = "FUNC.INTRATE";
+pub const FUNC_ID_ISEVEN: &str = "FUNC.ISEVEN";
+pub const FUNC_ID_JIS: &str = "FUNC.JIS";
+pub const FUNC_ID_KURT: &str = "FUNC.KURT";
+pub const FUNC_ID_LARGE: &str = "FUNC.LARGE";
+pub const FUNC_ID_LCM: &str = "FUNC.LCM";
+pub const FUNC_ID_LINEST: &str = "FUNC.LINEST";
+pub const FUNC_ID_LOGINV: &str = "FUNC.LOGINV";
+pub const FUNC_ID_LN: &str = "FUNC.LN";
+pub const FUNC_ID_LOG: &str = "FUNC.LOG";
+pub const FUNC_ID_LOG10: &str = "FUNC.LOG10";
+pub const FUNC_ID_LOOKUP: &str = "FUNC.LOOKUP";
+pub const FUNC_ID_LOWER: &str = "FUNC.LOWER";
+pub const FUNC_ID_MAX: &str = "FUNC.MAX";
+pub const FUNC_ID_MAXA: &str = "FUNC.MAXA";
+pub const FUNC_ID_MAXIFS: &str = "FUNC.MAXIFS";
+pub const FUNC_ID_MEDIAN: &str = "FUNC.MEDIAN";
+pub const FUNC_ID_MATCH: &str = "FUNC.MATCH";
+pub const FUNC_ID_MAKEARRAY: &str = "FUNC.MAKEARRAY";
+pub const FUNC_ID_MAP: &str = "FUNC.MAP";
+pub const FUNC_ID_MDETERM: &str = "FUNC.MDETERM";
+pub const FUNC_ID_MDURATION: &str = "FUNC.MDURATION";
+pub const FUNC_ID_MINVERSE: &str = "FUNC.MINVERSE";
+pub const FUNC_ID_MMULT: &str = "FUNC.MMULT";
+pub const FUNC_ID_MUNIT: &str = "FUNC.MUNIT";
+pub const FUNC_ID_MIN: &str = "FUNC.MIN";
+pub const FUNC_ID_MINA: &str = "FUNC.MINA";
+pub const FUNC_ID_MINIFS: &str = "FUNC.MINIFS";
+pub const FUNC_ID_MIRR: &str = "FUNC.MIRR";
+pub const FUNC_ID_MINUTE: &str = "FUNC.MINUTE";
+pub const FUNC_ID_MOD: &str = "FUNC.MOD";
+pub const FUNC_ID_MODE: &str = "FUNC.MODE";
+pub const FUNC_ID_MODE_MULT: &str = "FUNC.MODE.MULT";
+pub const FUNC_ID_MODE_SNGL: &str = "FUNC.MODE.SNGL";
+pub const FUNC_ID_MONTH: &str = "FUNC.MONTH";
+pub const FUNC_ID_MROUND: &str = "FUNC.MROUND";
+pub const FUNC_ID_MULTINOMIAL: &str = "FUNC.MULTINOMIAL";
+pub const FUNC_ID_N: &str = "FUNC.N";
+pub const FUNC_ID_NA: &str = "FUNC.NA";
+pub const FUNC_ID_NOMINAL: &str = "FUNC.NOMINAL";
+pub const FUNC_ID_NPER: &str = "FUNC.NPER";
+pub const FUNC_ID_NPV: &str = "FUNC.NPV";
+pub const FUNC_ID_NUMBERVALUE: &str = "FUNC.NUMBERVALUE";
+pub const FUNC_ID_NEGBINOM_DIST: &str = "FUNC.NEGBINOM.DIST";
+pub const FUNC_ID_NEGBINOMDIST: &str = "FUNC.NEGBINOMDIST";
+pub const FUNC_ID_CONFIDENCE: &str = "FUNC.CONFIDENCE";
+pub const FUNC_ID_CONFIDENCE_T: &str = "FUNC.CONFIDENCE.T";
+pub const FUNC_ID_CONFIDENCE_NORM: &str = "FUNC.CONFIDENCE.NORM";
+pub const FUNC_ID_LOGNORM_DIST: &str = "FUNC.LOGNORM.DIST";
+pub const FUNC_ID_LOGNORM_INV: &str = "FUNC.LOGNORM.INV";
+pub const FUNC_ID_LOGNORMDIST: &str = "FUNC.LOGNORMDIST";
+pub const FUNC_ID_LOGEST: &str = "FUNC.LOGEST";
+pub const FUNC_ID_NORM_DIST: &str = "FUNC.NORM.DIST";
+pub const FUNC_ID_NORM_INV: &str = "FUNC.NORM.INV";
+pub const FUNC_ID_NORM_S_DIST: &str = "FUNC.NORM.S.DIST";
+pub const FUNC_ID_NORM_S_INV: &str = "FUNC.NORM.S.INV";
+pub const FUNC_ID_NORMDIST: &str = "FUNC.NORMDIST";
+pub const FUNC_ID_NORMINV: &str = "FUNC.NORMINV";
+pub const FUNC_ID_NORMSDIST: &str = "FUNC.NORMSDIST";
+pub const FUNC_ID_NORMSINV: &str = "FUNC.NORMSINV";
+pub const FUNC_ID_NETWORKDAYS: &str = "FUNC.NETWORKDAYS";
+pub const FUNC_ID_NETWORKDAYS_INTL: &str = "FUNC.NETWORKDAYS.INTL";
+pub const FUNC_ID_NOT: &str = "FUNC.NOT";
+pub const FUNC_ID_NOW: &str = "FUNC.NOW";
+pub const FUNC_ID_OCT2BIN: &str = "FUNC.OCT2BIN";
+pub const FUNC_ID_OCT2DEC: &str = "FUNC.OCT2DEC";
+pub const FUNC_ID_OCT2HEX: &str = "FUNC.OCT2HEX";
+pub const FUNC_ID_POISSON: &str = "FUNC.POISSON";
+pub const FUNC_ID_POISSON_DIST: &str = "FUNC.POISSON.DIST";
+pub const FUNC_ID_ODD: &str = "FUNC.ODD";
+pub const FUNC_ID_ODDFPRICE: &str = "FUNC.ODDFPRICE";
+pub const FUNC_ID_ODDFYIELD: &str = "FUNC.ODDFYIELD";
+pub const FUNC_ID_ODDLPRICE: &str = "FUNC.ODDLPRICE";
+pub const FUNC_ID_ODDLYIELD: &str = "FUNC.ODDLYIELD";
+pub const FUNC_ID_OR: &str = "FUNC.OR";
+pub const FUNC_ID_OFFSET: &str = "FUNC.OFFSET";
+pub const FUNC_ID_CALL: &str = "FUNC.CALL";
+pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
+pub const FUNC_ID_OP_CONCAT: &str = "FUNC.OP_CONCAT";
+pub const FUNC_ID_OP_DIVIDE: &str = "FUNC.OP_DIVIDE";
+pub const FUNC_ID_OP_EQUAL: &str = "FUNC.OP_EQUAL";
+pub const FUNC_ID_OP_GREATER_EQUAL: &str = "FUNC.OP_GREATER_EQUAL";
+pub const FUNC_ID_OP_GREATER_THAN: &str = "FUNC.OP_GREATER_THAN";
+pub const FUNC_ID_OP_IMPLICIT_INTERSECTION: &str = "FUNC.OP_IMPLICIT_INTERSECTION";
+pub const FUNC_ID_OP_INTERSECTION_REF: &str = "FUNC.OP_INTERSECTION_REF";
+pub const FUNC_ID_OP_LESS_EQUAL: &str = "FUNC.OP_LESS_EQUAL";
+pub const FUNC_ID_OP_LESS_THAN: &str = "FUNC.OP_LESS_THAN";
+pub const FUNC_ID_OP_MULTIPLY: &str = "FUNC.OP_MULTIPLY";
+pub const FUNC_ID_OP_NEGATE: &str = "FUNC.OP_NEGATE";
+pub const FUNC_ID_OP_NOT_EQUAL: &str = "FUNC.OP_NOT_EQUAL";
+pub const FUNC_ID_OP_PERCENT: &str = "FUNC.OP_PERCENT";
+pub const FUNC_ID_OP_POWER: &str = "FUNC.OP_POWER";
+pub const FUNC_ID_OP_RANGE_REF: &str = "FUNC.OP_RANGE_REF";
+pub const FUNC_ID_OP_SPILL_REF: &str = "FUNC.OP_SPILL_REF";
+pub const FUNC_ID_OP_SUBTRACT: &str = "FUNC.OP_SUBTRACT";
+pub const FUNC_ID_OP_TRIM_REF_BOTH: &str = "FUNC.OP_TRIM_REF_BOTH";
+pub const FUNC_ID_OP_TRIM_REF_LEADING: &str = "FUNC.OP_TRIM_REF_LEADING";
+pub const FUNC_ID_OP_TRIM_REF_TRAILING: &str = "FUNC.OP_TRIM_REF_TRAILING";
+pub const FUNC_ID_OP_UNARY_PLUS: &str = "FUNC.OP_UNARY_PLUS";
+pub const FUNC_ID_OP_UNION_REF: &str = "FUNC.OP_UNION_REF";
+pub const FUNC_ID_PEARSON: &str = "FUNC.PEARSON";
+pub const FUNC_ID_PDURATION: &str = "FUNC.PDURATION";
+pub const FUNC_ID_PERMUT: &str = "FUNC.PERMUT";
+pub const FUNC_ID_PERMUTATIONA: &str = "FUNC.PERMUTATIONA";
+pub const FUNC_ID_PERCENTILE_EXC: &str = "FUNC.PERCENTILE.EXC";
+pub const FUNC_ID_PERCENTILE_INC: &str = "FUNC.PERCENTILE.INC";
+pub const FUNC_ID_PERCENTILE: &str = "FUNC.PERCENTILE";
+pub const FUNC_ID_PERCENTRANK_EXC: &str = "FUNC.PERCENTRANK.EXC";
+pub const FUNC_ID_PERCENTRANK_INC: &str = "FUNC.PERCENTRANK.INC";
+pub const FUNC_ID_PERCENTRANK: &str = "FUNC.PERCENTRANK";
+pub const FUNC_ID_PHI: &str = "FUNC.PHI";
+pub const FUNC_ID_PI: &str = "FUNC.PI";
+pub const FUNC_ID_PIVOTBY: &str = "FUNC.PIVOTBY";
+pub const FUNC_ID_PMT: &str = "FUNC.PMT";
+pub const FUNC_ID_PPMT: &str = "FUNC.PPMT";
+pub const FUNC_ID_PERCENTOF: &str = "FUNC.PERCENTOF";
+pub const FUNC_ID_PRICE: &str = "FUNC.PRICE";
+pub const FUNC_ID_PRICEDISC: &str = "FUNC.PRICEDISC";
+pub const FUNC_ID_PRICEMAT: &str = "FUNC.PRICEMAT";
+pub const FUNC_ID_PROB: &str = "FUNC.PROB";
+pub const FUNC_ID_PRODUCT: &str = "FUNC.PRODUCT";
+pub const FUNC_ID_POWER: &str = "FUNC.POWER";
+pub const FUNC_ID_PV: &str = "FUNC.PV";
+pub const FUNC_ID_PROPER: &str = "FUNC.PROPER";
+pub const FUNC_ID_QUOTIENT: &str = "FUNC.QUOTIENT";
+pub const FUNC_ID_QUARTILE_EXC: &str = "FUNC.QUARTILE.EXC";
+pub const FUNC_ID_QUARTILE_INC: &str = "FUNC.QUARTILE.INC";
+pub const FUNC_ID_QUARTILE: &str = "FUNC.QUARTILE";
+pub const FUNC_ID_RAND: &str = "FUNC.RAND";
+pub const FUNC_ID_RANDARRAY: &str = "FUNC.RANDARRAY";
+pub const FUNC_ID_RANDBETWEEN: &str = "FUNC.RANDBETWEEN";
+pub const FUNC_ID_REDUCE: &str = "FUNC.REDUCE";
+pub const FUNC_ID_RATE: &str = "FUNC.RATE";
+pub const FUNC_ID_RADIANS: &str = "FUNC.RADIANS";
+pub const FUNC_ID_RANK: &str = "FUNC.RANK";
+pub const FUNC_ID_RANK_AVG: &str = "FUNC.RANK.AVG";
+pub const FUNC_ID_RANK_EQ: &str = "FUNC.RANK.EQ";
+pub const FUNC_ID_ROW: &str = "FUNC.ROW";
+pub const FUNC_ID_ROWS: &str = "FUNC.ROWS";
+pub const FUNC_ID_RRI: &str = "FUNC.RRI";
+pub const FUNC_ID_RTD: &str = "FUNC.RTD";
+pub const FUNC_ID_ROMAN: &str = "FUNC.ROMAN";
+pub const FUNC_ID_ROUND: &str = "FUNC.ROUND";
+pub const FUNC_ID_ROUNDDOWN: &str = "FUNC.ROUNDDOWN";
+pub const FUNC_ID_REPLACE: &str = "FUNC.REPLACE";
+pub const FUNC_ID_REPLACEB: &str = "FUNC.REPLACEB";
+pub const FUNC_ID_RECEIVED: &str = "FUNC.RECEIVED";
+pub const FUNC_ID_REGEXEXTRACT: &str = "FUNC.REGEXEXTRACT";
+pub const FUNC_ID_REGEXREPLACE: &str = "FUNC.REGEXREPLACE";
+pub const FUNC_ID_REGEXTEST: &str = "FUNC.REGEXTEST";
+pub const FUNC_ID_REGISTER_ID: &str = "FUNC.REGISTER.ID";
+pub const FUNC_ID_ROUNDUP: &str = "FUNC.ROUNDUP";
+pub const FUNC_ID_RSQ: &str = "FUNC.RSQ";
+pub const FUNC_ID_SECOND: &str = "FUNC.SECOND";
+pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
+pub const FUNC_ID_SCAN: &str = "FUNC.SCAN";
+pub const FUNC_ID_SHEET: &str = "FUNC.SHEET";
+pub const FUNC_ID_SHEETS: &str = "FUNC.SHEETS";
+pub const FUNC_ID_SORT: &str = "FUNC.SORT";
+pub const FUNC_ID_SORTBY: &str = "FUNC.SORTBY";
+pub const FUNC_ID_SEC: &str = "FUNC.SEC";
+pub const FUNC_ID_SERIESSUM: &str = "FUNC.SERIESSUM";
+pub const FUNC_ID_SECH: &str = "FUNC.SECH";
+pub const FUNC_ID_SIGN: &str = "FUNC.SIGN";
+pub const FUNC_ID_SIN: &str = "FUNC.SIN";
+pub const FUNC_ID_SINH: &str = "FUNC.SINH";
+pub const FUNC_ID_SKEW: &str = "FUNC.SKEW";
+pub const FUNC_ID_SKEW_P: &str = "FUNC.SKEW.P";
+pub const FUNC_ID_STEYX: &str = "FUNC.STEYX";
+pub const FUNC_ID_SLN: &str = "FUNC.SLN";
+pub const FUNC_ID_SMALL: &str = "FUNC.SMALL";
+pub const FUNC_ID_SQRT: &str = "FUNC.SQRT";
+pub const FUNC_ID_SQRTPI: &str = "FUNC.SQRTPI";
+pub const FUNC_ID_SLOPE: &str = "FUNC.SLOPE";
+pub const FUNC_ID_STDEV: &str = "FUNC.STDEV";
+pub const FUNC_ID_STDEV_P: &str = "FUNC.STDEV.P";
+pub const FUNC_ID_STDEV_S: &str = "FUNC.STDEV.S";
+pub const FUNC_ID_STDEVP: &str = "FUNC.STDEVP";
+pub const FUNC_ID_STDEVA: &str = "FUNC.STDEVA";
+pub const FUNC_ID_STDEVPA: &str = "FUNC.STDEVPA";
+pub const FUNC_ID_STANDARDIZE: &str = "FUNC.STANDARDIZE";
+pub const FUNC_ID_SUBTOTAL: &str = "FUNC.SUBTOTAL";
+pub const FUNC_ID_SUM: &str = "FUNC.SUM";
+pub const FUNC_ID_SUMIF: &str = "FUNC.SUMIF";
+pub const FUNC_ID_SUMIFS: &str = "FUNC.SUMIFS";
+pub const FUNC_ID_SUMPRODUCT: &str = "FUNC.SUMPRODUCT";
+pub const FUNC_ID_SUMX2MY2: &str = "FUNC.SUMX2MY2";
+pub const FUNC_ID_SUMX2PY2: &str = "FUNC.SUMX2PY2";
+pub const FUNC_ID_SUMXMY2: &str = "FUNC.SUMXMY2";
+pub const FUNC_ID_SUMSQ: &str = "FUNC.SUMSQ";
+pub const FUNC_ID_SWITCH: &str = "FUNC.SWITCH";
+pub const FUNC_ID_T: &str = "FUNC.T";
+pub const FUNC_ID_TAKE: &str = "FUNC.TAKE";
+pub const FUNC_ID_T_DIST: &str = "FUNC.T.DIST";
+pub const FUNC_ID_T_DIST_2T: &str = "FUNC.T.DIST.2T";
+pub const FUNC_ID_T_DIST_RT: &str = "FUNC.T.DIST.RT";
+pub const FUNC_ID_T_INV: &str = "FUNC.T.INV";
+pub const FUNC_ID_T_INV_2T: &str = "FUNC.T.INV.2T";
+pub const FUNC_ID_T_TEST: &str = "FUNC.T.TEST";
+pub const FUNC_ID_TDIST: &str = "FUNC.TDIST";
+pub const FUNC_ID_TINV: &str = "FUNC.TINV";
+pub const FUNC_ID_SYD: &str = "FUNC.SYD";
+pub const FUNC_ID_TAN: &str = "FUNC.TAN";
+pub const FUNC_ID_TANH: &str = "FUNC.TANH";
+pub const FUNC_ID_TBILLEQ: &str = "FUNC.TBILLEQ";
+pub const FUNC_ID_TBILLPRICE: &str = "FUNC.TBILLPRICE";
+pub const FUNC_ID_TBILLYIELD: &str = "FUNC.TBILLYIELD";
+pub const FUNC_ID_TOCOL: &str = "FUNC.TOCOL";
+pub const FUNC_ID_TOROW: &str = "FUNC.TOROW";
+pub const FUNC_ID_LEFT: &str = "FUNC.LEFT";
+pub const FUNC_ID_LEFTB: &str = "FUNC.LEFTB";
+pub const FUNC_ID_LEN: &str = "FUNC.LEN";
+pub const FUNC_ID_LENB: &str = "FUNC.LENB";
+pub const FUNC_ID_MID: &str = "FUNC.MID";
+pub const FUNC_ID_MIDB: &str = "FUNC.MIDB";
+pub const FUNC_ID_RIGHT: &str = "FUNC.RIGHT";
+pub const FUNC_ID_RIGHTB: &str = "FUNC.RIGHTB";
+pub const FUNC_ID_TEXT: &str = "FUNC.TEXT";
+pub const FUNC_ID_TEXTAFTER: &str = "FUNC.TEXTAFTER";
+pub const FUNC_ID_TEXTBEFORE: &str = "FUNC.TEXTBEFORE";
+pub const FUNC_ID_TEXTSPLIT: &str = "FUNC.TEXTSPLIT";
+pub const FUNC_ID_SEARCH: &str = "FUNC.SEARCH";
+pub const FUNC_ID_SEARCHB: &str = "FUNC.SEARCHB";
+pub const FUNC_ID_REPT: &str = "FUNC.REPT";
+pub const FUNC_ID_SUBSTITUTE: &str = "FUNC.SUBSTITUTE";
+pub const FUNC_ID_TEXTJOIN: &str = "FUNC.TEXTJOIN";
+pub const FUNC_ID_TODAY: &str = "FUNC.TODAY";
+pub const FUNC_ID_TIME: &str = "FUNC.TIME";
+pub const FUNC_ID_TIMEVALUE: &str = "FUNC.TIMEVALUE";
+pub const FUNC_ID_TRANSLATE: &str = "FUNC.TRANSLATE";
+pub const FUNC_ID_TRIMMEAN: &str = "FUNC.TRIMMEAN";
+pub const FUNC_ID_TRUE: &str = "FUNC.TRUE";
+pub const FUNC_ID_TREND: &str = "FUNC.TREND";
+pub const FUNC_ID_TRANSPOSE: &str = "FUNC.TRANSPOSE";
+pub const FUNC_ID_TRUNC: &str = "FUNC.TRUNC";
+pub const FUNC_ID_TRIM: &str = "FUNC.TRIM";
+pub const FUNC_ID_TRIMRANGE: &str = "FUNC.TRIMRANGE";
+pub const FUNC_ID_TTEST: &str = "FUNC.TTEST";
+pub const FUNC_ID_TYPE: &str = "FUNC.TYPE";
+pub const FUNC_ID_UNIQUE: &str = "FUNC.UNIQUE";
+pub const FUNC_ID_UNICHAR: &str = "FUNC.UNICHAR";
+pub const FUNC_ID_UNICODE: &str = "FUNC.UNICODE";
+pub const FUNC_ID_UPPER: &str = "FUNC.UPPER";
+pub const FUNC_ID_VALUE: &str = "FUNC.VALUE";
+pub const FUNC_ID_VALUETOTEXT: &str = "FUNC.VALUETOTEXT";
+pub const FUNC_ID_VAR: &str = "FUNC.VAR";
+pub const FUNC_ID_VAR_P: &str = "FUNC.VAR.P";
+pub const FUNC_ID_VAR_S: &str = "FUNC.VAR.S";
+pub const FUNC_ID_VARA: &str = "FUNC.VARA";
+pub const FUNC_ID_VARP: &str = "FUNC.VARP";
+pub const FUNC_ID_VARPA: &str = "FUNC.VARPA";
+pub const FUNC_ID_VDB: &str = "FUNC.VDB";
+pub const FUNC_ID_VSTACK: &str = "FUNC.VSTACK";
+pub const FUNC_ID_HLOOKUP: &str = "FUNC.HLOOKUP";
+pub const FUNC_ID_VLOOKUP: &str = "FUNC.VLOOKUP";
+pub const FUNC_ID_WEIBULL: &str = "FUNC.WEIBULL";
+pub const FUNC_ID_WEIBULL_DIST: &str = "FUNC.WEIBULL.DIST";
+pub const FUNC_ID_WRAPCOLS: &str = "FUNC.WRAPCOLS";
+pub const FUNC_ID_WRAPROWS: &str = "FUNC.WRAPROWS";
+pub const FUNC_ID_XLOOKUP: &str = "FUNC.XLOOKUP";
+pub const FUNC_ID_XIRR: &str = "FUNC.XIRR";
+pub const FUNC_ID_XNPV: &str = "FUNC.XNPV";
+pub const FUNC_ID_XMATCH: &str = "FUNC.XMATCH";
+pub const FUNC_ID_XOR: &str = "FUNC.XOR";
+pub const FUNC_ID_WEEKDAY: &str = "FUNC.WEEKDAY";
+pub const FUNC_ID_WEEKNUM: &str = "FUNC.WEEKNUM";
+pub const FUNC_ID_WORKDAY: &str = "FUNC.WORKDAY";
+pub const FUNC_ID_WORKDAY_INTL: &str = "FUNC.WORKDAY.INTL";
+pub const FUNC_ID_YIELD: &str = "FUNC.YIELD";
+pub const FUNC_ID_YIELDDISC: &str = "FUNC.YIELDDISC";
+pub const FUNC_ID_YIELDMAT: &str = "FUNC.YIELDMAT";
+pub const FUNC_ID_YEAR: &str = "FUNC.YEAR";
+pub const FUNC_ID_YEARFRAC: &str = "FUNC.YEARFRAC";
+pub const FUNC_ID_Z_TEST: &str = "FUNC.Z.TEST";
+pub const FUNC_ID_ZTEST: &str = "FUNC.ZTEST";
+
+fn map_eval_error_to_ws(e: &EvalError) -> WorksheetErrorCode {
+    match e {
+        EvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+    }
+}
+
+fn map_xmatch_error_to_ws(e: &XmatchEvalError) -> WorksheetErrorCode {
+    match e {
+        XmatchEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+        XmatchEvalError::EmptyLookupArray => WorksheetErrorCode::NA,
+        XmatchEvalError::MissingArg => WorksheetErrorCode::Value,
+        XmatchEvalError::EmptyCell => WorksheetErrorCode::Value,
+        XmatchEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        XmatchEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::UnsupportedValueKind(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::InvalidMatchMode(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::InvalidSearchMode(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::UnsupportedMatchModeForSeed(_) => WorksheetErrorCode::NA,
+        XmatchEvalError::UnsupportedSearchModeForSeed(_) => WorksheetErrorCode::NA,
+        XmatchEvalError::NotAvailable => WorksheetErrorCode::NA,
+    }
+}
+
+struct FixedNowProvider {
+    serial: f64,
+}
+
+impl NowProvider for FixedNowProvider {
+    fn now_serial(&self) -> f64 {
+        self.serial
+    }
+}
+
+impl TodayProvider for FixedNowProvider {
+    fn today_serial(&self) -> f64 {
+        self.serial
+    }
+}
+
+struct RejectingCallableInvoker;
+
+impl CallableInvoker for RejectingCallableInvoker {
+    fn invoke(
+        &self,
+        callable: &crate::value::CallableValue,
+        _args: &[crate::functions::adapters::CalcValue],
+    ) -> Result<crate::functions::adapters::CalcValue, CallableInvocationError> {
+        Err(CallableInvocationError::UnsupportedCallableToken(
+            callable.summary.clone(),
+        ))
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SurfaceDispatchKey {
+    catalog_index: usize,
+    function_id: &'static str,
+    meta: crate::function::FunctionMeta,
+}
+
+impl SurfaceDispatchKey {
+    pub const fn catalog_index(self) -> usize {
+        self.catalog_index
+    }
+
+    pub const fn function_id(self) -> &'static str {
+        self.function_id
+    }
+
+    pub const fn meta(self) -> crate::function::FunctionMeta {
+        self.meta
+    }
+}
+
+pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatchKey> {
+    crate::xll_export_specs::function_catalog()
+        .iter()
+        .copied()
+        .enumerate()
+        .find(|(_, meta)| meta.function_id.eq_ignore_ascii_case(function_id))
+        .map(|(catalog_index, meta)| SurfaceDispatchKey {
+            catalog_index,
+            function_id: meta.function_id,
+            meta,
+        })
+        .or_else(|| {
+            if FUNC_ID_OP_IMPLICIT_INTERSECTION.eq_ignore_ascii_case(function_id) {
+                Some(SurfaceDispatchKey {
+                    catalog_index: crate::xll_export_specs::function_catalog().len(),
+                    function_id: FUNC_ID_OP_IMPLICIT_INTERSECTION,
+                    meta: OP_IMPLICIT_INTERSECTION_META,
+                })
+            } else {
+                None
+            }
+        })
+}
+
+/// Whether a function's declared `surface_fec_dependency_profile` says its surface pipeline needs
+/// function-execution-context / host capability beyond the reference resolver (a time serial, a
+/// random/external/host provider, or locale context). DERIVED from the single declared
+/// [`FecDependencyProfile`] axis on `FunctionMeta`; the `None`/`RefOnly` profiles are the
+/// resolver-only (date-part, pure) surfaces that never reach a provider-bound handler binding.
+///
+/// W105 oxf-y2uw.12.4: this is the spec-derived host-capability *precondition* that gates the
+/// provider/host-bound handler binding below — the analogue of the resolver
+/// `ReferenceSystemCapabilities` gate, single-sourced from the declared fact (W105-D2 two-kinds-of-
+/// fact: a host/plumbing fact, truth = our dispatch needs). It is a NECESSARY precondition for
+/// routing into [`eval_host_bound_surface`] (every bound id satisfies it, pinned by
+/// `host_bound_dispatch_arms_have_host_bound_surface_fec_profile`), NOT a new error: a function for
+/// which it holds but that has no provider-bound handler simply continues to the ordinary by-index
+/// path. Execution is unchanged.
+fn surface_fec_dependency_is_host_bound(profile: FecDependencyProfile) -> bool {
+    match profile {
+        // Resolver-only / pure surfaces — no host capability beyond the reference resolver.
+        FecDependencyProfile::None | FecDependencyProfile::RefOnly => false,
+        // Surfaces whose preparation/evaluation consumes function-execution-context or a host
+        // provider (caller context, time serial, random/external/host provider, locale).
+        FecDependencyProfile::CallerContext
+        | FecDependencyProfile::TimeProvider
+        | FecDependencyProfile::RandomProvider
+        | FecDependencyProfile::ExternalProvider
+        | FecDependencyProfile::LocaleProfile
+        | FecDependencyProfile::Composite => true,
+    }
+}
+
+/// Per-id handler binding for the provider/host-bound family (NOW/TODAY/IMAGE/HYPERLINK). Returns
+/// `Some` iff `function_id` is bound to a provider/host-bound surface handler; `None` otherwise so
+/// the caller continues to the ordinary dispatch paths.
+///
+/// W105 oxf-y2uw.12.4: this is the per-function handler *binding* W105-D2 deliberately keeps (the
+/// internal `CalcValue(s) -> CalcValue(s)` handlers are not reified). Its members differ from their
+/// by-index generated arm and so cannot be served by that path bit-exactly:
+///   * NOW/TODAY default a missing time serial to `0.0` (`now_serial.unwrap_or(0.0)`) — the
+///     by-index arm instead errors `#VALUE!` on a missing provider; the `unwrap_or(0.0)` fallback
+///     is PRESERVED here (no new host-error precondition).
+///   * IMAGE/HYPERLINK serve the rich-value (`_calc_surface_rich`) overlay — the by-index arm
+///     serves the plain (non-rich) value.
+/// It is NOT a second "which functions are host-bound" list — that membership is GATED by the
+/// spec-derived [`surface_fec_dependency_is_host_bound`] precondition (single-sourced from the
+/// declared `surface_fec_dependency_profile`), and the bound set is pinned by
+/// `host_bound_dispatch_arms_have_host_bound_surface_fec_profile`.
+fn eval_host_bound_surface(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    now_serial: Option<f64>,
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    match function_id {
+        FUNC_ID_HYPERLINK => Some(
+            eval_hyperlink_calc_surface_rich(args, resolver)
+                .map_err(|error| map_hyperlink_error_to_ws(&error)),
+        ),
+        FUNC_ID_IMAGE => Some(
+            eval_image_calc_surface_rich(args, resolver, host_info)
+                .map_err(|error| map_image_error_to_ws(&error)),
+        ),
+        FUNC_ID_NOW => {
+            let provider = FixedNowProvider {
+                serial: now_serial.unwrap_or(0.0),
+            };
+            Some(
+                eval_now_calc_surface(args, &provider).map_err(|error| map_now_error_to_ws(&error)),
+            )
+        }
+        FUNC_ID_TODAY => {
+            let provider = FixedNowProvider {
+                serial: now_serial.unwrap_or(0.0),
+            };
+            Some(
+                eval_today_calc_surface(args, &provider)
+                    .map_err(|error| map_today_error_to_ws(&error)),
+            )
+        }
+        _ => None,
+    }
+}
+
+/// Per-id handler binding for the invoker-consuming (lambda-helper) family. Returns `Some` iff
+/// `function_id` is bound to a callable-consuming surface handler; `None` otherwise so the caller
+/// continues to the ordinary dispatch paths.
+///
+/// W105 oxf-y2uw.12.3: this is the per-function handler *binding* W105-D2 deliberately keeps (the
+/// internal `CalcValue(s) -> CalcValue(s)` handlers are not reified). It is NOT a second "which
+/// functions take a callable" list — that membership fact is single-sourced from
+/// `callable_argument_specs_for_id` via [`function_id_requires_invoker`], which gates the call
+/// below, and is pinned equal to this arm set by
+/// `requires_invoker_set_matches_lambda_helper_dispatch_arms`.
+fn eval_invoker_consuming_surface(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    callable_invoker: &dyn CallableInvoker,
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    let result = match function_id {
+        FUNC_ID_MAP => eval_map_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_REDUCE => eval_reduce_calc_surface(args, resolver, callable_invoker)
+            .map(|value| prepared_arg_to_calc_value_lossy(&value))
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_SCAN => eval_scan_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_BYROW => eval_byrow_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_BYCOL => eval_bycol_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_MAKEARRAY => eval_makearray_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_GROUPBY => eval_groupby_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_PIVOTBY => eval_pivotby_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        _ => return None,
+    };
+    Some(result)
+}
+
+pub fn eval_surface_value_call_with_dispatch_key(
+    dispatch_key: SurfaceDispatchKey,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    now_serial: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+    callable_invoker: Option<&dyn CallableInvoker>,
+    rtd_provider: Option<&dyn RtdProvider>,
+    registered_external_provider: Option<&dyn RegisteredExternalProvider>,
+) -> Result<CalcValue, WorksheetErrorCode> {
+    let rejecting_invoker = RejectingCallableInvoker;
+    let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
+    // The `requires-invoker` membership decision is single-sourced from the declared
+    // `callable_argument_specs` (W105-D2): a function routes to the invoker-consuming family iff
+    // its callable-arg-spec set is non-empty. The per-id handler binding then lives in exactly one
+    // place (`eval_invoker_consuming_surface`); the two are pinned equal by a conformance test.
+    if crate::function_call::function_id_requires_invoker(dispatch_key.function_id) {
+        let routed = eval_invoker_consuming_surface(
+            dispatch_key.function_id,
+            args,
+            resolver,
+            callable_invoker,
+        );
+        debug_assert!(
+            routed.is_some(),
+            "function_id_requires_invoker is true but no invoker-consuming handler is bound for {}; \
+             callable_argument_specs and the lambda-helper dispatch arms have drifted",
+            dispatch_key.function_id
+        );
+        if let Some(result) = routed {
+            return result;
+        }
+    }
+    // W105 oxf-y2uw.12.5: the lookup/reference-adjacent INDEX surface no longer has a
+    // calc-dispatch interception. INDEX is served by exactly one path — the by-index generated
+    // table arm (`eval_index_surface`, which receives the live references INDEX's declared
+    // `arg_preparation_profile: RefsVisibleInAdapter` axis preserves, and resolves them through the
+    // capability-gated resolver primitives). The former `eval_lookup_reference_adjacent_calc_dispatch`
+    // shim intercepted the value-arg0 + non-array-index shape and ran the reference-blind
+    // `eval_index_calc_surface`, which rejected a *reference* row/col index arg with `#VALUE!`
+    // (`coerce_calc_scalar_to_number` → `UnsupportedValueKind("reference")`). Live Excel (16.0
+    // build 20026) RESOLVES a reference index arg — `INDEX({10;20;30},C1)` with `C1=2` yields `20`,
+    // not `#VALUE!` (oracle: .tmp/index-refarg-oracle.ps1) — so removing the shim moves INDEX onto
+    // the by-index path that already resolves it, an oracle-confirmed correction in the .12.2 mould.
+    // On every non-reference index shape the two handlers were proven bit-identical, so the collapse
+    // is bit-exact there and a deliberate correction only on the reference-index shape.
+    //
+    // W105 oxf-y2uw.12.2: the dynamic-array-reshape family (CHOOSECOLS, CHOOSEROWS,
+    // DROP, TAKE) no longer has a calc-dispatch interception. Every member is served
+    // by exactly one path — the by-index generated table, whose `eval_*_surface` arm
+    // prepares the args and runs the reshape, with the declared `lift_at(&[1, 2])`
+    // scalar-array-lift applied to DROP/TAKE uniformly with EXPAND/TOROW via
+    // `try_observed_scalar_array_lift`. The former `eval_dynamic_array_reshape_calc_dispatch`
+    // shim returned `#VALUE!` early on an array-valued count arg, shadowing that lift;
+    // live Excel (16.0 build 20026) LIFTS the count args, so removing the shim moves
+    // DROP/TAKE toward Excel and the declared spec. (The 1×1-array lift case — DROP(src,`{1}`)
+    // → Excel's intersected top-left SCALAR — is now handled by the shared array-lifter, which
+    // lifts a 1×1 array at a lift position like any array; oxf-wkwj is fixed.)
+    //
+    // W105 oxf-y2uw.3: the unary-numeric family no longer has a calc-dispatch
+    // interception. Every member (SIN, COS/COSH/TAN/EXP/SINH/DEGREES, and the rest)
+    // is served by exactly one path — the by-index generated table, whose
+    // `eval_*_surface` arms route the post-coercion math through the generic
+    // `unary_numeric::execute(spec, …)` executor. The former
+    // `eval_shared_unary_numeric_calc_dispatch` shim is deleted.
+    //
+    // W105 oxf-y2uw.12.1: likewise the binary-arithmetic operator family (MOD, OP_ADD,
+    // OP_SUBTRACT, OP_MULTIPLY, OP_DIVIDE, OP_POWER / POWER) no longer has a
+    // calc-dispatch interception. Every member is served by exactly one path — the
+    // by-index generated table, whose spec-driven arms route the post-coercion math
+    // through the generic `binary_numeric::execute(spec, …)` 2-arg executor. The former
+    // `eval_binary_arithmetic_calc_dispatch` shim is deleted.
+    //
+    // W105 oxf-y2uw.12.3: the invoker-consuming (lambda-helper) family
+    // (MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY/GROUPBY/PIVOTBY) is routed ABOVE via the
+    // spec-derived `function_id_requires_invoker` gate (single-sourced from
+    // `callable_argument_specs`); the per-id handler binding lives once in
+    // `eval_invoker_consuming_surface`. The former eight hand-coded `FUNC_ID_* =>` match arms
+    // (a second copy of the consumes-callable set) are retired.
+    //
+    // W105 oxf-y2uw.12.4: the date-time family (DATE, DAY, DAYS, HOUR, MINUTE, MONTH, SECOND,
+    // TIME, YEAR) no longer has a calc-dispatch interception. Each carries the resolver-only
+    // `surface_fec_dependency_profile: RefOnly` (no provider/host dependency), and its
+    // `eval_*_calc_surface` prep is bit-equivalent to the by-index `eval_*_surface` prep:
+    // `run_values_only_prepared` and `prepare_calc_values_only` + `prepared_from_calc_value` both
+    // resolve references then clone-map the prepared `CalcValue`s into the SAME `eval_*_prepared`
+    // core (proven by `date_time_calc_and_by_index_prep_are_bit_equivalent`), with the SAME
+    // per-id error mapper. None of them declares a `lift_broadcast_profile` (all
+    // `SurfaceNative`), so the post-table `try_observed_scalar_array_lift` is a no-op for them and
+    // the by-index path is bit-identical to the deleted shim. The former
+    // `eval_date_time_calc_dispatch` shim is deleted; every member is served by exactly one path.
+    //
+    // W105 oxf-y2uw.12.4: the provider/host-bound family (NOW, TODAY, IMAGE, HYPERLINK) is routed
+    // via the spec-derived `surface_fec_dependency_is_host_bound` host-capability PRECONDITION
+    // (single-sourced from the declared `surface_fec_dependency_profile`) — the analogue of the
+    // resolver capability gate. The per-id handler binding lives once in `eval_host_bound_surface`
+    // and is NOT collapsible onto the by-index arm bit-exactly: NOW/TODAY keep the
+    // `now_serial.unwrap_or(0.0)` fallback (the by-index arm errors `#VALUE!` on a missing
+    // provider), and IMAGE/HYPERLINK serve the rich-value overlay (the by-index arm is non-rich).
+    // The former `eval_provider_bound_calc_dispatch` arm-list is retired behind the spec gate.
+    if surface_fec_dependency_is_host_bound(surface_fec_dependency_profile_for_id(
+        dispatch_key.function_id,
+    )) {
+        if let Some(result) = eval_host_bound_surface(
+            dispatch_key.function_id,
+            args,
+            resolver,
+            now_serial,
+            host_info,
+        ) {
+            return result;
+        }
+    }
+
+    let dispatch_args = generated_table_args_from_calc_values(args);
+    let args = dispatch_args.as_slice();
+    let result = include!("surface_dispatch_by_index_generated.rs");
+
+    let lifted_result = || {
+        try_observed_scalar_array_lift(
+            dispatch_key.function_id,
+            args,
+            resolver,
+            now_serial,
+            random_provider,
+            locale_ctx,
+            host_info,
+            callable_invoker,
+            rtd_provider,
+            registered_external_provider,
+        )
+    };
+
+    // The scalar-array-lifter (`try_observed_scalar_array_lift`) is the lift+intersect path for the
+    // observed-lift family. Excel's actual rule (verified live, build 20026) is subtle:
+    //
+    //   * A MULTI-element array at a lift position is lifted ONLY when the function actually
+    //     consumes it as a scalar — then it spills the per-cell intersection. When the array is NOT
+    //     consumed (e.g. an IFS/SWITCH value on an unselected branch), Excel returns the bare
+    //     scalar result and does NOT spill: `IFS(FALSE,{1,1},0,2)` → `#N/A` (scalar), not
+    //     `[#N/A,#N/A]`. The by-index path reproduces BOTH halves for free: a consumed multi-cell
+    //     arg fails coercion → `#VALUE!`/`Err`, which routes to the lifter (spill); an unconsumed
+    //     multi-cell arg yields a clean `Ok(scalar)`, which is kept. So the multi-element trigger
+    //     stays "by-index error → lift", exactly as before — DO NOT widen it.
+    //
+    //   * A 1×1 array at a lift position is the oxf-wkwj case. The by-index prep collapses `{e}→e`
+    //     and SUCCEEDS (returning the un-intersected full result for an array-returning fn, or the
+    //     plain scalar for a scalar-returning fn), so the by-index-error trigger never fires. Excel
+    //     instead LIFTS the unit array and returns its implicit intersection — a SCALAR (top-left of
+    //     `f(e)`). We detect a 1×1-array lift arg explicitly and route it through the lifter, which
+    //     now sees the unit array (its prep no longer collapses it) and returns the intersected
+    //     scalar. This is safe even when the unit array is unconsumed (IFS unselected branch): the
+    //     bare result is already scalar, and its 1×1 intersection is that same scalar.
+    let has_unit_lift_array =
+        lift_position_holds_unit_array(dispatch_key.function_id, args, resolver);
+
+    match result {
+        Err(code) => lifted_result()
+            .map(|result| result.map(CalcValue::from))
+            .unwrap_or(Err(code)),
+        Ok(value)
+            if matches!(
+                value.core(),
+                CoreValue::Error(code)
+                    if *code == WorksheetErrorCode::Value
+                        || observed_error_result_array_lift(dispatch_key.function_id)
+            ) =>
+        {
+            let CoreValue::Error(code) = value.core() else {
+                unreachable!("guarded error")
+            };
+            lifted_result()
+                .map(|result| result.map(CalcValue::from))
+                .unwrap_or(Ok(CalcValue::error(*code)))
+        }
+        // oxf-wkwj: by-index produced a clean (non-#VALUE!) result, but a lift position holds a 1×1
+        // array — Excel intersects it to a scalar. Prefer the lifter (which yields that scalar);
+        // if for any reason it declines, keep the by-index result.
+        Ok(value) if has_unit_lift_array => lifted_result()
+            .map(|result| result.map(CalcValue::from))
+            .unwrap_or(Ok(value)),
+        other => other.map(CalcValue::from),
+    }
+}
+
+fn generated_table_args_from_calc_values(args: &[CalcValue]) -> Vec<CalcValue> {
+    args.to_vec()
+}
+
+fn calc_values_from_surface_call_args(args: &[CalcValue]) -> Vec<CalcValue> {
+    args.iter().cloned().map(calc_value_from_call_arg).collect()
+}
+
+fn calc_value_from_call_arg(arg: CalcValue) -> CalcValue {
+    arg
+}
+
+fn eval_value_from_calc_value(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Array(array) => CalcValue::array(array.clone()),
+        CoreValue::Reference(reference) => CalcValue::reference(reference.clone()),
+    }
+}
+
+fn singleton_arg_slice(arg: &CalcValue) -> Vec<CalcValue> {
+    // Core value model does not yet carry full array payloads in prepared call-args.
+    // Keep singleton passthrough until array payload/value expansion is implemented.
+    vec![arg.clone()]
+}
+
+pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfile> {
+    match function_id {
+        FUNC_ID_ACOS => Some(crate::functions::acos::ACOS_META.arg_preparation_profile),
+        FUNC_ID_ACOT => Some(crate::functions::acot::ACOT_META.arg_preparation_profile),
+        FUNC_ID_ACOSH => Some(crate::functions::acosh::ACOSH_META.arg_preparation_profile),
+        FUNC_ID_ACOTH => Some(crate::functions::acoth::ACOTH_META.arg_preparation_profile),
+        FUNC_ID_ABS => Some(crate::functions::abs::ABS_META.arg_preparation_profile),
+        FUNC_ID_ACCRINT => {
+            Some(crate::functions::bond_core_family::ACCRINT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ACCRINTM => {
+            Some(crate::functions::bond_core_family::ACCRINTM_META.arg_preparation_profile)
+        }
+        FUNC_ID_AGGREGATE => Some(
+            crate::functions::subtotal_aggregate_family::AGGREGATE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_AMORDEGRC => {
+            Some(crate::functions::amor_depreciation_family::AMORDEGRC_META.arg_preparation_profile)
+        }
+        FUNC_ID_AMORLINC => {
+            Some(crate::functions::amor_depreciation_family::AMORLINC_META.arg_preparation_profile)
+        }
+        FUNC_ID_ATAN => Some(crate::functions::atan::ATAN_META.arg_preparation_profile),
+        FUNC_ID_ASIN => Some(crate::functions::asin::ASIN_META.arg_preparation_profile),
+        FUNC_ID_ASINH => Some(crate::functions::asinh::ASINH_META.arg_preparation_profile),
+        FUNC_ID_ATAN2 => Some(crate::functions::atan2::ATAN2_META.arg_preparation_profile),
+        FUNC_ID_ATANH => Some(crate::functions::atanh::ATANH_META.arg_preparation_profile),
+        FUNC_ID_AND => Some(crate::functions::and_fn::AND_META.arg_preparation_profile),
+        FUNC_ID_ARABIC => Some(crate::functions::arabic_fn::ARABIC_META.arg_preparation_profile),
+        FUNC_ID_CALL => Some(CALL_META.arg_preparation_profile),
+        FUNC_ID_ADDRESS => Some(ADDRESS_META.arg_preparation_profile),
+        FUNC_ID_ARRAYTOTEXT => Some(
+            crate::functions::array_text_split_family::ARRAYTOTEXT_META.arg_preparation_profile,
+        ),
+        FUNC_ID_ASC => {
+            Some(crate::functions::text_compat_locale_family::ASC_META.arg_preparation_profile)
+        }
+        FUNC_ID_AREAS => Some(AREAS_META.arg_preparation_profile),
+        FUNC_ID_AVEDEV => Some(crate::functions::avedev_fn::AVEDEV_META.arg_preparation_profile),
+        FUNC_ID_AVERAGE => Some(crate::functions::average::AVERAGE_META.arg_preparation_profile),
+        FUNC_ID_AVERAGEIF => {
+            Some(crate::functions::criteria_family::AVERAGEIF_META.arg_preparation_profile)
+        }
+        FUNC_ID_AVERAGEIFS => {
+            Some(crate::functions::criteria_family::AVERAGEIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_AVERAGEA => {
+            Some(crate::functions::averagea_fn::AVERAGEA_META.arg_preparation_profile)
+        }
+        FUNC_ID_BAHTTEXT => {
+            Some(crate::functions::misc_conversion_family::BAHTTEXT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BASE => Some(crate::functions::base_fn::BASE_META.arg_preparation_profile),
+        FUNC_ID_BETA_DIST => {
+            Some(crate::functions::beta_gamma_stats_family::BETA_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BETA_INV => {
+            Some(crate::functions::beta_gamma_stats_family::BETA_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_BETADIST => {
+            Some(crate::functions::beta_gamma_stats_family::BETADIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BETAINV => {
+            Some(crate::functions::beta_gamma_stats_family::BETAINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELI => {
+            Some(crate::functions::bessel_convert_family::BESSELI_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELJ => {
+            Some(crate::functions::bessel_convert_family::BESSELJ_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELK => {
+            Some(crate::functions::bessel_convert_family::BESSELK_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELY => {
+            Some(crate::functions::bessel_convert_family::BESSELY_META.arg_preparation_profile)
+        }
+        FUNC_ID_BINOM_DIST => {
+            Some(crate::functions::discrete_dist_family::BINOM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BINOM_DIST_RANGE => Some(
+            crate::functions::discrete_dist_family::BINOM_DIST_RANGE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_BINOM_INV => {
+            Some(crate::functions::discrete_dist_family::BINOM_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_BINOMDIST => {
+            Some(crate::functions::discrete_dist_family::BINOMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BIN2DEC => {
+            Some(crate::functions::engineering_radix_family::BIN2DEC_META.arg_preparation_profile)
+        }
+        FUNC_ID_BIN2HEX => {
+            Some(crate::functions::engineering_radix_family::BIN2HEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_BIN2OCT => {
+            Some(crate::functions::engineering_radix_family::BIN2OCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BITAND => Some(crate::functions::bitand_fn::BITAND_META.arg_preparation_profile),
+        FUNC_ID_BITLSHIFT => {
+            Some(crate::functions::bitlshift_fn::BITLSHIFT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BITOR => Some(crate::functions::bitor_fn::BITOR_META.arg_preparation_profile),
+        FUNC_ID_BITRSHIFT => {
+            Some(crate::functions::bitrshift_fn::BITRSHIFT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BITXOR => Some(crate::functions::bitxor_fn::BITXOR_META.arg_preparation_profile),
+        FUNC_ID_BYCOL => Some(BYCOL_META.arg_preparation_profile),
+        FUNC_ID_BYROW => Some(BYROW_META.arg_preparation_profile),
+        FUNC_ID_CELL => Some(crate::functions::cell::CELL_META.arg_preparation_profile),
+        FUNC_ID_CEILING => {
+            Some(crate::functions::ceiling_floor_family::CEILING_META.arg_preparation_profile)
+        }
+        FUNC_ID_CEILING_MATH => {
+            Some(crate::functions::ceiling_floor_family::CEILING_MATH_META.arg_preparation_profile)
+        }
+        FUNC_ID_CEILING_PRECISE => Some(
+            crate::functions::ceiling_floor_family::CEILING_PRECISE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_CHIDIST => {
+            Some(crate::functions::chi_f_t_family::CHIDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHIINV => {
+            Some(crate::functions::chi_f_t_family::CHIINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHOOSE => {
+            Some(crate::functions::choose_ifs_family::CHOOSE_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHOOSECOLS => Some(CHOOSECOLS_META.arg_preparation_profile),
+        FUNC_ID_CHOOSEROWS => Some(CHOOSEROWS_META.arg_preparation_profile),
+        FUNC_ID_CHISQ_DIST => {
+            Some(crate::functions::chi_f_t_family::CHISQ_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_DIST_RT => {
+            Some(crate::functions::chi_f_t_family::CHISQ_DIST_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_INV => {
+            Some(crate::functions::chi_f_t_family::CHISQ_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_INV_RT => {
+            Some(crate::functions::chi_f_t_family::CHISQ_INV_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_TEST => Some(
+            crate::functions::statistical_tests_family::CHISQ_TEST_META.arg_preparation_profile,
+        ),
+        FUNC_ID_CHITEST => {
+            Some(crate::functions::statistical_tests_family::CHITEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHAR => Some(crate::functions::text_scalar_misc::CHAR_META.arg_preparation_profile),
+        FUNC_ID_COLUMN => Some(crate::functions::column_fn::COLUMN_META.arg_preparation_profile),
+        FUNC_ID_COLUMNS => Some(crate::functions::columns_fn::COLUMNS_META.arg_preparation_profile),
+        FUNC_ID_CODE => Some(crate::functions::text_scalar_misc::CODE_META.arg_preparation_profile),
+        FUNC_ID_COMBIN => Some(crate::functions::combin::COMBIN_META.arg_preparation_profile),
+        FUNC_ID_COMBINA => Some(crate::functions::combina::COMBINA_META.arg_preparation_profile),
+        FUNC_ID_COMPLEX => {
+            Some(crate::functions::complex_family::COMPLEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_CLEAN => Some(crate::functions::clean_fn::CLEAN_META.arg_preparation_profile),
+        FUNC_ID_CONCAT => {
+            Some(crate::functions::concat_family::CONCAT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONCATENATE => {
+            Some(crate::functions::concat_family::CONCATENATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_COS => Some(crate::functions::cos::COS_META.arg_preparation_profile),
+        FUNC_ID_COSH => Some(crate::functions::cosh::COSH_META.arg_preparation_profile),
+        FUNC_ID_CORREL => Some(crate::functions::correl_fn::CORREL_META.arg_preparation_profile),
+        FUNC_ID_COVARIANCE_P => {
+            Some(crate::functions::covariance_p_fn::COVARIANCE_P_META.arg_preparation_profile)
+        }
+        FUNC_ID_COVARIANCE_S => {
+            Some(crate::functions::covariance_s_fn::COVARIANCE_S_META.arg_preparation_profile)
+        }
+        FUNC_ID_COT => Some(crate::functions::cot::COT_META.arg_preparation_profile),
+        FUNC_ID_COTH => Some(crate::functions::coth::COTH_META.arg_preparation_profile),
+        FUNC_ID_COUNT => Some(crate::functions::count::COUNT_META.arg_preparation_profile),
+        FUNC_ID_COUNTBLANK => {
+            Some(crate::functions::countblank_fn::COUNTBLANK_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPDAYBS => {
+            Some(crate::functions::coupon_family::COUPDAYBS_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPDAYS => {
+            Some(crate::functions::coupon_family::COUPDAYS_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPDAYSNC => {
+            Some(crate::functions::coupon_family::COUPDAYSNC_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPNCD => {
+            Some(crate::functions::coupon_family::COUPNCD_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPNUM => {
+            Some(crate::functions::coupon_family::COUPNUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPPCD => {
+            Some(crate::functions::coupon_family::COUPPCD_META.arg_preparation_profile)
+        }
+        FUNC_ID_CRITBINOM => {
+            Some(crate::functions::discrete_dist_family::CRITBINOM_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUNTA => Some(crate::functions::counta::COUNTA_META.arg_preparation_profile),
+        FUNC_ID_COVAR => {
+            Some(crate::functions::legacy_stats_alias_family::COVAR_META.arg_preparation_profile)
+        }
+        FUNC_ID_CSC => Some(crate::functions::csc::CSC_META.arg_preparation_profile),
+        FUNC_ID_CSCH => Some(crate::functions::csch::CSCH_META.arg_preparation_profile),
+        FUNC_ID_CUMIPMT => {
+            Some(crate::functions::cumulative_finance_family::CUMIPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CUMPRINC => {
+            Some(crate::functions::cumulative_finance_family::CUMPRINC_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONVERT => {
+            Some(crate::functions::misc_conversion_family::CONVERT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DAVERAGE => {
+            Some(crate::functions::database_family::DAVERAGE_META.arg_preparation_profile)
+        }
+        FUNC_ID_DATE => Some(crate::functions::date_fn::DATE_META.arg_preparation_profile),
+        FUNC_ID_DATEDIF => {
+            Some(crate::functions::date_value_family::DATEDIF_META.arg_preparation_profile)
+        }
+        FUNC_ID_DAY => Some(crate::functions::date_parts_family::DAY_META.arg_preparation_profile),
+        FUNC_ID_DAYS => {
+            Some(crate::functions::date_parts_family::DAYS_META.arg_preparation_profile)
+        }
+        FUNC_ID_DAYS360 => {
+            Some(crate::functions::date_value_family::DAYS360_META.arg_preparation_profile)
+        }
+        FUNC_ID_DATEVALUE => {
+            Some(crate::functions::date_value_family::DATEVALUE_META.arg_preparation_profile)
+        }
+        FUNC_ID_DBCS => {
+            Some(crate::functions::text_compat_locale_family::DBCS_META.arg_preparation_profile)
+        }
+        FUNC_ID_DB => Some(crate::functions::depreciation_family::DB_META.arg_preparation_profile),
+        FUNC_ID_DEC2BIN => {
+            Some(crate::functions::engineering_radix_family::DEC2BIN_META.arg_preparation_profile)
+        }
+        FUNC_ID_DEC2HEX => {
+            Some(crate::functions::engineering_radix_family::DEC2HEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_DEC2OCT => {
+            Some(crate::functions::engineering_radix_family::DEC2OCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_EDATE => {
+            Some(crate::functions::date_week_family::EDATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_EOMONTH => {
+            Some(crate::functions::date_week_family::EOMONTH_META.arg_preparation_profile)
+        }
+        FUNC_ID_EFFECT => {
+            Some(crate::functions::financial_time_value_family::EFFECT_META.arg_preparation_profile)
+        }
+        FUNC_ID_EUROCONVERT => {
+            Some(crate::functions::misc_conversion_family::EUROCONVERT_META.arg_preparation_profile)
+        }
+        FUNC_ID_EXPAND => Some(EXPAND_META.arg_preparation_profile),
+        FUNC_ID_DECIMAL => Some(crate::functions::decimal_fn::DECIMAL_META.arg_preparation_profile),
+        FUNC_ID_ENCODEURL => {
+            Some(crate::functions::web_text_xml_family::ENCODEURL_META.arg_preparation_profile)
+        }
+        FUNC_ID_DDB => {
+            Some(crate::functions::depreciation_family::DDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_DCOUNT => {
+            Some(crate::functions::database_family::DCOUNT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DCOUNTA => {
+            Some(crate::functions::database_family::DCOUNTA_META.arg_preparation_profile)
+        }
+        FUNC_ID_DISC => {
+            Some(crate::functions::discount_bill_yearfrac_family::DISC_META.arg_preparation_profile)
+        }
+        FUNC_ID_DGET => Some(crate::functions::database_family::DGET_META.arg_preparation_profile),
+        FUNC_ID_DMAX => Some(crate::functions::database_family::DMAX_META.arg_preparation_profile),
+        FUNC_ID_DMIN => Some(crate::functions::database_family::DMIN_META.arg_preparation_profile),
+        FUNC_ID_DPRODUCT => {
+            Some(crate::functions::database_family::DPRODUCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DSTDEV => {
+            Some(crate::functions::database_family::DSTDEV_META.arg_preparation_profile)
+        }
+        FUNC_ID_DSTDEVP => {
+            Some(crate::functions::database_family::DSTDEVP_META.arg_preparation_profile)
+        }
+        FUNC_ID_DSUM => Some(crate::functions::database_family::DSUM_META.arg_preparation_profile),
+        FUNC_ID_DVAR => Some(crate::functions::database_family::DVAR_META.arg_preparation_profile),
+        FUNC_ID_DVARP => {
+            Some(crate::functions::database_family::DVARP_META.arg_preparation_profile)
+        }
+        FUNC_ID_DROP => Some(DROP_META.arg_preparation_profile),
+        FUNC_ID_DEVSQ => Some(crate::functions::devsq_fn::DEVSQ_META.arg_preparation_profile),
+        FUNC_ID_DEGREES => Some(crate::functions::degrees::DEGREES_META.arg_preparation_profile),
+        FUNC_ID_DELTA => Some(crate::functions::delta_fn::DELTA_META.arg_preparation_profile),
+        FUNC_ID_DURATION => {
+            Some(crate::functions::bond_core_family::DURATION_META.arg_preparation_profile)
+        }
+        FUNC_ID_DOLLAR => Some(crate::functions::dollar_fn::DOLLAR_META.arg_preparation_profile),
+        FUNC_ID_DOLLARDE => {
+            Some(crate::functions::dollar_fraction_family::DOLLARDE_META.arg_preparation_profile)
+        }
+        FUNC_ID_DOLLARFR => {
+            Some(crate::functions::dollar_fraction_family::DOLLARFR_META.arg_preparation_profile)
+        }
+        FUNC_ID_EVEN => Some(crate::functions::even_fn::EVEN_META.arg_preparation_profile),
+        FUNC_ID_ERROR_TYPE => {
+            Some(crate::functions::error_type_fn::ERROR_TYPE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERF => {
+            Some(crate::functions::special_dist_family::ERF_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERF_PRECISE => {
+            Some(crate::functions::special_dist_family::ERF_PRECISE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERFC => {
+            Some(crate::functions::special_dist_family::ERFC_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERFC_PRECISE => {
+            Some(crate::functions::special_dist_family::ERFC_PRECISE_META.arg_preparation_profile)
+        }
+        FUNC_ID_EXACT => Some(crate::functions::exact_fn::EXACT_META.arg_preparation_profile),
+        FUNC_ID_EXPON_DIST => {
+            Some(crate::functions::discrete_dist_family::EXPON_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_EXPONDIST => {
+            Some(crate::functions::discrete_dist_family::EXPONDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_EXP => Some(crate::functions::exp_fn::EXP_META.arg_preparation_profile),
+        FUNC_ID_FACT => Some(crate::functions::fact::FACT_META.arg_preparation_profile),
+        FUNC_ID_FACTDOUBLE => {
+            Some(crate::functions::factdouble::FACTDOUBLE_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_DIST => {
+            Some(crate::functions::chi_f_t_family::F_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_DIST_RT => {
+            Some(crate::functions::chi_f_t_family::F_DIST_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_INV => Some(crate::functions::chi_f_t_family::F_INV_META.arg_preparation_profile),
+        FUNC_ID_F_INV_RT => {
+            Some(crate::functions::chi_f_t_family::F_INV_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_TEST => {
+            Some(crate::functions::statistical_tests_family::F_TEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_FDIST => Some(crate::functions::chi_f_t_family::FDIST_META.arg_preparation_profile),
+        FUNC_ID_FINV => Some(crate::functions::chi_f_t_family::FINV_META.arg_preparation_profile),
+        FUNC_ID_FALSE => Some(crate::functions::false_fn::FALSE_META.arg_preparation_profile),
+        FUNC_ID_FTEST => {
+            Some(crate::functions::statistical_tests_family::FTEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_FREQUENCY => Some(
+            crate::functions::lookup_prob_frequency_family::FREQUENCY_META.arg_preparation_profile,
+        ),
+        FUNC_ID_FV => {
+            Some(crate::functions::financial_time_value_family::FV_META.arg_preparation_profile)
+        }
+        FUNC_ID_FVSCHEDULE => Some(
+            crate::functions::financial_time_value_family::FVSCHEDULE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_FISHER => Some(crate::functions::fisher_fn::FISHER_META.arg_preparation_profile),
+        FUNC_ID_FISHERINV => {
+            Some(crate::functions::fisherinv_fn::FISHERINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_FIND => {
+            Some(crate::functions::text_search_replace_family::FIND_META.arg_preparation_profile)
+        }
+        FUNC_ID_FINDB => {
+            Some(crate::functions::text_b_compat_family::FINDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_FILTER => Some(FILTER_META.arg_preparation_profile),
+        FUNC_ID_FILTERXML => {
+            Some(crate::functions::web_text_xml_family::FILTERXML_META.arg_preparation_profile)
+        }
+        FUNC_ID_FIXED => Some(crate::functions::fixed_fn::FIXED_META.arg_preparation_profile),
+        FUNC_ID_FLOOR => {
+            Some(crate::functions::ceiling_floor_family::FLOOR_META.arg_preparation_profile)
+        }
+        FUNC_ID_FLOOR_MATH => {
+            Some(crate::functions::ceiling_floor_family::FLOOR_MATH_META.arg_preparation_profile)
+        }
+        FUNC_ID_FLOOR_PRECISE => {
+            Some(crate::functions::ceiling_floor_family::FLOOR_PRECISE_META.arg_preparation_profile)
+        }
+        FUNC_ID_FORMULATEXT => Some(FORMULATEXT_META.arg_preparation_profile),
+        FUNC_ID_GAUSS => Some(crate::functions::gauss_fn::GAUSS_META.arg_preparation_profile),
+        FUNC_ID_GAMMA => {
+            Some(crate::functions::special_dist_family::GAMMA_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMA_DIST => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMA_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMA_INV => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMA_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMADIST => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMADIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMAINV => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMAINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMALN => {
+            Some(crate::functions::special_dist_family::GAMMALN_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMALN_PRECISE => Some(
+            crate::functions::special_dist_family::GAMMALN_PRECISE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_GCD => Some(crate::functions::gcd_fn::GCD_META.arg_preparation_profile),
+        FUNC_ID_GEOMEAN => Some(crate::functions::geomean_fn::GEOMEAN_META.arg_preparation_profile),
+        FUNC_ID_GESTEP => Some(crate::functions::gestep_fn::GESTEP_META.arg_preparation_profile),
+        FUNC_ID_GROUPBY => Some(crate::functions::groupby_fn::GROUPBY_META.arg_preparation_profile),
+        FUNC_ID_GROWTH => {
+            Some(crate::functions::regression_forecast_family::GROWTH_META.arg_preparation_profile)
+        }
+        FUNC_ID_HARMEAN => Some(crate::functions::harmean_fn::HARMEAN_META.arg_preparation_profile),
+        FUNC_ID_HYPERLINK => {
+            Some(crate::functions::hyperlink_fn::HYPERLINK_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMAGE => Some(crate::functions::image_fn::IMAGE_META.arg_preparation_profile),
+        FUNC_ID_HYPGEOM_DIST => {
+            Some(crate::functions::discrete_dist_family::HYPGEOM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_HYPGEOMDIST => {
+            Some(crate::functions::discrete_dist_family::HYPGEOMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_HOUR => {
+            Some(crate::functions::date_parts_family::HOUR_META.arg_preparation_profile)
+        }
+        FUNC_ID_HSTACK => Some(crate::functions::hstack::HSTACK_META.arg_preparation_profile),
+        FUNC_ID_SORT => Some(SORT_META.arg_preparation_profile),
+        FUNC_ID_SORTBY => Some(SORTBY_META.arg_preparation_profile),
+        FUNC_ID_INFO => Some(crate::functions::info_fn::INFO_META.arg_preparation_profile),
+        FUNC_ID_ISOMITTED => Some(ISOMITTED_META.arg_preparation_profile),
+        FUNC_ID_IRR => {
+            Some(crate::functions::cashflow_rate_family::IRR_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMABS => Some(crate::functions::complex_family::IMABS_META.arg_preparation_profile),
+        FUNC_ID_IMAGINARY => {
+            Some(crate::functions::complex_family::IMAGINARY_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMARGUMENT => {
+            Some(crate::functions::complex_family::IMARGUMENT_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMCONJUGATE => {
+            Some(crate::functions::complex_family::IMCONJUGATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMCOS => Some(crate::functions::complex_family::IMCOS_META.arg_preparation_profile),
+        FUNC_ID_IMCOSH => {
+            Some(crate::functions::complex_family::IMCOSH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMCOT => Some(crate::functions::complex_family::IMCOT_META.arg_preparation_profile),
+        FUNC_ID_IMCSC => Some(crate::functions::complex_family::IMCSC_META.arg_preparation_profile),
+        FUNC_ID_IMCSCH => {
+            Some(crate::functions::complex_family::IMCSCH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMDIV => Some(crate::functions::complex_family::IMDIV_META.arg_preparation_profile),
+        FUNC_ID_IMEXP => Some(crate::functions::complex_family::IMEXP_META.arg_preparation_profile),
+        FUNC_ID_IMLN => Some(crate::functions::complex_family::IMLN_META.arg_preparation_profile),
+        FUNC_ID_IMLOG10 => {
+            Some(crate::functions::complex_family::IMLOG10_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMLOG2 => {
+            Some(crate::functions::complex_family::IMLOG2_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMPOWER => {
+            Some(crate::functions::complex_family::IMPOWER_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMPRODUCT => {
+            Some(crate::functions::complex_family::IMPRODUCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMREAL => {
+            Some(crate::functions::complex_family::IMREAL_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSEC => Some(crate::functions::complex_family::IMSEC_META.arg_preparation_profile),
+        FUNC_ID_IMSECH => {
+            Some(crate::functions::complex_family::IMSECH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSIN => Some(crate::functions::complex_family::IMSIN_META.arg_preparation_profile),
+        FUNC_ID_IMSINH => {
+            Some(crate::functions::complex_family::IMSINH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSQRT => {
+            Some(crate::functions::complex_family::IMSQRT_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSUB => Some(crate::functions::complex_family::IMSUB_META.arg_preparation_profile),
+        FUNC_ID_IMSUM => Some(crate::functions::complex_family::IMSUM_META.arg_preparation_profile),
+        FUNC_ID_IMTAN => Some(crate::functions::complex_family::IMTAN_META.arg_preparation_profile),
+        FUNC_ID_ISFORMULA => {
+            Some(crate::functions::misc_switch_info_family::ISFORMULA_META.arg_preparation_profile)
+        }
+        FUNC_ID_IF => Some(crate::functions::if_fn::IF_META.arg_preparation_profile),
+        FUNC_ID_IFERROR => Some(crate::functions::iferror::IFERROR_META.arg_preparation_profile),
+        FUNC_ID_IFNA => Some(crate::functions::ifna_fn::IFNA_META.arg_preparation_profile),
+        FUNC_ID_IFS => Some(crate::functions::choose_ifs_family::IFS_META.arg_preparation_profile),
+        FUNC_ID_INDEX => Some(crate::functions::index::INDEX_META.arg_preparation_profile),
+        FUNC_ID_INDIRECT => Some(crate::functions::indirect::INDIRECT_META.arg_preparation_profile),
+        FUNC_ID_IPMT => {
+            Some(crate::functions::financial_time_value_family::IPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISPMT => {
+            Some(crate::functions::financial_time_value_family::ISPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_HEX2BIN => {
+            Some(crate::functions::engineering_radix_family::HEX2BIN_META.arg_preparation_profile)
+        }
+        FUNC_ID_HEX2DEC => {
+            Some(crate::functions::engineering_radix_family::HEX2DEC_META.arg_preparation_profile)
+        }
+        FUNC_ID_HEX2OCT => {
+            Some(crate::functions::engineering_radix_family::HEX2OCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISNUMBER => Some(crate::functions::isnumber::ISNUMBER_META.arg_preparation_profile),
+        FUNC_ID_ISBLANK => {
+            Some(crate::functions::is_predicates_family::ISBLANK_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISERR => {
+            Some(crate::functions::is_predicates_family::ISERR_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISERROR => {
+            Some(crate::functions::is_predicates_family::ISERROR_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISLOGICAL => {
+            Some(crate::functions::is_predicates_family::ISLOGICAL_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISNA => {
+            Some(crate::functions::is_predicates_family::ISNA_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISNONTEXT => {
+            Some(crate::functions::is_predicates_family::ISNONTEXT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISODD => {
+            Some(crate::functions::is_predicates_family::ISODD_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISREF => {
+            Some(crate::functions::is_predicates_family::ISREF_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISTEXT => {
+            Some(crate::functions::is_predicates_family::ISTEXT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISOWEEKNUM => {
+            Some(crate::functions::date_week_family::ISOWEEKNUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISO_CEILING => {
+            Some(crate::functions::ceiling_floor_family::ISO_CEILING_META.arg_preparation_profile)
+        }
+        FUNC_ID_INTERCEPT => {
+            Some(crate::functions::intercept_fn::INTERCEPT_META.arg_preparation_profile)
+        }
+        FUNC_ID_INT => Some(crate::functions::int_fn::INT_META.arg_preparation_profile),
+        FUNC_ID_INTRATE => Some(
+            crate::functions::discount_bill_yearfrac_family::INTRATE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_ISEVEN => Some(crate::functions::iseven_fn::ISEVEN_META.arg_preparation_profile),
+        FUNC_ID_JIS => {
+            Some(crate::functions::text_compat_locale_family::JIS_META.arg_preparation_profile)
+        }
+        FUNC_ID_KURT => {
+            Some(crate::functions::moment_stats_family::KURT_META.arg_preparation_profile)
+        }
+        FUNC_ID_LARGE => Some(crate::functions::large_fn::LARGE_META.arg_preparation_profile),
+        FUNC_ID_LCM => Some(crate::functions::lcm_fn::LCM_META.arg_preparation_profile),
+        FUNC_ID_FORECAST => Some(
+            crate::functions::regression_forecast_family::FORECAST_META.arg_preparation_profile,
+        ),
+        FUNC_ID_FORECAST_LINEAR => Some(
+            crate::functions::regression_forecast_family::FORECAST_LINEAR_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_LINEST => {
+            Some(crate::functions::regression_forecast_family::LINEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGINV => {
+            Some(crate::functions::legacy_stats_alias_family::LOGINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_LN => Some(crate::functions::ln_fn::LN_META.arg_preparation_profile),
+        FUNC_ID_LOG => Some(crate::functions::log_fn::LOG_META.arg_preparation_profile),
+        FUNC_ID_LOG10 => Some(crate::functions::log10_fn::LOG10_META.arg_preparation_profile),
+        FUNC_ID_LOOKUP => Some(
+            crate::functions::lookup_prob_frequency_family::LOOKUP_META.arg_preparation_profile,
+        ),
+        FUNC_ID_LOGEST => {
+            Some(crate::functions::regression_forecast_family::LOGEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOWER => {
+            Some(crate::functions::text_scalar_misc::LOWER_META.arg_preparation_profile)
+        }
+        FUNC_ID_LEFT => {
+            Some(crate::functions::text_slice_family::LEFT_META.arg_preparation_profile)
+        }
+        FUNC_ID_LEFTB => {
+            Some(crate::functions::text_b_compat_family::LEFTB_META.arg_preparation_profile)
+        }
+        FUNC_ID_LEN => Some(crate::functions::text_slice_family::LEN_META.arg_preparation_profile),
+        FUNC_ID_LENB => {
+            Some(crate::functions::text_b_compat_family::LENB_META.arg_preparation_profile)
+        }
+        FUNC_ID_MID => Some(crate::functions::text_slice_family::MID_META.arg_preparation_profile),
+        FUNC_ID_MIDB => {
+            Some(crate::functions::text_b_compat_family::MIDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_RIGHT => {
+            Some(crate::functions::text_slice_family::RIGHT_META.arg_preparation_profile)
+        }
+        FUNC_ID_RIGHTB => {
+            Some(crate::functions::text_b_compat_family::RIGHTB_META.arg_preparation_profile)
+        }
+        FUNC_ID_MAX => Some(crate::functions::max_fn::MAX_META.arg_preparation_profile),
+        FUNC_ID_MAXA => Some(crate::functions::maxa_fn::MAXA_META.arg_preparation_profile),
+        FUNC_ID_MAXIFS => {
+            Some(crate::functions::criteria_family::MAXIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_MEDIAN => Some(crate::functions::median_fn::MEDIAN_META.arg_preparation_profile),
+        FUNC_ID_MATCH => Some(crate::functions::match_fn::MATCH_META.arg_preparation_profile),
+        FUNC_ID_MAKEARRAY => Some(MAKEARRAY_META.arg_preparation_profile),
+        FUNC_ID_MAP => Some(MAP_META.arg_preparation_profile),
+        FUNC_ID_MDETERM => {
+            Some(crate::functions::matrix_family::MDETERM_META.arg_preparation_profile)
+        }
+        FUNC_ID_MDURATION => {
+            Some(crate::functions::bond_core_family::MDURATION_META.arg_preparation_profile)
+        }
+        FUNC_ID_MINVERSE => {
+            Some(crate::functions::matrix_family::MINVERSE_META.arg_preparation_profile)
+        }
+        FUNC_ID_MMULT => Some(crate::functions::matrix_family::MMULT_META.arg_preparation_profile),
+        FUNC_ID_MUNIT => Some(crate::functions::matrix_family::MUNIT_META.arg_preparation_profile),
+        FUNC_ID_MIN => Some(crate::functions::min_fn::MIN_META.arg_preparation_profile),
+        FUNC_ID_MINA => Some(crate::functions::mina_fn::MINA_META.arg_preparation_profile),
+        FUNC_ID_MINIFS => {
+            Some(crate::functions::criteria_family::MINIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_MIRR => {
+            Some(crate::functions::financial_time_value_family::MIRR_META.arg_preparation_profile)
+        }
+        FUNC_ID_MINUTE => {
+            Some(crate::functions::date_parts_family::MINUTE_META.arg_preparation_profile)
+        }
+        FUNC_ID_MOD => Some(crate::functions::mod_fn::MOD_META.arg_preparation_profile),
+        FUNC_ID_MODE => {
+            Some(crate::functions::legacy_stats_alias_family::MODE_META.arg_preparation_profile)
+        }
+        FUNC_ID_MODE_MULT => Some(
+            crate::functions::lookup_prob_frequency_family::MODE_MULT_META.arg_preparation_profile,
+        ),
+        FUNC_ID_MODE_SNGL => {
+            Some(crate::functions::mode_sngl_fn::MODE_SNGL_META.arg_preparation_profile)
+        }
+        FUNC_ID_MONTH => {
+            Some(crate::functions::date_parts_family::MONTH_META.arg_preparation_profile)
+        }
+        FUNC_ID_MROUND => Some(crate::functions::mround::MROUND_META.arg_preparation_profile),
+        FUNC_ID_MULTINOMIAL => {
+            Some(crate::functions::multinomial::MULTINOMIAL_META.arg_preparation_profile)
+        }
+        FUNC_ID_N => Some(crate::functions::n_fn::N_META.arg_preparation_profile),
+        FUNC_ID_NA => Some(crate::functions::na_fn::NA_META.arg_preparation_profile),
+        FUNC_ID_NOMINAL => Some(
+            crate::functions::financial_time_value_family::NOMINAL_META.arg_preparation_profile,
+        ),
+        FUNC_ID_NPER => {
+            Some(crate::functions::financial_time_value_family::NPER_META.arg_preparation_profile)
+        }
+        FUNC_ID_NPV => {
+            Some(crate::functions::financial_time_value_family::NPV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NUMBERVALUE => Some(
+            crate::functions::number_regex_translate_family::NUMBERVALUE_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_NEGBINOM_DIST => {
+            Some(crate::functions::discrete_dist_family::NEGBINOM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NEGBINOMDIST => {
+            Some(crate::functions::discrete_dist_family::NEGBINOMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONFIDENCE => {
+            Some(crate::functions::normal_log_family::CONFIDENCE_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONFIDENCE_T => Some(
+            crate::functions::confidence_test_family::CONFIDENCE_T_META.arg_preparation_profile,
+        ),
+        FUNC_ID_CONFIDENCE_NORM => {
+            Some(crate::functions::normal_log_family::CONFIDENCE_NORM_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGNORM_DIST => {
+            Some(crate::functions::normal_log_family::LOGNORM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGNORM_INV => {
+            Some(crate::functions::normal_log_family::LOGNORM_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGNORMDIST => {
+            Some(crate::functions::normal_log_family::LOGNORMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_DIST => {
+            Some(crate::functions::normal_log_family::NORM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_INV => {
+            Some(crate::functions::normal_log_family::NORM_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_S_DIST => {
+            Some(crate::functions::normal_log_family::NORM_S_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_S_INV => {
+            Some(crate::functions::normal_log_family::NORM_S_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMDIST => {
+            Some(crate::functions::normal_log_family::NORMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMINV => {
+            Some(crate::functions::normal_log_family::NORMINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMSDIST => {
+            Some(crate::functions::normal_log_family::NORMSDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMSINV => {
+            Some(crate::functions::normal_log_family::NORMSINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NETWORKDAYS => Some(
+            crate::functions::workday_networkdays_family::NETWORKDAYS_META.arg_preparation_profile,
+        ),
+        FUNC_ID_NETWORKDAYS_INTL => Some(
+            crate::functions::workday_networkdays_family::NETWORKDAYS_INTL_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_NOT => Some(crate::functions::not_fn::NOT_META.arg_preparation_profile),
+        FUNC_ID_NOW => Some(crate::functions::now_fn::NOW_META.arg_preparation_profile),
+        FUNC_ID_OCT2BIN => {
+            Some(crate::functions::engineering_radix_family::OCT2BIN_META.arg_preparation_profile)
+        }
+        FUNC_ID_OCT2DEC => {
+            Some(crate::functions::engineering_radix_family::OCT2DEC_META.arg_preparation_profile)
+        }
+        FUNC_ID_OCT2HEX => {
+            Some(crate::functions::engineering_radix_family::OCT2HEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_POISSON => {
+            Some(crate::functions::discrete_dist_family::POISSON_META.arg_preparation_profile)
+        }
+        FUNC_ID_POISSON_DIST => {
+            Some(crate::functions::discrete_dist_family::POISSON_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODD => Some(crate::functions::odd_fn::ODD_META.arg_preparation_profile),
+        FUNC_ID_ODDFPRICE => {
+            Some(crate::functions::odd_bond_family::ODDFPRICE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODDFYIELD => {
+            Some(crate::functions::odd_bond_family::ODDFYIELD_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODDLPRICE => {
+            Some(crate::functions::odd_bond_family::ODDLPRICE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODDLYIELD => {
+            Some(crate::functions::odd_bond_family::ODDLYIELD_META.arg_preparation_profile)
+        }
+        FUNC_ID_OR => Some(crate::functions::or_fn::OR_META.arg_preparation_profile),
+        FUNC_ID_OFFSET => Some(crate::functions::offset::OFFSET_META.arg_preparation_profile),
+        FUNC_ID_OP_ADD => Some(crate::functions::op_add::OP_ADD_META.arg_preparation_profile),
+        FUNC_ID_OP_CONCAT => Some(OP_CONCAT_META.arg_preparation_profile),
+        FUNC_ID_OP_DIVIDE => Some(OP_DIVIDE_META.arg_preparation_profile),
+        FUNC_ID_OP_EQUAL => Some(OP_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_GREATER_EQUAL => Some(OP_GREATER_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_GREATER_THAN => Some(OP_GREATER_THAN_META.arg_preparation_profile),
+        FUNC_ID_OP_IMPLICIT_INTERSECTION => {
+            Some(OP_IMPLICIT_INTERSECTION_META.arg_preparation_profile)
+        }
+        FUNC_ID_OP_INTERSECTION_REF => Some(OP_INTERSECTION_REF_META.arg_preparation_profile),
+        FUNC_ID_OP_LESS_EQUAL => Some(OP_LESS_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_LESS_THAN => Some(OP_LESS_THAN_META.arg_preparation_profile),
+        FUNC_ID_OP_MULTIPLY => Some(OP_MULTIPLY_META.arg_preparation_profile),
+        FUNC_ID_OP_NEGATE => Some(OP_NEGATE_META.arg_preparation_profile),
+        FUNC_ID_OP_NOT_EQUAL => Some(OP_NOT_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_PERCENT => Some(OP_PERCENT_META.arg_preparation_profile),
+        FUNC_ID_OP_POWER => Some(OP_POWER_META.arg_preparation_profile),
+        FUNC_ID_OP_RANGE_REF => Some(OP_RANGE_REF_META.arg_preparation_profile),
+        FUNC_ID_OP_SPILL_REF => {
+            Some(crate::functions::op_spill_ref::OP_SPILL_REF_META.arg_preparation_profile)
+        }
+        FUNC_ID_OP_SUBTRACT => Some(OP_SUBTRACT_META.arg_preparation_profile),
+        FUNC_ID_OP_TRIM_REF_BOTH => Some(OP_TRIM_REF_BOTH_META.arg_preparation_profile),
+        FUNC_ID_OP_TRIM_REF_LEADING => Some(OP_TRIM_REF_LEADING_META.arg_preparation_profile),
+        FUNC_ID_OP_TRIM_REF_TRAILING => Some(OP_TRIM_REF_TRAILING_META.arg_preparation_profile),
+        FUNC_ID_OP_UNARY_PLUS => Some(OP_UNARY_PLUS_META.arg_preparation_profile),
+        FUNC_ID_OP_UNION_REF => Some(OP_UNION_REF_META.arg_preparation_profile),
+        FUNC_ID_PEARSON => Some(crate::functions::pearson_fn::PEARSON_META.arg_preparation_profile),
+        FUNC_ID_PDURATION => Some(
+            crate::functions::financial_time_value_family::PDURATION_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PERMUT => Some(crate::functions::permut_fn::PERMUT_META.arg_preparation_profile),
+        FUNC_ID_PERMUTATIONA => {
+            Some(crate::functions::permutationa_fn::PERMUTATIONA_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTILE_EXC => {
+            Some(crate::functions::percentile_exc_fn::PERCENTILE_EXC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTILE_INC => {
+            Some(crate::functions::percentile_inc_fn::PERCENTILE_INC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTILE => Some(
+            crate::functions::legacy_stats_alias_family::PERCENTILE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PERCENTRANK_EXC => {
+            Some(crate::functions::percentrank_exc_fn::PERCENTRANK_EXC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTRANK_INC => {
+            Some(crate::functions::percentrank_inc_fn::PERCENTRANK_INC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTRANK => Some(
+            crate::functions::legacy_stats_alias_family::PERCENTRANK_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PHI => Some(crate::functions::phi_fn::PHI_META.arg_preparation_profile),
+        FUNC_ID_PI => Some(crate::functions::pi::PI_META.arg_preparation_profile),
+        FUNC_ID_PIVOTBY => Some(crate::functions::pivotby_fn::PIVOTBY_META.arg_preparation_profile),
+        FUNC_ID_PMT => {
+            Some(crate::functions::financial_time_value_family::PMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_PPMT => {
+            Some(crate::functions::financial_time_value_family::PPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTOF => {
+            Some(crate::functions::misc_conversion_family::PERCENTOF_META.arg_preparation_profile)
+        }
+        FUNC_ID_PRICE => {
+            Some(crate::functions::bond_core_family::PRICE_META.arg_preparation_profile)
+        }
+        FUNC_ID_PRICEDISC => Some(
+            crate::functions::discount_bill_yearfrac_family::PRICEDISC_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PRICEMAT => {
+            Some(crate::functions::bond_core_family::PRICEMAT_META.arg_preparation_profile)
+        }
+        FUNC_ID_PROB => {
+            Some(crate::functions::lookup_prob_frequency_family::PROB_META.arg_preparation_profile)
+        }
+        FUNC_ID_PRODUCT => Some(crate::functions::product::PRODUCT_META.arg_preparation_profile),
+        FUNC_ID_POWER => Some(crate::functions::power_fn::POWER_META.arg_preparation_profile),
+        FUNC_ID_PV => {
+            Some(crate::functions::financial_time_value_family::PV_META.arg_preparation_profile)
+        }
+        FUNC_ID_PROPER => {
+            Some(crate::functions::text_search_replace_family::PROPER_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUOTIENT => {
+            Some(crate::functions::quotient_fn::QUOTIENT_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUARTILE_EXC => {
+            Some(crate::functions::quartile_exc_fn::QUARTILE_EXC_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUARTILE_INC => {
+            Some(crate::functions::quartile_inc_fn::QUARTILE_INC_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUARTILE => {
+            Some(crate::functions::legacy_stats_alias_family::QUARTILE_META.arg_preparation_profile)
+        }
+        FUNC_ID_RAND => Some(crate::functions::rand_fn::RAND_META.arg_preparation_profile),
+        FUNC_ID_RANDARRAY => {
+            Some(crate::functions::misc_conversion_family::RANDARRAY_META.arg_preparation_profile)
+        }
+        FUNC_ID_RANDBETWEEN => {
+            Some(crate::functions::randbetween_fn::RANDBETWEEN_META.arg_preparation_profile)
+        }
+        FUNC_ID_REDUCE => Some(REDUCE_META.arg_preparation_profile),
+        FUNC_ID_RATE => {
+            Some(crate::functions::financial_time_value_family::RATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_RADIANS => Some(crate::functions::radians::RADIANS_META.arg_preparation_profile),
+        FUNC_ID_RANK => Some(crate::functions::rank_fn::RANK_META.arg_preparation_profile),
+        FUNC_ID_RANK_AVG => {
+            Some(crate::functions::rank_avg_fn::RANK_AVG_META.arg_preparation_profile)
+        }
+        FUNC_ID_RANK_EQ => Some(crate::functions::rank_eq_fn::RANK_EQ_META.arg_preparation_profile),
+        FUNC_ID_ROW => Some(crate::functions::row_fn::ROW_META.arg_preparation_profile),
+        FUNC_ID_ROWS => Some(crate::functions::rows_fn::ROWS_META.arg_preparation_profile),
+        FUNC_ID_RRI => {
+            Some(crate::functions::financial_time_value_family::RRI_META.arg_preparation_profile)
+        }
+        FUNC_ID_RTD => Some(crate::functions::rtd_fn::RTD_META.arg_preparation_profile),
+        FUNC_ID_REGISTER_ID => Some(REGISTER_ID_META.arg_preparation_profile),
+        FUNC_ID_ROMAN => Some(crate::functions::roman_fn::ROMAN_META.arg_preparation_profile),
+        FUNC_ID_ROUND => Some(crate::functions::round_fn::ROUND_META.arg_preparation_profile),
+        FUNC_ID_ROUNDDOWN => {
+            Some(crate::functions::rounddown_fn::ROUNDDOWN_META.arg_preparation_profile)
+        }
+        FUNC_ID_REPLACE => {
+            Some(crate::functions::text_search_replace_family::REPLACE_META.arg_preparation_profile)
+        }
+        FUNC_ID_REPLACEB => {
+            Some(crate::functions::text_b_compat_family::REPLACEB_META.arg_preparation_profile)
+        }
+        FUNC_ID_RECEIVED => Some(
+            crate::functions::discount_bill_yearfrac_family::RECEIVED_META.arg_preparation_profile,
+        ),
+        FUNC_ID_REGEXEXTRACT => Some(
+            crate::functions::number_regex_translate_family::REGEXEXTRACT_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_REGEXREPLACE => Some(
+            crate::functions::number_regex_translate_family::REGEXREPLACE_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_REGEXTEST => Some(
+            crate::functions::number_regex_translate_family::REGEXTEST_META.arg_preparation_profile,
+        ),
+        FUNC_ID_ROUNDUP => Some(crate::functions::roundup_fn::ROUNDUP_META.arg_preparation_profile),
+        FUNC_ID_RSQ => Some(crate::functions::rsq_fn::RSQ_META.arg_preparation_profile),
+        FUNC_ID_SECOND => {
+            Some(crate::functions::date_parts_family::SECOND_META.arg_preparation_profile)
+        }
+        FUNC_ID_SEQUENCE => Some(crate::functions::sequence::SEQUENCE_META.arg_preparation_profile),
+        FUNC_ID_SCAN => Some(SCAN_META.arg_preparation_profile),
+        FUNC_ID_SEC => Some(crate::functions::sec::SEC_META.arg_preparation_profile),
+        FUNC_ID_SECH => Some(crate::functions::sech::SECH_META.arg_preparation_profile),
+        FUNC_ID_SHEET => Some(SHEET_META.arg_preparation_profile),
+        FUNC_ID_SHEETS => Some(SHEETS_META.arg_preparation_profile),
+        FUNC_ID_SERIESSUM => {
+            Some(crate::functions::sumproduct_family::SERIESSUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_SIGN => Some(crate::functions::sign_fn::SIGN_META.arg_preparation_profile),
+        FUNC_ID_SIN => Some(crate::functions::sin::SIN_META.arg_preparation_profile),
+        FUNC_ID_SINH => Some(crate::functions::sinh::SINH_META.arg_preparation_profile),
+        FUNC_ID_SKEW => {
+            Some(crate::functions::moment_stats_family::SKEW_META.arg_preparation_profile)
+        }
+        FUNC_ID_SKEW_P => {
+            Some(crate::functions::moment_stats_family::SKEW_P_META.arg_preparation_profile)
+        }
+        FUNC_ID_SLN => {
+            Some(crate::functions::depreciation_family::SLN_META.arg_preparation_profile)
+        }
+        FUNC_ID_SMALL => Some(crate::functions::small_fn::SMALL_META.arg_preparation_profile),
+        FUNC_ID_STEYX => {
+            Some(crate::functions::moment_stats_family::STEYX_META.arg_preparation_profile)
+        }
+        FUNC_ID_SQRT => Some(crate::functions::sqrt_fn::SQRT_META.arg_preparation_profile),
+        FUNC_ID_SQRTPI => Some(crate::functions::sqrtpi::SQRTPI_META.arg_preparation_profile),
+        FUNC_ID_SLOPE => Some(crate::functions::slope_fn::SLOPE_META.arg_preparation_profile),
+        FUNC_ID_STDEV => Some(crate::functions::stdev_fn::STDEV_META.arg_preparation_profile),
+        FUNC_ID_STDEV_P => Some(crate::functions::stdev_p_fn::STDEV_P_META.arg_preparation_profile),
+        FUNC_ID_STDEV_S => Some(crate::functions::stdev_s_fn::STDEV_S_META.arg_preparation_profile),
+        FUNC_ID_STDEVP => Some(crate::functions::stdevp_fn::STDEVP_META.arg_preparation_profile),
+        FUNC_ID_STDEVA => Some(crate::functions::stdeva_fn::STDEVA_META.arg_preparation_profile),
+        FUNC_ID_STDEVPA => Some(crate::functions::stdevpa_fn::STDEVPA_META.arg_preparation_profile),
+        FUNC_ID_STANDARDIZE => {
+            Some(crate::functions::standardize_fn::STANDARDIZE_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUBTOTAL => {
+            Some(crate::functions::subtotal_aggregate_family::SUBTOTAL_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
+        FUNC_ID_SUMIF => {
+            Some(crate::functions::criteria_family::SUMIF_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMIFS => {
+            Some(crate::functions::criteria_family::SUMIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMPRODUCT => {
+            Some(crate::functions::sumproduct_family::SUMPRODUCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMX2MY2 => {
+            Some(crate::functions::sumproduct_family::SUMX2MY2_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMX2PY2 => {
+            Some(crate::functions::sumproduct_family::SUMX2PY2_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMXMY2 => {
+            Some(crate::functions::sumproduct_family::SUMXMY2_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMSQ => Some(crate::functions::sumsq::SUMSQ_META.arg_preparation_profile),
+        FUNC_ID_SWITCH => {
+            Some(crate::functions::misc_switch_info_family::SWITCH_META.arg_preparation_profile)
+        }
+        FUNC_ID_T => Some(crate::functions::t_fn::T_META.arg_preparation_profile),
+        FUNC_ID_TAKE => Some(TAKE_META.arg_preparation_profile),
+        FUNC_ID_T_DIST => {
+            Some(crate::functions::chi_f_t_family::T_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_DIST_2T => {
+            Some(crate::functions::chi_f_t_family::T_DIST_2T_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_DIST_RT => {
+            Some(crate::functions::chi_f_t_family::T_DIST_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_INV => Some(crate::functions::chi_f_t_family::T_INV_META.arg_preparation_profile),
+        FUNC_ID_T_INV_2T => {
+            Some(crate::functions::chi_f_t_family::T_INV_2T_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_TEST => {
+            Some(crate::functions::statistical_tests_family::T_TEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_TAN => Some(crate::functions::tan::TAN_META.arg_preparation_profile),
+        FUNC_ID_TANH => Some(crate::functions::tanh::TANH_META.arg_preparation_profile),
+        FUNC_ID_TBILLEQ => Some(
+            crate::functions::discount_bill_yearfrac_family::TBILLEQ_META.arg_preparation_profile,
+        ),
+        FUNC_ID_TBILLPRICE => Some(
+            crate::functions::discount_bill_yearfrac_family::TBILLPRICE_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_TBILLYIELD => Some(
+            crate::functions::discount_bill_yearfrac_family::TBILLYIELD_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_TOCOL => Some(TOCOL_META.arg_preparation_profile),
+        FUNC_ID_TOROW => Some(TOROW_META.arg_preparation_profile),
+        FUNC_ID_TDIST => Some(crate::functions::chi_f_t_family::TDIST_META.arg_preparation_profile),
+        FUNC_ID_TINV => Some(crate::functions::chi_f_t_family::TINV_META.arg_preparation_profile),
+        FUNC_ID_SYD => {
+            Some(crate::functions::depreciation_family::SYD_META.arg_preparation_profile)
+        }
+        FUNC_ID_SEARCH => {
+            Some(crate::functions::text_search_replace_family::SEARCH_META.arg_preparation_profile)
+        }
+        FUNC_ID_SEARCHB => {
+            Some(crate::functions::text_b_compat_family::SEARCHB_META.arg_preparation_profile)
+        }
+        FUNC_ID_TEXT => Some(crate::functions::text_fn::TEXT_META.arg_preparation_profile),
+        FUNC_ID_TEXTAFTER => {
+            Some(crate::functions::text_delim_family::TEXTAFTER_META.arg_preparation_profile)
+        }
+        FUNC_ID_TEXTBEFORE => {
+            Some(crate::functions::text_delim_family::TEXTBEFORE_META.arg_preparation_profile)
+        }
+        FUNC_ID_TEXTSPLIT => {
+            Some(crate::functions::array_text_split_family::TEXTSPLIT_META.arg_preparation_profile)
+        }
+        FUNC_ID_REPT => Some(crate::functions::text_scalar_misc::REPT_META.arg_preparation_profile),
+        FUNC_ID_SUBSTITUTE => Some(
+            crate::functions::text_search_replace_family::SUBSTITUTE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_TEXTJOIN => Some(crate::functions::textjoin::TEXTJOIN_META.arg_preparation_profile),
+        FUNC_ID_TODAY => Some(crate::functions::today_fn::TODAY_META.arg_preparation_profile),
+        FUNC_ID_TIME => {
+            Some(crate::functions::date_parts_family::TIME_META.arg_preparation_profile)
+        }
+        FUNC_ID_TIMEVALUE => {
+            Some(crate::functions::date_value_family::TIMEVALUE_META.arg_preparation_profile)
+        }
+        FUNC_ID_TRANSLATE => Some(
+            crate::functions::number_regex_translate_family::TRANSLATE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_TRIMMEAN => {
+            Some(crate::functions::moment_stats_family::TRIMMEAN_META.arg_preparation_profile)
+        }
+        FUNC_ID_TRANSPOSE => Some(TRANSPOSE_META.arg_preparation_profile),
+        FUNC_ID_TRUE => Some(crate::functions::true_fn::TRUE_META.arg_preparation_profile),
+        FUNC_ID_TREND => {
+            Some(crate::functions::regression_forecast_family::TREND_META.arg_preparation_profile)
+        }
+        FUNC_ID_TRUNC => Some(crate::functions::trunc_fn::TRUNC_META.arg_preparation_profile),
+        FUNC_ID_TRIM => Some(crate::functions::text_scalar_misc::TRIM_META.arg_preparation_profile),
+        FUNC_ID_TRIMRANGE => {
+            Some(crate::functions::trimrange_fn::TRIMRANGE_META.arg_preparation_profile)
+        }
+        FUNC_ID_TTEST => {
+            Some(crate::functions::statistical_tests_family::TTEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_TYPE => Some(crate::functions::type_fn::TYPE_META.arg_preparation_profile),
+        FUNC_ID_UNIQUE => Some(UNIQUE_META.arg_preparation_profile),
+        FUNC_ID_UNICHAR => {
+            Some(crate::functions::text_unicode_fn::UNICHAR_META.arg_preparation_profile)
+        }
+        FUNC_ID_UNICODE => {
+            Some(crate::functions::text_unicode_fn::UNICODE_META.arg_preparation_profile)
+        }
+        FUNC_ID_UPPER => {
+            Some(crate::functions::text_scalar_misc::UPPER_META.arg_preparation_profile)
+        }
+        FUNC_ID_VALUE => Some(crate::functions::value_fn::VALUE_META.arg_preparation_profile),
+        FUNC_ID_VALUETOTEXT => {
+            Some(crate::functions::valuetotext_fn::VALUETOTEXT_META.arg_preparation_profile)
+        }
+        FUNC_ID_VAR => Some(crate::functions::var_fn::VAR_META.arg_preparation_profile),
+        FUNC_ID_VAR_P => Some(crate::functions::var_p_fn::VAR_P_META.arg_preparation_profile),
+        FUNC_ID_VAR_S => Some(crate::functions::var_s_fn::VAR_S_META.arg_preparation_profile),
+        FUNC_ID_VARA => Some(crate::functions::vara_fn::VARA_META.arg_preparation_profile),
+        FUNC_ID_VARP => Some(crate::functions::varp_fn::VARP_META.arg_preparation_profile),
+        FUNC_ID_VARPA => Some(crate::functions::varpa_fn::VARPA_META.arg_preparation_profile),
+        FUNC_ID_VDB => {
+            Some(crate::functions::depreciation_family::VDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_VSTACK => Some(VSTACK_META.arg_preparation_profile),
+        FUNC_ID_HLOOKUP => {
+            Some(crate::functions::vhlookup_family::HLOOKUP_META.arg_preparation_profile)
+        }
+        FUNC_ID_VLOOKUP => {
+            Some(crate::functions::vhlookup_family::VLOOKUP_META.arg_preparation_profile)
+        }
+        FUNC_ID_WEIBULL => {
+            Some(crate::functions::special_dist_family::WEIBULL_META.arg_preparation_profile)
+        }
+        FUNC_ID_WEIBULL_DIST => {
+            Some(crate::functions::special_dist_family::WEIBULL_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_WRAPCOLS => Some(WRAPCOLS_META.arg_preparation_profile),
+        FUNC_ID_WRAPROWS => Some(WRAPROWS_META.arg_preparation_profile),
+        FUNC_ID_XIRR => {
+            Some(crate::functions::cashflow_rate_family::XIRR_META.arg_preparation_profile)
+        }
+        FUNC_ID_XNPV => {
+            Some(crate::functions::cashflow_rate_family::XNPV_META.arg_preparation_profile)
+        }
+        FUNC_ID_XLOOKUP => Some(crate::functions::xlookup::XLOOKUP_META.arg_preparation_profile),
+        FUNC_ID_XMATCH => Some(crate::functions::xmatch::XMATCH_META.arg_preparation_profile),
+        FUNC_ID_XOR => Some(crate::functions::xor_fn::XOR_META.arg_preparation_profile),
+        FUNC_ID_WEEKDAY => {
+            Some(crate::functions::date_week_family::WEEKDAY_META.arg_preparation_profile)
+        }
+        FUNC_ID_WEEKNUM => {
+            Some(crate::functions::date_week_family::WEEKNUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_WORKDAY => {
+            Some(crate::functions::workday_networkdays_family::WORKDAY_META.arg_preparation_profile)
+        }
+        FUNC_ID_WORKDAY_INTL => Some(
+            crate::functions::workday_networkdays_family::WORKDAY_INTL_META.arg_preparation_profile,
+        ),
+        FUNC_ID_YIELD => {
+            Some(crate::functions::bond_core_family::YIELD_META.arg_preparation_profile)
+        }
+        FUNC_ID_YIELDDISC => {
+            Some(crate::functions::bond_core_family::YIELDDISC_META.arg_preparation_profile)
+        }
+        FUNC_ID_YIELDMAT => {
+            Some(crate::functions::bond_core_family::YIELDMAT_META.arg_preparation_profile)
+        }
+        FUNC_ID_YEAR => {
+            Some(crate::functions::date_parts_family::YEAR_META.arg_preparation_profile)
+        }
+        FUNC_ID_YEARFRAC => Some(
+            crate::functions::discount_bill_yearfrac_family::YEARFRAC_META.arg_preparation_profile,
+        ),
+        FUNC_ID_Z_TEST => {
+            Some(crate::functions::confidence_test_family::Z_TEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_ZTEST => {
+            Some(crate::functions::test_alias_family::ZTEST_META.arg_preparation_profile)
+        }
+        _ => None,
+    }
+}
+
+pub fn eval_surface_value_call(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    now_serial: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Result<CalcValue, WorksheetErrorCode> {
+    eval_surface_value_call_with_callable(
+        function_id,
+        args,
+        resolver,
+        now_serial,
+        random_provider,
+        locale_ctx,
+        host_info,
+        None,
+        None,
+        None,
+    )
+}
+
+/// The declared lift/broadcast axis for a function id (W105 oxf-y2uw.6), looked up FROM the
+/// function's own [`FunctionMeta`] (`meta.lift_broadcast_profile`). The meta literal is the
+/// SINGLE declared home of every function's by-index scalar-array-lift rule — there is no
+/// independent id-keyed copy a dispatch site could contradict. Unknown ids (not in the catalog)
+/// fall back to the default surface-native profile.
+fn lift_broadcast_profile_for_id(function_id: &str) -> LiftBroadcastProfile {
+    crate::xll_export_specs::lookup_function_meta_by_id(function_id)
+        .map(|meta| meta.lift_broadcast_profile)
+        .unwrap_or(crate::function::FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE)
+}
+
+/// The declared surface-pipeline FEC dependency profile for a function id (W105 oxf-y2uw.12.4),
+/// looked up FROM the function's own [`FunctionMeta`] (`meta.surface_fec_dependency_profile`). The
+/// meta literal is the SINGLE declared home of every function's provider/host dependency fact — no
+/// independent id-keyed copy a dispatch site could contradict. Unknown ids (not in the catalog)
+/// fall back to the resolver-only `RefOnly` profile so they are never treated as host-bound.
+fn surface_fec_dependency_profile_for_id(function_id: &str) -> FecDependencyProfile {
+    crate::xll_export_specs::lookup_function_meta_by_id(function_id)
+        .map(|meta| meta.surface_fec_dependency_profile)
+        .unwrap_or(FecDependencyProfile::RefOnly)
+}
+
+/// The by-index scalar-array-lift argument positions for a function id, DERIVED from the single
+/// declared [`LiftBroadcastProfile`] axis carried on the function's [`FunctionMeta`] (see
+/// [`lift_broadcast_profile_for_id`]) via its one `scalar_array_lift_positions` accessor. A thin
+/// derivation FROM the meta — never a second copy of the rule.
+fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [usize]> {
+    lift_broadcast_profile_for_id(function_id).scalar_array_lift_positions()
+}
+
+fn observed_error_result_array_lift(function_id: &str) -> bool {
+    matches!(function_id, FUNC_ID_DOLLARFR)
+}
+
+/// True iff `function_id` is an observed-lift function AND at least one of its declared lift
+/// positions holds a 1×1 array (after reference resolution, WITHOUT the scalar-prep `{e}→e`
+/// collapse). This is the oxf-wkwj signal: the by-index path silently coerces a unit-array lift
+/// arg to its scalar cell and SUCCEEDS, so the usual "by-index error → lift" trigger never fires —
+/// yet Excel lifts the unit array and returns its implicit intersection (a scalar). A multi-element
+/// array does NOT satisfy this (it is handled by the by-index-error trigger), and a scalar arg does
+/// not either, so this leaves every other case untouched.
+fn lift_position_holds_unit_array(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> bool {
+    let Some(lift_positions) = observed_scalar_array_lift_positions(function_id) else {
+        return false;
+    };
+    let Ok(prepared) =
+        crate::functions::adapters::prepare_args_values_only_preserving_unit_arrays(args, resolver)
+    else {
+        return false;
+    };
+    lift_positions.iter().any(|&position| {
+        prepared
+            .get(position)
+            .map(|value| matches!(value.core(), CoreValue::Array(array) if array.shape() == (ArrayShape { rows: 1, cols: 1 })))
+            .unwrap_or(false)
+    })
+}
+
+fn prepared_array_shape(value: &crate::functions::adapters::CalcValue) -> ArrayShape {
+    match value.core() {
+        CoreValue::Array(array) => array.shape(),
+        _ => ArrayShape { rows: 1, cols: 1 },
+    }
+}
+
+fn prepared_broadcast_at(
+    value: &crate::functions::adapters::CalcValue,
+    row: usize,
+    col: usize,
+) -> Option<crate::functions::adapters::CalcValue> {
+    match value.core() {
+        CoreValue::Array(array) => {
+            let shape = array.shape();
+            let source_row = if shape.rows == 1 {
+                0
+            } else if row < shape.rows {
+                row
+            } else {
+                return None;
+            };
+            let source_col = if shape.cols == 1 {
+                0
+            } else if col < shape.cols {
+                col
+            } else {
+                return None;
+            };
+            array
+                .get(source_row, source_col)
+                .map(|cell| match cell.core() {
+                    CoreValue::Number(n) => CalcValue::number(*n),
+                    CoreValue::Text(t) => CalcValue::text(t.clone()),
+                    CoreValue::Logical(b) => CalcValue::logical(*b),
+                    CoreValue::Error(code) => CalcValue::error(*code),
+                    CoreValue::Empty | CoreValue::Missing => {
+                        crate::functions::adapters::CalcValue::empty()
+                    }
+                    CoreValue::Array(_) | CoreValue::Reference(_) => {
+                        CalcValue::error(WorksheetErrorCode::Value)
+                    }
+                })
+        }
+        _ => Some(value.clone()),
+    }
+}
+
+fn call_arg_from_prepared(prepared: &crate::functions::adapters::CalcValue) -> CalcValue {
+    prepared.clone()
+}
+
+fn scalar_output_cell(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Array(array) => array
+            .get(0, 0)
+            .cloned()
+            .unwrap_or(CalcValue::error(WorksheetErrorCode::Calc)),
+        CoreValue::Reference(_) | CoreValue::Empty | CoreValue::Missing => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
+    }
+}
+
+fn try_observed_scalar_array_lift(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    now_serial: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+    callable_invoker: &dyn CallableInvoker,
+    rtd_provider: Option<&dyn RtdProvider>,
+    registered_external_provider: Option<&dyn RegisteredExternalProvider>,
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    let lift_positions = observed_scalar_array_lift_positions(function_id)?;
+    // Prepare WITHOUT collapsing a 1×1 array to its scalar cell. A 1×1-array argument at a lift
+    // position must be SEEN as an array so it flows through the same lift+intersect path as a
+    // multi-element array — Excel lifts a 1×1-array argument and returns its implicit
+    // intersection (the top-left scalar of `f(e)`), not a bare `f(e)`. The collapsing prep
+    // (`prepare_args_values_only`) hid the 1×1 case (oxf-wkwj): the array vanished into a scalar
+    // before the shape check, `has_lift_array` stayed false, the lifter declined, and the
+    // by-index path returned the un-intersected full result.
+    let prepared =
+        crate::functions::adapters::prepare_args_values_only_preserving_unit_arrays(args, resolver)
+            .ok()?;
+    let mut has_lift_array = false;
+    let mut shape = ArrayShape { rows: 1, cols: 1 };
+
+    for &position in lift_positions {
+        let Some(value) = prepared.get(position) else {
+            continue;
+        };
+        // Any array at a lift position — including a 1×1 array — is lifted. A bare scalar arg is
+        // not (it is broadcast as-is), so scalar-arg calls still decline the lifter here.
+        if matches!(value.core(), CoreValue::Array(_)) {
+            has_lift_array = true;
+        }
+        let arg_shape = prepared_array_shape(value);
+        shape.rows = shape.rows.max(arg_shape.rows);
+        shape.cols = shape.cols.max(arg_shape.cols);
+    }
+
+    if !has_lift_array {
+        return None;
+    }
+
+    let mut cells = Vec::with_capacity(shape.cell_count());
+    let mut cell_args = Vec::with_capacity(prepared.len());
+    for row in 0..shape.rows {
+        for col in 0..shape.cols {
+            cell_args.clear();
+            let mut missing_coordinate = false;
+            for (index, value) in prepared.iter().enumerate() {
+                let cell_prepared = if lift_positions.contains(&index) {
+                    match prepared_broadcast_at(value, row, col) {
+                        Some(value) => value,
+                        None => {
+                            missing_coordinate = true;
+                            break;
+                        }
+                    }
+                } else {
+                    value.clone()
+                };
+                cell_args.push(call_arg_from_prepared(&cell_prepared));
+            }
+
+            if missing_coordinate {
+                cells.push(CalcValue::error(WorksheetErrorCode::NA));
+                continue;
+            }
+
+            let cell_calc_args = calc_values_from_surface_call_args(&cell_args);
+            let cell = match eval_surface_value_call_with_callable(
+                function_id,
+                &cell_calc_args,
+                resolver,
+                now_serial,
+                random_provider,
+                locale_ctx,
+                host_info,
+                Some(callable_invoker),
+                rtd_provider,
+                registered_external_provider,
+            ) {
+                Ok(value) => scalar_output_cell(eval_value_from_calc_value(value)),
+                Err(code) => CalcValue::error(code),
+            };
+            cells.push(cell);
+        }
+    }
+
+    // When the lifted/intersected shape is 1×1 (every lift-position array was itself 1×1), Excel's
+    // implicit intersection yields a SCALAR, not a 1×1 array — return the single intersected cell
+    // bare. For a scalar-returning lift fn this is exactly `f(e)` (intersection of a scalar is the
+    // scalar, so the result is unchanged from the pre-fix scalar path); for an array-returning lift
+    // fn it is the top-left of `f(e)` (the fix). A multi-element result stays a spilled array.
+    if shape.rows == 1 && shape.cols == 1 {
+        return Some(Ok(cells
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| CalcValue::error(WorksheetErrorCode::Calc))));
+    }
+
+    Some(
+        CalcArray::new(shape, cells)
+            .map(CalcValue::array)
+            .ok_or(WorksheetErrorCode::Calc),
+    )
+}
+
+pub fn eval_surface_value_call_with_callable(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    now_serial: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+    callable_invoker: Option<&dyn CallableInvoker>,
+    rtd_provider: Option<&dyn RtdProvider>,
+    registered_external_provider: Option<&dyn RegisteredExternalProvider>,
+) -> Result<CalcValue, WorksheetErrorCode> {
+    let dispatch_key =
+        resolve_surface_dispatch_key(function_id).ok_or(WorksheetErrorCode::Value)?;
+    eval_surface_value_call_with_dispatch_key(
+        dispatch_key,
+        args,
+        resolver,
+        now_serial,
+        random_provider,
+        locale_ctx,
+        host_info,
+        callable_invoker,
+        rtd_provider,
+        registered_external_provider,
+    )
+}
+
+pub fn eval_surface_q_unary_number(
+    function_id: &str,
+    value: f64,
+) -> Result<f64, WorksheetErrorCode> {
+    match function_id {
+        FUNC_ID_ABS => Ok(abs_kernel(value)),
+        FUNC_ID_ACOT => acot_kernel(value),
+        FUNC_ID_ATAN => Ok(atan_kernel(value)),
+        FUNC_ID_ASINH => asinh_kernel(value),
+        FUNC_ID_ATANH => atanh_kernel(value),
+        FUNC_ID_COS => COS_META
+            .real_result_policy
+            .publish(value, cos_kernel(value)),
+        FUNC_ID_COSH => COSH_META
+            .real_result_policy
+            .publish(value, cosh_kernel(value)),
+        FUNC_ID_COT => cot_kernel(value),
+        FUNC_ID_COTH => coth_kernel(value),
+        FUNC_ID_CSC => csc_kernel(value),
+        FUNC_ID_CSCH => csch_kernel(value),
+        FUNC_ID_DEGREES => DEGREES_META
+            .real_result_policy
+            .publish(value, degrees_kernel(value)),
+        FUNC_ID_EVEN => even_kernel(value),
+        FUNC_ID_EXP => EXP_META
+            .real_result_policy
+            .publish(value, exp_kernel(value)),
+        FUNC_ID_FACT => fact_kernel(value),
+        FUNC_ID_FACTDOUBLE => factdouble_kernel(value),
+        FUNC_ID_INT => int_kernel(value),
+        FUNC_ID_LN => ln_kernel(value),
+        FUNC_ID_LOG10 => log10_kernel(value),
+        FUNC_ID_ODD => odd_kernel(value),
+        FUNC_ID_OP_NEGATE => op_negate_kernel(value),
+        FUNC_ID_OP_PERCENT => op_percent_kernel(value),
+        FUNC_ID_OP_UNARY_PLUS => op_unary_plus_kernel(value),
+        FUNC_ID_RADIANS => Ok(radians_kernel(value)),
+        FUNC_ID_SEC => sec_kernel(value),
+        FUNC_ID_SECH => sech_kernel(value),
+        FUNC_ID_SIGN => sign_kernel(value),
+        FUNC_ID_SIN => SIN_META
+            .real_result_policy
+            .publish(value, sin_kernel(value)),
+        FUNC_ID_SINH => SINH_META
+            .real_result_policy
+            .publish(value, sinh_kernel(value)),
+        FUNC_ID_SQRT => sqrt_kernel(value),
+        FUNC_ID_SQRTPI => sqrtpi_kernel(value),
+        FUNC_ID_TAN => TAN_META
+            .real_result_policy
+            .publish(value, tan_kernel(value)),
+        FUNC_ID_TANH => crate::functions::tanh::TANH_META.real_result_policy.publish(value, tanh_kernel(value)),
+        _ => Err(WorksheetErrorCode::Value),
+    }
+}
+
+pub fn eval_surface_q_binary_number(
+    function_id: &str,
+    lhs: f64,
+    rhs: f64,
+) -> Result<f64, WorksheetErrorCode> {
+    match function_id {
+        FUNC_ID_ATAN2 => atan2_kernel(lhs, rhs),
+        FUNC_ID_BITAND => bitand_kernel(lhs, rhs),
+        FUNC_ID_BITLSHIFT => bitlshift_kernel(lhs, rhs),
+        FUNC_ID_BITOR => bitor_kernel(lhs, rhs),
+        FUNC_ID_BITRSHIFT => bitrshift_kernel(lhs, rhs),
+        FUNC_ID_BITXOR => bitxor_kernel(lhs, rhs),
+        FUNC_ID_COMBIN => combin_kernel(lhs, rhs),
+        FUNC_ID_COMBINA => combina_kernel(lhs, rhs),
+        FUNC_ID_DELTA => delta_kernel(lhs, rhs),
+        FUNC_ID_GESTEP => gestep_kernel(lhs, rhs),
+        FUNC_ID_MOD => mod_kernel(lhs, rhs),
+        FUNC_ID_MROUND => mround_kernel(lhs, rhs),
+        FUNC_ID_OP_ADD => Ok(op_add_kernel(lhs, rhs)),
+        FUNC_ID_OP_DIVIDE => op_divide_kernel(lhs, rhs),
+        FUNC_ID_OP_MULTIPLY => op_multiply_kernel(lhs, rhs),
+        FUNC_ID_OP_POWER => power_kernel(lhs, rhs),
+        FUNC_ID_POWER => power_kernel(lhs, rhs),
+        FUNC_ID_OP_SUBTRACT => op_subtract_kernel(lhs, rhs),
+        FUNC_ID_QUOTIENT => quotient_kernel(lhs, rhs),
+        FUNC_ID_ROUND => Ok(round_kernel(lhs, rhs.trunc() as i32)),
+        FUNC_ID_TRUNC => Ok(trunc_kernel(lhs, rhs.trunc() as i32)),
+        _ => Err(WorksheetErrorCode::Value),
+    }
+}
+
+pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, WorksheetErrorCode> {
+    match function_id {
+        FUNC_ID_PI => match eval_pi(&[]) {
+            Ok(value) => match value.core() {
+                CoreValue::Number(n) => Ok(*n),
+                _ => Err(WorksheetErrorCode::Value),
+            },
+            Err(e) => Err(map_eval_error_to_ws(&e)),
+        },
+        _ => Err(WorksheetErrorCode::Value),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+        rc::Rc,
+    };
+
+    use crate::functions::adapters::CalcValue;
+    use crate::host_info::{
+        HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ResolvedWebImage,
+    };
+    use crate::locale_format::test_current_excel_host_context;
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{
+        CalcArray, CallableArityShape, CallableValue, CellStyleHint, ExcelText, NumberFormatHint,
+        OpaqueCallable, PresentationHint, ReferenceKind, ReferenceLike, RichValue, RichValueData,
+        Shared,
+    };
+
+    struct NoReferenceSystemProvider;
+
+    struct TestCallableInvoker;
+    #[derive(Debug)]
+    struct TestCallableHandle;
+    struct TestRandomProvider;
+    struct SequenceRandomProvider {
+        next: Cell<u32>,
+    }
+    static TEST_RANDOM_PROVIDER: TestRandomProvider = TestRandomProvider;
+
+    impl RandomProvider for TestRandomProvider {
+        fn random_unit(&self) -> f64 {
+            0.5
+        }
+    }
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
+
+    fn test_callable_value(token: &str, arity: usize) -> CallableValue {
+        CallableValue {
+            arity: CallableArityShape::exact(arity),
+            summary: token.to_string(),
+            handle: Shared::new(TestCallableHandle),
+        }
+    }
+
+    impl RandomProvider for SequenceRandomProvider {
+        fn random_unit(&self) -> f64 {
+            let next = self.next.get();
+            self.next.set(next + 1);
+            next as f64 / 100.0
+        }
+    }
+
+    type RegisteredCallable<'a> =
+        Rc<dyn Fn(&[CalcValue]) -> Result<CalcValue, CallableInvocationError> + 'a>;
+
+    #[derive(Clone)]
+    struct ClosureCallableInvoker<'a> {
+        closures: Rc<RefCell<HashMap<String, RegisteredCallable<'a>>>>,
+    }
+
+    struct TestImageProvider;
+
+    impl<'a> ClosureCallableInvoker<'a> {
+        fn new() -> Self {
+            Self {
+                closures: Rc::new(RefCell::new(HashMap::new())),
+            }
+        }
+
+        fn register<F>(&self, token: &str, arity: usize, f: F) -> CallableValue
+        where
+            F: Fn(&[CalcValue]) -> Result<CalcValue, CallableInvocationError> + 'a,
+        {
+            self.closures
+                .borrow_mut()
+                .insert(token.to_string(), Rc::new(f));
+            test_callable_value(token, arity)
+        }
+    }
+
+    impl ReferenceSystemProvider for NoReferenceSystemProvider {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
+        }
+
+        fn dereference(
+            &self,
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target().to_string(),
+                },
+            )
+        }
+    }
+
+    impl CallableInvoker for ClosureCallableInvoker<'_> {
+        fn invoke(
+            &self,
+            callable: &CallableValue,
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
+            if let Some(handler) = self.closures.borrow().get(&callable.summary).cloned() {
+                return handler(args);
+            }
+
+            let fallback = TestCallableInvoker;
+            fallback.invoke(callable, args)
+        }
+    }
+
+    fn eval_test_surface_value(
+        function_id: &str,
+        args: &[CalcValue],
+    ) -> Result<CalcValue, CallableInvocationError> {
+        eval_test_surface_value_call(
+            function_id,
+            args,
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .map_err(CallableInvocationError::Worksheet)
+    }
+
+    fn eval_test_surface_value_call(
+        function_id: &str,
+        args: &[CalcValue],
+        resolver: &(impl ReferenceSystemProvider + ?Sized),
+        now_serial: Option<f64>,
+        random_provider: Option<&dyn RandomProvider>,
+        locale_ctx: Option<&LocaleFormatContext>,
+        host_info: Option<&dyn HostInfoProvider>,
+    ) -> Result<CalcValue, WorksheetErrorCode> {
+        let calc_args = super::calc_values_from_surface_call_args(args);
+        super::eval_surface_value_call(
+            function_id,
+            &calc_args,
+            resolver,
+            now_serial,
+            random_provider,
+            locale_ctx,
+            host_info,
+        )
+        .map(super::eval_value_from_calc_value)
+    }
+
+    fn array_arg(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        CalcValue::array(CalcArray::from_rows(rows).unwrap())
+    }
+
+    fn number_arg(value: f64) -> CalcValue {
+        CalcValue::number(value)
+    }
+
+    fn logical_arg(value: bool) -> CalcValue {
+        CalcValue::logical(value)
+    }
+
+    fn text_arg(value: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_interop_assignment(value))
+    }
+
+    fn text_cell(value: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_interop_assignment(value))
+    }
+
+    #[test]
+    fn observed_scalar_array_lift_handles_value_error_result_surfaces() {
+        let got = eval_test_surface_value(
+            FUNC_ID_TRIMMEAN,
+            &[
+                array_arg(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(5.0),
+                    CalcValue::number(6.0),
+                    CalcValue::number(7.0),
+                    CalcValue::number(8.0),
+                    CalcValue::number(9.0),
+                    CalcValue::number(100.0),
+                ]]),
+                array_arg(vec![vec![CalcValue::number(0.2), CalcValue::number(0.2)]]),
+            ],
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(5.5), CalcValue::number(5.5),]])
+                    .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn observed_scalar_array_lift_handles_abs_arrays() {
+        let got = eval_test_surface_value(
+            FUNC_ID_ABS,
+            &[array_arg(vec![vec![
+                CalcValue::number(-1.0),
+                CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                CalcValue::number(2.0),
+            ]])],
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::number(2.0),
+                ]])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn observed_scalar_array_lift_covers_w092_reopened_successor_positions() {
+        let binomdist = eval_test_surface_value(
+            FUNC_ID_BINOMDIST,
+            &[
+                number_arg(2.0),
+                number_arg(4.0),
+                number_arg(0.25),
+                array_arg(vec![vec![
+                    CalcValue::logical(false),
+                    CalcValue::logical(false),
+                ]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            binomdist,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(f64::from_bits(0x3fcb000000000002)),
+                    CalcValue::number(f64::from_bits(0x3fcb000000000002)),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let normdist = eval_test_surface_value(
+            FUNC_ID_NORMDIST,
+            &[
+                number_arg(42.0),
+                number_arg(40.0),
+                number_arg(1.5),
+                array_arg(vec![vec![
+                    CalcValue::logical(true),
+                    CalcValue::logical(true),
+                ]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            normdist,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(f64::from_bits(0x3fed14cc3547f8da)),
+                    CalcValue::number(f64::from_bits(0x3fed14cc3547f8da)),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let complex = eval_test_surface_value(
+            FUNC_ID_COMPLEX,
+            &[
+                number_arg(3.0),
+                number_arg(4.0),
+                array_arg(vec![vec![text_cell("j"), text_cell("j")]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            complex,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![text_cell("3+4j"), text_cell("3+4j")]]).unwrap()
+            )
+        );
+
+        let dollarfr = eval_test_surface_value(
+            FUNC_ID_DOLLARFR,
+            &[
+                CalcValue::missing(),
+                array_arg(vec![vec![CalcValue::number(16.0), CalcValue::number(16.0)]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            dollarfr,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let switch = eval_test_surface_value(
+            FUNC_ID_SWITCH,
+            &[
+                number_arg(2.0),
+                number_arg(1.0),
+                text_arg("a"),
+                array_arg(vec![vec![CalcValue::number(2.0), CalcValue::number(2.0)]]),
+                text_arg("b"),
+                text_arg("other"),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            switch,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![text_cell("b"), text_cell("b")]]).unwrap()
+            )
+        );
+
+        let switch_no_default = eval_test_surface_value(
+            FUNC_ID_SWITCH,
+            &[
+                number_arg(3.0),
+                number_arg(1.0),
+                text_arg("a"),
+                array_arg(vec![vec![CalcValue::number(2.0), CalcValue::number(2.0)]]),
+                text_arg("b"),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            switch_no_default,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let ifs = eval_test_surface_value(
+            FUNC_ID_IFS,
+            &[
+                text_arg("2"),
+                array_arg(vec![vec![text_cell("hit"), text_cell("hit")]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            ifs,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let ifs_unselected_array_result = eval_test_surface_value(
+            FUNC_ID_IFS,
+            &[
+                logical_arg(false),
+                array_arg(vec![vec![CalcValue::number(1.0), CalcValue::number(1.0)]]),
+                number_arg(0.0),
+                number_arg(2.0),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            ifs_unselected_array_result,
+            CalcValue::error(WorksheetErrorCode::NA)
+        );
+
+        let address_abs_num = eval_test_surface_value(
+            FUNC_ID_ADDRESS,
+            &[
+                number_arg(3.0),
+                number_arg(2.0),
+                array_arg(vec![vec![CalcValue::number(4.0), CalcValue::number(4.0)]]),
+                logical_arg(false),
+                text_arg("Alpha"),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            address_abs_num,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    text_cell("Alpha!R[3]C[2]"),
+                    text_cell("Alpha!R[3]C[2]"),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let address_sheet_text = eval_test_surface_value(
+            FUNC_ID_ADDRESS,
+            &[
+                number_arg(3.0),
+                number_arg(2.0),
+                number_arg(1.0),
+                logical_arg(true),
+                array_arg(vec![vec![text_cell("Quarter 1"), text_cell("Quarter 1")]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            address_sheet_text,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    text_cell("'Quarter 1'!$B$3"),
+                    text_cell("'Quarter 1'!$B$3"),
+                ]])
+                .unwrap()
+            )
+        );
+    }
+
+    /// W105 oxf-y2uw.6 single-source guard. The lift/broadcast axis has exactly ONE declared
+    /// home: each function's `FunctionMeta.lift_broadcast_profile` literal. The by-index dispatch
+    /// reads it through `lift_broadcast_profile_for_id` / `observed_scalar_array_lift_positions`,
+    /// both of which now look the rule up FROM the meta — there is no independent id-keyed copy.
+    /// This test pins FULL BIDIRECTIONAL agreement for EVERY catalog id (not one direction):
+    ///
+    /// 1. The dispatch's declared profile for an id is exactly that id's
+    ///    `meta.lift_broadcast_profile` — the dispatch reads the meta and nothing else.
+    /// 2. The positions the dispatch broadcasts over are exactly the meta profile's positions
+    ///    (the derivation accessor never re-decides the mask).
+    /// 3. Therefore an id carries a non-default lift field IFF the dispatch lifts it, and the
+    ///    masks coincide both ways — neither side can hold a mask the other lacks or contradicts.
+    /// 4. `FUNC.ABS` is fully migrated: it carries the default `SurfaceNative` profile and lifts
+    ///    natively through the unary-numeric executor (so the dispatch sees no by-index mask).
+    #[test]
+    fn lift_broadcast_axis_is_single_source() {
+        use crate::function::FunctionMeta;
+
+        for meta in crate::xll_export_specs::function_catalog() {
+            let dispatch_profile = lift_broadcast_profile_for_id(meta.function_id);
+            let dispatch_positions = observed_scalar_array_lift_positions(meta.function_id);
+            let meta_profile = meta.lift_broadcast_profile;
+            let meta_positions = meta_profile.scalar_array_lift_positions();
+
+            // (1) The dispatch's declared profile IS the meta's field — single source, read here.
+            assert_eq!(
+                dispatch_profile, meta_profile,
+                "{}: the lift/broadcast profile the dispatch reads diverged from \
+                 FunctionMeta.lift_broadcast_profile (a second, contradicting lift source)",
+                meta.function_id
+            );
+
+            // (2) The positions the dispatch broadcasts over ARE the meta profile's positions.
+            assert_eq!(
+                dispatch_positions, meta_positions,
+                "{}: the dispatch lift positions diverged from the meta profile's positions",
+                meta.function_id
+            );
+
+            // (3) Bidirectional default/non-default agreement: a default meta field must yield no
+            // dispatch lift, and a non-default meta field must yield a dispatch lift (and back).
+            let meta_is_default = meta_profile == FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE;
+            assert_eq!(
+                meta_is_default,
+                dispatch_positions.is_none(),
+                "{}: meta-default ({meta_is_default}) and dispatch-native ({}) disagree — the \
+                 lift field and the dispatch lift must be non-default together or default together",
+                meta.function_id,
+                dispatch_positions.is_none(),
+            );
+        }
+
+        // (4) ABS carries the default surface-native axis and the dispatch sees no by-index mask.
+        assert_eq!(
+            crate::functions::abs::ABS_META.lift_broadcast_profile,
+            FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+            "ABS_META must carry the default SurfaceNative lift/broadcast profile"
+        );
+        assert_eq!(
+            lift_broadcast_profile_for_id(FUNC_ID_ABS),
+            LiftBroadcastProfile::SurfaceNative,
+            "ABS must lift natively (default profile), not via the by-index dispatch"
+        );
+        assert_eq!(
+            observed_scalar_array_lift_positions(FUNC_ID_ABS),
+            None,
+            "ABS must not carry a scalar-array-lift position mask after migration"
+        );
+    }
+
+    fn eval_test_calc_surface_value_with_callable(
+        function_id: &str,
+        args: &[CalcValue],
+        invoker: &dyn CallableInvoker,
+    ) -> Result<CalcValue, CallableInvocationError> {
+        super::eval_surface_value_call_with_callable(
+            function_id,
+            args,
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+            Some(invoker),
+            None,
+            None,
+        )
+        .map(super::eval_value_from_calc_value)
+        .map_err(CallableInvocationError::Worksheet)
+    }
+
+    fn call_arg_from_prepared(prepared: &CalcValue) -> CalcValue {
+        match prepared.core() {
+            CoreValue::Missing => CalcValue::missing(),
+            CoreValue::Empty => CalcValue::empty(),
+            _ => prepared.clone(),
+        }
+    }
+
+    fn number_column(values: &[f64]) -> CalcValue {
+        CalcValue::array(
+            CalcArray::from_rows(
+                values
+                    .iter()
+                    .copied()
+                    .map(|value| vec![CalcValue::number(value)])
+                    .collect(),
+            )
+            .expect("column vector"),
+        )
+    }
+
+    impl CallableInvoker for TestCallableInvoker {
+        fn invoke(
+            &self,
+            callable: &CallableValue,
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
+            match callable.summary.as_str() {
+                "helper.mul10" => match args {
+                    [value] => match value.core() {
+                        CoreValue::Number(n) => Ok(CalcValue::number(*n * 10.0)),
+                        _ => Err(CallableInvocationError::Worksheet(
+                            WorksheetErrorCode::Value,
+                        )),
+                    },
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                "helper.add1" => match args {
+                    [value] => match value.core() {
+                        CoreValue::Number(n) => Ok(CalcValue::number(*n + 1.0)),
+                        _ => Err(CallableInvocationError::Worksheet(
+                            WorksheetErrorCode::Value,
+                        )),
+                    },
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                "helper.feb2024_day_or_two_spaces" => match args {
+                    [value] => {
+                        let CoreValue::Number(n) = value.core() else {
+                            return Err(CallableInvocationError::Worksheet(
+                                WorksheetErrorCode::Value,
+                            ));
+                        };
+                        let first_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            2,
+                            1,
+                        )
+                        .expect("first day serial");
+                        let last_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            2,
+                            29,
+                        )
+                        .expect("last day serial");
+                        if *n >= first_day && *n <= last_day {
+                            let day = eval_test_surface_value_call(
+                                FUNC_ID_DAY,
+                                &[(CalcValue::number(*n))],
+                                &NoReferenceSystemProvider,
+                                Some(46000.0),
+                                Some(&TEST_RANDOM_PROVIDER),
+                                None,
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            let ctx = test_current_excel_host_context();
+                            let text = eval_test_surface_value_call(
+                                FUNC_ID_TEXT,
+                                &[
+                                    (day),
+                                    (CalcValue::text(ExcelText::from_interop_assignment("00"))),
+                                ],
+                                &NoReferenceSystemProvider,
+                                Some(46000.0),
+                                Some(&TEST_RANDOM_PROVIDER),
+                                Some(&ctx),
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            Ok(text)
+                        } else {
+                            Ok(CalcValue::text(ExcelText::from_interop_assignment("  ")))
+                        }
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                "helper.jan2024_day_or_two_spaces" => match args {
+                    [value] => {
+                        let CoreValue::Number(n) = value.core() else {
+                            return Err(CallableInvocationError::Worksheet(
+                                WorksheetErrorCode::Value,
+                            ));
+                        };
+                        let first_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            1,
+                        )
+                        .expect("first day serial");
+                        let last_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            31,
+                        )
+                        .expect("last day serial");
+                        if *n >= first_day && *n <= last_day {
+                            let day = eval_test_surface_value_call(
+                                FUNC_ID_DAY,
+                                &[(CalcValue::number(*n))],
+                                &NoReferenceSystemProvider,
+                                Some(46000.0),
+                                Some(&TEST_RANDOM_PROVIDER),
+                                None,
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            let ctx = test_current_excel_host_context();
+                            let text = eval_test_surface_value_call(
+                                FUNC_ID_TEXT,
+                                &[
+                                    (day),
+                                    (CalcValue::text(ExcelText::from_interop_assignment("00"))),
+                                ],
+                                &NoReferenceSystemProvider,
+                                Some(46000.0),
+                                Some(&TEST_RANDOM_PROVIDER),
+                                Some(&ctx),
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            Ok(text)
+                        } else {
+                            Ok(CalcValue::text(ExcelText::from_interop_assignment("  ")))
+                        }
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                "helper.jan2024_day_or_zero" => match args {
+                    [value] => {
+                        let CoreValue::Number(n) = value.core() else {
+                            return Err(CallableInvocationError::Worksheet(
+                                WorksheetErrorCode::Value,
+                            ));
+                        };
+                        let first_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            1,
+                        )
+                        .expect("first day serial");
+                        let last_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            31,
+                        )
+                        .expect("last day serial");
+                        if *n >= first_day && *n <= last_day {
+                            let day = eval_test_surface_value_call(
+                                FUNC_ID_DAY,
+                                &[(CalcValue::number(*n))],
+                                &NoReferenceSystemProvider,
+                                Some(46000.0),
+                                Some(&TEST_RANDOM_PROVIDER),
+                                None,
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            Ok(day)
+                        } else {
+                            Ok(CalcValue::number(0.0))
+                        }
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                _ => Err(CallableInvocationError::UnsupportedCallableToken(
+                    callable.summary.clone(),
+                )),
+            }
+        }
+    }
+
+    impl HostInfoProvider for TestImageProvider {
+        fn query_image(
+            &self,
+            _request: &ImageRequest,
+        ) -> Result<ImageProviderResult, HostInfoError> {
+            Ok(ImageProviderResult::Image(ResolvedWebImage {
+                web_image_identifier: "img-1".to_string(),
+                published_fallback: ExcelText::from_interop_assignment("-2146826273"),
+            }))
+        }
+    }
+
+    #[test]
+    fn eval_surface_value_call_abs_accepts_text_numeric() {
+        let arg = CalcValue::text(ExcelText::from_utf16_code_units(
+            " -2 ".encode_utf16().collect(),
+        ));
+        let got = eval_test_surface_value_call(
+            FUNC_ID_ABS,
+            &[arg],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_power_zero_to_zero_returns_num_error() {
+        for function_id in [FUNC_ID_OP_POWER, FUNC_ID_POWER] {
+            let got = eval_test_surface_value_call(
+                function_id,
+                &[(CalcValue::number(0.0)), (CalcValue::number(0.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            );
+            assert_eq!(got, Err(WorksheetErrorCode::Num));
+        }
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_add_lifts_arrays() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                    ])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0), CalcValue::number(40.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(11.0), CalcValue::number(22.0)],
+                    vec![CalcValue::number(33.0), CalcValue::number(44.0)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_add_broadcasts_arrays() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0), CalcValue::number(3.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_equal_broadcasts_arrays() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_OP_EQUAL,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::logical(true), CalcValue::logical(false)],
+                    vec![CalcValue::logical(false), CalcValue::logical(true)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_concat_marks_missing_broadcast_coordinates_as_na() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_OP_CONCAT,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::text(ExcelText::from_interop_assignment("y")),
+                        CalcValue::text(ExcelText::from_interop_assignment("z")),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("ax")),
+                    CalcValue::text(ExcelText::from_interop_assignment("by")),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_range_ref_normalizes_bounds() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_OP_RANGE_REF,
+            &[
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Ref));
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_union_ref_returns_multi_area_reference() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_OP_UNION_REF,
+            &[
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:A2".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "G1:G2".to_string())),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Ref));
+    }
+
+    #[test]
+    fn eval_surface_value_call_vlookup_spills_array_lookup_value_results() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_VLOOKUP,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(2.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(4.0), CalcValue::number(40.0)],
+                        vec![CalcValue::number(6.0), CalcValue::number(60.0)],
+                        vec![CalcValue::number(8.0), CalcValue::number(80.0)],
+                    ])
+                    .unwrap(),
+                )),
+                (CalcValue::number(2.0)),
+                (CalcValue::logical(false)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(20.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_hlookup_spills_array_lookup_value_results() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_HLOOKUP,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![
+                            CalcValue::number(2.0),
+                            CalcValue::number(4.0),
+                            CalcValue::number(6.0),
+                            CalcValue::number(8.0),
+                        ],
+                        vec![
+                            CalcValue::number(20.0),
+                            CalcValue::number(40.0),
+                            CalcValue::number(60.0),
+                            CalcValue::number(80.0),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+                (CalcValue::number(2.0)),
+                (CalcValue::logical(false)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(20.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_left_spills_array_counts() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_LEFT,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment("MISSISSIPPI"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("M"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("MI"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("MIS"))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_right_spills_array_counts() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_RIGHT,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment("MISSISSIPPI"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("PI"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("PPI"))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_mid_spills_array_start_positions() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_MID,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment("MISSISSIPPI"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                        vec![CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0)],
+                        vec![CalcValue::number(6.0)],
+                        vec![CalcValue::number(7.0)],
+                        vec![CalcValue::number(8.0)],
+                        vec![CalcValue::number(9.0)],
+                        vec![CalcValue::number(10.0)],
+                        vec![CalcValue::number(11.0)],
+                    ])
+                    .unwrap(),
+                )),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("M"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("P"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("P"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_char_spills_array_numbers() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_CHAR,
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(65.0)],
+                    vec![CalcValue::number(66.0)],
+                    vec![CalcValue::number(67.0)],
+                ])
+                .unwrap(),
+            ))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("A"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("B"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("C"))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_rept_spills_array_counts() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_REPT,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment("x"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("x"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("xx"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("xxx"))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_textafter_spills_array_instance_numbers() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXTAFTER,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment("a-b-c"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("-"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("b-c"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("c"))],
+                    vec![CalcValue::error(WorksheetErrorCode::NA)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_textbefore_spills_array_text_inputs() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXTBEFORE,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a-b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c-d")),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::text(ExcelText::from_interop_assignment("-"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("a")),
+                    CalcValue::text(ExcelText::from_interop_assignment("c")),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_areas_counts_multi_area_reference() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_AREAS,
+            &[CalcValue::reference(
+                ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
+            )],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_areas_rejects_legacy_parenthesized_area_carrier() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_AREAS,
+            &[CalcValue::reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "(A1,B2:B3)".to_string(),
+            ))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn eval_surface_value_call_index_reports_provider_failure_for_parenthesized_area_carrier() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CalcValue::reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "(A1:A2,G1:G2)".to_string(),
+                )),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Ref));
+    }
+
+    #[test]
+    fn eval_surface_value_call_rejects_unknown_id() {
+        let arg = CalcValue::number(1.0);
+        let got = eval_test_surface_value_call(
+            "FUNC.UNKNOWN",
+            &[arg],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn eval_surface_value_call_roman_returns_text_result() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_ROMAN,
+            &[(CalcValue::number(499.0)), (CalcValue::logical(false))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
+                "ID".encode_utf16().collect()
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_with_callable_supports_map_helper_surface() {
+        let array =
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .expect("row vector");
+        let callable = test_callable_value("helper.add1", 1);
+        let got = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(CalcValue::array(array)),
+                CalcValue::callable(callable),
+            ],
+            &TestCallableInvoker,
+        );
+        let expected =
+            CalcArray::from_rows(vec![vec![CalcValue::number(2.0), CalcValue::number(3.0)]])
+                .expect("row vector");
+        assert_eq!(got, Ok(CalcValue::array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_xmatch_spills_array_lookup_value_results() {
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
+        ]])
+        .expect("row vector");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_XMATCH,
+            &[
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        let expected = CalcArray::from_rows(vec![vec![
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(1.0),
+            CalcValue::error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(CalcValue::array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_xmatch_exact_witness_spills_array_lookup_value_results() {
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+            CalcValue::number(4.0),
+            CalcValue::number(5.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
+        ]])
+        .expect("row vector");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_XMATCH,
+            &[
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        let expected = CalcArray::from_rows(vec![vec![
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(1.0),
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(2.0),
+            CalcValue::error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(CalcValue::array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0940_corpus_formula_returns_six() {
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+            CalcValue::number(4.0),
+            CalcValue::number(5.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
+        ]])
+        .expect("row vector");
+        let source = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+            CalcValue::number(4.0),
+            CalcValue::number(5.0),
+        ]])
+        .expect("row vector");
+
+        let xmatch = eval_test_surface_value_call(
+            FUNC_ID_XMATCH,
+            &[
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("xmatch result");
+
+        let isnumber = eval_test_surface_value_call(
+            FUNC_ID_ISNUMBER,
+            &[(xmatch)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("isnumber result");
+
+        let filtered = eval_test_surface_value_call(
+            FUNC_ID_FILTER,
+            &[(CalcValue::array(source)), (isnumber)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("filter result");
+
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(filtered)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(CalcValue::number(6.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0779_dictionary_keys_composition_returns_two() {
+        let keys = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_interop_assignment("name")),
+            CalcValue::text(ExcelText::from_interop_assignment("age")),
+            CalcValue::text(ExcelText::from_interop_assignment("city")),
+        ]])
+        .expect("row vector");
+        let mapped = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_interop_assignment("Alice")),
+            CalcValue::number(30.0),
+            CalcValue::error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+
+        let iserror = eval_test_surface_value_call(
+            FUNC_ID_ISERROR,
+            &[(CalcValue::array(mapped))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("iserror result");
+
+        let keep = eval_test_surface_value_call(
+            FUNC_ID_NOT,
+            &[(iserror)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("not result");
+
+        let filtered = eval_test_surface_value_call(
+            FUNC_ID_FILTER,
+            &[(CalcValue::array(keys)), (keep)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("filter result");
+
+        let got = eval_test_surface_value_call(
+            FUNC_ID_COLUMNS,
+            &[(filtered)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0702_day_of_date_1900_march_zero_returns_twenty_nine() {
+        let serial = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(0.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("date result");
+
+        let got = eval_test_surface_value_call(
+            FUNC_ID_DAY,
+            &[(serial)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(CalcValue::number(29.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0703_0705_datedif_cluster_matches_expected_values() {
+        let start_y = CalcValue::text(ExcelText::from_interop_assignment("2020-01-15"));
+        let end_y = CalcValue::text(ExcelText::from_interop_assignment("2024-03-20"));
+        let unit_y = CalcValue::text(ExcelText::from_interop_assignment("Y"));
+        let got_y = eval_test_surface_value_call(
+            FUNC_ID_DATEDIF,
+            &[start_y, end_y, unit_y],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_y, Ok(CalcValue::number(4.0)));
+
+        let start_m = CalcValue::text(ExcelText::from_interop_assignment("2024-01-15"));
+        let end_m = CalcValue::text(ExcelText::from_interop_assignment("2024-04-10"));
+        let got_m = eval_test_surface_value_call(
+            FUNC_ID_DATEDIF,
+            &[
+                start_m.clone(),
+                end_m.clone(),
+                (CalcValue::text(ExcelText::from_interop_assignment("M"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_m, Ok(CalcValue::number(2.0)));
+
+        let got_md = eval_test_surface_value_call(
+            FUNC_ID_DATEDIF,
+            &[
+                start_m,
+                end_m,
+                (CalcValue::text(ExcelText::from_interop_assignment("MD"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_md, Ok(CalcValue::number(26.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0706_0708_weekday_iso_cluster_matches_expected_values() {
+        let jan1 = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("DATE(2024,1,1)");
+        let got_0706 = eval_test_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[(jan1.clone())],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0706, Ok(CalcValue::number(2.0)));
+
+        let got_0707 = eval_test_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[(jan1), (CalcValue::number(2.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0707, Ok(CalcValue::number(1.0)));
+
+        let dec30 = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(12.0)),
+                (CalcValue::number(30.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("DATE(2024,12,30)");
+        let got_0708 = eval_test_surface_value_call(
+            FUNC_ID_ISOWEEKNUM,
+            &[(dec30)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0708, Ok(CalcValue::number(1.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0709_0711_month_end_shift_cluster_matches_expected_values() {
+        let jan15 = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(15.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("DATE(2024,1,15)");
+        let got_0709 = eval_test_surface_value_call(
+            FUNC_ID_DAY,
+            &[eval_test_surface_value_call(
+                FUNC_ID_EOMONTH,
+                &[(jan15), (CalcValue::number(1.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("EOMONTH(...,1)")],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0709, Ok(CalcValue::number(29.0)));
+
+        let mar15 = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(15.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("DATE(2024,3,15)");
+        let got_0710 = eval_test_surface_value_call(
+            FUNC_ID_MONTH,
+            &[eval_test_surface_value_call(
+                FUNC_ID_EOMONTH,
+                &[(mar15), (CalcValue::number(-1.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("EOMONTH(...,-1)")],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0710, Ok(CalcValue::number(2.0)));
+
+        let jan31 = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(31.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("DATE(2024,1,31)");
+        let got_0711 = eval_test_surface_value_call(
+            FUNC_ID_DAY,
+            &[eval_test_surface_value_call(
+                FUNC_ID_EDATE,
+                &[(jan31), (CalcValue::number(1.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("EDATE(...,1)")],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0711, Ok(CalcValue::number(29.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0712_time_second_roundtrip_returns_one() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_ROUND,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_MULTIPLY,
+                    &[
+                        eval_test_surface_value_call(
+                            FUNC_ID_TIME,
+                            &[
+                                (CalcValue::number(0.0)),
+                                (CalcValue::number(0.0)),
+                                (CalcValue::number(1.0)),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("TIME(0,0,1)"),
+                        (CalcValue::number(86400.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("TIME*86400")),
+                (CalcValue::number(0.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0805_iferror_sum_filter_false_returns_empty() {
+        let filtered_err = eval_test_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::logical(false)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect_err("FILTER({1,2,3},FALSE) should error locally");
+        let sum_err = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(CalcValue::error(filtered_err))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect_err("SUM should propagate the same local error lane");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_IFERROR,
+            &[
+                (CalcValue::error(sum_err)),
+                (CalcValue::text(ExcelText::from_interop_assignment("empty"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("empty")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0807_sort_row_vector_default_axis_returns_first_cell() {
+        let sorted = eval_test_surface_value_call(
+            FUNC_ID_SORT,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(9.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(6.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CalcValue::missing(),
+                (CalcValue::number(-1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("sort result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[(sorted), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0808_sortby_row_vector_index_first_returns_d() {
+        let sorted = eval_test_surface_value_call(
+            FUNC_ID_SORTBY,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::text(ExcelText::from_interop_assignment("d")),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(4.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("sortby result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[(sorted), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("d")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0814_sum_of_drop_row_vector_negative_count_returns_calc() {
+        let drop_err = eval_test_surface_value_call(
+            FUNC_ID_DROP,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(5.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::number(-2.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect_err("DROP should stay on the row axis and empty out the array locally");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(CalcValue::error(drop_err))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Calc));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0820_choosecols_sum_returns_ninety() {
+        let chosen = eval_test_surface_value_call(
+            FUNC_ID_CHOOSECOLS,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                        CalcValue::number(40.0),
+                        CalcValue::number(50.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(5.0),
+                    ]])
+                    .expect("selector row vector"),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("choosecols result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(chosen)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(90.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0846_to_ftc_0850_match_and_choose_cluster_matches_expected() {
+        let row_vector = CalcArray::from_rows(vec![vec![
+            CalcValue::number(100.0),
+            CalcValue::number(200.0),
+            CalcValue::number(300.0),
+            CalcValue::number(400.0),
+            CalcValue::number(500.0),
+        ]])
+        .expect("row vector");
+        let matched = eval_test_surface_value_call(
+            FUNC_ID_MATCH,
+            &[
+                (CalcValue::number(300.0)),
+                (CalcValue::array(row_vector.clone())),
+                (CalcValue::number(0.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("match result");
+        let got_0846 = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[(CalcValue::array(row_vector)), (matched)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0846, Ok(CalcValue::number(300.0)));
+
+        let got_0848 = eval_test_surface_value_call(
+            FUNC_ID_MATCH,
+            &[
+                (CalcValue::number(99.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::number(0.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0848, Err(WorksheetErrorCode::NA));
+
+        let got_0849 = eval_test_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                (CalcValue::number(3.0)),
+                (CalcValue::text(ExcelText::from_interop_assignment("a"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("b"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("c"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("d"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got_0849,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("c")))
+        );
+
+        let got_0850 = eval_test_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                (CalcValue::number(5.0)),
+                (CalcValue::text(ExcelText::from_interop_assignment("a"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("b"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("c"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got_0850, Ok(CalcValue::error(WorksheetErrorCode::Value)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0851_and_ftc_0858_lookup_cluster_matches_expected() {
+        let got_0851 = eval_test_surface_value_call(
+            FUNC_ID_XLOOKUP,
+            &[
+                (CalcValue::number(99.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::text(ExcelText::from_interop_assignment("missing"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got_0851,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "missing"
+            )))
+        );
+
+        let got_0858 = eval_test_surface_value_call(
+            FUNC_ID_LOOKUP,
+            &[
+                (CalcValue::number(25.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                        CalcValue::number(40.0),
+                        CalcValue::number(50.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::text(ExcelText::from_interop_assignment("d")),
+                        CalcValue::text(ExcelText::from_interop_assignment("e")),
+                    ]])
+                    .expect("row vector"),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got_0858,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("b")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_xlookup_spills_array_lookup_value_results() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_XLOOKUP,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(2.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(6.0),
+                        CalcValue::number(8.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(20.0),
+                        CalcValue::number(40.0),
+                        CalcValue::number(60.0),
+                        CalcValue::number(80.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                (CalcValue::text(ExcelText::from_interop_assignment("NF"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("NF")),
+                    CalcValue::number(20.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("NF")),
+                ]])
+                .expect("row vector")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
+        let cols = eval_test_surface_value_call(
+            FUNC_ID_SEQUENCE,
+            &[(CalcValue::number(1.0)), (CalcValue::number(4.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("sequence result");
+        let result = eval_test_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                (cols),
+                (CalcValue::text(ExcelText::from_interop_assignment("Alpha"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Bravo"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Charlie"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Delta"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("choose result");
+
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[(result), (CalcValue::number(1.0)), (CalcValue::number(3.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "Charlie"
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1030_choose_transpose_index_returns_two() {
+        let data = eval_test_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[(CalcValue::number(1.0)), (CalcValue::number(3.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0)],
+                        vec![CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0)],
+                    ])
+                    .unwrap(),
+                )),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(100.0)],
+                        vec![CalcValue::number(200.0)],
+                        vec![CalcValue::number(300.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("choose result");
+        let result = eval_test_surface_value_call(
+            FUNC_ID_TRANSPOSE,
+            &[(data)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("transpose result");
+
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[(result), (CalcValue::number(1.0)), (CalcValue::number(2.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1021_conditional_text_date_format_returns_fifteen() {
+        let ctx = test_current_excel_host_context();
+        let concat = |lhs: CalcValue, rhs: CalcValue| {
+            eval_test_surface_value_call(
+                FUNC_ID_OP_CONCAT,
+                &[(lhs), (rhs)],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("concat result")
+        };
+        let first_day = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("first day");
+        let last_day = eval_test_surface_value_call(
+            FUNC_ID_EOMONTH,
+            &[(first_day.clone()), (CalcValue::number(0.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("last day");
+        let test_date = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(15.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("test date");
+        let format_code = concat(
+            concat(
+                concat(
+                    concat(
+                        CalcValue::text(ExcelText::from_interop_assignment("[<")),
+                        first_day,
+                    ),
+                    CalcValue::text(ExcelText::from_interop_assignment("] ;[>")),
+                ),
+                last_day,
+            ),
+            CalcValue::text(ExcelText::from_interop_assignment("] ;dd")),
+        );
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXT,
+            &[(test_date), (format_code)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("15")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1022_conditional_text_out_of_range_trims_to_zero() {
+        let ctx = test_current_excel_host_context();
+        let concat = |lhs: CalcValue, rhs: CalcValue| {
+            eval_test_surface_value_call(
+                FUNC_ID_OP_CONCAT,
+                &[(lhs), (rhs)],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("concat result")
+        };
+        let first_day = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("first day");
+        let last_day = eval_test_surface_value_call(
+            FUNC_ID_EOMONTH,
+            &[(first_day.clone()), (CalcValue::number(0.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("last day");
+        let test_date = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(28.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("test date");
+        let format_code = concat(
+            concat(
+                concat(
+                    concat(
+                        CalcValue::text(ExcelText::from_interop_assignment("[<")),
+                        first_day,
+                    ),
+                    CalcValue::text(ExcelText::from_interop_assignment("] ;[>")),
+                ),
+                last_day,
+            ),
+            CalcValue::text(ExcelText::from_interop_assignment("] ;dd")),
+        );
+        let rendered = eval_test_surface_value_call(
+            FUNC_ID_TEXT,
+            &[(test_date), (format_code)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        )
+        .expect("text result");
+        let trimmed = eval_test_surface_value_call(
+            FUNC_ID_TRIM,
+            &[(rendered)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("trim result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_LEN,
+            &[(trimmed)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1024_first_week_textjoin_returns_expected_row() {
+        let first_day = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("first day");
+        let weekday = eval_test_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[(first_day.clone()), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("weekday");
+        let grid_start = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(first_day.clone()), (weekday)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("grid start");
+        let dates = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (grid_start),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[
+                        (CalcValue::number(7.0)),
+                        CalcValue::missing(),
+                        (CalcValue::number(0.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("dates");
+        let day_texts = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(dates),
+                CalcValue::callable(test_callable_value("helper.feb2024_day_or_two_spaces", 1)),
+            ],
+            &TestCallableInvoker,
+        )
+        .expect("map result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXTJOIN,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment(","))),
+                (CalcValue::logical(false)),
+                (day_texts),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "  ,  ,  ,  ,01,02,03"
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1023_weekday_headers_index_returns_sun() {
+        let ctx = test_current_excel_host_context();
+        let base_sun = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(7.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("base sun");
+        let headers = eval_test_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[
+                        (eval_test_surface_value_call(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                (base_sun),
+                                (eval_test_surface_value_call(
+                                    FUNC_ID_SEQUENCE,
+                                    &[(CalcValue::number(1.0)), (CalcValue::number(7.0))],
+                                    &NoReferenceSystemProvider,
+                                    Some(46000.0),
+                                    Some(&TEST_RANDOM_PROVIDER),
+                                    None,
+                                    None,
+                                )
+                                .expect("sequence result")),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("add result")),
+                        (CalcValue::number(1.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::text(ExcelText::from_interop_assignment("DDD"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        )
+        .expect("text result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                (headers),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("Sun")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1028_text_month_name_returns_july() {
+        let ctx = test_current_excel_host_context();
+        let date = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(7.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("date result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                (date),
+                (CalcValue::text(ExcelText::from_interop_assignment("MMMM"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("July")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1040_one_month_calendar_prefix_returns_expected_text() {
+        let ctx = test_current_excel_host_context();
+        let first_day = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("first day");
+        let weekday = eval_test_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[(first_day.clone()), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("weekday");
+        let grid_start = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(first_day.clone()), (weekday)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("grid start");
+        let dates = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (grid_start),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[
+                        (CalcValue::number(42.0)),
+                        CalcValue::missing(),
+                        (CalcValue::number(0.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("dates");
+        let day_strs = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(dates),
+                CalcValue::callable(test_callable_value("helper.jan2024_day_or_two_spaces", 1)),
+            ],
+            &TestCallableInvoker,
+        )
+        .expect("map result");
+        let month_name = eval_test_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                (first_day),
+                (CalcValue::text(ExcelText::from_interop_assignment("MMMM"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        )
+        .expect("month name");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXTJOIN,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment("|"))),
+                (CalcValue::logical(false)),
+                (month_name),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(1.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 1")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(2.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 2")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(3.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 3")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(4.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 4")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(5.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 5")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(6.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 6")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs), (CalcValue::number(7.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 7")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "January|  |01|02|03|04|05|06"
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1031_first_week_sum_returns_twenty_one() {
+        let first_day = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("first day");
+        let weekday = eval_test_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[(first_day.clone()), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("weekday");
+        let grid_start = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(first_day), (weekday)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("grid start");
+        let week1 = eval_test_surface_value_call(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_ADD,
+                    &[
+                        (grid_start),
+                        (eval_test_surface_value_call(
+                            FUNC_ID_SEQUENCE,
+                            &[
+                                (CalcValue::number(1.0)),
+                                (CalcValue::number(7.0)),
+                                CalcValue::missing(),
+                                (CalcValue::number(1.0)),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("sequence")),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("add result")),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("week1");
+        let day_nums = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(week1),
+                CalcValue::callable(test_callable_value("helper.jan2024_day_or_zero", 1)),
+            ],
+            &TestCallableInvoker,
+        )
+        .expect("map result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(day_nums)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(21.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1032_after_direct_seam_fixes_returns_zero() {
+        let first_day = eval_test_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("first day");
+        let last_day = eval_test_surface_value_call(
+            FUNC_ID_EOMONTH,
+            &[(first_day.clone()), (CalcValue::number(0.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("last day");
+        let days_in_month = eval_test_surface_value_call(
+            FUNC_ID_DAY,
+            &[(last_day)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("days in month");
+        let offset = eval_test_surface_value_call(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_WEEKDAY,
+                    &[(first_day), (CalcValue::number(1.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("weekday")),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("offset");
+        let grid = eval_test_surface_value_call(
+            FUNC_ID_SEQUENCE,
+            &[(CalcValue::number(42.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("grid");
+        let day_vals = eval_test_surface_value_call(
+            FUNC_ID_IF,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_AND,
+                    &[
+                        (eval_test_surface_value_call(
+                            FUNC_ID_OP_GREATER_THAN,
+                            &[(grid.clone()), (offset.clone())],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("gt result")),
+                        (eval_test_surface_value_call(
+                            FUNC_ID_OP_LESS_EQUAL,
+                            &[
+                                (grid.clone()),
+                                (eval_test_surface_value_call(
+                                    FUNC_ID_OP_ADD,
+                                    &[(offset.clone()), (days_in_month)],
+                                    &NoReferenceSystemProvider,
+                                    Some(46000.0),
+                                    Some(&TEST_RANDOM_PROVIDER),
+                                    None,
+                                    None,
+                                )
+                                .expect("offset+days")),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("le result")),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("and result")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(grid), (offset)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("grid-offset")),
+                (CalcValue::number(0.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("day vals");
+        let weekly = eval_test_surface_value_call(
+            FUNC_ID_WRAPROWS,
+            &[(day_vals), (CalcValue::number(7.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("weekly");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(eval_test_surface_value_call(
+                FUNC_ID_INDEX,
+                &[(weekly), (CalcValue::number(1.0)), (CalcValue::number(0.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("index first row"))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0798_scalar_seed_index_lane_returns_zero() {
+        let cols = eval_test_surface_value_call(
+            FUNC_ID_COLUMNS,
+            &[(CalcValue::number(0.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("columns result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[(CalcValue::number(0.0)), (cols)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0450_population_stddev_let_composition() {
+        let data = CalcArray::from_rows(vec![vec![
+            CalcValue::number(5.0),
+            CalcValue::number(3.0),
+            CalcValue::number(8.0),
+            CalcValue::number(1.0),
+            CalcValue::number(9.0),
+            CalcValue::number(2.0),
+            CalcValue::number(7.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+        ]])
+        .unwrap();
+        let n = eval_test_surface_value_call(
+            FUNC_ID_COUNTA,
+            &[(CalcValue::array(data.clone()))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("counta result");
+        let mean = eval_test_surface_value_call(
+            FUNC_ID_AVERAGE,
+            &[(CalcValue::array(data.clone()))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("average result");
+        let centered = eval_test_surface_value_call(
+            FUNC_ID_OP_SUBTRACT,
+            &[(CalcValue::array(data)), (mean.clone())],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("subtract result");
+        let squares = eval_test_surface_value_call(
+            FUNC_ID_OP_POWER,
+            &[(centered), (CalcValue::number(2.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("power result");
+        let variance = eval_test_surface_value_call(
+            FUNC_ID_OP_DIVIDE,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_SUMPRODUCT,
+                    &[(squares)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sumproduct result")),
+                (n),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("variance result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SQRT,
+            &[(variance)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(2.581988897471611)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0256_sumproduct_of_double_unary_compare_returns_two() {
+        let include = eval_test_surface_value_call(
+            FUNC_ID_OP_GREATER_THAN,
+            &[
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("comparison result");
+        let coerced = eval_test_surface_value_call(
+            FUNC_ID_OP_NEGATE,
+            &[(eval_test_surface_value_call(
+                FUNC_ID_OP_NEGATE,
+                &[(include)],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("first negate"))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("double-negated result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUMPRODUCT,
+            &[(coerced)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0288_text_grouped_decimal_format_returns_en_us_text() {
+        let ctx = crate::locale_format::test_en_us_context();
+        let got = eval_test_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                (CalcValue::number(1234567.89)),
+                (CalcValue::text(ExcelText::from_interop_assignment("#,##0.00"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "1,234,567.89"
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0505_columns_of_randarray_returns_three() {
+        let generated = eval_test_surface_value_call(
+            FUNC_ID_RANDARRAY,
+            &[(CalcValue::number(5.0)), (CalcValue::number(3.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("randarray result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_COLUMNS,
+            &[(generated)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_randarray_consumes_one_random_draw_per_cell() {
+        let provider = SequenceRandomProvider { next: Cell::new(1) };
+        let got = eval_test_surface_value_call(
+            FUNC_ID_RANDARRAY,
+            &[(CalcValue::number(5.0)), (CalcValue::number(5.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&provider),
+            None,
+            None,
+        )
+        .expect("RANDARRAY result");
+
+        let CoreValue::Array(array) = got.core else {
+            panic!("expected array result");
+        };
+        assert_eq!(array.shape(), ArrayShape { rows: 5, cols: 5 });
+        let values = array.iter_row_major().cloned().collect::<Vec<_>>();
+        assert_eq!(values.first(), Some(&CalcValue::number(0.01)));
+        assert_eq!(values.get(12), Some(&CalcValue::number(0.13)));
+        assert_eq!(values.last(), Some(&CalcValue::number(0.25)));
+        assert_eq!(provider.next.get(), 26);
+    }
+
+    #[test]
+    fn eval_surface_value_call_randarray_requires_random_provider() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_RANDARRAY,
+            &[(CalcValue::number(5.0)), (CalcValue::number(5.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            None,
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0600_extract_digits_from_string_returns_123() {
+        let ctx = test_current_excel_host_context();
+        let text = CalcValue::text(ExcelText::from_interop_assignment("Hello World 123"));
+        let length = eval_test_surface_value_call(
+            FUNC_ID_LEN,
+            &[(text.clone())],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("len result");
+        let positions = eval_test_surface_value_call(
+            FUNC_ID_SEQUENCE,
+            &[(length)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("sequence result");
+        let chars = eval_test_surface_value_call(
+            FUNC_ID_MID,
+            &[(text), (positions), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("mid result");
+        let multiplied = eval_test_surface_value_call(
+            FUNC_ID_OP_MULTIPLY,
+            &[(chars.clone()), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("chars times one");
+        let recovered = eval_test_surface_value_call(
+            FUNC_ID_IFERROR,
+            &[
+                (multiplied),
+                (CalcValue::text(ExcelText::from_interop_assignment(""))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("iferror result");
+        let numeric_text = eval_test_surface_value_call(
+            FUNC_ID_VALUE,
+            &[(recovered)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            Some(&ctx),
+            None,
+        )
+        .expect("value result");
+        let is_digit = eval_test_surface_value_call(
+            FUNC_ID_ISNUMBER,
+            &[(numeric_text)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("isnumber result");
+        let digits = eval_test_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                (chars),
+                (is_digit),
+                (CalcValue::text(ExcelText::from_interop_assignment(""))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("filter result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_CONCAT,
+            &[(digits)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("123")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0470_map_chain_sum_returns_sixty_three() {
+        let data = CalcArray::from_rows(vec![
+            vec![CalcValue::number(1.0)],
+            vec![CalcValue::number(2.0)],
+            vec![CalcValue::number(3.0)],
+        ])
+        .unwrap();
+        let step1 = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(CalcValue::array(data)),
+                CalcValue::callable(test_callable_value("helper.mul10", 1)),
+            ],
+            &TestCallableInvoker,
+        )
+        .expect("first map result");
+        let step2 = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(step1),
+                CalcValue::callable(test_callable_value("helper.add1", 1)),
+            ],
+            &TestCallableInvoker,
+        )
+        .expect("second map result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(step2)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(63.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0443_recursive_gcd_returns_twelve() {
+        let invoker = ClosureCallableInvoker::new();
+        let gcd_callable = test_callable_value("closure.ftc0443.gcd", 2);
+        let recursive_invoker = invoker.clone();
+        let gcd_self_callable = gcd_callable.clone();
+        invoker.register("closure.ftc0443.gcd", 2, move |args| match args {
+            [a, b] => match (a.core(), b.core()) {
+                (CoreValue::Number(a), CoreValue::Number(b)) => {
+                    if *b == 0.0 {
+                        Ok(CalcValue::number(*a))
+                    } else {
+                        let remainder = eval_test_surface_value(
+                            FUNC_ID_MOD,
+                            &[CalcValue::number(*a), CalcValue::number(*b)],
+                        )?;
+                        recursive_invoker
+                            .invoke(&gcd_self_callable, &[CalcValue::number(*b), remainder])
+                    }
+                }
+                _ => Err(CallableInvocationError::Worksheet(
+                    WorksheetErrorCode::Value,
+                )),
+            },
+            _ => Err(CallableInvocationError::Worksheet(
+                WorksheetErrorCode::Value,
+            )),
+        });
+
+        let got = invoker.invoke(
+            &gcd_callable,
+            &[CalcValue::number(48.0), CalcValue::number(36.0)],
+        );
+        assert_eq!(got, Ok(CalcValue::number(12.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1013_current_inverse_reconstruction_returns_2211() {
+        let invoker = ClosureCallableInvoker::new();
+        let a = number_column(&[1.0, 1.0, 1.0, 0.0]);
+        let b = number_column(&[1.0, 1.0, 0.0, 0.0]);
+        let n = CalcValue::number(4.0);
+        let ks = eval_test_surface_value(
+            FUNC_ID_SEQUENCE,
+            &[(n.clone()), CalcValue::missing(), (CalcValue::number(0.0))],
+        )
+        .expect("ks");
+        let two_pi = eval_test_surface_value(
+            FUNC_ID_OP_MULTIPLY,
+            &[
+                (CalcValue::number(2.0)),
+                (eval_test_surface_value(FUNC_ID_PI, &[]).expect("pi")),
+            ],
+        )
+        .expect("two_pi");
+
+        let register_dft = |token: &str, signal: CalcValue, trig_function: &str, sign: f64| {
+            let signal = signal.clone();
+            let ks = ks.clone();
+            let n = n.clone();
+            let two_pi = two_pi.clone();
+            let trig_function = trig_function.to_string();
+            invoker.register(token, 1, move |args| {
+                let wave = eval_test_surface_value(
+                    trig_function.as_str(),
+                    &[eval_test_surface_value(
+                        FUNC_ID_OP_DIVIDE,
+                        &[
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    two_pi.clone(),
+                                    eval_test_surface_value(
+                                        FUNC_ID_OP_MULTIPLY,
+                                        &[call_arg_from_prepared(&args[0]), ks.clone()],
+                                    )
+                                    .expect("k*ks"),
+                                ],
+                            )
+                            .expect("2pi*k*ks"),
+                            n.clone(),
+                        ],
+                    )
+                    .expect("angle")],
+                )?;
+                let mut total = eval_test_surface_value(
+                    FUNC_ID_SUM,
+                    &[
+                        eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[signal.clone(), wave])
+                            .expect("signal*wave"),
+                    ],
+                )?;
+                if sign < 0.0 {
+                    total = eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[CalcValue::number(sign), total],
+                    )?;
+                }
+                Ok(total)
+            })
+        };
+
+        let ar_lambda = register_dft("closure.ftc1013.ar", a.clone(), FUNC_ID_COS, 1.0);
+        let ai_lambda = register_dft("closure.ftc1013.ai", a.clone(), FUNC_ID_SIN, -1.0);
+        let br_lambda = register_dft("closure.ftc1013.br", b.clone(), FUNC_ID_COS, 1.0);
+        let bi_lambda = register_dft("closure.ftc1013.bi", b.clone(), FUNC_ID_SIN, -1.0);
+
+        let ar = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[CalcValue::from(ks.clone()), CalcValue::callable(ar_lambda)],
+            &invoker,
+        )
+        .expect("Ar");
+        let ai = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[CalcValue::from(ks.clone()), CalcValue::callable(ai_lambda)],
+            &invoker,
+        )
+        .expect("Ai");
+        let br = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[CalcValue::from(ks.clone()), CalcValue::callable(br_lambda)],
+            &invoker,
+        )
+        .expect("Br");
+        let bi = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[CalcValue::from(ks.clone()), CalcValue::callable(bi_lambda)],
+            &invoker,
+        )
+        .expect("Bi");
+
+        let cr = eval_test_surface_value(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ar.clone(), br.clone()])
+                    .expect("Ar*Br"),
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ai.clone(), bi.clone()])
+                    .expect("Ai*Bi"),
+            ],
+        )
+        .expect("Cr");
+        let ci = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ar.clone(), bi.clone()])
+                    .expect("Ar*Bi"),
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ai.clone(), br.clone()])
+                    .expect("Ai*Br"),
+            ],
+        )
+        .expect("Ci");
+
+        let conv_lambda = {
+            let cr = cr.clone();
+            let ci = ci.clone();
+            let ks = ks.clone();
+            let n = n.clone();
+            let two_pi = two_pi.clone();
+            invoker.register("closure.ftc1013.conv", 1, move |args| {
+                let angle = eval_test_surface_value(
+                    FUNC_ID_OP_DIVIDE,
+                    &[
+                        eval_test_surface_value(
+                            FUNC_ID_OP_MULTIPLY,
+                            &[
+                                two_pi.clone(),
+                                eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
+                                    &[call_arg_from_prepared(&args[0]), ks.clone()],
+                                )
+                                .expect("n*ks"),
+                            ],
+                        )
+                        .expect("2pi*n*ks"),
+                        n.clone(),
+                    ],
+                )
+                .expect("angle");
+                let total = eval_test_surface_value(
+                    FUNC_ID_SUM,
+                    &[eval_test_surface_value(
+                        FUNC_ID_OP_ADD,
+                        &[
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    cr.clone(),
+                                    eval_test_surface_value(FUNC_ID_COS, &[angle.clone()])
+                                        .expect("cos(angle)"),
+                                ],
+                            )
+                            .expect("Cr*cos"),
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    ci.clone(),
+                                    eval_test_surface_value(FUNC_ID_SIN, &[angle])
+                                        .expect("sin(angle)"),
+                                ],
+                            )
+                            .expect("Ci*sin"),
+                        ],
+                    )
+                    .expect("sum terms")],
+                )?;
+                Ok(
+                    eval_test_surface_value(FUNC_ID_OP_DIVIDE, &[total, n.clone()])
+                        .expect("divide by N"),
+                )
+            })
+        };
+
+        let conv = eval_test_calc_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CalcValue::from(ks.clone()),
+                CalcValue::callable(conv_lambda),
+            ],
+            &invoker,
+        )
+        .expect("conv");
+
+        // The current local witness reconstructs the inverse real part as
+        // `Cr*cos(angle) + Ci*sin(angle)`. For the locally computed `Ci`
+        // carrier, that yields the packed result `2211`; the previously pinned
+        // `1221` expectation corresponds to the alternate reconstruction that
+        // subtracts the sine term.
+        let got = eval_test_surface_value(
+            FUNC_ID_ROUND,
+            &[
+                (eval_test_surface_value(
+                    FUNC_ID_OP_ADD,
+                    &[
+                        (eval_test_surface_value(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                (eval_test_surface_value(
+                                    FUNC_ID_INDEX,
+                                    &[(conv.clone()), (CalcValue::number(1.0))],
+                                )
+                                .expect("conv1")),
+                                (eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
+                                    &[
+                                        (CalcValue::number(10.0)),
+                                        (eval_test_surface_value(
+                                            FUNC_ID_INDEX,
+                                            &[(conv.clone()), CalcValue::number(2.0)],
+                                        )
+                                        .expect("conv2")),
+                                    ],
+                                )
+                                .expect("10*conv2")),
+                            ],
+                        )
+                        .expect("low digits")),
+                        (eval_test_surface_value(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                (eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
+                                    &[
+                                        (CalcValue::number(100.0)),
+                                        (eval_test_surface_value(
+                                            FUNC_ID_INDEX,
+                                            &[(conv.clone()), CalcValue::number(3.0)],
+                                        )
+                                        .expect("conv3")),
+                                    ],
+                                )
+                                .expect("100*conv3")),
+                                (eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
+                                    &[
+                                        (CalcValue::number(1000.0)),
+                                        (eval_test_surface_value(
+                                            FUNC_ID_INDEX,
+                                            &[(conv), CalcValue::number(4.0)],
+                                        )
+                                        .expect("conv4")),
+                                    ],
+                                )
+                                .expect("1000*conv4")),
+                            ],
+                        )
+                        .expect("high digits")),
+                    ],
+                )
+                .expect("packed")),
+                (CalcValue::number(0.0)),
+            ],
+        );
+        assert_eq!(got, Ok(CalcValue::number(2211.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0477_filter_if_empty_returns_none() {
+        let data = CalcArray::from_rows(vec![
+            vec![CalcValue::number(1.0)],
+            vec![CalcValue::number(2.0)],
+            vec![CalcValue::number(3.0)],
+            vec![CalcValue::number(4.0)],
+            vec![CalcValue::number(5.0)],
+        ])
+        .unwrap();
+        let include = eval_test_surface_value_call(
+            FUNC_ID_OP_GREATER_THAN,
+            &[(CalcValue::array(data.clone())), (CalcValue::number(10.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("comparison result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                (CalcValue::array(data)),
+                (include),
+                (CalcValue::text(ExcelText::from_interop_assignment("none"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("none")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1006_orientation_chain_packs_to_201_locally() {
+        let data = number_column(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]);
+        let wrapped = eval_test_surface_value(
+            FUNC_ID_WRAPCOLS,
+            &[
+                eval_test_surface_value(
+                    FUNC_ID_TOCOL,
+                    &[
+                        (data.clone()),
+                        CalcValue::missing(),
+                        (CalcValue::logical(true)),
+                    ],
+                )
+                .expect("TOCOL(data,,TRUE)"),
+                (CalcValue::number(2.0)),
+            ],
+        )
+        .expect("Wrap(data,2)");
+        let x0 =
+            eval_test_surface_value(FUNC_ID_TAKE, &[(wrapped.clone()), (CalcValue::number(1.0))])
+                .expect("TAKE(w,1)");
+        let x1 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[(wrapped.clone()), (CalcValue::number(-1.0))],
+        )
+        .expect("TAKE(w,-1)");
+        let y0 = eval_test_surface_value(
+            FUNC_ID_WRAPCOLS,
+            &[
+                eval_test_surface_value(
+                    FUNC_ID_TOCOL,
+                    &[
+                        (x0.clone()),
+                        CalcValue::missing(),
+                        (CalcValue::logical(true)),
+                    ],
+                )
+                .expect("TOCOL(x0,,TRUE)"),
+                (CalcValue::number(2.0)),
+            ],
+        )
+        .expect("Wrap(x0,2)");
+        let y1 = eval_test_surface_value(
+            FUNC_ID_WRAPCOLS,
+            &[
+                eval_test_surface_value(
+                    FUNC_ID_TOCOL,
+                    &[
+                        (x1.clone()),
+                        CalcValue::missing(),
+                        (CalcValue::logical(true)),
+                    ],
+                )
+                .expect("TOCOL(x1,,TRUE)"),
+                (CalcValue::number(2.0)),
+            ],
+        )
+        .expect("Wrap(x1,2)");
+        let result = eval_test_surface_value(FUNC_ID_VSTACK, &[(y0.clone()), (y1.clone())])
+            .expect("VSTACK(y0,y1)");
+        let flat =
+            eval_test_surface_value(FUNC_ID_TOCOL, &[(result.clone())]).expect("TOCOL(result)");
+        let packed = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                eval_test_surface_value(FUNC_ID_INDEX, &[(flat.clone()), (CalcValue::number(1.0))])
+                    .expect("INDEX(flat,1)"),
+                (eval_test_surface_value(
+                    FUNC_ID_OP_MULTIPLY,
+                    &[
+                        (CalcValue::number(100.0)),
+                        eval_test_surface_value(
+                            FUNC_ID_INDEX,
+                            &[(flat.clone()), (CalcValue::number(5.0))],
+                        )
+                        .expect("INDEX(flat,5)"),
+                    ],
+                )
+                .expect("100*index5")),
+            ],
+        )
+        .expect("packed");
+
+        assert_eq!(
+            wrapped,
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(7.0),
+                    ],
+                    vec![
+                        CalcValue::number(2.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(6.0),
+                        CalcValue::number(8.0),
+                    ],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(
+            y0,
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(5.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(7.0)],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(
+            y1,
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0), CalcValue::number(6.0)],
+                    vec![CalcValue::number(4.0), CalcValue::number(8.0)],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(
+            flat,
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(5.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(7.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(6.0)],
+                    vec![CalcValue::number(4.0)],
+                    vec![CalcValue::number(8.0)],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(packed, CalcValue::number(201.0));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1007_take_vector_split_packs_to_6_locally() {
+        let x = eval_test_surface_value(
+            FUNC_ID_HSTACK,
+            &[
+                (CalcValue::number(3.0)),
+                (CalcValue::number(0.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(0.0)),
+            ],
+        )
+        .expect("HSTACK");
+        let x0 = eval_test_surface_value(FUNC_ID_TAKE, &[(x.clone()), (CalcValue::number(1.0))])
+            .expect("TAKE(x,1)");
+        let x1 = eval_test_surface_value(FUNC_ID_TAKE, &[(x.clone()), (CalcValue::number(-1.0))])
+            .expect("TAKE(x,-1)");
+        let re_x0 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[(x0.clone()), CalcValue::missing(), (CalcValue::number(2.0))],
+        )
+        .expect("Re(x0)");
+        let re_x1 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[(x1.clone()), CalcValue::missing(), (CalcValue::number(2.0))],
+        )
+        .expect("Re(x1)");
+        let y0 = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x0.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x0,1,1)"),
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x1.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x1,1,1)"),
+            ],
+        )
+        .expect("y0");
+        let y1 = eval_test_surface_value(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x0.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x0,1,1)"),
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x1.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x1,1,1)"),
+            ],
+        )
+        .expect("y1");
+        let packed = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                (y0.clone()),
+                (eval_test_surface_value(
+                    FUNC_ID_OP_MULTIPLY,
+                    &[(y1.clone()), (CalcValue::number(100.0))],
+                )
+                .expect("y1*100")),
+            ],
+        )
+        .expect("packed");
+
+        assert_eq!(x0, x);
+        assert_eq!(x1, x);
+        assert_eq!(
+            re_x0,
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(3.0), CalcValue::number(0.0),]])
+                    .unwrap()
+            )
+        );
+        assert_eq!(re_x1, re_x0);
+        assert_eq!(y0, CalcValue::number(6.0));
+        assert_eq!(y1, CalcValue::number(0.0));
+        assert_eq!(packed, CalcValue::number(6.0));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1008_complex_magnitude_returns_five() {
+        let z = eval_test_surface_value_call(
+            FUNC_ID_HSTACK,
+            &[(CalcValue::number(3.0)), (CalcValue::number(4.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("hstack result");
+        let re = eval_test_surface_value_call(
+            FUNC_ID_TAKE,
+            &[(z.clone()), CalcValue::missing(), (CalcValue::number(1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("real part");
+        let im = eval_test_surface_value_call(
+            FUNC_ID_TAKE,
+            &[(z), CalcValue::missing(), (CalcValue::number(-1.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("imaginary part");
+        let sumsq = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_POWER,
+                    &[(re), (CalcValue::number(2.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("re squared")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_POWER,
+                    &[(im), (CalcValue::number(2.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("im squared")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("sumsq result");
+        let magnitude = eval_test_surface_value_call(
+            FUNC_ID_SQRT,
+            &[(sumsq)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("sqrt result");
+        let indexed = eval_test_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                (magnitude),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("index result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_ROUND,
+            &[(indexed), (CalcValue::number(6.0))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1020_calendar_grid_counts_january_days() {
+        let dates = eval_test_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                (CalcValue::number(45291.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[
+                        (CalcValue::number(42.0)),
+                        CalcValue::missing(),
+                        (CalcValue::number(0.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("dates result");
+        let in_month = eval_test_surface_value_call(
+            FUNC_ID_OP_EQUAL,
+            &[
+                (eval_test_surface_value_call(
+                    FUNC_ID_MONTH,
+                    &[(dates)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("month result")),
+                (CalcValue::number(1.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("equal result");
+        let coerced = eval_test_surface_value_call(
+            FUNC_ID_OP_NEGATE,
+            &[(eval_test_surface_value_call(
+                FUNC_ID_OP_NEGATE,
+                &[(in_month)],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("first negate"))],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        )
+        .expect("double-negated result");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_SUM,
+            &[(coerced)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(31.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_match_spills_array_lookup_value_results() {
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
+        ]])
+        .expect("row vector");
+        let got = eval_test_surface_value_call(
+            FUNC_ID_MATCH,
+            &[
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
+                (CalcValue::number(0.0)),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        let expected = CalcArray::from_rows(vec![vec![
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(1.0),
+            CalcValue::error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(CalcValue::array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_wraps_now_with_number_format_hint() {
+        let got = eval_surface_value_call(
+            FUNC_ID_NOW,
+            &[],
+            &NoReferenceSystemProvider,
+            Some(46000.25),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::with_presentation(
+                CoreValue::Number(46000.25),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_wraps_today_with_number_format_hint() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TODAY,
+            &[],
+            &NoReferenceSystemProvider,
+            Some(46000.75),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::with_presentation(
+                CoreValue::Number(46000.0),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_wraps_hyperlink_with_style_hint() {
+        let got = eval_surface_value_call(
+            FUNC_ID_HYPERLINK,
+            &[
+                CalcValue::text(ExcelText::from_interop_assignment("https://example.com")),
+                CalcValue::text(ExcelText::from_interop_assignment("Go")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::with_presentation(
+                CoreValue::Text(ExcelText::from_interop_assignment("Go")),
+                PresentationHint::style(CellStyleHint::Hyperlink)
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_wraps_image_with_rich_value() {
+        let got = eval_surface_value_call(
+            FUNC_ID_IMAGE,
+            &[
+                CalcValue::text(ExcelText::from_interop_assignment(
+                    "https://example.com/image.png",
+                )),
+                CalcValue::text(ExcelText::from_interop_assignment("Sphere")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            Some(&TestImageProvider),
+        );
+        match got {
+            Ok(value) => {
+                assert_eq!(
+                    value.core,
+                    CoreValue::Text(ExcelText::from_interop_assignment("-2146826273"))
+                );
+                let Some(RichValue::Object(object)) = value.rich() else {
+                    panic!("expected rich object");
+                };
+                assert_eq!(object.value_type.type_name, "_webimage");
+                assert!(matches!(object.fallback, RichValueData::Text(_)));
+            }
+            other => panic!("expected rich image surface, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_image_through_host_provider() {
+        let got = eval_test_surface_value_call(
+            FUNC_ID_IMAGE,
+            &[
+                (CalcValue::text(ExcelText::from_interop_assignment(
+                    "https://example.com/image.png",
+                ))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Sphere"))),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            Some(&TestImageProvider),
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "-2146826273"
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_now_with_number_format_hint() {
+        let got = eval_surface_value_call(
+            FUNC_ID_NOW,
+            &[],
+            &NoReferenceSystemProvider,
+            Some(46000.25),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::with_presentation(
+                CoreValue::Number(46000.25),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_today_with_number_format_hint() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TODAY,
+            &[],
+            &NoReferenceSystemProvider,
+            Some(46000.75),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::with_presentation(
+                CoreValue::Number(46000.0),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_hyperlink_with_style_hint() {
+        let got = eval_surface_value_call(
+            FUNC_ID_HYPERLINK,
+            &[
+                CalcValue::text(ExcelText::from_interop_assignment("https://example.com")),
+                CalcValue::text(ExcelText::from_interop_assignment("Go")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::with_presentation(
+                CoreValue::Text(ExcelText::from_interop_assignment("Go")),
+                PresentationHint::style(CellStyleHint::Hyperlink)
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_image_requires_host_provider_on_calc_path() {
+        let got = eval_surface_value_call(
+            FUNC_ID_IMAGE,
+            &[
+                CalcValue::text(ExcelText::from_interop_assignment(
+                    "https://example.com/image.png",
+                )),
+                CalcValue::text(ExcelText::from_interop_assignment("Sphere")),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_shared_unary_numeric_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_SQRT,
+            &[CalcValue::number(9.0)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_shared_unary_numeric_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_PERCENT,
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(5.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array"),
+            )],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(0.05),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_abs_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_ABS,
+            &[CalcValue::number(-3.5)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(3.5)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_abs_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_ABS,
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(-5.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array"),
+            )],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(5.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_binary_arithmetic_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[CalcValue::number(2.0), CalcValue::number(3.5)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(5.5)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_maps_binary_arithmetic_domain_errors_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_DIVIDE,
+            &[CalcValue::number(4.0), CalcValue::number(0.0)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Div0));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_binary_arithmetic_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_POWER,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                    ]])
+                    .expect("array"),
+                ),
+                CalcValue::number(2.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(4.0),
+                    CalcValue::number(9.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_date_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CalcValue::number(1900.0),
+                CalcValue::number(2.0),
+                CalcValue::number(29.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(60.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_day_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DAY,
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(60.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array"),
+            )],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(29.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_maps_days_domain_errors_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DAYS,
+            &[CalcValue::number(1.0), CalcValue::number(-1.0)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_time_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TIME,
+            &[
+                CalcValue::number(1.0),
+                CalcValue::number(30.0),
+                CalcValue::number(0.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(1.5 / 24.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_choosecols_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_CHOOSECOLS,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![
+                            CalcValue::number(1.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(3.0),
+                        ],
+                        vec![
+                            CalcValue::number(4.0),
+                            CalcValue::number(5.0),
+                            CalcValue::number(6.0),
+                        ],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                    ]])
+                    .expect("selector array"),
+                ),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0), CalcValue::number(1.0)],
+                    vec![CalcValue::number(6.0), CalcValue::number(4.0)],
+                ])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_chooserows_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_CHOOSEROWS,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(3.0),
+                CalcValue::number(1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                ])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_take_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TAKE,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(-2.0),
+                CalcValue::number(1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(5.0)],
+                ])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_drop_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DROP,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![
+                            CalcValue::number(1.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(3.0),
+                        ],
+                        vec![
+                            CalcValue::number(4.0),
+                            CalcValue::number(5.0),
+                            CalcValue::number(6.0),
+                        ],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(1.0),
+                CalcValue::number(-1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(4.0), CalcValue::number(5.0)]])
+                    .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_index_array_source_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0), CalcValue::number(40.0)],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(2.0),
+                CalcValue::number(1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(30.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_index_vector_slice_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                    ]])
+                    .expect("array"),
+                ),
+                CalcValue::number(2.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
+    }
+
+    #[test]
+    fn arg_preparation_profile_reports_roman_as_values_only() {
+        let got = arg_preparation_profile(FUNC_ID_ROMAN);
+        assert_eq!(got, Some(ArgPreparationProfile::ValuesOnlyPreAdapter));
+    }
+
+    #[test]
+    fn eval_surface_q_unary_number_abs_calls_kernel() {
+        let got = eval_surface_q_unary_number(FUNC_ID_ABS, -3.0);
+        assert_eq!(got, Ok(3.0));
+    }
+
+    #[test]
+    fn eval_surface_q_binary_number_add_calls_kernel() {
+        let got = eval_surface_q_binary_number(FUNC_ID_OP_ADD, 1.5, 2.0);
+        assert_eq!(got, Ok(3.5));
+    }
+
+    #[test]
+    fn eval_surface_q_binary_number_round_calls_kernel() {
+        let got = eval_surface_q_binary_number(FUNC_ID_ROUND, 12.34, 1.0);
+        assert_eq!(got, Ok(12.3));
+    }
+
+    #[test]
+    fn eval_surface_q_binary_number_power_calls_kernel() {
+        let got = eval_surface_q_binary_number(FUNC_ID_POWER, 2.0, 3.0);
+        assert_eq!(got, Ok(8.0));
+    }
+
+    #[test]
+    fn eval_surface_q_nullary_number_pi_returns_constant() {
+        let got = eval_surface_q_nullary_number(FUNC_ID_PI);
+        assert_eq!(got, Ok(std::f64::consts::PI));
+    }
+
+    // W105 oxf-y2uw.12.2: with `eval_dynamic_array_reshape_calc_dispatch` deleted, DROP/TAKE
+    // are served by the single by-index arm + the declared `lift_at(&[1, 2])` scalar-array-lift
+    // (`try_observed_scalar_array_lift`), exactly like EXPAND/TOROW. These tests pin the
+    // resulting public-dispatch behaviour against live Excel 16.0 build 20026.
+    #[test]
+    fn drop_take_array_count_lifts_through_public_dispatch_like_expand() {
+        let src = array_arg(vec![
+            vec![number_arg(1.0), number_arg(2.0), number_arg(3.0)],
+            vec![number_arg(4.0), number_arg(5.0), number_arg(6.0)],
+        ]);
+        let src22 = array_arg(vec![
+            vec![number_arg(1.0), number_arg(2.0)],
+            vec![number_arg(3.0), number_arg(4.0)],
+        ]);
+
+        // Multi-element array count: DROP(src, {0;1}) -> 2x1=[1,4]; matches Excel exactly.
+        let col01 = array_arg(vec![vec![number_arg(0.0)], vec![number_arg(1.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.DROP", &[src.clone(), col01]).unwrap(),
+            array_arg(vec![vec![number_arg(1.0)], vec![number_arg(4.0)]]),
+            "DROP(src,{{0;1}}) must lift to Excel's 2x1=[1,4]"
+        );
+
+        // Multi-element array count: TAKE(src, {1;2}) -> 2x1=[1,1]; matches Excel exactly.
+        let col12 = array_arg(vec![vec![number_arg(1.0)], vec![number_arg(2.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.TAKE", &[src.clone(), col12]).unwrap(),
+            array_arg(vec![vec![number_arg(1.0)], vec![number_arg(1.0)]]),
+            "TAKE(src,{{1;2}}) must lift to Excel's 2x1=[1,1]"
+        );
+
+        // EXPAND uses the SAME lift mechanism; multi-element array count agrees with Excel and
+        // is the cross-check that DROP/TAKE now ride the identical `lift_at(&[1, 2])` path.
+        let col34 = array_arg(vec![vec![number_arg(3.0)], vec![number_arg(4.0)]]);
+        assert_eq!(
+            eval_test_surface_value(
+                "FUNC.EXPAND",
+                &[src22.clone(), col34, number_arg(2.0), number_arg(0.0)],
+            )
+            .unwrap(),
+            array_arg(vec![vec![number_arg(1.0)], vec![number_arg(1.0)]]),
+            "EXPAND(src22,{{3;4}},2,0) lifts to Excel's 2x1=[1,1]"
+        );
+
+        // 1x1-array count: the shared array-lifter now LIFTS a 1x1 array at a lift position like any
+        // array — it computes f(e) and returns the implicit intersection (top-left scalar). So
+        // DROP(src, {1}) lifts the unit count {1}: f(1) is the scalar-count DROP (1x3=[4,5,6]) and
+        // the intersection is its top-left, the SCALAR 4 — exactly what live Excel 16.0 build 20026
+        // returns (oracle .tmp/onexone-arrayret-oracle.ps1). This is the oxf-wkwj fix.
+        let one = array_arg(vec![vec![number_arg(1.0)]]);
+        let drop_one = eval_test_surface_value("FUNC.DROP", &[src.clone(), one]).unwrap();
+        assert_eq!(
+            drop_one,
+            number_arg(4.0),
+            "DROP(src,{{1}}) lifts the 1x1 count to Excel's intersected SCALAR 4 (top-left of [4,5,6])"
+        );
+
+        // TAKE's own 1x1-array count: TAKE(src, {2}) -> top-left of the scalar-count TAKE (1x3=[1,2,3])
+        // = SCALAR 1.
+        let two = array_arg(vec![vec![number_arg(2.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.TAKE", &[src.clone(), two]).unwrap(),
+            number_arg(1.0),
+            "TAKE(src,{{2}}) lifts the 1x1 count to Excel's intersected SCALAR 1"
+        );
+
+        // EXPAND's own 1x1-array count: EXPAND(src22, {3}, 2, 0) -> top-left of the full 3x2 expand
+        // = SCALAR 1.
+        let three = array_arg(vec![vec![number_arg(3.0)]]);
+        assert_eq!(
+            eval_test_surface_value(
+                "FUNC.EXPAND",
+                &[src22.clone(), three, number_arg(2.0), number_arg(0.0)],
+            )
+            .unwrap(),
+            number_arg(1.0),
+            "EXPAND(src22,{{3}},2,0) lifts the 1x1 count to Excel's intersected SCALAR 1 (top-left)"
+        );
+
+        // TOROW's own 1x1-array count: TOROW(src22, {0}) -> top-left of the flattened row = SCALAR 1.
+        let zero = array_arg(vec![vec![number_arg(0.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.TOROW", &[src22, zero]).unwrap(),
+            number_arg(1.0),
+            "TOROW(src22,{{0}}) lifts the 1x1 mode to Excel's intersected SCALAR 1"
+        );
+    }
+
+    #[test]
+    fn drop_take_scalar_count_is_bit_exact_through_public_dispatch() {
+        // Scalar/normal counts: DROP/TAKE must stay BIT-EXACT after removing the calc-dispatch
+        // interception (the calc path and by-index path agree on non-array args; the lift never
+        // triggers because no lift-position arg is an array).
+        let src = array_arg(vec![
+            vec![number_arg(1.0), number_arg(2.0), number_arg(3.0)],
+            vec![number_arg(4.0), number_arg(5.0), number_arg(6.0)],
+        ]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.DROP", &[src.clone(), number_arg(1.0)]).unwrap(),
+            array_arg(vec![vec![
+                number_arg(4.0),
+                number_arg(5.0),
+                number_arg(6.0)
+            ]]),
+            "DROP(src,1) scalar count unchanged"
+        );
+        assert_eq!(
+            eval_test_surface_value("FUNC.TAKE", &[src.clone(), number_arg(1.0)]).unwrap(),
+            array_arg(vec![vec![
+                number_arg(1.0),
+                number_arg(2.0),
+                number_arg(3.0)
+            ]]),
+            "TAKE(src,1) scalar count unchanged"
+        );
+        // Two-axis scalar counts also unchanged.
+        assert_eq!(
+            eval_test_surface_value(
+                "FUNC.TAKE",
+                &[src.clone(), number_arg(1.0), number_arg(2.0)]
+            )
+            .unwrap(),
+            array_arg(vec![vec![number_arg(1.0), number_arg(2.0)]]),
+            "TAKE(src,1,2) scalar counts unchanged"
+        );
+        assert_eq!(
+            eval_test_surface_value("FUNC.DROP", &[src, number_arg(1.0), number_arg(1.0)]).unwrap(),
+            array_arg(vec![vec![number_arg(5.0), number_arg(6.0)]]),
+            "DROP(src,1,1) scalar counts unchanged"
+        );
+    }
+
+    /// W105 oxf-y2uw.12.3: the `requires-invoker` membership set is SINGLE-SOURCED. The spec
+    /// derives it from `callable_argument_specs` (via `function_id_requires_invoker`); the dispatch
+    /// binds the per-id handler in `eval_invoker_consuming_surface`. This pins, over the WHOLE
+    /// catalog, that the two sets are identical — neither side can carry an id the other lacks
+    /// (the exact drift the eight retired hand-coded `FUNC_ID_* =>` arms used to risk).
+    #[test]
+    fn requires_invoker_set_matches_lambda_helper_dispatch_arms() {
+        let rejecting = RejectingCallableInvoker;
+        for meta in crate::xll_export_specs::function_catalog() {
+            let spec_requires =
+                crate::function_call::function_id_requires_invoker(meta.function_id);
+            // `eval_invoker_consuming_surface` returns `Some` IFF the id is bound to an
+            // invoker-consuming handler. Probe with empty args + a rejecting invoker — we only
+            // observe whether the id is ROUTED (Some/None), never the handler's value/error.
+            let dispatch_routes = eval_invoker_consuming_surface(
+                meta.function_id,
+                &[],
+                &NoReferenceSystemProvider,
+                &rejecting,
+            )
+            .is_some();
+            assert_eq!(
+                spec_requires, dispatch_routes,
+                "{}: requires-invoker (spec-derived from callable_argument_specs = {spec_requires}) \
+                 and the lambda-helper dispatch binding ({dispatch_routes}) disagree — the \
+                 consumes-callable set has a second, drifting source",
+                meta.function_id
+            );
+        }
+
+        // The set is exactly the eight documented lambda-helper ids (a concrete anchor so a future
+        // catalog edit that grows/shrinks the set is reviewed deliberately).
+        let invoker_ids: Vec<&str> = crate::xll_export_specs::function_catalog()
+            .iter()
+            .map(|meta| meta.function_id)
+            .filter(|id| crate::function_call::function_id_requires_invoker(id))
+            .collect();
+        let mut sorted = invoker_ids.clone();
+        sorted.sort_unstable();
+        assert_eq!(
+            sorted,
+            vec![
+                FUNC_ID_BYCOL,
+                FUNC_ID_BYROW,
+                FUNC_ID_GROUPBY,
+                FUNC_ID_MAKEARRAY,
+                FUNC_ID_MAP,
+                FUNC_ID_PIVOTBY,
+                FUNC_ID_REDUCE,
+                FUNC_ID_SCAN,
+            ],
+            "the requires-invoker (lambda-helper) family must be exactly these eight ids"
+        );
+    }
+
+    /// W105 oxf-y2uw.12.4: PROOF the date-time family collapse (.12.2 style) is bit-exact. The
+    /// deleted `eval_date_time_calc_dispatch` shim served each id via `eval_*_calc_surface`; the
+    /// by-index path now serves it via `eval_*_surface`. This evaluates BOTH helpers over a battery
+    /// of inputs (scalar number / text / logical / empty / missing / error, and an array to drive
+    /// the in-`prepared` lift) and asserts the produced `CalcValue` (mapped through the SAME per-id
+    /// worksheet-error mapper) is identical — so removing the shim and serving via the by-index arm
+    /// changes nothing. (DATE/DAYS/TIME take 2-3 args; the per-arg battery is applied to arg 0 with
+    /// the remaining args fixed.)
+    #[test]
+    fn date_time_calc_and_by_index_prep_are_bit_equivalent() {
+        use crate::functions::date_fn::{eval_date_calc_surface, map_date_error_to_ws};
+        use crate::functions::date_parts_family::{
+            eval_day_calc_surface, eval_days_calc_surface, eval_hour_calc_surface,
+            eval_minute_calc_surface, eval_month_calc_surface, eval_second_calc_surface,
+            eval_time_calc_surface, eval_year_calc_surface,
+        };
+
+        let r = &NoReferenceSystemProvider;
+        let battery = || -> Vec<CalcValue> {
+            vec![
+                number_arg(44197.625),
+                number_arg(-1.0),
+                text_arg("44197"),
+                text_arg("not-a-number"),
+                logical_arg(true),
+                logical_arg(false),
+                CalcValue::empty(),
+                CalcValue::missing(),
+                CalcValue::error(WorksheetErrorCode::Div0),
+                array_arg(vec![
+                    vec![number_arg(44197.0), number_arg(60.5)],
+                    vec![text_arg("0"), logical_arg(true)],
+                ]),
+            ]
+        };
+
+        // (id, calc-dispatch handler mapped to ws, by-index `eval_*_surface` handler mapped to ws,
+        //  trailing fixed args appended after the battery arg). Both columns map the SAME error
+        // type through the SAME per-id mapper, exactly as the deleted shim and the generated arm do.
+        type WsResult = Result<CalcValue, WorksheetErrorCode>;
+        #[allow(clippy::type_complexity)]
+        let cases: Vec<(
+            &str,
+            Box<dyn Fn(&[CalcValue]) -> WsResult>,
+            Box<dyn Fn(&[CalcValue]) -> WsResult>,
+            Vec<CalcValue>,
+        )> = vec![
+            (
+                FUNC_ID_DATE,
+                Box::new(|a| eval_date_calc_surface(a, r).map_err(|e| map_date_error_to_ws(&e))),
+                Box::new(|a| eval_date_surface(a, r).map_err(|e| map_date_error_to_ws(&e))),
+                vec![number_arg(6.0), number_arg(15.0)],
+            ),
+            (
+                FUNC_ID_DAY,
+                Box::new(|a| {
+                    eval_day_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_day_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_DAYS,
+                Box::new(|a| {
+                    eval_days_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_days_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![number_arg(44000.0)],
+            ),
+            (
+                FUNC_ID_HOUR,
+                Box::new(|a| {
+                    eval_hour_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_hour_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_MINUTE,
+                Box::new(|a| {
+                    eval_minute_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_minute_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_MONTH,
+                Box::new(|a| {
+                    eval_month_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_month_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_SECOND,
+                Box::new(|a| {
+                    eval_second_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_second_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_TIME,
+                Box::new(|a| {
+                    eval_time_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_time_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![number_arg(30.0), number_arg(15.0)],
+            ),
+            (
+                FUNC_ID_YEAR,
+                Box::new(|a| {
+                    eval_year_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_year_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+        ];
+
+        for (id, calc, by_index, trailing) in &cases {
+            for first in battery() {
+                let mut args = vec![first];
+                args.extend(trailing.iter().cloned());
+                let calc_result = calc(&args);
+                let by_index_result = by_index(&args);
+                assert_eq!(
+                    calc_result, by_index_result,
+                    "{id}: calc-dispatch prep and by-index prep diverge on {args:?} — the \
+                     date-time collapse is NOT bit-exact"
+                );
+            }
+        }
+    }
+
+    /// W105 oxf-y2uw.12.4: the provider/host-bound family (NOW/TODAY/IMAGE/HYPERLINK) routing is
+    /// gated by the spec-derived host-capability PRECONDITION
+    /// `surface_fec_dependency_is_host_bound`, derived from the single declared
+    /// `surface_fec_dependency_profile`. This pins, over the WHOLE catalog, that (a) every id the
+    /// `eval_host_bound_surface` handler binds satisfies that precondition — so the gate is a SOUND
+    /// (necessary) derivation FROM the declared fact, never a second free-standing id list — and
+    /// (b) the bound set is exactly the four documented provider/host-bound ids (a concrete anchor
+    /// so a future catalog edit that grows/shrinks the set is reviewed deliberately).
+    #[test]
+    fn host_bound_dispatch_arms_have_host_bound_surface_fec_profile() {
+        // `eval_host_bound_surface` returns `Some` IFF the id is bound to a provider/host-bound
+        // handler. Probe with empty args + no providers — we only observe whether the id is ROUTED
+        // (Some/None), never the handler's value/error.
+        let routes = |id: &str| {
+            eval_host_bound_surface(id, &[], &NoReferenceSystemProvider, None, None).is_some()
+        };
+
+        for meta in crate::xll_export_specs::function_catalog() {
+            if routes(meta.function_id) {
+                assert!(
+                    surface_fec_dependency_is_host_bound(meta.surface_fec_dependency_profile),
+                    "{}: bound to the provider/host handler but its declared \
+                     surface_fec_dependency_profile ({:?}) is not host-bound — the host-capability \
+                     precondition gate would not route it (drift between the binding and the spec)",
+                    meta.function_id,
+                    meta.surface_fec_dependency_profile
+                );
+            }
+        }
+
+        let host_bound_ids: Vec<&str> = crate::xll_export_specs::function_catalog()
+            .iter()
+            .map(|meta| meta.function_id)
+            .filter(|id| routes(id))
+            .collect();
+        let mut sorted = host_bound_ids.clone();
+        sorted.sort_unstable();
+        assert_eq!(
+            sorted,
+            vec![FUNC_ID_HYPERLINK, FUNC_ID_IMAGE, FUNC_ID_NOW, FUNC_ID_TODAY,],
+            "the provider/host-bound family must be exactly these four ids"
+        );
+    }
+
+    /// Resolves any reference to a fixed numeric value (`2`) so the reference-sensitive INDEX
+    /// surface can be exercised with a live reference index arg.
+    struct RefToTwoResolver;
+    impl ReferenceSystemProvider for RefToTwoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
+        }
+        fn dereference(
+            &self,
+            _request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
+            Ok(CalcValue::number(2.0))
+        }
+    }
+
+    /// W105 oxf-y2uw.12.5: PROOF the lookup/reference-adjacent INDEX collapse (.12.2 style) leaves
+    /// INDEX served by exactly ONE path and is bit-exact on every input shape EXCEPT the one the
+    /// deleted shim got wrong. The former `eval_lookup_reference_adjacent_calc_dispatch` intercepted
+    /// the value-arg0 + non-array-index shape and ran the reference-blind `eval_index_calc_surface`;
+    /// the by-index `eval_index_surface` now serves all shapes. This drives the full
+    /// {value, reference} arg0 × {scalar, array} index matrix through the public surface and pins:
+    ///   * value/reference arg0 with scalar/array index → the documented Excel result, unchanged;
+    ///   * the value-arg0 + REFERENCE-index shape (the only place the two handlers differed) now
+    ///     RESOLVES the reference index arg, matching live Excel 16.0 build 20026:
+    ///     `INDEX({10;20;30}, ref→2) = 20` (not the shim's `#VALUE!`). Oracle:
+    ///     `.tmp/index-refarg-oracle.ps1`.
+    #[test]
+    fn index_served_by_single_by_index_path_across_input_shape_matrix() {
+        let col_vec = || {
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0)],
+                ])
+                .unwrap(),
+            )
+        };
+        let matrix = || {
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0), CalcValue::number(40.0)],
+                    vec![CalcValue::number(50.0), CalcValue::number(60.0)],
+                ])
+                .unwrap(),
+            )
+        };
+        let call = |args: &[CalcValue], resolver: &dyn ReferenceSystemProvider| {
+            eval_surface_value_call(
+                FUNC_ID_INDEX,
+                args,
+                resolver,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+        };
+
+        // --- value arg0, SCALAR index args (the shape the shim used to intercept) ---
+        assert_eq!(
+            call(
+                &[col_vec(), CalcValue::number(2.0)],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::number(20.0)),
+            "value arg0 + scalar index (vector position)"
+        );
+        assert_eq!(
+            call(
+                &[matrix(), CalcValue::number(2.0), CalcValue::number(1.0)],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::number(30.0)),
+            "value arg0 + scalar row/col"
+        );
+        assert_eq!(
+            call(
+                &[CalcValue::number(42.0), CalcValue::number(1.0)],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::number(42.0)),
+            "scalar value arg0 treated as single-cell array"
+        );
+        assert_eq!(
+            call(
+                &[
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::number(3.0)
+                ],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::error(WorksheetErrorCode::Value)),
+            "error value arg0 propagates"
+        );
+
+        // --- value arg0, ARRAY index arg (the shim explicitly fell through to by-index) ---
+        let selector = CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0)],
+                vec![CalcValue::number(3.0)],
+            ])
+            .unwrap(),
+        );
+        assert_eq!(
+            call(&[col_vec(), selector], &NoReferenceSystemProvider),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(30.0)],
+                ])
+                .unwrap()
+            )),
+            "value arg0 + selector-array index"
+        );
+
+        // --- value arg0, REFERENCE index arg: the ONLY shape the two handlers disagreed on.
+        // The deleted shim rejected it (#VALUE!); live Excel RESOLVES it. By-index now resolves. ---
+        let ref_index =
+            || CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "C1".to_string()));
+        assert_eq!(
+            call(&[col_vec(), ref_index()], &RefToTwoResolver),
+            Ok(CalcValue::number(20.0)),
+            "value arg0 + REFERENCE index now resolves (Excel-correct): INDEX({{10;20;30}}, C1=2) = 20"
+        );
+        assert_eq!(
+            call(&[matrix(), ref_index(), ref_index()], &RefToTwoResolver),
+            Ok(CalcValue::number(40.0)),
+            "value arg0 + REFERENCE row/col resolves: INDEX(3x2, C1=2, C1=2) = 40"
+        );
+
+        // --- reference arg0 (always served by the by-index path; never intercepted) ---
+        // Drive the value-context materialization branch via a value-enumerating resolver.
+        struct EnumResolver;
+        impl ReferenceSystemProvider for EnumResolver {
+            fn capabilities(&self) -> ReferenceSystemCapabilities {
+                ReferenceSystemCapabilities::permissive_local()
+            }
+            fn enumerate_values(
+                &self,
+                request: &crate::resolver::ReferenceEnumerationRequest,
+            ) -> Result<
+                Option<crate::resolver::ResolvedReferenceValues>,
+                crate::resolver::ReferenceResolutionError,
+            > {
+                if request.reference.target() != "A1:B3" {
+                    return Ok(None);
+                }
+                Ok(Some(crate::resolver::ResolvedReferenceValues::new(
+                    crate::resolver::ResolvedReferenceExtent::new(3, 2),
+                    vec![
+                        crate::resolver::ResolvedReferenceCell::new(1, 1, CalcValue::number(10.0)),
+                        crate::resolver::ResolvedReferenceCell::new(1, 2, CalcValue::number(20.0)),
+                        crate::resolver::ResolvedReferenceCell::new(2, 1, CalcValue::number(30.0)),
+                        crate::resolver::ResolvedReferenceCell::new(2, 2, CalcValue::number(40.0)),
+                        crate::resolver::ResolvedReferenceCell::new(3, 1, CalcValue::number(50.0)),
+                        crate::resolver::ResolvedReferenceCell::new(3, 2, CalcValue::number(60.0)),
+                    ],
+                    None,
+                )))
+            }
+        }
+        assert_eq!(
+            call(
+                &[
+                    CalcValue::reference(ReferenceLike::new(
+                        ReferenceKind::Area,
+                        "A1:B3".to_string()
+                    )),
+                    CalcValue::number(2.0),
+                    CalcValue::number(2.0),
+                ],
+                &EnumResolver
+            ),
+            Ok(CalcValue::number(40.0)),
+            "reference arg0 materializes via the resolver (by-index path)"
+        );
+    }
+
+    /// W105 oxf-y2uw.12.5 (Part 2): the resolver-capability gate is SPEC-DRIVEN, not a hand-list.
+    /// A function's adapter sees live (unresolved) references — and can therefore reach the
+    /// capability-gated resolver primitives (`resolve_eval_value` / `enumerate_reference_values`,
+    /// each of which calls `ensure_reference_resolution_allowed`) — IFF the XLL registration sets
+    /// `preserve_refs`, which `xll_export_specs` derives SOLELY from the declared
+    /// `arg_preparation_profile == RefsVisibleInAdapter` axis. This pins, over the WHOLE catalog,
+    /// that the set of reference-resolving (refs-visible-in-adapter) functions equals the declared
+    /// `RefsVisibleInAdapter` set — neither a separate hand-maintained list nor a per-function gate.
+    #[test]
+    fn reference_resolution_capability_gate_is_driven_by_declared_arg_preparation_profile() {
+        // The single derivation site `xll_export_specs` reads when emitting each U-arity export.
+        let preserve_refs_for = |meta: &crate::function::FunctionMeta| {
+            meta.arg_preparation_profile == ArgPreparationProfile::RefsVisibleInAdapter
+        };
+
+        for spec in crate::xll_export_specs::xll_export_specs() {
+            // Only U-arity exports carry the live-reference-passing flag; Q (numeric) exports never
+            // preserve refs (they are ValuesOnlyPreAdapter by construction).
+            if let crate::xll_export_specs::XllEntryKind::UArity(_) = spec.entry_kind {
+                let meta = crate::xll_export_specs::lookup_function_meta_by_id(spec.function_id)
+                    .expect("every export id is in the catalog");
+                assert_eq!(
+                    spec.preserve_refs,
+                    preserve_refs_for(&meta),
+                    "{}: XLL preserve_refs ({}) must equal the declared \
+                     arg_preparation_profile == RefsVisibleInAdapter ({}) — the live-reference \
+                     (resolver-reachable) set must be SINGLE-SOURCED from the declared axis",
+                    spec.function_id,
+                    spec.preserve_refs,
+                    preserve_refs_for(&meta),
+                );
+            }
+        }
+
+        // Concrete anchors: INDEX (and the reference-sensitive reference-adjacent surfaces that
+        // inspect a LIVE reference's address/shape) carry the axis and therefore resolve
+        // references; functions that take a text/value reference descriptor (INDIRECT builds a ref
+        // from text) or plain numerics do NOT.
+        for id in [FUNC_ID_INDEX, FUNC_ID_CELL, FUNC_ID_OFFSET] {
+            let meta = crate::xll_export_specs::lookup_function_meta_by_id(id).unwrap();
+            assert_eq!(
+                meta.arg_preparation_profile,
+                ArgPreparationProfile::RefsVisibleInAdapter,
+                "{id} is reference-sensitive and must declare RefsVisibleInAdapter"
+            );
+        }
+        for id in [FUNC_ID_OP_ADD, FUNC_ID_INDIRECT] {
+            let meta = crate::xll_export_specs::lookup_function_meta_by_id(id).unwrap();
+            assert_eq!(
+                meta.arg_preparation_profile,
+                ArgPreparationProfile::ValuesOnlyPreAdapter,
+                "{id} does not inspect a live reference (INDIRECT builds one from text); \
+                 it must declare the default ValuesOnlyPreAdapter"
+            );
+        }
+    }
+}

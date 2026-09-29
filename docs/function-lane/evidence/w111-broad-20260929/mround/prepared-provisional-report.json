@@ -1,0 +1,1260 @@
+{
+  "rows": 432,
+  "matches": 276,
+  "by_function": {
+    "FUNC.MROUND": {
+      "rows": 432,
+      "matches": 276
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111mroundheldout-00192-mround-fresh-192",
+      "formula": "=MROUND(B1:D2,CHOOSE({1;2;3},#VALUE!,\"0.499999999999995\",FALSE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Num|error:Ref|number:0x40397fffffffffb8|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00194-mround-fresh-194",
+      "formula": "=MROUND(B1:D1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:Name|error:Num|number:0x0000000000000000|error:Num|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00195-mround-fresh-195",
+      "formula": "=MROUND(B1:B3,F1)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[error:Num|number:0x4054500000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00196-mround-fresh-196",
+      "formula": "=MROUND(B1:C3,CHOOSE({1,2,3;4,5,6},#NUM!,A100,#NAME?,#NAME?,\"0.499999999999995\",\"x\"))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Num|error:Num|error:NA|error:Value|number:0x0000000000000000|error:NA|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00197-mround-fresh-197",
+      "formula": "=MROUND(B1,F1:H1)",
+      "expected": "error:Null",
+      "actual": "array:1x3:[error:Null|error:Null|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00200-mround-fresh-200",
+      "formula": "=MROUND(CHOOSE({1},\"(1.25)\"),F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[number:0x0000000000000000|error:Value|error:Num|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00201-mround-fresh-201",
+      "formula": "=MROUND(B1:D1,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|error:Num|error:Null|error:Value|number:0x0000000000000000|error:Null|error:Value|number:0x0000000000000000|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00202-mround-fresh-202",
+      "formula": "=MROUND(B1:B3,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[number:0x0000000000000000|error:Null|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00203-mround-fresh-203",
+      "formula": "=MROUND(CHOOSE({1,2;3,4;5,6},\"\",A100,\"+.5\",#VALUE!,FALSE,A101),F1:H2)",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Num|error:NA|error:Value|error:Value|error:NA|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00204-mround-fresh-204",
+      "formula": "=MROUND(B1:D2,CHOOSE({1,2;3,4},A100,\"-0\",A101,FALSE))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Num|error:Value|error:Num|error:Value|error:Null|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00206-mround-fresh-206",
+      "formula": "=MROUND(B1:B3,CHOOSE({1,2,3;4,5,6},FALSE,A100,A101,FALSE,\"350%\",#NAME?))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|number:0xc039400000000000|number:0xc03e600000000000|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00207-mround-fresh-207",
+      "formula": "=MROUND(B1:C2,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:Ref|error:NA|error:Num|error:Div0|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00208-mround-fresh-208",
+      "formula": "=MROUND(CHOOSE({1,2,3;4,5,6},\"0.499999999999995\",A100,A101,A102,\"0.499999999999995\",#N/A),F1:G2)",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:NA]",
+      "actual": "array:2x3:[error:Null|error:Num|error:NA|error:Div0|error:Name|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00209-mround-fresh-209",
+      "formula": "=MROUND(B1:D2,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Ref|error:Value|error:Ref|error:Name|error:Value|error:Value|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00210-mround-fresh-210",
+      "formula": "=MROUND(B1:D1,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[error:NA|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00212-mround-fresh-212",
+      "formula": "=MROUND(B1:C3,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|number:0x0000000000000000|error:Div0|error:Num|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00213-mround-fresh-213",
+      "formula": "=MROUND(B1:C3,CHOOSE({1;2;3},#NUM!,A100,#NUM!))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|error:Value|number:0xc047600000000000|number:0xc057600000000000|error:Value|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00216-mround-fresh-216",
+      "formula": "=MROUND(CHOOSE({1,2,3},#NUM!,A100,A101),F1:H2)",
+      "expected": "array:1x3:[error:Num|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Num|error:Value|error:Ref|error:Num|error:Num|number:0xc054a00000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00217-mround-fresh-217",
+      "formula": "=MROUND(B1:B3,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Div0|error:Div0|number:0x0000000000000000|number:0x0000000000000000|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00224-mround-fresh-224",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2,3;4,5,6},A100,A101,\"x\",A102,FALSE,TRUE))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Div0|number:0x0000000000000000|error:Value|error:Div0|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00225-mround-fresh-225",
+      "formula": "=MROUND(CHOOSE({1,2,3},A100,A101,#DIV/0!),F1:F3)",
+      "expected": "array:1x3:[error:Value|error:Value|error:Div0]",
+      "actual": "array:3x3:[number:0x4046700000000000|error:Num|error:Div0|error:Value|error:Value|error:Div0|error:Value|error:Value|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00226-mround-fresh-226",
+      "formula": "=MROUND(B1:D1,F1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00228-mround-fresh-228",
+      "formula": "=MROUND(B1:C3,CHOOSE({1;2;3},A100,\"350%\",FALSE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|error:Value|error:NA|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00229-mround-fresh-229",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2;3,4;5,6},\"x\",\"-0\",TRUE,FALSE,A100,#DIV/0!))",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Value|error:NA|error:Value|error:Value|error:NA|error:Num|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00230-mround-fresh-230",
+      "formula": "=MROUND(CHOOSE({1,2;3,4;5,6},FALSE,A100,A101,A102,TRUE,TRUE),F1:F3)",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Value|error:Value|number:0x4058800000000000|number:0x4033800000000000|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00233-mround-fresh-233",
+      "formula": "=MROUND(B1:C2,F1)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Name|error:Name|error:Value|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00234-mround-fresh-234",
+      "formula": "=MROUND(B1:D1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Num|number:0x0000000000000000|error:Value|error:Num|number:0x0000000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00237-mround-fresh-237",
+      "formula": "=MROUND(CHOOSE({1;2;3},#NULL!,TRUE,FALSE),F1:G3)",
+      "expected": "array:3x1:[error:Null|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Null|error:Null|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00238-mround-fresh-238",
+      "formula": "=MROUND(B1:C2,CHOOSE({1,2,3},\"\",#NULL!,TRUE))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Null|error:NA|error:Value|error:Null|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00239-mround-fresh-239",
+      "formula": "=MROUND(B1,F1:G2)",
+      "expected": "error:Div0",
+      "actual": "array:2x2:[error:Div0|error:Div0|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00240-mround-fresh-240",
+      "formula": "=MROUND(B1:C2,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Null|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00243-mround-fresh-243",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2;3,4},\"0.499999999999995\",\"TRUE\",A100,\"350%\"))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Div0|error:Value|error:Value|error:Div0|number:0x0000000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00244-mround-fresh-244",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},#DIV/0!,#VALUE!,A100,A101),F1:H1)",
+      "expected": "array:2x2:[error:Div0|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Div0|error:Value|error:NA|error:Value|error:Ref|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00245-mround-fresh-245",
+      "formula": "=MROUND(B1:C2,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Ref|error:Value|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00247-mround-fresh-247",
+      "formula": "=MROUND(B1:D2,F1)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:Value|error:Div0|error:Null|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00248-mround-fresh-248",
+      "formula": "=MROUND(B1:C2,CHOOSE({1,2;3,4;5,6},A100,\"350%\",\" 2.75 \",#REF!,FALSE,\"\"))",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Value|error:Value|error:Ref|error:Ref|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00250-mround-fresh-250",
+      "formula": "=MROUND(B1:C3,CHOOSE({1,2,3;4,5,6},FALSE,TRUE,TRUE,TRUE,\"+.5\",A100))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Div0|error:NA|error:Value|number:0x3fe0000000000000|error:NA|error:NA|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00251-mround-fresh-251",
+      "formula": "=MROUND(B1:B3,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|number:0xc04ea00000000000|error:NA|error:Value|error:Num|error:Value|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00253-mround-fresh-253",
+      "formula": "=MROUND(B1:B3,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|error:Value|number:0x0000000000000000|error:Div0|error:Div0|error:Div0|error:Value|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00254-mround-fresh-254",
+      "formula": "=MROUND(B1:B3,CHOOSE({1,2,3},\"x\",A100,#NUM!))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|number:0x0000000000000000|error:Num|error:Value|error:Value|error:Value|error:Ref|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00255-mround-fresh-255",
+      "formula": "=MROUND(B1:B3,CHOOSE({1,2,3},FALSE,#NULL!,#NUM!))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Num|error:Num|error:Num|error:Value|error:Null|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00256-mround-fresh-256",
+      "formula": "=MROUND(CHOOSE({1;2;3},A100,\"(1.25)\",#REF!),F1:H2)",
+      "expected": "array:3x1:[error:Value|error:Value|error:Ref]",
+      "actual": "array:3x3:[error:NA|error:Num|error:Value|error:Value|error:Num|error:Num|error:Ref|error:Ref|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00257-mround-fresh-257",
+      "formula": "=MROUND(CHOOSE({1},\"(1.25)\"),F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Null|number:0x0000000000000000|error:Num|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00258-mround-fresh-258",
+      "formula": "=MROUND(B1:D2,CHOOSE({1;2;3},#NAME?,\"x\",A100))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Name|error:Name|error:Value|error:Value|error:Value|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00259-mround-fresh-259",
+      "formula": "=MROUND(CHOOSE({1;2;3},FALSE,A100,TRUE),F1:H1)",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Value|number:0x0000000000000000|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00260-mround-fresh-260",
+      "formula": "=MROUND(B1:C2,CHOOSE({1,2,3;4,5,6},#DIV/0!,\"TRUE\",TRUE,\"TRUE\",A100,A101))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|error:NA|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00262-mround-fresh-262",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2;3,4},A100,A101,\"0.499999999999995\",#NULL!))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|number:0x0000000000000000|error:Ref|error:Value|error:Null|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00264-mround-fresh-264",
+      "formula": "=MROUND(B1:B3,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00265-mround-fresh-265",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2;3,4},#DIV/0!,A100,#N/A,\"-0\"))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|error:NA|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00266-mround-fresh-266",
+      "formula": "=MROUND(B1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Value|error:Num|error:Num|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00268-mround-fresh-268",
+      "formula": "=MROUND(B1:C3,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Num|number:0x0000000000000000|error:Num|error:Value|error:Name|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00269-mround-fresh-269",
+      "formula": "=MROUND(B1:D2,CHOOSE({1;2;3},A100,A101,#NUM!))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|number:0x0000000000000000|number:0x0000000000000000|error:Num|number:0x0000000000000000|error:Value|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00270-mround-fresh-270",
+      "formula": "=MROUND(B1:B3,CHOOSE({1;2;3},A100,TRUE,A101))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x1:[number:0x0000000000000000|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00271-mround-fresh-271",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},A100,#DIV/0!,#VALUE!,A101),F1:H2)",
+      "expected": "array:2x2:[error:Value|error:Div0|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Name|error:Div0|error:NA|error:Value|error:Num|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00272-mround-fresh-272",
+      "formula": "=MROUND(B1:C2,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:Value|error:NA|error:Value|error:Name|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00273-mround-fresh-273",
+      "formula": "=MROUND(B1,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00275-mround-fresh-275",
+      "formula": "=MROUND(CHOOSE({1},\"-0\"),F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Value|number:0x0000000000000000|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00277-mround-fresh-277",
+      "formula": "=MROUND(CHOOSE({1},TRUE),F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00278-mround-fresh-278",
+      "formula": "=MROUND(B1:C2,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Value|error:Num|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00279-mround-fresh-279",
+      "formula": "=MROUND(B1:C2,CHOOSE({1,2,3;4,5,6},\"\",#NUM!,TRUE,\"0.499999999999995\",\"0.499999999999995\",A100))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Num|error:NA|error:Value|number:0x4042bfffffffffcb|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00280-mround-fresh-280",
+      "formula": "=MROUND(CHOOSE({1,2,3},TRUE,#NUM!,A100),F1:H1)",
+      "expected": "array:1x3:[error:Value|error:Num|error:Value]",
+      "actual": "array:1x3:[error:Value|error:Num|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00281-mround-fresh-281",
+      "formula": "=MROUND(B1:B3,F1)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[error:Value|error:Value|error:Ref]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00282-mround-fresh-282",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},\" 2.75 \",A100,A101,\"+.5\"),F1:G3)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Null|error:Num|error:Num|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00286-mround-fresh-286",
+      "formula": "=MROUND(B1:D2,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[number:0x0000000000000000|error:Num|error:Value|error:Null|error:Ref|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00287-mround-fresh-287",
+      "formula": "=MROUND(CHOOSE({1},#NAME?),F1:G2)",
+      "expected": "error:Name",
+      "actual": "array:2x2:[error:Name|error:Name|error:Name|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00289-mround-fresh-289",
+      "formula": "=MROUND(B1:C2,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Div0|error:NA|error:NA|number:0x0000000000000000|error:Num|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00291-mround-fresh-291",
+      "formula": "=MROUND(B1:D2,CHOOSE({1,2,3;4,5,6},A100,FALSE,FALSE,A101,A102,#N/A))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Name|error:Value|error:Value|number:0xc055d80000000000|error:Value|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00293-mround-fresh-293",
+      "formula": "=MROUND(B1,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00295-mround-fresh-295",
+      "formula": "=MROUND(CHOOSE({1;2;3},A100,A101,A102),F1:G2)",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|number:0x0000000000000000|error:Div0|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00296-mround-fresh-296",
+      "formula": "=MROUND(B1:D1,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Value|number:0x0000000000000000|number:0x0000000000000000|error:Value|error:Num|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00297-mround-fresh-297",
+      "formula": "=MROUND(B1:C3,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Name|number:0x0000000000000000|number:0x0000000000000000|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00298-mround-fresh-298",
+      "formula": "=MROUND(B1:D1,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[number:0xc056980000000000|error:Num|error:Value|number:0xc058300000000000|error:Num|error:Value|number:0x0000000000000000|number:0x0000000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00299-mround-fresh-299",
+      "formula": "=MROUND(B1:D1,F1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00300-mround-fresh-300",
+      "formula": "=MROUND(B1:C3,CHOOSE({1;2;3},A100,TRUE,FALSE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[number:0xc04c000000000000|number:0x0000000000000000|error:Value|error:Div0|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00301-mround-fresh-301",
+      "formula": "=MROUND(B1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00305-mround-fresh-305",
+      "formula": "=MROUND(B1:D2,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Null|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00306-mround-fresh-306",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},A100,A101,TRUE,A102),F1:H2)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Num|error:NA|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00308-mround-fresh-308",
+      "formula": "=MROUND(B1:D2,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Ref|error:Value|error:Value|error:Value|number:0x0000000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00309-mround-fresh-309",
+      "formula": "=MROUND(B1:C3,CHOOSE({1},TRUE))",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00310-mround-fresh-310",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2;3,4;5,6},\"350%\",FALSE,A100,#REF!,\"+.5\",#NULL!))",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[number:0x0000000000000000|error:Div0|error:NA|number:0x0000000000000000|error:Div0|error:NA|number:0x0000000000000000|error:Div0|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00311-mround-fresh-311",
+      "formula": "=MROUND(B1,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[error:Num|number:0x0000000000000000|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00312-mround-fresh-312",
+      "formula": "=MROUND(B1:C2,CHOOSE({1;2;3},#NAME?,TRUE,FALSE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Name|error:Name|error:Value|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00313-mround-fresh-313",
+      "formula": "=MROUND(CHOOSE({1;2;3},#NUM!,A100,#VALUE!),F1:G3)",
+      "expected": "array:3x1:[error:Num|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|error:Num|number:0x0000000000000000|number:0x0000000000000000|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00316-mround-fresh-316",
+      "formula": "=MROUND(CHOOSE({1,2;3,4;5,6},#N/A,TRUE,FALSE,#NULL!,A100,FALSE),F1:F3)",
+      "expected": "array:3x2:[error:NA|error:Value|error:Value|error:Null|error:Value|error:Value]",
+      "actual": "array:3x2:[error:NA|error:Value|error:Value|error:Null|error:Ref|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00319-mround-fresh-319",
+      "formula": "=MROUND(B1:B3,CHOOSE({1,2;3,4;5,6},A100,FALSE,\"\",FALSE,FALSE,\"0.499999999999995\"))",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Value|error:Value|error:Name|error:Name|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00320-mround-fresh-320",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},\"(1.25)\",TRUE,\"350%\",\"-0\"),F1:H2)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|error:NA|error:Value|number:0x0000000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00321-mround-fresh-321",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2,3;4,5,6},FALSE,#VALUE!,\"\",TRUE,\"\",\"0.499999999999995\"))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Null|error:Value|error:Value|error:Null|error:Value|number:0x404fffffffffffa6]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00322-mround-fresh-322",
+      "formula": "=MROUND(B1:D1,CHOOSE({1;2;3},\"0.499999999999995\",FALSE,TRUE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Num|error:Value|error:Num|error:Value|error:Value|error:Num|error:Value|error:Value|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00323-mround-fresh-323",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2,3;4,5,6},FALSE,FALSE,A100,TRUE,A101,TRUE))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|number:0x0000000000000000|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00324-mround-fresh-324",
+      "formula": "=MROUND(B1:D1,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Num|error:Num|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00325-mround-fresh-325",
+      "formula": "=MROUND(B1:D1,F1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[number:0x0000000000000000|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00328-mround-fresh-328",
+      "formula": "=MROUND(B1,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[number:0x0000000000000000|number:0x0000000000000000|error:Ref|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00329-mround-fresh-329",
+      "formula": "=MROUND(B1:C3,CHOOSE({1,2,3;4,5,6},FALSE,#NAME?,TRUE,\"TRUE\",#VALUE!,A100))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Name|error:NA|error:Value|error:Null|error:NA|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00330-mround-fresh-330",
+      "formula": "=MROUND(B1:D2,CHOOSE({1,2;3,4},\"-0\",#DIV/0!,A100,#NUM!))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Div0|error:Div0|error:Value|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00331-mround-fresh-331",
+      "formula": "=MROUND(B1:C3,F1)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Num|error:Value|number:0x4056b00000000000|error:Num|number:0x4033400000000000|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00332-mround-fresh-332",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},TRUE,A100,#NAME?,A101),F1:H1)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Name|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Num|error:NA|error:Name|error:Num|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00334-mround-fresh-334",
+      "formula": "=MROUND(B1:D2,CHOOSE({1},A100))",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|number:0x0000000000000000|error:Div0|number:0x0000000000000000|error:Div0|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00337-mround-fresh-337",
+      "formula": "=MROUND(CHOOSE({1,2,3;4,5,6},A100,A101,TRUE,\"(1.25)\",#VALUE!,A102),F1:G2)",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[number:0x4054f00000000000|number:0x0000000000000000|error:Value|error:Num|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00338-mround-fresh-338",
+      "formula": "=MROUND(B1:B3,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Name|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00339-mround-fresh-339",
+      "formula": "=MROUND(CHOOSE({1,2;3,4;5,6},TRUE,\"(1.25)\",#NULL!,TRUE,\"350%\",#NUM!),F1:G3)",
+      "expected": "array:3x2:[error:Value|error:Value|error:Null|error:Value|error:Value|error:Num]",
+      "actual": "array:3x2:[error:Value|error:Num|error:Null|error:Value|error:Num|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00340-mround-fresh-340",
+      "formula": "=MROUND(B1:C2,CHOOSE({1;2;3},A100,A101,FALSE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Value|error:Name|error:Value|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00343-mround-fresh-343",
+      "formula": "=MROUND(B1,F1:H2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[number:0x0000000000000000|error:Value|error:Value|number:0x0000000000000000|number:0x0000000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00346-mround-fresh-346",
+      "formula": "=MROUND(CHOOSE({1;2;3},A100,TRUE,A101),F1:H1)",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[number:0x0000000000000000|error:Div0|number:0x0000000000000000|error:Value|error:Value|error:Value|number:0x0000000000000000|error:Div0|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00348-mround-fresh-348",
+      "formula": "=MROUND(B1:D2,CHOOSE({1},#N/A))",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:Value|error:NA|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00350-mround-fresh-350",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},\" 2.75 \",\"350%\",#NULL!,\"+.5\"),F1:H2)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Null|error:Value]",
+      "actual": "array:2x3:[number:0x0000000000000000|error:Num|error:NA|error:Null|number:0x0000000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00351-mround-fresh-351",
+      "formula": "=MROUND(B1:D2,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Value|error:Value|error:NA|error:Value|error:Value|error:Value|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00353-mround-fresh-353",
+      "formula": "=MROUND(B1,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[number:0x0000000000000000|error:Ref|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00354-mround-fresh-354",
+      "formula": "=MROUND(B1:B3,F1)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00355-mround-fresh-355",
+      "formula": "=MROUND(B1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Null|error:Num|error:Ref|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00359-mround-fresh-359",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},#REF!,FALSE,A100,FALSE),F1:G2)",
+      "expected": "array:2x2:[error:Ref|error:Value|error:Value|error:Value]",
+      "actual": "array:2x2:[error:Ref|error:Value|number:0x0000000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00360-mround-fresh-360",
+      "formula": "=MROUND(B1:B3,CHOOSE({1;2;3},\"x\",TRUE,#N/A))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x1:[error:Null|error:Null|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00361-mround-fresh-361",
+      "formula": "=MROUND(CHOOSE({1,2,3},A100,A101,A102),F1:F3)",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:Value|error:Value|error:Value|error:Num|error:Num|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00362-mround-fresh-362",
+      "formula": "=MROUND(B1:D2,CHOOSE({1,2,3},TRUE,#N/A,A100))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|error:Div0|error:Value|error:Null|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00363-mround-fresh-363",
+      "formula": "=MROUND(B1,F1:H1)",
+      "expected": "error:Value",
+      "actual": "array:1x3:[error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00364-mround-fresh-364",
+      "formula": "=MROUND(B1:C2,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[number:0x4040000000000000|error:Null|error:Ref|error:Null|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00365-mround-fresh-365",
+      "formula": "=MROUND(CHOOSE({1,2,3},TRUE,#VALUE!,FALSE),F1:G2)",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00366-mround-fresh-366",
+      "formula": "=MROUND(B1:D2,CHOOSE({1,2,3},A100,A101,#NULL!))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[number:0x0000000000000000|error:Num|error:Null|number:0xc051180000000000|error:NA|error:Null]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00367-mround-fresh-367",
+      "formula": "=MROUND(B1:C3,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:NA|error:Ref|error:NA|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00368-mround-fresh-368",
+      "formula": "=MROUND(B1:D1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Value|error:NA|error:Value|error:Value|error:NA|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00369-mround-fresh-369",
+      "formula": "=MROUND(B1:D1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[number:0x0000000000000000|error:Value|error:NA|number:0x0000000000000000|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00373-mround-fresh-373",
+      "formula": "=MROUND(B1,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00374-mround-fresh-374",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},A100,#NUM!,\"TRUE\",\"350%\"),F1:G3)",
+      "expected": "array:2x2:[error:Value|error:Num|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|error:Num|error:Value|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00375-mround-fresh-375",
+      "formula": "=MROUND(B1:C3,CHOOSE({1;2;3},#N/A,FALSE,#NAME?))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:NA|error:NA|error:Value|error:Value|error:Value|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00376-mround-fresh-376",
+      "formula": "=MROUND(B1:B3,CHOOSE({1;2;3},TRUE,#DIV/0!,TRUE))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x1:[error:Ref|error:Div0|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00377-mround-fresh-377",
+      "formula": "=MROUND(CHOOSE({1},#VALUE!),F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00378-mround-fresh-378",
+      "formula": "=MROUND(B1:D2,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[number:0x0000000000000000|error:Value|error:NA|error:NA|number:0xc04fb00000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00379-mround-fresh-379",
+      "formula": "=MROUND(CHOOSE({1;2;3},A100,TRUE,#DIV/0!),F1:G3)",
+      "expected": "array:3x1:[error:Value|error:Value|error:Div0]",
+      "actual": "array:3x2:[number:0x0000000000000000|error:Name|error:Value|error:Value|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00385-mround-fresh-385",
+      "formula": "=MROUND(B1:C2,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|number:0x0000000000000000|error:Num|error:Num|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00387-mround-fresh-387",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2;3,4},#DIV/0!,A100,TRUE,\"350%\"))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|number:0x0000000000000000|error:NA|error:Value|number:0x4038800000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00388-mround-fresh-388",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},#N/A,FALSE,\"0.499999999999995\",A100),F1:G3)",
+      "expected": "array:2x2:[error:NA|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:NA|error:Value|error:Value|error:Ref|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00389-mround-fresh-389",
+      "formula": "=MROUND(B1:C3,CHOOSE({1,2,3;4,5,6},A100,A101,A102,TRUE,A103,TRUE))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Div0|error:Value|error:NA|error:Value|number:0x4037c00000000000|error:NA|error:NA|error:Num|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00390-mround-fresh-390",
+      "formula": "=MROUND(B1:B3,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[number:0x0000000000000000|error:Value|number:0x0000000000000000|number:0x0000000000000000|error:Div0|error:Div0]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00392-mround-fresh-392",
+      "formula": "=MROUND(B1:D2,F1)",
+      "expected": "error:Value",
+      "actual": "array:2x3:[error:Num|error:Name|number:0x0000000000000000|error:Name|error:Value|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00396-mround-fresh-396",
+      "formula": "=MROUND(B1:B3,CHOOSE({1},\"+.5\"))",
+      "expected": "error:Value",
+      "actual": "array:3x1:[error:Num|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00397-mround-fresh-397",
+      "formula": "=MROUND(B1:B3,CHOOSE({1,2;3,4;5,6},#NAME?,A100,A101,#N/A,#DIV/0!,A102))",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|error:Num|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00398-mround-fresh-398",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2,3},#NUM!,TRUE,\"350%\"))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:1x3:[error:Num|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00399-mround-fresh-399",
+      "formula": "=MROUND(B1:D1,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Num|number:0x4039800000000000|error:NA|error:Num|error:Value|error:NA|error:Num|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00400-mround-fresh-400",
+      "formula": "=MROUND(CHOOSE({1,2,3;4,5,6},A100,\"\",FALSE,FALSE,#N/A,\"\"),F1:G3)",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:NA|error:Value]",
+      "actual": "array:3x3:[error:Value|error:Value|error:Value|error:Value|error:NA|error:Value|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00401-mround-fresh-401",
+      "formula": "=MROUND(CHOOSE({1},FALSE),F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00403-mround-fresh-403",
+      "formula": "=MROUND(B1:B3,F1:G2)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Div0|error:Div0|error:Value|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00404-mround-fresh-404",
+      "formula": "=MROUND(CHOOSE({1;2;3},TRUE,\"-0\",A100),F1:F3)",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x1:[error:Value|number:0x0000000000000000|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00405-mround-fresh-405",
+      "formula": "=MROUND(B1:B3,CHOOSE({1;2;3},\"+.5\",#VALUE!,\"-0\"))",
+      "expected": "array:3x1:[error:Value|error:Value|error:Value]",
+      "actual": "array:3x1:[error:Null|error:Value|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00406-mround-fresh-406",
+      "formula": "=MROUND(B1:B3,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x1:[error:Num|error:Num|error:Name]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00407-mround-fresh-407",
+      "formula": "=MROUND(CHOOSE({1,2,3},\"0.499999999999995\",FALSE,FALSE),F1:G2)",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[number:0x3fdfffffffffffa6|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00409-mround-fresh-409",
+      "formula": "=MROUND(CHOOSE({1,2;3,4;5,6},\"-0\",#NAME?,\"(1.25)\",A100,#NULL!,A101),F1:F3)",
+      "expected": "array:3x2:[error:Value|error:Name|error:Value|error:Value|error:Null|error:Value]",
+      "actual": "array:3x2:[number:0x0000000000000000|error:Name|error:Value|error:Value|error:Null|number:0x0000000000000000]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00411-mround-fresh-411",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},\"0.499999999999995\",TRUE,\"x\",\"(1.25)\"),F1:G3)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:3x2:[error:Num|error:Value|error:Value|number:0x0000000000000000|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00412-mround-fresh-412",
+      "formula": "=MROUND(B1:C2,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|number:0x0000000000000000|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00415-mround-fresh-415",
+      "formula": "=MROUND(B1:C3,CHOOSE({1},FALSE))",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00417-mround-fresh-417",
+      "formula": "=MROUND(CHOOSE({1,2;3,4;5,6},#NUM!,A100,#NUM!,#N/A,TRUE,\"x\"),F1:H2)",
+      "expected": "array:3x2:[error:Num|error:Value|error:Num|error:NA|error:Value|error:Value]",
+      "actual": "array:3x3:[error:Num|error:Value|error:NA|error:Num|error:NA|error:NA|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00418-mround-fresh-418",
+      "formula": "=MROUND(CHOOSE({1,2;3,4},A100,\" 2.75 \",A101,\"350%\"),F1:H1)",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[number:0x0000000000000000|number:0x0000000000000000|error:NA|number:0x0000000000000000|number:0x0000000000000000|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00420-mround-fresh-420",
+      "formula": "=MROUND(B1:C3,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Null|error:Null|error:Name|error:Value|error:Value|error:Num]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00422-mround-fresh-422",
+      "formula": "=MROUND(B1:D1,F1:G3)",
+      "expected": "error:Value",
+      "actual": "array:3x3:[error:Num|error:Num|error:NA|number:0x0000000000000000|number:0x0000000000000000|error:NA|error:Num|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00424-mround-fresh-424",
+      "formula": "=MROUND(B1:C2,F1:F3)",
+      "expected": "error:Value",
+      "actual": "array:3x2:[error:Name|error:Value|error:Value|error:Value|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00427-mround-fresh-427",
+      "formula": "=MROUND(B1:C2,CHOOSE({1,2,3},FALSE,FALSE,#DIV/0!))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:2x3:[error:Value|error:Value|error:NA|error:Value|error:Value|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00428-mround-fresh-428",
+      "formula": "=MROUND(B1:D1,CHOOSE({1,2,3},\"-0\",\" 2.75 \",\"-0\"))",
+      "expected": "array:1x3:[error:Value|error:Value|error:Value]",
+      "actual": "array:1x3:[error:Value|number:0x4006000000000000|error:Value]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111mroundheldout-00431-mround-fresh-431",
+      "formula": "=MROUND(B1,F1:H2)",
+      "expected": "error:NA",
+      "actual": "array:2x3:[error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    }
+  ]
+}

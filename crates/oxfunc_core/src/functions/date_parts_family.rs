@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{
     coerce_prepared_to_number, prepare_calc_values_only, prepared_from_calc_value,
-    run_values_only_prepared,
+    run_values_only_prepared, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
@@ -108,13 +108,16 @@ fn coerce_serial_arg(arg: &CalcValue) -> Result<f64, DatePartsEvalError> {
 }
 
 fn serial_to_ymd(serial: f64) -> Result<(i64, i64, i64), WorksheetErrorCode> {
-    if !serial.is_finite() {
+    if !serial.is_finite() || serial < 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    let serial = serial.trunc() as i64;
-    if serial < 0 {
+    // Date-part extraction adds half a second in serial-day units before
+    // splitting the date and time. The order is observable near midnight.
+    let rounded = serial + 0.5 / 86_400.0;
+    if rounded >= 2_958_466.0 {
         return Err(WorksheetErrorCode::Num);
     }
+    let serial = rounded.floor() as i64;
     if serial == 0 {
         return Ok((1900, 1, 0));
     }
@@ -139,7 +142,9 @@ pub fn year_kernel(serial: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn days_kernel(end_serial: f64, start_serial: f64) -> Result<f64, WorksheetErrorCode> {
-    if !end_serial.is_finite() || !start_serial.is_finite() {
+    if !end_serial.is_finite() || !start_serial.is_finite()
+        || !(0.0..2_958_466.0).contains(&end_serial)
+        || !(0.0..2_958_466.0).contains(&start_serial) {
         return Err(WorksheetErrorCode::Num);
     }
     let end_serial = end_serial.trunc();
@@ -151,18 +156,17 @@ pub fn days_kernel(end_serial: f64, start_serial: f64) -> Result<f64, WorksheetE
 }
 
 fn serial_fraction_to_hms(serial: f64) -> Result<(f64, f64, f64), WorksheetErrorCode> {
-    if !serial.is_finite() {
-        return Err(WorksheetErrorCode::Num);
-    }
-    if serial < 0.0 {
+    let rounded = serial + 0.5 / 86_400.0;
+    if !serial.is_finite() || serial < 0.0 || rounded >= 2_958_466.0 {
         return Err(WorksheetErrorCode::Num);
     }
 
-    let fractional = serial - serial.floor();
-    let total_seconds = (fractional * 86_400.0).round().rem_euclid(86_400.0);
-    let hour = (total_seconds / 3600.0).floor();
-    let minute = ((total_seconds - hour * 3600.0) / 60.0).floor();
-    let second = total_seconds - hour * 3600.0 - minute * 60.0;
+    let fractional = rounded - rounded.floor();
+    let hours = fractional * 24.0;
+    let hour = hours.floor();
+    let minutes = (hours - hour) * 60.0;
+    let minute = minutes.floor();
+    let second = ((minutes - minute) * 60.0).floor().rem_euclid(60.0);
     Ok((hour, minute, second))
 }
 
@@ -234,31 +238,11 @@ fn eval_date_part_unary_prepared(
             let cells = array
                 .iter_row_major()
                 .map(|cell| {
-                    let serial = match cell.core() {
-                        CoreValue::Number(n) => *n,
-                        CoreValue::Text(_) => {
-                            coerce_prepared_to_number(cell).map_err(DatePartsEvalError::Coercion)?
-                        }
-                        CoreValue::Logical(value) => {
-                            if *value {
-                                1.0
-                            } else {
-                                0.0
-                            }
-                        }
-                        CoreValue::Error(_) => {
-                            return Ok(cell.clone());
-                        }
-                        CoreValue::Missing | CoreValue::Empty => 0.0,
-                        CoreValue::Array(_) | CoreValue::Reference(_) => {
-                            return Ok(CalcValue::error(WorksheetErrorCode::Value));
-                        }
-                    };
-                    kernel(serial)
-                        .map(CalcValue::number)
-                        .map_err(DatePartsEvalError::Domain)
+                    let result = coerce_serial_arg(cell).and_then(|serial|
+                        kernel(serial).map(CalcValue::number).map_err(DatePartsEvalError::Domain));
+                    result.unwrap_or_else(|error| CalcValue::error(map_date_parts_error_to_ws(&error)))
                 })
-                .collect::<Result<Vec<_>, _>>()?;
+                .collect::<Vec<_>>();
             Ok(CalcValue::array(
                 CalcArray::new(array.shape(), cells)
                     .expect("date-part array lift preserves input shape"),
@@ -334,10 +318,11 @@ pub fn eval_days_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DatePartsEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         eval_days_prepared,
+        map_date_parts_error_to_ws,
         DatePartsEvalError::Coercion,
     )
 }
@@ -350,6 +335,13 @@ fn eval_days_prepared(prepared: &[CalcValue]) -> Result<CalcValue, DatePartsEval
             actual: prepared.len(),
         });
     }
+    // DAYS propagates a worksheet error before attempting text conversion,
+    // including an error in the second argument after invalid first text.
+    for arg in prepared {
+        if let CoreValue::Error(code) = arg.core() {
+            return Err(DatePartsEvalError::Domain(*code));
+        }
+    }
     let end_serial = coerce_serial_arg(&prepared[0])?;
     let start_serial = coerce_serial_arg(&prepared[1])?;
     days_kernel(end_serial, start_serial)
@@ -361,13 +353,7 @@ pub fn eval_days_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DatePartsEvalError> {
-    let prepared_calc =
-        prepare_calc_values_only(args, resolver).map_err(DatePartsEvalError::Coercion)?;
-    let prepared = prepared_calc
-        .iter()
-        .map(prepared_from_calc_value)
-        .collect::<Vec<_>>();
-    eval_days_prepared(&prepared).map(CalcValue::from)
+    eval_days_surface(args, resolver)
 }
 
 pub fn eval_hour_surface(

@@ -1,4 +1,5 @@
 import OxFunc.FunctionCore
+import OxFunc.NumericTextRendering
 
 namespace OxFunc.Functions
 
@@ -26,14 +27,14 @@ inductive ValueKind where
   deriving DecidableEq, Repr
 
 def valueToTextConcise : ValueKind → String
-  | .number n => toString n
+  | .number n => numericTextRuntimeForRat n
   | .text s => s
   | .logical true => "TRUE"
   | .logical false => "FALSE"
   | .error e => e
 
 def valueToTextStrict : ValueKind → String
-  | .number n => toString n
+  | .number n => numericTextRuntimeForRat n
   | .text s => "\"" ++ s ++ "\""
   | .logical true => "TRUE"
   | .logical false => "FALSE"

@@ -1,0 +1,12 @@
+{
+  "rows": 194,
+  "matches": {
+    "current_kahan": 194,
+    "ratio_first": 194,
+    "inner_ratio": 191,
+    "identity": 185,
+    "gamma_equals_expon": 194
+  },
+  "current_kahan_misses": [],
+  "qualification": "Observed worksheet surfaces constrain mathematical hypotheses; no binary internals or universal identity claim."
+}

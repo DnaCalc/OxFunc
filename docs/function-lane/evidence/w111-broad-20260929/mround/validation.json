@@ -1,0 +1,55 @@
+{
+  "numeric": {
+    "observations": 47964,
+    "exact_matches": 47964,
+    "distinct_pairs": 47554
+  },
+  "typed": {
+    "observations": 1514,
+    "exact_matches": 1514,
+    "provisional_duplicate_observations_excluded": 432
+  },
+  "commands": [
+    {
+      "command": "cargo test -p oxfunc_core --offline --test w111_mround_live_replay",
+      "working_directory": "repository root",
+      "tests_passed": 4
+    },
+    {
+      "command": "cargo test -p oxfunc_core --offline --test w111_mround_prepared_live_replay",
+      "working_directory": "repository root",
+      "tests_passed": 4
+    },
+    {
+      "command": "cargo test -p oxfunc_core --offline --test function_meta_golden",
+      "working_directory": "repository root",
+      "tests_passed": 1
+    },
+    {
+      "command": "lake build OxFunc.Functions.Mround",
+      "working_directory": "formal/lean",
+      "jobs_passed": 7
+    }
+  ],
+  "test_sources": {
+    "crates\\oxfunc_core\\tests\\w111_mround_live_replay.rs": "13fcdac6c93dff729bcc8f807b86e3864acc686f2e4dff60f19372c86e328892",
+    "crates\\oxfunc_core\\tests\\w111_mround_prepared_live_replay.rs": "f41cca6d995529051d425bae0e5e6e6e18f93a7c1d548d633448056fd5242f81"
+  },
+  "candidate_freeze": "reference-candidate-freeze.json",
+  "heldout_source_check": "reference-heldout-source-check.json",
+  "metadata_scope": "MROUND row only; RefsVisibleInAdapter and Custom",
+  "read_only_review": "No additional blocker for captured finite normal/+0 arithmetic and resolved-reference slice; true resolver failures before ordered scalar error selection remain an unresolved host seam.",
+  "status": {
+    "scope_completeness": "scope_partial",
+    "target_completeness": "target_partial",
+    "integration_completeness": "partial",
+    "open_lanes": [
+      "multi-area/structured/external reference classes",
+      "shared numeric-text context constraints",
+      "unresolved reference/provider failures and evaluator integration",
+      "non-x86_64 arithmetic target evidence",
+      "cutoff mechanism not identified; observed uniform boundary only",
+      "receiving-repository acknowledgment"
+    ]
+  }
+}

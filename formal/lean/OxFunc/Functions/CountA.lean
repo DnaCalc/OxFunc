@@ -20,7 +20,7 @@ def countAMeta : FunctionMeta := {
 }
 
 def countAArgumentIncluded : CoercionInput → Bool
-  | .missingArg => false
+  | .missingArg => true
   | .emptyCell => false
   | _ => true
 
@@ -31,8 +31,8 @@ theorem evalCountAPrepared_counts_empty_string_and_error :
     evalCountAPrepared [.text "", .error .na, .emptyCell] = 2 := by
   native_decide
 
-theorem evalCountAPrepared_ignores_missing_and_empty :
-    evalCountAPrepared [.missingArg, .emptyCell] = 0 := by
+theorem evalCountAPrepared_counts_missing_and_ignores_empty :
+    evalCountAPrepared [.missingArg, .emptyCell] = 1 := by
   native_decide
 
 theorem countAMeta_profiles :

@@ -1,0 +1,83 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_rollup.v1",
+  "run_id": "w111-atan-repeat-controls-typed-20260929",
+  "tranche_id": "w111-atan-repeat-controls-20260929",
+  "generated_utc": "2026-09-29T15:06:22.3696062Z",
+  "total_cases": 544,
+  "by_classification": {
+    "exact_typed_bit_match": 512,
+    "unexpected_mismatch": 32
+  },
+  "by_severity_class": {
+    "match": 512,
+    "numeric_drift_1ulp": 16,
+    "structural_mismatch": 16
+  },
+  "by_severity_sub_tag": {
+    "array_element_drift": 16
+  },
+  "by_function": {
+    "FUNC.ATAN": {
+      "exact_typed_bit_match": 512,
+      "unexpected_mismatch": 32
+    }
+  },
+  "mismatch_case_ids": [
+    "w111atanrepeat-00032-atan-scalar-0-4611700760338047348-0--1",
+    "w111atanrepeat-00033-atan-scalar-0-4611700760338047348-0-1",
+    "w111atanrepeat-00034-atan-array-0-4611700760338047348-0",
+    "w111atanrepeat-00035-atan-reference-array-0-4611700760338047348-0",
+    "w111atanrepeat-00100-atan-scalar-0-4611718733320961168-0--1",
+    "w111atanrepeat-00101-atan-scalar-0-4611718733320961168-0-1",
+    "w111atanrepeat-00102-atan-array-0-4611718733320961168-0",
+    "w111atanrepeat-00103-atan-reference-array-0-4611718733320961168-0",
+    "w111atanrepeat-00168-atan-scalar-1-4611700760338047348-0--1",
+    "w111atanrepeat-00169-atan-scalar-1-4611700760338047348-0-1",
+    "w111atanrepeat-00170-atan-array-1-4611700760338047348-0",
+    "w111atanrepeat-00171-atan-reference-array-1-4611700760338047348-0",
+    "w111atanrepeat-00236-atan-scalar-1-4611718733320961168-0--1",
+    "w111atanrepeat-00237-atan-scalar-1-4611718733320961168-0-1",
+    "w111atanrepeat-00238-atan-array-1-4611718733320961168-0",
+    "w111atanrepeat-00239-atan-reference-array-1-4611718733320961168-0",
+    "w111atanrepeat-00304-atan-scalar-2-4611700760338047348-0--1",
+    "w111atanrepeat-00305-atan-scalar-2-4611700760338047348-0-1",
+    "w111atanrepeat-00306-atan-array-2-4611700760338047348-0",
+    "w111atanrepeat-00307-atan-reference-array-2-4611700760338047348-0",
+    "w111atanrepeat-00372-atan-scalar-2-4611718733320961168-0--1",
+    "w111atanrepeat-00373-atan-scalar-2-4611718733320961168-0-1",
+    "w111atanrepeat-00374-atan-array-2-4611718733320961168-0",
+    "w111atanrepeat-00375-atan-reference-array-2-4611718733320961168-0",
+    "w111atanrepeat-00440-atan-scalar-3-4611700760338047348-0--1",
+    "w111atanrepeat-00441-atan-scalar-3-4611700760338047348-0-1",
+    "w111atanrepeat-00442-atan-array-3-4611700760338047348-0",
+    "w111atanrepeat-00443-atan-reference-array-3-4611700760338047348-0",
+    "w111atanrepeat-00508-atan-scalar-3-4611718733320961168-0--1",
+    "w111atanrepeat-00509-atan-scalar-3-4611718733320961168-0-1",
+    "w111atanrepeat-00510-atan-array-3-4611718733320961168-0",
+    "w111atanrepeat-00511-atan-reference-array-3-4611718733320961168-0"
+  ],
+  "axis_witness_pairs": {
+    "total_pairs": 0,
+    "differentiated_pairs": 0,
+    "not_differentiated_pairs": 0,
+    "blocked_or_incomplete_pairs": 0,
+    "by_axis_tag": {},
+    "pairs": []
+  },
+  "excel_environment": {
+    "available": true,
+    "version": "16.0",
+    "build": "20430",
+    "calculation": "-4105",
+    "workbook_compatibility_version": "2",
+    "channel": "unavailable_not_queried",
+    "bitness": "64-bit",
+    "operating_system": "Windows (64-bit) NT 10.00",
+    "workbook_date_system": "1900",
+    "precision_as_displayed": false,
+    "excel_input_plumbing": "typed_value2_with_fixture_readback",
+    "fixture_readback_policy": "numeric_exact_bits_text_ordinal_logical_blank_error_code"
+  },
+  "comparison_policy": "exact_typed_bit_match_no_tolerance_with_1x1_publication_seam_classification",
+  "failure_packet_dir": "smart-fuzzer/runs/w111-atan-repeat-controls-typed-20260929/failure_packets"
+}

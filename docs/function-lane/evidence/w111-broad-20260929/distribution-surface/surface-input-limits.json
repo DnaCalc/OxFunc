@@ -1,0 +1,85 @@
+{
+  "rows": 16,
+  "limited": [
+    {
+      "case_id": "w111typed-00135-norm_s_dist-axis-0-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00144-norm_s_dist-axis-1-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00300-norm_dist-axis-0-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00327-norm_dist-axis-1-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00354-norm_dist-axis-2-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00363-norm_dist-axis-3-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00551-normdist-axis-0-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00578-normdist-axis-1-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00605-normdist-axis-2-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00614-normdist-axis-3-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00802-expon_dist-axis-0-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00829-expon_dist-axis-1-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-00838-expon_dist-axis-2-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-01010-expondist-axis-0-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-01037-expondist-axis-1-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    },
+    {
+      "case_id": "w111typed-01046-expondist-axis-2-reference",
+      "reason": "generator placed missing_arg in cell fixture; not an Excel value observation",
+      "oracle_status": "excel_case_harness_error"
+    }
+  ]
+}

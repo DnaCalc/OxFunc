@@ -1,0 +1,32 @@
+{
+  "artifacts": [
+    {
+      "path": "combined-checks.json",
+      "sha256": "723ceb6c6b91d3b48dc1c189f32a7aad18fbeb4b44bfdb8fb57622cd096089ae"
+    },
+    {
+      "path": "engine-tests.log",
+      "sha256": "ea877096a14676bb2a1d80fe09c9e078f48e45c6673c325d24a46a2ccc67f528"
+    },
+    {
+      "path": "full-lean.log",
+      "sha256": "190a94b2fbf4eb271feb27b522f3371a77236be81556fc769e460863d236c87c"
+    },
+    {
+      "path": "full-rust.log",
+      "sha256": "6730deab861b05663037a38d2839546019af5e015f046fecf4dc00d1750f7af4"
+    },
+    {
+      "path": "helper-tests.log",
+      "sha256": "0d3753bb3f597bbb6a042cf3f007c05c90c26661a3dcf48dfd71c4d481809b04"
+    },
+    {
+      "path": "historical-lean-case-collision.log",
+      "sha256": "0c9ca08e4f00b5d70089e23f625351af8b94141780d2cf2eae81e8d1b4b545c4"
+    },
+    {
+      "path": "historical-lean-case-recovery.log",
+      "sha256": "c413015871633d8533f0f6ba8187273376388df260c2addc7f399b07df94549b"
+    }
+  ]
+}

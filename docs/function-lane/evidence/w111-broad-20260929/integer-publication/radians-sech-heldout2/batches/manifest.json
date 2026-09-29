@@ -1,0 +1,18 @@
+{
+  "phase": "independent",
+  "seed": 202609292512,
+  "batches": [
+    {
+      "function": "RADIANS",
+      "path": "batch-radians.json",
+      "rows": 22000,
+      "sha256": "86207b519ced46765fb9e6f464bcec49be44e3268fbcd70b6cc17753105f9354"
+    },
+    {
+      "function": "SECH",
+      "path": "batch-sech.json",
+      "rows": 22000,
+      "sha256": "4afb1bae08e380915087ef707d147d0cc41aac6609d03717fc4a9eb9eb423c44"
+    }
+  ]
+}

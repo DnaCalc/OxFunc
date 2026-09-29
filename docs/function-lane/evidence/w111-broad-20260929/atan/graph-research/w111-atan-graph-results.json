@@ -1,0 +1,43 @@
+{
+  "direct_misses": [
+    {
+      "args": [
+        "0xc0000d685e592174"
+      ],
+      "candidates": {
+        "direct_fpatan": "0xbff1bc3aef431d29",
+        "half_angle_fpatan": "0xbff1bc3aef431d2a",
+        "positive_fpatan_sign_restore": "0xbff1bc3aef431d29",
+        "positive_std_sign_restore": "0xbff1bc3aef431d2a",
+        "reciprocal_fpatan": "0xbff1bc3aef431d29",
+        "std_atan": "0xbff1bc3aef431d2a"
+      },
+      "expected_bits": "0xbff1bc3aef431d2a",
+      "id": "w111atan-heldout-20468"
+    },
+    {
+      "args": [
+        "0xc0001dc1079c3c90"
+      ],
+      "candidates": {
+        "direct_fpatan": "0xbff1c2b6c60d2616",
+        "half_angle_fpatan": "0xbff1c2b6c60d2617",
+        "positive_fpatan_sign_restore": "0xbff1c2b6c60d2616",
+        "positive_std_sign_restore": "0xbff1c2b6c60d2616",
+        "reciprocal_fpatan": "0xbff1c2b6c60d2616",
+        "std_atan": "0xbff1c2b6c60d2616"
+      },
+      "expected_bits": "0xbff1c2b6c60d2617",
+      "id": "w111atan-heldout-22881"
+    }
+  ],
+  "exact": {
+    "direct_fpatan": 29571,
+    "half_angle_fpatan": 25977,
+    "positive_fpatan_sign_restore": 29571,
+    "positive_std_sign_restore": 28984,
+    "reciprocal_fpatan": 27197,
+    "std_atan": 28984
+  },
+  "rows": 29573
+}

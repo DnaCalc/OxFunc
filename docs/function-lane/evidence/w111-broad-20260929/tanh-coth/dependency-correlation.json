@@ -1,0 +1,371 @@
+{
+  "authority": "public_dependency_values_at_all_failed_independent_tanh_inputs",
+  "rows": [
+    {
+      "input_bits": "0x3ca59e05f1e2674d",
+      "tanh_expected": "0x3ca59e05f1e2674d",
+      "sinh_expected": "0x3ca59e05f1e2674d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2674e"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e2674b",
+      "tanh_expected": "0x3ca59e05f1e2674b",
+      "sinh_expected": "0x3ca59e05f1e2674b",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2674c"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26749",
+      "tanh_expected": "0x3ca59e05f1e26749",
+      "sinh_expected": "0x3ca59e05f1e26749",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2674a"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26747",
+      "tanh_expected": "0x3ca59e05f1e26747",
+      "sinh_expected": "0x3ca59e05f1e26747",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26748"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26745",
+      "tanh_expected": "0x3ca59e05f1e26745",
+      "sinh_expected": "0x3ca59e05f1e26745",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26746"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26743",
+      "tanh_expected": "0x3ca59e05f1e26743",
+      "sinh_expected": "0x3ca59e05f1e26743",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26744"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26741",
+      "tanh_expected": "0x3ca59e05f1e26741",
+      "sinh_expected": "0x3ca59e05f1e26741",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26742"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e2673f",
+      "tanh_expected": "0x3ca59e05f1e2673f",
+      "sinh_expected": "0x3ca59e05f1e2673f",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26740"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e2673d",
+      "tanh_expected": "0x3ca59e05f1e2673d",
+      "sinh_expected": "0x3ca59e05f1e2673d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2673e"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e2674f",
+      "tanh_expected": "0x3ca59e05f1e2674f",
+      "sinh_expected": "0x3ca59e05f1e2674f",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26750"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26751",
+      "tanh_expected": "0x3ca59e05f1e26751",
+      "sinh_expected": "0x3ca59e05f1e26751",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26752"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26753",
+      "tanh_expected": "0x3ca59e05f1e26753",
+      "sinh_expected": "0x3ca59e05f1e26753",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26754"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26755",
+      "tanh_expected": "0x3ca59e05f1e26755",
+      "sinh_expected": "0x3ca59e05f1e26755",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26756"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26757",
+      "tanh_expected": "0x3ca59e05f1e26757",
+      "sinh_expected": "0x3ca59e05f1e26757",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e26758"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e26759",
+      "tanh_expected": "0x3ca59e05f1e26759",
+      "sinh_expected": "0x3ca59e05f1e26759",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2675a"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e2675b",
+      "tanh_expected": "0x3ca59e05f1e2675b",
+      "sinh_expected": "0x3ca59e05f1e2675b",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2675c"
+    },
+    {
+      "input_bits": "0x3ca59e05f1e2675d",
+      "tanh_expected": "0x3ca59e05f1e2675d",
+      "sinh_expected": "0x3ca59e05f1e2675d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca59e05f1e2675e"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2674d",
+      "tanh_expected": "0xbca59e05f1e2674d",
+      "sinh_expected": "0xbca59e05f1e2674d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2674e"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2674f",
+      "tanh_expected": "0xbca59e05f1e2674f",
+      "sinh_expected": "0xbca59e05f1e2674f",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26750"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26751",
+      "tanh_expected": "0xbca59e05f1e26751",
+      "sinh_expected": "0xbca59e05f1e26751",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26752"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26753",
+      "tanh_expected": "0xbca59e05f1e26753",
+      "sinh_expected": "0xbca59e05f1e26753",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26754"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26755",
+      "tanh_expected": "0xbca59e05f1e26755",
+      "sinh_expected": "0xbca59e05f1e26755",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26756"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26757",
+      "tanh_expected": "0xbca59e05f1e26757",
+      "sinh_expected": "0xbca59e05f1e26757",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26758"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26759",
+      "tanh_expected": "0xbca59e05f1e26759",
+      "sinh_expected": "0xbca59e05f1e26759",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2675a"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2675b",
+      "tanh_expected": "0xbca59e05f1e2675b",
+      "sinh_expected": "0xbca59e05f1e2675b",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2675c"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2675d",
+      "tanh_expected": "0xbca59e05f1e2675d",
+      "sinh_expected": "0xbca59e05f1e2675d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2675e"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2674b",
+      "tanh_expected": "0xbca59e05f1e2674b",
+      "sinh_expected": "0xbca59e05f1e2674b",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2674c"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26749",
+      "tanh_expected": "0xbca59e05f1e26749",
+      "sinh_expected": "0xbca59e05f1e26749",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2674a"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26747",
+      "tanh_expected": "0xbca59e05f1e26747",
+      "sinh_expected": "0xbca59e05f1e26747",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26748"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26745",
+      "tanh_expected": "0xbca59e05f1e26745",
+      "sinh_expected": "0xbca59e05f1e26745",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26746"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26743",
+      "tanh_expected": "0xbca59e05f1e26743",
+      "sinh_expected": "0xbca59e05f1e26743",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26744"
+    },
+    {
+      "input_bits": "0xbca59e05f1e26741",
+      "tanh_expected": "0xbca59e05f1e26741",
+      "sinh_expected": "0xbca59e05f1e26741",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26742"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2673f",
+      "tanh_expected": "0xbca59e05f1e2673f",
+      "sinh_expected": "0xbca59e05f1e2673f",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e26740"
+    },
+    {
+      "input_bits": "0xbca59e05f1e2673d",
+      "tanh_expected": "0xbca59e05f1e2673d",
+      "sinh_expected": "0xbca59e05f1e2673d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca59e05f1e2673e"
+    },
+    {
+      "input_bits": "0x3e45798ee2308c41",
+      "tanh_expected": "0x3e45798ee2308c42",
+      "sinh_expected": "0x3e45798ee2308c42",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3e45798ee2308c41"
+    },
+    {
+      "input_bits": "0xbe45798ee2308c41",
+      "tanh_expected": "0xbe45798ee2308c42",
+      "sinh_expected": "0xbe45798ee2308c42",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbe45798ee2308c41"
+    },
+    {
+      "input_bits": "0xbcae971d6d59594b",
+      "tanh_expected": "0xbcae971d6d59594b",
+      "sinh_expected": "0xbcae971d6d59594b",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbcae971d6d59594c"
+    },
+    {
+      "input_bits": "0xbca8270030179bab",
+      "tanh_expected": "0xbca8270030179bab",
+      "sinh_expected": "0xbca8270030179bab",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca8270030179bac"
+    },
+    {
+      "input_bits": "0x3ca82d06ab79fb53",
+      "tanh_expected": "0x3ca82d06ab79fb53",
+      "sinh_expected": "0x3ca82d06ab79fb53",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca82d06ab79fb54"
+    },
+    {
+      "input_bits": "0x3caef6f1b52d3435",
+      "tanh_expected": "0x3caef6f1b52d3435",
+      "sinh_expected": "0x3caef6f1b52d3435",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3caef6f1b52d3436"
+    },
+    {
+      "input_bits": "0xbcaf0d0a89df0cd5",
+      "tanh_expected": "0xbcaf0d0a89df0cd5",
+      "sinh_expected": "0xbcaf0d0a89df0cd5",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbcaf0d0a89df0cd6"
+    },
+    {
+      "input_bits": "0x3ca0a5b07f62d607",
+      "tanh_expected": "0x3ca0a5b07f62d607",
+      "sinh_expected": "0x3ca0a5b07f62d607",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca0a5b07f62d608"
+    },
+    {
+      "input_bits": "0x3ca503446e536ef9",
+      "tanh_expected": "0x3ca503446e536ef9",
+      "sinh_expected": "0x3ca503446e536ef9",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca503446e536efa"
+    },
+    {
+      "input_bits": "0xbca2411aa8d627db",
+      "tanh_expected": "0xbca2411aa8d627db",
+      "sinh_expected": "0xbca2411aa8d627db",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca2411aa8d627dc"
+    },
+    {
+      "input_bits": "0xbca32b42c0387a27",
+      "tanh_expected": "0xbca32b42c0387a27",
+      "sinh_expected": "0xbca32b42c0387a27",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca32b42c0387a28"
+    },
+    {
+      "input_bits": "0x3ca3ca16871a4a17",
+      "tanh_expected": "0x3ca3ca16871a4a17",
+      "sinh_expected": "0x3ca3ca16871a4a17",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca3ca16871a4a18"
+    },
+    {
+      "input_bits": "0x3ca06c91e834ff0f",
+      "tanh_expected": "0x3ca06c91e834ff0f",
+      "sinh_expected": "0x3ca06c91e834ff0f",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca06c91e834ff10"
+    },
+    {
+      "input_bits": "0x3ca51b6e814b147d",
+      "tanh_expected": "0x3ca51b6e814b147d",
+      "sinh_expected": "0x3ca51b6e814b147d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca51b6e814b147e"
+    },
+    {
+      "input_bits": "0x3ca7d5eba2ecf54d",
+      "tanh_expected": "0x3ca7d5eba2ecf54d",
+      "sinh_expected": "0x3ca7d5eba2ecf54d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca7d5eba2ecf54e"
+    },
+    {
+      "input_bits": "0xbca314c57f4d39ed",
+      "tanh_expected": "0xbca314c57f4d39ed",
+      "sinh_expected": "0xbca314c57f4d39ed",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0xbca314c57f4d39ee"
+    },
+    {
+      "input_bits": "0x3ca19c68de716fcd",
+      "tanh_expected": "0x3ca19c68de716fcd",
+      "sinh_expected": "0x3ca19c68de716fcd",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3ca19c68de716fce"
+    },
+    {
+      "input_bits": "0x3caca55cdcc0643d",
+      "tanh_expected": "0x3caca55cdcc0643d",
+      "sinh_expected": "0x3caca55cdcc0643d",
+      "cosh_expected": "0x3ff0000000000000",
+      "tanh_local": "0x3caca55cdcc0643e"
+    }
+  ],
+  "all_tanh_expected_equal_sinh_expected": true,
+  "all_cosh_equal_one": true
+}

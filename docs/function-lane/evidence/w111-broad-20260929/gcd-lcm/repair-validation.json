@@ -1,0 +1,56 @@
+{
+  "state": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "contextual numeric text HO-FN-022",
+    "HO-FN-027 receiving acknowledgement",
+    "final whole-function review"
+  ],
+  "discovery_numeric_admitted": 6638,
+  "discovery_typed_admitted": 918,
+  "typed_withheld_formula_assignment_failures": 2,
+  "rust_dispatch_tests": {
+    "passed": 13,
+    "failed": 0
+  },
+  "focused_library_tests": {
+    "command": "cargo test -p oxfunc_core --lib gcd",
+    "passed": 6,
+    "failed": 0
+  },
+  "formal": {
+    "command": "lake build OxFunc.GcdLcmReduction OxFunc.Functions.GcdFn OxFunc.Functions.LcmFn",
+    "passed_jobs": 9
+  },
+  "review": "Independent read-only review found no defect on admitted nonnegative inputs: ordered coercion, sparse zero effect, u128 product bound and rounded accumulator cast checked. Direct arbitrary-i64 kernel calls remain outside worksheet admission.",
+  "artifact_sha256": {
+    "candidate-freeze.json": "cd2718168d4a80cdb2662ea361e4c3f82061ccb192f2edca1227543b11c8ac2b",
+    "numeric-discovery2-gcd.json": "5fd0eec6eaf3338dcb030d14048c611b50f461a537d07b9f1d387c390cf8559b",
+    "numeric-discovery2-lcm.json": "2471123d8c450c819642cd20796834ae99b964f30ea645c73d469059ddac3944",
+    "numeric-gcd.json": "6f54a7fc6168b726a1b330b3157db061fc4a516530f48f0f2a0b297dd9d6d3b4",
+    "numeric-heldout-gcd.json": "4c102204743f81b6c181681f855fcf45a2dfa985715af138aff04917f873bcef",
+    "numeric-heldout-lcm.json": "9bde8c909ef73bc052af26333a8df8983730a27719d306b94d7de98b0a947bf3",
+    "numeric-lcm.json": "3290dd3c1a1cd9795634556f1c35c758a0cdedaced49f752e9c8dd1b5dce10ee",
+    "numeric-refinement-gcd.json": "9599a31c495b6bb76d2dbadc1ff531000b335dec4cea3b82fe26ec55f5a99901",
+    "numeric-refinement-lcm.json": "71756910da38379d8df902b5859529cc3d979983534ba957e03f012556aad2ee",
+    "typed-array-order.json": "d04b38c71a2d2b4886759de5a5383fd3e8076a57be11a3f6661c87d6dc18a9f9",
+    "typed-discovery2.json": "496c2f651b9222d6c3582adb7fe67472ce0ef7f0208703a873741ba58fe144d4",
+    "typed-heldout.json": "61dadebcb0c194c21f0d01639c0c94b5ab12d0264b1367938364a64961a8c32a",
+    "typed-initial.json": "cdd4e757f765d1d4a7407656344c103fc80122078af126b415629f66edbcc239",
+    "typed-refinement.json": "5744976efa231cfa5e1989a8994eb8d99a3231adb011252d141f225258b32aef"
+  },
+  "focused_library_tests_lcm": {
+    "command": "cargo test -p oxfunc_core --lib lcm",
+    "passed": 4,
+    "failed": 0,
+    "shared_tests_overlap": 2
+  },
+  "independent_numeric_admitted": 7104,
+  "independent_typed_admitted": 1160,
+  "independent_differences": 0,
+  "independent_exclusions": 0,
+  "total_admitted_observations": 15820,
+  "candidate_source_hashes_unchanged": true
+}

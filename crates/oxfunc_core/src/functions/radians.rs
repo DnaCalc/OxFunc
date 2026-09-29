@@ -24,7 +24,8 @@ pub const RADIANS_META: FunctionMeta = function_spec! {
 };
 
 pub fn radians_kernel(n: f64) -> f64 {
-    n * (std::f64::consts::PI / 180.0)
+    let result = crate::excel_numeric::excel_x87_mul(n, std::f64::consts::PI / 180.0);
+    if result.abs() < f64::MIN_POSITIVE { 0.0 } else { result }
 }
 
 pub fn eval_radians_surface(

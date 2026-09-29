@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     prepare_args_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::{CalcArray, ExcelText, WorksheetErrorCode};
 
 pub const BASE_META: FunctionMeta = function_spec! {
@@ -54,19 +54,37 @@ pub fn base_kernel(
     radix: f64,
     min_length: Option<f64>,
 ) -> Result<ExcelText, WorksheetErrorCode> {
-    let number = number.trunc();
-    let radix = radix.trunc();
-    let min_length = min_length.unwrap_or(0.0).trunc();
-    if number < 0.0 || !(2.0..=36.0).contains(&radix) || min_length < 0.0 {
+    // Value2 captures on Excel 20430/CV2: sign and 2^53 admission precede
+    // truncation, while the optional length is truncated within 0..255.
+    if !number.is_finite() || !(0.0..9_007_199_254_740_992.0).contains(&number)
+        || !radix.is_finite()
+        || min_length.is_some_and(|n| !n.is_finite() || n < 0.0)
+    {
         return Err(WorksheetErrorCode::Num);
     }
-    let mut out = int_to_base(number as i64, radix as i64);
+    let number = number.trunc();
+    let radix = radix.trunc();
+    let min_length = min_length.unwrap_or(1.0).trunc();
+    if !(2.0..=36.0).contains(&radix) || min_length > 255.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    // An explicit zero length differs from omitting the optional argument.
+    let mut out = if number == 0.0 && min_length == 0.0 {
+        String::new()
+    } else {
+        int_to_base(number as i64, radix as i64)
+    };
     while out.len() < min_length as usize {
         out.insert(0, '0');
     }
     Ok(ExcelText::from_utf16_code_units(
         out.encode_utf16().collect(),
     ))
+}
+
+fn coerce_base_number(arg: &CalcValue) -> Result<f64, CoercionError> {
+    if matches!(arg.core, CoreValue::Missing) { Ok(0.0) }
+    else { coerce_prepared_to_number(arg) }
 }
 
 pub fn eval_base_surface(
@@ -95,9 +113,9 @@ pub fn eval_base_surface(
             CalcArray::new(shape, mapped).expect("shape preserved"),
         ));
     }
-    let number = coerce_prepared_to_number(&prepared[0]).map_err(BaseEvalError::Coercion)?;
-    let radix = coerce_prepared_to_number(&prepared[1]).map_err(BaseEvalError::Coercion)?;
-    let min_length = if prepared.len() > 2 {
+    let number = coerce_base_number(&prepared[0]).map_err(BaseEvalError::Coercion)?;
+    let radix = coerce_base_number(&prepared[1]).map_err(BaseEvalError::Coercion)?;
+    let min_length = if prepared.len() > 2 && !matches!(prepared[2].core, CoreValue::Missing) {
         Some(coerce_prepared_to_number(&prepared[2]).map_err(BaseEvalError::Coercion)?)
     } else {
         None
@@ -108,17 +126,17 @@ pub fn eval_base_surface(
 }
 
 fn map_base_item(args: &[CalcValue]) -> CalcValue {
-    let number = match coerce_prepared_to_number(&args[0]) {
+    let number = match coerce_base_number(&args[0]) {
         Ok(value) => value,
         Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),
         Err(_) => return CalcValue::error(WorksheetErrorCode::Value),
     };
-    let radix = match coerce_prepared_to_number(&args[1]) {
+    let radix = match coerce_base_number(&args[1]) {
         Ok(value) => value,
         Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),
         Err(_) => return CalcValue::error(WorksheetErrorCode::Value),
     };
-    let min_length = if args.len() > 2 {
+    let min_length = if args.len() > 2 && !matches!(args[2].core, CoreValue::Missing) {
         match coerce_prepared_to_number(&args[2]) {
             Ok(value) => Some(value),
             Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),

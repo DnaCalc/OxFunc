@@ -1,0 +1,646 @@
+[
+  {
+    "function_id": "FUNC.BETA.DIST",
+    "rows_judged": 20,
+    "rows_agree": 7,
+    "severity": "last_bit",
+    "worst_ulp": 2,
+    "misses_by_severity": {
+      "last_bit": 13
+    },
+    "misses": [
+      {
+        "id": "w111-seed-recheck-BETA.DIST-009",
+        "args": [
+          "0x3fd999999999999b",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236048
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236050
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 2
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-000",
+        "args": [
+          "0x3fd9999999999992",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236037
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236036
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-002",
+        "args": [
+          "0x3fd9999999999994",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236039
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236040
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-003",
+        "args": [
+          "0x3fd9999999999995",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236038
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236039
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-007",
+        "args": [
+          "0x3fd9999999999999",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236042
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236043
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-008",
+        "args": [
+          "0x3fd999999999999a",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-012",
+        "args": [
+          "0x3fd999999999999e",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236049
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236050
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-014",
+        "args": [
+          "0x3fd99999999999a0",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236052
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236051
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-015",
+        "args": [
+          "0x3fd99999999999a1",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236052
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236051
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-016",
+        "args": [
+          "0x3fd99999999999a2",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236054
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236055
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-017",
+        "args": [
+          "0x3fd999999999999a",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-018",
+        "args": [
+          "0x3fd999999999999a",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-BETA.DIST-019",
+        "args": [
+          "0x3fd999999999999a",
+          "0x4008000000000000",
+          "0x4018000000000000",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      }
+    ],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T19:06:14.5930384Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.NEGBINOM.DIST",
+    "rows_judged": 20,
+    "rows_agree": 7,
+    "severity": "last_bit",
+    "worst_ulp": 2,
+    "misses_by_severity": {
+      "last_bit": 13
+    },
+    "misses": [
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-009",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd999999999999b",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236048
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236050
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 2
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-000",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd9999999999992",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236037
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236036
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-002",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd9999999999994",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236039
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236040
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-003",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd9999999999995",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236038
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236039
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-007",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd9999999999999",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236042
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236043
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-008",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd999999999999a",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-012",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd999999999999e",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236049
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236050
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-014",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd99999999999a0",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236052
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236051
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-015",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd99999999999a1",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236052
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236051
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-016",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd99999999999a2",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236054
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236055
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-017",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd999999999999a",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-018",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd999999999999a",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "w111-seed-recheck-NEGBINOM.DIST-019",
+        "args": [
+          "0x4014000000000000",
+          "0x4008000000000000",
+          "0x3fd999999999999a",
+          "0x3ff0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 4604341597154236045
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4604341597154236046
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      }
+    ],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T19:06:11.4137632Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  }
+]

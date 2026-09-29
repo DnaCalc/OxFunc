@@ -1,0 +1,21 @@
+{
+  "seed": 202609293039,
+  "rows": 2190,
+  "by_function": {
+    "MEDIAN": 730,
+    "HARMEAN": 730,
+    "DEVSQ": 730
+  },
+  "candidate_frozen_before_generation": true,
+  "all_origin_triples_and_reversals_per_function": 250,
+  "random_mixed_origin_per_function": 384,
+  "value_order_controls_per_function": 96,
+  "seven_error_codes": true,
+  "unit_arrays_preserve_collection_origin": true,
+  "reference_fixture_forms": [
+    "area",
+    "separate_cells"
+  ],
+  "new_rule_target": "Direct scalar coercion errors first; then original collection order.",
+  "qualification": "Public prepared-value observations; resolver failure before preparation and evaluator laziness are not claimed."
+}

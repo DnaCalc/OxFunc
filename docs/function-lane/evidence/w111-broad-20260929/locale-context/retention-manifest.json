@@ -1,0 +1,32 @@
+[
+  {
+    "source": "smart-fuzzer/runs/w111-locale-profile-20260929/cases/cases.jsonl",
+    "source_sha256": "5dc9d79e6160a3e710276c1495bac16ae67f239c55b8614cbaf42ab18c7cd88c",
+    "retained": "cases.json"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-locale-profile-20260929/manifest.json",
+    "source_sha256": "b243c0c430acdbe30fe71d1ce46002013caa23c8bac0f059954c53445a7f211a",
+    "retained": "manifest.json"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-locale-profile-20260929/rollup.json",
+    "source_sha256": "500fed65a843a919ab02569e509e91220b3d5111264d82e856c9fbddd0d720d3",
+    "retained": "rollup.json"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-locale-profile-local-20260929.jsonl",
+    "source_sha256": "c27652b68c9d0a1e1d6ffde9d409f7196587d337e99fe7d3bb0f5aa9cb3e94b3",
+    "retained": "explicit-local.json"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-locale-profile-local-20260929.provenance.json",
+    "source_sha256": "42e965ea851643cd4a484e8592595ef912ae60b2a31e16bf3f62ee9667de1fa4",
+    "retained": "w111-locale-profile-local-20260929.provenance.json"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-locale-profile-20260929/outcomes/excel.jsonl",
+    "source_sha256": "2683de9bf69784fab921be22314a35f0b1014cd89003f65b163d3f9eadd3b0b0",
+    "retained": "excel.json"
+  }
+]

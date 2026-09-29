@@ -1,0 +1,838 @@
+[
+  {
+    "function_id": "FUNC.COMPLEX",
+    "rows_judged": 944,
+    "rows_agree": 904,
+    "severity": "structural",
+    "worst_ulp": null,
+    "misses_by_severity": {
+      "structural": 40
+    },
+    "misses": [
+      {
+        "id": "complex-scaling-heldout-2026092905-0008",
+        "args": [
+          "0x10e561894bbe3363",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "2.82046893450868E-227"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "2.82046893450867E-227"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0009",
+        "args": [
+          "0x0000000000000000",
+          "0x10e561894bbe3363"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "2.82046893450868E-227i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "2.82046893450867E-227i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0010",
+        "args": [
+          "0x90e561894bbe3363",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-2.82046893450868E-227"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-2.82046893450867E-227"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0011",
+        "args": [
+          "0x0000000000000000",
+          "0x90e561894bbe3363"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-2.82046893450868E-227i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-2.82046893450867E-227i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0048",
+        "args": [
+          "0x7e02b4e3d0f16255",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "9.7872481425881E+298"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "9.78724814258811E+298"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0049",
+        "args": [
+          "0x0000000000000000",
+          "0x7e02b4e3d0f16255"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "9.7872481425881E+298i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "9.78724814258811E+298i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0050",
+        "args": [
+          "0xfe02b4e3d0f16255",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-9.7872481425881E+298"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-9.78724814258811E+298"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0051",
+        "args": [
+          "0x0000000000000000",
+          "0xfe02b4e3d0f16255"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-9.7872481425881E+298i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-9.78724814258811E+298i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0068",
+        "args": [
+          "0x2301bfce8c26d85b",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "4.6577043631124E-140"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "4.65770436311241E-140"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0069",
+        "args": [
+          "0x0000000000000000",
+          "0x2301bfce8c26d85b"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "4.6577043631124E-140i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "4.65770436311241E-140i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0070",
+        "args": [
+          "0xa301bfce8c26d85b",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-4.6577043631124E-140"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-4.65770436311241E-140"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0071",
+        "args": [
+          "0x0000000000000000",
+          "0xa301bfce8c26d85b"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-4.6577043631124E-140i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-4.65770436311241E-140i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0108",
+        "args": [
+          "0x29467cda51e616a3",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "7.48060549288466E-110"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "7.48060549288467E-110"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0109",
+        "args": [
+          "0x0000000000000000",
+          "0x29467cda51e616a3"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "7.48060549288466E-110i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "7.48060549288467E-110i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0110",
+        "args": [
+          "0xa9467cda51e616a3",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-7.48060549288466E-110"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-7.48060549288467E-110"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0111",
+        "args": [
+          "0x0000000000000000",
+          "0xa9467cda51e616a3"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-7.48060549288466E-110i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-7.48060549288467E-110i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0148",
+        "args": [
+          "0x46f71c76690ef33c",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "7.50000729077372E+33"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "7.50000729077373E+33"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0149",
+        "args": [
+          "0x0000000000000000",
+          "0x46f71c76690ef33c"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "7.50000729077372E+33i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "7.50000729077373E+33i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0150",
+        "args": [
+          "0xc6f71c76690ef33c",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-7.50000729077372E+33"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-7.50000729077373E+33"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0151",
+        "args": [
+          "0x0000000000000000",
+          "0xc6f71c76690ef33c"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-7.50000729077372E+33i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-7.50000729077373E+33i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0168",
+        "args": [
+          "0x46bd8fa6beb20c93",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "5.99571110793787E+32"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "5.99571110793788E+32"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0169",
+        "args": [
+          "0x0000000000000000",
+          "0x46bd8fa6beb20c93"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "5.99571110793787E+32i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "5.99571110793788E+32i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0170",
+        "args": [
+          "0xc6bd8fa6beb20c93",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-5.99571110793787E+32"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-5.99571110793788E+32"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0171",
+        "args": [
+          "0x0000000000000000",
+          "0xc6bd8fa6beb20c93"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-5.99571110793787E+32i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-5.99571110793788E+32i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0208",
+        "args": [
+          "0x4858e7f00ff9a9dc",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "3.39002997935657E+40"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "3.39002997935656E+40"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0209",
+        "args": [
+          "0x0000000000000000",
+          "0x4858e7f00ff9a9dc"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "3.39002997935657E+40i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "3.39002997935656E+40i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0210",
+        "args": [
+          "0xc858e7f00ff9a9dc",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-3.39002997935657E+40"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-3.39002997935656E+40"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0211",
+        "args": [
+          "0x0000000000000000",
+          "0xc858e7f00ff9a9dc"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-3.39002997935657E+40i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-3.39002997935656E+40i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0248",
+        "args": [
+          "0x5bad6e3af0b4afb6",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "4.17798636843288E+133"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "4.17798636843289E+133"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0249",
+        "args": [
+          "0x0000000000000000",
+          "0x5bad6e3af0b4afb6"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "4.17798636843288E+133i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "4.17798636843289E+133i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0250",
+        "args": [
+          "0xdbad6e3af0b4afb6",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-4.17798636843288E+133"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-4.17798636843289E+133"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0251",
+        "args": [
+          "0x0000000000000000",
+          "0xdbad6e3af0b4afb6"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-4.17798636843288E+133i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-4.17798636843289E+133i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0368",
+        "args": [
+          "0x78f9ebbaaacb57df",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "5.60899108780219E+274"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "5.6089910878022E+274"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0369",
+        "args": [
+          "0x0000000000000000",
+          "0x78f9ebbaaacb57df"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "5.60899108780219E+274i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "5.6089910878022E+274i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0370",
+        "args": [
+          "0xf8f9ebbaaacb57df",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-5.60899108780219E+274"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-5.6089910878022E+274"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0371",
+        "args": [
+          "0x0000000000000000",
+          "0xf8f9ebbaaacb57df"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-5.60899108780219E+274i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-5.6089910878022E+274i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0488",
+        "args": [
+          "0x4f68477730f84d1c",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "3.43180535488736E+74"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "3.43180535488735E+74"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0489",
+        "args": [
+          "0x0000000000000000",
+          "0x4f68477730f84d1c"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "3.43180535488736E+74i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "3.43180535488735E+74i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0490",
+        "args": [
+          "0xcf68477730f84d1c",
+          "0x0000000000000000"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-3.43180535488736E+74"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-3.43180535488735E+74"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      },
+      {
+        "id": "complex-scaling-heldout-2026092905-0491",
+        "args": [
+          "0x0000000000000000",
+          "0xcf68477730f84d1c"
+        ],
+        "expected": {
+          "kind": "text",
+          "value": "-3.43180535488736E+74i"
+        },
+        "actual": {
+          "kind": "text",
+          "value": "-3.43180535488735E+74i"
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "structural",
+          "ulp": null
+        }
+      }
+    ],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T13:00:15.2663175Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  }
+]

@@ -1,0 +1,4834 @@
+{
+  "rows": 6180,
+  "pairs": 3090,
+  "non_odd_pairs": 687,
+  "by_category": {
+    "uniform-domain-pair": {
+      "pairs": 1600,
+      "non_odd": 485
+    },
+    "scaled-domain-pair": {
+      "pairs": 800,
+      "non_odd": 5
+    },
+    "mathematical-boundary-neighbor": {
+      "pairs": 177,
+      "non_odd": 29
+    },
+    "prior-asymmetry-neighbor": {
+      "pairs": 513,
+      "non_odd": 168
+    }
+  },
+  "non_odd_observations": [
+    {
+      "positive_input": "0x3fdc1bcf23e4fe6a",
+      "positive": "0x3fdd19e32114a1c6",
+      "negative": "0xbfdd19e32114a1c5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcce9830d80419c",
+      "positive": "0x3fcd29f0a2a68f5c",
+      "negative": "0xbfcd29f0a2a68f5d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7368802fa2c9d",
+      "positive": "0x3fe9f8d4fdbd897f",
+      "negative": "0xbfe9f8d4fdbd897e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef820faa651c3b",
+      "positive": "0x3ff652d5adc40bd7",
+      "negative": "0xbff652d5adc40bda",
+      "magnitude_ulp_delta": 3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd59d1f65bc041e",
+      "positive": "0x3fd60c184cfaafe4",
+      "negative": "0xbfd60c184cfaafe5",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5c5758a59e903",
+      "positive": "0x3fe7f1a05cf1250d",
+      "negative": "0xbfe7f1a05cf1250f",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe62918375cc033",
+      "positive": "0x3fe87aa57c43de1e",
+      "negative": "0xbfe87aa57c43de1f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbaa80990598848",
+      "positive": "0x3fbab46de8ea92ef",
+      "negative": "0xbfbab46de8ea92ee",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3febfaff4c6c6163",
+      "positive": "0x3ff106dd3a5ca707",
+      "negative": "0xbff106dd3a5ca708",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe49c948dfa2d3b",
+      "positive": "0x3fe6654993df4511",
+      "negative": "0xbfe6654993df4512",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef1876f94630e1",
+      "positive": "0x3ff551d4cdaf8ad6",
+      "negative": "0xbff551d4cdaf8ad4",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc77bf1ec68514c",
+      "positive": "0x3fc79e31d460bfe0",
+      "negative": "0xbfc79e31d460bfe1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdec161623d9d86",
+      "positive": "0x3fe00a873d78c3cf",
+      "negative": "0xbfe00a873d78c3d0",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb85a482a39c918",
+      "positive": "0x3fb863b916423694",
+      "negative": "0xbfb863b916423695",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe83dba1b8e457d",
+      "positive": "0x3feb81427bd3f898",
+      "negative": "0xbfeb81427bd3f896",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea9ee4e6935105",
+      "positive": "0x3fef70c59401fe8b",
+      "negative": "0xbfef70c59401fe8a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee1aeb75190003",
+      "positive": "0x3ff3995c8c5b37db",
+      "negative": "0xbff3995c8c5b37dc",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9bd9cc7a1d82d",
+      "positive": "0x3fede8b8415aa25f",
+      "negative": "0xbfede8b8415aa25e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd7dcfebffda6da",
+      "positive": "0x3fd87436be9d6937",
+      "negative": "0xbfd87436be9d6936",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdbd102190c9e46",
+      "positive": "0x3fdcc6ba9ed2430c",
+      "negative": "0xbfdcc6ba9ed2430d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fce8a802e72ed14",
+      "positive": "0x3fced6a7607f9c91",
+      "negative": "0xbfced6a7607f9c90",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbbee3caa44fe18",
+      "positive": "0x3fbbfc7fca94444b",
+      "negative": "0xbfbbfc7fca94444c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc6a714c6569ca",
+      "positive": "0x3fdd71877bb80fa7",
+      "negative": "0xbfdd71877bb80fa6",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe915cffe84c233",
+      "positive": "0x3fecd48621d907a3",
+      "negative": "0xbfecd48621d907a4",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fce925bf9b4387c",
+      "positive": "0x3fcedebf114ab34d",
+      "negative": "0xbfcedebf114ab34e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc02729c6d3860c",
+      "positive": "0x3fc03237d97dcce4",
+      "negative": "0xbfc03237d97dcce5",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec1b4e455c5049",
+      "positive": "0x3ff128677e754514",
+      "negative": "0xbff128677e754513",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fce181a957def34",
+      "positive": "0x3fce60e8060fa4ed",
+      "negative": "0xbfce60e8060fa4ec",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd9bee89ef2f59e",
+      "positive": "0x3fda7f05704741bb",
+      "negative": "0xbfda7f05704741bd",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7d1be0bed743b",
+      "positive": "0x3feaddb9585f71db",
+      "negative": "0xbfeaddb9585f71dd",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed503fec9584e5",
+      "positive": "0x3ff2879cbf3dbc69",
+      "negative": "0xbff2879cbf3dbc68",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6d66ae7ec3c4d",
+      "positive": "0x3fe96e6c2d35f2dc",
+      "negative": "0xbfe96e6c2d35f2db",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed7fee43427ca1",
+      "positive": "0x3ff2c413572d98b3",
+      "negative": "0xbff2c413572d98b2",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc6acbae0c93a94",
+      "positive": "0x3fc6cb86c3423cf9",
+      "negative": "0xbfc6cb86c3423cf8",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee0036a4c8b0c5",
+      "positive": "0x3ff3727bb59fd7e3",
+      "negative": "0xbff3727bb59fd7e2",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec35d2b3e30105",
+      "positive": "0x3ff144506afd6a1a",
+      "negative": "0xbff144506afd6a19",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee4ba8be256cb9",
+      "positive": "0x3ff3e318106f8149",
+      "negative": "0xbff3e318106f8148",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee2458b1535a4f",
+      "positive": "0x3ff3a754d0e7b7bc",
+      "negative": "0xbff3a754d0e7b7be",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdf6cffeade253e",
+      "positive": "0x3fe06cb3895174e2",
+      "negative": "0xbfe06cb3895174e3",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc3a51a14cc3314",
+      "positive": "0x3fc3b90eb55e0238",
+      "negative": "0xbfc3b90eb55e0237",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feca2da44f4a8d5",
+      "positive": "0x3ff1bb0719ba468e",
+      "negative": "0xbff1bb0719ba468d",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdb876f631e55ee",
+      "positive": "0x3fdc75224ffd45ba",
+      "negative": "0xbfdc75224ffd45bc",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3febe759e1dcdf85",
+      "positive": "0x3ff0f2b585c62b4a",
+      "negative": "0xbff0f2b585c62b49",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feeabce68a3d273",
+      "positive": "0x3ff4816b93bca70c",
+      "negative": "0xbff4816b93bca70d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feea62c680db4bb",
+      "positive": "0x3ff477958cb7d77e",
+      "negative": "0xbff477958cb7d780",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea47e648fc5687",
+      "positive": "0x3feed62ec4d55200",
+      "negative": "0xbfeed62ec4d55201",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd85118a9b6f802",
+      "positive": "0x3fd8f188360cbef5",
+      "negative": "0xbfd8f188360cbef4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc617a1a9a1f394",
+      "positive": "0x3fc634182aeeb8e6",
+      "negative": "0xbfc634182aeeb8e5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb8ecd9ce9adad",
+      "positive": "0x3ff099f894a60cff",
+      "negative": "0xbff099f894a60cfe",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe3e25390c19cfb",
+      "positive": "0x3fe574bc31f8db08",
+      "negative": "0xbfe574bc31f8db09",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd8fcfbc3422252",
+      "positive": "0x3fd9abcb1eaa7251",
+      "negative": "0xbfd9abcb1eaa7250",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedbcaa4f463a4b",
+      "positive": "0x3ff31450e743ff7b",
+      "negative": "0xbff31450e743ff7c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd5867b3c9ddfc2",
+      "positive": "0x3fd5f40bf83816a0",
+      "negative": "0xbfd5f40bf838169f",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc22dc3bec83da4",
+      "positive": "0x3fc23d8d890ed517",
+      "negative": "0xbfc23d8d890ed516",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe078f0237e1623",
+      "positive": "0x3fe14dab5b06c3b4",
+      "negative": "0xbfe14dab5b06c3b5",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3febde8a0fd24327",
+      "positive": "0x3ff0e9b9e7ea2069",
+      "negative": "0xbff0e9b9e7ea206a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f94c99eeb38bf20",
+      "positive": "0x3f94c9fc81ce63fd",
+      "negative": "0xbf94c9fc81ce63fc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9a91c4b8c86e9",
+      "positive": "0x3fedc64ed6a3c5b6",
+      "negative": "0xbfedc64ed6a3c5b5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed31c355a05623",
+      "positive": "0x3ff261fff25f67fd",
+      "negative": "0xbff261fff25f67fe",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefcbb83d40be21",
+      "positive": "0x3ff752fb83ba21b2",
+      "negative": "0xbff752fb83ba21ad",
+      "magnitude_ulp_delta": -5,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe879080729204d",
+      "positive": "0x3febdcb36465d380",
+      "negative": "0xbfebdcb36465d37f",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd84891555a93ca",
+      "positive": "0x3fd8e850254c9f2c",
+      "negative": "0xbfd8e850254c9f2b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee396c4b02c269",
+      "positive": "0x3ff3c70f5473ee34",
+      "negative": "0xbff3c70f5473ee32",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc89e717f727634",
+      "positive": "0x3fc8c5f65f8c3645",
+      "negative": "0xbfc8c5f65f8c3644",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd017cd896b5892",
+      "positive": "0x3fd04480678e89a6",
+      "negative": "0xbfd04480678e89a5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe571c0025e6fe3",
+      "positive": "0x3fe780223fecbb1d",
+      "negative": "0xbfe780223fecbb1e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe106647f43a79f",
+      "positive": "0x3fe1f3af39f55814",
+      "negative": "0xbfe1f3af39f55815",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feefaaa531d822d",
+      "positive": "0x3ff51498d7c67017",
+      "negative": "0xbff51498d7c67016",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6e65d4c250af1",
+      "positive": "0x3fe9853877729352",
+      "negative": "0xbfe9853877729351",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f08356ea623c000",
+      "positive": "0x3f08356ea648b28a",
+      "negative": "0xbf08356ea648b28b",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc75e199217236c",
+      "positive": "0x3fc77fd63727dc20",
+      "negative": "0xbfc77fd63727dc21",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe25f6de90816eb",
+      "positive": "0x3fe391efb114ba8e",
+      "negative": "0xbfe391efb114ba8f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe86c3a60cc8dad",
+      "positive": "0x3febc8db8708fe17",
+      "negative": "0xbfebc8db8708fe16",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe8ac791065f919",
+      "positive": "0x3fec2d02b04e2e1b",
+      "negative": "0xbfec2d02b04e2e1a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea46d40302acc3",
+      "positive": "0x3feed44e1d232055",
+      "negative": "0xbfeed44e1d232057",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe87b1b7a2c3ff7",
+      "positive": "0x3febdfec6f43fc42",
+      "negative": "0xbfebdfec6f43fc44",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcb8239335ca8cc",
+      "positive": "0x3fcbb9978c958af4",
+      "negative": "0xbfcbb9978c958af5",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd40862e274a3ea",
+      "positive": "0x3fd4600d81df3a76",
+      "negative": "0xbfd4600d81df3a75",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef306474d6de69",
+      "positive": "0x3ff585df7faaf55f",
+      "negative": "0xbff585df7faaf55d",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedf930bcf45d05",
+      "positive": "0x3ff3686c6689bf8c",
+      "negative": "0xbff3686c6689bf8b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fddc66a56355692",
+      "positive": "0x3fdef8397fb288ba",
+      "negative": "0xbfdef8397fb288b9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefbe238b19398f",
+      "positive": "0x3ff71a3dea8e89d2",
+      "negative": "0xbff71a3dea8e89d6",
+      "magnitude_ulp_delta": 4,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee1e84441c11d9",
+      "positive": "0x3ff39ead1ec0ba52",
+      "negative": "0xbff39ead1ec0ba50",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe881f5ccacaaff",
+      "positive": "0x3febea92a7992159",
+      "negative": "0xbfebea92a799215a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fafe78a6fad4df0",
+      "positive": "0x3fafecd5f2407e0e",
+      "negative": "0xbfafecd5f2407e0f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe612e00b260c2f",
+      "positive": "0x3fe85be6c2917943",
+      "negative": "0xbfe85be6c2917945",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdcfbd9941f02e6",
+      "positive": "0x3fde1436428c4199",
+      "negative": "0xbfde1436428c419b",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe0c2252e42e067",
+      "positive": "0x3fe1a3544dfb7541",
+      "negative": "0xbfe1a3544dfb7542",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fecd8e60a875645",
+      "positive": "0x3ff1f880bd6ecab1",
+      "negative": "0xbff1f880bd6ecab0",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fda1505785ea372",
+      "positive": "0x3fdadd331ebf2c8a",
+      "negative": "0xbfdadd331ebf2c89",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee24b6ff017415",
+      "positive": "0x3ff3a7e1433b0877",
+      "negative": "0xbff3a7e1433b0876",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd4e5574a8fed42",
+      "positive": "0x3fd54940bf13806b",
+      "negative": "0xbfd54940bf13806a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9c7de71e92d25",
+      "positive": "0x3fedfa0232e370c1",
+      "negative": "0xbfedfa0232e370bf",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe06f534eabe405",
+      "positive": "0x3fe1427632cf3ddf",
+      "negative": "0xbfe1427632cf3dde",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd46a9fce093d46",
+      "positive": "0x3fd4c798d3a60dc3",
+      "negative": "0xbfd4c798d3a60dc4",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fab0858df879190",
+      "positive": "0x3fab0b9101d97dfd",
+      "negative": "0xbfab0b9101d97dfc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fead45fda0f2285",
+      "positive": "0x3fefd20315698009",
+      "negative": "0xbfefd20315698007",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb52bba20fd55d",
+      "positive": "0x3ff05f9596f7dfb9",
+      "negative": "0xbff05f9596f7dfb8",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed40948a6f9741",
+      "positive": "0x3ff2742edb6b68c8",
+      "negative": "0xbff2742edb6b68c6",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc5acc6d6b2d7ac",
+      "positive": "0x3fc5c7a490eb6aa5",
+      "negative": "0xbfc5c7a490eb6aa6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd488a53b9c900e",
+      "positive": "0x3fd4e7489597691d",
+      "negative": "0xbfd4e7489597691e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe934ed4c374cd5",
+      "positive": "0x3fed06d5625d1887",
+      "negative": "0xbfed06d5625d1886",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7774b01603521",
+      "positive": "0x3fea577f3f9f780b",
+      "negative": "0xbfea577f3f9f7809",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea9d48f3a4e3b1",
+      "positive": "0x3fef6ddf6ebdf66d",
+      "negative": "0xbfef6ddf6ebdf66b",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2a0447605408f",
+      "positive": "0x3fe3e1663787a757",
+      "negative": "0xbfe3e1663787a758",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef7bc42b0fbaab",
+      "positive": "0x3ff64108921df8c5",
+      "negative": "0xbff64108921df8c7",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb87fcb9874cbb",
+      "positive": "0x3ff093468bcebf4c",
+      "negative": "0xbff093468bcebf4d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe63711eed45d07",
+      "positive": "0x3fe88e0a86799518",
+      "negative": "0xbfe88e0a86799519",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd60d2e8bda52de",
+      "positive": "0x3fd6834e2bb95a5a",
+      "negative": "0xbfd6834e2bb95a5b",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd3bb67614a372a",
+      "positive": "0x3fd40f1017affaeb",
+      "negative": "0xbfd40f1017affaea",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdbb51f89c32c0e",
+      "positive": "0x3fdca7c7d9b75743",
+      "negative": "0xbfdca7c7d9b75744",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd3612cab408522",
+      "positive": "0x3fd3b04d1a671588",
+      "negative": "0xbfd3b04d1a671587",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdb0fa685e9f2a2",
+      "positive": "0x3fdbf0b362b40ea5",
+      "negative": "0xbfdbf0b362b40ea4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb206b03915213",
+      "positive": "0x3ff02fb5f7674119",
+      "negative": "0xbff02fb5f767411a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe1535844c66e23",
+      "positive": "0x3fe24ee335424f30",
+      "negative": "0xbfe24ee335424f31",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2967d939a76ab",
+      "positive": "0x3fe3d561cb432066",
+      "negative": "0xbfe3d561cb432067",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe58b030acdf8d7",
+      "positive": "0x3fe7a23b8d3978f0",
+      "negative": "0xbfe7a23b8d3978f1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe65b4661911f43",
+      "positive": "0x3fe8c07e181c923f",
+      "negative": "0xbfe8c07e181c9240",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea9bc3f00b5187",
+      "positive": "0x3fef6b22f75ef4ab",
+      "negative": "0xbfef6b22f75ef4ac",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fda418fc788ce9e",
+      "positive": "0x3fdb0e01ad5f1f44",
+      "negative": "0xbfdb0e01ad5f1f45",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee504a6d529983",
+      "positive": "0x3ff3ea4de67729d9",
+      "negative": "0xbff3ea4de67729db",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5c6f9bc7bbcc1",
+      "positive": "0x3fe7f3b21b9cc962",
+      "negative": "0xbfe7f3b21b9cc961",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe813df72466daf",
+      "positive": "0x3feb416ea88fba6c",
+      "negative": "0xbfeb416ea88fba6d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd565939da105a2",
+      "positive": "0x3fd5d11ea7790845",
+      "negative": "0xbfd5d11ea7790844",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe917de1c2dafe3",
+      "positive": "0x3fecd7d5bb5bee1f",
+      "negative": "0xbfecd7d5bb5bee20",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe69f15098b0563",
+      "positive": "0x3fe91fcf1a7e48ea",
+      "negative": "0xbfe91fcf1a7e48eb",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb62691f513f83",
+      "positive": "0x3ff06eb08fa21fbd",
+      "negative": "0xbff06eb08fa21fbe",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed761f4be3cb69",
+      "positive": "0x3ff2b7774338c69a",
+      "negative": "0xbff2b7774338c699",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec0b788eee9e91",
+      "positive": "0x3ff117e743b5518d",
+      "negative": "0xbff117e743b5518c",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5ecb162061e6d",
+      "positive": "0x3fe82752d5ffe2a8",
+      "negative": "0xbfe82752d5ffe2a6",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe93126d1aaef65",
+      "positive": "0x3fed00b54a34eefe",
+      "negative": "0xbfed00b54a34eefd",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd90892c1b2f6fe",
+      "positive": "0x3fd9b8627058958d",
+      "negative": "0xbfd9b8627058958e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe646ec9962a791",
+      "positive": "0x3fe8a418c66c2896",
+      "negative": "0xbfe8a418c66c2895",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe664ffba820cef",
+      "positive": "0x3fe8ce183ab02329",
+      "negative": "0xbfe8ce183ab0232a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcc8e6aafd6f94c",
+      "positive": "0x3fcccc7578b7cf24",
+      "negative": "0xbfcccc7578b7cf25",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc880638ffa52f4",
+      "positive": "0x3fc8a756c526b855",
+      "negative": "0xbfc8a756c526b854",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbc40a2c4bc2818",
+      "positive": "0x3fbc4f660deb5441",
+      "negative": "0xbfbc4f660deb5442",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedcda5d262a393",
+      "positive": "0x3ff32b780956961d",
+      "negative": "0xbff32b780956961f",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec898ebc086e55",
+      "positive": "0x3ff19ee21db32b12",
+      "negative": "0xbff19ee21db32b11",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7d7908ee3f925",
+      "positive": "0x3feae672b0e3c783",
+      "negative": "0xbfeae672b0e3c782",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe37e6510f46a4f",
+      "positive": "0x3fe4f5f6f110284a",
+      "negative": "0xbfe4f5f6f110284b",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fabd9e0c156f9f0",
+      "positive": "0x3fabdd661b42d38d",
+      "negative": "0xbfabdd661b42d38e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea4f2e8b1c7701",
+      "positive": "0x3feee2f60894b99b",
+      "negative": "0xbfeee2f60894b99a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7a18bc9f9a9ff",
+      "positive": "0x3fea95e696cbbee6",
+      "negative": "0xbfea95e696cbbee7",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd27c15925e49ee",
+      "positive": "0x3fd2c079985e888f",
+      "negative": "0xbfd2c079985e8890",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc7d6d3864c702c",
+      "positive": "0x3fc7faab7152d9ef",
+      "negative": "0xbfc7faab7152d9f0",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe754da825e240b",
+      "positive": "0x3fea2502a154af87",
+      "negative": "0xbfea2502a154af88",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed865353a7d435",
+      "positive": "0x3ff2cc58ba3bfe5b",
+      "negative": "0xbff2cc58ba3bfe5a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fda281c221ed9f2",
+      "positive": "0x3fdaf21bd80d510a",
+      "negative": "0xbfdaf21bd80d5109",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4fb139596a65d",
+      "positive": "0x3fe6e19f5cf028f6",
+      "negative": "0xbfe6e19f5cf028f5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcb0dd71162f27c",
+      "positive": "0x3fcb4278b4971077",
+      "negative": "0xbfcb4278b4971078",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe0ecdcf5d98c65",
+      "positive": "0x3fe1d5918292aee0",
+      "negative": "0xbfe1d5918292aedf",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbfa93c33173ef8",
+      "positive": "0x3fbfbe0a9425f37f",
+      "negative": "0xbfbfbe0a9425f380",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee621d076bcfd1",
+      "positive": "0x3ff40668572ea991",
+      "negative": "0xbff40668572ea98f",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f6e6d34af318700",
+      "positive": "0x3f6e6d3944e0919b",
+      "negative": "0xbf6e6d3944e0919c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc0f6b85e8759c4",
+      "positive": "0x3fc10388ca29a795",
+      "negative": "0xbfc10388ca29a794",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fecc692ef87cad9",
+      "positive": "0x3ff1e3726df001f1",
+      "negative": "0xbff1e3726df001f0",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fda8db2f3e39f52",
+      "positive": "0x3fdb6196dea21f3c",
+      "negative": "0xbfdb6196dea21f3b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed518a57641e1b",
+      "positive": "0x3ff28938d93cb857",
+      "negative": "0xbff28938d93cb858",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc46ca185d76a2c",
+      "positive": "0x3fc48313aa070622",
+      "negative": "0xbfc48313aa070623",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef7e5c7d4b274b",
+      "positive": "0x3ff64851dbcf0607",
+      "negative": "0xbff64851dbcf060a",
+      "magnitude_ulp_delta": 3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feec1ea0d12ca0b",
+      "positive": "0x3ff4a8d181e3134e",
+      "negative": "0xbff4a8d181e31350",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef9fe16f5c58a9",
+      "positive": "0x3ff6ade84cafbbd3",
+      "negative": "0xbff6ade84cafbbd0",
+      "magnitude_ulp_delta": -3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb6c8208aa9717",
+      "positive": "0x3ff07877a42d3ab0",
+      "negative": "0xbff07877a42d3ab1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbdf836805198d8",
+      "positive": "0x3fbe09d8b91f48eb",
+      "negative": "0xbfbe09d8b91f48ec",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7c6c8c5cb5cef",
+      "positive": "0x3feacd552a029d0e",
+      "negative": "0xbfeacd552a029d0f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd6ccc6d9bb4936",
+      "positive": "0x3fd74fdf24a44878",
+      "negative": "0xbfd74fdf24a44879",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed80e15e6065bb",
+      "positive": "0x3ff2c54d21977511",
+      "negative": "0xbff2c54d21977512",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc4b69196b89ce",
+      "positive": "0x3fdd4eea1a3c05db",
+      "negative": "0xbfdd4eea1a3c05dc",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe307fba2753195",
+      "positive": "0x3fe461ac1cb82f89",
+      "negative": "0xbfe461ac1cb82f88",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe69e1599ee9d8d",
+      "positive": "0x3fe91e65fd4343cf",
+      "negative": "0xbfe91e65fd4343cd",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc5d018029dcdf4",
+      "positive": "0x3fc5eb7b152a5c5b",
+      "negative": "0xbfc5eb7b152a5c5a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc5655f090cd5f4",
+      "positive": "0x3fc57f3469e3df1b",
+      "negative": "0xbfc57f3469e3df1a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe442ecb9642127",
+      "positive": "0x3fe5f0c6084035da",
+      "negative": "0xbfe5f0c6084035db",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc62af402ee8b6c",
+      "positive": "0x3fc647b624890205",
+      "negative": "0xbfc647b624890206",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc029a8490956d4",
+      "positive": "0x3fc034bb81d097c5",
+      "negative": "0xbfc034bb81d097c4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbc8369cc1b9df8",
+      "positive": "0x3fbc929721a4d5fe",
+      "negative": "0xbfbc929721a4d5ff",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe8cf1ff160c361",
+      "positive": "0x3fec63a6557c9727",
+      "negative": "0xbfec63a6557c9726",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee836384ea9269",
+      "positive": "0x3ff43c80e89f9871",
+      "negative": "0xbff43c80e89f986f",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe37371e981987f",
+      "positive": "0x3fe4e82a7f9387ed",
+      "negative": "0xbfe4e82a7f9387ee",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe418e64399765d",
+      "positive": "0x3fe5ba9fd37889fa",
+      "negative": "0xbfe5ba9fd37889f9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed1a558728fbe9",
+      "positive": "0x3ff2459c1a10047b",
+      "negative": "0xbff2459c1a10047a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe55cb6562796cf",
+      "positive": "0x3fe763d58c9bf64e",
+      "negative": "0xbfe763d58c9bf64f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2788458449927",
+      "positive": "0x3fe3b09e364dd843",
+      "negative": "0xbfe3b09e364dd844",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fceffad4151b9cc",
+      "positive": "0x3fcf4f5eaa0d9bc8",
+      "negative": "0xbfcf4f5eaa0d9bc9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe30f45dd562121",
+      "positive": "0x3fe46abe72e23fe3",
+      "negative": "0xbfe46abe72e23fe2",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb07d4edf386c48",
+      "positive": "0x3fb0803b870ec0f0",
+      "negative": "0xbfb0803b870ec0ef",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd19830b153a706",
+      "positive": "0x3fd1d2f2870a921e",
+      "negative": "0xbfd1d2f2870a921f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb2cdd15fe558f",
+      "positive": "0x3ff03b77f8cf82eb",
+      "negative": "0xbff03b77f8cf82ec",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe75ad6e9a1e103",
+      "positive": "0x3fea2dc2f4e3bdff",
+      "negative": "0xbfea2dc2f4e3be00",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec2e33a5550ef9",
+      "positive": "0x3ff13c41a3dacba3",
+      "negative": "0xbff13c41a3dacba2",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2b540bd6f293d",
+      "positive": "0x3fe3fb3c803da36e",
+      "negative": "0xbfe3fb3c803da36c",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feec67f31378371",
+      "positive": "0x3ff4b126af7b7460",
+      "negative": "0xbff4b126af7b745e",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9e91fb9a61433",
+      "positive": "0x3fee3268e005d92d",
+      "negative": "0xbfee3268e005d92f",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed51e6c11f0b53",
+      "positive": "0x3ff289ac2c7fb0f7",
+      "negative": "0xbff289ac2c7fb0f8",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5b9ee9e72040b",
+      "positive": "0x3fe7e1e97d737eb5",
+      "negative": "0xbfe7e1e97d737eb6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe387cc79f08a21",
+      "positive": "0x3fe501d4554eabf7",
+      "negative": "0xbfe501d4554eabf6",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fde86df26c85d9e",
+      "positive": "0x3fdfd269d60c5054",
+      "negative": "0xbfdfd269d60c5056",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec209da9a2e7c7",
+      "positive": "0x3ff12df715131a36",
+      "negative": "0xbff12df715131a37",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb9c418ffc6e0e8",
+      "positive": "0x3fb9cf4907051c7f",
+      "negative": "0xbfb9cf4907051c7e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6becbbcff39c3",
+      "positive": "0x3fe94cc543996be8",
+      "negative": "0xbfe94cc543996be9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef43c06f1bc2ed",
+      "positive": "0x3ff5b23038cade23",
+      "negative": "0xbff5b23038cade20",
+      "magnitude_ulp_delta": -3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec134520e119f3",
+      "positive": "0x3ff12003ee36b373",
+      "negative": "0xbff12003ee36b374",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbb824338993428",
+      "positive": "0x3fbb8fe2dcd528ef",
+      "negative": "0xbfbb8fe2dcd528ee",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd4a17aa9b143ea",
+      "positive": "0x3fd50182b1956159",
+      "negative": "0xbfd50182b1956158",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc1542fd9acd7b4",
+      "positive": "0x3fc161d9e40c92dd",
+      "negative": "0xbfc161d9e40c92dc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea001ffa0f2533",
+      "positive": "0x3fee59bc30f0cbed",
+      "negative": "0xbfee59bc30f0cbef",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe684e15c8ab6f7",
+      "positive": "0x3fe8fad8d5ec3817",
+      "negative": "0xbfe8fad8d5ec3818",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc9abfcea2a563c",
+      "positive": "0x3fc9d8dd544c6675",
+      "negative": "0xbfc9d8dd544c6676",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc748ee79c60e0c",
+      "positive": "0x3fc76a4ed4be5607",
+      "negative": "0xbfc76a4ed4be5608",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5ad9914db81f9",
+      "positive": "0x3fe7d120d56f53a6",
+      "negative": "0xbfe7d120d56f53a5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef088cc6e1ecb7",
+      "positive": "0x3ff530acda769c7f",
+      "negative": "0xbff530acda769c81",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7ced0bade05c1",
+      "positive": "0x3fead95796adc207",
+      "negative": "0xbfead95796adc206",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcbf79f735f30b4",
+      "positive": "0x3fcc31d95d28a334",
+      "negative": "0xbfcc31d95d28a333",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc70a16f39ce02c",
+      "positive": "0x3fc72a6943eed9f1",
+      "negative": "0xbfc72a6943eed9f2",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe3a5b3838dba1d",
+      "positive": "0x3fe527a535a94e76",
+      "negative": "0xbfe527a535a94e75",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcb2055627a2a34",
+      "positive": "0x3fcb5564c0d75474",
+      "negative": "0xbfcb5564c0d75473",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe79151deb92da7",
+      "positive": "0x3fea7ddffdaf1fe3",
+      "negative": "0xbfea7ddffdaf1fe4",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6c35b97e643c9",
+      "positive": "0x3fe953423858938e",
+      "negative": "0xbfe953423858938c",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5c716ca2d3757",
+      "positive": "0x3fe7f3d9c29cfa67",
+      "negative": "0xbfe7f3d9c29cfa68",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fda7ffa34849de6",
+      "positive": "0x3fdb5282f49245fd",
+      "negative": "0xbfdb5282f49245fe",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9db48fffbd3a5",
+      "positive": "0x3fee1adfca8414ae",
+      "negative": "0xbfee1adfca8414ad",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed2f37835e267d",
+      "positive": "0x3ff25ee4ae6b629e",
+      "negative": "0xbff25ee4ae6b629d",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe56b04106d0df7",
+      "positive": "0x3fe77710c7d62c40",
+      "negative": "0xbfe77710c7d62c41",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef6420bc815881",
+      "positive": "0x3ff601ad6310c269",
+      "negative": "0xbff601ad6310c267",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feff410cf330cb7",
+      "positive": "0x3ff844dc1b20634c",
+      "negative": "0xbff844dc1b206355",
+      "magnitude_ulp_delta": 9,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fecfb7075b4238f",
+      "positive": "0x3ff220d16950d28c",
+      "negative": "0xbff220d16950d28d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe31c8eebdddbf1",
+      "positive": "0x3fe47b4ba3249560",
+      "negative": "0xbfe47b4ba324955f",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe46270de509029",
+      "positive": "0x3fe6199322b14b4f",
+      "negative": "0xbfe6199322b14b4d",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcfa621a22cff24",
+      "positive": "0x3fcffb0b6325d5c5",
+      "negative": "0xbfcffb0b6325d5c3",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe70341e5691691",
+      "positive": "0x3fe9aeb178a802c1",
+      "negative": "0xbfe9aeb178a802c0",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea366a04f008ab",
+      "positive": "0x3feeb79df5f2fd34",
+      "negative": "0xbfeeb79df5f2fd36",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc988268b1f2354",
+      "positive": "0x3fc9b449bf5200d7",
+      "negative": "0xbfc9b449bf5200d6",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdac0e95cc1f77a",
+      "positive": "0x3fdb99eb5763bad5",
+      "negative": "0xbfdb99eb5763bad4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc8fc712b4a945c",
+      "positive": "0x3fc925c6f14a82a0",
+      "negative": "0xbfc925c6f14a82a1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedb183ff96ca0f",
+      "positive": "0x3ff3054aef63a271",
+      "negative": "0xbff3054aef63a273",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc367656ecf9b4c",
+      "positive": "0x3fc37a9f04d24779",
+      "negative": "0xbfc37a9f04d2477a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefc4d6ca7c63db",
+      "positive": "0x3ff7356be94f1aff",
+      "negative": "0xbff7356be94f1b03",
+      "magnitude_ulp_delta": 4,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feea99cfb7e0701",
+      "positive": "0x3ff47d94ce447bf5",
+      "negative": "0xbff47d94ce447bf3",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb758f133042bf8",
+      "positive": "0x3fb761424d441a7d",
+      "negative": "0xbfb761424d441a7e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6dc02ebdcc813",
+      "positive": "0x3fe9766988938b82",
+      "negative": "0xbfe9766988938b83",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe778f2148f0729",
+      "positive": "0x3fea59ed9da97c5f",
+      "negative": "0xbfea59ed9da97c5d",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fce4c648ec48454",
+      "positive": "0x3fce96b6c9bb0636",
+      "negative": "0xbfce96b6c9bb0635",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee8c9c805bd197",
+      "positive": "0x3ff44be6bdf93387",
+      "negative": "0xbff44be6bdf93389",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe836defa977ddf",
+      "positive": "0x3feb76c3d74e0252",
+      "negative": "0xbfeb76c3d74e0253",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdfa688a23d3f36",
+      "positive": "0x3fe08dc2d97d9732",
+      "negative": "0xbfe08dc2d97d9733",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd7612ab7bf8e22",
+      "positive": "0x3fd7eefa6449a473",
+      "negative": "0xbfd7eefa6449a472",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec2eb1e51cbf0d",
+      "positive": "0x3ff13cc6e3db8508",
+      "negative": "0xbff13cc6e3db8507",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef1624bff5f299",
+      "positive": "0x3ff54ced503cfbc7",
+      "negative": "0xbff54ced503cfbc5",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7df622909746b",
+      "positive": "0x3feaf22e07620a28",
+      "negative": "0xbfeaf22e07620a29",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed9bc66f394c53",
+      "positive": "0x3ff2e862f199d20e",
+      "negative": "0xbff2e862f199d20f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe500477acd0255",
+      "positive": "0x3fe6e883f432cc78",
+      "negative": "0xbfe6e883f432cc77",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb6c29260201658",
+      "positive": "0x3fb6ca466c64e62b",
+      "negative": "0xbfb6ca466c64e62c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcc581665612c14",
+      "positive": "0x3fcc94bc591118c4",
+      "negative": "0xbfcc94bc591118c3",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedaea0cab66a61",
+      "positive": "0x3ff3016c9f87dc2d",
+      "negative": "0xbff3016c9f87dc2c",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe0ced6868b7727",
+      "positive": "0x3fe1b23ca8f7826e",
+      "negative": "0xbfe1b23ca8f7826f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcc0fb069c49214",
+      "positive": "0x3fcc4a8367989de3",
+      "negative": "0xbfcc4a8367989de1",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbe403ddf6f8f08",
+      "positive": "0x3fbe5260fae1efd5",
+      "negative": "0xbfbe5260fae1efd4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc49dd5ded5f0ec",
+      "positive": "0x3fc4b4ed12861160",
+      "negative": "0xbfc4b4ed12861161",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f67a157cc9dc900",
+      "positive": "0x3f67a159f2677748",
+      "negative": "0xbf67a159f2677747",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2eb1b25733d8b",
+      "positive": "0x3fe43dcf8184a028",
+      "negative": "0xbfe43dcf8184a029",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feebfd72b00b7cd",
+      "positive": "0x3ff4a5112149e6f1",
+      "negative": "0xbff4a5112149e6ef",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd6370b8b4315fa",
+      "positive": "0x3fd6afebefebd081",
+      "negative": "0xbfd6afebefebd080",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feec657d1917bd3",
+      "positive": "0x3ff4b0ded7f78ebc",
+      "negative": "0xbff4b0ded7f78ebd",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe8782f7d643ed7",
+      "positive": "0x3febdb6357243cd8",
+      "negative": "0xbfebdb6357243cd9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fde1b5a69a8c282",
+      "positive": "0x3fdf5853f2db17ab",
+      "negative": "0xbfdf5853f2db17a9",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea1ad8bc8e66cf",
+      "positive": "0x3fee87c14e976504",
+      "negative": "0xbfee87c14e976505",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd9f7a0fc23fe1e",
+      "positive": "0x3fdabd06f2783e4c",
+      "negative": "0xbfdabd06f2783e4d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef938678ed0aeb",
+      "positive": "0x3ff686ad263fd634",
+      "negative": "0xbff686ad263fd637",
+      "magnitude_ulp_delta": 3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdd5709eccc710e",
+      "positive": "0x3fde7aa75273e9f5",
+      "negative": "0xbfde7aa75273e9f7",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec4aeb6ee1be0d",
+      "positive": "0x3ff15ac65c034d52",
+      "negative": "0xbff15ac65c034d51",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fda1f0da3ddae76",
+      "positive": "0x3fdae82fd892d96b",
+      "negative": "0xbfdae82fd892d96c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee85cd568208c1",
+      "positive": "0x3ff44083dafcb9e7",
+      "negative": "0xbff44083dafcb9e5",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe40947f5a91225",
+      "positive": "0x3fe5a692e158d5e6",
+      "negative": "0xbfe5a692e158d5e5",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbf28b782015968",
+      "positive": "0x3fbf3c8b672413c2",
+      "negative": "0xbfbf3c8b672413c1",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe89430a7a6e7cd",
+      "positive": "0x3fec06fb9acdebcd",
+      "negative": "0xbfec06fb9acdebcc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd1690eeb84d5fa",
+      "positive": "0x3fd1a1f28f551cad",
+      "negative": "0xbfd1a1f28f551cac",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe08ae969b9e6df",
+      "positive": "0x3fe162a674f22778",
+      "negative": "0xbfe162a674f22779",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe140752b5124b1",
+      "positive": "0x3fe2387155052039",
+      "negative": "0xbfe2387155052038",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9729822a0f45d",
+      "positive": "0x3fed6bbb894ff672",
+      "negative": "0xbfed6bbb894ff671",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc6a9206a5d7be",
+      "positive": "0x3fdd71ac022b8b4a",
+      "negative": "0xbfdd71ac022b8b4c",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd798e1ce209efa",
+      "positive": "0x3fd82adf73f8a01d",
+      "negative": "0xbfd82adf73f8a01c",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef5134ee3f105f",
+      "positive": "0x3ff5d25470fd10f3",
+      "negative": "0xbff5d25470fd10f6",
+      "magnitude_ulp_delta": 3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc4b9a9e4cb50ac",
+      "positive": "0x3fc4d11fd9409f76",
+      "negative": "0xbfc4d11fd9409f77",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec1cd027060b45",
+      "positive": "0x3ff129fb3cbbda47",
+      "negative": "0xbff129fb3cbbda46",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedfeff2002ee43",
+      "positive": "0x3ff370bc45ef0a1b",
+      "negative": "0xbff370bc45ef0a1d",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcf3847eb40a0dc",
+      "positive": "0x3fcf89b93ffcd764",
+      "negative": "0xbfcf89b93ffcd766",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdd3ba580dd7772",
+      "positive": "0x3fde5bd8ba610829",
+      "negative": "0xbfde5bd8ba610827",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd1498dd59f762a",
+      "positive": "0x3fd18137c0e06dd0",
+      "negative": "0xbfd18137c0e06dcf",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb80e5ed9af8c3",
+      "positive": "0x3ff08c54d7a0452d",
+      "negative": "0xbff08c54d7a0452e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea92603ce320a9",
+      "positive": "0x3fef5a428ede1c59",
+      "negative": "0xbfef5a428ede1c57",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe24efc0e572399",
+      "positive": "0x3fe37dde4c1dc917",
+      "negative": "0xbfe37dde4c1dc915",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feaeb1967231961",
+      "positive": "0x3feffbdf4f720a07",
+      "negative": "0xbfeffbdf4f720a05",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef1ad636a989bf",
+      "positive": "0x3ff556de3808a96d",
+      "negative": "0xbff556de3808a96f",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe83a229abe8f63",
+      "positive": "0x3feb7bc277b57eb9",
+      "negative": "0xbfeb7bc277b57eba",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbcd9cc339aeba8",
+      "positive": "0x3fbce985a82299da",
+      "negative": "0xbfbce985a82299d9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdb9c15997101fa",
+      "positive": "0x3fdc8c03dd6ae10c",
+      "negative": "0xbfdc8c03dd6ae10b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f994eea9128f520",
+      "positive": "0x3f994f937821630b",
+      "negative": "0xbf994f937821630a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe0c15898e45ff3",
+      "positive": "0x3fe1a2642a110a87",
+      "negative": "0xbfe1a2642a110a88",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee7e8e5f2c80cd",
+      "positive": "0x3ff4348203c8301b",
+      "negative": "0xbff4348203c8301a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb301e00eb64e9",
+      "positive": "0x3ff03e8d278f297c",
+      "negative": "0xbff03e8d278f297b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb51c8d914f2658",
+      "positive": "0x3fb522b29c5e3e49",
+      "negative": "0xbfb522b29c5e3e4a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea19aa448c70c5",
+      "positive": "0x3fee85b66d90b53c",
+      "negative": "0xbfee85b66d90b53b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcd78a59af9971c",
+      "positive": "0x3fcdbcf300717349",
+      "negative": "0xbfcdbcf30071734a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea99794f96de6f",
+      "positive": "0x3fef6703561f9607",
+      "negative": "0xbfef6703561f9609",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc74415a117e8b4",
+      "positive": "0x3fc76560f2639927",
+      "negative": "0xbfc76560f2639926",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe46a1f127b7465",
+      "positive": "0x3fe6238b1d71afdc",
+      "negative": "0xbfe6238b1d71afdb",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc3888fe8704104",
+      "positive": "0x3fc39c2d710d4bca",
+      "negative": "0xbfc39c2d710d4bc9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef3c62685990d7",
+      "positive": "0x3ff5a111ea4b9679",
+      "negative": "0xbff5a111ea4b967c",
+      "magnitude_ulp_delta": 3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe75ede1e2ad399",
+      "positive": "0x3fea33a7fc669731",
+      "negative": "0xbfea33a7fc669730",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9d8b765a8f9cd",
+      "positive": "0x3fee168405f0eda5",
+      "negative": "0xbfee168405f0eda3",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd9d877c35c9016",
+      "positive": "0x3fda9af30c9397fc",
+      "negative": "0xbfda9af30c9397fd",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe04888b2e4bc9f",
+      "positive": "0x3fe115538b0182ed",
+      "negative": "0xbfe115538b0182ee",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe08fe9e7c9f99d",
+      "positive": "0x3fe1687ea96af733",
+      "negative": "0xbfe1687ea96af732",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7459e18bc4d83",
+      "positive": "0x3fea0ec7cfdd6ae0",
+      "negative": "0xbfea0ec7cfdd6ae1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc63705312db2e",
+      "positive": "0x3fdd69b6b235fbf1",
+      "negative": "0xbfdd69b6b235fbf2",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea5a4559db8a15",
+      "positive": "0x3feef67992d4e903",
+      "negative": "0xbfeef67992d4e902",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee8f39b70abb31",
+      "positive": "0x3ff4504cb6f53479",
+      "negative": "0xbff4504cb6f53477",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed923fd80df135",
+      "positive": "0x3ff2dbe071d65648",
+      "negative": "0xbff2dbe071d65646",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed183712c2532f",
+      "positive": "0x3ff24310369b4b27",
+      "negative": "0xbff24310369b4b28",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee15ca53d5d0af",
+      "positive": "0x3ff391d0b85d337a",
+      "negative": "0xbff391d0b85d337b",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd71c43a68fcf16",
+      "positive": "0x3fd7a506710bfb47",
+      "negative": "0xbfd7a506710bfb48",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd80ce2fd83dfce",
+      "positive": "0x3fd8a7dc39ed439b",
+      "negative": "0xbfd8a7dc39ed439c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd85c1167a72cde",
+      "positive": "0x3fd8fd651e0a7bc3",
+      "negative": "0xbfd8fd651e0a7bc4",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe541ca912a15c5",
+      "positive": "0x3fe73fbf7766f684",
+      "negative": "0xbfe73fbf7766f683",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd133206a8c0336",
+      "positive": "0x3fd169eddd239c1b",
+      "negative": "0xbfd169eddd239c1c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe924dca5bcb96f",
+      "positive": "0x3fececcf039dc700",
+      "negative": "0xbfececcf039dc701",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe82feb62845807",
+      "positive": "0x3feb6c23cf4aeeb1",
+      "negative": "0xbfeb6c23cf4aeeb2",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc5cafef93e0ee",
+      "positive": "0x3fdd622e6d50a484",
+      "negative": "0xbfdd622e6d50a485",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3febb76f3a053e11",
+      "positive": "0x3ff0c246967ac1ac",
+      "negative": "0xbff0c246967ac1ab",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f7a430a4da0f780",
+      "positive": "0x3f7a4316186d3272",
+      "negative": "0xbf7a4316186d3273",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc5733afe90cb44",
+      "positive": "0x3fc58d43225cb131",
+      "negative": "0xbfc58d43225cb130",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec1da15abb99ef",
+      "positive": "0x3ff12ad63e0bf685",
+      "negative": "0xbff12ad63e0bf686",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc17decbffa7d14",
+      "positive": "0x3fc18bfb066e6ac3",
+      "negative": "0xbfc18bfb066e6ac2",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9c9b0babc183f",
+      "positive": "0x3fedfd15849baf15",
+      "negative": "0xbfedfd15849baf17",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb7f7a667051548",
+      "positive": "0x3fb800a61ea4410c",
+      "negative": "0xbfb800a61ea4410b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe766f4333535c7",
+      "positive": "0x3fea3f80c825c6fa",
+      "negative": "0xbfea3f80c825c6fb",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4f1067fc2adeb",
+      "positive": "0x3fe6d451ffdf3521",
+      "negative": "0xbfe6d451ffdf3523",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fba9fe0006c47c8",
+      "positive": "0x3fbaac38f0c85c7c",
+      "negative": "0xbfbaac38f0c85c7b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcbc628dd4ab94c",
+      "positive": "0x3fcbff2b7e27ef04",
+      "negative": "0xbfcbff2b7e27ef05",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec18ee9c225e21",
+      "positive": "0x3ff125ec48a46b0e",
+      "negative": "0xbff125ec48a46b0d",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc739afa56d4f6",
+      "positive": "0x3fdd7bc1c0518109",
+      "negative": "0xbfdd7bc1c051810a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdab1cc0325f1ea",
+      "positive": "0x3fdb8948fb2056af",
+      "negative": "0xbfdb8948fb2056ad",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6f583e903430d",
+      "positive": "0x3fe99af0e2cd3401",
+      "negative": "0xbfe99af0e2cd3400",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb88d21fa7fb5b8",
+      "positive": "0x3fb896ceb14675f0",
+      "negative": "0xbfb896ceb14675f1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe39ac2636a0c63",
+      "positive": "0x3fe519cac62df06f",
+      "negative": "0xbfe519cac62df070",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefa5aca596182f",
+      "positive": "0x3ff6c12ab8bc1807",
+      "negative": "0xbff6c12ab8bc180a",
+      "magnitude_ulp_delta": 3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd178995232e202",
+      "positive": "0x3fd1b21974e377da",
+      "negative": "0xbfd1b21974e377d9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4d990dabdb713",
+      "positive": "0x3fe6b5585776a4d5",
+      "negative": "0xbfe6b5585776a4d6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd389be066736ee",
+      "positive": "0x3fd3dae28f6a6074",
+      "negative": "0xbfd3dae28f6a6075",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd63286b4d898ee",
+      "positive": "0x3fd6ab1a78a42791",
+      "negative": "0xbfd6ab1a78a42792",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefae656d43a45d",
+      "positive": "0x3ff6df5b9e66c714",
+      "negative": "0xbff6df5b9e66c711",
+      "magnitude_ulp_delta": -3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feecd20642ebe6d",
+      "positive": "0x3ff4bd5006ce2e0f",
+      "negative": "0xbff4bd5006ce2e0e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2e2af34c4cf77",
+      "positive": "0x3fe4335fa1adcf34",
+      "negative": "0xbfe4335fa1adcf35",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc2aac92e8a280c",
+      "positive": "0x3fc2bbe3bdad00d0",
+      "negative": "0xbfc2bbe3bdad00d1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcefbfeb183518c",
+      "positive": "0x3fcf4b93328c43a3",
+      "negative": "0xbfcf4b93328c43a4",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feae2b65ac9efef",
+      "positive": "0x3fefec62769edc1d",
+      "negative": "0xbfefec62769edc1e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd620a8ec3a1372",
+      "positive": "0x3fd6980f08c685b4",
+      "negative": "0xbfd6980f08c685b3",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe98ba418abeb53",
+      "positive": "0x3fed952e684f5926",
+      "negative": "0xbfed952e684f5928",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd149dac4d7506e",
+      "positive": "0x3fd18187a8850cf8",
+      "negative": "0xbfd18187a8850cf9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd82cca8f7491a2",
+      "positive": "0x3fd8ca4d89feaaed",
+      "negative": "0xbfd8ca4d89feaaec",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3faedaed9e17a7d0",
+      "positive": "0x3faedfb799794222",
+      "negative": "0xbfaedfb799794221",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe38b0366f40779",
+      "positive": "0x3fe505e36216e660",
+      "negative": "0xbfe505e36216e65f",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc957c07e37962",
+      "positive": "0x3fdda199bfd651be",
+      "negative": "0xbfdda199bfd651bd",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9118ebefc53f5",
+      "positive": "0x3feccdacabaecc7f",
+      "negative": "0xbfeccdacabaecc7e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9d84bf6fd1c11",
+      "positive": "0x3fee15cdd16481b3",
+      "negative": "0xbfee15cdd16481b1",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed055ce06d19c1",
+      "positive": "0x3ff22c8edc7532a8",
+      "negative": "0xbff22c8edc7532a7",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee7c12018d5a03",
+      "positive": "0x3ff4306a020bb007",
+      "negative": "0xbff4306a020bb008",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef6b6e20ee8a0d",
+      "positive": "0x3ff614b4fb4a7818",
+      "negative": "0xbff614b4fb4a7816",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9349174223a3d",
+      "positive": "0x3fed06404deef99d",
+      "negative": "0xbfed06404deef99c",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc641ef6bca2fe",
+      "positive": "0x3fdd6a798e5ce57d",
+      "negative": "0xbfdd6a798e5ce57e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feacd1d46216ccf",
+      "positive": "0x3fefc4b5364da5f7",
+      "negative": "0xbfefc4b5364da5f8",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fde48ed663e253a",
+      "positive": "0x3fdf8c0455a577dc",
+      "negative": "0xbfdf8c0455a577da",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdd4b3c6098424e",
+      "positive": "0x3fde6d602bb22789",
+      "negative": "0xbfde6d602bb2278a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefb70f339dc243",
+      "positive": "0x3ff6fefb48d52610",
+      "negative": "0xbff6fefb48d52614",
+      "magnitude_ulp_delta": 4,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd2d8e1ca32179e",
+      "positive": "0x3fd3217da4c43ff8",
+      "negative": "0xbfd3217da4c43ff9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feddd6f8589252b",
+      "positive": "0x3ff3414c29700e7c",
+      "negative": "0xbff3414c29700e7d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe658ce4af1e783",
+      "positive": "0x3fe8bd0ad193af6c",
+      "negative": "0xbfe8bd0ad193af6d",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee5987d976c633",
+      "positive": "0x3ff3f8cd5444b9cd",
+      "negative": "0xbff3f8cd5444b9cf",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdf4c1043c07726",
+      "positive": "0x3fe059cf42c7c951",
+      "negative": "0xbfe059cf42c7c952",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe60907cb23fe4f",
+      "positive": "0x3fe84e507abe67d8",
+      "negative": "0xbfe84e507abe67d9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd534b24567c3aa",
+      "positive": "0x3fd59d48ba5188cb",
+      "negative": "0xbfd59d48ba5188ca",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec5e791a0fd37b",
+      "positive": "0x3ff16fcd7dc849b5",
+      "negative": "0xbff16fcd7dc849b6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4e4ab20bf070b",
+      "positive": "0x3fe6c3fdf720f2c5",
+      "negative": "0xbfe6c3fdf720f2c6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fb49469a0dd34c8",
+      "positive": "0x3fb49a1a8b1946fb",
+      "negative": "0xbfb49a1a8b1946fa",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe885adc6befa93",
+      "positive": "0x3febf05bcbe2ef33",
+      "negative": "0xbfebf05bcbe2ef34",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe72c6707bbea5f",
+      "positive": "0x3fe9ea216f5c5692",
+      "negative": "0xbfe9ea216f5c5693",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd450608e2311de",
+      "positive": "0x3fd4abe92b3fd82e",
+      "negative": "0xbfd4abe92b3fd82f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feb2cb545b0366f",
+      "positive": "0x3ff03b5245cf751e",
+      "negative": "0xbff03b5245cf751f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefe17db63fddd9",
+      "positive": "0x3ff7c05e5d855380",
+      "negative": "0xbff7c05e5d85537a",
+      "magnitude_ulp_delta": -6,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9d2f864546c59",
+      "positive": "0x3fee0cc71408b3c7",
+      "negative": "0xbfee0cc71408b3c6",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee88f9391659c9",
+      "positive": "0x3ff445ce424231d8",
+      "negative": "0xbff445ce424231d6",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2cbdb281f7503",
+      "positive": "0x3fe417218666b5ef",
+      "negative": "0xbfe417218666b5f0",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdab1d8dc7f47b2",
+      "positive": "0x3fdb89571e5551a5",
+      "negative": "0xbfdb89571e5551a4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f993123da4ab0a0",
+      "positive": "0x3f9931ca6fba952b",
+      "negative": "0xbf9931ca6fba952a",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feed8d889ed40f1",
+      "positive": "0x3ff4d32152fcac24",
+      "negative": "0xbff4d32152fcac22",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee773a37f4e453",
+      "positive": "0x3ff428799d5bfabb",
+      "negative": "0xbff428799d5bfabd",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe0629acafaa835",
+      "positive": "0x3fe133a4f010aced",
+      "negative": "0xbfe133a4f010acec",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc7e371dc0cdac4",
+      "positive": "0x3fc807836cef0755",
+      "negative": "0xbfc807836cef0754",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4d8c8d551e2a9",
+      "positive": "0x3fe6b450af14d0bd",
+      "negative": "0xbfe6b450af14d0bc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5730ba59a3c97",
+      "positive": "0x3fe781e119926cf7",
+      "negative": "0xbfe781e119926cf8",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe78d99bde8823d",
+      "positive": "0x3fea7860f76f10f5",
+      "negative": "0xbfea7860f76f10f4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc0cb11b3d8c684",
+      "positive": "0x3fc0d77faf3572ec",
+      "negative": "0xbfc0d77faf3572eb",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7d6af23d320b5",
+      "positive": "0x3feae520c26af538",
+      "negative": "0xbfeae520c26af537",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9a4964429d1d5",
+      "positive": "0x3fedbebdcf070ca2",
+      "negative": "0xbfedbebdcf070ca1",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fedb8cfd086ffc9",
+      "positive": "0x3ff30f1bad9c720e",
+      "negative": "0xbff30f1bad9c720d",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9b20de823e389",
+      "positive": "0x3fedd54bbf87ae84",
+      "negative": "0xbfedd54bbf87ae82",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe44164dd595651",
+      "positive": "0x3fe5eecbcff4fa77",
+      "negative": "0xbfe5eecbcff4fa76",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4621d8b68987f",
+      "positive": "0x3fe619270b5a5fa6",
+      "negative": "0xbfe619270b5a5fa7",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe982af2e2cedf1",
+      "positive": "0x3fed8653d27029c5",
+      "negative": "0xbfed8653d27029c4",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea7db9d3676407",
+      "positive": "0x3fef3553172e6aa5",
+      "negative": "0xbfef3553172e6aa6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe7fc86c14219fb",
+      "positive": "0x3feb1e132939ee5f",
+      "negative": "0xbfeb1e132939ee61",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fde50cc9f286642",
+      "positive": "0x3fdf94f436d6c919",
+      "negative": "0xbfdf94f436d6c918",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3f9bda6aeab0b6a0",
+      "positive": "0x3f9bdb4c149a05b7",
+      "negative": "0xbf9bdb4c149a05b6",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe16005ef0bed73",
+      "positive": "0x3fe25df9f147aec8",
+      "negative": "0xbfe25df9f147aec9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe780e611863c31",
+      "positive": "0x3fea65a376a77a44",
+      "negative": "0xbfea65a376a77a43",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd93adf74bffafa",
+      "positive": "0x3fd9ef13d386b237",
+      "negative": "0xbfd9ef13d386b236",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefebf806582bd5",
+      "positive": "0x3ff8037bdc144fd0",
+      "negative": "0xbff8037bdc144fc9",
+      "magnitude_ulp_delta": -7,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe603eb766c0715",
+      "positive": "0x3fe84744f7b4802e",
+      "negative": "0xbfe84744f7b4802c",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef88efda798205",
+      "positive": "0x3ff666ca64523f3e",
+      "negative": "0xbff666ca64523f3b",
+      "magnitude_ulp_delta": -3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fee26f11396a461",
+      "positive": "0x3ff3ab3369bd4588",
+      "negative": "0xbff3ab3369bd4586",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd97871c49f1b32",
+      "positive": "0x3fda3222385091fa",
+      "negative": "0xbfda3222385091f9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fead62a40a0c1fd",
+      "positive": "0x3fefd54c6b137804",
+      "negative": "0xbfefd54c6b137802",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feca0fc3fc29797",
+      "positive": "0x3ff1b8efd8ce49c4",
+      "negative": "0xbff1b8efd8ce49c5",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe1e59ece3afaad",
+      "positive": "0x3fe2fe16f004b9f4",
+      "negative": "0xbfe2fe16f004b9f3",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd43b0bf5f15166",
+      "positive": "0x3fd4956c210bf69a",
+      "negative": "0xbfd4956c210bf69b",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe848e0d691c4d5",
+      "positive": "0x3feb925ce205b772",
+      "negative": "0xbfeb925ce205b771",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe792a8ae11096b",
+      "positive": "0x3fea7fdad60c81ab",
+      "negative": "0xbfea7fdad60c81ac",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe69f4cfbf0633f",
+      "positive": "0x3fe9201e346e7aa4",
+      "negative": "0xbfe9201e346e7aa6",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6606687cd13cf",
+      "positive": "0x3fe8c7a8d7bed3c0",
+      "negative": "0xbfe8c7a8d7bed3c1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe3afbe44390ac5",
+      "positive": "0x3fe5346015ed08e4",
+      "negative": "0xbfe5346015ed08e3",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe47f733e4dbe6d",
+      "positive": "0x3fe63f4788ba1706",
+      "negative": "0xbfe63f4788ba1705",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5ae0e607cee9f",
+      "positive": "0x3fe7d1c04cbd19a6",
+      "negative": "0xbfe7d1c04cbd19a7",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe91dc4733adeff",
+      "positive": "0x3fece15960578ea2",
+      "negative": "0xbfece15960578ea4",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc7f4cc162bc8bc",
+      "positive": "0x3fc8192d53dc0377",
+      "negative": "0xbfc8192d53dc0378",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc3859cb03d6a64",
+      "positive": "0x3fc3993146e4c950",
+      "negative": "0xbfc3993146e4c94f",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9aeb8d14fa0e9",
+      "positive": "0x3fedcfb50baaacc0",
+      "negative": "0xbfedcfb50baaacbf",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feba90668de5d57",
+      "positive": "0x3ff0b3e7758318a0",
+      "negative": "0xbff0b3e7758318a1",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc62b5e3a2aabc4",
+      "positive": "0x3fc64821fcfcceca",
+      "negative": "0xbfc64821fcfccec9",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fce34c0ac8f033c",
+      "positive": "0x3fce7e6273134d60",
+      "negative": "0xbfce7e6273134d61",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe6a447cda588f3",
+      "positive": "0x3fe927296fbbf289",
+      "negative": "0xbfe927296fbbf28a",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fa5cffea0c23250",
+      "positive": "0x3fa5d1af664bcabe",
+      "negative": "0xbfa5d1af664bcabd",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fc20fe779942b3c",
+      "positive": "0x3fc21f637ea5939e",
+      "negative": "0xbfc21f637ea5939f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd5b3df66c16686",
+      "positive": "0x3fd6244578fda59f",
+      "negative": "0xbfd6244578fda5a0",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd46338820ffc1a",
+      "positive": "0x3fd4bfc934b865f2",
+      "negative": "0xbfd4bfc934b865f1",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed0f06c0a308df",
+      "positive": "0x3ff2380f844fd3b1",
+      "negative": "0xbff2380f844fd3b2",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd3cb547c45ee7a",
+      "positive": "0x3fd41fceb242ee88",
+      "negative": "0xbfd41fceb242ee87",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdb0eda3fe029be",
+      "positive": "0x3fdbefd1f90b5b91",
+      "negative": "0xbfdbefd1f90b5b92",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd7440248f21fea",
+      "positive": "0x3fd7cfaac631980c",
+      "negative": "0xbfd7cfaac631980b",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fea476cae2b70e3",
+      "positive": "0x3feed559a4167159",
+      "negative": "0xbfeed559a416715b",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdf69d17c3fb05a",
+      "positive": "0x3fe06ae01dae5bd4",
+      "negative": "0xbfe06ae01dae5bd3",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feded412a83c6d1",
+      "positive": "0x3ff35779fd150b56",
+      "negative": "0xbff35779fd150b54",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed8d9fb28c08f9",
+      "positive": "0x3ff2d5d5db687dfe",
+      "negative": "0xbff2d5d5db687dfd",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe29c599585f429",
+      "positive": "0x3fe3dc95247266c0",
+      "negative": "0xbfe3dc95247266bf",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe8876ab6ee01e3",
+      "positive": "0x3febf3107c4dd40b",
+      "negative": "0xbfebf3107c4dd40d",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fed5f5a8e3ec083",
+      "positive": "0x3ff29a8ab2dca05d",
+      "negative": "0xbff29a8ab2dca05e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe609bb25e4a095",
+      "positive": "0x3fe84f47d4d44acd",
+      "negative": "0xbfe84f47d4d44acc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3feeb2195c7094a9",
+      "positive": "0x3ff48c80e1132b44",
+      "negative": "0xbff48c80e1132b42",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd63521ff483ef6",
+      "positive": "0x3fd6ade1f258ced0",
+      "negative": "0xbfd6ade1f258ced2",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe5044533ab6a55",
+      "positive": "0x3fe6edce7b10faf9",
+      "negative": "0xbfe6edce7b10faf8",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe92825f4f6ec2f",
+      "positive": "0x3fecf21fb7ff3ac5",
+      "negative": "0xbfecf21fb7ff3ac6",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdc06a4c2a12d3a",
+      "positive": "0x3fdd025609d23afc",
+      "negative": "0xbfdd025609d23afb",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbfaeaec5c09548",
+      "positive": "0x3fbfc387f2cabd29",
+      "negative": "0xbfbfc387f2cabd28",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe9801653bb0ecf",
+      "positive": "0x3fed8206ed711fe6",
+      "negative": "0xbfed8206ed711fe7",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef51411542921b",
+      "positive": "0x3ff5d27203e4f743",
+      "negative": "0xbff5d27203e4f745",
+      "magnitude_ulp_delta": 2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fcc7dd2714d6564",
+      "positive": "0x3fccbb6fa598f15f",
+      "negative": "0xbfccbb6fa598f15e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fccf8d72e3fc234",
+      "positive": "0x3fcd39ad17e50c1d",
+      "negative": "0xbfcd39ad17e50c1c",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fec43416ba4827b",
+      "positive": "0x3ff152969e0830f2",
+      "negative": "0xbff152969e0830f3",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fefee0f6a184dfd",
+      "positive": "0x3ff812db98186681",
+      "negative": "0xbff812db9818667a",
+      "magnitude_ulp_delta": -7,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe3b9f0c04e9b83",
+      "positive": "0x3fe5415160c06ffc",
+      "negative": "0xbfe5415160c06ffd",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fca89c992206b7c",
+      "positive": "0x3fcabb6d23c1683e",
+      "negative": "0xbfcabb6d23c1683f",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd13e432432780a",
+      "positive": "0x3fd1757dc2cdc208",
+      "negative": "0xbfd1757dc2cdc207",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe092db0ef56c91",
+      "positive": "0x3fe16beefe36587f",
+      "negative": "0xbfe16beefe36587e",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe1d028b85eebc3",
+      "positive": "0x3fe2e43a7195a84d",
+      "negative": "0xbfe2e43a7195a84e",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe4bfb7a679fc75",
+      "positive": "0x3fe69354e8e6f867",
+      "negative": "0xbfe69354e8e6f866",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd8e09467faa57e",
+      "positive": "0x3fd98cf4026cddc8",
+      "negative": "0xbfd98cf4026cddc9",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe0425db1eabc27",
+      "positive": "0x3fe10e29c8cbb22b",
+      "negative": "0xbfe10e29c8cbb22c",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef935384f2990d",
+      "positive": "0x3ff68610262b1af5",
+      "negative": "0xbff68610262b1af2",
+      "magnitude_ulp_delta": -3,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fbe0296bac4a2e8",
+      "positive": "0x3fbe144b5e253c58",
+      "negative": "0xbfbe144b5e253c57",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe506972e82abd7",
+      "positive": "0x3fe6f0e249964c97",
+      "negative": "0xbfe6f0e249964c98",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fecee4a3cf7475d",
+      "positive": "0x3ff2115f1bc0bdbd",
+      "negative": "0xbff2115f1bc0bdbc",
+      "magnitude_ulp_delta": -1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fe2664d4cd2198f",
+      "positive": "0x3fe39a5555f09097",
+      "negative": "0xbfe39a5555f09098",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd78dabe8c75e5e",
+      "positive": "0x3fd81ed07c8e7aff",
+      "negative": "0xbfd81ed07c8e7b00",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fdbd1ddd741e87e",
+      "positive": "0x3fdcc7ae9e2981c1",
+      "negative": "0xbfdcc7ae9e2981c2",
+      "magnitude_ulp_delta": 1,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3fef3bdc33e04cd5",
+      "positive": "0x3ff59fdd36dcc7df",
+      "negative": "0xbff59fdd36dcc7dd",
+      "magnitude_ulp_delta": -2,
+      "category": "uniform-domain-pair"
+    },
+    {
+      "positive_input": "0x3e4756e72423811f",
+      "positive": "0x3e4756e724238120",
+      "negative": "0xbe4756e72423811f",
+      "magnitude_ulp_delta": -1,
+      "category": "scaled-domain-pair"
+    },
+    {
+      "positive_input": "0x3f6a50d9e1bfa2bd",
+      "positive": "0x3f6a50dcd9191d20",
+      "negative": "0xbf6a50dcd9191d21",
+      "magnitude_ulp_delta": 1,
+      "category": "scaled-domain-pair"
+    },
+    {
+      "positive_input": "0x3e77096767a43ff9",
+      "positive": "0x3e77096767a44000",
+      "negative": "0xbe77096767a44001",
+      "magnitude_ulp_delta": 1,
+      "category": "scaled-domain-pair"
+    },
+    {
+      "positive_input": "0x3f00021c5434c47e",
+      "positive": "0x3f00021c543f7361",
+      "negative": "0xbf00021c543f7362",
+      "magnitude_ulp_delta": 1,
+      "category": "scaled-domain-pair"
+    },
+    {
+      "positive_input": "0x3e4737d8c343e049",
+      "positive": "0x3e4737d8c343e04a",
+      "negative": "0xbe4737d8c343e049",
+      "magnitude_ulp_delta": -1,
+      "category": "scaled-domain-pair"
+    },
+    {
+      "positive_input": "0x3fd000000000000a",
+      "positive": "0x3fd02be9ce0b87d8",
+      "negative": "0xbfd02be9ce0b87d7",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fdffffffffffff6",
+      "positive": "0x3fe0c152382d735f",
+      "negative": "0xbfe0c152382d7360",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fdffffffffffffe",
+      "positive": "0x3fe0c152382d7364",
+      "negative": "0xbfe0c152382d7365",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bc1",
+      "positive": "0x3fe921fb54442d08",
+      "negative": "0xbfe921fb54442d07",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bc3",
+      "positive": "0x3fe921fb54442d0b",
+      "negative": "0xbfe921fb54442d0c",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bc5",
+      "positive": "0x3fe921fb54442d0e",
+      "negative": "0xbfe921fb54442d0d",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bc7",
+      "positive": "0x3fe921fb54442d10",
+      "negative": "0xbfe921fb54442d11",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bcb",
+      "positive": "0x3fe921fb54442d15",
+      "negative": "0xbfe921fb54442d17",
+      "magnitude_ulp_delta": 2,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bcd",
+      "positive": "0x3fe921fb54442d19",
+      "negative": "0xbfe921fb54442d18",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bd3",
+      "positive": "0x3fe921fb54442d21",
+      "negative": "0xbfe921fb54442d22",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bd5",
+      "positive": "0x3fe921fb54442d24",
+      "negative": "0xbfe921fb54442d23",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bd7",
+      "positive": "0x3fe921fb54442d27",
+      "negative": "0xbfe921fb54442d28",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe6a09e667f3bd9",
+      "positive": "0x3fe921fb54442d2a",
+      "negative": "0xbfe921fb54442d29",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe7fffffffffff7",
+      "positive": "0x3feb235315c680ce",
+      "negative": "0xbfeb235315c680cf",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe7fffffffffff9",
+      "positive": "0x3feb235315c680d2",
+      "negative": "0xbfeb235315c680d1",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe7fffffffffffb",
+      "positive": "0x3feb235315c680d4",
+      "negative": "0xbfeb235315c680d5",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe7fffffffffffd",
+      "positive": "0x3feb235315c680d8",
+      "negative": "0xbfeb235315c680d7",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe7ffffffffffff",
+      "positive": "0x3feb235315c680da",
+      "negative": "0xbfeb235315c680db",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe8000000000001",
+      "positive": "0x3feb235315c680de",
+      "negative": "0xbfeb235315c680dc",
+      "magnitude_ulp_delta": -2,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe8000000000003",
+      "positive": "0x3feb235315c680e0",
+      "negative": "0xbfeb235315c680e1",
+      "magnitude_ulp_delta": 1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe8000000000005",
+      "positive": "0x3feb235315c680e4",
+      "negative": "0xbfeb235315c680e3",
+      "magnitude_ulp_delta": -1,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe8000000000009",
+      "positive": "0x3feb235315c680ea",
+      "negative": "0xbfeb235315c680e8",
+      "magnitude_ulp_delta": -2,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe800000000000b",
+      "positive": "0x3feb235315c680ec",
+      "negative": "0xbfeb235315c680ee",
+      "magnitude_ulp_delta": 2,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3feffffffffffff5",
+      "positive": "0x3ff921fb46fff3ce",
+      "negative": "0xbff921fb4668efa4",
+      "magnitude_ulp_delta": -9897002,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3feffffffffffff7",
+      "positive": "0x3ff921fb48442d18",
+      "negative": "0xbff921fb48f3dde5",
+      "magnitude_ulp_delta": 11514061,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3feffffffffffff9",
+      "positive": "0x3ff921fb49aeed43",
+      "negative": "0xbff921fb48f3dde5",
+      "magnitude_ulp_delta": -12259166,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3feffffffffffffb",
+      "positive": "0x3ff921fb4b52714a",
+      "negative": "0xbff921fb4c442d18",
+      "magnitude_ulp_delta": 15842254,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3feffffffffffffd",
+      "positive": "0x3ff921fb4d568e5e",
+      "negative": "0xbff921fb4c442d18",
+      "magnitude_ulp_delta": -17981766,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fefffffffffffff",
+      "positive": "0x3ff921fb50442d18",
+      "negative": "0xbff921fb54442d18",
+      "magnitude_ulp_delta": 67108864,
+      "category": "mathematical-boundary-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9dd",
+      "positive": "0x3fe720476e0c1970",
+      "negative": "0xbfe720476e0c196f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9df",
+      "positive": "0x3fe720476e0c1972",
+      "negative": "0xbfe720476e0c1973",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9e3",
+      "positive": "0x3fe720476e0c1977",
+      "negative": "0xbfe720476e0c1978",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9e7",
+      "positive": "0x3fe720476e0c197d",
+      "negative": "0xbfe720476e0c197e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9e9",
+      "positive": "0x3fe720476e0c1980",
+      "negative": "0xbfe720476e0c197f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9eb",
+      "positive": "0x3fe720476e0c1982",
+      "negative": "0xbfe720476e0c1983",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9ed",
+      "positive": "0x3fe720476e0c1985",
+      "negative": "0xbfe720476e0c1984",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9f1",
+      "positive": "0x3fe720476e0c198b",
+      "negative": "0xbfe720476e0c198a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9f3",
+      "positive": "0x3fe720476e0c198d",
+      "negative": "0xbfe720476e0c198e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9f7",
+      "positive": "0x3fe720476e0c1992",
+      "negative": "0xbfe720476e0c1993",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9fd",
+      "positive": "0x3fe720476e0c199b",
+      "negative": "0xbfe720476e0c199a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2e9ff",
+      "positive": "0x3fe720476e0c199d",
+      "negative": "0xbfe720476e0c199e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea01",
+      "positive": "0x3fe720476e0c19a0",
+      "negative": "0xbfe720476e0c199f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea03",
+      "positive": "0x3fe720476e0c19a2",
+      "negative": "0xbfe720476e0c19a3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea09",
+      "positive": "0x3fe720476e0c19ab",
+      "negative": "0xbfe720476e0c19a9",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea0d",
+      "positive": "0x3fe720476e0c19b0",
+      "negative": "0xbfe720476e0c19af",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea0f",
+      "positive": "0x3fe720476e0c19b2",
+      "negative": "0xbfe720476e0c19b3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea11",
+      "positive": "0x3fe720476e0c19b5",
+      "negative": "0xbfe720476e0c19b4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea13",
+      "positive": "0x3fe720476e0c19b7",
+      "negative": "0xbfe720476e0c19b9",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea15",
+      "positive": "0x3fe720476e0c19bb",
+      "negative": "0xbfe720476e0c19ba",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea17",
+      "positive": "0x3fe720476e0c19bd",
+      "negative": "0xbfe720476e0c19be",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea1b",
+      "positive": "0x3fe720476e0c19c2",
+      "negative": "0xbfe720476e0c19c3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea1d",
+      "positive": "0x3fe720476e0c19c5",
+      "negative": "0xbfe720476e0c19c4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea1f",
+      "positive": "0x3fe720476e0c19c7",
+      "negative": "0xbfe720476e0c19c8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea23",
+      "positive": "0x3fe720476e0c19cc",
+      "negative": "0xbfe720476e0c19cd",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea25",
+      "positive": "0x3fe720476e0c19d0",
+      "negative": "0xbfe720476e0c19cf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea27",
+      "positive": "0x3fe720476e0c19d2",
+      "negative": "0xbfe720476e0c19d3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea29",
+      "positive": "0x3fe720476e0c19d5",
+      "negative": "0xbfe720476e0c19d4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea31",
+      "positive": "0x3fe720476e0c19e0",
+      "negative": "0xbfe720476e0c19df",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea33",
+      "positive": "0x3fe720476e0c19e2",
+      "negative": "0xbfe720476e0c19e3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea37",
+      "positive": "0x3fe720476e0c19e7",
+      "negative": "0xbfe720476e0c19e8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea3b",
+      "positive": "0x3fe720476e0c19ed",
+      "negative": "0xbfe720476e0c19ee",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea3d",
+      "positive": "0x3fe720476e0c19f0",
+      "negative": "0xbfe720476e0c19ef",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea3f",
+      "positive": "0x3fe720476e0c19f2",
+      "negative": "0xbfe720476e0c19f3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea41",
+      "positive": "0x3fe720476e0c19f5",
+      "negative": "0xbfe720476e0c19f4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea47",
+      "positive": "0x3fe720476e0c19fd",
+      "negative": "0xbfe720476e0c19fe",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea4b",
+      "positive": "0x3fe720476e0c1a02",
+      "negative": "0xbfe720476e0c1a03",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea51",
+      "positive": "0x3fe720476e0c1a0b",
+      "negative": "0xbfe720476e0c1a0a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea53",
+      "positive": "0x3fe720476e0c1a0d",
+      "negative": "0xbfe720476e0c1a0e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea55",
+      "positive": "0x3fe720476e0c1a10",
+      "negative": "0xbfe720476e0c1a0f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea57",
+      "positive": "0x3fe720476e0c1a12",
+      "negative": "0xbfe720476e0c1a13",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea5d",
+      "positive": "0x3fe720476e0c1a1b",
+      "negative": "0xbfe720476e0c1a19",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea61",
+      "positive": "0x3fe720476e0c1a20",
+      "negative": "0xbfe720476e0c1a1e",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea63",
+      "positive": "0x3fe720476e0c1a22",
+      "negative": "0xbfe720476e0c1a23",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea65",
+      "positive": "0x3fe720476e0c1a25",
+      "negative": "0xbfe720476e0c1a24",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea67",
+      "positive": "0x3fe720476e0c1a27",
+      "negative": "0xbfe720476e0c1a29",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea69",
+      "positive": "0x3fe720476e0c1a2b",
+      "negative": "0xbfe720476e0c1a2a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea6b",
+      "positive": "0x3fe720476e0c1a2d",
+      "negative": "0xbfe720476e0c1a2e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea6f",
+      "positive": "0x3fe720476e0c1a32",
+      "negative": "0xbfe720476e0c1a33",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea71",
+      "positive": "0x3fe720476e0c1a35",
+      "negative": "0xbfe720476e0c1a34",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea73",
+      "positive": "0x3fe720476e0c1a37",
+      "negative": "0xbfe720476e0c1a38",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea75",
+      "positive": "0x3fe720476e0c1a3b",
+      "negative": "0xbfe720476e0c1a39",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea79",
+      "positive": "0x3fe720476e0c1a40",
+      "negative": "0xbfe720476e0c1a3f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea7b",
+      "positive": "0x3fe720476e0c1a42",
+      "negative": "0xbfe720476e0c1a44",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea85",
+      "positive": "0x3fe720476e0c1a50",
+      "negative": "0xbfe720476e0c1a4f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea87",
+      "positive": "0x3fe720476e0c1a52",
+      "negative": "0xbfe720476e0c1a53",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea89",
+      "positive": "0x3fe720476e0c1a55",
+      "negative": "0xbfe720476e0c1a54",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea8b",
+      "positive": "0x3fe720476e0c1a57",
+      "negative": "0xbfe720476e0c1a58",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea91",
+      "positive": "0x3fe720476e0c1a60",
+      "negative": "0xbfe720476e0c1a5f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea95",
+      "positive": "0x3fe720476e0c1a65",
+      "negative": "0xbfe720476e0c1a64",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea9b",
+      "positive": "0x3fe720476e0c1a6d",
+      "negative": "0xbfe720476e0c1a6e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea9d",
+      "positive": "0x3fe720476e0c1a70",
+      "negative": "0xbfe720476e0c1a6f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ea9f",
+      "positive": "0x3fe720476e0c1a72",
+      "negative": "0xbfe720476e0c1a73",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaa5",
+      "positive": "0x3fe720476e0c1a7b",
+      "negative": "0xbfe720476e0c1a7a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaa7",
+      "positive": "0x3fe720476e0c1a7d",
+      "negative": "0xbfe720476e0c1a7e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaa9",
+      "positive": "0x3fe720476e0c1a80",
+      "negative": "0xbfe720476e0c1a7f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaab",
+      "positive": "0x3fe720476e0c1a82",
+      "negative": "0xbfe720476e0c1a83",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eab1",
+      "positive": "0x3fe720476e0c1a8a",
+      "negative": "0xbfe720476e0c1a89",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eab3",
+      "positive": "0x3fe720476e0c1a8d",
+      "negative": "0xbfe720476e0c1a8e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eab5",
+      "positive": "0x3fe720476e0c1a90",
+      "negative": "0xbfe720476e0c1a8f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eab7",
+      "positive": "0x3fe720476e0c1a92",
+      "negative": "0xbfe720476e0c1a93",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eab9",
+      "positive": "0x3fe720476e0c1a96",
+      "negative": "0xbfe720476e0c1a94",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eabb",
+      "positive": "0x3fe720476e0c1a98",
+      "negative": "0xbfe720476e0c1a99",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eabd",
+      "positive": "0x3fe720476e0c1a9b",
+      "negative": "0xbfe720476e0c1a9a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eabf",
+      "positive": "0x3fe720476e0c1a9c",
+      "negative": "0xbfe720476e0c1a9e",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eac3",
+      "positive": "0x3fe720476e0c1aa2",
+      "negative": "0xbfe720476e0c1aa3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eac5",
+      "positive": "0x3fe720476e0c1aa5",
+      "negative": "0xbfe720476e0c1aa4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eac7",
+      "positive": "0x3fe720476e0c1aa7",
+      "negative": "0xbfe720476e0c1aa8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eac9",
+      "positive": "0x3fe720476e0c1aab",
+      "negative": "0xbfe720476e0c1aa9",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eacd",
+      "positive": "0x3fe720476e0c1ab0",
+      "negative": "0xbfe720476e0c1aaf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eacf",
+      "positive": "0x3fe720476e0c1ab2",
+      "negative": "0xbfe720476e0c1ab4",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ead3",
+      "positive": "0x3fe720476e0c1ab7",
+      "negative": "0xbfe720476e0c1ab8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ead9",
+      "positive": "0x3fe720476e0c1ac0",
+      "negative": "0xbfe720476e0c1abf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eadb",
+      "positive": "0x3fe720476e0c1ac2",
+      "negative": "0xbfe720476e0c1ac3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eadd",
+      "positive": "0x3fe720476e0c1ac5",
+      "negative": "0xbfe720476e0c1ac4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eadf",
+      "positive": "0x3fe720476e0c1ac7",
+      "negative": "0xbfe720476e0c1ac8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eae5",
+      "positive": "0x3fe720476e0c1ad0",
+      "negative": "0xbfe720476e0c1acf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eae9",
+      "positive": "0x3fe720476e0c1ad5",
+      "negative": "0xbfe720476e0c1ad4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaef",
+      "positive": "0x3fe720476e0c1add",
+      "negative": "0xbfe720476e0c1ade",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaf1",
+      "positive": "0x3fe720476e0c1ae0",
+      "negative": "0xbfe720476e0c1adf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaf3",
+      "positive": "0x3fe720476e0c1ae2",
+      "negative": "0xbfe720476e0c1ae3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaf5",
+      "positive": "0x3fe720476e0c1ae5",
+      "negative": "0xbfe720476e0c1ae4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaf9",
+      "positive": "0x3fe720476e0c1aeb",
+      "negative": "0xbfe720476e0c1aea",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eafd",
+      "positive": "0x3fe720476e0c1af0",
+      "negative": "0xbfe720476e0c1aef",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eaff",
+      "positive": "0x3fe720476e0c1af2",
+      "negative": "0xbfe720476e0c1af3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb05",
+      "positive": "0x3fe720476e0c1afa",
+      "negative": "0xbfe720476e0c1af9",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb07",
+      "positive": "0x3fe720476e0c1afd",
+      "negative": "0xbfe720476e0c1afe",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb09",
+      "positive": "0x3fe720476e0c1b00",
+      "negative": "0xbfe720476e0c1aff",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb0b",
+      "positive": "0x3fe720476e0c1b02",
+      "negative": "0xbfe720476e0c1b03",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb0d",
+      "positive": "0x3fe720476e0c1b06",
+      "negative": "0xbfe720476e0c1b04",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb11",
+      "positive": "0x3fe720476e0c1b0b",
+      "negative": "0xbfe720476e0c1b0a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb13",
+      "positive": "0x3fe720476e0c1b0c",
+      "negative": "0xbfe720476e0c1b0e",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb17",
+      "positive": "0x3fe720476e0c1b12",
+      "negative": "0xbfe720476e0c1b13",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb19",
+      "positive": "0x3fe720476e0c1b15",
+      "negative": "0xbfe720476e0c1b14",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb1d",
+      "positive": "0x3fe720476e0c1b1a",
+      "negative": "0xbfe720476e0c1b19",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb21",
+      "positive": "0x3fe720476e0c1b20",
+      "negative": "0xbfe720476e0c1b1f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb23",
+      "positive": "0x3fe720476e0c1b22",
+      "negative": "0xbfe720476e0c1b23",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb27",
+      "positive": "0x3fe720476e0c1b27",
+      "negative": "0xbfe720476e0c1b28",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb2d",
+      "positive": "0x3fe720476e0c1b30",
+      "negative": "0xbfe720476e0c1b2f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb2f",
+      "positive": "0x3fe720476e0c1b32",
+      "negative": "0xbfe720476e0c1b33",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb31",
+      "positive": "0x3fe720476e0c1b35",
+      "negative": "0xbfe720476e0c1b34",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb33",
+      "positive": "0x3fe720476e0c1b37",
+      "negative": "0xbfe720476e0c1b38",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb35",
+      "positive": "0x3fe720476e0c1b3b",
+      "negative": "0xbfe720476e0c1b3a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb39",
+      "positive": "0x3fe720476e0c1b40",
+      "negative": "0xbfe720476e0c1b3f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb3d",
+      "positive": "0x3fe720476e0c1b45",
+      "negative": "0xbfe720476e0c1b44",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb3f",
+      "positive": "0x3fe720476e0c1b47",
+      "negative": "0xbfe720476e0c1b48",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb43",
+      "positive": "0x3fe720476e0c1b4d",
+      "negative": "0xbfe720476e0c1b4e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb45",
+      "positive": "0x3fe720476e0c1b50",
+      "negative": "0xbfe720476e0c1b4f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb47",
+      "positive": "0x3fe720476e0c1b52",
+      "negative": "0xbfe720476e0c1b53",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb49",
+      "positive": "0x3fe720476e0c1b55",
+      "negative": "0xbfe720476e0c1b54",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb4d",
+      "positive": "0x3fe720476e0c1b5b",
+      "negative": "0xbfe720476e0c1b5a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb51",
+      "positive": "0x3fe720476e0c1b60",
+      "negative": "0xbfe720476e0c1b5f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb53",
+      "positive": "0x3fe720476e0c1b62",
+      "negative": "0xbfe720476e0c1b63",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb57",
+      "positive": "0x3fe720476e0c1b68",
+      "negative": "0xbfe720476e0c1b69",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb5b",
+      "positive": "0x3fe720476e0c1b6d",
+      "negative": "0xbfe720476e0c1b6e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb5d",
+      "positive": "0x3fe720476e0c1b70",
+      "negative": "0xbfe720476e0c1b6f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb5f",
+      "positive": "0x3fe720476e0c1b72",
+      "negative": "0xbfe720476e0c1b73",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb61",
+      "positive": "0x3fe720476e0c1b76",
+      "negative": "0xbfe720476e0c1b74",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb65",
+      "positive": "0x3fe720476e0c1b7b",
+      "negative": "0xbfe720476e0c1b7a",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb67",
+      "positive": "0x3fe720476e0c1b7c",
+      "negative": "0xbfe720476e0c1b7e",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb6b",
+      "positive": "0x3fe720476e0c1b82",
+      "negative": "0xbfe720476e0c1b83",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb6d",
+      "positive": "0x3fe720476e0c1b85",
+      "negative": "0xbfe720476e0c1b84",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb71",
+      "positive": "0x3fe720476e0c1b8a",
+      "negative": "0xbfe720476e0c1b89",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb75",
+      "positive": "0x3fe720476e0c1b90",
+      "negative": "0xbfe720476e0c1b8f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb77",
+      "positive": "0x3fe720476e0c1b92",
+      "negative": "0xbfe720476e0c1b93",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb7b",
+      "positive": "0x3fe720476e0c1b97",
+      "negative": "0xbfe720476e0c1b98",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb81",
+      "positive": "0x3fe720476e0c1ba0",
+      "negative": "0xbfe720476e0c1b9f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb83",
+      "positive": "0x3fe720476e0c1ba2",
+      "negative": "0xbfe720476e0c1ba3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb85",
+      "positive": "0x3fe720476e0c1ba5",
+      "negative": "0xbfe720476e0c1ba4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb87",
+      "positive": "0x3fe720476e0c1ba7",
+      "negative": "0xbfe720476e0c1ba8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb89",
+      "positive": "0x3fe720476e0c1bab",
+      "negative": "0xbfe720476e0c1baa",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb8d",
+      "positive": "0x3fe720476e0c1bb0",
+      "negative": "0xbfe720476e0c1baf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb8f",
+      "positive": "0x3fe720476e0c1bb2",
+      "negative": "0xbfe720476e0c1bb3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb93",
+      "positive": "0x3fe720476e0c1bb7",
+      "negative": "0xbfe720476e0c1bb8",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb95",
+      "positive": "0x3fe720476e0c1bbb",
+      "negative": "0xbfe720476e0c1bba",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb97",
+      "positive": "0x3fe720476e0c1bbd",
+      "negative": "0xbfe720476e0c1bbe",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb99",
+      "positive": "0x3fe720476e0c1bc0",
+      "negative": "0xbfe720476e0c1bbf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb9b",
+      "positive": "0x3fe720476e0c1bc2",
+      "negative": "0xbfe720476e0c1bc3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eb9d",
+      "positive": "0x3fe720476e0c1bc5",
+      "negative": "0xbfe720476e0c1bc4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eba1",
+      "positive": "0x3fe720476e0c1bcb",
+      "negative": "0xbfe720476e0c1bca",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eba5",
+      "positive": "0x3fe720476e0c1bd0",
+      "negative": "0xbfe720476e0c1bcf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2eba7",
+      "positive": "0x3fe720476e0c1bd2",
+      "negative": "0xbfe720476e0c1bd3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebab",
+      "positive": "0x3fe720476e0c1bd8",
+      "negative": "0xbfe720476e0c1bd9",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebaf",
+      "positive": "0x3fe720476e0c1bdd",
+      "negative": "0xbfe720476e0c1bde",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebb1",
+      "positive": "0x3fe720476e0c1be0",
+      "negative": "0xbfe720476e0c1bdf",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebb5",
+      "positive": "0x3fe720476e0c1be6",
+      "negative": "0xbfe720476e0c1be4",
+      "magnitude_ulp_delta": -2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebb9",
+      "positive": "0x3fe720476e0c1beb",
+      "negative": "0xbfe720476e0c1bea",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebbb",
+      "positive": "0x3fe720476e0c1bec",
+      "negative": "0xbfe720476e0c1bee",
+      "magnitude_ulp_delta": 2,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebbf",
+      "positive": "0x3fe720476e0c1bf2",
+      "negative": "0xbfe720476e0c1bf3",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebc1",
+      "positive": "0x3fe720476e0c1bf5",
+      "negative": "0xbfe720476e0c1bf4",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebc5",
+      "positive": "0x3fe720476e0c1bfa",
+      "negative": "0xbfe720476e0c1bf9",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebcb",
+      "positive": "0x3fe720476e0c1c02",
+      "negative": "0xbfe720476e0c1c03",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebcf",
+      "positive": "0x3fe720476e0c1c07",
+      "negative": "0xbfe720476e0c1c08",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebd3",
+      "positive": "0x3fe720476e0c1c0d",
+      "negative": "0xbfe720476e0c1c0e",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebd5",
+      "positive": "0x3fe720476e0c1c10",
+      "negative": "0xbfe720476e0c1c0f",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebd7",
+      "positive": "0x3fe720476e0c1c12",
+      "negative": "0xbfe720476e0c1c13",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebd9",
+      "positive": "0x3fe720476e0c1c15",
+      "negative": "0xbfe720476e0c1c14",
+      "magnitude_ulp_delta": -1,
+      "category": "prior-asymmetry-neighbor"
+    },
+    {
+      "positive_input": "0x3fe52a3a8df2ebdb",
+      "positive": "0x3fe720476e0c1c17",
+      "negative": "0xbfe720476e0c1c18",
+      "magnitude_ulp_delta": 1,
+      "category": "prior-asymmetry-neighbor"
+    }
+  ]
+}

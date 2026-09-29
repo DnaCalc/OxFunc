@@ -1,0 +1,160 @@
+{
+  "centers": [
+    {
+      "direct": "0x3ff5340253925eae",
+      "input": "0x3fef0a2c79073ebc",
+      "reduced": "0x3ff5340253925eaf"
+    },
+    {
+      "direct": "0x3ff3139294176baf",
+      "input": "0x3fedbc1daccfeb13",
+      "reduced": "0x3ff3139294176bb0"
+    },
+    {
+      "direct": "0x3ff3ac6aee1e944d",
+      "input": "0x3fee27c1a4c0466a",
+      "reduced": "0x3ff3ac6aee1e944e"
+    },
+    {
+      "direct": "0xbfeda21773c8b788",
+      "input": "0xbfe9936887bf448a",
+      "reduced": "0xbfeda21773c8b789"
+    },
+    {
+      "direct": "0x3ff2b589d0e11fe0",
+      "input": "0x3fed749ddae87b8f",
+      "reduced": "0x3ff2b589d0e11fe1"
+    },
+    {
+      "direct": "0xbff0b308e5236ea8",
+      "input": "0xbfeba8268b169756",
+      "reduced": "0xbff0b308e5236ea9"
+    },
+    {
+      "direct": "0x3ff0e1cea5893491",
+      "input": "0x3febd6be2032a0f9",
+      "reduced": "0x3ff0e1cea5893492"
+    },
+    {
+      "direct": "0x3fea0e406f1b044e",
+      "input": "0x3fe745412c67af22",
+      "reduced": "0x3fea0e406f1b044f"
+    },
+    {
+      "direct": "0xbff4ace5105c5359",
+      "input": "0xbfeec428ff5e3006",
+      "reduced": "0xbff4ace5105c535a"
+    },
+    {
+      "direct": "0x3feaec825d2c1aa3",
+      "input": "0x3fe7db9b15d4cd2d",
+      "reduced": "0x3feaec825d2c1aa4"
+    },
+    {
+      "direct": "0xbfee34b3512705b6",
+      "input": "0xbfe9ea77cd7a648b",
+      "reduced": "0xbfee34b3512705b7"
+    },
+    {
+      "direct": "0xbfed1c6e582fee6f",
+      "input": "0xbfe94235a45fc389",
+      "reduced": "0xbfed1c6e582fee70"
+    },
+    {
+      "direct": "0xbfe9d88fbd6d91d0",
+      "input": "0xbfe72045d5705186",
+      "reduced": "0xbfe9d88fbd6d91d1"
+    },
+    {
+      "direct": "0x3ff5f27b6708d8c3",
+      "input": "0x3fef5e2c22275b1c",
+      "reduced": "0x3ff5f27b6708d8c4"
+    },
+    {
+      "direct": "0xbff1b662d14f5134",
+      "input": "0xbfec9eb4626d4431",
+      "reduced": "0xbff1b662d14f5135"
+    },
+    {
+      "direct": "0xbff39463cb9f2080",
+      "input": "0xbfee178b136d8731",
+      "reduced": "0xbff39463cb9f2081"
+    },
+    {
+      "direct": "0x3fee2d8a0f709365",
+      "input": "0x3fe9e643c0934107",
+      "reduced": "0x3fee2d8a0f709366"
+    },
+    {
+      "direct": "0xbfea6a3fac74f67d",
+      "input": "0xbfe78406beb20ee8",
+      "reduced": "0xbfea6a3fac74f67e"
+    },
+    {
+      "direct": "0xbff16f4669ffd1fb",
+      "input": "0xbfec5dfc184a9bc5",
+      "reduced": "0xbff16f4669ffd1fc"
+    },
+    {
+      "direct": "0xbff532335f54a296",
+      "input": "0xbfef094b26dc94b3",
+      "reduced": "0xbff532335f54a297"
+    },
+    {
+      "direct": "0x3ff0a419234eff05",
+      "input": "0x3feb9913aaa5f5cf",
+      "reduced": "0x3ff0a419234eff06"
+    },
+    {
+      "direct": "0x3fec60828ffdec98",
+      "input": "0x3fe8cd2426a341b2",
+      "reduced": "0x3fec60828ffdec99"
+    },
+    {
+      "direct": "0xbff2dc4cc649284f",
+      "input": "0xbfed9292a0febcb3",
+      "reduced": "0xbff2dc4cc6492850"
+    },
+    {
+      "direct": "0x3ff374789437e290",
+      "input": "0x3fee01987fb71146",
+      "reduced": "0x3ff374789437e291"
+    },
+    {
+      "direct": "0x3ff2d6383f3c0616",
+      "input": "0x3fed8deb27c4aa91",
+      "reduced": "0x3ff2d6383f3c0617"
+    },
+    {
+      "direct": "0x3fe9c2aac6c55829",
+      "input": "0x3fe7111e6d5975e1",
+      "reduced": "0x3fe9c2aac6c5582a"
+    },
+    {
+      "direct": "0x3feac3b3532654a4",
+      "input": "0x3fe7c0555fa8f35a",
+      "reduced": "0x3feac3b3532654a5"
+    },
+    {
+      "direct": "0xbfece9a9929c5420",
+      "input": "0xbfe922ea531253c1",
+      "reduced": "0xbfece9a9929c5421"
+    },
+    {
+      "direct": "0x3febe9606eb93899",
+      "input": "0x3fe88130e17edc8b",
+      "reduced": "0x3febe9606eb9389a"
+    },
+    {
+      "direct": "0xbfef62bf89755d5b",
+      "input": "0xbfea971a1e9c30ad",
+      "reduced": "0xbfef62bf89755d5c"
+    },
+    {
+      "direct": "0xbfea902294414b82",
+      "input": "0xbfe79da826f0f949",
+      "reduced": "0xbfea902294414b83"
+    }
+  ],
+  "searched": 300000
+}

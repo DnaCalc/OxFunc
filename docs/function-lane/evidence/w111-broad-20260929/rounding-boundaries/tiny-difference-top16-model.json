@@ -1,0 +1,32 @@
+[
+  {
+    "source": "smart-fuzzer/runs/w111-roundup-tiny-threshold-20260929/answers-roundup.json",
+    "rows": 4604,
+    "mismatches": 0,
+    "misses": []
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-roundup-tiny-difference-20260929/answers-roundup.json",
+    "rows": 3666,
+    "mismatches": 0,
+    "misses": []
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-rounding-refined-heldout-20260929/answers-roundup.json",
+    "rows": 6780,
+    "mismatches": 0,
+    "misses": []
+  },
+  {
+    "source": "docs/function-lane/evidence/w111-broad-20260929/rounding-boundaries/numeric-roundup.json",
+    "rows": 20290,
+    "mismatches": 0,
+    "misses": []
+  },
+  {
+    "source": "docs/function-lane/evidence/w111-broad-20260929/rounding-boundaries/endpoint-roundup.json",
+    "rows": 3556,
+    "mismatches": 0,
+    "misses": []
+  }
+]

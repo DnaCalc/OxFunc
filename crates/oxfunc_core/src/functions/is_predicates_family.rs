@@ -133,7 +133,7 @@ fn coerce_isodd_number(arg: &CalcValue) -> Result<f64, CoercionError> {
 }
 
 pub fn isodd_kernel(n: f64) -> bool {
-    (n.trunc() as i64).rem_euclid(2) != 0
+    !crate::functions::iseven_fn::iseven_kernel(n)
 }
 
 pub fn eval_isblank_surface(

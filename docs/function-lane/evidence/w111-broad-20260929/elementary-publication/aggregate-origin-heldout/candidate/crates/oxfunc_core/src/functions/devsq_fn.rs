@@ -1,0 +1,174 @@
+use crate::coercion::CoercionError;
+use crate::function::{
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+};
+use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg};
+use crate::functions::aggregate_common::average_argument_value;
+use crate::resolver::ReferenceSystemProvider;
+use crate::value::{CalcValue, CoreValue};
+use crate::value::WorksheetErrorCode;
+
+pub const DEVSQ_META: FunctionMeta = function_spec! {
+    function_id: "FUNC.DEVSQ",
+    arity: Arity { min: 1, max: 255 },
+    determinism: DeterminismClass::Deterministic,
+    volatility: VolatilityClass::NonVolatile,
+    host_interaction: HostInteractionClass::None,
+    thread_safety: ThreadSafetyClass::SafePure,
+    coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
+    kernel_signature_class: KernelSignatureClass::NumsToNum,
+    fec_dependency_profile: FecDependencyProfile::None,
+    surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum DevSqEvalError {
+    ArityMismatch {
+        expected_min: usize,
+        expected_max: usize,
+        actual: usize,
+    },
+    Coercion(CoercionError),
+}
+
+// W111 distinguishes blank cells from explicit omitted scalar arguments.
+// Keep reference/array-origin policy in the existing aggregate helper.
+fn prepared_number(arg: &AggregatePreparedItem) -> Result<Option<f64>, CoercionError> {
+    match arg.0.core() {
+        CoreValue::Empty => Ok(None),
+        CoreValue::Missing if matches!(arg.1, AggregateArgOrigin::DirectScalar) => Ok(Some(0.0)),
+        _ => average_argument_value(arg),
+    }
+}
+
+fn eval_devsq_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, DevSqEvalError> {
+    // Direct scalar coercion errors precede errors in arrays/references.
+    // Validate only here: the full pass below keeps numeric accumulation order.
+    for arg in args {
+        if matches!(arg.1, AggregateArgOrigin::DirectScalar) {
+            prepared_number(arg).map_err(DevSqEvalError::Coercion)?;
+        }
+    }
+    let mut values = Vec::new();
+    for arg in args {
+        if let Some(value) = prepared_number(arg).map_err(DevSqEvalError::Coercion)? {
+            values.push(value);
+        }
+    }
+
+    if values.is_empty() {
+        return Ok(CalcValue::error(WorksheetErrorCode::Num));
+    }
+
+    let mean = values.iter().sum::<f64>() / values.len() as f64;
+    let devsq = values
+        .iter()
+        .map(|value| {
+            let delta = value - mean;
+            let square = crate::excel_numeric::excel_x87_mul(delta, delta);
+            // The stored square is published before accumulation. Tiny terms
+            // contribute zero even when their unflushed sum would be normal.
+            if square < f64::MIN_POSITIVE { 0.0 } else { square }
+        })
+        .sum::<f64>();
+    Ok(if devsq.is_finite() { CalcValue::number(devsq) }
+       else { CalcValue::error(WorksheetErrorCode::Num) })
+}
+
+pub fn eval_devsq_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DevSqEvalError> {
+    let argc = args.len();
+    if !DEVSQ_META.arity.accepts(argc) {
+        return Err(DevSqEvalError::ArityMismatch {
+            expected_min: DEVSQ_META.arity.min,
+            expected_max: DEVSQ_META.arity.max,
+            actual: argc,
+        });
+    }
+
+    let mut prepared = Vec::new();
+    for arg in args {
+        prepared.extend(expand_aggregate_arg(arg, resolver).map_err(DevSqEvalError::Coercion)?);
+    }
+    eval_devsq_aggregate(&prepared)
+}
+
+pub fn map_devsq_error_to_ws(e: &DevSqEvalError) -> WorksheetErrorCode {
+    match e {
+        DevSqEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+        DevSqEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        DevSqEvalError::Coercion(_) => WorksheetErrorCode::Value,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
+
+    struct MockResolver {
+        resolved_value: Option<CalcValue>,
+    }
+
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
+        }
+
+        fn dereference(
+            &self,
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target().to_string(),
+                },
+            )
+        }
+    }
+
+    #[test]
+    fn eval_devsq_accumulates_direct_numeric_text_and_logical() {
+        let args = vec![
+            (CalcValue::logical(true)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
+                "2".encode_utf16().collect(),
+            ))),
+        ];
+        let got = eval_devsq_surface(
+            &args,
+            &MockResolver {
+                resolved_value: None,
+            },
+        );
+        assert_eq!(got, Ok(CalcValue::number(0.5)));
+    }
+
+    #[test]
+    fn eval_devsq_ignores_reference_derived_text_and_logical() {
+        let args = vec![CalcValue::reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A2".to_string(),
+        ))];
+        let got = eval_devsq_surface(
+            &args,
+            &MockResolver {
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
+                            "x".encode_utf16().collect(),
+                        )),
+                        CalcValue::logical(true),
+                    ]])
+                    .unwrap(),
+                )),
+            },
+        );
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Num)));
+    }
+}

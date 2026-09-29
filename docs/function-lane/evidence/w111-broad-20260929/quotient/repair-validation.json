@@ -1,0 +1,25 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "shared locale/date/year numeric-text preparation HO-FN-022",
+    "QUOTIENT coercion_lift_profile assessment",
+    "whole-function audit"
+  ],
+  "validation": {
+    "numeric_admitted_rows": 3141,
+    "baseline_ingress_exclusions": 18,
+    "fresh_numeric_heldout_rows": 1797,
+    "typed_exact_rows": 504,
+    "fresh_typed_heldout_rows": 288,
+    "numeric_integration_tests_passed": 2,
+    "typed_replay_passed": true,
+    "lean_module_built": "OxFunc.Functions.QuotientFn"
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/quotient_fn.rs": "8de326cd7c8f64929ac8d6ed2a36ae0c8fb6648749768213d785ce78e3fd504c",
+    "crates/oxfunc_core/tests/w111_quotient_live_replay.rs": "67f249d256bc690d10cb9e82cede9be1e1653039fd14936eba6130e1d1af1285",
+    "formal/lean/OxFunc/Functions/QuotientFn.lean": "2f9a9739f77a31a79ac36a86ab31eab9eb69768da8e49c83d15d7005d652a2bb"
+  }
+}

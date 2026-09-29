@@ -1,0 +1,403 @@
+{
+  "function": "HYPGEOM.DIST",
+  "matches": 968,
+  "misses": [
+    {
+      "actual": "0x3feb6db6db6db6db",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3feb6db6db6db6dc",
+      "id": "fresh-hypgeom.dist-00082-fractional-support-controls"
+    },
+    {
+      "actual": "0x3feb6db6db6db6db",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x401c000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3feb6db6db6db6dc",
+      "id": "fresh-hypgeom.dist-00083-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe2492492492492",
+      "args": [
+        "0x400c000000000000",
+        "0x4019000000000000",
+        "0x400c000000000000",
+        "0x401c000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fe2492492492490",
+      "id": "fresh-hypgeom.dist-00162-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x401d000000000000",
+        "0x401d000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00206-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00264-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00265-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x401f000000000000",
+        "0x401d000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00318-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00348-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00349-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x4012000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00364-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fc0000000000000",
+      "args": [
+        "0x401d000000000000",
+        "0x401d000000000000",
+        "0x401f99999999999a",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc0000000000001",
+      "id": "fresh-hypgeom.dist-00378-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00382-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fe0000000000000",
+      "args": [
+        "0x400a000000000000",
+        "0x401d000000000000",
+        "0x4010000000000000",
+        "0x4020000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fdffffffffffffe",
+      "id": "fresh-hypgeom.dist-00383-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fec71c71c71c71c",
+      "args": [
+        "0x3ff6666666666668",
+        "0x3ff8000000000000",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fec71c71c71c71b",
+      "id": "fresh-hypgeom.dist-00450-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fec71c71c71c71c",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fec71c71c71c71a",
+      "id": "fresh-hypgeom.dist-00462-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fec71c71c71c71c",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x3ff0000000000000",
+        "0x4022000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fec71c71c71c71a",
+      "id": "fresh-hypgeom.dist-00463-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fbc71c71c71c71c",
+      "args": [
+        "0x40204ccccccccccc",
+        "0x4020800000000000",
+        "0x4021cccccccccccd",
+        "0x4022000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fbc71c71c71c71b",
+      "id": "fresh-hypgeom.dist-00492-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00612-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00613-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdd89d89d89d89e",
+      "args": [
+        "0x3ff8000000000000",
+        "0x3ff8000000000000",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdd89d89d89d89f",
+      "id": "fresh-hypgeom.dist-00618-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fb3b13b13b13b14",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb3b13b13b13b15",
+      "id": "fresh-hypgeom.dist-00630-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fb3b13b13b13b14",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x3ff0000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb3b13b13b13b15",
+      "id": "fresh-hypgeom.dist-00631-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00638-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00639-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00652-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x3ff8000000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00653-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdd89d89d89d89e",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3ff8000000000000",
+        "0x401a000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdd89d89d89d89f",
+      "id": "fresh-hypgeom.dist-00702-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00728-fractional-support-controls"
+    },
+    {
+      "actual": "0x3ff0000000000000",
+      "args": [
+        "0x0000000000000000",
+        "0x4028800000000000",
+        "0x0000000000000000",
+        "0x402a000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fefffffffffffff",
+      "id": "fresh-hypgeom.dist-00729-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fb3b13b13b13b14",
+      "args": [
+        "0x40284ccccccccccc",
+        "0x4028800000000000",
+        "0x4029cccccccccccd",
+        "0x402a000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb3b13b13b13b15",
+      "id": "fresh-hypgeom.dist-00762-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fa0842108421084",
+      "args": [
+        "0x403e266666666666",
+        "0x403e400000000000",
+        "0x403ee66666666666",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa0842108421085",
+      "id": "fresh-hypgeom.dist-00858-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdef7bdef7bdef8",
+      "args": [
+        "0x402d800000000000",
+        "0x403e400000000000",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fdef7bdef7bdee8",
+      "id": "fresh-hypgeom.dist-00992-fractional-support-controls"
+    },
+    {
+      "actual": "0x3fdef7bdef7bdef8",
+      "args": [
+        "0x402d800000000000",
+        "0x403e400000000000",
+        "0x402f000000000000",
+        "0x403f000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fdef7bdef7bdee8",
+      "id": "fresh-hypgeom.dist-00993-fractional-support-controls"
+    }
+  ],
+  "rows": 1001
+}

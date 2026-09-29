@@ -1,0 +1,37 @@
+{
+  "function": "BINOM.INV",
+  "matches": 402,
+  "misses": [
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x3ff0000000000000",
+        "0x3fe0000000000000",
+        "0x3fe0000000000000"
+      ],
+      "expected": "0x3ff0000000000000",
+      "id": "binom.inv-domain-00131-unit-endpoints"
+    },
+    {
+      "actual": "0x0000000000000000",
+      "args": [
+        "0x4000000000000000",
+        "0x3fe0000000000000",
+        "0x3fd0000000000000"
+      ],
+      "expected": "0x3ff0000000000000",
+      "id": "binom.inv-domain-00211-unit-endpoints"
+    },
+    {
+      "actual": "0x4008000000000000",
+      "args": [
+        "0x401c000000000000",
+        "0x3fe0000000000000",
+        "0x3fe0000000000000"
+      ],
+      "expected": "0x4010000000000000",
+      "id": "binom.inv-domain-00293-unit-endpoints"
+    }
+  ],
+  "rows": 405
+}

@@ -1,0 +1,64 @@
+{
+  "function": "LN",
+  "witnesses": [
+    {
+      "id": "w111sinhem1-LN-00000",
+      "args": [
+        "0x3feffffffaa19c48"
+      ],
+      "expected_bits": "0xbe45798ee1cd2b29"
+    },
+    {
+      "id": "w111sinhem1-LN-00001",
+      "args": [
+        "0x3feffffffffffffe"
+      ],
+      "expected_bits": "0xbcb0000000000000"
+    },
+    {
+      "id": "w111sinhem1-LN-00002",
+      "args": [
+        "0x3fefffffffffffff"
+      ],
+      "expected_bits": "0xbca0000000000000"
+    },
+    {
+      "id": "w111sinhem1-LN-00003",
+      "args": [
+        "0x3ff0000000000001"
+      ],
+      "expected_bits": "0x3cafffffffffffff"
+    },
+    {
+      "id": "w111sinhem1-LN-00004",
+      "args": [
+        "0x3ff0000002af31dc"
+      ],
+      "expected_bits": "0x3e45798ede32d4d7"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T17:45:02.6531106Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

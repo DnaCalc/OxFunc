@@ -1,0 +1,47 @@
+{
+  "seed": 202609292633,
+  "batches": [
+    {
+      "function": "INT",
+      "rows": 24608,
+      "sha256": "4d8c851514e476dc140108c1ef91a47dab5d0737dfccfeeb3d7d5c1831df7d63",
+      "prior_inputs_excluded": 68585,
+      "path": "batch-int.json"
+    },
+    {
+      "function": "PERMUTATIONA",
+      "rows": 16017,
+      "sha256": "eaac8d51f379be667894e94cd81984e6d8352f19ca46036745396d4a53160cb7",
+      "prior_inputs_excluded": 0,
+      "path": "batch-permutationa.json"
+    },
+    {
+      "function": "TRUNC",
+      "rows": 6160,
+      "sha256": "ca0fc8e1c608aca847f5f96a7d6b35124e178c7f6d34fc3eaa1ab4015cbf62b8",
+      "prior_inputs_excluded": 0,
+      "path": "batch-trunc.json"
+    },
+    {
+      "function": "ROUNDDOWN",
+      "rows": 6160,
+      "sha256": "e1abfc1ae721ad57f484d9ce4a2665971720eda4f007f79a9593376179442b69",
+      "prior_inputs_excluded": 0,
+      "path": "batch-rounddown.json"
+    },
+    {
+      "function": "ROUND",
+      "rows": 6160,
+      "sha256": "288be19d6cfe38223d5848f8ee6fa8cce45e5b6a748429b030f3168af15204c5",
+      "prior_inputs_excluded": 0,
+      "path": "batch-round.json"
+    },
+    {
+      "function": "ROUNDUP",
+      "rows": 6160,
+      "sha256": "0004f69f1e63b7ac72af50272dcaf6612c83eef1bfb831971ed7e33fb38f1300",
+      "prior_inputs_excluded": 0,
+      "path": "batch-roundup.json"
+    }
+  ]
+}

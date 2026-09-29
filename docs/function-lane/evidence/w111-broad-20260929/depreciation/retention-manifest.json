@@ -1,0 +1,2996 @@
+[
+  {
+    "source": "smart-fuzzer/runs/w111-extended-numeric-20260929/answers/answers-db.json",
+    "source_sha256": "8b2226ef0866e052bb13571419ea4372b5603bca5e36d142904dc8e10a4e2be2",
+    "retained": "primary-db.json",
+    "retained_sha256": "baaae415862ed37ab3387b1d87ad13b83711005da2b3e29bfe2330a325d79d80"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/answers-db.json",
+    "source_sha256": "36a924439d750443159665e27e5e2e89cef6e048713d0db8fa05433b8122ade5",
+    "retained": "answers-db.json",
+    "retained_sha256": "8f72c8b624405d864d00db1aa62d4c84bb522642141ab9bcf0752aa4303ec2a7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-db-answers.json",
+    "source_sha256": "174867f10b0ef7c828dda23d2b15ec79be915f1d0eab46e12185c8e25a78df3d",
+    "retained": "heldout-db-answers.json",
+    "retained_sha256": "47dc42ecdc7f500ad88ca222dec41abf3485fc0fce17454ce86b0bb45b22a2b3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-db-answers.json",
+    "source_sha256": "9f82efe2500e2e4e5eb77d062180f0fb81511a6e0db871726d58b7bfcb00f7bd",
+    "retained": "refinement-db-answers.json",
+    "retained_sha256": "607828d9533d6d42489ac071a301331c7741b34c3f62c3f34cfc865ca7a8ae6e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-db-answers.json",
+    "source_sha256": "decd7f939717a4db882849bfa1e1f9d78851809ef5e7c49df5588cd052db9373",
+    "retained": "second-heldout-db-answers.json",
+    "retained_sha256": "4b656f9fe2fe0cc47eb79a27391e34882532ebdb1f4e03a5b7022e3ab3158f03"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-db-answers.json",
+    "source_sha256": "3d98b94f24f38a2db6841ded345d5d12feef81d41f838d74eddb6b22c57799e4",
+    "retained": "refinement2-db-answers.json",
+    "retained_sha256": "a039a1f0a893ddda7a0acad339f0fdfcba4ca7c4398dcdc4273deda7a7e1f7c8"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-db-answers.json",
+    "source_sha256": "6a97265a9bd9249c15923af0184a9962c219c36e11ade150877782e55ab365c0",
+    "retained": "refinement3-db-answers.json",
+    "retained_sha256": "05680078bb35fb35bed8a1e82e9c29c8eacc11aaaa52eeff192ace400112071a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-db-answers.json",
+    "source_sha256": "91a44e1c869ace63d28c5f5f67383bc1acb1816fad023bb2767d22cb1c7e8b97",
+    "retained": "refinement5-db-answers.json",
+    "retained_sha256": "531e960716b154ec9f53bee763255a716dc55a7040c9f15a22bf91ddc48bed72"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-db-answers.json",
+    "source_sha256": "17fc48bd1a12a6eff24edd9b98a0ed5104af50af14de3123c296599529626bd4",
+    "retained": "refinement6-db-answers.json",
+    "retained_sha256": "1fe9dd19b045f563eae18bc14ce0debe2a29cd402afc4abf07d3b3602bdd1c80"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement7-db-answers.json",
+    "source_sha256": "1e917b8ebae89d4f86fc760dd5a29aa2323852e3bb317664ccfd8f67b141803a",
+    "retained": "refinement7-db-answers.json",
+    "retained_sha256": "9fbcdea2002583edbe60d4dc14c0c447373f814d91b98f4c4682434665d78102"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement8-db-answers.json",
+    "source_sha256": "7d5760a4aadc0798315264a6fd254429918e0fded9baec64cdece1fe6f985da6",
+    "retained": "refinement8-db-answers.json",
+    "retained_sha256": "210b59451dc36a8f6c475189d0441bf05b7720db174502901103dd218d0997e2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement9-db-answers.json",
+    "source_sha256": "4a0801a73022612abe3158980a150a360e54a597c83aaf1171929a80ebfc5ffa",
+    "retained": "refinement9-db-answers.json",
+    "retained_sha256": "20e2a749b274e9950371cb40418d6ab7c84797ac21e01143385e76358cc77c40"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-db-answers.json",
+    "source_sha256": "a1bbca5f2f604e735fc4d0e2ac79231d5430c83198f3daf46fff49fe3aa72399",
+    "retained": "third-heldout-db-answers.json",
+    "retained_sha256": "269137c076a7eff56d28bb5c451a25ddfdc081b7cb0e05bf63b7097ce241d17e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-db-answers.json",
+    "source_sha256": "8112b6242d08e34cf001789674dc72db0b9fbaa8521a9c44ba42fa8ad3970ed9",
+    "retained": "fourth-heldout-db-answers.json",
+    "retained_sha256": "1aaf55b5a7a02a70efd31b1a9c6b7c69efa04021a45cd16e9d38e5347306b471"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-db-answers.json",
+    "source_sha256": "f71312c1b8e4beb237aed91eba1385966b8c3f959e3849c881ae27803cbba533",
+    "retained": "fifth-heldout-db-answers.json",
+    "retained_sha256": "db5a9c4b52ff615bc9521dd32d8b25f61dff6020fb0111a4e8b7c5decca22765"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-db-answers.json",
+    "source_sha256": "eace184d7d69415a488c1702fc214992c749335da81837eea4f856f44f354f37",
+    "retained": "sixth-heldout-db-answers.json",
+    "retained_sha256": "386c3671c4b7adc6c50ddb7f5d7aeff69735b0ca9c07ae412675ca7a64d22e1c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/seventh-heldout-db-answers.json",
+    "source_sha256": "4fdac60ddfa1fa8e85f123b9394bd5d956e9ef18e283bfa4b1b3a80c7e0a6e21",
+    "retained": "seventh-heldout-db-answers.json",
+    "retained_sha256": "79304feb599e0eeac86da25167cf9656e39611dbafb65ec24789affd387d5db3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/eighth-heldout-db-answers.json",
+    "source_sha256": "4629a933edf2ed8843b8f6ea8f0139a756b5a1282bdc1b01272e15b1368cc8bc",
+    "retained": "eighth-heldout-db-answers.json",
+    "retained_sha256": "791dd39dfd777d6ef4b16afb4c74f4b19e8eb6f22693aeff5fb8fbb213815f35"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-extended-numeric-20260929/answers/answers-ddb.json",
+    "source_sha256": "65af95515f851fe60c47ab0253dd2cb7805e062807054cf469368fd59ad88bd8",
+    "retained": "primary-ddb.json",
+    "retained_sha256": "0fdf71bd3bd1e98ee633b9890586aa7b3ae054e637eaf2b8da864dcd4e3c4a93"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/answers-ddb.json",
+    "source_sha256": "eea4077bf06a4c5814a3c52d1010e5f6c8f8eee9fcd1848c2918792d4dc2782f",
+    "retained": "answers-ddb.json",
+    "retained_sha256": "43989b81e8b5697cd80344607bcf93fa6346e98c702321689334b74bc394aa19"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-ddb-answers.json",
+    "source_sha256": "6cd7bca26308f62c1834554065ff7e851039d56b7f5c2de24224f00a1f3b2fcb",
+    "retained": "heldout-ddb-answers.json",
+    "retained_sha256": "4b8be79d7e5d8b8e73c01279660eb33f2ed294958d25ea627dad7c975a8329cb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-ddb-answers.json",
+    "source_sha256": "3fafe5c6b91f62152b4849582c3ae77b74006590ebbdcd928785367a73b405a2",
+    "retained": "refinement-ddb-answers.json",
+    "retained_sha256": "1918b2ce8378b3896ffce54cf585803073298eb28a8e2831e20adfd6a0896e34"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-ddb-answers.json",
+    "source_sha256": "13c68ea810ddccdd20b35523abced72780a6e1acf788555bf35c19773b1b89de",
+    "retained": "second-heldout-ddb-answers.json",
+    "retained_sha256": "ce50c49455fec19a08dd997819e1f025dc69e3920b7213601b5953bb2a5331c9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-ddb-answers.json",
+    "source_sha256": "c83b06ee86cfe187cec7bd056f114b33324524257441c55314c9f5bea4454435",
+    "retained": "refinement2-ddb-answers.json",
+    "retained_sha256": "3603bfb46a63b113aa1a691a82c2afd94e05550e055836ed9ccda23734d5dc70"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-ddb-answers.json",
+    "source_sha256": "7c1541ada028a9ef03c95a9b673e87e2d57d4317cce20a302f60429d745c4439",
+    "retained": "refinement3-ddb-answers.json",
+    "retained_sha256": "af434d454340992ebd2328acf38156376406d234242ba2dc5b723c6909cea477"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-ddb-answers.json",
+    "source_sha256": "56737bed2ec3fe7c75fca15815100f0975ad5dd5ee220284f15257d5386d5e5a",
+    "retained": "refinement4-ddb-answers.json",
+    "retained_sha256": "09147731c4f22ed67d3bf17a1b1140bcb838e478e1c964318f0854122e073db9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-ddb-answers.json",
+    "source_sha256": "1b33bdc11bb85cc948d4164a32d26d1ec5971af346d6a58d2d77c3df9a890c42",
+    "retained": "refinement5-ddb-answers.json",
+    "retained_sha256": "262365c6ce7a9a475a450c659573b55a55144b1876e3a398d3e7e9b77ae82903"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-ddb-answers.json",
+    "source_sha256": "293eb46208252e3b480485f3b0c2fb9f2ab4c5606a47f74d2ac6770f004068de",
+    "retained": "refinement6-ddb-answers.json",
+    "retained_sha256": "2cadb435e73fd821e9ecde496553a314774ced3b2e7d33040173025f901d347e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-ddb-answers.json",
+    "source_sha256": "962224e1f1c4a7cdbd064cedde92e2626b5b6b0e73effdd91e8938c310b36c53",
+    "retained": "third-heldout-ddb-answers.json",
+    "retained_sha256": "2b6a32d969e730ee13be9d5d62180be940c2096bcba9321c52e1d15d8edd4d2c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-ddb-answers.json",
+    "source_sha256": "5ff8afd4cef3307b1cbfbf394f74676ba2d1447029243a3b661b113280f8dff5",
+    "retained": "fourth-heldout-ddb-answers.json",
+    "retained_sha256": "25e66e9ea2f779a36e588f4f6f8f165ffda18d5b90702579a6d74728a3624ec6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-ddb-answers.json",
+    "source_sha256": "f1b0df708823a07163b329572cea5e146688ced603f88467a24817ecbec317a9",
+    "retained": "fifth-heldout-ddb-answers.json",
+    "retained_sha256": "682a64fdd1552bbf2bb1dba03c2075fc029fa1d45273e93bd63032f153930cb1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-ddb-answers.json",
+    "source_sha256": "37276e89ddfdaa8b12b2ebbf750f8bb0c590625a552001a960b4f99610932d91",
+    "retained": "sixth-heldout-ddb-answers.json",
+    "retained_sha256": "0a474ddd2c4fddb17bbfe7a2d7923f4a5281fd2c378f7b5f04fcc1e562d03375"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-extended-numeric-20260929/answers/answers-vdb.json",
+    "source_sha256": "8404b01b392847125840939362d7538b9358a440075f12ce04e74be50fba11c7",
+    "retained": "primary-vdb.json",
+    "retained_sha256": "340181c25a1369e2d7609bc21cf8cbd7f1dd943c33a0315cd18ba0a1e7351da3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/answers-vdb.json",
+    "source_sha256": "9949d5e1c79e8a8bb49399ff83d6285ab072654cd964466be937ec74ff76e70d",
+    "retained": "answers-vdb.json",
+    "retained_sha256": "1720d21e87ef37f00732231c239c79b88c24ad4073a15c07df18832a08c97587"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-vdb-answers.json",
+    "source_sha256": "1d3e74dad67cd92a3febd543ea2e814f4a165e752e9e1f5face88ad66ca98fb4",
+    "retained": "refinement-vdb-answers.json",
+    "retained_sha256": "8b6ae1afffec5b14e66a6466fa3228ed50ff4ae70fe500cb74c1fdf05eef5dfa"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-ddb-v1.json",
+    "source_sha256": "032c756a6d8145fd5ba472497b36365056d6060ac74653548458150fb6628b16",
+    "retained": "freeze-db-ddb-v1.json",
+    "retained_sha256": "0c6d7cf8cde7f21c9129c62427a904d5c3f1006efeeffa0f4ebfdd08f85823bf"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-ddb-v2.json",
+    "source_sha256": "beced04bb34d207f0b0dcd6f1fe28bce1b4430559899e358162e9342fc554217",
+    "retained": "freeze-db-ddb-v2.json",
+    "retained_sha256": "bb6b37c5a119c6cb57ef912ea29d25a40dbfbf25f430f89020c93e6db7e01496"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-ddb-v3.json",
+    "source_sha256": "ee64bdade9cb4076ba2544be73e3177ca89db18b9ddc5c0ce543e0cd5009e66e",
+    "retained": "freeze-db-ddb-v3.json",
+    "retained_sha256": "ddc56d931a57d3b633e33fbf9a0a93138b12d52f97303da7696ea68f9d5433b1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v7-discovery-judgement.json",
+    "source_sha256": "4176c4dc1ef8a86c63847043e71bda0a847893fb7388f18df967efefce92a7d6",
+    "retained": "db-v7-discovery-judgement.json",
+    "retained_sha256": "1d5eeaf437b45b89b60623fe4b239be92e86af57f04538a7c2930ee81adc162a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v7-full-refined-judgement.json",
+    "source_sha256": "ac4734ecbabeb51c51b5862ebc0da494f60be7382714e0e97e6bd55f889f2348",
+    "retained": "db-v7-full-refined-judgement.json",
+    "retained_sha256": "eb5070c7b3633f134edb4a9e20d551fd7e77b814145a160c4074e5836a062c85"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-large-exponent-judgement.json",
+    "source_sha256": "3c86571ee9948c38e1a1b9ddf84d937f0bb550b39f2618e371f5272a8d9c7eb9",
+    "retained": "db-large-exponent-judgement.json",
+    "retained_sha256": "3ea4d1eef77e28c41f5fef6fe4c35e1ae0be68f5b52d1e00287c68b9b9d53e62"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-large-exponent-refined-judgement.json",
+    "source_sha256": "4c7174d9b850370d29a507cd2d80e2f1ff82f4c078a2390b656eb85693f3a9dd",
+    "retained": "db-large-exponent-refined-judgement.json",
+    "retained_sha256": "9c90777b6472dcf6a0149b5e414c200f014caa767c37b7816e2e9ce28ded9d91"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/ddb-large-exponent-judgement.json",
+    "source_sha256": "c5ee8e2cd0310f80544c244145735a71bff2610f4636e66048f76b1bf78b8bda",
+    "retained": "ddb-large-exponent-judgement.json",
+    "retained_sha256": "1c32a04c2553ceb300c2f0e84b6e9590ffefe725c2df4289281651890e0fde25"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/ddb-large-exponent-refined-judgement.json",
+    "source_sha256": "b12e9621d05927a6f0cd9c9ba1599966a7faf90046ed7aea59bdb45b3f639e30",
+    "retained": "ddb-large-exponent-refined-judgement.json",
+    "retained_sha256": "43a12ff9ad7be47bf6b0b0840216a7095958381d035990aff8a5cd91035c587b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/depreciation-bounded-power-refined-judgement.json",
+    "source_sha256": "fe10f8f247cc9a523df153f098e1507912bf40797a1891b6b90d25933daede81",
+    "retained": "depreciation-bounded-power-refined-judgement.json",
+    "retained_sha256": "832719e6f1528176319e2e88c755356c0065346f2990e77ce9209ef194ff0a4e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-v7.json",
+    "source_sha256": "0bd12dc39779563e00c5cfcc52ecdea791d899127cc29f380b009a2de3c9231f",
+    "retained": "freeze-db-v7.json",
+    "retained_sha256": "c27fe2ac48439059566050903fb42158a6a41db141e6d80b8e8c9b32386daaca"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-ddb-v5.json",
+    "source_sha256": "55c44905d3f47ba95c3f7c9077d68e88a8434092a6fa614a1d9ffdf7dbe95694",
+    "retained": "freeze-ddb-v5.json",
+    "retained_sha256": "9dbf1c03e8ed76306967f203b7500ee275284df5daeaeeb19de4db81f93d5b27"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/oracle-only-vdb-large-index.json",
+    "source_sha256": "c534cbeed1089153a927fa069da363f7c4a26428c4f32fd61b5c9dfaeeb66ad7",
+    "retained": "oracle-only-vdb-large-index.json",
+    "retained_sha256": "b3d315f1e1195d3e89eba98b385fd63c0ac4fcca1f6de9209f9a1284693e1089"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/oracle-only-vdb-large-index-answers.json",
+    "source_sha256": "0cb87b7e1331352d1ed5216e0cac682e0fd9f840be452c4b1ad4819e62c8fc45",
+    "retained": "oracle-only-vdb-large-index-answers.json",
+    "retained_sha256": "b1e21fc0917ae6fc8d3bca8b59706b1df5f5d3a59711cbff1d0b3089c7bf38ae"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/latest-independent-power-judgement.json",
+    "source_sha256": "b15a9e6ffdd3a1c143d2c8dc83759e85a66c1bba44416ad3ea029c654ea50b01",
+    "retained": "latest-independent-power-judgement.json",
+    "retained_sha256": "4165be84525715fb3efa9d2326f4958969a13f838d089e3b2547c461267b30e9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/observed-vdb-large-index-safe-prefix.json",
+    "source_sha256": "5fce1e6fbc4a02a34f60e42c64f4b2435415d03464d309a9728f1c148345e0aa",
+    "retained": "observed-vdb-large-index-safe-prefix.json",
+    "retained_sha256": "355e79f849f9f99f216f5f5fa3aae33d51a12b0da05b7da44a37c809911fb1c2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/observed-vdb-large-index-safe-prefix-judgement.json",
+    "source_sha256": "5486ba865773f45d3af46703e685ae57122c91fb1bbbe7f91308982de877b633",
+    "retained": "observed-vdb-large-index-safe-prefix-judgement.json",
+    "retained_sha256": "d091d4a76ad7accf73cf489e51000939cf5738600897befeffd45523fc839860"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/oracle-only-vdb-owned-process-stop.json",
+    "source_sha256": "39f03e82bcb49dc9a72065797c328c9a6a586b3450675fe6b438419e31f122ce",
+    "retained": "oracle-only-vdb-owned-process-stop.json",
+    "retained_sha256": "ea702ed2f37408abdc7ee4ddc2dba3cf624eec863b7759c8bf1af0b59bdee12a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-v8.json",
+    "source_sha256": "da4403b7ef31b4e371fb854cbc908d26aaa6063542a7752b33b6d860e6b7248b",
+    "retained": "freeze-db-v8.json",
+    "retained_sha256": "00627c53ad0267bcedc865e609fce31e174b6ddf98cfbb3aa7b5c73c7f820e3f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-ddb-v6.json",
+    "source_sha256": "add28474a94ce46eaf52aeae3a918d6111cc2ac5011eb1c795485054797481f4",
+    "retained": "freeze-ddb-v6.json",
+    "retained_sha256": "671db1b81eaa4c9050487b319322416b1212d42be1d05b7facb253e3fbb73f7c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/final-stage-discriminators-before.json",
+    "source_sha256": "51e396d86ecd6158e8239a0f0b41edf91037c6939fa89fda74e194c9b7e484ab",
+    "retained": "final-stage-discriminators-before.json",
+    "retained_sha256": "17fff1e650b8c46baf6f8006c15b1013ecf1d2cc31a4f8292607fae87ada9599"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/final-stage-refined-all-judgement.json",
+    "source_sha256": "45c84e6b3613c236bde78d29e47636fc1f92c4d1e7f7e29c8f0a4f20ba75cd4a",
+    "retained": "final-stage-refined-all-judgement.json",
+    "retained_sha256": "09aab3d2795377d8c9bdb88c7645de6c8ebb1aa17934d1202157149ef113dd21"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-independent.json",
+    "source_sha256": "e2144ded960c30f9c97cd2facd5a9ff2102f214be08bda428fcd1b2d8b3f7f58",
+    "retained": "typed-independent.json",
+    "retained_sha256": "087275de1f97982a9e411e50da840301ea08c2e5db98486cdd438b26440ac715"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-independent-judgement.json",
+    "source_sha256": "752c7685049ec8f76f4ae6e0c9c631e1b63fc8acf150a159420f1eaf1f1c816f",
+    "retained": "typed-independent-judgement.json",
+    "retained_sha256": "ddb9971d80d49b7ba2b06b6a72f209a99e1cb5ef61feb8b4139b112dc4471970"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/dbv8-ddbv6-independent-judgement.json",
+    "source_sha256": "dfa6f6b009d4931830be506e2fb1cc6f55d386a7811bc801e35b876d670c72a5",
+    "retained": "dbv8-ddbv6-independent-judgement.json",
+    "retained_sha256": "378488569537cead91d5f6032059855dc668608db9b5b9ec059b1e7c16d8a894"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-candidate.json",
+    "source_sha256": "08294a949a32a1f55dd0eb776574662b02a86a80d61d078c990e9c9fbf478ae9",
+    "retained": "switched-research-candidate.json",
+    "retained_sha256": "006f41d28027583cbf800f243edcdd61c7101a5ab298897b52628109975a4a9b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-shift-negative-residual.json",
+    "source_sha256": "19d236c9f1ba3eb0bba97948ac99902a0a48911c3fa2b4825377ca9dac133802",
+    "retained": "vdb-shift-negative-residual.json",
+    "retained_sha256": "8e6d9f490d2058d1915279a3f7eec6c8bb97ea3a2b9a434a5d953938f7d09be5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-switched-bounded-discovery.json",
+    "source_sha256": "54512d347dab227d2e67014d880a7f70e2d92cb17ae0175e4f943175cbb31608",
+    "retained": "vdb-switched-bounded-discovery.json",
+    "retained_sha256": "17fcb604b9c1551ee5957f5fa84ecc6252b33e2405bc2763ac6e1de5f2bdfd6e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-vdb-switched.json",
+    "source_sha256": "9d85f69c08c18fcfb339b3859a5e54a689f94d5ca180d2082a0d3b24195c8085",
+    "retained": "refinement3-vdb-switched.json",
+    "retained_sha256": "625e4e81ddaa9af1b6e8a074cbf19ae33ee31cfae9cee3bbc0ff3f743ecbdeaa"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-vdb-switched-answers.json",
+    "source_sha256": "757bc67aeb8b03172830f6a8f3a3934f0edb7ae2ef9e8c1d40c80f3c8fa881d8",
+    "retained": "refinement3-vdb-switched-answers.json",
+    "retained_sha256": "8fc1b2de0a742448c42e433bd5baeb277f86c43fdcd097c9b8154f0228e29f1b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/candidate-v1-judgement.json",
+    "source_sha256": "f3a82ad1260e9a27efa6c1eb085361509a4853d763bba868f2c2d5ac58c992da",
+    "retained": "candidate-v1-judgement.json",
+    "retained_sha256": "b6dbbbcc694fa56dd57ed9b92ab051398a6e8e99d1ded7e63c3c30724601d5b7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-v1-full-judgement.json",
+    "source_sha256": "a7e3aa0d53976a2051423de619c5d48452f52b3f7112b15b5dac0724250c01e4",
+    "retained": "heldout-v1-full-judgement.json",
+    "retained_sha256": "8f3a22942ccadf8f03e8af5f24f5f914ad5744ed54c58d2186d370f3e5ecae49"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refined-db-judgement.json",
+    "source_sha256": "8fd4d3227714e4781ee5fb2428cbb40fef165b25055d871ff37e3be1e81df0f1",
+    "retained": "refined-db-judgement.json",
+    "retained_sha256": "ce26b09fc79cd9f1beb6e62ac80a47076348579da19b79f1ae34626234ad9265"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refined-ddb-judgement.json",
+    "source_sha256": "566b7a0082e71c80087f180048988f9f92abc0d415d9dc6b2cd91316a05a924c",
+    "retained": "refined-ddb-judgement.json",
+    "retained_sha256": "63a42dd0085a837e23892a7179303068f610437dbc4990d147498600461b581d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-v2-judgement.json",
+    "source_sha256": "7f8178a535d9fb3a6c6ffbd93cba679fa2a661cdad6e65f66b57593b5b0ad962",
+    "retained": "second-heldout-v2-judgement.json",
+    "retained_sha256": "d653b21aa6570dcd11e8fd897dc87af42a94bac7f2e4240c7af85dbaf4e272be"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/final-numeric-judgement.json",
+    "source_sha256": "6d7280ac10dc4a8c8f91e6c47b8a35596d754845035cb1a61bd5465a83e34895",
+    "retained": "final-numeric-judgement.json",
+    "retained_sha256": "43adfb91427674e0fca4d3e68f2cb168afe1d7a04d43ce3f791a0a8a8b4c6bda"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-judgement.json",
+    "source_sha256": "fa5362cd87f0a1cd28ba9c98e5f45fa14de46ab8729a7f166b3e9f6408933641",
+    "retained": "third-heldout-judgement.json",
+    "retained_sha256": "1d632b59cf39604724811f99da1b9b61649b15199d8ce9df377c07ac6d741602"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v3-judgement.json",
+    "source_sha256": "c8f2435475e3e168c8732a919bd4a3bdd6cfa96fa78527165ed94cb8242bb240",
+    "retained": "db-v3-judgement.json",
+    "retained_sha256": "18da6e8c7ff0119708f0c7b534882cc2baaacdd3a8ccd86ada2685430aec99ba"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v4-judgement.json",
+    "source_sha256": "176edee488c6cc03f96548a12f935a4445adb1a0910d7ea695a3e3f92cbfeeff",
+    "retained": "db-v4-judgement.json",
+    "retained_sha256": "8dd2795ae1290031103ecf0d4e8ff6c38991d02bbdd51c0c4c59bd96c6b6a777"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v5-judgement.json",
+    "source_sha256": "55e9f102cba694725f0158b67e2d5f7f48f4670cf26043bfd82fd0b1f4d8e3b0",
+    "retained": "db-v5-judgement.json",
+    "retained_sha256": "1205de91f40b5dc16534077de4432c4e4a8ca20bcd33014937cd3e5ab0a0c837"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/ddb-v4-judgement.json",
+    "source_sha256": "50aecc9f88250471cd8352128e7dfa342e6a8e27eb8a786c40470b603db91378",
+    "retained": "ddb-v4-judgement.json",
+    "retained_sha256": "a9f39f7c9a1e3615ed120a3ee35a2ca82a312619ed26e2287595c306e50b23ff"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-v2-judgement.json",
+    "source_sha256": "16ac5a27b7c64753f3f5834e12c2c5a81c4c03a99a9a750c09fb1308e648d330",
+    "retained": "vdb-noswitch-v2-judgement.json",
+    "retained_sha256": "5ba11a596bd79ab75254f7a176437e393b9aff0c5e5a23e2420b98d22bddbbe6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/latest-heldout-judgement.json",
+    "source_sha256": "1493aa3680f474fec5135e05883b89d03bba5cc6c2cf90cf2659d335661775b5",
+    "retained": "latest-heldout-judgement.json",
+    "retained_sha256": "0265aa85f927028de48bc8313e310897ac9c228fd20cd1409ea12260eda735f6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-v4.json",
+    "source_sha256": "08234ec9dba584d276b2843fced9f8e190707452f2ac5bb2f0493eeb8b45ba57",
+    "retained": "freeze-db-v4.json",
+    "retained_sha256": "d1d5d4d8533bc14611c25f211c9ede6f79bae62f2a94a7598c03932f6ac4f960"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-ddb-v4.json",
+    "source_sha256": "e29277c36d9a7b915177d17e5781cc3ccfd07f62931bc88c01c4afd38c1d0178",
+    "retained": "freeze-ddb-v4.json",
+    "retained_sha256": "81105d56e6ab5dddc0468dfc14d1827e830f612b40a7e6cf4acc032ea03c35e2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-v5.json",
+    "source_sha256": "cb745c4c817de3eab045681cd9274543eb1c0885ce3d11e487e4fb7d41668a09",
+    "retained": "freeze-db-v5.json",
+    "retained_sha256": "aa5b47893176391a6162abdacc26c4c14d690b7dbf69fde3807f15c019d42459"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-db-v6.json",
+    "source_sha256": "7006f10f9b3a42c6654b9eab1d512dc532e489112389edc4bb111520d08a83a3",
+    "retained": "freeze-db-v6.json",
+    "retained_sha256": "ab943fc6ba0e914f87ad3a47a5283745015750206cb23a1d6085606f738f8aba"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-vdb-noswitch-v2.json",
+    "source_sha256": "41a04be6a5ddf17154b60113f8e79dbcbf01f94b1642381bcc38b8b3b8e6aa18",
+    "retained": "freeze-vdb-noswitch-v2.json",
+    "retained_sha256": "109cb535c184632be113fc4078814448a4709072c362489733dfa40ac71e9ac3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-db-judgement.json",
+    "source_sha256": "e1145ec767370eca4ae116ec4411ca0231d8249cac13a67e209c71516f9e0f4c",
+    "retained": "fifth-heldout-db-judgement.json",
+    "retained_sha256": "8fa6b6cd2b50f59ac35b5001bc0c8509345993f89f51c71ceee808d5209ef0dd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-db-judgement.json",
+    "source_sha256": "0ba3d54967a5f2510ba4900f17725936559b6305fd3830d33f52b2ec57b9b5a5",
+    "retained": "sixth-heldout-db-judgement.json",
+    "retained_sha256": "6945e84dd2064569f0525e46c6b90e2c7ffe6a6580e6a4c8bc01a74618033702"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v6-discovery-judgement.json",
+    "source_sha256": "72b3ec7f35777b3b8748d204d9d6eeae314bd31374a7bd36e74f71512996a905",
+    "retained": "db-v6-discovery-judgement.json",
+    "retained_sha256": "9b06deca7fb4730f68422bc7fed2979b518876555c6663224afc4618ec8f4c4f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-store-discriminator-judgement.json",
+    "source_sha256": "c0a5c2007c1de7ff6f92edd6a3ddcf30762df09017728f5a9b104fc19fbcec50",
+    "retained": "db-store-discriminator-judgement.json",
+    "retained_sha256": "2c5cfc0d406dc3908385d8eef88f30834d9d3ce2965e5b21a8b3aefffc4f71e3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v7-initial-judgement.json",
+    "source_sha256": "a4e5bc06b6f583e1e9ae9b081d316f89261fd0f7f83a2f713966541ee52d5b37",
+    "retained": "db-v7-initial-judgement.json",
+    "retained_sha256": "860ce25ed5e5884dd4a1e3809e2aec9425f8f311bf949ff4ade8a3ab64a218ed"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/db-v7-discriminator-judgement.json",
+    "source_sha256": "f699b2a6748cd0f1920b0ece0236ed386e8c73a3e0006609be257fb8ca54095a",
+    "retained": "db-v7-discriminator-judgement.json",
+    "retained_sha256": "6d74b7780daf057fc5fb1bf2714ec1a3d6cfc6bcda02fdd802ad0f0dfc4c538c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-vdb-switched-answers.json",
+    "source_sha256": "7a30c7d2cb43c6e03280c0d8dc53704adb59e106d631408fa17f1495ff9a6d70",
+    "retained": "refinement2-vdb-switched-answers.json",
+    "retained_sha256": "457c94573e4fd48361b1ec23832ddef6316cad8734d6aa811fe250c18231008d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-vdb-counterexamples.json",
+    "source_sha256": "170f8037753789eda11896affaabb991be1e4e5f4f6f5d5824832cf2275bb39a",
+    "retained": "switched-vdb-counterexamples.json",
+    "retained_sha256": "01bf13f53743d6a53c951389589da7009c707551b8e5d736040d11e781e9bfce"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-db-judgement.json",
+    "source_sha256": "f63586f994b63e606ee7f060ffe393b2110a505ee5a7b3cbee6f95e6b65b2620",
+    "retained": "fourth-heldout-db-judgement.json",
+    "retained_sha256": "3fad2ecf99f79fb54145ffccc0af01493c6ff5cda3cffd9f74179999791147df"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-ddb-before.json",
+    "source_sha256": "868d185526d59427b3b6a4c61770f53f6cbc1cd58b1590a690a41546e1d06e00",
+    "retained": "refinement3-ddb-before.json",
+    "retained_sha256": "9e64ef51992f84dbf90cf9cf81fe3bb433135c0013053d6b61e377723ff66064"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-vdb-noswitch-v1.json",
+    "source_sha256": "12736f82934659b8d29315c4edd6f7359fc3db3ec30c746e1a82c68ec557ac73",
+    "retained": "freeze-vdb-noswitch-v1.json",
+    "retained_sha256": "f938fb5a90f809547de82ff7cc75304b165e46b61c14a77317de04975db28644"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-production-v1.json",
+    "source_sha256": "684dffd143b3e6a75814cff85bd177249058bf07571e35a7a675680ff09472fa",
+    "retained": "vdb-noswitch-production-v1.json",
+    "retained_sha256": "2dcc9c074f1d562d7bdc516c4be9ae93d14713190e851b2101aa578e1a027ecf"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-noswitch-answers.json",
+    "source_sha256": "b2c027383ec375565c5c517cbe243e5a8a4650b27650bd9dc3a81b69bf7a03ac",
+    "retained": "heldout-vdb-noswitch-answers.json",
+    "retained_sha256": "8df5e407a0e07f69a5ea639c01b4ca75c93ddf8dbc65dace8748e441def9a56c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-noswitch-judgement.json",
+    "source_sha256": "2498bac9d17ffe955abfd9322001b6d6058b698a018c4c6542406d4eade9842d",
+    "retained": "heldout-vdb-noswitch-judgement.json",
+    "retained_sha256": "0f2303899c88f1a1558b1ceb9dc119952ba2b3bf7da9fe9c4a7983978a1a9336"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-vdb-noswitch-answers.json",
+    "source_sha256": "87680dba47cf54a1638df5dfdb6426a136d1e7294db46c39ec9e007664f4b394",
+    "retained": "refinement2-vdb-noswitch-answers.json",
+    "retained_sha256": "5dcfd1457a64267845ddd6e6fc1b41c64c28b2d9e1836643de8fcbc1780b2296"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-refined-production.json",
+    "source_sha256": "aba5cb7b576db9ae33a445a9a26c52b44158ad9532f25c37f5cf992bd132c4d2",
+    "retained": "vdb-noswitch-refined-production.json",
+    "retained_sha256": "7e188e82ab8d6c350a3b75cd7c8def720095306e991ecc068ab27480b81c5f82"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-noswitch-answers.json",
+    "source_sha256": "9dce19046b9b60a39cf26b3b7d9031ac318204b7b3fbf84accbbc2ed21b5e2c3",
+    "retained": "second-heldout-vdb-noswitch-answers.json",
+    "retained_sha256": "eded544d85c8140f42fd94060aa7f8878ec6d282bb76ea898a8fea250ce97b59"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-discovery.json",
+    "source_sha256": "26d647e25c78142043c5e29f61efb97c25cc9c4bba90c356284436106a144891",
+    "retained": "vdb-noswitch-discovery.json",
+    "retained_sha256": "240e2ba103094f51178ed15cee44261aeb006232b5fbf200a4df3ecf71073355"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-latest-judgement.json",
+    "source_sha256": "69bd49c27ec89486074f763d5bc7f5910301094b520405202c917d39b72d23fc",
+    "retained": "refinement-latest-judgement.json",
+    "retained_sha256": "e1d1aa8ccac00e888f362967993d1ccf5aca6f244e8e175a071a5ca9791c5836"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discriminator-db.json",
+    "source_sha256": "d2f1bb65d0828eebe2c2d34b4cbc88583cf79458bfc797e516a5dd5fd4c1d8f2",
+    "retained": "inputs-discriminator-db.json",
+    "retained_sha256": "223327b1ecc5dfc7c8150ff3836b16d1b57b8a50926814d1088775b8a800f77c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-db.json",
+    "source_sha256": "dc8bda8436580bb697a4e22f846a0d6c11c62783e8809cf7cd00b3592e6893d3",
+    "retained": "inputs-heldout-db.json",
+    "retained_sha256": "723fa98a4380ba78e2a34b94ecc25cffe3599cb82a6490eac597abc83263b39d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-db.json",
+    "source_sha256": "7364b7560acf2f2746b219ff6c82cec84c44d83459cc4713929ceebb80c8bfc0",
+    "retained": "inputs-refinement-db.json",
+    "retained_sha256": "f11ce497a620ad5bf53d7030e73e470b6ea06cb4837147cfbfdf508b5eca5f7e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-db.json",
+    "source_sha256": "5fc2d63699bb84042034742661f4da4b71e34474a6a2479cdb20a6d6dab34640",
+    "retained": "inputs-second-heldout-db.json",
+    "retained_sha256": "2182962db90af33bc1ed4ba2f35a0a87fe52500f5780b18b6295e590188ebe17"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-db.json",
+    "source_sha256": "e1edf616048badae6b3b50386c01f56610060892b8ed0ec42dd03c69201ff4d9",
+    "retained": "inputs-refinement2-db.json",
+    "retained_sha256": "91cc98bffa96690c3c59f09fd534438cb24b87ea26f53a2534aa602ebe861e09"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-db.json",
+    "source_sha256": "58fededbe16f26941640de8caa356826768e3a6b6434f242450494a98a3f7151",
+    "retained": "inputs-refinement3-db.json",
+    "retained_sha256": "3f2d1e342f618af10e24cc63e2d68d59c82f1b39c5cb38facfa27c6f8b818b44"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-db.json",
+    "source_sha256": "e4dfa631129df46c69541c596ebb457b3bb62d9cb89a7635332e924d05619aeb",
+    "retained": "inputs-refinement5-db.json",
+    "retained_sha256": "6b8198cd07317ce43a835d0da64cb027ef227d9f552661ecbbbefbde1571bd9f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-db.json",
+    "source_sha256": "dca5913a488a3af260e4ad2f6c4655b8d01f652726c4cfee2960ed896775e01f",
+    "retained": "inputs-refinement6-db.json",
+    "retained_sha256": "dc62c77df5c8d1d52dc2bd9d5fb034eecf14cfa41fc8b4c40d0e498493e5db05"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement7-db.json",
+    "source_sha256": "338506a589c142fb773483ef020f3ddc990127be3fb1224d88a9d51c97bc6d80",
+    "retained": "inputs-refinement7-db.json",
+    "retained_sha256": "3020d978aa5d52c620d11cfe4f4e0c1a3d4e35d69231d5a115006af8e9bff1e9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement8-db.json",
+    "source_sha256": "5b7242089b5041e422b2ad5e6735d06067b414d2fa572885d627071d754a3299",
+    "retained": "inputs-refinement8-db.json",
+    "retained_sha256": "b6dc4915f92419d4fc4a3be4ab3fee75bfcfd07967f5f0b2822b01013db1b773"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement9-db.json",
+    "source_sha256": "3c988265bc42f800837dae9fddbb10a5bd15769838b7e949e513550b2b7ea82e",
+    "retained": "inputs-refinement9-db.json",
+    "retained_sha256": "ac6b2b00ebc450a7c9f3dd32d882199217637f1a36346581746f47f77d53b9ee"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-db.json",
+    "source_sha256": "cd60799b5b2027148612805233e2f76efe378658faa9bf580383df061043a565",
+    "retained": "inputs-third-heldout-db.json",
+    "retained_sha256": "20cc899d7b46fc2f9b138770faabfda2dc595c7aff53082bb0361e3a7c7b1fae"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-db.json",
+    "source_sha256": "643dde732950983c4e6d7d510d3e38d76865daa865a20154c2cf944dcc9bc495",
+    "retained": "inputs-fourth-heldout-db.json",
+    "retained_sha256": "d708465973ff0e39e3cd4770a60a4a6d8249001cfc24639e41f3d928bc6b3316"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-db.json",
+    "source_sha256": "2bf2450d8a1156106c0770318fb1800369acc77373313bbbc1907a8a4e4cfad4",
+    "retained": "inputs-fifth-heldout-db.json",
+    "retained_sha256": "f69fae81d71d4715042b77dda18d85da5f7754c1c01702d84be7d3d8e3d07d15"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-db.json",
+    "source_sha256": "b03160ecc914bf44f1ae03da8a4a472789b7ceb7ea51f3939bd2b9ae4c7dc5da",
+    "retained": "inputs-sixth-heldout-db.json",
+    "retained_sha256": "387faf5b9fcb3d5d05ff39b330fa0a78a5cfec3bd3eb37490d3b987922d91387"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/seventh-heldout-db.json",
+    "source_sha256": "759d3b6085f0f1d9ff73fd547d47951913548ccc53603c8196e60332e92a721a",
+    "retained": "inputs-seventh-heldout-db.json",
+    "retained_sha256": "e5b48c5260171b10e69983088baa6e23e0d5a184cf841404815e18da15081268"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/eighth-heldout-db.json",
+    "source_sha256": "bb101ca5a452cea787f2b2e5e7e72c19802067621c00cf62fe2d3a68c8aeb1e5",
+    "retained": "inputs-eighth-heldout-db.json",
+    "retained_sha256": "271974f5e8e8faeac25459da237b0dd350751f02a4833436995b2692774a5865"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discriminator-ddb.json",
+    "source_sha256": "64e590b8917160934f0ea32ee0580b87a43d42e83be62792ab356e6b7e905625",
+    "retained": "inputs-discriminator-ddb.json",
+    "retained_sha256": "bfe7da024c090ec71def0d4c85671e4545966a92fbf4c3bf22b6c0e69d5d6ada"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-ddb.json",
+    "source_sha256": "ac83cb0f43ae13b5b7f686cc379ce4c2481fd5f01b86518f512895559b9c990e",
+    "retained": "inputs-heldout-ddb.json",
+    "retained_sha256": "06eab2d148a5d331ca8474d4f9959043906ca062f0b38dcb7706827a4cd2f8e7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-ddb.json",
+    "source_sha256": "5ab91cbefcbfce00c7a1fa55ceb9710fa7989cb698101a5f52cf44657f94da5e",
+    "retained": "inputs-refinement-ddb.json",
+    "retained_sha256": "973266b90c07cb5eb5f45980f25018d970cf14efdf2da407b8aa728a12d7a73c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-ddb.json",
+    "source_sha256": "63429f452e937e2f9e9680c389ee0793756253488ac5d0f64fae4f4136680a99",
+    "retained": "inputs-second-heldout-ddb.json",
+    "retained_sha256": "692564685c3dedfefb04aa1d5e8d2451feb860ae819c077853563e5650966327"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-ddb.json",
+    "source_sha256": "254548e523285462ae30001bff88c3fe30c48cb5e52359e8e0228614ecf42f5b",
+    "retained": "inputs-refinement2-ddb.json",
+    "retained_sha256": "c8e51e9bd134cfd5d990987469ee5295701e32a6e9b7a43ca705e9c532525663"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-ddb.json",
+    "source_sha256": "083071e09a1790e708733f7264ab4c277167013fd187b6e339bb63b70998a9a2",
+    "retained": "inputs-refinement3-ddb.json",
+    "retained_sha256": "e25d52241a7108b0672b03b43ccd45a41b3656977442256e62d8a3e2a9486cf6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-ddb.json",
+    "source_sha256": "cfce899e00bcba90a307624bbd10d5a9864a49b4a236b7545243adc0f6b2143a",
+    "retained": "inputs-refinement4-ddb.json",
+    "retained_sha256": "eca3aa05cf29c74501f25da54d34af0f4199664ce16cf65143a8635a057cc855"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-ddb.json",
+    "source_sha256": "aff23624f69fde2b58c5239efc14d82b36136fe853e538e459fcee56d4300aba",
+    "retained": "inputs-refinement5-ddb.json",
+    "retained_sha256": "9304a811ea5e33cf25145acf2e909ac2b3dc300e5b2a5d9f15ce008da7ff240d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-ddb.json",
+    "source_sha256": "c8af95a17d4b9568b046c818ee8b7fcc4361dd76e9941556d3751ca75db0e468",
+    "retained": "inputs-refinement6-ddb.json",
+    "retained_sha256": "dca955be208c141ed230d6b536c8ce3998ddcdb89692a7bf3e43e6199a02a077"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-ddb.json",
+    "source_sha256": "9065c0c7df20826ae11f15cbf28c4879148dbb394279fc98d051793e5fff677e",
+    "retained": "inputs-third-heldout-ddb.json",
+    "retained_sha256": "b3f7fc6afebc9d32a99999d76642da6289aa489eb7ed79a0f848d20022ef14d6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-ddb.json",
+    "source_sha256": "f718f21120d78ff6a65b4af7ded1414aab84491098f99a5fe540dcb2509890c2",
+    "retained": "inputs-fourth-heldout-ddb.json",
+    "retained_sha256": "a1f5a26f7283418e376ccd166fc5b8c8a224e8bc4c9db554aea8ccbfd2fdb4a8"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-ddb.json",
+    "source_sha256": "3a46ce59db09a04c59a34d0808b440def5f27f785133b12330b03f799ca0dfb5",
+    "retained": "inputs-fifth-heldout-ddb.json",
+    "retained_sha256": "ff14a051be04ddc652f11b1b03c455578fda6192393ce4c826d6d1c0853d6123"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-ddb.json",
+    "source_sha256": "239aab7bbf2a9a11905c68db74324eddf4a9d72b8c501031111c67649048507e",
+    "retained": "inputs-sixth-heldout-ddb.json",
+    "retained_sha256": "78eede091ce45ef7cda3a25be43a18a40d18e9454769fae02de253a8e039ecc2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discriminator-vdb.json",
+    "source_sha256": "0bb0479c57a423dbdc60347c4ed5ab572b740c8b0df2465aeff4d3476727cf0c",
+    "retained": "inputs-discriminator-vdb.json",
+    "retained_sha256": "171dbd27e23b53682be4a0b4b431532d9c5b5aea20514fcd1ba24dae45fafc78"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-vdb.json",
+    "source_sha256": "079a1ebe952a58ddf2ec741c6f0afa0678844a1029960b6724e8e55315e04ce5",
+    "retained": "inputs-refinement-vdb.json",
+    "retained_sha256": "cbfd03256032148aac33f722914788a2ded7a8902f11828db45382cb9e70d372"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-noswitch.json",
+    "source_sha256": "fabc24cf501266ac7ef22183717c237e70f981300506b7b14f5df938bd62d577",
+    "retained": "inputs-heldout-vdb-noswitch.json",
+    "retained_sha256": "281cfa6d58230f1f83993b9ab4949cd2b47f6eafafbb1fac828f3ed8b0a92e49"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-vdb-noswitch.json",
+    "source_sha256": "4e5b4eba1b4686686386d85f2a3d359f95e691788f8310f2626354130fd03352",
+    "retained": "inputs-refinement2-vdb-noswitch.json",
+    "retained_sha256": "d1a55f3c320986869f2e81b7272b0efdacf3002b51d2ff9679e849db36e6cdb8"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-noswitch.json",
+    "source_sha256": "c8b05fcd8546a7fe63b19887256ee85089337233741a4dc327eb71e335c429c5",
+    "retained": "inputs-second-heldout-vdb-noswitch.json",
+    "retained_sha256": "dbc33c3f5754d08ad02bdcfc10d71eca7628fe57224701cfeec2bd02dd9d382d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-vdb-switched.json",
+    "source_sha256": "846619a0d855c1bf169ec278975efce2e0105321b149c2cfc37e99bf25f3ad80",
+    "retained": "inputs-refinement2-vdb-switched.json",
+    "retained_sha256": "b9ebea61adb52905ba5f5164701404d668c89f50ac7f27abbecef83b7164f6fd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-noswitch.json",
+    "source_sha256": "a9af92aeb5652756d5c5742020898012133049d778049164face5874aa628ee1",
+    "retained": "inputs-third-heldout-vdb-noswitch.json",
+    "retained_sha256": "157382759e84b22f37e907163ba2884c142900ff1b059a815c63f6bf4fb5e6cc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-noswitch.json",
+    "source_sha256": "2915fe860214d2d07bd7fbbbfd4ec919e0c974caa5d14a7d33406e66cdfe31ee",
+    "retained": "inputs-fourth-heldout-vdb-noswitch.json",
+    "retained_sha256": "356b194bf34b1319630d1d9c0c1b67caef9bff49055fbdabfc088934c8e6a120"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-vdb-noswitch.json",
+    "source_sha256": "0c2160e86915608406bbe1126b6144974459c45c744d72e1afc2fb99b492b93f",
+    "retained": "inputs-refinement3-vdb-noswitch.json",
+    "retained_sha256": "257c9899a5c751b29aea800633457c832f89d8784c48dcbf715060cd9b2dc7a7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-switched.json",
+    "source_sha256": "333cd88164f11485b7f4601b0f553e1d12cab21992e61a930af83780fa12e721",
+    "retained": "inputs-refinement4-vdb-switched.json",
+    "retained_sha256": "b9e3ea8becbe439e2f643b129b05d1628216603f478cbfd9a61e2b0baaf0165f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discriminator-syd.json",
+    "source_sha256": "61762e8dfcb2392a2f2a75390e0d0dfd05d9ebe4fb21a73fef6823b03cacc299",
+    "retained": "inputs-discriminator-syd.json",
+    "retained_sha256": "756a0e4cf9361dbec3ba78666c28213535dd05b2ec37b8755f8cc72cbb37690d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-noswitch-answers.json",
+    "source_sha256": "95f41ee2d552231d6795bd43d88a5e5d60ebfce9b6441f81b3afd86b166b196b",
+    "retained": "third-heldout-vdb-noswitch-answers.json",
+    "retained_sha256": "9d9b748aea1f71287d385dd888406c6276447b2d87d1eeb69dee1018167b3fe6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-noswitch-judgement.json",
+    "source_sha256": "ea205722049902d176a881d3aab4ea7e33d43abe1f83420976ad69479c8b349e",
+    "retained": "third-heldout-vdb-noswitch-judgement.json",
+    "retained_sha256": "e0bbae56006619c745fc8ffe1c8e4715e4a3fbfda2807dedf7a65765278c9f78"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-noswitch-answers.json",
+    "source_sha256": "28ace821ff150fd436c1a3ce220a6eaf64bbca531e750100b93bfb4a12c38af6",
+    "retained": "fourth-heldout-vdb-noswitch-answers.json",
+    "retained_sha256": "bb30b505a4abdf9fb8551a37f6e7ad20f93170bb6ceaf304f3d0cf3f7e55cfc4"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-noswitch-judgement.json",
+    "source_sha256": "00e2c75e8da179580fa9e4055a02cc21d6b2695ed567998c489f46a39f90e24a",
+    "retained": "fourth-heldout-vdb-noswitch-judgement.json",
+    "retained_sha256": "23b3ad483266d5248bb66f90e023f976594a3a2c830e1b2dfb27bdf19f5ae146"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-vdb-noswitch-answers.json",
+    "source_sha256": "7a4124d882d0b7b8d09357fadd5f3da5275948d9d58fa9bcbd45fe221581cd0b",
+    "retained": "refinement3-vdb-noswitch-answers.json",
+    "retained_sha256": "e050b50b6ca95fc6389e3c34617fbc911c4924f4c63e4afdf4cb8247b056522b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-v4-discovery-judgement.json",
+    "source_sha256": "1e4b61a8b0f485adf49a2ea8e320d50b45b27d33b22fed305283c6ea7e85f826",
+    "retained": "vdb-noswitch-v4-discovery-judgement.json",
+    "retained_sha256": "9005771bdf263decc45001d7beb3cd397987ce58c42bda14478a2135fbd3d8c9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-v4-earlier-judgement.json",
+    "source_sha256": "7264dfc32ee28101ee42cfb395c23fc18ea0bc033aae5a5dff2b0c08fea1e712",
+    "retained": "vdb-noswitch-v4-earlier-judgement.json",
+    "retained_sha256": "1b42b0e3dfc51206a6f3ec8035d43c979afd8324ce7b45aef5bf085fdd026b6b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-vdb-noswitch-v3.json",
+    "source_sha256": "1d24b56098c1490fe3d5d7cb1c69e41be03017f5890c71074302e21fc89cd099",
+    "retained": "freeze-vdb-noswitch-v3.json",
+    "retained_sha256": "4808008c3362e96708b3907137dcc37083440d4fd19e9545e7aa9cd34e9fed73"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-vdb-noswitch-v4.json",
+    "source_sha256": "d34aed09c478e1ac5520fb9f1aad2c018f3b80e34746b7c33a77160fa9c496c0",
+    "retained": "freeze-vdb-noswitch-v4.json",
+    "retained_sha256": "ed1520678ea598da7e065606b65e1ce5d5cf3d6525dad14ea05eedfb924592da"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-switched-answers.json",
+    "source_sha256": "87496efd46b9db040296b821ede0a7ead16edcd0ea8fc04701c6ca16a96adab4",
+    "retained": "refinement4-vdb-switched-answers.json",
+    "retained_sha256": "4c15507e835bc58e989bfc69a5cad2049160a13f1fca9d3810aa314978f7b0fd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-stage-trace-judgement.json",
+    "source_sha256": "ae313e3acbcc11cdee3dc3e7fb7e6e577269243553e7dae76add4582f06b114a",
+    "retained": "vdb-stage-trace-judgement.json",
+    "retained_sha256": "74af573b28ff61da05f6850178f3a3481eb6fd4a752c345a9fdf0ac563686d10"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-transition-trace-judgement.json",
+    "source_sha256": "4fa4b1b515593b1fbdcc56cfa901c1978eb6b63704c14f1d4350da5fb7933c9f",
+    "retained": "vdb-transition-trace-judgement.json",
+    "retained_sha256": "f7f52b31dabba7a29de3205c7e9b9a5e19f01bc2205c572d8714ba835a37afb8"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discriminator-syd-answers.json",
+    "source_sha256": "0d7f4cd8862b3e1318930736dd8b9902110549f60b61b78caf66c82f6c7c36fa",
+    "retained": "discriminator-syd-answers.json",
+    "retained_sha256": "385fe1819a9d6d40ac766e6a856515bdf61e6b980f8100528fedb22ec3597b20"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/syd-discriminator-before.json",
+    "source_sha256": "3b86debd069bc30542aae7faa3ec66dd1d125ea9a601a729c0db2ba0f6f18992",
+    "retained": "syd-discriminator-before.json",
+    "retained_sha256": "7ccbfe34e81d31713d1ed1b6ad0c26f8236f100ea496dbf11126b5693a68bb41"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-partial-store-discriminator.jsonl",
+    "source_sha256": "fbfe0be40e91c0b9578f9b8138e81bd8054777153c198be154bf2ec810f5c86f",
+    "retained": "vdb-partial-store-discriminator.json",
+    "retained_sha256": "991cb5f503dd5462388b4c4e68d501118ba8cfa2a99cdff48f60d599a719041a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-vdb-noswitch.json",
+    "source_sha256": "d45d7a126a67834a9d2039657e09fb9f9cbba7e3127abee1c826ff7a8e97bd37",
+    "retained": "inputs-fifth-heldout-vdb-noswitch.json",
+    "retained_sha256": "cb336f7adf91691ebb6ecf7a454765379ae58f70f3eea738cd790f5136bf8cdd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-noswitch.json",
+    "source_sha256": "89d1628c1b6ca989648d2090f56ce8a784d8bb103b8f5ad5b5f27357fd9ed514",
+    "retained": "inputs-refinement4-vdb-noswitch.json",
+    "retained_sha256": "addcc68d7832cdd08bedc1d1e455c5b45db472c842b0ce284622df84808b1f7d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-syd.json",
+    "source_sha256": "ce88b41ee7d6e76cb78cd1a50b2c0cdc7bcccc202c40f952250214467951a3f1",
+    "retained": "inputs-second-heldout-syd.json",
+    "retained_sha256": "8b78c00c47249dcbbcf91b537dbec95ac934c3dc9863b28e523b2034fd5461ea"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-syd.json",
+    "source_sha256": "d9914027e4ca669d0e501b030ca2fe8b2cb06b604faed755e6689b346623895e",
+    "retained": "inputs-heldout-syd.json",
+    "retained_sha256": "50f4f0b4a7dc1c698db9ff0a343ee43ac9e2dd001f78216637fd2b2df373d90d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-syd.json",
+    "source_sha256": "42dc9f01797ff264943af74af4a1483c9ead8e1ff4b63ba44a6bb8b7a59ffeb4",
+    "retained": "inputs-refinement-syd.json",
+    "retained_sha256": "1273ff4d5c0747f2d23a9ded63fdbf8d07eabd94333bd1b3ca012c6123138658"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-syd.json",
+    "source_sha256": "3b155047dd5b2c83e999b939f383a5c68e38428aa31a975a4f80db022cf8b86a",
+    "retained": "inputs-refinement2-syd.json",
+    "retained_sha256": "a411acf2bf7a68f4a07a630fce994e2d142cc87cfe617480c0e79466dcf06221"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-syd.json",
+    "source_sha256": "22644e502ec1601e7eb0af640b9d0635a2318a146de3edd8ea388114cb89a8dd",
+    "retained": "inputs-typed-syd.json",
+    "retained_sha256": "7fbbfc9ea8703c91ade4d0b5bcbe43188c3951ee39968350428e970f86173dee"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-independent-syd.json",
+    "source_sha256": "348cb7d33155c2b1343dfe443e15b558909ff7f591fae6ccafd4b0cf1646554c",
+    "retained": "inputs-typed-independent-syd.json",
+    "retained_sha256": "b9b858c10ed584ee6e37ad4722fc23d98b08f00b4157aaf2bd57d0cc371c3ea6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-vdb-noswitch-answers.json",
+    "source_sha256": "6ec50540daa4b24b348cb647984856cc1b8129e3695100c22df17a775666e95f",
+    "retained": "fifth-heldout-vdb-noswitch-answers.json",
+    "retained_sha256": "7b85eb13c7978139cee2fd562c329103e15ff03ed9f165644b0d37bc46d21059"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-vdb-noswitch-judgement.json",
+    "source_sha256": "0dcb5743a8b5485d447571b26886a9cf6c09d7a0e8e764484ba44350c6ed175b",
+    "retained": "fifth-heldout-vdb-noswitch-judgement.json",
+    "retained_sha256": "ab25093495b746f6096fb72c846937d008e3957d7454e8057a96232af258a3e5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-noswitch-answers.json",
+    "source_sha256": "a29ce25e7c603ebac4eb8ad7334320d228eea0009d5634f5a70f10c87c5a2b64",
+    "retained": "refinement4-vdb-noswitch-answers.json",
+    "retained_sha256": "cef223a25df9b87dc095a7e6b892462391f3a226fd829fb4d97fa6f3379b451a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-v5-prior-judgement.json",
+    "source_sha256": "0868aaab84041ab1fcff291596274ef720d211278d030494d79abab312524a6e",
+    "retained": "vdb-noswitch-v5-prior-judgement.json",
+    "retained_sha256": "db2f899cbbe951efdaab9d45c1367d549e7c350b458754e4638be49735bea74e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-noswitch-v5-discriminator-judgement.json",
+    "source_sha256": "a7035b5eaff914fb36b1cb8cb290f788ea8a50c86a126993b9aaa7b5707c944e",
+    "retained": "vdb-noswitch-v5-discriminator-judgement.json",
+    "retained_sha256": "ccbdec902835fb9889cacfbe360ae7608acdbafeff93866b7f5db1a50f725ea6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-vdb-noswitch-v5.json",
+    "source_sha256": "9ef43c692be4653e1d35a982bec201abd8b65185af393f19a1771bf0401f6cfb",
+    "retained": "freeze-vdb-noswitch-v5.json",
+    "retained_sha256": "267bd3017f5278041622f08eccea888ab3c6241984acc86d414f4f682af75cc9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-syd-v1.json",
+    "source_sha256": "4a4d429a01d17c425ee17c3f51b0796795e715528b3102e6e28645a1e5ebb686",
+    "retained": "freeze-syd-v1.json",
+    "retained_sha256": "bae504b76e9c6a3b5ad87781d8b83fc1b4709853f1346f804824ab7b0061f0ce"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-syd-v2.json",
+    "source_sha256": "886953aa2c10aaa077264a53b2281021e23a751658fc36d3ea98af98754e9b53",
+    "retained": "freeze-syd-v2.json",
+    "retained_sha256": "8ee3b0a967670d81fb8b7537253f920b99b6e3ca11183c8d741953c3aaad5b7a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/syd-v1-discovery-judgement.json",
+    "source_sha256": "fc9080ca59f22b8f50d99fe150d36d2e72db29ab0994346944aaa63fc5765445",
+    "retained": "syd-v1-discovery-judgement.json",
+    "retained_sha256": "17efacb969fb6054849cb12e6de8b1f4c776db737103dd15dad3dc5caec3a56f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/syd-v2-discovery-judgement.json",
+    "source_sha256": "a151c1eeaac92a8195171d8e5362ba6aa188e5be9fdd6d8ef4f2e1c83724842e",
+    "retained": "syd-v2-discovery-judgement.json",
+    "retained_sha256": "5ad47b033b79ff902ca92a14ef3d30b0c2e9cd38a58474e7c94d2e617675ca94"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-syd-answers.json",
+    "source_sha256": "1b27daa69cadeececc16e06b65bf1807d0823b0fb235c58c4e92c23899821e22",
+    "retained": "heldout-syd-answers.json",
+    "retained_sha256": "a92fa81814789ac6dfaaca513866759baee4c60a1b36ae03980ce402356fb348"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-syd-v1-judgement.json",
+    "source_sha256": "eb4ee6d7a5e3770d3b504e085bb460a4878b8fb7d97ee5b406d074fb956cf73f",
+    "retained": "heldout-syd-v1-judgement.json",
+    "retained_sha256": "f7e85236cb8b65cabbb08d231419ecd3c2cd60a2cc2746d9d001d61b514fb1b9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-syd-answers.json",
+    "source_sha256": "8c39767df405bef1453175515e7658fe07264009de22f5c53adc960ee954a77e",
+    "retained": "second-heldout-syd-answers.json",
+    "retained_sha256": "de024da5501dcd5584093a1c8f5441cb8055beda4eaa3dff42ea9a0b415672aa"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-syd-judgement.json",
+    "source_sha256": "19791830b156380f2223e0acae480ea1f31afccb75b3465f0642b74d5babc641",
+    "retained": "second-heldout-syd-judgement.json",
+    "retained_sha256": "ef36b3de775d42a43c184cb9f75b04c95b45a8894859eb75081a81069927b415"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement-syd-answers.json",
+    "source_sha256": "e2e6e771341a419d67c086b7097f225fb15365f3ea9482b6bd3b7850a7a4e0bd",
+    "retained": "refinement-syd-answers.json",
+    "retained_sha256": "c6b31dba279e42cd26afc7ff36c7725aa59fb0da8fc602f2a867334619ef1b56"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-syd-answers.json",
+    "source_sha256": "7968bfe67cfe392d93a7fb64c2fb2a3998d5271fcb14c43f37214cdeb2733f84",
+    "retained": "refinement2-syd-answers.json",
+    "retained_sha256": "d6d46dddf414042414c696f11700316cecf289dad0fa09a0dc23e8e4f1c863d0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-syd-before.json",
+    "source_sha256": "8262344eb7f877c380b6977f123a262c2846d82f185b1e1078f9bd39ace63988",
+    "retained": "typed-syd-before.json",
+    "retained_sha256": "1ee2ffe9cc563b240a0d389ada8343215b998f0d3151fe62aebd59dbc9b6ec3a"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-syd.json",
+    "source_sha256": "9c26472f63eb47d4eda9f803a930a3f556cb94f9fcfa4e81b9685fa1e9ae7b2d",
+    "retained": "primary-syd.json",
+    "retained_sha256": "173ff1f3beede33d64743fb73ea3a0494da2bfc862eb37e226e29482eae5fa95"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-syd-v2-replay.json",
+    "source_sha256": "7b64b263d496a96dce0250dab226f091cae7261bc1c4b1101d5bf7300d21d77b",
+    "retained": "typed-syd-v2-replay.json",
+    "retained_sha256": "c5a86b6937d297a58c5632fd52f2a1d2d35b050fa8ffca7e7666d2d476f8de61"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-syd.json",
+    "source_sha256": "cc6b5ddbdde0818dd155f4bf9ad2cf21be0850f448fdf4a44c70798bd00c4c39",
+    "retained": "inputs-third-heldout-syd.json",
+    "retained_sha256": "a3dd2c75ecba840e294910f1917145e764392a7e91d5ae3686d3242470792621"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-syd.json",
+    "source_sha256": "158147633895928d5aac2729008fc56f4715e6f2a3900cb8f39c184da65f6d44",
+    "retained": "inputs-refinement3-syd.json",
+    "retained_sha256": "b68101d18c0a72bb7f4f60f5f8c96389c4059d4c95b8ab4d615c643582b18880"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-depreciation-padding.json",
+    "source_sha256": "1f57fa2d01014e8856ac90f8ff6e5c8cd8d9ab8b0d5a785e46bbb96c2ce482c7",
+    "retained": "inputs-typed-depreciation-padding.json",
+    "retained_sha256": "bd47bd22fe0bb9514035b6f475e4dd74ee51228b47895d7f4a18ce82d83b0375"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-depreciation-padding-independent.json",
+    "source_sha256": "8a31995f9b8b73b08135b4466793e6d5eba04b61a15edaca2c8a690b45ed4b4a",
+    "retained": "inputs-typed-depreciation-padding-independent.json",
+    "retained_sha256": "bd87d06c5aa1ce3966086e3c2d149cbd3c79f460f8e3d7eda12fee9b60f5f2dc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-research.json",
+    "source_sha256": "ff683e353f82d14971d3b5225f9ce8d7383f1be055e384e38913c0b06ba81559",
+    "retained": "inputs-heldout-vdb-switched-research.json",
+    "retained_sha256": "66044075433c3d1d03c39fc57f01be1e5cae0e3811f6e2ee5f9eef9ddb75a35f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/freeze-syd-v3.json",
+    "source_sha256": "95215b8fe63b26f1b1cc764dfc1931ed04164ce87aec41423732083c3c8cd9c2",
+    "retained": "freeze-syd-v3.json",
+    "retained_sha256": "fa986e41369fc97d9a3877bb9682b4f15021517aa6da3f27ef41d7aa42d27543"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-syd-answers.json",
+    "source_sha256": "fbf8227c1d4d98842e143a04f0a8884c4c4ec1c312e412dd60229123164dab0a",
+    "retained": "third-heldout-syd-answers.json",
+    "retained_sha256": "4d380b811abd92a141c8c22eec7b8fb21e3e33539d3b029584304b172599e965"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-syd-judgement.json",
+    "source_sha256": "2f49bee5a22bbe982a7dde58484964601c35a78c0c1074052aac0d21f0749fcf",
+    "retained": "third-heldout-syd-judgement.json",
+    "retained_sha256": "1582af3f85ca51bdc5e0d28d7b30c90e3f6296d383ccfd365aa2a8237383948d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-syd-answers.json",
+    "source_sha256": "5d0e7de4f5e385f6511cccf9232b52c6f4d35aa88fd7c7c52d32cf6782300687",
+    "retained": "refinement3-syd-answers.json",
+    "retained_sha256": "6f68527b4fb3b544ea73b3d39f01094a232acf836627c39ec42f5e38ca0ebc89"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/syd-extreme-basis-judgement.json",
+    "source_sha256": "a4f7a61f0e3e02dc59fa51e31f1a4c20c34efad6f6c9daefd624833ec8f885f0",
+    "retained": "syd-extreme-basis-judgement.json",
+    "retained_sha256": "25263a6c61a31389444ab4c871e63eae873ede9143dfaf3d6664a148e790b17d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/syd-v3-extreme-basis-judgement.json",
+    "source_sha256": "167ff51483fec3d74aedab384430cb0934ae999e4f70a1caa07ef3a1e1ef73a8",
+    "retained": "syd-v3-extreme-basis-judgement.json",
+    "retained_sha256": "7281b50ddb51fe24ee1401f7440972d13f273a896df905aaf4f4d29c02395347"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-independent-syd-judgement.json",
+    "source_sha256": "788c0679824ae61069cfd5ec031bfa4b08b23f2c63b97ee87d825e3046dd21c1",
+    "retained": "typed-independent-syd-judgement.json",
+    "retained_sha256": "010bc3c7cd55ba669d7d6f6a216f109346b876d71117f7a5a531f5a9813ac0fd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-depreciation-padding-before.json",
+    "source_sha256": "e842413867449b23ccfeac9af8834c5adcf4880f5b5850a838c971ff3c290337",
+    "retained": "typed-depreciation-padding-before.json",
+    "retained_sha256": "09f4f721b583587f7ddd8884ed8d3b1f293fc5aef6ee517d07f5c1fef6c37ca3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-research-answers.json",
+    "source_sha256": "1b7532b6b6583030d4613ae05a530c0fed3c9762d782fb6a907b5a487738cda2",
+    "retained": "heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "f9e72cc544f970bbc79e6ed5e62101ae815692790c9cd50eeacbd8cc06f0534e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-research-judgement.json",
+    "source_sha256": "065b9cf16f18d59cd1d3072a1263c141ea10411564aa5e73029358ae964391a8",
+    "retained": "heldout-vdb-switched-research-judgement.json",
+    "retained_sha256": "f58bddeb2b9ae582ab4394d541723209d28dd978cdb264e453c5fbf07f024d7f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-independent-freeze.json",
+    "source_sha256": "d56340254ab67b36ca80ad43fc9161b0e71ca9452586dd48a052a22ef04d6c3a",
+    "retained": "switched-research-independent-freeze.json",
+    "retained_sha256": "9a7ac00d37d97113b620d0c7a5939a175a17d5d36d43678194734a15209e9206"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-unswitched-clipping-heldout-replay.json",
+    "source_sha256": "0b7f7f82fdc31975509e7ab4db570b845d4f88b64dfe25367e38dfb08ba4ab18",
+    "retained": "vdb-unswitched-clipping-heldout-replay.json",
+    "retained_sha256": "2a8179a6b870b3d3500d2b1c4a21a1b1dcd80745855e1fdb4b7c175bbb9d71ad"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-explicit-clipping-heldout-replay.json",
+    "source_sha256": "72e144297b42f460964d2c8a2b930e5da96c1d2d61aece5ae5687a096475137f",
+    "retained": "vdb-explicit-clipping-heldout-replay.json",
+    "retained_sha256": "8f3124bc69b5f02a583c7f12e51a8c485ac7d3d9450a877c8a99036f7899d53d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/frozen-function-body-check.json",
+    "source_sha256": "1908de24f42b2f765ae304150b2bbf4434f461cb93cabc987e109c3399a91c4b",
+    "retained": "frozen-function-body-check.json",
+    "retained_sha256": "4b9575432dc67c3327903bc9a00ddc5d686f4f15a2d38557b48eb82480be40c0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-syd-v3-replay.json",
+    "source_sha256": "09073d2f345e3332ffe30565972906988629f6b4a2a2d6df81acf6d7f59036d5",
+    "retained": "typed-syd-v3-replay.json",
+    "retained_sha256": "7d1e8416eef74a7845c79b4dde30df085a2f0c3d2065545730e45176f51ba5a6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-depreciation-v7-replay.json",
+    "source_sha256": "b1b0aab96ebff927c6dd97b4dd608fab58d3496c0e5b145fee620ae0f9a230e4",
+    "retained": "typed-depreciation-v7-replay.json",
+    "retained_sha256": "579000cfdeb8ded9fa6fae100177a9592c65ec8c938d73da959397e8d007c760"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-depreciation-padding-v1-replay.json",
+    "source_sha256": "05ca107bc0470a2f77bcaee8d7e7dc53a13b829938c5479cce76400ef72c5051",
+    "retained": "typed-depreciation-padding-v1-replay.json",
+    "retained_sha256": "99ee554961e2615a4e0191762733929fb60b1b6e13049a629fbcb456d7a123c6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-depreciation-padding-independent-v1-replay.json",
+    "source_sha256": "a958f6306b40864eb2502e1f1446e6bd7069bedb2aa3a1b9cf31fba767a2872d",
+    "retained": "typed-depreciation-padding-independent-v1-replay.json",
+    "retained_sha256": "4982fb38532344fb44b0433d9651202d15f91a16f9f06a6e6b5917e884dd9160"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-vdb-switched-production-v1-replay.json",
+    "source_sha256": "f91110931148fde1cd35762ff08baa43cc536f7b1de161cada09122ba6733a89",
+    "retained": "typed-vdb-switched-production-v1-replay.json",
+    "retained_sha256": "8ffac1321612f8a7e5850a3cab0b66e83918d990c3325a4a9d82fdec8ed889d7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-clipping-replay-refinement3-vdb-switched-answers.json",
+    "source_sha256": "d94d13ef1309d14b93c376b3c5abf947695681adca28ace83d7f58d574166d66",
+    "retained": "vdb-clipping-replay-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "60ec78bb97eaaf2ad32f554322d1a090b1074dfb6f2d6eee9b619e55037476fc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-clipping-replay-refinement4-vdb-switched-answers.json",
+    "source_sha256": "98021497d03944044d9688f86e1e84020e2a1556a232e79423b8ab868e4de5c4",
+    "retained": "vdb-clipping-replay-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "d66d680c7c9ecd58b587777c3d56824df6928e85897401c95dae7aacb28f8a99"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-clipping-replay-vdb-switched-bounded-discovery.json",
+    "source_sha256": "645e145de0cd1dc80b846821a5923029d7f31b70d9db22aca30d63a217a508ce",
+    "retained": "vdb-clipping-replay-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "7f672f1311eb1717ed2edcee11a927400f6713a88cc6b35061df1a43bd0fc57c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-duration-4294967506-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "040e8e9e5dd79a85b8ac18c33a2cb3c95f97e1d0a7484f22334bf2f324166088",
+    "retained": "vdb-duration-4294967506-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "7e6d2f4011b1d794fa664783e65472e35c2e4a2b2f5a54e42ed1858f6bd5e878"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-duration-4294967506-refinement4-vdb-switched-answers.json",
+    "source_sha256": "658ec716c1bf071acebd46eb3d563efb7f1e5b061ae65b69a2b9a23ca42570b3",
+    "retained": "vdb-duration-4294967506-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "bc588746efcedb509b0c03fbddf952ac368c4d796767c8f8d3dd6b50eeece612"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-duration-4294967506-vdb-switched-bounded-discovery.json",
+    "source_sha256": "b982313618e8f729a91670761efbaccffa34c88e14e98f15f12f61880006473a",
+    "retained": "vdb-duration-4294967506-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "b558a172e4db9b91aea1831920523c7f2183b1af985f2c903da152d64612ba09"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-duration-4294970578-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "1ec792d0502f6500fd00f319011a90409d73607a7c2da347535a921b1e564150",
+    "retained": "vdb-duration-4294970578-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "89bf058a1a485ea56fe75d6d5e909d29a9ffa63342ff55ed881bbf9c1e4e5504"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-duration-4294970578-refinement4-vdb-switched-answers.json",
+    "source_sha256": "1b0cc9ea0e1e4f5e41a070cac4c5574034ab76c7999bd96a21329f1f4a5436ea",
+    "retained": "vdb-duration-4294970578-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "d777ed8091fc3df63a9c856385da3d2f4377e45007a5e9c5b82a94fb1f03c262"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-duration-4294970578-vdb-switched-bounded-discovery.json",
+    "source_sha256": "b3e1949bf6491acc996f34d9dad7f44d7a85340488969bb9dd56e9deadfb803f",
+    "retained": "vdb-duration-4294970578-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "875a653d9b66cbb8696f710cc393ccbdb068ba0bbe8496797a9dad61e31f16e4"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-inherited-sl-duration-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "204d1c7855b556ca2c9562a51325aace7221005aa4a75e9ca7584abd129940f8",
+    "retained": "vdb-inherited-sl-duration-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "0c0faa6158802f88281e7ad0e0a87a313f9a9d2e38417808b38c18061a90e16c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-inherited-sl-duration-refinement3-vdb-switched-answers.json",
+    "source_sha256": "faedf4ac09050ca5930d51b3c3d5d854073164d125628c8fbd05725ca027dbf7",
+    "retained": "vdb-inherited-sl-duration-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "71410e10cbcbfb72a39d6875b9d90043259d23487b2e14399e67c559eeac9774"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-inherited-sl-duration-refinement4-vdb-switched-answers.json",
+    "source_sha256": "95b2419e0a9cd592e7f4a0daf2de47b9ff0cf42fa950014d1e3c393a85966354",
+    "retained": "vdb-inherited-sl-duration-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "3654187d3d7d5a36f352bcb68ba031f8ba99abe5e180ae42117becb153aaf2ed"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-inherited-sl-duration-vdb-switched-bounded-discovery.json",
+    "source_sha256": "0108550e30f40e82c13d469fef97e8289104c58bb1f326023b7a4fa4be40247b",
+    "retained": "vdb-inherited-sl-duration-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "32f7c3cb019039327deb3d1f39f07cfb36997d4d2aa676c4e438dccb26355511"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-eighteen-store-axis-search.json",
+    "source_sha256": "6c14f790266f62d504193e8f0ad79cc02ea62fae4ccdbb3e23e3da2cdc365e8e",
+    "retained": "switched-eighteen-store-axis-search.json",
+    "retained_sha256": "fdbcc2d685e0fb52461646e63f2283df659c7e1f9ef62211174a66ac2f6d57cb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-inherited-sl-store-axis-search.json",
+    "source_sha256": "0c6f82ce76be8cc43fd5ac19f0661af6a2631d58f05d9d75f84c2583354add64",
+    "retained": "switched-inherited-sl-store-axis-search.json",
+    "retained_sha256": "df7acee97d7fdb6ce126d30ab1f23805f52b8829a75be978dd48076dd48941de"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-first-step-sl-duration-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "5f8d9e0cb2556b081017cc96342c9671963c4b93028b96526ee6b49604e41477",
+    "retained": "vdb-first-step-sl-duration-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "2a72c3c2550ea9de334bcc73b55c295921e0bad0deb436cdbd22b71dae4600df"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-first-step-sl-duration-refinement3-vdb-switched-answers.json",
+    "source_sha256": "b9dcc480507b13606c4465e6fee718723751fa69f3669b5d7c7eb267b35b932a",
+    "retained": "vdb-first-step-sl-duration-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "d41ea91074bc54efe0cb3abb2f8860311842471394c2d623017118116e14b341"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-first-step-sl-duration-refinement4-vdb-switched-answers.json",
+    "source_sha256": "474fde7db6e29f8d3f55e6ce295909413da9b74790cb2e499f51a822164ba31d",
+    "retained": "vdb-first-step-sl-duration-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "45724b72bd4c0da99143eaf0dbd1235f34bb305c01b2ed16194665e4337c79dd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-first-step-sl-duration-vdb-switched-bounded-discovery.json",
+    "source_sha256": "768a3c6163bbe433fb920d279214c4201d1fc0f9053705bd045757c7254e302b",
+    "retained": "vdb-first-step-sl-duration-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "2dc308414411e0cdaad56279d1481e78eccf72aafe8c2166027064d402f6c872"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-x87-shifted-end-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "167b139652f8c335ba8fc08d32d619fc6acab34d56788092b116392e21d4d926",
+    "retained": "vdb-x87-shifted-end-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "255dae895651509ef09ca41426c67967b85d6349a7b4e2b6be16b8f447ef3d68"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-x87-shifted-end-refinement4-vdb-switched-answers.json",
+    "source_sha256": "f9dc3ae8bc005303d798e548b18ae581fca3788e39f67a1f66e73ffdbf42574f",
+    "retained": "vdb-x87-shifted-end-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "8a6e3551dfff811c50527bc30c17c555b840999849d98413021b9eeb8b4fa8f9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-x87-shifted-end-refinement5-vdb-switched-answers.json",
+    "source_sha256": "4749ba42dd9bc481e2f5575c86e34e73a660985162880913e89bc4092bf4224a",
+    "retained": "vdb-x87-shifted-end-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "4bf2ec28b895848cbea41d70985d40bf9f3b9fadb0e978885fd96736003cf3cf"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-x87-shifted-end-vdb-switched-bounded-discovery.json",
+    "source_sha256": "bb745f78be7c927fb77a1a37f848a7537be80363eb7ea6dc370b7f5a3fc13744",
+    "retained": "vdb-x87-shifted-end-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "603799ad620d596b679212643717a0e9fd87aabb93a99e58d677f72a20b44659"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-period-end-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "20f960b9ba66ec3888f904be84f6400e6281c1f5e811922c7e0518be7952e071",
+    "retained": "vdb-absolute-period-end-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "29683d0a66a9cef1bc9e89848ca1717876b06d3a6b6bb406f52f3a7ed44b7148"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-period-end-refinement3-vdb-switched-answers.json",
+    "source_sha256": "5bd0d629bda6c29e6cc3d5f669c6f2991bf0eec18d2dda9d2302d1fdec98f83b",
+    "retained": "vdb-absolute-period-end-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "5bcf3eadd0f4febcbc6a81447628bd0dd7b704ad4169afc9c492eb74fab96806"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-period-end-refinement4-vdb-switched-answers.json",
+    "source_sha256": "69e727db76686fd4b27c7f8fab59dc1b23e6cf9bd928d80c85ff4ed4c2492879",
+    "retained": "vdb-absolute-period-end-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "d3cf3e0c47b3de6cc88247717c9e6811acc5bf4a84b9d9520150fd658da8b372"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-period-end-refinement5-vdb-switched-answers.json",
+    "source_sha256": "dac0c21447aff0ee8be901adb9f14a324b726de1d63db7323526c0f973bda478",
+    "retained": "vdb-absolute-period-end-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "a4bf6252a33a0dbe3d3ac20556aef770dffcfd6fea60e5d9fad203e970eb2a7b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-period-end-vdb-switched-bounded-discovery.json",
+    "source_sha256": "76dd7971704015440435875dc3fce2e230781c9bddb91469abea0d7ed762d59c",
+    "retained": "vdb-absolute-period-end-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "98ae30b128cc92744cdeb39a6f91652eefdae5256723eabb5cc2635182686598"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-life-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "75c7b0b7f2730a8afea4238a55bb28031492106e13a6e3c827d60a7eb304e9ae",
+    "retained": "vdb-absolute-life-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "59116f143f31084f588883e2acc9289bb47d56589780f3d28f4aa03999dfd6dc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-life-refinement3-vdb-switched-answers.json",
+    "source_sha256": "ab4061cf646084199f3b52c5476c0b8c0698bdfd2517f7ec73611d9ce32e241c",
+    "retained": "vdb-absolute-life-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "cca2c36f4812f5e86775bf5d6e8c9639700a2a6c0f3e5efc65b7bc5b00fe3021"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-life-refinement4-vdb-switched-answers.json",
+    "source_sha256": "56f142f2256c1f85bde2795ca22bb2e8e3117ae3e724baeb57029fe92855295a",
+    "retained": "vdb-absolute-life-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "74637438290e8ccaae109a298fb3cab62406f5c78c7f72576306f11f557d878b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-life-refinement5-vdb-switched-answers.json",
+    "source_sha256": "f7009ec3750a1ff1e38d736e9d807b9bfe9b8cc4032962ff39bbb078e5088d85",
+    "retained": "vdb-absolute-life-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "d3d39c7d8e6eb1c9f24311e80f52ff51283047fb35253d458a500c1093ce3d7c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-life-vdb-switched-bounded-discovery.json",
+    "source_sha256": "9d6cd7985264ab72c1480dfdd955e3a4e4ce1b047ef1d4d9be2adb179fbe300c",
+    "retained": "vdb-absolute-life-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "869fa72158f4104f34029fb4d6db5a19e7b9675db19e3908c9715acb441eebd3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-347892353234-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "741aa3524e8f1f8109b09252aa8e90c1f553f958b4056414cd93064185587d57",
+    "retained": "vdb-interval-347892353234-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "6718879643b7001922fdbdfa4dd76d40d281271561e82082dfa55e0ec51dbe5f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-347892353234-refinement3-vdb-switched-answers.json",
+    "source_sha256": "5b2f915b5fe0c36cafe65aa140ddb0893202ba2288b273c1313779f4aa4c5d83",
+    "retained": "vdb-interval-347892353234-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "8a3c690bc99c8068396fdf959972bdc9ac2b1d21fea25437152d69f586275d14"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-347892353234-refinement4-vdb-switched-answers.json",
+    "source_sha256": "3259dfcdf2288ed9fe65ebf8b73120d41083d27c2ab4b6b92eda3f85399f0335",
+    "retained": "vdb-interval-347892353234-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "94412f50b5bccb15f6bb78178160d03696b41b66354b8d6b4e789ff893414a66"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-347892353234-refinement5-vdb-switched-answers.json",
+    "source_sha256": "3266724c5212287ef4825bbc36e9647e10b0d47ceb2f465a86b3086fed8fdf90",
+    "retained": "vdb-interval-347892353234-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "dc36d596fc560a1865eef4d2f2626640e846134acbfc8a99b1755dd842b13207"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-347892353234-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "0e2e5e4b730aa6cfce6dd944e32af82e7bdb14d975edb35b4605747828470375",
+    "retained": "vdb-interval-347892353234-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "f0a76cbeb89bbf1493316078678a08902e58037f5597f5acaeb032f4122c1db2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-347892353234-vdb-switched-bounded-discovery.json",
+    "source_sha256": "6a03cb934bd1b6dcd138bf26795623b803289b640456941dc2697d84beaddadb",
+    "retained": "vdb-interval-347892353234-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "3fd70f1faa70714f9f2bb0c0ae29fab8f76a7cbf4991cfe387bdf9ef9f4e0390"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-622770260178-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "be7eafde77afc52b8dfea27c817d5785bbdb9afe6c8c001f25c7f7b5b24f4077",
+    "retained": "vdb-interval-622770260178-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "851883e4e9fcb452a5b971992c282e1d6ccb7bae754b4272fc8bc8bc140c29e5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-622770260178-refinement3-vdb-switched-answers.json",
+    "source_sha256": "0d1efaed98d63aef9671ec2df24285753e36d0a18ce6fa89f68e835a2d65029a",
+    "retained": "vdb-interval-622770260178-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "1d1eb8a12c35c137d8ae47c20f5cdf9e3e646bebdb092d90c0fe020a6f891591"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-622770260178-refinement4-vdb-switched-answers.json",
+    "source_sha256": "8f59cba915c6389a1ffdafbe52db45c7dd0186d21ada09b8a38b7729d58e7f75",
+    "retained": "vdb-interval-622770260178-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "f3f089d408d47661f059ba186286043e03158f1f12481709736705b43fffce7d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-622770260178-refinement5-vdb-switched-answers.json",
+    "source_sha256": "40fe0ecaef39f1e06ddb27102691d208ae7b15efde71cba63d72c27c6de9f666",
+    "retained": "vdb-interval-622770260178-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "016835cb0ef50cb0965a583899f0e954d01aa883db3c91e30938b58c7381bc26"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-622770260178-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "5ec9f6a74f1f11dc4c79092020b0ffda6312001100de618b0e35111364719ec6",
+    "retained": "vdb-interval-622770260178-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "84873a95fc009ca03f8ec9d7f72393179a7bcb028d99c68c52a31b09fbd671cc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-622770260178-vdb-switched-bounded-discovery.json",
+    "source_sha256": "d8fbe147ab0fec49a021bb0411c56e11d4cfef0bff5e08aabe45009535629bb9",
+    "retained": "vdb-interval-622770260178-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "0ab96a935ebd5bdad781429f4787f1d7c9d18be254168cf9c662bf09c4d5a6f6"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-897648167122-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "bf1aba9b1e0e61053918bf5d79a976f23e8ee346399eda8fd1d1540a8df66e4a",
+    "retained": "vdb-interval-897648167122-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "8580dd7cb10d1158a27d3e640e40d0f22774d0ab65c2423364cea5d4302a7976"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-897648167122-refinement3-vdb-switched-answers.json",
+    "source_sha256": "91cfd475ffadfd6feb4108128311c02dc9a73ac3f49e47220863680d47562720",
+    "retained": "vdb-interval-897648167122-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "66c6788f30880af144d1466a5f65083d9b720713f4e9b17b53bfabbcd3ce0da9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-897648167122-refinement4-vdb-switched-answers.json",
+    "source_sha256": "79f76fc35708b67af6b5d3abe98ff8ce6032276901c135c605beec79e8c62ffa",
+    "retained": "vdb-interval-897648167122-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "bf34ff4c24466fbf6b61b81fe1e289ce7dfb11106207b30e5cd3b4ce8ee2abf5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-897648167122-refinement5-vdb-switched-answers.json",
+    "source_sha256": "de39e01aad0c1a6620396de8e67d15fa1cc94197c831c5f439fe651e25be4d14",
+    "retained": "vdb-interval-897648167122-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "7f7c4b9a34f0f60f6fa40995364d50ea2b08e596b117fe9259b45fc0f5fc06a3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-897648167122-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "90282802fae9cad9af6dbc52be5cc8c2ad940ecb8967f36bfa449582908fe865",
+    "retained": "vdb-interval-897648167122-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "0fd72e2b56a6fb49a05401ff5b2c1ca185c9cb0be445d9a7ec2d2c1100784f45"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-interval-897648167122-vdb-switched-bounded-discovery.json",
+    "source_sha256": "2c2e47b08964f1e6b8a773fd56e18dd8cbbc336238bacb9af2beac2a78b8dd91",
+    "retained": "vdb-interval-897648167122-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "be22a856c2b20bdaab062c465240b9491b9326d81a0ffe377ad867effd82e8ac"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-cursor-loop-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "a252b31a953a58ba908191011b826bee9d0cc51ddc6725698e39ca0baef6ef1c",
+    "retained": "vdb-cursor-loop-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "a5e087fbe7c23f3486a43457b8242661f2475cce1eb4b331d48fa93a2cd2a970"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-cursor-loop-refinement3-vdb-switched-answers.json",
+    "source_sha256": "db1736500478ef4eb57ba58ecea7e2a1bbd6d0c702155e67b7ec054ccc969899",
+    "retained": "vdb-cursor-loop-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "bd37ed7510d26c9f29083caf7b31847832622bbc418acb7f616512da033adc1b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-cursor-loop-refinement4-vdb-switched-answers.json",
+    "source_sha256": "1f8bdc7de726709237c35f948cca5b21d9860e8fcc8a382c3e48281f34ea739a",
+    "retained": "vdb-cursor-loop-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "2577e90f96a67fa150c3ab9ae8d574a7757a0d2defec634b31a9e754f778d863"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-cursor-loop-refinement5-vdb-switched-answers.json",
+    "source_sha256": "0aff83af79422f0aa7ca5b85dcd1f8d1e7356809faf34a0bf44f2038017121de",
+    "retained": "vdb-cursor-loop-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "0e73222fef59900b03b2975710f8f59dfd7196db1cfce0fa63df5bb18a3162db"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-cursor-loop-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "c007c3bf49fb68cecc2dbe63e1134642d94a7b4ba978f4103fecdd2674c12411",
+    "retained": "vdb-cursor-loop-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "a10d4a42bca7e5ad8296e30782c57a5f5fc318ee46de7e9bde3122f41b896aed"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-cursor-loop-vdb-switched-bounded-discovery.json",
+    "source_sha256": "88e55690c6a734442d8af0624948bb8437f3b3f3846fe15c89d0c05db946878c",
+    "retained": "vdb-cursor-loop-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "337937b899eea5ef93dea706c621d4e898f1e5b9000ed64a0643bd6f4adcbbfa"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "c8360632654eb515cc88f3c41e097ac83c567415c4561b29c3a84795bc36e1b9",
+    "retained": "vdb-negative-basis-general-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "c2600300ed4d287beab9c598dcb9ffc43da063f1b7ae48d79d298859162d69b0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-refinement3-vdb-switched-answers.json",
+    "source_sha256": "7750457f1c90e0f3fe183a270f129a1ba585566b0a5b06bb1a546f569d7e8b95",
+    "retained": "vdb-negative-basis-general-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "e5e9e2b609edcebffbc7b7121940447a005c412632a7d8e6c20d8f84d29da651"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-refinement4-vdb-switched-answers.json",
+    "source_sha256": "b6af250fdd34896f04d8e0455ce306c9152c6fc6ae459a2081a385d518f8ad25",
+    "retained": "vdb-negative-basis-general-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "b6802c4418d4fa59f8ea2b1a9efd1587808154c2446caf2de9b943bd648389be"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-refinement5-vdb-switched-answers.json",
+    "source_sha256": "43a4c2eef5779ed4d87dd1493703266b83a77f5529d5a67433859e4871c742d0",
+    "retained": "vdb-negative-basis-general-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "4b7e1ddff2bbbeafb4c15576b69e084558688aeeafeb99fe22ba56e6ee226c2e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-second-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "908b2fbd014192d28db280403af27a9aa772f7d2057668d915353065fbf8d0d4",
+    "retained": "vdb-negative-basis-general-second-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "80ee8c42fceffee2f58fed0c3650b56ff9c3f56c8e95abbb69f25a595e04f8e3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "eed3d50a738bd1dc7814ba550593af66ed7b29a9d4ebce2f85a67620621ab4be",
+    "retained": "vdb-negative-basis-general-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "bf2319e26d2cd43b351ad71b067467c87b0e37357b7e1995078d663878e26dcc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-negative-basis-general-vdb-switched-bounded-discovery.json",
+    "source_sha256": "dd8bd89a845ece96423e262fa8ad35ee6079f21c35850e185e453e3409c9a35e",
+    "retained": "vdb-negative-basis-general-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "b86663372be5460547b74d97048e31299030803020998e125cb832463fd80639"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-initial-store-12717398165714-judgement.json",
+    "source_sha256": "82d29728d1bf9071236c3a5a691aa00de69f8924ebe0c07ffcbb66621e0612ad",
+    "retained": "vdb-initial-store-12717398165714-judgement.json",
+    "retained_sha256": "8a3efaafb5a9edd91a5fb3d7bc9b3c286f99174fd821ac37601e3c69b87622e3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-initial-store-17115444676826-judgement.json",
+    "source_sha256": "b19930092b9abb60b4393a9bc39efcb6636b56b290252694df94d943ee52eb9d",
+    "retained": "vdb-initial-store-17115444676826-judgement.json",
+    "retained_sha256": "27e97eec8f416959798925ae32d5e97ce346d544e9f172fdfb717ac2d739ee61"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-initial-store-3921305143514-judgement.json",
+    "source_sha256": "37a8ec41c66d17348451a43fce31349d2f3cef4113e519cdf5342de8f8beaaf1",
+    "retained": "vdb-initial-store-3921305143514-judgement.json",
+    "retained_sha256": "11ff48de87ba2ce323b9187fb62bce7851cbd996c0736be2deb2d701c42c346b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-initial-store-8319351654610-judgement.json",
+    "source_sha256": "87b4df11c99c4435cf383d8c7996a94d8d85c5550180562b413efac4bf8d1423",
+    "retained": "vdb-initial-store-8319351654610-judgement.json",
+    "retained_sha256": "aaa1fce1ed4122a3bbb7453e007ac35da93ec6f364712ebc1be9664d0f1ddf30"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "ff58c6f443c2005ce70e8f823dbaa8789f0f6cb43ef5cdd9143a8189936a95a9",
+    "retained": "vdb-direct-width-count-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "b49f2ca2caf6a10ff70afbef6d12b7997757fbfe41207088f6e1b1b5081d9dcd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-refinement3-vdb-switched-answers.json",
+    "source_sha256": "9856c6f5037f8196d4f46a5b99d317a07ca639a1604b0b25ef45d767e1b51b59",
+    "retained": "vdb-direct-width-count-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "34d6021ed912ad2c1f9924a15a4a541d89db5ac9a394f15693463aa0bcc130ae"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-refinement4-vdb-switched-answers.json",
+    "source_sha256": "152a758774b01288206b771430226a973bb5e6ee2a889efa40abf7017132fd2b",
+    "retained": "vdb-direct-width-count-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "523b0516fb17f3a1314195d7b32ef7bb15bf0a32863116d837b254f84e46797d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-refinement5-vdb-switched-answers.json",
+    "source_sha256": "104e8a6f203936f1e10e7c9e2f7e2a09238c065bd7bf7c9a7b26ce755a0b96a3",
+    "retained": "vdb-direct-width-count-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "c03a8086fb1ab025267f3ee1879875e95c063e9a931bdf2908032b9b2701c9bb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-second-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "b2fa9452403a9c31f5dc3236ea76101b6bf550ace875dc2925d8ee2445db210e",
+    "retained": "vdb-direct-width-count-second-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "5c88fdb44aa80cda6398258e879c004cb623a62e4d31b86cccac79f584b68a9a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-third-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "f3148619d5cf50f98708a8d2c6f88705c2eab742c0a161579f4da73512ad95fe",
+    "retained": "vdb-direct-width-count-third-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "85c746642c3747edca6da7b3075d438b2342df0eaff6be21b672eec2f86b458e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "75e5a49caf0b8615eb534f90cb6fba7f56c6156ae510038c7e10dcf9e97b3c2f",
+    "retained": "vdb-direct-width-count-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "b264d9f773835b9239b4b3095abd97f6c1743ce50996c04da2103f07004ce575"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-direct-width-count-vdb-switched-bounded-discovery.json",
+    "source_sha256": "0dc5d5ed7d9ce5f5b716d1e7e271a96d14517d225c415281b959554ddadb17a2",
+    "retained": "vdb-direct-width-count-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "a9d4733dd3e2eba11d3e98235ec6d60fab21d2edc9d80a955bde34f191b73cca"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "f32f93d26f6604d571ecf98a111150a40c3af8ecf953b94255af4f5f493a6ea4",
+    "retained": "vdb-width-and-cursor-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "406acf9e86114a8ce6aea6a23adfa061f402e5805852a2f870cd7986dd08faf7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-refinement3-vdb-switched-answers.json",
+    "source_sha256": "feb5dea81e1bffb4b8c0f323fc4752a15ac5a656013c82c8495182c1ced36d1c",
+    "retained": "vdb-width-and-cursor-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "2280680dc97b3378b4b8d2823e515809fb262905f9af53538348991417acfe16"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-refinement4-vdb-switched-answers.json",
+    "source_sha256": "45e3a470e8739e16af2c56d212eae766a560321da6e1c4ffdc3810c2c0b9fa8b",
+    "retained": "vdb-width-and-cursor-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "2fe71da2aa9c97fe50427e88c97ded806b0e153ec5c3dd6e80ed43db9c83c429"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-refinement5-vdb-switched-answers.json",
+    "source_sha256": "b546f4e2689f10303e83b6b7653c44f45b21514c6758cd344406fe7c5d126d3c",
+    "retained": "vdb-width-and-cursor-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "08a5caedf001198e9f0afe15de76b0a27df4bb3bcc7d2a75014408144d02d01b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-second-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "f89ca7f1b7ec1a0476a429dd293868f3b5f141242f80ebeff60ef032f9c17cfc",
+    "retained": "vdb-width-and-cursor-second-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "73e9de3326bcdaf59b816356a14bc3e1a1724786eec70a00230950d002e16c5b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-third-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "5b76ffa2611cdb08674882e6423f028a75683e3c8ca4bf619938946181d8fdf4",
+    "retained": "vdb-width-and-cursor-third-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "8d710a761dd489321c5a778ccdb86005499e2eb1f8bb0f47b3e6aea2ca3c0182"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "1d666aa388c5ab1be0605582740ef5164d115830ab9437ec9c3c5a9e9520b68b",
+    "retained": "vdb-width-and-cursor-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "f3e20814b47d9d8128d89d52cec16645e3311eb8c7038b710bb02ca7f5149bed"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-width-and-cursor-vdb-switched-bounded-discovery.json",
+    "source_sha256": "035fa79b518b1e98c70538d37a2863d0a6f4956481571e1419bda197c8f63256",
+    "retained": "vdb-width-and-cursor-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "48d9e4929f43d8f6b69a395fa6088956aeecd48c55dafcdd55a4f33993f39800"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "ee906d316f143432d0216890f471533c96e0dceb5862a5cd78179857a6ffa6b8",
+    "retained": "vdb-final-remaining-period-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "517fd876b4a2cadd53b0bd6a087b36b208a67cc24f024275e4a5785d2b445bb1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-refinement3-vdb-switched-answers.json",
+    "source_sha256": "0c18d2f62f20c0881a346e48eec9b5b2d12aafae39556aab6ca0b3925c3a32be",
+    "retained": "vdb-final-remaining-period-refinement3-vdb-switched-answers.json",
+    "retained_sha256": "d1ad280d89a0ce021b2faaa1705a1b917b50f1d22308ec381786ed9e819f53b0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-refinement4-vdb-switched-answers.json",
+    "source_sha256": "4622949c6f8776be26a04a613d9e980e59528d8944837f1061d58a4fbcbeca4a",
+    "retained": "vdb-final-remaining-period-refinement4-vdb-switched-answers.json",
+    "retained_sha256": "0291795cf853ac9c6850fd1bf4388d3deeb059fd1dd453f49cd50bbf08a16d8c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-refinement5-vdb-switched-answers.json",
+    "source_sha256": "43604a95bbcada331025f7756f73a90e7076a26f71ed51053854dfbb2f1809e0",
+    "retained": "vdb-final-remaining-period-refinement5-vdb-switched-answers.json",
+    "retained_sha256": "bae43ec8cd5bf457e0591bce976885792faf7a52e427c0e6ff39a4d2d233a019"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-second-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "83a7be563f6458d0d76fe9dfa5a53c7a192a62844c85788cf7944789b39d95cd",
+    "retained": "vdb-final-remaining-period-second-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "40c4a5d0f69874a4718d8b50d98ada058786b83f0592c5171d734f410b8124b2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-third-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "3e47f6e7bddb49cab8630d02a59bde81abe2d766de71a529627291b207cc4504",
+    "retained": "vdb-final-remaining-period-third-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "767521006b5ae0b2221491ed07144808e60cee7fc690445dc2b1b9df04cbfbea"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "46237080ad675ad994a12325bb7bb7fcaf94d130ce8b79ef363c73148e8598f5",
+    "retained": "vdb-final-remaining-period-typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "0cd9d27c82250fca52be0d622d3624daa2fc86b3a089fce77d9c4977e925cacd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-remaining-period-vdb-switched-bounded-discovery.json",
+    "source_sha256": "3039de110c56fb1b7f9bba017230f4c75871e00c6aa39765d0c84e5546f83744",
+    "retained": "vdb-final-remaining-period-vdb-switched-bounded-discovery.json",
+    "retained_sha256": "2d487b3f5a615104ffde25f30852c9bfd3443c4d4ea3d2145cb1abe9b075fadb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-vdb-switched-mode12884904146-judgement.json",
+    "source_sha256": "b70cad6f1e3e60a0aa299e1dd074ab441bbbe9fdbfab9536c913af7043e213a6",
+    "retained": "refinement5-vdb-switched-mode12884904146-judgement.json",
+    "retained_sha256": "c9afd1509d4596c9a7ef14091dd1990f619b554b925926d2ed4f40e9e6dbd323"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-vdb-switched-mode30064773330-judgement.json",
+    "source_sha256": "4a5ca9462f13d209e7652f30b6b0c196f6dfd29b4352c957c0de689d20d7d60e",
+    "retained": "refinement5-vdb-switched-mode30064773330-judgement.json",
+    "retained_sha256": "cafbc1c699b11ab03402fe5ba64466c0ab58661beab144595e84f8748249390c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-vdb-switched-mode4294969554-judgement.json",
+    "source_sha256": "3af1646492c60e2542e4e3a517e295712beb15a8d3345f4d38541e39736698a6",
+    "retained": "refinement5-vdb-switched-mode4294969554-judgement.json",
+    "retained_sha256": "7f500f1312a85784ad9d4477c639ccb28707f1724d7851adb4a6cf506f665961"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-recheck-research-answers.json",
+    "source_sha256": "cce7c0414b0fa0d8c49e35ca58c148544978a9fbff7ea05bf7026e6b3b9b2b52",
+    "retained": "typed-vdb-switched-recheck-research-answers.json",
+    "retained_sha256": "be8614f9ad5f0cbce3366d7a461d0d611e25a1f268c1d2746f816e6c498b6370"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-recheck-research-judgement.json",
+    "source_sha256": "06f2b8704aec145a22e0f0fff2348a9460f7d562febed7249c77d138f9ed97dc",
+    "retained": "typed-vdb-switched-recheck-research-judgement.json",
+    "retained_sha256": "1b0aacdac9a3e8ae8ab969110bcec877848d81f8fbfa37444401a5a3fc369679"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-endpoint-freeze.json",
+    "source_sha256": "cd8e9cfdcb7917d528c6fe5c5c020a2e3c43ed5dcfa1a4a530bc80f022adf43d",
+    "retained": "switched-research-endpoint-freeze.json",
+    "retained_sha256": "e6151ff88519e0577072cc1bd02bf1dbfb60d6e1f5ad76380e232ac6fdf4b8e5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-vdb-switched.json",
+    "source_sha256": "0617a06fe5ecc17befd7bed0c231098ce1b544f0d46ab7e5aae024e38f65070b",
+    "retained": "refinement5-vdb-switched.json",
+    "retained_sha256": "79c7944023b67ad04e9c59e0210f469e5a02694ecede0bbd0df7ddb34557cc6e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-vdb-switched-answers.json",
+    "source_sha256": "e12c692ade011e798d1dbd7d21d4bc84f5dd302b055f063964d04b272d90b1ab",
+    "retained": "refinement5-vdb-switched-answers.json",
+    "retained_sha256": "270c33543d3777f44efc86e199717c6b01d9f0fb1e81ae482c97eb38d37a05a2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-eighteen-residuals.json",
+    "source_sha256": "7d2904a8ff39a8ffd38df89ddcd0faf5f64a1f298dd3fafa3cbcc206600c95cd",
+    "retained": "switched-research-eighteen-residuals.json",
+    "retained_sha256": "327cce58e598acd573421b09b4f2c23125fe14cadd84ebf2883e6b6e858e29a9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-absolute-end-freeze.json",
+    "source_sha256": "654009df305b24866a7897118c669f681406a0f731239a11a75351d57f9b862a",
+    "retained": "switched-research-absolute-end-freeze.json",
+    "retained_sha256": "30bd825b6bdc5499d9fe879aa46560d0e90d4b20e73b67e3973f706c2f3bc7ee"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-recheck.json",
+    "source_sha256": "af0487da9418c8457fb38fc7043f3ca9a42aff5c8579d5a08d87cb8a6cd25854",
+    "retained": "typed-vdb-switched-recheck.json",
+    "retained_sha256": "1c04c54472e3dba8f6736bd3ba9a4cbc87997ffeaf87d0d9d86f502f3a53d33d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-switched-ten-local-stage-traces.json",
+    "source_sha256": "6ec1112807935701d73ee6d292b0691b6d2a0295ad9b30b46735b0b11ef3f31b",
+    "retained": "vdb-switched-ten-local-stage-traces.json",
+    "retained_sha256": "4a79a3201f8e92b1317dac062e54d623d49f1506d46a9c69fe01a2a207ae4cd8"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-switched-eight-local-stage-traces.json",
+    "source_sha256": "c85f44c8429c4e8007f1ae7df81309f0180bddb3ce379c1950b928279eb76906",
+    "retained": "vdb-switched-eight-local-stage-traces.json",
+    "retained_sha256": "dd352dc767af369cc93b97698e7ca49b078acb5bf333a6cbe8db492d5305135a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-final-take-operation-analysis.json",
+    "source_sha256": "acb1f1943e221191ccee3fbd68ca510220c1c608642b5c397a5682e6fe266224",
+    "retained": "vdb-final-take-operation-analysis.json",
+    "retained_sha256": "58e3b853064fcc6997cc3c77165a21b224f940d1674977d6a263d4b4aaea3e8d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-end-ten-residuals.json",
+    "source_sha256": "6a7a636aae29e1a9bfa20d927153f7dadd5278098ab8e0821be1f215e7c77e9c",
+    "retained": "vdb-absolute-end-ten-residuals.json",
+    "retained_sha256": "1037816453896628430f8537f833661af9fd6bf3ea2790eaba29b20802325287"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-end-ten-axis-search.json",
+    "source_sha256": "13b93eb709267edd4d20205332f63a92d5220ede3d05b61069ccc6ebf0af28d0",
+    "retained": "vdb-absolute-end-ten-axis-search.json",
+    "retained_sha256": "2bc5b96cc93cac50ab7b3e9752fdfef878d3d05f534153ce48bff29b74c2ea44"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-absolute-period-equivalence.json",
+    "source_sha256": "f9a3e446cfb64ca3726a9e88259b92b22312a39602eed524076b7fe0b21f8663",
+    "retained": "vdb-absolute-period-equivalence.json",
+    "retained_sha256": "cb956e21b0bf05848b33cd7e34bcb60ad55dc2f1cd77c9d53f888c11ce7366a4"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-cursor-freeze.json",
+    "source_sha256": "8b477bc245e222e7f30d6be74bc9c76865930b4b711ac58fd6d2f5f0b32c2c49",
+    "retained": "switched-research-cursor-freeze.json",
+    "retained_sha256": "5d08bd2dacdbed9500281de023423d07d6c9dc1be46bd94d2db5c4d2bd63d0ea"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-research.json",
+    "source_sha256": "6bf1282fdef367f43afe12a63828268fdd7e818cd41abed5e2adaeb024328162",
+    "retained": "second-heldout-vdb-switched-research.json",
+    "retained_sha256": "3b6490728779bfe22072ff604aff5ceb707bd281b92758836ef546872f5ed32a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "be4aefa692ab787087a77cb8fe9e1d81165475aac985c1d2c527cb418ae468ed",
+    "retained": "second-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "b7b965624b37b83a1f3c63698aa34162f56e58117c6fc0e29c220aaf9c5e51ac"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-research-judgement.json",
+    "source_sha256": "4d1fce83e0c0a0aa8f548716908ef0aa28ec69cf799fa126b6cdbf6358e6602b",
+    "retained": "second-heldout-vdb-switched-research-judgement.json",
+    "retained_sha256": "1bb3ee13cd45177c4fa9830af91cf0db94957bb595baa84a7e43c61aed9cdcad"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-general-schedule-freeze.json",
+    "source_sha256": "51d53da10559a99b8e542d8f19bd6722e31e0e0d2537d6dcb05310f910c02938",
+    "retained": "switched-research-general-schedule-freeze.json",
+    "retained_sha256": "3d15df314d73aa41d113d66dbd50edd39f1ee5de86ef66462748fade1a78502e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-switched-research.json",
+    "source_sha256": "4c71f363f54a9c0368a8eaa0389e8ca714df99a05fdafa72d06c72b65839aaf0",
+    "retained": "third-heldout-vdb-switched-research.json",
+    "retained_sha256": "40fff88c26fd6fd31943124d5a68d05f75ec229b64de3ad8518340b3783568ae"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "a4698811570580b35de7da91327474faa70203e44dbacd4a4700f2051789fd64",
+    "retained": "third-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "d336712e711dae5519009c3fcc3d545a86e40d94a86201a000bb361d5d6b32a0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-switched-research-judgement.json",
+    "source_sha256": "6535b2ad328b22be1f4cfa0b2523b652937b4f17a1b05d073a68f3e6cd805bbc",
+    "retained": "third-heldout-vdb-switched-research-judgement.json",
+    "retained_sha256": "fae94a6d5d0eeb80e6684a247ed1a6d9bcbdd4cdd8f5970387cce4d97598e95d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-final-period-freeze.json",
+    "source_sha256": "3ebf3ed6d536518dee54e8511e7c73c1f8333dc15bd48ea1a342bc3f66119a18",
+    "retained": "switched-research-final-period-freeze.json",
+    "retained_sha256": "d92a8c0970a1a753c2c4661baeb97374ec3591e99773d6d71a3dcacff89a8613"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-switched-research.json",
+    "source_sha256": "86a26a5af55c23a6c1418868f6744fc4678296a0cff859df5d7ec0ca3af2556a",
+    "retained": "fourth-heldout-vdb-switched-research.json",
+    "retained_sha256": "b924fd2015046a84188419d0d3851501f7c5a252355a7ff25da79dffb087568b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "424f1866973f57f3f26089d2ea5687e217fdaff1a5bf2780bd5bc43aa6fbc6b8",
+    "retained": "fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "63472cb782d823b1ff0cf8e103d123fcaeac7e30aff1df90d6f96f3c25bec6ef"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-switched-research-judgement.json",
+    "source_sha256": "1ebec7205ec9449edf3cff195e6cb01b249198566e52f14a26d3f75a35326e76",
+    "retained": "fourth-heldout-vdb-switched-research-judgement.json",
+    "retained_sha256": "f5bd6e085b312fc72a4ae772ecfff79056499a17ff4702876436b2962ad775ee"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discovery-vdb-switched-publication.json",
+    "source_sha256": "c54f68208b747c45c153c676f55963f78db9452cef3dccd2259cd9328eddf91b",
+    "retained": "discovery-vdb-switched-publication.json",
+    "retained_sha256": "c2ce95bee7e0869b65c84886a134355ea8a98af17e2e5372265b6d7fc678b0bb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "9aa9fe2b612eb252440e32dff061cb69c1ff70750d1666456152d4eb26c481b6",
+    "retained": "discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "874aa472b37f123aa14df8e8508b4285b8d1ba771a9193425e543a1672c38de0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discovery-vdb-switched-publication-judgement.json",
+    "source_sha256": "e9520333d84f609be27304bbedaa46a98fe748bf2ddfa7fc5ded0c88946a923f",
+    "retained": "discovery-vdb-switched-publication-judgement.json",
+    "retained_sha256": "e2600743ee37aa538f3ff27b6534916f0dde321dea52a58d407b503cf7302134"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-publication-freeze.json",
+    "source_sha256": "efc87526a48bd9704a34f3ca1254a0ed7e3fa30a62cf95064056d13b31f0dcac",
+    "retained": "switched-research-publication-freeze.json",
+    "retained_sha256": "f9b692e933b4ea3d2f776663cf67e9f1a24a6fa2aaed7efbdaabc0290d221e41"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-publication.json",
+    "source_sha256": "8b66aa65c888d8bde4844c63f843dbd6f2764974ea93c8fdd5f124ffd593eb4b",
+    "retained": "heldout-vdb-switched-publication.json",
+    "retained_sha256": "4a7de0a46e2cbb94f4036b1e3361111ae098ee23326ee2530ab5b30e3269ceb1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-publication-answers.json",
+    "source_sha256": "59245518a695f7b52e73c59faccb23ecc2d94d021dc8fae91f289f756aa07cf7",
+    "retained": "heldout-vdb-switched-publication-answers.json",
+    "retained_sha256": "8a102caae3933191de5d6a86536ca0dfd4e5d5849ea3386b98a1d006c38c42dc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-publication-judgement.json",
+    "source_sha256": "b2a20ac215bf5ff4e5f9dadd996093440dc97f3c0027b334b2b6f2cf0f6603b6",
+    "retained": "heldout-vdb-switched-publication-judgement.json",
+    "retained_sha256": "0d0db06bc82a9567db06e7c1d25e95520ef0c1275807aa8fc3b321f24d7b2810"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-prior-discovery-replay.json",
+    "source_sha256": "a155f7db16521af61d3a0d84568326d505cde9c64c9f43f67586c1d5dbbb1650",
+    "retained": "vdb-publication-prior-discovery-replay.json",
+    "retained_sha256": "ed586d417776691241ee3bb4c1d02339bc8114eb66b33f4c26fb0a97fb2cec44"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-trial-122668560943322-discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "417bdf69e0cced0e497e42f2a19533e144c0d70619d16524012dbce880571105",
+    "retained": "vdb-publication-trial-122668560943322-discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "8d65f962dc030df6b55cfae8d2a35b180113be9d9d989861b94b6995a0ef686d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-trial-122668560943322-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "b6e019a0b22fc159d9c119fc24082efa7a1be53cf7e2151c65bebf776e6befbe",
+    "retained": "vdb-publication-trial-122668560943322-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "eb140afb3d2e5ee43db8e766d1072c3c74171f31ff21a3d4c43179414386d200"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-trial-193037305120986-discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "731550888dfded56b413b3160cfa82bd552ce430380883221a00f72261d60459",
+    "retained": "vdb-publication-trial-193037305120986-discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "7c906a8b9c5ba5244f1b43f233d1a1abb04a5011288c002dd98f2256b37542fe"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-trial-193037305120986-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "98833f807c216e91f815290482b7edad489f68d9fee12a7e28f367315a21194c",
+    "retained": "vdb-publication-trial-193037305120986-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "877ab91ec130b3332cd68b13f47577a9aaec6587d07bc9fa0107b3a81a81d3ca"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-trial-263406049298650-discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "e2a0cc8bb5fa93b60e2636bc8de308d70585984e528bc437060d1e48636d991c",
+    "retained": "vdb-publication-trial-263406049298650-discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "5008d92539307bc0a166ca826fea95fad5e637c26654eb4be9b4616e15dc773f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-trial-263406049298650-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "2ea31c48dee0e23d7f1f17fd5f7f181c06d45b7c0a79c7a0c79600cba8a3199f",
+    "retained": "vdb-publication-trial-263406049298650-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "e5d9f02c2198ca516e4f60b092a44cdbbd8880c4df0b8fe7ab6536f6e46b0fd5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-published-stages-discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "bffdd9036988ce27fa0be78c1f78c08143b595f00d21e05c6b07463b03bc76f9",
+    "retained": "vdb-published-stages-discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "a0ee151445969971e07251f1ba7d061b99be4d8c3747eef28cb6aa1de6bc83ca"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-published-stages-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "4e5ff8ad3847a7b1453b7bc77c0e465bef2b4c09601d119747e157a8f83c6dd0",
+    "retained": "vdb-published-stages-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "af7cdb187b6912012b128c979751b0a5f95bda168f8afe76791b15330d480b7e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-stage-discriminator.json",
+    "source_sha256": "4ecf27c7712e1ca9d1d14b8a4e04cd0864a7fb715f3b2fbbf4b110ca574f85a6",
+    "retained": "vdb-publication-stage-discriminator.json",
+    "retained_sha256": "5d0bed65c5be84645202cf8dbc125e9349dd9d42d1129634e94beea4c04d2da1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-stage-discriminator2.json",
+    "source_sha256": "1db97f76a9666ae2576e47f1fbc39b5d90e2dd8cac3f33c59df68a4b3282758a",
+    "retained": "vdb-publication-stage-discriminator2.json",
+    "retained_sha256": "5de5fd0731bd80baea7306884754201b9dc5a436725e2d6a8352112ac76cd39d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-published-comparison-discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "ab3306773865d4b4cfef6a3d502ef5c383cbb06406d4ae0627bfaeea69a2c65a",
+    "retained": "vdb-published-comparison-discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "1eb162378ef8324a5a4b5eaf5c5a344c866fbf6e345a1f8057753ac57ef91af9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-published-comparison-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "d56a81a77ef97afb8af9d951e2e9a886bd9cfefc2fc5e3537a2adeea4b953183",
+    "retained": "vdb-published-comparison-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "7d7cb33270a711c76dc6b259e265643638782e5cb2a92b20d20b0abdc688c645"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-published-comparison-heldout-vdb-switched-publication-answers.json",
+    "source_sha256": "6cd2135d7cca9030671a630794d3667f3738fd41e1375f3f396902aac7e2302c",
+    "retained": "vdb-published-comparison-heldout-vdb-switched-publication-answers.json",
+    "retained_sha256": "6fe1ca5dbcc66aab42072f19444310e84ebce1976b7431e47236018dd45b1e90"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-vdb-switched-publication-answers.json",
+    "source_sha256": "890fcfdc32ac1ff9a4aa27e854aa0ebd46c850594ea5c51b7a0efc34ab4d2bbb",
+    "retained": "refinement6-vdb-switched-publication-answers.json",
+    "retained_sha256": "27b724e2ed4700cd88471ca8e6e996a5eb478b10e9367073a43011247e64f3ce"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-vdb-switched-publication-judgement.json",
+    "source_sha256": "53ac3324563f81c969862de1d0fec241152d0ea647c41066dec36404f12e6135",
+    "retained": "refinement6-vdb-switched-publication-judgement.json",
+    "retained_sha256": "8cebc2016998744d81f0f218c0af6e1fee4988a08e4c97134b00e7a01c99c938"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-vdb-switched-publication.json",
+    "source_sha256": "f3e73a4662f31335f2a654dcadb19e6caa5c4b385b0094f03db4b72716943edb",
+    "retained": "refinement6-vdb-switched-publication.json",
+    "retained_sha256": "66ca7dbc43ca8789496f445320108faa913fe8ffad6b695362030a4dff6381eb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement7-vdb-switch-comparison-answers.json",
+    "source_sha256": "b8a050cc9d76931ab6f1cade1f8ad7c8df53e8d232630df6b2c4f7318b01affa",
+    "retained": "refinement7-vdb-switch-comparison-answers.json",
+    "retained_sha256": "df46345df94bf32e9881e4277358c38bb33fad56bc29dfbe7a3e3eba092de4b3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement7-vdb-switch-comparison.json",
+    "source_sha256": "51c3fbeb984c9e3176e29ba48c65202560452ad9ffeaecc11186a9c52a08237b",
+    "retained": "refinement7-vdb-switch-comparison.json",
+    "retained_sha256": "49fc56f192c01a6dc97bb3d1d1653cb84d3211c7e212f287da4324a2ddc3e292"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-comparison-min16-discovery-vdb-switched-publication-answers.json",
+    "source_sha256": "c612656cfcd55bb2f69759a793324b0147a9b0e44ae82dbaeabec5facfc88bf9",
+    "retained": "vdb-comparison-min16-discovery-vdb-switched-publication-answers.json",
+    "retained_sha256": "7ba121456f8de0f2a59967d981a157d0473cc4907d60ee00e3337a157dbcdb81"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-comparison-min16-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "f0730ab26060bcf158ea281700b2b4831d6f6ab6ba6148b08a541e2b0cf00a37",
+    "retained": "vdb-comparison-min16-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "70cf72e6e44433052ba3b1bc405bf08e75b278250320ab5551130955aa398d7b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-comparison-min16-heldout-vdb-switched-publication-answers.json",
+    "source_sha256": "d3012fe56f46417411ba32ec796703da290eb2444735408ed3abe777c7587c76",
+    "retained": "vdb-comparison-min16-heldout-vdb-switched-publication-answers.json",
+    "retained_sha256": "e8d4fdd2840437dcd08d9be5a6e01adf5e4a02f42fde470845746f5bcbf9b9dd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-comparison-min16-refinement6-vdb-switched-publication-answers.json",
+    "source_sha256": "ff7a87d4d5c3e8e96ebc5de9fe2b3b43f678f8c6a9556ccde2db16d8b80b0640",
+    "retained": "vdb-comparison-min16-refinement6-vdb-switched-publication-answers.json",
+    "retained_sha256": "6fcade2898ff50f5dcba04839bfa22e489873a413cef955ccbbc5609da11db96"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-dd-ordinary-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "f32dde9a165b5d3ea8f39b8de987a149f31be3c8aa44e263813c292347fccba2",
+    "retained": "vdb-dd-ordinary-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "afdb9f1f4d52552da0c2329fe785153bb1770bb5de515daa0392bf64d55970c1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-dd-ordinary-heldout-vdb-switched-publication-answers.json",
+    "source_sha256": "25853cd84849ff34197ab6575635ad3bbeb103ccf8809a108a4fd3004f7873ba",
+    "retained": "vdb-dd-ordinary-heldout-vdb-switched-publication-answers.json",
+    "retained_sha256": "97f43148c196eb67c29f1c75e67ea943af6a1dc528bf1cffa18c70a19e8cc8d1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-dd-ordinary-refinement6-vdb-switched-publication-answers.json",
+    "source_sha256": "332392f34f270d586c42d43c2237f800106d654834213bbd1f59e29b429ff263",
+    "retained": "vdb-dd-ordinary-refinement6-vdb-switched-publication-answers.json",
+    "retained_sha256": "e346a8b60d78efd819171587876e3f2f37f4bb4d6440efe53fb853e1a2cf8b73"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-rate-ordinary-fourth-heldout-vdb-switched-research-answers.json",
+    "source_sha256": "341253de3089e486af0134e658490abcc295b3d0a7bce8290fbbf750a1997773",
+    "retained": "vdb-rate-ordinary-fourth-heldout-vdb-switched-research-answers.json",
+    "retained_sha256": "d017027a9d22d590626367c6794dc3f0ca2463570f4563dc3b3b8fac420dca41"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-rate-ordinary-heldout-vdb-switched-publication-answers.json",
+    "source_sha256": "ff41abbbe7f6ed81dc25691aae545875e16baed15aef8746689e3e53583b05b6",
+    "retained": "vdb-rate-ordinary-heldout-vdb-switched-publication-answers.json",
+    "retained_sha256": "1adf673eb7edd0e0765bc570f8e5c4ad951a393f31f262de1ee974da5ba66cad"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-rate-ordinary-refinement6-vdb-switched-publication-answers.json",
+    "source_sha256": "f1b639db637a07c1d8c440a049404958dc907eacc173e98d8573a6a0029dcece",
+    "retained": "vdb-rate-ordinary-refinement6-vdb-switched-publication-answers.json",
+    "retained_sha256": "eec4cfe3ba075c15909125b577881bba501a1ada5f9960e84962bf985273656c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-tiny-book-store-1073741824.json",
+    "source_sha256": "be3b492fed6a9871ea95a9e11bbcb3451c8565ed0ad2ca92a027c7c0104aabb9",
+    "retained": "vdb-tiny-book-store-1073741824.json",
+    "retained_sha256": "29672d156a90b299588d62d9598107f43771027dedda680c1a62890b829b784f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-tiny-book-store-1610612736.json",
+    "source_sha256": "cde8b818862a3819c1b4bcf16dc182e51c13e3442fba24ad43fcb30b36c39c29",
+    "retained": "vdb-tiny-book-store-1610612736.json",
+    "retained_sha256": "b72f197d35c944a903a5fdcd997a0b47af42fcc8803f5cfee05df4f84d6de1b2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-tiny-book-store-4.json",
+    "source_sha256": "2abd9458238b9aa12060f3959a2ee3f517de2bc1419bf795d5fd4514554af00a",
+    "retained": "vdb-tiny-book-store-4.json",
+    "retained_sha256": "648361a4d160a4d99405cfb519176d49c09c810b9496307f92badedc3c47a165"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-tiny-book-store-536870912.json",
+    "source_sha256": "1899b2bcad46a6d24d3e00b29c9dd75dc8eddc09a47e62fcb60774ae6999bbeb",
+    "retained": "vdb-tiny-book-store-536870912.json",
+    "retained_sha256": "9f73c3b86ac58f072ba1df1806821659c98578967e853069c12aebce8bf9a6aa"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-tiny-advance-store-all-replay.json",
+    "source_sha256": "004daf47977da581d9b23a207c4c5d36522b712a28dedc62233c3aa182b7bb62",
+    "retained": "vdb-tiny-advance-store-all-replay.json",
+    "retained_sha256": "b72e5e5f99f9985a9df645fed421de8094de279e9aec050d477f90f9ddb12a38"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-publication-v2-prior-discovery-replay.json",
+    "source_sha256": "e051202b73d9cf5a6c9155ef6425600b24fd49ed2a8e5801ceeead1fd295a58f",
+    "retained": "vdb-publication-v2-prior-discovery-replay.json",
+    "retained_sha256": "a665d1582a00cec81b356574b09d4fc3a05d99368384ac2aba2d59ab7a20cf0e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-research-publication-v2-freeze.json",
+    "source_sha256": "3c4736931305f26cdca357d931997b0bff644056bfd3d4e9b387d46ad170973b",
+    "retained": "switched-research-publication-v2-freeze.json",
+    "retained_sha256": "19ecf1892f950cb4a0e242e46a3523ae3b1b3917e550ccbac005b7be4759dd8c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-publication-answers.json",
+    "source_sha256": "200ed1845e321a7c271fcce8ae27e2610d5218a5f00ac603ce83492db9a52465",
+    "retained": "second-heldout-vdb-switched-publication-answers.json",
+    "retained_sha256": "5c00d325876997c5b4b736b639c803ac40f404ffd805110b88f6153e4b88cb80"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-publication-judgement.json",
+    "source_sha256": "5e7e00ea446db4f3e874eb87ae1628f30738bbcb6c6836022f73643ee31475d4",
+    "retained": "second-heldout-vdb-switched-publication-judgement.json",
+    "retained_sha256": "fe1d7b7c33cb6f6fda54a9cc9b3531778cefb22b3d3451fd4ce7b289460483b7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-publication-manifest.json",
+    "source_sha256": "11213f80f714df7a450f5f50177472f8dfca9a7f095fc224b6447aa3a3070973",
+    "retained": "second-heldout-vdb-switched-publication-manifest.json",
+    "retained_sha256": "1f1b0f865837a7589b74e94dd3de4a7c8002e5ae193275f7d4ddcb84b67043d0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-publication.json",
+    "source_sha256": "8e997f70f64a471e22a13f43cda912edbf01eb15f39352715f6d11462e289506",
+    "retained": "second-heldout-vdb-switched-publication.json",
+    "retained_sha256": "d219fdaa2b5c17b60d05d4baf6dc9112477cb5dd49a90a686a06058322a2a72d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-production-v1-all-replay.json",
+    "source_sha256": "831ea9d1fe4c405a76c2b596c1768a19709e3c274c599b42ac70b6d3867157ff",
+    "retained": "switched-production-v1-all-replay.json",
+    "retained_sha256": "2c32c49261e1608bc126b912f470b306d44573ba3bbcfcfaa896328f4846fef7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-production-v1-formatted-freeze.json",
+    "source_sha256": "f50d56ded26b1c2fac7a76b106e2484504c7ae9e32485812d9b0cae68a6ce8d7",
+    "retained": "switched-production-v1-formatted-freeze.json",
+    "retained_sha256": "e98332539ee08612e4a5f6b173185e20220781fda45643123a3eec7cf5debb57"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/switched-production-v1-freeze.json",
+    "source_sha256": "71e105699fdcde2d28621c2b249c08c003e0e9e5d1456303bd7c71d473392a35",
+    "retained": "switched-production-v1-freeze.json",
+    "retained_sha256": "30c8d5f89c40ab31208e5067880f31f5a62bcbf1bc6306a9ab61ecfb5cc356f0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-dispatch-answers.json",
+    "source_sha256": "76f13ee9ea1e5015d5b0b608472a24c80d3bb7749db3db403d5a3ca63923df43",
+    "retained": "heldout-vdb-switched-dispatch-answers.json",
+    "retained_sha256": "ab7ee22a63e994b15ca07cd97fb72b1e0d321248a53544a798c1ed5cf3274e99"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-dispatch-judgement.json",
+    "source_sha256": "e1adcf8009bfb92f9adffa32eedbfddb7e9eddd60784f8e8d21fdf0eb9213866",
+    "retained": "heldout-vdb-switched-dispatch-judgement.json",
+    "retained_sha256": "5eac6a233a77282cdd30aa66b9d5f1f4459682c5df97a27855121eff62f61555"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-dispatch-manifest.json",
+    "source_sha256": "fda0174e47d20edd5b5dcb40c5425acab16ae29714340ee7a594462ac61418c3",
+    "retained": "heldout-vdb-switched-dispatch-manifest.json",
+    "retained_sha256": "30abd48e71bdd0a0333a6e30fc08b80b9b92b3f94ba5bfde40cb262a33c89adf"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-dispatch.json",
+    "source_sha256": "9782c510c8dee6943eaaea44c8467a37b032d5a13f9e768b78cc6c33787d075f",
+    "retained": "heldout-vdb-switched-dispatch.json",
+    "retained_sha256": "691f04e01a5e562b0269827aef26d4fe8edcbc5b3437696c64f78564f95b26fc"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-independent-manifest.json",
+    "source_sha256": "aab8041cbd6d1b296fcb8d35e4044c1a0dd1cfde2af1ea7b246debd78731174c",
+    "retained": "typed-vdb-switched-independent-manifest.json",
+    "retained_sha256": "c0e4ad830ab98573436ca23ea30835b3786ac3e78b78f341d4b76137b0110c94"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-independent.json",
+    "source_sha256": "50f7ffeae44e898804d473a76d6999aacb7be37fea24f7b3ede9cfd40f3216e9",
+    "retained": "typed-vdb-switched-independent.json",
+    "retained_sha256": "450f8a93add8f3b608087b958460ce9010689a4907a4f789a1a258f8a60d2599"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/formal-recovery-validation.json",
+    "source_sha256": "7084703ce21272e025e90f87f8513c3260ba0cdfdb7b9287665154151f4ae363",
+    "retained": "formal-recovery-validation.json",
+    "retained_sha256": "d79f3ebb20ed3a4edb4ac1cd48a8deafd81371c03e2b1056e364376b38a5d6d2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-translation-advance-audit-input.json",
+    "source_sha256": "26753e31f3d4951a6793dd69ddd3671ba56c6524efff30afdd07c1fa7a475e3a",
+    "retained": "vdb-translation-advance-audit-input.json",
+    "retained_sha256": "a43e37b4684cdb47e4cc08a0aa99a4dc8d406788d9e5a2b353d143729caa5182"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-translation-advance-audit-judgement.json",
+    "source_sha256": "d85af97d62b2729aa17dee23241b60bb7a19b8b81fcad9e118736566818bbd6e",
+    "retained": "vdb-translation-advance-audit-judgement.json",
+    "retained_sha256": "b7faeedd677002f3ec52bf06dbda6fb36579c1ff2c69a0ce2ea9f40751fbc836"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/vdb-translation-advance-audit-research.json",
+    "source_sha256": "b28b71156a634f878995b136faf4bcaa14db5d96286bb402bddba5412204e482",
+    "retained": "vdb-translation-advance-audit-research.json",
+    "retained_sha256": "f71839f6f4047f23e641ce3dcb7630118b4023582d0a45d58bdda80052796459"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/progress-safe-ddb-controls.json",
+    "source_sha256": "976ccee6662761a72a8db6bdc986dc40483aaf0e0e807cc35f3c3a612ec881f8",
+    "retained": "progress-safe-ddb-controls.json",
+    "retained_sha256": "0ba1c02d05769dc46584f2e70cb0011cd17543c0fd9ef713f6bff38fab43087e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/progress-safe-vdb-controls.json",
+    "source_sha256": "cd46ece320cfb8d755b43cdf05cb8423663434669d53322a24652bb71469b039",
+    "retained": "progress-safe-vdb-controls.json",
+    "retained_sha256": "c508928769bd1475d767d87de065f6a2a927c107bb3d9eb160fcf4271221aa04"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/progress-safe-ddb-controls-answers.json",
+    "source_sha256": "5c1c524b3562b4bf3d2ba7882cd0bdf3b6be660cd7e7aaade71da83f9b1a6ee4",
+    "retained": "progress-safe-ddb-controls-answers.json",
+    "retained_sha256": "1f7b1d55d1ba23f0ff521559ca21eb3d248047508f7d771a9cd285d1f4dea6cf"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/progress-safe-vdb-controls-answers.json",
+    "source_sha256": "5e886d546ef56c740b952904cdb6eaebc3c207c7b9783aa0bba65185ba252d1d",
+    "retained": "progress-safe-vdb-controls-answers.json",
+    "retained_sha256": "a2e277c9c7bd47421df8ac03625f4e36d5dc5647e05481352f6b6ae4f9f72bfb"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/progress-safe-controls-judgement.json",
+    "source_sha256": "20d73c9bfbd2782c3f72093b2224d824ea5766b59bc36f631a4d26618c12427f",
+    "retained": "progress-safe-controls-judgement.json",
+    "retained_sha256": "34b4e51e07987df6c8fa32c19dbab504e22a4af019c3b223f376f22e27155659"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discovery-vdb-switched-publication-manifest.json",
+    "source_sha256": "69ee229f51c7a04c52829b465353a6c0cd149fa009ac145204ff099bb615a6a3",
+    "retained": "discovery-vdb-switched-publication-manifest.json",
+    "retained_sha256": "ed4aeb40c32d70b012ce21255e6859c71f5bec3e160f2304580270c3cad2c316"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/discriminator-syd-manifest.json",
+    "source_sha256": "1189d3065c04191b093e14acc309b4d05314bc59e5988fcc07707fa8b96f51cd",
+    "retained": "discriminator-syd-manifest.json",
+    "retained_sha256": "f1cda3ad38c7005c306d1d3ab089bf81b5a81eb3eddb2afed1baca80254d702d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/eighth-heldout-db-manifest.json",
+    "source_sha256": "84bf65bd66355534a4765404ae973e9a0e007b9a306a249e5e5d9c0c5223d17e",
+    "retained": "eighth-heldout-db-manifest.json",
+    "retained_sha256": "8ba91aca7727705373bb39b5e63d964f430e928273abf70dfd1ff6483d92ba45"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-db-manifest.json",
+    "source_sha256": "ea73c48a5ec0868fa7330ed1b92224c7261f1e7c7eef7623bde062879337abe2",
+    "retained": "fifth-heldout-db-manifest.json",
+    "retained_sha256": "dfb9b9ff077e81d9ae85bbda82b17518f7c66c70ba84639420b1ffe843fe4d39"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-ddb-manifest.json",
+    "source_sha256": "013c4eca61feadc2df89cf9ffe7678a52c6f074ae8df266c43369b6d64107055",
+    "retained": "fifth-heldout-ddb-manifest.json",
+    "retained_sha256": "cc7a205d30338ce938868ec31c146870907e8aee49f5c04fef55cd76d393f70d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fifth-heldout-vdb-noswitch-manifest.json",
+    "source_sha256": "b7611ceabd6735917657e74f52b5ebd6d220b8ea4403a3462fa5764a9f7a087b",
+    "retained": "fifth-heldout-vdb-noswitch-manifest.json",
+    "retained_sha256": "cc200beef6dd433a83537b482a7d1da591d5548515a2d5f772a5b63fcf28d8a8"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-db-manifest.json",
+    "source_sha256": "c4e7ec6e8ac0231916a970f2e0509bc584a2be49ac8aa9931e743c58a522b225",
+    "retained": "fourth-heldout-db-manifest.json",
+    "retained_sha256": "d44fdb06e84860de58a3957a6b399d4ec0c202d9a3e31005007b4dd152e8d2f2"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-ddb-manifest.json",
+    "source_sha256": "91b52bc349c2c148aa9bf1ae77a711aa40c3a644032496583e0384c563190925",
+    "retained": "fourth-heldout-ddb-manifest.json",
+    "retained_sha256": "6fc113c3abaf965caac96790030d18f194f83e2982726b3a2da475b52aa96d40"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-noswitch-manifest.json",
+    "source_sha256": "d3797bfc3415c49fb7e6c9218c8c046049131bfa5787325010fb18fbae84ff00",
+    "retained": "fourth-heldout-vdb-noswitch-manifest.json",
+    "retained_sha256": "e13fdfb5b6f0b8dc43f08438c2972021b2cb61f9d49abd71e9d345866e52880a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/fourth-heldout-vdb-switched-research-manifest.json",
+    "source_sha256": "fe4f36195c50d10a47977e9f1b41e27ccf1e000debf3ed99936ce85d1a668aca",
+    "retained": "fourth-heldout-vdb-switched-research-manifest.json",
+    "retained_sha256": "c4dd7426722522694ad31f0bdc6d80e75a6d5be08f347d765eb3cfaa0e41cde1"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-db-manifest.json",
+    "source_sha256": "c12d2b71343489836ffac108316f25de6425008c46e29e9d6016fde058aabb78",
+    "retained": "heldout-db-manifest.json",
+    "retained_sha256": "fc02f2eee56e8e2dea6196eceddae6c37ab6857e984475864c0399f6204af5f3"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-ddb-manifest.json",
+    "source_sha256": "3f228afe06e5009e729db97f3270110688a3a40cc23ffe82e84d1bca606d272e",
+    "retained": "heldout-ddb-manifest.json",
+    "retained_sha256": "fa0303fab707aba11f6c3a88d365fff3a35a86df769e8d307bd6a2399df59cfd"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-syd-manifest.json",
+    "source_sha256": "c6d3cadfa2f291655e1c675630c6300bbba9454b2f0cf5646643282bb61af7b9",
+    "retained": "heldout-syd-manifest.json",
+    "retained_sha256": "4105aac74978dc8d6a6649480be4cea589a6183a12123f51190a6214b80fab25"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-noswitch-manifest.json",
+    "source_sha256": "7394061f0a61ed2e6fdc6cf0684f5b32936b6ed4d1f6854f9fe51610cabdad36",
+    "retained": "heldout-vdb-noswitch-manifest.json",
+    "retained_sha256": "b9ca4c0a852ba9edb6dd86fe2e107f3eb6fb68c1b1cf51d2a82e8b422b7a8629"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-dispatch-manifest.json",
+    "source_sha256": "fda0174e47d20edd5b5dcb40c5425acab16ae29714340ee7a594462ac61418c3",
+    "retained": "heldout-vdb-switched-dispatch-manifest.json",
+    "retained_sha256": "30abd48e71bdd0a0333a6e30fc08b80b9b92b3f94ba5bfde40cb262a33c89adf"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-publication-manifest.json",
+    "source_sha256": "27829f98020b2d40d7470e71c68244c63924d74815c90a45aa2bbac8a17619c2",
+    "retained": "heldout-vdb-switched-publication-manifest.json",
+    "retained_sha256": "5c89f7388698c118db7ca89308bbfc4f76f4803108eafae5dd3ee82b02688c5a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/heldout-vdb-switched-research-manifest.json",
+    "source_sha256": "5dfa1cd1bfc320e7d2e6cbe4fd539b4003246753dd012d4b2e2ab5bc27c717b1",
+    "retained": "heldout-vdb-switched-research-manifest.json",
+    "retained_sha256": "7687f5029777fd112a055b48f90cbe73046c947ca27a4c04703690e2f3e8c676"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/oracle-only-vdb-large-index-manifest.json",
+    "source_sha256": "bd5b87617723662a2d32de46a4736ccc0447ee0b28833951eb811fd8d163a024",
+    "retained": "oracle-only-vdb-large-index-manifest.json",
+    "retained_sha256": "9dd9120d4d3fefb27d15b98ff088b89ac4f2538bd6b1b014c4f4080fb7c04738"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement2-syd-manifest.json",
+    "source_sha256": "4e55712536c14be57a8a52db33dbaf4657755c68f08919be5a3d110f7ca07414",
+    "retained": "refinement2-syd-manifest.json",
+    "retained_sha256": "b6580fde04a17fe6e72e90c3ea734c649c2509f8376913d6052a69f45fc7326a"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-syd-manifest.json",
+    "source_sha256": "e9a93cd5e5f6a7e500cbabee7f74fa5dd5b765620bd6cd0e5c1c722b46e31d5f",
+    "retained": "refinement3-syd-manifest.json",
+    "retained_sha256": "cda68932cb6a158ac6d96f4a3bb903d66f5a5b96022c934a8bb7e7997c345be0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-vdb-noswitch-manifest.json",
+    "source_sha256": "d703bb2e77b967ad3cf6ae73087ec0339142d38d1125a4e4deed1a0027a082c9",
+    "retained": "refinement3-vdb-noswitch-manifest.json",
+    "retained_sha256": "97ea4aec6b41dc5c514f9da570fb4f942bd0670dbfe355c1eea9d327757bb090"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement3-vdb-switched-manifest.json",
+    "source_sha256": "73c264c42be9df53a911606009da739c9a51f045f5e8ea8ef196978b0262f177",
+    "retained": "refinement3-vdb-switched-manifest.json",
+    "retained_sha256": "b7f0a046bdaebcae357b121be07078e1fa7f22cbbcc8744d5199b2de0b6ab037"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-noswitch-manifest.json",
+    "source_sha256": "ade6acf6ba9f562e85f8a19f98608c94240f71fb8740f13baffd22d0347b2af4",
+    "retained": "refinement4-vdb-noswitch-manifest.json",
+    "retained_sha256": "d19e80461c62f2c22a18a315193bb4e38b9af1930b80c8426180bc356eeaee8e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-switched-manifest.json",
+    "source_sha256": "f3f9c0e28be6a0e61970a7e9d63e9b13c2c28a61d83859ee77851dc23d08f7ed",
+    "retained": "refinement4-vdb-switched-manifest.json",
+    "retained_sha256": "e57bc7235b759f3f14931ad38c01cb89114433ccf0eafacd8b581209afb38e03"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement5-vdb-switched-manifest.json",
+    "source_sha256": "4fe31521ea27e2521e0a21e226db3be2eb576181fbd6b3180307f5e36f5b24d3",
+    "retained": "refinement5-vdb-switched-manifest.json",
+    "retained_sha256": "6417463b20303c63e73a9d6fde699b111e428d00b512402fc0b96f2e8f5aa28d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement6-db-manifest.json",
+    "source_sha256": "7bdb8bcc45f1afee81fde432a64c212a02900c77d9cfefe98594f6e8c0a1bbe1",
+    "retained": "refinement6-db-manifest.json",
+    "retained_sha256": "11c10b0e66a3e3046892c6f77902e6be4b4df393009ec0cab32d9aea0f6538b5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/refinement9-db-manifest.json",
+    "source_sha256": "04466a6b770d0d4a2840bf48e1776ebe259759c37486ebed12e2aa45d73618b5",
+    "retained": "refinement9-db-manifest.json",
+    "retained_sha256": "0107eeb68d7199ff772b8000f83d852b59b160cefbcf737b5b17c498ae9cadc4"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-db-manifest.json",
+    "source_sha256": "1659bba3be75b48b01ae2e88e1ccb13030a09a4396824438594b18dfad432ee6",
+    "retained": "second-heldout-db-manifest.json",
+    "retained_sha256": "574be88a6e943b4b97f66a550fe322e572aad458b74b88eae64b0c5531a9d594"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-ddb-manifest.json",
+    "source_sha256": "459e764dfbeb700f3ecf990bf45419bdd2d8665974f4d45746e43f3cbc8092c0",
+    "retained": "second-heldout-ddb-manifest.json",
+    "retained_sha256": "22feab059e02d78d7358a59aa5c4762de4ca9dfb95e740287cd8eb904373e4ca"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-syd-manifest.json",
+    "source_sha256": "6ccd7053cd506095195c4e6590a270695ccac3c8ba14aeb153a5dddabcd3fe60",
+    "retained": "second-heldout-syd-manifest.json",
+    "retained_sha256": "3b29b2c7911ca1c757299555effac7db129801c7c48a4abb6a6363373b5fc59d"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-noswitch-manifest.json",
+    "source_sha256": "fbecc35a4d7bce993a7aafcb501767072a53bc15e8c9b9f551303fa68299c93d",
+    "retained": "second-heldout-vdb-noswitch-manifest.json",
+    "retained_sha256": "0880b473fc8e4d53824eac3361965541368672bcdaa68d51cfc56d31e8ee68b5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-publication-manifest.json",
+    "source_sha256": "11213f80f714df7a450f5f50177472f8dfca9a7f095fc224b6447aa3a3070973",
+    "retained": "second-heldout-vdb-switched-publication-manifest.json",
+    "retained_sha256": "1f1b0f865837a7589b74e94dd3de4a7c8002e5ae193275f7d4ddcb84b67043d0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/second-heldout-vdb-switched-research-manifest.json",
+    "source_sha256": "09132b88d58c89c543db1cc179b5d9e2b043f2a81ca544f1610c777bc7fa3509",
+    "retained": "second-heldout-vdb-switched-research-manifest.json",
+    "retained_sha256": "444efb5e713c64f600ce5e54fe9fcbf76bb9a9d6983af95d0984650c56a45618"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/seventh-heldout-db-manifest.json",
+    "source_sha256": "1aa47a8bf6f40b7a71b00f5809601edf42ddbdd5e39be5b63bd1c1ed6303481d",
+    "retained": "seventh-heldout-db-manifest.json",
+    "retained_sha256": "c001c49f2c0af44b6eca94d5652ea1035147a0115b7b607c489c84b1aacd7fd9"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-db-manifest.json",
+    "source_sha256": "ccd3d6435d405e6bfbc52d9b6735b62104fa9ee42648e7d5f1b153b73fa554c0",
+    "retained": "sixth-heldout-db-manifest.json",
+    "retained_sha256": "81e5b6732613654417575365b8e8c84b83429bcc340c25d40eb489a421fb8ed0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/sixth-heldout-ddb-manifest.json",
+    "source_sha256": "358eef90302391ff6be403f06fe418e88eeabd243f50da0d87df9ae5b21f7826",
+    "retained": "sixth-heldout-ddb-manifest.json",
+    "retained_sha256": "0159d7e86e6929f4ecdccad20461ea4443184d984280a19e5442b13941d01129"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-db-manifest.json",
+    "source_sha256": "85bb3ef5d3ef79ac24fadcf9f14f89c10d513d86bd78a8bd3a6e512b51af12fb",
+    "retained": "third-heldout-db-manifest.json",
+    "retained_sha256": "6e3f756604a16d541ef9225756d00176f5a099ccc027d10a3f5f91690084a77e"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-ddb-manifest.json",
+    "source_sha256": "d1230bd243a983fb042ff70a7d7ed3b0764a618ce39d54398b79a41ca99a8dcb",
+    "retained": "third-heldout-ddb-manifest.json",
+    "retained_sha256": "be827846bb295e6311f782482ee673762b236a059008373e1b62a8055321a843"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-syd-manifest.json",
+    "source_sha256": "35bfac2aea42c0f65f5285787755f6924aace32ecff389ed2b17d94c83e1b908",
+    "retained": "third-heldout-syd-manifest.json",
+    "retained_sha256": "6b0a566521193405ffa52522f294cbcc64b1820e92db723f559eb4b9369a5f1c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-noswitch-manifest.json",
+    "source_sha256": "1de8482415f9e2ab731fa96405b84d504837ff039f31e7fea0787ac555aaeac3",
+    "retained": "third-heldout-vdb-noswitch-manifest.json",
+    "retained_sha256": "865e51ded8ac4adca903040ae1a7348ed6dfc1da52e94cc022be47983edddef7"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/third-heldout-vdb-switched-research-manifest.json",
+    "source_sha256": "b6e5128bc4ba0ad2485888c45e1f735a3b3cbeb7e22c1b407a3eaa880a7d6c0d",
+    "retained": "third-heldout-vdb-switched-research-manifest.json",
+    "retained_sha256": "577e97120c1bceeaa8539f80b282f8e8b7cd05dd4883154103efd5e2ccf11b14"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-depreciation-padding-independent-manifest.json",
+    "source_sha256": "695b143bef0bfac14f4c43f729d742ea154f0de33d701f0a9683b6b3c630a3f3",
+    "retained": "typed-depreciation-padding-independent-manifest.json",
+    "retained_sha256": "9aa9caf2dac3f3997216156fdb3b9c03dbef7bf3682b739f73a1776bb1d4ae68"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-depreciation-padding-manifest.json",
+    "source_sha256": "44e4aab2fb6f05e1a491aee5a70e780170e4e2c71ca766b4a38650db17362484",
+    "retained": "typed-depreciation-padding-manifest.json",
+    "retained_sha256": "ccc79df2e9e51d415adb676535f85de0deee437e37ea1bca637cc24a9b499bc0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-independent-manifest.json",
+    "source_sha256": "020e8c2b5a0c9fbff5b18b389ccfa3ab74c3b5df95dc5ebf73984c9a3f7c2cff",
+    "retained": "typed-independent-manifest.json",
+    "retained_sha256": "7ffedf7b0afcc908616ef3e3be2a41150a40f3aa9e9c0d4ec4f5ec38818a0af5"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-independent-syd-manifest.json",
+    "source_sha256": "70f484f8497c7b3ee8bae4a8942b6e63742cbee1e69d359250d4dc0e28cc5a2a",
+    "retained": "typed-independent-syd-manifest.json",
+    "retained_sha256": "ef4ae618018d93909ed89d28df2cd1a6d8d9c492f0d64691d4a4e7056d638d4f"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-syd-manifest.json",
+    "source_sha256": "505f9d8c4fbe7db4abad15ca829aa1d258282c833a9c19bcbd564afabc40c5ba",
+    "retained": "typed-syd-manifest.json",
+    "retained_sha256": "154bf4b521ac2bd930ac6a17e8e01e524e868bbf3d6144cd617040a8412b0a3b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-independent-manifest.json",
+    "source_sha256": "aab8041cbd6d1b296fcb8d35e4044c1a0dd1cfde2af1ea7b246debd78731174c",
+    "retained": "typed-vdb-switched-independent-manifest.json",
+    "retained_sha256": "c0e4ad830ab98573436ca23ea30835b3786ac3e78b78f341d4b76137b0110c94"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-vdb-switched-recheck-manifest.json",
+    "source_sha256": "9f0240ae1ecbbb58d73433f430f5963fc4292f05c82dee3e02bee8d30ec21250",
+    "retained": "typed-vdb-switched-recheck-manifest.json",
+    "retained_sha256": "0c2bfd8190dc20bb2eea2919f2fb57058c2d9cf95fbc8251001c04cdacbc4ec2"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/cases/cases.jsonl",
+    "source_sha256": "09607e56f9b01d39f81d690100383e46e7e55b5c7bb6c648c54ca95f09a74483",
+    "retained": "typed-cases.json",
+    "retained_sha256": "ed4ced2970baa19cd05e8960902ac72d83dc86a840a84b5212f83708ee9a5ba7"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/outcomes/excel.jsonl",
+    "source_sha256": "b914d7b15944c5e71f30b9434a352fe271b5c55aa4b792776f742114cbb5b09f",
+    "retained": "typed-excel.json",
+    "retained_sha256": "e19b61b89e94ea3691e828c49d37241b278adc25442a89ec02d868565791207f"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/manifest.json",
+    "source_sha256": "40e88f4b1dce4f8348e5bd5234ebed0b3128e8109d9902232df9f06ae1aaad69",
+    "retained": "typed-manifest.json",
+    "retained_sha256": "aa8a2e86a511fc0e0fce022a4d3732604b6fe697a9f5b6857daa946237fc2afb"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/outcomes/local.jsonl",
+    "source_sha256": "641efcc6b62474fd26e406fc85946cff360ce7b4df86fda6a2a42678c49a0ce4",
+    "retained": "typed-captured-local.json",
+    "retained_sha256": "c22c95419a7447ab496e696907d357edaed947dce294b3f75211180f8f77bc62"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-local-v2.jsonl",
+    "source_sha256": "956206873ac1c7b93931a7d87272de5a9a9641361743a0ebad113ab4f6c92bc6",
+    "retained": "typed-candidate-v2.json",
+    "retained_sha256": "b23f0287857ef3eee3292bbb179995c5d43c8e3a4d5852ecfce1efcc9a38ffcc"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/outcomes/local-depreciation-v4.jsonl",
+    "source_sha256": "956206873ac1c7b93931a7d87272de5a9a9641361743a0ebad113ab4f6c92bc6",
+    "retained": "typed-candidate-v4.json",
+    "retained_sha256": "b23f0287857ef3eee3292bbb179995c5d43c8e3a4d5852ecfce1efcc9a38ffcc"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/outcomes/local-depreciation-v5.jsonl",
+    "source_sha256": "956206873ac1c7b93931a7d87272de5a9a9641361743a0ebad113ab4f6c92bc6",
+    "retained": "typed-candidate-v5.json",
+    "retained_sha256": "b23f0287857ef3eee3292bbb179995c5d43c8e3a4d5852ecfce1efcc9a38ffcc"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-20260929/outcomes/local-depreciation-v7.jsonl",
+    "source_sha256": "956206873ac1c7b93931a7d87272de5a9a9641361743a0ebad113ab4f6c92bc6",
+    "retained": "typed-candidate-depreciation-v7.json",
+    "retained_sha256": "b23f0287857ef3eee3292bbb179995c5d43c8e3a4d5852ecfce1efcc9a38ffcc"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/cases/cases.jsonl",
+    "source_sha256": "9409e059c6d311f767b105aa7ee89d77eea17dcb01d84f03557d34a72c734f56",
+    "retained": "typed-options-cases.json",
+    "retained_sha256": "4d534bcc454585a060d3e4de6cf414b55fa28ec099b50ef7882bd006b1b1b464"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/outcomes/excel.jsonl",
+    "source_sha256": "120b760108ae6bc71a0cdc94aa9fd1e8afd30b5abe40ee1fd932fc0a84233b3d",
+    "retained": "typed-options-excel.json",
+    "retained_sha256": "c8f211568cb2768335ab1e4d9bcbd34eb0757f25d9657f593955e03629232d0c"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/manifest.json",
+    "source_sha256": "bd7a5d18625157ebc54c7365e4c5a2be55be875429ad57eac9f8196afcd5d3ce",
+    "retained": "typed-options-manifest.json",
+    "retained_sha256": "f6cdb3e71fa5bcc350822e6b3c69598e7e3de3555246a652e8829088d75777fe"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/outcomes/local.jsonl",
+    "source_sha256": "862f9354f6d194b808b75fc2d1a76e6cb1304e02bee8a2aec0cbb8b1a240fc30",
+    "retained": "typed-options-captured-local.json",
+    "retained_sha256": "ef3ddf5334e3cd7915bc54d885db7064f3341aaa548ef1500b0bdfa873941fd0"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/typed-options-local-v2.jsonl",
+    "source_sha256": "54dd12d400f45e2e870c207f081cd894335afe7dbfc188bcd08d226b5df1ab87",
+    "retained": "typed-options-candidate-v2.json",
+    "retained_sha256": "2640de4ffe5bdfd5de93356242bf11052e148a22affd00c519c2648155a92c6e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/outcomes/local-depreciation-v4.jsonl",
+    "source_sha256": "54dd12d400f45e2e870c207f081cd894335afe7dbfc188bcd08d226b5df1ab87",
+    "retained": "typed-options-candidate-v4.json",
+    "retained_sha256": "2640de4ffe5bdfd5de93356242bf11052e148a22affd00c519c2648155a92c6e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/outcomes/local-depreciation-v5.jsonl",
+    "source_sha256": "54dd12d400f45e2e870c207f081cd894335afe7dbfc188bcd08d226b5df1ab87",
+    "retained": "typed-options-candidate-v5.json",
+    "retained_sha256": "2640de4ffe5bdfd5de93356242bf11052e148a22affd00c519c2648155a92c6e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-options-20260929/outcomes/local-depreciation-v7.jsonl",
+    "source_sha256": "54dd12d400f45e2e870c207f081cd894335afe7dbfc188bcd08d226b5df1ab87",
+    "retained": "typed-options-candidate-depreciation-v7.json",
+    "retained_sha256": "2640de4ffe5bdfd5de93356242bf11052e148a22affd00c519c2648155a92c6e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-independent-20260929/cases/cases.jsonl",
+    "source_sha256": "cb35d2cadaaf9d9006d959d643707b122993cc50f6bac130052438b69243aad8",
+    "retained": "typed-independent-cases.json",
+    "retained_sha256": "ff55f8037824e22e8f8ec1dc868a5e90fb7b14dd9a4c4ff23606306ff0c9a3e7"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-independent-20260929/outcomes/excel.jsonl",
+    "source_sha256": "0966fad4ff96bfd7bcaea2c70a0af79f459792d958dca5f50214dbbf30e47f3e",
+    "retained": "typed-independent-excel.json",
+    "retained_sha256": "5faef6e85f62ad2e14281da3bd666f50ec7fe2620977f6aca72230d8033d8109"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-independent-20260929/manifest.json",
+    "source_sha256": "0009b737b6e02439afa704c417ed4f98133e8ff5a854f286a953be28f76c6f4e",
+    "retained": "typed-independent-manifest.json",
+    "retained_sha256": "96fba06720cb22e0bee3a1889c7e75cdd01e60a64378c36afc1dad0d84d01882"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-independent-20260929/outcomes/local.jsonl",
+    "source_sha256": "802d0904343135b65d6741dc89889e0c8e4665b5c96d89448114ad1a30ab4ff0",
+    "retained": "typed-independent-captured-local.json",
+    "retained_sha256": "eafadc00816094f39e7f93e1ccf3bad07228320bbf5e0c52362c0cd17afb5bc6"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-typed-independent-20260929/outcomes/local-depreciation-v7.jsonl",
+    "source_sha256": "802d0904343135b65d6741dc89889e0c8e4665b5c96d89448114ad1a30ab4ff0",
+    "retained": "typed-independent-candidate-depreciation-v7.json",
+    "retained_sha256": "eafadc00816094f39e7f93e1ccf3bad07228320bbf5e0c52362c0cd17afb5bc6"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-20260929/cases/cases.jsonl",
+    "source_sha256": "fc271540959af3a4f3ed7424c340e13790ce294898fdeed763eaf2de6530b850",
+    "retained": "typed-syd-cases.json",
+    "retained_sha256": "31be26649164f744cc213518912880ccfbfdbeae677e36cb1f8efbd90f0fcac0"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-20260929/outcomes/excel.jsonl",
+    "source_sha256": "c5a6cce63b73fc032c2c5ade355efe0a54fa348b32a0bc88427c5245381f3a0c",
+    "retained": "typed-syd-excel.json",
+    "retained_sha256": "60171929cec640ff30462d1b585df14007cdc9f93fb859fbe1d26cacb412085f"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-20260929/manifest.json",
+    "source_sha256": "812d17d4da23fc034c35c8f1e85cacf62b980fb26029805162c8afc00f0765c2",
+    "retained": "typed-syd-manifest.json",
+    "retained_sha256": "64955e12340574e21610c5efbcf5371d8926cd5b96d4e0ca609aa45c356a46bb"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-20260929/outcomes/local.jsonl",
+    "source_sha256": "bbd54294a12a90a6c9fcc9f20b253e2edf81f6e228e903bcb167dec37ab7177e",
+    "retained": "typed-syd-captured-local.json",
+    "retained_sha256": "4405d8eaf33de74ad97bd21af688dd4e713c4ac1eabe71ae32c047fbb20bf876"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-20260929/outcomes/local-syd-v2.jsonl",
+    "source_sha256": "0b636e6b70363e5c5a40bea5826a71ae4c1ed42121c0c49565b6712cc4e0e8f3",
+    "retained": "typed-syd-candidate-syd-v2.json",
+    "retained_sha256": "dec53f64738fa07560fa837df4479842d4b700bf03332296acc533f9e7ca7a1e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-20260929/outcomes/local-syd-v3.jsonl",
+    "source_sha256": "0b636e6b70363e5c5a40bea5826a71ae4c1ed42121c0c49565b6712cc4e0e8f3",
+    "retained": "typed-syd-candidate-syd-v3.json",
+    "retained_sha256": "dec53f64738fa07560fa837df4479842d4b700bf03332296acc533f9e7ca7a1e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-independent-20260929/cases/cases.jsonl",
+    "source_sha256": "926b02cce2b3720281c32b9e14f375d6b83a0fde534db5e628e44dd695cfd189",
+    "retained": "typed-independent-syd-cases.json",
+    "retained_sha256": "20b0686da99833b9222f3c8ae4c50e26068682611d71c66a681af9bfd9e59f92"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-independent-20260929/outcomes/excel.jsonl",
+    "source_sha256": "3c24eb6cd198ebacc1278248195914a9e7ebb0f33e12ae5ac922d5cdd72577af",
+    "retained": "typed-independent-syd-excel.json",
+    "retained_sha256": "4e950df9a50df11c9c070657b5b7a0c1233dd551298cca3a9a4020e63ea70ad9"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-independent-20260929/manifest.json",
+    "source_sha256": "9bad0cdb0a8624b06219d40a7ba6352c6a6b006167dffb76600a5201111428c2",
+    "retained": "typed-independent-syd-manifest.json",
+    "retained_sha256": "8a4db4e79c14fe14cc048c7f30619469af8e5f21ec102c1f23c69f5ce8294060"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-independent-20260929/outcomes/local.jsonl",
+    "source_sha256": "697e45836ffa671a62ff59967f1c475371f014cf88a74d9e83ea1baf81723e70",
+    "retained": "typed-independent-syd-captured-local.json",
+    "retained_sha256": "5c702986ce198bc8f8a184f0d042efc672dec123ba201323b1e9f195dc1611f3"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-syd-typed-independent-20260929/outcomes/local-syd-v3.jsonl",
+    "source_sha256": "697e45836ffa671a62ff59967f1c475371f014cf88a74d9e83ea1baf81723e70",
+    "retained": "typed-independent-syd-candidate-syd-v3.json",
+    "retained_sha256": "5c702986ce198bc8f8a184f0d042efc672dec123ba201323b1e9f195dc1611f3"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-20260929/cases/cases.jsonl",
+    "source_sha256": "036aed63565d115e86ecb9c7a704c28e8d5b64f6b057fbc9c6e53883118c5050",
+    "retained": "typed-padding-cases.json",
+    "retained_sha256": "3bd606393a5d1b5fcd48d2d514e9bb70874fb0e4b3c7bb2cd94fba1d18653c51"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-20260929/outcomes/excel.jsonl",
+    "source_sha256": "b2d1837fc5dd27d9d5c47a585672ab40b46ceed4ed04d9d8a310a7969ff7e907",
+    "retained": "typed-padding-excel.json",
+    "retained_sha256": "eb079eb2d1404a1c0ca7975932f14c66cafaf1fcfd51e96426240201c2c6a9b6"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-20260929/manifest.json",
+    "source_sha256": "23b12a9ab3319609c300190c785e125c1b7fab41df1e7f9dc9462f36962d7ee7",
+    "retained": "typed-padding-manifest.json",
+    "retained_sha256": "414ce934c11a73c410abd63aeb96e1c3aa401fc627a1c41d457fcab8d324254a"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-20260929/outcomes/local.jsonl",
+    "source_sha256": "58d81a6a67f9bb28b5c726a6fb37976cb99f52ed7cfca6556e5b8aa4d87110d5",
+    "retained": "typed-padding-captured-local.json",
+    "retained_sha256": "03ad7b9ee399131204d0e36314099e5235744a7690b10a44f85d3a87335dec99"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-20260929/outcomes/local-depreciation-v7.jsonl",
+    "source_sha256": "6cf915b7d5a71eda7fed7f6b49f0e268194f3d1cd5c5d5e470fd13b73f1cb0e6",
+    "retained": "typed-padding-candidate-depreciation-v7.json",
+    "retained_sha256": "72d9078a8ba18d9a2a954c409c89836add4c524c806a4bb2efed1cc5616e0a0f"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-20260929/outcomes/local-depreciation-padding-v1.jsonl",
+    "source_sha256": "6cf915b7d5a71eda7fed7f6b49f0e268194f3d1cd5c5d5e470fd13b73f1cb0e6",
+    "retained": "typed-padding-candidate-depreciation-padding-v1.json",
+    "retained_sha256": "72d9078a8ba18d9a2a954c409c89836add4c524c806a4bb2efed1cc5616e0a0f"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-independent-20260929/cases/cases.jsonl",
+    "source_sha256": "1b5fcfab853025e6d621bbe8279ac9ee60ced68b37cf97cd852c42b962599971",
+    "retained": "typed-padding-independent-cases.json",
+    "retained_sha256": "c84e880ce59084782c438b1ea2dff4f6299d3775534adc4b0793b03716f57636"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-independent-20260929/outcomes/excel.jsonl",
+    "source_sha256": "0d08c02663236b10db39a80e57020e1a6b6b8d0a3170d835662e92c10b83daf6",
+    "retained": "typed-padding-independent-excel.json",
+    "retained_sha256": "e11e4fae8cc05df4270870a536034621bd5c4f3c96bb1fd4eec7ef0d7b67b845"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-independent-20260929/manifest.json",
+    "source_sha256": "631cbb51db21e814720e9e172f801ff63867afc472052919bb43ff661faeaece",
+    "retained": "typed-padding-independent-manifest.json",
+    "retained_sha256": "65e8a7b73454147258497639a487084d12291f77514808751e2a877e12892b9a"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-independent-20260929/outcomes/local.jsonl",
+    "source_sha256": "a254c08eec9c6705bd752c7ef7c8584e6dce816c38ff1398088eec2159a12d81",
+    "retained": "typed-padding-independent-captured-local.json",
+    "retained_sha256": "60e1dd668060f6588cb687aac4177f9257d1887be37a5b3dd90865e4f2a982d1"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-depreciation-padding-independent-20260929/outcomes/local-depreciation-padding-independent-v1.jsonl",
+    "source_sha256": "a254c08eec9c6705bd752c7ef7c8584e6dce816c38ff1398088eec2159a12d81",
+    "retained": "typed-padding-independent-candidate-depreciation-padding-independent-v1.json",
+    "retained_sha256": "60e1dd668060f6588cb687aac4177f9257d1887be37a5b3dd90865e4f2a982d1"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-recheck-20260929/cases/cases.jsonl",
+    "source_sha256": "58866b06b9d2b3ba03db4afa6ac9e4bcbafda8ef6a76ae91cf2b07c19743b8cd",
+    "retained": "typed-vdb-switched-recheck-cases.json",
+    "retained_sha256": "fe350d5917a6ed6664a5c34a647fb3df204e60728ba6b75d4915ddaa9e8d84cc"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-recheck-20260929/outcomes/excel.jsonl",
+    "source_sha256": "83402d7fe571628e162ba8e68b8fa7af16c5f4d57a0b4f3171e7c751b4333277",
+    "retained": "typed-vdb-switched-recheck-excel.json",
+    "retained_sha256": "05e2978c5731365d3693ceacb3609b8c45021ab2e5486d64475a538a77fa42d7"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-recheck-20260929/manifest.json",
+    "source_sha256": "3837012c1f1631672290506691ad90ed55917def361b0db61472bc18fae41906",
+    "retained": "typed-vdb-switched-recheck-manifest.json",
+    "retained_sha256": "24b23a77468ec07c928313e2498593c2dd8beec4700222ebf036b7b05854f92c"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-recheck-20260929/outcomes/local.jsonl",
+    "source_sha256": "617e63bcf3699a78758f693be4cd749b248ba2f2553d2ed355e3c182bc10854e",
+    "retained": "typed-vdb-switched-recheck-captured-local.json",
+    "retained_sha256": "896c609cf42f5c0ce4417908e7a7de5a535a82c02a3ecdd6749a8b32d91ca44e"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-typed-independent-20260929/cases/cases.jsonl",
+    "source_sha256": "93a0b42e484b2c3235977fe44761d516f9b5f62d852490e081aa9565b9756cb1",
+    "retained": "typed-vdb-switched-independent-cases.json",
+    "retained_sha256": "5778b0964669c511886a73f4bee81b4a47a3f4845b35bf7a3c3cbda6aa42c678"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-typed-independent-20260929/outcomes/excel.jsonl",
+    "source_sha256": "db241c33d1f780683826227e5feb2b3f3ab541d151a5942044116ff5867329a6",
+    "retained": "typed-vdb-switched-independent-excel.json",
+    "retained_sha256": "af2cd10e8d85f8598c4cd6ffab94a4bc920a3ccad83abeb699d28c80bc54db00"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-typed-independent-20260929/manifest.json",
+    "source_sha256": "74faf25c5c38b651cfc606a33a328038391417b7315c4797845651855e480fe4",
+    "retained": "typed-vdb-switched-independent-manifest.json",
+    "retained_sha256": "4e6d37613b9c8e3d06f951ec71e0bba79979ddb1b053d2326c16376d3c55980b"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-typed-independent-20260929/outcomes/local.jsonl",
+    "source_sha256": "b4b07834e6b29f0035288eccfda2fca0c12ea64b14cf424290924a51ea61707b",
+    "retained": "typed-vdb-switched-independent-captured-local.json",
+    "retained_sha256": "6bc741c086743bfb8ee8d39dcc20322a6a8e7922ac8e27ae17ad02ca94aada8b"
+  },
+  {
+    "source": "smart-fuzzer/runs/w111-vdb-switched-typed-independent-20260929/outcomes/local-vdb-switched-production-v1.jsonl",
+    "source_sha256": "b4b07834e6b29f0035288eccfda2fca0c12ea64b14cf424290924a51ea61707b",
+    "retained": "typed-vdb-switched-independent-candidate-vdb-switched-production-v1.json",
+    "retained_sha256": "6bc741c086743bfb8ee8d39dcc20322a6a8e7922ac8e27ae17ad02ca94aada8b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-depreciation-v4-replay.json",
+    "source_sha256": "37b490050e779721c08066705cab52191af730489c6a218325137f277f00e0a8",
+    "retained": "typed-v4-replay-report.json",
+    "retained_sha256": "2cad0b7986bf06805dd2b1077e8856e352ee59a024ae190035514352527a295c"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-typed-depreciation-v5-replay.json",
+    "source_sha256": "6cca34735950f9281776333ff72f905530dde00ddd277f75674216c51fb0fa8e",
+    "retained": "typed-v5-replay-report.json",
+    "retained_sha256": "34c6d0081fdafc8067c71495c5c994a4c79d7135aa266867248263c32306de30"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/formal-recovery-equivalence.lean",
+    "source_sha256": "e59b2ef07b86cec1c140e13f18f5b9324981c0801eee5d0485a642940f0f1f3b",
+    "retained": "formal-recovery-equivalence.lean",
+    "retained_sha256": "e59b2ef07b86cec1c140e13f18f5b9324981c0801eee5d0485a642940f0f1f3b"
+  },
+  {
+    "source": "smart-fuzzer/cache/w111-depreciation-20260929/candidate-depreciation-formal-current.lean",
+    "source_sha256": "1d0346c23a83ba8f3bb169ed00091dbe6fe08d4422cb623963a7206be732daa3",
+    "retained": "candidate-depreciation-formal-current.lean",
+    "retained_sha256": "1d0346c23a83ba8f3bb169ed00091dbe6fe08d4422cb623963a7206be732daa3"
+  }
+]

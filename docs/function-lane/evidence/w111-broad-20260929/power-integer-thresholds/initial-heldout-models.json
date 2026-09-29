@@ -1,0 +1,1310 @@
+{
+  "exact": {
+    "limit2147483647-inclusivefalse-decimalSignedfalse": 23252,
+    "limit2147483647-inclusivefalse-decimalSignedtrue": 23252,
+    "limit2147483647-inclusivetrue-decimalSignedfalse": 23252,
+    "limit2147483647-inclusivetrue-decimalSignedtrue": 23252,
+    "limit2147483648-inclusivefalse-decimalSignedfalse": 23252,
+    "limit2147483648-inclusivefalse-decimalSignedtrue": 23252,
+    "limit2147483648-inclusivetrue-decimalSignedfalse": 23262,
+    "limit2147483648-inclusivetrue-decimalSignedtrue": 23264,
+    "limit4294967295-inclusivefalse-decimalSignedfalse": 23262,
+    "limit4294967295-inclusivefalse-decimalSignedtrue": 23264,
+    "limit4294967295-inclusivetrue-decimalSignedfalse": 23262,
+    "limit4294967295-inclusivetrue-decimalSignedtrue": 23264,
+    "limit4294967296-inclusivefalse-decimalSignedfalse": 23262,
+    "limit4294967296-inclusivefalse-decimalSignedtrue": 23264,
+    "limit4294967296-inclusivetrue-decimalSignedfalse": 23252,
+    "limit4294967296-inclusivetrue-decimalSignedtrue": 23254,
+    "production": 23226
+  },
+  "failures": {
+    "limit2147483647-inclusivefalse-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23002"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23006"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x3fefffff80000100",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3fefffff800000f0",
+        "id": "w111lpm-heldout-POWER-23009"
+      },
+      {
+        "actual": "0x3ff0000080000200",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff00000800001f0",
+        "id": "w111lpm-heldout-POWER-23010"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23035"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc000000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23037"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23039"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23041"
+      },
+      {
+        "actual": "0x3ff0000040000080",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000040000088",
+        "id": "w111lpm-heldout-POWER-23042"
+      },
+      {
+        "actual": "0x3fefffff00000400",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3fefffff00000420",
+        "id": "w111lpm-heldout-POWER-23043"
+      }
+    ],
+    "limit2147483647-inclusivefalse-decimalSignedtrue": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23002"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23006"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x3fefffff80000100",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3fefffff800000f0",
+        "id": "w111lpm-heldout-POWER-23009"
+      },
+      {
+        "actual": "0x3ff0000080000200",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff00000800001f0",
+        "id": "w111lpm-heldout-POWER-23010"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23035"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc000000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23037"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23039"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23041"
+      },
+      {
+        "actual": "0x3ff0000040000080",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000040000088",
+        "id": "w111lpm-heldout-POWER-23042"
+      },
+      {
+        "actual": "0x3fefffff00000400",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3fefffff00000420",
+        "id": "w111lpm-heldout-POWER-23043"
+      }
+    ],
+    "limit2147483647-inclusivetrue-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23002"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23006"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x3fefffff80000100",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3fefffff800000f0",
+        "id": "w111lpm-heldout-POWER-23009"
+      },
+      {
+        "actual": "0x3ff0000080000200",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff00000800001f0",
+        "id": "w111lpm-heldout-POWER-23010"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23035"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc000000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23037"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23039"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23041"
+      },
+      {
+        "actual": "0x3ff0000040000080",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000040000088",
+        "id": "w111lpm-heldout-POWER-23042"
+      },
+      {
+        "actual": "0x3fefffff00000400",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3fefffff00000420",
+        "id": "w111lpm-heldout-POWER-23043"
+      }
+    ],
+    "limit2147483647-inclusivetrue-decimalSignedtrue": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23002"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23006"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x3fefffff80000100",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3fefffff800000f0",
+        "id": "w111lpm-heldout-POWER-23009"
+      },
+      {
+        "actual": "0x3ff0000080000200",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff00000800001f0",
+        "id": "w111lpm-heldout-POWER-23010"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23035"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc000000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23037"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23039"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23041"
+      },
+      {
+        "actual": "0x3ff0000040000080",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000040000088",
+        "id": "w111lpm-heldout-POWER-23042"
+      },
+      {
+        "actual": "0x3fefffff00000400",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3fefffff00000420",
+        "id": "w111lpm-heldout-POWER-23043"
+      }
+    ],
+    "limit2147483648-inclusivefalse-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23002"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23006"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x3fefffff80000100",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3fefffff800000f0",
+        "id": "w111lpm-heldout-POWER-23009"
+      },
+      {
+        "actual": "0x3ff0000080000200",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff00000800001f0",
+        "id": "w111lpm-heldout-POWER-23010"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23035"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc000000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23037"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23039"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23041"
+      },
+      {
+        "actual": "0x3ff0000040000080",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000040000088",
+        "id": "w111lpm-heldout-POWER-23042"
+      },
+      {
+        "actual": "0x3fefffff00000400",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3fefffff00000420",
+        "id": "w111lpm-heldout-POWER-23043"
+      }
+    ],
+    "limit2147483648-inclusivefalse-decimalSignedtrue": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23002"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23006"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x3fefffff80000100",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3fefffff800000f0",
+        "id": "w111lpm-heldout-POWER-23009"
+      },
+      {
+        "actual": "0x3ff0000080000200",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x3ff00000800001f0",
+        "id": "w111lpm-heldout-POWER-23010"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000000000000",
+        "id": "w111lpm-heldout-POWER-23035"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc000000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23037"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23039"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "error:Num",
+        "args": [
+          "0xc024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23041"
+      },
+      {
+        "actual": "0x3ff0000040000080",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3ff0000040000088",
+        "id": "w111lpm-heldout-POWER-23042"
+      },
+      {
+        "actual": "0x3fefffff00000400",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1e0000000000000"
+        ],
+        "expected": "0x3fefffff00000420",
+        "id": "w111lpm-heldout-POWER-23043"
+      }
+    ],
+    "limit2147483648-inclusivetrue-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      }
+    ],
+    "limit4294967295-inclusivefalse-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      }
+    ],
+    "limit4294967295-inclusivetrue-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      }
+    ],
+    "limit4294967296-inclusivefalse-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      }
+    ],
+    "limit4294967296-inclusivetrue-decimalSignedfalse": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23046"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23050"
+      },
+      {
+        "actual": "0x3fefffff000003e0",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41f0000000000000"
+        ],
+        "expected": "0x3fefffff00000400",
+        "id": "w111lpm-heldout-POWER-23053"
+      },
+      {
+        "actual": "0x3ff00001000007e0",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41f0000000000000"
+        ],
+        "expected": "0x3ff0000100000800",
+        "id": "w111lpm-heldout-POWER-23054"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23079"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc000000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23081"
+      },
+      {
+        "actual": "error:Div0",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23083"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc024000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23085"
+      },
+      {
+        "actual": "0x3ff0000080000210",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1f0000000000000"
+        ],
+        "expected": "0x3ff0000080000200",
+        "id": "w111lpm-heldout-POWER-23086"
+      },
+      {
+        "actual": "0x3feffffe00001040",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1f0000000000000"
+        ],
+        "expected": "0x3feffffe00001000",
+        "id": "w111lpm-heldout-POWER-23087"
+      }
+    ],
+    "limit4294967296-inclusivetrue-decimalSignedtrue": [
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23046"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23050"
+      },
+      {
+        "actual": "0x3fefffff000003e0",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41f0000000000000"
+        ],
+        "expected": "0x3fefffff00000400",
+        "id": "w111lpm-heldout-POWER-23053"
+      },
+      {
+        "actual": "0x3ff00001000007e0",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41f0000000000000"
+        ],
+        "expected": "0x3ff0000100000800",
+        "id": "w111lpm-heldout-POWER-23054"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23079"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc000000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23081"
+      },
+      {
+        "actual": "error:Div0",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23083"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc024000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23085"
+      },
+      {
+        "actual": "0x3ff0000080000210",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1f0000000000000"
+        ],
+        "expected": "0x3ff0000080000200",
+        "id": "w111lpm-heldout-POWER-23086"
+      },
+      {
+        "actual": "0x3feffffe00001040",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1f0000000000000"
+        ],
+        "expected": "0x3feffffe00001000",
+        "id": "w111lpm-heldout-POWER-23087"
+      }
+    ],
+    "production": [
+      {
+        "actual": "error:Num",
+        "args": [
+          "0x4024000000000000",
+          "0x41e0000000000000"
+        ],
+        "expected": "0x0000000000000000",
+        "id": "w111lpm-heldout-POWER-23007"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0x4024000000000000",
+          "0xc1e0000000000000"
+        ],
+        "expected": "error:Div0",
+        "id": "w111lpm-heldout-POWER-23040"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23046"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x41f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23050"
+      },
+      {
+        "actual": "0x3fefffff000003e0",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x41f0000000000000"
+        ],
+        "expected": "0x3fefffff00000400",
+        "id": "w111lpm-heldout-POWER-23053"
+      },
+      {
+        "actual": "0x3ff00001000007e0",
+        "args": [
+          "0x3ff0000000000001",
+          "0x41f0000000000000"
+        ],
+        "expected": "0x3ff0000100000800",
+        "id": "w111lpm-heldout-POWER-23054"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23079"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc000000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23081"
+      },
+      {
+        "actual": "error:Div0",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23083"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc024000000000000",
+          "0xc1f0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23085"
+      },
+      {
+        "actual": "0x3ff0000080000210",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc1f0000000000000"
+        ],
+        "expected": "0x3ff0000080000200",
+        "id": "w111lpm-heldout-POWER-23086"
+      },
+      {
+        "actual": "0x3feffffe00001040",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc1f0000000000000"
+        ],
+        "expected": "0x3feffffe00001000",
+        "id": "w111lpm-heldout-POWER-23087"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x4340000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23090"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x4340000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23094"
+      },
+      {
+        "actual": "0x3fd78b56333c7f23",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x4340000000000000"
+        ],
+        "expected": "0x3fd78b56362cef38",
+        "id": "w111lpm-heldout-POWER-23097"
+      },
+      {
+        "actual": "0x401d8e64b16f0b93",
+        "args": [
+          "0x3ff0000000000001",
+          "0x4340000000000000"
+        ],
+        "expected": "0x401d8e64b8d4ddac",
+        "id": "w111lpm-heldout-POWER-23098"
+      },
+      {
+        "actual": "0xbff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x433fffffffffffff"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23101"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x433fffffffffffff"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23105"
+      },
+      {
+        "actual": "0x3fd78b56333c7f25",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x433fffffffffffff"
+        ],
+        "expected": "0x3fd78b56362cef39",
+        "id": "w111lpm-heldout-POWER-23108"
+      },
+      {
+        "actual": "0x401d8e64b16f0b91",
+        "args": [
+          "0x3ff0000000000001",
+          "0x433fffffffffffff"
+        ],
+        "expected": "0x401d8e64b8d4ddaa",
+        "id": "w111lpm-heldout-POWER-23109"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x4340000000000001"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23112"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x4340000000000001"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23116"
+      },
+      {
+        "actual": "0x3fd78b56333c7f22",
+        "args": [
+          "0x3fefffffffffffff",
+          "0x4340000000000001"
+        ],
+        "expected": "0x3fd78b56362cef36",
+        "id": "w111lpm-heldout-POWER-23119"
+      },
+      {
+        "actual": "0x401d8e64b16f0b97",
+        "args": [
+          "0x3ff0000000000001",
+          "0x4340000000000001"
+        ],
+        "expected": "0x401d8e64b8d4ddae",
+        "id": "w111lpm-heldout-POWER-23120"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23123"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc000000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23125"
+      },
+      {
+        "actual": "error:Div0",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23127"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc024000000000000",
+          "0xc340000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23129"
+      },
+      {
+        "actual": "0x4005bf0a8dcb512e",
+        "args": [
+          "0x3fefffffffffffff",
+          "0xc340000000000000"
+        ],
+        "expected": "0x4005bf0a8b145769",
+        "id": "w111lpm-heldout-POWER-23130"
+      },
+      {
+        "actual": "0x3fc152aaa81579e8",
+        "args": [
+          "0x3ff0000000000001",
+          "0xc340000000000000"
+        ],
+        "expected": "0x3fc152aaa3bf81cd",
+        "id": "w111lpm-heldout-POWER-23131"
+      },
+      {
+        "actual": "0xbff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x43e0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23134"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x43e0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23138"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0x43dfffffffffffff"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23145"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xbfe0000000000000",
+          "0x43dfffffffffffff"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23149"
+      },
+      {
+        "actual": "0x3ff0000000000000",
+        "args": [
+          "0xbff0000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23167"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc000000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23169"
+      },
+      {
+        "actual": "error:Div0",
+        "args": [
+          "0xbfe0000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23171"
+      },
+      {
+        "actual": "0x0000000000000000",
+        "args": [
+          "0xc024000000000000",
+          "0xc3e0000000000000"
+        ],
+        "expected": "error:Num",
+        "id": "w111lpm-heldout-POWER-23173"
+      }
+    ]
+  },
+  "rows": 23264
+}

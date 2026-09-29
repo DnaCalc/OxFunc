@@ -1,0 +1,10 @@
+{
+  "source_sha256": {
+    "functions/permutationa_fn.rs": "feac99115e5706ac168cc6b37bb3891e3835c45136c56fa115b68e4aad9abdd9",
+    "coercion.rs": "96564e9e279de1ad5962f846b41d52242ccfafdfaa568b8f00b61ef335667908",
+    "coercion_decimal.rs": "d034bb03adb8488bcce4ea29546321fe7e9c330094ea0cb117deb9c60fbe7096",
+    "coercion_decimal_powers.rs": "a9a14c0e7c497c61cd428058b6fdafc5f7df132a0b3aa41dda7992e2a97ade13"
+  },
+  "frozen_utc": "2026-09-29T17:04:48.756915+00:00",
+  "seed": 202609292803
+}

@@ -1,0 +1,1667 @@
+[
+  {
+    "function_id": "FUNC.TRUNC",
+    "rows_judged": 6160,
+    "rows_agree": 6160,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T16:33:45.7817803Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.ROUNDDOWN",
+    "rows_judged": 6160,
+    "rows_agree": 6160,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T16:33:55.3521573Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.ROUNDUP",
+    "rows_judged": 6160,
+    "rows_agree": 6160,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T16:34:11.4289155Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.ROUND",
+    "rows_judged": 6160,
+    "rows_agree": 6097,
+    "severity": "gross",
+    "worst_ulp": 4817745636528479808,
+    "misses_by_severity": {
+      "gross": 63
+    },
+    "misses": [
+      {
+        "id": "w111threshold-ROUND-004959",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffc400000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004961",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffc500000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004963",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffc700000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004965",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffc800000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004967",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffc900000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004969",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffcb00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004971",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffcc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004973",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffcd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004975",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffcf00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004977",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004979",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd100000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004981",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd300000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004983",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd400000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004985",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd500000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004987",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd700000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004989",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd800000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004991",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffd900000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004993",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffdb00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004995",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffdc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004997",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffdd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-004999",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffdf00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005001",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005003",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe100000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005005",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe300000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005007",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe400000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005009",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe500000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005011",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe700000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005013",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe800000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005015",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffe900000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005017",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffeb00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005019",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffec00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005021",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffed00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005023",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffef00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005025",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005027",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff100000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005029",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff300000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005031",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff400000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005033",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff500000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005035",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff700000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005037",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff800000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005039",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffff900000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005041",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffffb00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005043",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffffc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005045",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dfffffffd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-005047",
+        "args": [
+          "0x42dc12218377de60",
+          "0x41dffffffff00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4817745636528479808
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4817745636528479808
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-002573",
+        "args": [
+          "0x4029c00000000000",
+          "0x41dfffffff800000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4623437598705057792
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-002575",
+        "args": [
+          "0x4029c00000000000",
+          "0x41dfffffff900000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4623437598705057792
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-002577",
+        "args": [
+          "0x4029c00000000000",
+          "0x41dfffffffb00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4623437598705057792
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-002579",
+        "args": [
+          "0x4029c00000000000",
+          "0x41dfffffffc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4623437598705057792
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-002581",
+        "args": [
+          "0x4029c00000000000",
+          "0x41dfffffffd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4623437598705057792
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-002583",
+        "args": [
+          "0x4029c00000000000",
+          "0x41dffffffff00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4623437598705057792
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-003805",
+        "args": [
+          "0xc029c00000000000",
+          "0x41dfffffff800000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13846809635559833600
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-003807",
+        "args": [
+          "0xc029c00000000000",
+          "0x41dfffffff900000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13846809635559833600
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-003809",
+        "args": [
+          "0xc029c00000000000",
+          "0x41dfffffffb00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13846809635559833600
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-003811",
+        "args": [
+          "0xc029c00000000000",
+          "0x41dfffffffc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13846809635559833600
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-003813",
+        "args": [
+          "0xc029c00000000000",
+          "0x41dfffffffd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13846809635559833600
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-003815",
+        "args": [
+          "0xc029c00000000000",
+          "0x41dffffffff00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13846809635559833600
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4623437598705057792
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-000115",
+        "args": [
+          "0x3ff2000000000000",
+          "0x41dfffffffc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607745368753438720
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4607745368753438720
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-000117",
+        "args": [
+          "0x3ff2000000000000",
+          "0x41dfffffffd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607745368753438720
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4607745368753438720
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-000119",
+        "args": [
+          "0x3ff2000000000000",
+          "0x41dffffffff00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 4607745368753438720
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4607745368753438720
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-001347",
+        "args": [
+          "0xbff2000000000000",
+          "0x41dfffffffc00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13831117405608214528
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4607745368753438720
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-001349",
+        "args": [
+          "0xbff2000000000000",
+          "0x41dfffffffd00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13831117405608214528
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4607745368753438720
+        }
+      },
+      {
+        "id": "w111threshold-ROUND-001351",
+        "args": [
+          "0xbff2000000000000",
+          "0x41dffffffff00000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 0
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 13831117405608214528
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 4607745368753438720
+        }
+      }
+    ],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T16:34:02.6874996Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.INT",
+    "rows_judged": 24608,
+    "rows_agree": 24608,
+    "severity": null,
+    "worst_ulp": null,
+    "misses_by_severity": {},
+    "misses": [],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T16:33:17.1233820Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  },
+  {
+    "function_id": "FUNC.TRUNC",
+    "rows_judged": 3312,
+    "rows_agree": 3302,
+    "severity": "gross",
+    "worst_ulp": 9214871658872686752,
+    "misses_by_severity": {
+      "gross": 8,
+      "last_bit": 2
+    },
+    "misses": [
+      {
+        "id": "integer-refinement-TRUNC-00000",
+        "args": [
+          "0xffe1ccf385ebc8a0",
+          "0xd4b249ad2594c37d"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 18438243695727462560
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00001",
+        "args": [
+          "0xffe1ccf385ebc8a0",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 18438243695727462560
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00003",
+        "args": [
+          "0xffe1ccf385ebc8a0",
+          "0xc0e0002000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 18438243695727462560
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00004",
+        "args": [
+          "0xffe1ccf385ebc8a0",
+          "0xc0e0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 18438243695727462560
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00288",
+        "args": [
+          "0x7fe1ccf385ebc8a0",
+          "0xd4b249ad2594c37d"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 9214871658872686752
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00289",
+        "args": [
+          "0x7fe1ccf385ebc8a0",
+          "0xc1f0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 9214871658872686752
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00291",
+        "args": [
+          "0x7fe1ccf385ebc8a0",
+          "0xc0e0002000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 9214871658872686752
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-00292",
+        "args": [
+          "0x7fe1ccf385ebc8a0",
+          "0xc0e0000000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 9214871658872686752
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 0
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "gross",
+          "ulp": 9214871658872686752
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-01763",
+        "args": [
+          "0xfbe25b47be12c31f",
+          "0xc066080000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 18150169811946226466
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 18150169811946226465
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      },
+      {
+        "id": "integer-refinement-TRUNC-02155",
+        "args": [
+          "0xeb0dbb0532956565",
+          "0xc05fc00000000000"
+        ],
+        "expected": {
+          "kind": "number",
+          "bits": 16937399404608185696
+        },
+        "actual": {
+          "kind": "number",
+          "bits": 16937399404608185695
+        },
+        "verdict": {
+          "agree": false,
+          "severity": "last_bit",
+          "ulp": 1
+        }
+      }
+    ],
+    "capture_provenance": {
+      "captured_utc": "2026-09-29T16:05:20.1643206Z",
+      "environment": {
+        "excel_bitness": "64-bit",
+        "excel_build": "20430",
+        "excel_input_plumbing": "cell_value2_bulk",
+        "excel_operating_system": "Windows (64-bit) NT 10.00",
+        "excel_version": "16.0",
+        "workbook_compatibility": "2"
+      },
+      "oracle_cache": {
+        "hits": 0,
+        "misses": 0,
+        "mode": "no_cache",
+        "root": null
+      },
+      "runner": {
+        "name": "Run-W109BulkBatch.ps1",
+        "powershell_version": "7.6.5",
+        "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+        "version": "w109-bulk-batch-v2"
+      },
+      "schema_version": "w109-capture-provenance-v1"
+    }
+  }
+]

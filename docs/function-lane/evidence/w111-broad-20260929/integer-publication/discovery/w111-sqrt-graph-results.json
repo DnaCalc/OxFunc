@@ -1,0 +1,50 @@
+[
+  {
+    "path": "smart-fuzzer/runs/w111-integer-publication-20260929/answers/answers-sqrt.json",
+    "rows": 5676,
+    "staged_exact": 5676,
+    "staged_misses": [],
+    "standard_exact": 5523
+  },
+  {
+    "path": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-sqrt.json",
+    "rows": 1227,
+    "staged_exact": 1224,
+    "staged_misses": [
+      {
+        "row": {
+          "args": [
+            "0x8000000000000000"
+          ],
+          "expected_bits": "0x0000000000000000",
+          "id": "w111broad-20260929-SQRT-00001"
+        },
+        "staged": "0x8000000000000000",
+        "standard": "0x8000000000000000"
+      },
+      {
+        "row": {
+          "args": [
+            "0x0000000000000001"
+          ],
+          "expected_bits": "0x0000000000000000",
+          "id": "w111broad-20260929-SQRT-00002"
+        },
+        "staged": "0x1e60000000000000",
+        "standard": "0x1e60000000000000"
+      },
+      {
+        "row": {
+          "args": [
+            "0x8000000000000001"
+          ],
+          "expected_bits": "0x0000000000000000",
+          "id": "w111broad-20260929-SQRT-00003"
+        },
+        "staged": "error:Num",
+        "standard": "error:Num"
+      }
+    ],
+    "standard_exact": 1222
+  }
+]

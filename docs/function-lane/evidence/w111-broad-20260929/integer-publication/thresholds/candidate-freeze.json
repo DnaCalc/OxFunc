@@ -1,0 +1,21 @@
+{
+  "source_sha256": {
+    "int_fn.rs": "e119099419077ba021c3c06424346dbe076d58e5d0fc3001bae0c1f6e6083cd4",
+    "round_fn.rs": "99cc24e69e4c301e468175f051dc708362aa4aa7e13d33e5908094a8ced1be19",
+    "permutationa_fn.rs": "4989e1404303f0a24d99017c1994314ca351ac01667a972d40c88eec9b568eda",
+    "trunc_fn.rs": "2e23fb35861a74f36a954f698f096bcbe0d174a8e243b23f7e1bc684f6f236b0",
+    "rounddown_fn.rs": "61f66737697d974d3e6f80c6a5fcd67c242a4c67f9936b07f6cd5794cb556eac"
+  },
+  "frozen_utc": "2026-09-29T16:31:58.857456+00:00",
+  "seed": 202609292633,
+  "validation_only": [
+    "INT"
+  ],
+  "discovery": [
+    "PERMUTATIONA",
+    "TRUNC",
+    "ROUND",
+    "ROUNDDOWN",
+    "ROUNDUP"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "numeric_rows": 112498,
+  "seed": 202609292011,
+  "excluded_prior_inputs": 68897,
+  "generator_sha256": "db5ac64df0ec4ffe7dd89756f18f7b5e57cd623de46e0a79866e17dbba1a6202",
+  "batch_sha256": "f78856ddddcda34c367926fa9d885faf29b8c274c04cc69ae958a5c75dddb36a",
+  "mpmath_version": "1.3.0",
+  "mpmath_decimal_precision": 110,
+  "math_use": "Select fresh inputs near mathematical output midpoints only; Excel remains the result oracle",
+  "ingress": "normal binary64 and positive zero, exact Value2 readback"
+}

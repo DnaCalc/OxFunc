@@ -1,0 +1,67 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_rollup.v1",
+  "run_id": "w111-elementary-prepared-independent-typed-20260929",
+  "tranche_id": "w111-elementary-prepared-heldout-20260929",
+  "generated_utc": "2026-09-29T18:59:57.2663722Z",
+  "total_cases": 832,
+  "by_classification": {
+    "exact_typed_bit_match": 824,
+    "unexpected_mismatch": 8
+  },
+  "by_severity_class": {
+    "match": 824,
+    "structural_mismatch": 8
+  },
+  "by_severity_sub_tag": {
+    "error_code_drift": 8
+  },
+  "by_function": {
+    "FUNC.LOG": {
+      "exact_typed_bit_match": 304
+    },
+    "FUNC.POWER": {
+      "exact_typed_bit_match": 240
+    },
+    "FUNC.MEDIAN": {
+      "exact_typed_bit_match": 184,
+      "unexpected_mismatch": 8
+    },
+    "FUNC.FISHER": {
+      "exact_typed_bit_match": 96
+    }
+  },
+  "mismatch_case_ids": [
+    "w111elementaryheldout-00548-median-fresh-aggregate-4",
+    "w111elementaryheldout-00563-median-fresh-aggregate-19",
+    "w111elementaryheldout-00585-median-fresh-aggregate-41",
+    "w111elementaryheldout-00595-median-fresh-aggregate-51",
+    "w111elementaryheldout-00633-median-fresh-aggregate-89",
+    "w111elementaryheldout-00672-median-fresh-aggregate-128",
+    "w111elementaryheldout-00705-median-fresh-aggregate-161",
+    "w111elementaryheldout-00735-median-fresh-aggregate-191"
+  ],
+  "axis_witness_pairs": {
+    "total_pairs": 0,
+    "differentiated_pairs": 0,
+    "not_differentiated_pairs": 0,
+    "blocked_or_incomplete_pairs": 0,
+    "by_axis_tag": {},
+    "pairs": []
+  },
+  "excel_environment": {
+    "available": true,
+    "version": "16.0",
+    "build": "20430",
+    "calculation": "-4105",
+    "workbook_compatibility_version": "2",
+    "channel": "unavailable_not_queried",
+    "bitness": "64-bit",
+    "operating_system": "Windows (64-bit) NT 10.00",
+    "workbook_date_system": "1900",
+    "precision_as_displayed": false,
+    "excel_input_plumbing": "typed_value2_with_fixture_readback",
+    "fixture_readback_policy": "numeric_exact_bits_text_ordinal_logical_blank_error_code"
+  },
+  "comparison_policy": "exact_typed_bit_match_no_tolerance_with_1x1_publication_seam_classification",
+  "failure_packet_dir": "smart-fuzzer/runs/w111-elementary-prepared-independent-typed-20260929/failure_packets"
+}

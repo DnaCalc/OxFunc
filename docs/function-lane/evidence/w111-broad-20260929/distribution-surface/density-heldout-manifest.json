@@ -1,0 +1,19 @@
+{
+  "generator": "gen_distribution_density_holdout.py",
+  "seed": 2026092926,
+  "authority": "independent_after_density_operation_graph_freeze",
+  "batches": [
+    {
+      "function": "NORM.DIST",
+      "path": "batch-norm.dist.json",
+      "rows": 6586,
+      "sha256": "cde714490925fa4ce7701f796e04995cc770ddb8e21f027f8f3a1f065f6c493c"
+    },
+    {
+      "function": "NEGBINOM.DIST",
+      "path": "batch-negbinom.dist.json",
+      "rows": 30,
+      "sha256": "f957058714ea623aad4cb965236780435ebcc86968031de4df69b0f43cfdbc56"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "numeric-rounddown": {
+    "rows": 30946,
+    "baseline_mismatches": 0,
+    "nibble_mismatches": 0,
+    "changed_rows": []
+  },
+  "refined-heldout-rounddown": {
+    "rows": 6780,
+    "baseline_mismatches": 15,
+    "nibble_mismatches": 15,
+    "changed_rows": []
+  },
+  "residual-heldout-rounddown": {
+    "rows": 3470,
+    "baseline_mismatches": 0,
+    "nibble_mismatches": 0,
+    "changed_rows": []
+  },
+  "tiny-difference-rounddown": {
+    "rows": 3666,
+    "baseline_mismatches": 0,
+    "nibble_mismatches": 0,
+    "changed_rows": []
+  },
+  "endpoint-rounddown": {
+    "rows": 3556,
+    "baseline_mismatches": 80,
+    "nibble_mismatches": 80,
+    "changed_rows": []
+  }
+}

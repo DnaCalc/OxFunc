@@ -1,0 +1,5265 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "historical_TRUNC_MAX_capture_conflict",
+    "overflow_numeric_publication",
+    "initial15_precision",
+    "post_refinement_independent_validation"
+  ],
+  "repeated_controls": {
+    "rows": 960,
+    "independent_processes": [
+      {
+        "session": 1,
+        "process_ids": [
+          16060
+        ],
+        "excel_version": "16.0",
+        "excel_build": "20430",
+        "workbook_compatibility": "2",
+        "precision_as_displayed": false,
+        "operating_system": "Windows (64-bit) NT 10.00"
+      },
+      {
+        "session": 2,
+        "process_ids": [
+          30108
+        ],
+        "excel_version": "16.0",
+        "excel_build": "20430",
+        "workbook_compatibility": "2",
+        "precision_as_displayed": false,
+        "operating_system": "Windows (64-bit) NT 10.00"
+      }
+    ],
+    "distinct_inputs": 60,
+    "repetitions_per_input": [
+      16
+    ],
+    "ingress_failures": [],
+    "inconsistent_groups": [],
+    "tested_axes": [
+      "General/scientific",
+      "Calculate/CalculateFull",
+      "Formula2/Formula2R1C1",
+      "before/after dependent formulas"
+    ],
+    "conclusion": "No tested session, format, API, or calculation setting explains the historical disagreement."
+  },
+  "models": {
+    "TRUNC": {
+      "finite_subnormal_repair": {
+        "rows": 3556,
+        "mismatches": 80,
+        "misses": [
+          {
+            "id": "w111roundendpoint-TRUNC-01236",
+            "args": [
+              "0xffefffffffffffff",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01237",
+            "args": [
+              "0xffefffffffffffff",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01238",
+            "args": [
+              "0xffefffffffffffff",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01239",
+            "args": [
+              "0xffefffffffffffff",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01240",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01241",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01242",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01243",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01244",
+            "args": [
+              "0xffefffffffffffff",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01245",
+            "args": [
+              "0xffefffffffffffff",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01250",
+            "args": [
+              "0x7fefffffffffffff",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01251",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01252",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01253",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01254",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01255",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01256",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01257",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01258",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01259",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01264",
+            "args": [
+              "0xffeffffffffffffe",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01265",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01266",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01267",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01268",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01269",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01270",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01271",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01272",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01273",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01278",
+            "args": [
+              "0x7feffffffffffffe",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01279",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01280",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01281",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01282",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01283",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01284",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01285",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01286",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01287",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01292",
+            "args": [
+              "0xffeffffffffffffd",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01293",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01294",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01295",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01296",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01297",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01298",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01299",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01300",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01301",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01306",
+            "args": [
+              "0x7feffffffffffffd",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01307",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01308",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01309",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01310",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01311",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01312",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01313",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01314",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01315",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01320",
+            "args": [
+              "0xffeffffffffffffc",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01321",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01322",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01323",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01324",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01325",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01326",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01327",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01328",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01329",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01334",
+            "args": [
+              "0x7feffffffffffffc",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01335",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01336",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01337",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01338",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01339",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01340",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01341",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01342",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-TRUNC-01343",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          }
+        ]
+      },
+      "raw_exponent_research": {
+        "rows": 3556,
+        "mismatches": 0,
+        "misses": []
+      }
+    },
+    "ROUNDDOWN": {
+      "finite_subnormal_repair": {
+        "rows": 3556,
+        "mismatches": 80,
+        "misses": [
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01236",
+            "args": [
+              "0xffefffffffffffff",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01237",
+            "args": [
+              "0xffefffffffffffff",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01238",
+            "args": [
+              "0xffefffffffffffff",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01239",
+            "args": [
+              "0xffefffffffffffff",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01240",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01241",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01242",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01243",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01244",
+            "args": [
+              "0xffefffffffffffff",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01245",
+            "args": [
+              "0xffefffffffffffff",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01250",
+            "args": [
+              "0x7fefffffffffffff",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01251",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01252",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01253",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01254",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01255",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01256",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01257",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01258",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01259",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01264",
+            "args": [
+              "0xffeffffffffffffe",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01265",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01266",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01267",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01268",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01269",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01270",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01271",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01272",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01273",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01278",
+            "args": [
+              "0x7feffffffffffffe",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01279",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01280",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01281",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01282",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01283",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01284",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01285",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01286",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01287",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01292",
+            "args": [
+              "0xffeffffffffffffd",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01293",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01294",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01295",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01296",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01297",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01298",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01299",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01300",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01301",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01306",
+            "args": [
+              "0x7feffffffffffffd",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01307",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01308",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01309",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01310",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01311",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01312",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01313",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01314",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01315",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01320",
+            "args": [
+              "0xffeffffffffffffc",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01321",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01322",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01323",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01324",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01325",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01326",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01327",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01328",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01329",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01334",
+            "args": [
+              "0x7feffffffffffffc",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01335",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01336",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01337",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01338",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01339",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01340",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01341",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01342",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUNDDOWN-01343",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          }
+        ]
+      },
+      "raw_exponent_research": {
+        "rows": 3556,
+        "mismatches": 0,
+        "misses": []
+      }
+    },
+    "ROUNDUP": {
+      "finite_subnormal_repair": {
+        "rows": 3556,
+        "mismatches": 0,
+        "misses": []
+      },
+      "raw_exponent_research": {
+        "rows": 3556,
+        "mismatches": 0,
+        "misses": []
+      }
+    },
+    "ROUND": {
+      "finite_subnormal_repair": {
+        "rows": 3556,
+        "mismatches": 412,
+        "misses": [
+          {
+            "id": "w111roundendpoint-ROUND-01234",
+            "args": [
+              "0xffefffffffffffff",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01235",
+            "args": [
+              "0xffefffffffffffff",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01236",
+            "args": [
+              "0xffefffffffffffff",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01237",
+            "args": [
+              "0xffefffffffffffff",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01238",
+            "args": [
+              "0xffefffffffffffff",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01239",
+            "args": [
+              "0xffefffffffffffff",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01240",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01241",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01242",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01243",
+            "args": [
+              "0xffefffffffffffff",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01244",
+            "args": [
+              "0xffefffffffffffff",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01245",
+            "args": [
+              "0xffefffffffffffff",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01248",
+            "args": [
+              "0x7fefffffffffffff",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01249",
+            "args": [
+              "0x7fefffffffffffff",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01250",
+            "args": [
+              "0x7fefffffffffffff",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01251",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01252",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01253",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01254",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01255",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01256",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01257",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01258",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01259",
+            "args": [
+              "0x7fefffffffffffff",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01262",
+            "args": [
+              "0xffeffffffffffffe",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01263",
+            "args": [
+              "0xffeffffffffffffe",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01264",
+            "args": [
+              "0xffeffffffffffffe",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01265",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01266",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01267",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01268",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01269",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01270",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01271",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01272",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01273",
+            "args": [
+              "0xffeffffffffffffe",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01276",
+            "args": [
+              "0x7feffffffffffffe",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01277",
+            "args": [
+              "0x7feffffffffffffe",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01278",
+            "args": [
+              "0x7feffffffffffffe",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01279",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01280",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01281",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01282",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01283",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01284",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01285",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01286",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01287",
+            "args": [
+              "0x7feffffffffffffe",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01290",
+            "args": [
+              "0xffeffffffffffffd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01291",
+            "args": [
+              "0xffeffffffffffffd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01292",
+            "args": [
+              "0xffeffffffffffffd",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01293",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01294",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01295",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01296",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01297",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01298",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01299",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01300",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01301",
+            "args": [
+              "0xffeffffffffffffd",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01304",
+            "args": [
+              "0x7feffffffffffffd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01305",
+            "args": [
+              "0x7feffffffffffffd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01306",
+            "args": [
+              "0x7feffffffffffffd",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01307",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01308",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01309",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01310",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01311",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01312",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01313",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01314",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01315",
+            "args": [
+              "0x7feffffffffffffd",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01318",
+            "args": [
+              "0xffeffffffffffffc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01319",
+            "args": [
+              "0xffeffffffffffffc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01320",
+            "args": [
+              "0xffeffffffffffffc",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01321",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01322",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01323",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01324",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01325",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01326",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01327",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01328",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01329",
+            "args": [
+              "0xffeffffffffffffc",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0xfff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01332",
+            "args": [
+              "0x7feffffffffffffc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01333",
+            "args": [
+              "0x7feffffffffffffc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01334",
+            "args": [
+              "0x7feffffffffffffc",
+              "0xbff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01335",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x0000000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01336",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x3ff0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01337",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x402e000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01338",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01339",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073400000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01340",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4073500000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01341",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x4074300000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01342",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x40dfffc000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01343",
+            "args": [
+              "0x7feffffffffffffc",
+              "0x40e0000000000000"
+            ],
+            "expected_bits": "0x7ff000000000000a",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01346",
+            "args": [
+              "0xffeffffffffffffb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01347",
+            "args": [
+              "0xffeffffffffffffb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01360",
+            "args": [
+              "0x7feffffffffffffb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01361",
+            "args": [
+              "0x7feffffffffffffb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01374",
+            "args": [
+              "0xffeffffffffffffa",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01375",
+            "args": [
+              "0xffeffffffffffffa",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01388",
+            "args": [
+              "0x7feffffffffffffa",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01389",
+            "args": [
+              "0x7feffffffffffffa",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01402",
+            "args": [
+              "0xffeffffffffffff9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01403",
+            "args": [
+              "0xffeffffffffffff9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01416",
+            "args": [
+              "0x7feffffffffffff9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01417",
+            "args": [
+              "0x7feffffffffffff9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01430",
+            "args": [
+              "0xffeffffffffffff8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01431",
+            "args": [
+              "0xffeffffffffffff8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01444",
+            "args": [
+              "0x7feffffffffffff8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01445",
+            "args": [
+              "0x7feffffffffffff8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01458",
+            "args": [
+              "0xffeffffffffffff7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01459",
+            "args": [
+              "0xffeffffffffffff7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01472",
+            "args": [
+              "0x7feffffffffffff7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01473",
+            "args": [
+              "0x7feffffffffffff7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01486",
+            "args": [
+              "0xffeffffffffffff6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01487",
+            "args": [
+              "0xffeffffffffffff6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01500",
+            "args": [
+              "0x7feffffffffffff6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01501",
+            "args": [
+              "0x7feffffffffffff6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01514",
+            "args": [
+              "0xffeffffffffffff5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01515",
+            "args": [
+              "0xffeffffffffffff5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01528",
+            "args": [
+              "0x7feffffffffffff5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01529",
+            "args": [
+              "0x7feffffffffffff5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01542",
+            "args": [
+              "0xffeffffffffffff4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01543",
+            "args": [
+              "0xffeffffffffffff4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01556",
+            "args": [
+              "0x7feffffffffffff4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01557",
+            "args": [
+              "0x7feffffffffffff4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01570",
+            "args": [
+              "0xffeffffffffffff3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01571",
+            "args": [
+              "0xffeffffffffffff3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01584",
+            "args": [
+              "0x7feffffffffffff3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01585",
+            "args": [
+              "0x7feffffffffffff3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01598",
+            "args": [
+              "0xffeffffffffffff2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01599",
+            "args": [
+              "0xffeffffffffffff2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01612",
+            "args": [
+              "0x7feffffffffffff2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01613",
+            "args": [
+              "0x7feffffffffffff2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01626",
+            "args": [
+              "0xffeffffffffffff1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01627",
+            "args": [
+              "0xffeffffffffffff1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01640",
+            "args": [
+              "0x7feffffffffffff1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01641",
+            "args": [
+              "0x7feffffffffffff1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01654",
+            "args": [
+              "0xffeffffffffffff0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01655",
+            "args": [
+              "0xffeffffffffffff0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01668",
+            "args": [
+              "0x7feffffffffffff0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01669",
+            "args": [
+              "0x7feffffffffffff0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01682",
+            "args": [
+              "0xffefffffffffffef",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01683",
+            "args": [
+              "0xffefffffffffffef",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01696",
+            "args": [
+              "0x7fefffffffffffef",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01697",
+            "args": [
+              "0x7fefffffffffffef",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01710",
+            "args": [
+              "0xffefffffffffffee",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01711",
+            "args": [
+              "0xffefffffffffffee",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01724",
+            "args": [
+              "0x7fefffffffffffee",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01725",
+            "args": [
+              "0x7fefffffffffffee",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01738",
+            "args": [
+              "0xffefffffffffffed",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01739",
+            "args": [
+              "0xffefffffffffffed",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01752",
+            "args": [
+              "0x7fefffffffffffed",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01753",
+            "args": [
+              "0x7fefffffffffffed",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01766",
+            "args": [
+              "0xffefffffffffffec",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01767",
+            "args": [
+              "0xffefffffffffffec",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01780",
+            "args": [
+              "0x7fefffffffffffec",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01781",
+            "args": [
+              "0x7fefffffffffffec",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01794",
+            "args": [
+              "0xffefffffffffffeb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01795",
+            "args": [
+              "0xffefffffffffffeb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01808",
+            "args": [
+              "0x7fefffffffffffeb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01809",
+            "args": [
+              "0x7fefffffffffffeb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01822",
+            "args": [
+              "0xffefffffffffffea",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01823",
+            "args": [
+              "0xffefffffffffffea",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01836",
+            "args": [
+              "0x7fefffffffffffea",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01837",
+            "args": [
+              "0x7fefffffffffffea",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01850",
+            "args": [
+              "0xffefffffffffffe9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01851",
+            "args": [
+              "0xffefffffffffffe9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01864",
+            "args": [
+              "0x7fefffffffffffe9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01865",
+            "args": [
+              "0x7fefffffffffffe9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01878",
+            "args": [
+              "0xffefffffffffffe8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01879",
+            "args": [
+              "0xffefffffffffffe8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01892",
+            "args": [
+              "0x7fefffffffffffe8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01893",
+            "args": [
+              "0x7fefffffffffffe8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01906",
+            "args": [
+              "0xffefffffffffffe7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01907",
+            "args": [
+              "0xffefffffffffffe7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01920",
+            "args": [
+              "0x7fefffffffffffe7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01921",
+            "args": [
+              "0x7fefffffffffffe7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01934",
+            "args": [
+              "0xffefffffffffffe6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01935",
+            "args": [
+              "0xffefffffffffffe6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01948",
+            "args": [
+              "0x7fefffffffffffe6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01949",
+            "args": [
+              "0x7fefffffffffffe6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01962",
+            "args": [
+              "0xffefffffffffffe5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01963",
+            "args": [
+              "0xffefffffffffffe5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01976",
+            "args": [
+              "0x7fefffffffffffe5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01977",
+            "args": [
+              "0x7fefffffffffffe5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01990",
+            "args": [
+              "0xffefffffffffffe4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-01991",
+            "args": [
+              "0xffefffffffffffe4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02004",
+            "args": [
+              "0x7fefffffffffffe4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02005",
+            "args": [
+              "0x7fefffffffffffe4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02018",
+            "args": [
+              "0xffefffffffffffe3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02019",
+            "args": [
+              "0xffefffffffffffe3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02032",
+            "args": [
+              "0x7fefffffffffffe3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02033",
+            "args": [
+              "0x7fefffffffffffe3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02046",
+            "args": [
+              "0xffefffffffffffe2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02047",
+            "args": [
+              "0xffefffffffffffe2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02060",
+            "args": [
+              "0x7fefffffffffffe2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02061",
+            "args": [
+              "0x7fefffffffffffe2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02074",
+            "args": [
+              "0xffefffffffffffe1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02075",
+            "args": [
+              "0xffefffffffffffe1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02088",
+            "args": [
+              "0x7fefffffffffffe1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02089",
+            "args": [
+              "0x7fefffffffffffe1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02102",
+            "args": [
+              "0xffefffffffffffe0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02103",
+            "args": [
+              "0xffefffffffffffe0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02116",
+            "args": [
+              "0x7fefffffffffffe0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02117",
+            "args": [
+              "0x7fefffffffffffe0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02130",
+            "args": [
+              "0xffefffffffffffdf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02131",
+            "args": [
+              "0xffefffffffffffdf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02144",
+            "args": [
+              "0x7fefffffffffffdf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02145",
+            "args": [
+              "0x7fefffffffffffdf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02158",
+            "args": [
+              "0xffefffffffffffde",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02159",
+            "args": [
+              "0xffefffffffffffde",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02172",
+            "args": [
+              "0x7fefffffffffffde",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02173",
+            "args": [
+              "0x7fefffffffffffde",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02186",
+            "args": [
+              "0xffefffffffffffdd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02187",
+            "args": [
+              "0xffefffffffffffdd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02200",
+            "args": [
+              "0x7fefffffffffffdd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02201",
+            "args": [
+              "0x7fefffffffffffdd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02214",
+            "args": [
+              "0xffefffffffffffdc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02215",
+            "args": [
+              "0xffefffffffffffdc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02228",
+            "args": [
+              "0x7fefffffffffffdc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02229",
+            "args": [
+              "0x7fefffffffffffdc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02242",
+            "args": [
+              "0xffefffffffffffdb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02243",
+            "args": [
+              "0xffefffffffffffdb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02256",
+            "args": [
+              "0x7fefffffffffffdb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02257",
+            "args": [
+              "0x7fefffffffffffdb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02270",
+            "args": [
+              "0xffefffffffffffda",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02271",
+            "args": [
+              "0xffefffffffffffda",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02284",
+            "args": [
+              "0x7fefffffffffffda",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02285",
+            "args": [
+              "0x7fefffffffffffda",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02298",
+            "args": [
+              "0xffefffffffffffd9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02299",
+            "args": [
+              "0xffefffffffffffd9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02312",
+            "args": [
+              "0x7fefffffffffffd9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02313",
+            "args": [
+              "0x7fefffffffffffd9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02326",
+            "args": [
+              "0xffefffffffffffd8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02327",
+            "args": [
+              "0xffefffffffffffd8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02340",
+            "args": [
+              "0x7fefffffffffffd8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02341",
+            "args": [
+              "0x7fefffffffffffd8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02354",
+            "args": [
+              "0xffefffffffffffd7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02355",
+            "args": [
+              "0xffefffffffffffd7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02368",
+            "args": [
+              "0x7fefffffffffffd7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02369",
+            "args": [
+              "0x7fefffffffffffd7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02382",
+            "args": [
+              "0xffefffffffffffd6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02383",
+            "args": [
+              "0xffefffffffffffd6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02396",
+            "args": [
+              "0x7fefffffffffffd6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02397",
+            "args": [
+              "0x7fefffffffffffd6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02410",
+            "args": [
+              "0xffefffffffffffd5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02411",
+            "args": [
+              "0xffefffffffffffd5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02424",
+            "args": [
+              "0x7fefffffffffffd5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02425",
+            "args": [
+              "0x7fefffffffffffd5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02438",
+            "args": [
+              "0xffefffffffffffd4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02439",
+            "args": [
+              "0xffefffffffffffd4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02452",
+            "args": [
+              "0x7fefffffffffffd4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02453",
+            "args": [
+              "0x7fefffffffffffd4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02466",
+            "args": [
+              "0xffefffffffffffd3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02467",
+            "args": [
+              "0xffefffffffffffd3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02480",
+            "args": [
+              "0x7fefffffffffffd3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02481",
+            "args": [
+              "0x7fefffffffffffd3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02494",
+            "args": [
+              "0xffefffffffffffd2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02495",
+            "args": [
+              "0xffefffffffffffd2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02508",
+            "args": [
+              "0x7fefffffffffffd2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02509",
+            "args": [
+              "0x7fefffffffffffd2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02522",
+            "args": [
+              "0xffefffffffffffd1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02523",
+            "args": [
+              "0xffefffffffffffd1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02536",
+            "args": [
+              "0x7fefffffffffffd1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02537",
+            "args": [
+              "0x7fefffffffffffd1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02550",
+            "args": [
+              "0xffefffffffffffd0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02551",
+            "args": [
+              "0xffefffffffffffd0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02564",
+            "args": [
+              "0x7fefffffffffffd0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02565",
+            "args": [
+              "0x7fefffffffffffd0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02578",
+            "args": [
+              "0xffefffffffffffcf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02579",
+            "args": [
+              "0xffefffffffffffcf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02592",
+            "args": [
+              "0x7fefffffffffffcf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02593",
+            "args": [
+              "0x7fefffffffffffcf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02606",
+            "args": [
+              "0xffefffffffffffce",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02607",
+            "args": [
+              "0xffefffffffffffce",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02620",
+            "args": [
+              "0x7fefffffffffffce",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02621",
+            "args": [
+              "0x7fefffffffffffce",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02634",
+            "args": [
+              "0xffefffffffffffcd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02635",
+            "args": [
+              "0xffefffffffffffcd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02648",
+            "args": [
+              "0x7fefffffffffffcd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02649",
+            "args": [
+              "0x7fefffffffffffcd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02662",
+            "args": [
+              "0xffefffffffffffcc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02663",
+            "args": [
+              "0xffefffffffffffcc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02676",
+            "args": [
+              "0x7fefffffffffffcc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02677",
+            "args": [
+              "0x7fefffffffffffcc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02690",
+            "args": [
+              "0xffefffffffffffcb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02691",
+            "args": [
+              "0xffefffffffffffcb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02704",
+            "args": [
+              "0x7fefffffffffffcb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02705",
+            "args": [
+              "0x7fefffffffffffcb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02718",
+            "args": [
+              "0xffefffffffffffca",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02719",
+            "args": [
+              "0xffefffffffffffca",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02732",
+            "args": [
+              "0x7fefffffffffffca",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02733",
+            "args": [
+              "0x7fefffffffffffca",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02746",
+            "args": [
+              "0xffefffffffffffc9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02747",
+            "args": [
+              "0xffefffffffffffc9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02760",
+            "args": [
+              "0x7fefffffffffffc9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02761",
+            "args": [
+              "0x7fefffffffffffc9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02774",
+            "args": [
+              "0xffefffffffffffc8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02775",
+            "args": [
+              "0xffefffffffffffc8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02788",
+            "args": [
+              "0x7fefffffffffffc8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02789",
+            "args": [
+              "0x7fefffffffffffc8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02802",
+            "args": [
+              "0xffefffffffffffc7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02803",
+            "args": [
+              "0xffefffffffffffc7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02816",
+            "args": [
+              "0x7fefffffffffffc7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02817",
+            "args": [
+              "0x7fefffffffffffc7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02830",
+            "args": [
+              "0xffefffffffffffc6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02831",
+            "args": [
+              "0xffefffffffffffc6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02844",
+            "args": [
+              "0x7fefffffffffffc6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02845",
+            "args": [
+              "0x7fefffffffffffc6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02858",
+            "args": [
+              "0xffefffffffffffc5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02859",
+            "args": [
+              "0xffefffffffffffc5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02872",
+            "args": [
+              "0x7fefffffffffffc5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02873",
+            "args": [
+              "0x7fefffffffffffc5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02886",
+            "args": [
+              "0xffefffffffffffc4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02887",
+            "args": [
+              "0xffefffffffffffc4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02900",
+            "args": [
+              "0x7fefffffffffffc4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02901",
+            "args": [
+              "0x7fefffffffffffc4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02914",
+            "args": [
+              "0xffefffffffffffc3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02915",
+            "args": [
+              "0xffefffffffffffc3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02928",
+            "args": [
+              "0x7fefffffffffffc3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02929",
+            "args": [
+              "0x7fefffffffffffc3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02942",
+            "args": [
+              "0xffefffffffffffc2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02943",
+            "args": [
+              "0xffefffffffffffc2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02956",
+            "args": [
+              "0x7fefffffffffffc2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02957",
+            "args": [
+              "0x7fefffffffffffc2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02970",
+            "args": [
+              "0xffefffffffffffc1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02971",
+            "args": [
+              "0xffefffffffffffc1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02984",
+            "args": [
+              "0x7fefffffffffffc1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02985",
+            "args": [
+              "0x7fefffffffffffc1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02998",
+            "args": [
+              "0xffefffffffffffc0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-02999",
+            "args": [
+              "0xffefffffffffffc0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03012",
+            "args": [
+              "0x7fefffffffffffc0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03013",
+            "args": [
+              "0x7fefffffffffffc0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03026",
+            "args": [
+              "0xffefffffffffffbf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03027",
+            "args": [
+              "0xffefffffffffffbf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03040",
+            "args": [
+              "0x7fefffffffffffbf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03041",
+            "args": [
+              "0x7fefffffffffffbf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03054",
+            "args": [
+              "0xffefffffffffffbe",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03055",
+            "args": [
+              "0xffefffffffffffbe",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03068",
+            "args": [
+              "0x7fefffffffffffbe",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03069",
+            "args": [
+              "0x7fefffffffffffbe",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03082",
+            "args": [
+              "0xffefffffffffffbd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03083",
+            "args": [
+              "0xffefffffffffffbd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03096",
+            "args": [
+              "0x7fefffffffffffbd",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03097",
+            "args": [
+              "0x7fefffffffffffbd",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03110",
+            "args": [
+              "0xffefffffffffffbc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03111",
+            "args": [
+              "0xffefffffffffffbc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03124",
+            "args": [
+              "0x7fefffffffffffbc",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03125",
+            "args": [
+              "0x7fefffffffffffbc",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03138",
+            "args": [
+              "0xffefffffffffffbb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03139",
+            "args": [
+              "0xffefffffffffffbb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03152",
+            "args": [
+              "0x7fefffffffffffbb",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03153",
+            "args": [
+              "0x7fefffffffffffbb",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03166",
+            "args": [
+              "0xffefffffffffffba",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03167",
+            "args": [
+              "0xffefffffffffffba",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03180",
+            "args": [
+              "0x7fefffffffffffba",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03181",
+            "args": [
+              "0x7fefffffffffffba",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03194",
+            "args": [
+              "0xffefffffffffffb9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03195",
+            "args": [
+              "0xffefffffffffffb9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03208",
+            "args": [
+              "0x7fefffffffffffb9",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03209",
+            "args": [
+              "0x7fefffffffffffb9",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03222",
+            "args": [
+              "0xffefffffffffffb8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03223",
+            "args": [
+              "0xffefffffffffffb8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03236",
+            "args": [
+              "0x7fefffffffffffb8",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03237",
+            "args": [
+              "0x7fefffffffffffb8",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03250",
+            "args": [
+              "0xffefffffffffffb7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03251",
+            "args": [
+              "0xffefffffffffffb7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03264",
+            "args": [
+              "0x7fefffffffffffb7",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03265",
+            "args": [
+              "0x7fefffffffffffb7",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03278",
+            "args": [
+              "0xffefffffffffffb6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03279",
+            "args": [
+              "0xffefffffffffffb6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03292",
+            "args": [
+              "0x7fefffffffffffb6",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03293",
+            "args": [
+              "0x7fefffffffffffb6",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03306",
+            "args": [
+              "0xffefffffffffffb5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03307",
+            "args": [
+              "0xffefffffffffffb5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03320",
+            "args": [
+              "0x7fefffffffffffb5",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03321",
+            "args": [
+              "0x7fefffffffffffb5",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03334",
+            "args": [
+              "0xffefffffffffffb4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03335",
+            "args": [
+              "0xffefffffffffffb4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03348",
+            "args": [
+              "0x7fefffffffffffb4",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03349",
+            "args": [
+              "0x7fefffffffffffb4",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03362",
+            "args": [
+              "0xffefffffffffffb3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03363",
+            "args": [
+              "0xffefffffffffffb3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03376",
+            "args": [
+              "0x7fefffffffffffb3",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03377",
+            "args": [
+              "0x7fefffffffffffb3",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03390",
+            "args": [
+              "0xffefffffffffffb2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03391",
+            "args": [
+              "0xffefffffffffffb2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03404",
+            "args": [
+              "0x7fefffffffffffb2",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03405",
+            "args": [
+              "0x7fefffffffffffb2",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03418",
+            "args": [
+              "0xffefffffffffffb1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03419",
+            "args": [
+              "0xffefffffffffffb1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03432",
+            "args": [
+              "0x7fefffffffffffb1",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03433",
+            "args": [
+              "0x7fefffffffffffb1",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03446",
+            "args": [
+              "0xffefffffffffffb0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03447",
+            "args": [
+              "0xffefffffffffffb0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03460",
+            "args": [
+              "0x7fefffffffffffb0",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03461",
+            "args": [
+              "0x7fefffffffffffb0",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03474",
+            "args": [
+              "0xffefffffffffffaf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03475",
+            "args": [
+              "0xffefffffffffffaf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03488",
+            "args": [
+              "0x7fefffffffffffaf",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03489",
+            "args": [
+              "0x7fefffffffffffaf",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03502",
+            "args": [
+              "0xffefffffffffff7f",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03503",
+            "args": [
+              "0xffefffffffffff7f",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03516",
+            "args": [
+              "0x7fefffffffffff7f",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03517",
+            "args": [
+              "0x7fefffffffffff7f",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03530",
+            "args": [
+              "0xffeffffffffffeff",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0xfff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03531",
+            "args": [
+              "0xffeffffffffffeff",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0xfff005419221015d",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03544",
+            "args": [
+              "0x7feffffffffffeff",
+              "0xc073400000000000"
+            ],
+            "expected_bits": "0x7ff1ccf385ebc8a0",
+            "actual": "error:Num"
+          },
+          {
+            "id": "w111roundendpoint-ROUND-03545",
+            "args": [
+              "0x7feffffffffffeff",
+              "0xc073300000000000"
+            ],
+            "expected_bits": "0x7ff005419221015d",
+            "actual": "error:Num"
+          }
+        ]
+      },
+      "raw_exponent_research": {
+        "rows": 3556,
+        "mismatches": 0,
+        "misses": []
+      }
+    }
+  },
+  "sources": [
+    {
+      "source": "smart-fuzzer/runs/w111-rounding-endpoint-refinement-20260929/repeated-session-controls.json",
+      "retained": "docs/function-lane/evidence/w111-broad-20260929/rounding-boundaries/endpoint-repeated-session-controls.json",
+      "sha256": "725d066a0550d3e5c2bd9f2cec8844e30f932fea07e8db919e074c7bf7fad256"
+    },
+    {
+      "source": ".tmp/w111-rounding-repeated-session-controls.log",
+      "retained": "docs/function-lane/evidence/w111-broad-20260929/rounding-boundaries/endpoint-w111-rounding-repeated-session-controls.log",
+      "sha256": "2d53ff37c964953bdedb80d8968567a9b3a953e67f9e502e8d5040a777e1851e"
+    }
+  ]
+}

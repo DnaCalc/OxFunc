@@ -1,0 +1,180 @@
+{
+  "rows": 1083,
+  "matches": 1064,
+  "by_function": {
+    "FUNC.NORM.S.DIST": {
+      "rows": 165,
+      "matches": 162
+    },
+    "FUNC.NORM.DIST": {
+      "rows": 251,
+      "matches": 246
+    },
+    "FUNC.NORMDIST": {
+      "rows": 251,
+      "matches": 246
+    },
+    "FUNC.EXPON.DIST": {
+      "rows": 208,
+      "matches": 205
+    },
+    "FUNC.EXPONDIST": {
+      "rows": 208,
+      "matches": 205
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111typed-00135-norm_s_dist-axis-0-reference",
+      "formula": "=NORM.S.DIST(B2,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00144-norm_s_dist-axis-1-reference",
+      "formula": "=NORM.S.DIST(A100,B2)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00161-norm_s_dist-precedence-axis-0",
+      "formula": "=NORM.S.DIST(A100,\"TRUE\")",
+      "expected": "number:0x3fc44ed0bb7cb209",
+      "actual": "number:0x3fc44ed0bb7cb20a",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00300-norm_dist-axis-0-reference",
+      "formula": "=NORM.DIST(B2,A100,A101,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00327-norm_dist-axis-1-reference",
+      "formula": "=NORM.DIST(A100,B2,A101,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00354-norm_dist-axis-2-reference",
+      "formula": "=NORM.DIST(A100,A101,B2,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00363-norm_dist-axis-3-reference",
+      "formula": "=NORM.DIST(A100,A101,A102,B2)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00380-norm_dist-precedence-axis-0",
+      "formula": "=NORM.DIST(A100,A101,A102,\"TRUE\")",
+      "expected": "number:0x3fc44ed0bb7cb209",
+      "actual": "number:0x3fc44ed0bb7cb20a",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00551-normdist-axis-0-reference",
+      "formula": "=NORMDIST(B2,A100,A101,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00578-normdist-axis-1-reference",
+      "formula": "=NORMDIST(A100,B2,A101,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00605-normdist-axis-2-reference",
+      "formula": "=NORMDIST(A100,A101,B2,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00614-normdist-axis-3-reference",
+      "formula": "=NORMDIST(A100,A101,A102,B2)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00631-normdist-precedence-axis-0",
+      "formula": "=NORMDIST(A100,A101,A102,\"TRUE\")",
+      "expected": "number:0x3fc44ed0bb7cb209",
+      "actual": "number:0x3fc44ed0bb7cb20a",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00802-expon_dist-axis-0-reference",
+      "formula": "=EXPON.DIST(B2,A100,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00829-expon_dist-axis-1-reference",
+      "formula": "=EXPON.DIST(A100,B2,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00838-expon_dist-axis-2-reference",
+      "formula": "=EXPON.DIST(A100,A101,B2)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-01010-expondist-axis-0-reference",
+      "formula": "=EXPONDIST(B2,A100,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-01037-expondist-axis-1-reference",
+      "formula": "=EXPONDIST(A100,B2,FALSE)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    },
+    {
+      "case_id": "w111typed-01046-expondist-axis-2-reference",
+      "formula": "=EXPONDIST(A100,A101,B2)",
+      "expected": "harness_error:unsupported scalar fixture value kind: missing_arg",
+      "actual": "harness_error:missing_arg is not a fixture value",
+      "excel_execution": "excel_case_harness_error",
+      "local_execution": "local_fixture_materialization_error"
+    }
+  ]
+}

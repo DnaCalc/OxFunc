@@ -1,0 +1,32 @@
+{
+  "authority": "read_only_public_packet_research_not_production_candidate",
+  "files": [
+    {
+      "path": "smart-fuzzer/tools/calc_graph_racer/src/bin/w111_normal_cdf_dependencies.rs",
+      "sha256": "4d6d1b463336327162f14d6d2f74653baa0ec9e0dcc174ad7ed89197815d278f",
+      "retained_source": "initial-w111_normal_cdf_dependencies.rs"
+    },
+    {
+      "path": "smart-fuzzer/tools/calc_graph_racer/src/erfc_f_packets.rs",
+      "sha256": "c565b1ac9cddcabcc326a4f7c9fb3251bb65796a7bb4fde9ab508d06be97522c",
+      "retained_source": "initial-erfc_f_packets.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/special_dist_family.rs",
+      "sha256": "0afb782193af607bb121632c84b99059285da324cfdaac9e56bd18453e034012",
+      "retained_source": "initial-special_dist_family.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/normal_dist_common.rs",
+      "sha256": "7bfe28859c3e6664483986291304f370248137437265afb0791efdb5db9fed0d",
+      "retained_source": "initial-normal_dist_common.rs"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/normal_log_family.rs",
+      "sha256": "e5bf9fcbf1fd60f24b1cdbc427816bc9129ede45c4df7d9bf179313126bb2c9b",
+      "retained_source": "initial-normal_log_family.rs"
+    }
+  ],
+  "input_bank": "docs/function-lane/evidence/w111-broad-20260929/integer-publication/heldout/answers/answers-norm.s.dist.json",
+  "input_sha256": "b9090628aed728aa6560e3e8a13c435795a483c26fee8691b44d23cd9eb262f0"
+}

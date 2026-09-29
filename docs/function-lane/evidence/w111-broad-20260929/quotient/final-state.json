@@ -1,0 +1,50 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "contextual_numeric_text",
+    "multi_area_and_unresolved_references",
+    "evaluator_reference_provenance",
+    "HO_FN_027_receiving_acknowledgment"
+  ],
+  "source_and_test_sha256": {
+    "crates/oxfunc_core/src/functions/quotient_fn.rs": "c3cbf33841621d1d77e892e10c70d67c36107dd78780e5821aff309c859da475",
+    "crates/oxfunc_core/src/functions/adapters.rs": "e398634aa04823dcdcde9e0e2530c2dd59bd022b53ac5281116fc63dcb4aec95",
+    "crates/oxfunc_core/src/functions/binary_numeric.rs": "84fe212a7d54f986a58f08a7335e3d301e92b8e861f5a3edd55e3b18c5860207",
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": "f3f88e498d0671c554634e8f67fc28f871c602315c10d105be490ec7797a1d3d",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "formal/lean/OxFunc/Functions/QuotientFn.lean": "39d4c9325d2ba77340c916d9f0077802de196e185bcb07e4cfd0431cd0e9da69",
+    "crates/oxfunc_core/tests/w111_quotient_prepared_live_replay.rs": "6530f29e4cd3ab5ddf7b24d5ac76665087fe99a3423c950c0224591b2797563a",
+    "crates/oxfunc_core/tests/w111_quotient_live_replay.rs": "67f249d256bc690d10cb9e82cede9be1e1653039fd14936eba6130e1d1af1285"
+  },
+  "golden_row_sha256": "d7d96f4d0f088076f43375d7d4354c78a393d373a5fe2cfd792e9f63f2446077",
+  "typed_exact": 1720,
+  "numeric_exact": 3141,
+  "fresh_exact": 624,
+  "historical_failed_stages": {
+    "reference_discovery": {
+      "rows": 80,
+      "exact": 26
+    },
+    "first_reference_heldout": {
+      "rows": 512,
+      "exact": 507
+    }
+  },
+  "checks": {
+    "prepared_tests": 5,
+    "numeric_tests": 2,
+    "metadata_golden": "passed",
+    "lean_jobs": 7
+  },
+  "bank_sha256": {
+    "typed.json": "64441c82b70033c48120ce6c45eb3d6d9daac8e5cdbff5a7e36fe749bc95cfb5",
+    "typed-validation.json": "46c41a28ffc0e3d2e512d0e1992ac28333525fc5aaca6352bbc1f7f2a5ba0132",
+    "reference-discovery.json": "f4df2a6d179cc496fedf2cc69872396d1bc1ae9f5a0707622ca279a31d7fe709",
+    "reference-heldout.json": "1005d7eef4cda93e3e1a9044bbddfb6bbd260f0b60016bdfd9036c4cd92e607e",
+    "padding-heldout.json": "6cf6b0ddadae43f82bc5ee33139546cffe808c78bc43ed65ed84e1326bae9bc4"
+  }
+}

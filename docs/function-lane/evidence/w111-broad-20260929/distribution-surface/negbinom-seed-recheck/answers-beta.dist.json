@@ -1,0 +1,229 @@
+{
+  "function": "BETA.DIST",
+  "witnesses": [
+    {
+      "id": "w111-seed-recheck-BETA.DIST-000",
+      "args": [
+        "0x3fd9999999999992",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed685"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-001",
+      "args": [
+        "0x3fd9999999999993",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed688"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-002",
+      "args": [
+        "0x3fd9999999999994",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed687"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-003",
+      "args": [
+        "0x3fd9999999999995",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed686"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-004",
+      "args": [
+        "0x3fd9999999999996",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68a"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-005",
+      "args": [
+        "0x3fd9999999999997",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68c"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-006",
+      "args": [
+        "0x3fd9999999999998",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68b"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-007",
+      "args": [
+        "0x3fd9999999999999",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68a"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-008",
+      "args": [
+        "0x3fd999999999999a",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68d"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-009",
+      "args": [
+        "0x3fd999999999999b",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed690"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-010",
+      "args": [
+        "0x3fd999999999999c",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed690"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-011",
+      "args": [
+        "0x3fd999999999999d",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed690"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-012",
+      "args": [
+        "0x3fd999999999999e",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed691"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-013",
+      "args": [
+        "0x3fd999999999999f",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed694"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-014",
+      "args": [
+        "0x3fd99999999999a0",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed694"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-015",
+      "args": [
+        "0x3fd99999999999a1",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed694"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-016",
+      "args": [
+        "0x3fd99999999999a2",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed696"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-017",
+      "args": [
+        "0x3fd999999999999a",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68d"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-018",
+      "args": [
+        "0x3fd999999999999a",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68d"
+    },
+    {
+      "id": "w111-seed-recheck-BETA.DIST-019",
+      "args": [
+        "0x3fd999999999999a",
+        "0x4008000000000000",
+        "0x4018000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5e849aaeed68d"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T19:06:14.5930384Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

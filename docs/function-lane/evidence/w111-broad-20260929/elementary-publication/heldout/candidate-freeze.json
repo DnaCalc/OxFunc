@@ -1,0 +1,13 @@
+{
+  "seed": 202609293101,
+  "frozen_utc": "2026-09-29T18:12:54.962695+00:00",
+  "sources": {
+    "functions/log_fn.rs": "15c3ca08ee0ba12c693244dcce90f4e18a831d585508be6d812da7fafe6a2141",
+    "functions/power_fn.rs": "32be0ede37d51a1235bedca4bf59f31623cd31cd12edf9c74cc71689faaefa4b",
+    "functions/fisher_fn.rs": "152cfb18185d144a73692a6171ff45ab49c28a4ece5e92f345d07fd3dede21be",
+    "functions/median_fn.rs": "a0dd6f490c40dfa627804bfff025e9097cb9d33893496ecc1271ddf5753ca926",
+    "excel_numeric/mod.rs": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd",
+    "coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d"
+  }
+}

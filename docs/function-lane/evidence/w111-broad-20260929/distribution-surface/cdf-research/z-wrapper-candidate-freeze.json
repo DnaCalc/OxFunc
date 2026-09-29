@@ -1,0 +1,9 @@
+{
+  "authority": "wrapper_hypothesis_frozen_before_fresh_mathematical_discriminator_capture",
+  "model": "z = RN53(RN64(abs(x) * bits(0x3fe6a09e667f3bcd))); q = public ERFC.PRECISE(z); NORM.S.DIST = flush_subnormal(x<0 ? q/2 : 1-q/2), x==0 =>0.5. Ordinary GAUSS = NORM.S.DIST -0.5.",
+  "qualification": "Public ERFC outcome is an empirical dependency, not a claim about the current local fitted backend. No producer source modified.",
+  "generator": "smart-fuzzer/tools/w111/complex_kernel_probe/src/bin/normal_cdf_z_discriminators.rs",
+  "generator_sha256": "5a2ae05fe43588afda41facb5b3c6a748f11fa13fc55aed19b700e5010a83fc7",
+  "supporting_observations": "public-wrapper-comparison.json: native462/463; staged463/463",
+  "fresh_run": "smart-fuzzer/runs/w111-normal-cdf-z-discriminators-20260929"
+}

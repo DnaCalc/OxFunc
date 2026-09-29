@@ -1,0 +1,2 @@
+answered 12000 probes for TRUNC (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-hyperbolic-heldout-20260929\answers\answers-trunc.json
+BULK throughput: 12000 live probes | compute 1.58s (7579.6/s) | +excel startup 1.61s (3755.3/s incl startup) | total wall 3.88s

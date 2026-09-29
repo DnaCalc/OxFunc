@@ -1,0 +1,29 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "directed initial15 precision: 212/2136 residuals per function",
+    "generic ROUND initial15 precision",
+    "raw overflow numeric publication HO-FN-029",
+    "historical TRUNC MAX conflict",
+    "contextual numeric text",
+    "HO-FN-028 receiving acknowledgement"
+  ],
+  "independent_validation": {
+    "ROUNDUP": {
+      "rows": 6542,
+      "exact": 6542
+    },
+    "ROUNDDOWN": {
+      "rows": 3470,
+      "exact": 3470
+    },
+    "source_hashes_unchanged_at_production_replay": true
+  },
+  "test_command": "cargo test -p oxfunc_core --test w111_rounding_boundary_live_replay roundup_signed_residual_frozen_independent_heldout",
+  "test_result": "1 passed, 10012 observations",
+  "formal": "13 targeted jobs passed before freeze",
+  "refinement_rows_before_freeze": 38896
+}

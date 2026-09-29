@@ -1,0 +1,18 @@
+{
+  "seed": 202609293041,
+  "rows": 624,
+  "candidate_frozen_before_generation": true,
+  "asymmetric_array_rows": 480,
+  "nonunit_reference_rows": 96,
+  "unit_reference_rows": 48,
+  "both_argument_positions": true,
+  "error_codes": [
+    "NA",
+    "Value",
+    "Div0",
+    "Num",
+    "Ref",
+    "Name",
+    "Null"
+  ]
+}

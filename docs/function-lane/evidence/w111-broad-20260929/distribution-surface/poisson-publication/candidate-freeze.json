@@ -1,0 +1,12 @@
+{
+  "scope": "positive-count final subnormal publication only; zero-count unchanged; all backend discrepancies remain open",
+  "sources": {
+    "crates/oxfunc_core/src/functions/discrete_dist_family.rs": "1357ef163a54c622c8bc98e6bd3efabafd5d06be19e4ec2e387ef5d2ac929115",
+    "crates/oxfunc_core/src/functions/special_math_common.rs": "de441194b10cc0f417fa1bc806c6011234dd84c962033601e37aae5bd53d3665",
+    "crates/oxfunc_core/src/excel_numeric/mod.rs": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "crates/oxfunc_core/src/excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+  },
+  "discovery_rows": 1428,
+  "discovery_exact": 959,
+  "discovery_residuals": 469
+}

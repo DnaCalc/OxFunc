@@ -1,0 +1,43 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_rollup.v1",
+  "run_id": "w111-logical-text-20260929",
+  "tranche_id": "w111-logical-text-20260929",
+  "generated_utc": "2026-09-29T12:10:31.6522118Z",
+  "total_cases": 540,
+  "by_classification": {
+    "exact_typed_bit_match": 540
+  },
+  "by_severity_class": {
+    "match": 540
+  },
+  "by_severity_sub_tag": {},
+  "by_function": {
+    "FUNC.AND": {
+      "exact_typed_bit_match": 180
+    },
+    "FUNC.OR": {
+      "exact_typed_bit_match": 180
+    },
+    "FUNC.XOR": {
+      "exact_typed_bit_match": 180
+    }
+  },
+  "mismatch_case_ids": [],
+  "axis_witness_pairs": {
+    "total_pairs": 0,
+    "differentiated_pairs": 0,
+    "not_differentiated_pairs": 0,
+    "blocked_or_incomplete_pairs": 0,
+    "by_axis_tag": {},
+    "pairs": []
+  },
+  "excel_environment": {
+    "available": true,
+    "version": "16.0",
+    "build": "20430",
+    "calculation": "-4105",
+    "workbook_compatibility_version": "2"
+  },
+  "comparison_policy": "exact_typed_bit_match_no_tolerance_with_1x1_publication_seam_classification",
+  "failure_packet_dir": "smart-fuzzer/runs/w111-logical-text-20260929/failure_packets"
+}

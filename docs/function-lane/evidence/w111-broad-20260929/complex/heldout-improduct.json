@@ -1,0 +1,4404 @@
+{
+  "function": "IMPRODUCT",
+  "witnesses": [
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0000",
+      "args": [
+        "0x8ec3e3158ba35914"
+      ],
+      "expected_bits": "text:-1.52701653939258E-237"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0001",
+      "args": [
+        "0xe68ce17c3dfd2c3e"
+      ],
+      "expected_bits": "text:-9.81740238312632E+185"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0002",
+      "args": [
+        "0xc3144c88b0f5d1e8"
+      ],
+      "expected_bits": "text:-1428412375594110"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0003",
+      "args": [
+        "0x70b292d2fc7742e5"
+      ],
+      "expected_bits": "text:7.38195054159689E+234"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0004",
+      "args": [
+        "0xa04a1a5202da80d9"
+      ],
+      "expected_bits": "text:-3.89367360081186E-153"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0005",
+      "args": [
+        "0xcbb1659f021e1c30"
+      ],
+      "expected_bits": "text:-4.26572157274785E+56"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0006",
+      "args": [
+        "0x623cfea3befa34df"
+      ],
+      "expected_bits": "text:1.66969079180386E+165"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0007",
+      "args": [
+        "0xb699f3a65fef4a6a"
+      ],
+      "expected_bits": "text:-1.13644243216191E-45"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0008",
+      "args": [
+        "0x84ecb9443266785e"
+      ],
+      "expected_bits": "text:-6.03635050482343E-285"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0009",
+      "args": [
+        "0xd011ef427bc49c8f"
+      ],
+      "expected_bits": "text:-5.19171438491872E+77"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0010",
+      "args": [
+        "0x1371b59a4fff8961"
+      ],
+      "expected_bits": "text:5.13720155717565E-215"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0011",
+      "args": [
+        "0x4c5165aff51cf9fb"
+      ],
+      "expected_bits": "text:4.36816382693292E+59"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0012",
+      "args": [
+        "0x6c352ddbcba819ea"
+      ],
+      "expected_bits": "text:1.78248205939585E+213"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0013",
+      "args": [
+        "0x7480ef3a6962dd28"
+      ],
+      "expected_bits": "text:1.55195228801868E+253"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0014",
+      "args": [
+        "0x16b8aaac8421a301"
+      ],
+      "expected_bits": "text:3.22250678916342E-199"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0015",
+      "args": [
+        "0x01ba52877bf9c678"
+      ],
+      "expected_bits": "text:2.45657194440756E-300"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0016",
+      "args": [
+        "0x55774ac1d539c2be"
+      ],
+      "expected_bits": "text:5.21681796780407E+103"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0017",
+      "args": [
+        "0x1b4c61cc2463fe99"
+      ],
+      "expected_bits": "text:3.50199791260739E-177"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0018",
+      "args": [
+        "0x7d61ec7b67a6b3b3"
+      ],
+      "expected_bits": "text:9.15787743564805E+295"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0019",
+      "args": [
+        "0x8e8ee47c1b7a62c8"
+      ],
+      "expected_bits": "text:-1.48254118109086E-238"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0020",
+      "args": [
+        "0xf6e78c9ab78aa9cb"
+      ],
+      "expected_bits": "text:-5.93229889016354E+264"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0021",
+      "args": [
+        "0x0bcbeeb68f35ef5b"
+      ],
+      "expected_bits": "text:7.61979044286482E-252"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0022",
+      "args": [
+        "0xb637f85ac55eccac"
+      ],
+      "expected_bits": "text:-1.64010319543527E-47"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0023",
+      "args": [
+        "0x8dbb40bc2da1a21c"
+      ],
+      "expected_bits": "text:-1.59652517056151E-242"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0024",
+      "args": [
+        "0xb6fbf9c3bc0fe098"
+      ],
+      "expected_bits": "text:-7.84044509336633E-44"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0025",
+      "args": [
+        "0x00bae16eb13d2b4b"
+      ],
+      "expected_bits": "text:3.82792383110406E-305"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0026",
+      "args": [
+        "0x50f87e3197b9c24e"
+      ],
+      "expected_bits": "text:1.16166212947763E+82"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0027",
+      "args": [
+        "0xc3258b24d01a2da7"
+      ],
+      "expected_bits": "text:-3031982368691920"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0028",
+      "args": [
+        "0x4001df56f218f6b3"
+      ],
+      "expected_bits": "text:2.23405255449946"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0029",
+      "args": [
+        "0xc2913cf9f37441d5"
+      ],
+      "expected_bits": "text:-4738397297936.46"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0030",
+      "args": [
+        "0xfcfc6aaa0b105681"
+      ],
+      "expected_bits": "text:-1.13430219618749E+294"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0031",
+      "args": [
+        "0xb288f99ab014fb9c"
+      ],
+      "expected_bits": "text:-2.96439952581946E-65"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0032",
+      "args": [
+        "0xda54b5481bf8d85f"
+      ],
+      "expected_bits": "text:-1.40177755788E+127"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0033",
+      "args": [
+        "0x73f986d4abbfd7f3"
+      ],
+      "expected_bits": "text:4.56910131467886E+250"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0034",
+      "args": [
+        "0xc0e61c659972175c"
+      ],
+      "expected_bits": "text:-45283.1749811608"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0035",
+      "args": [
+        "0x7a3f770966b15a74"
+      ],
+      "expected_bits": "text:7.13942993034959E+280"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0036",
+      "args": [
+        "0xbb5add4362fc9295"
+      ],
+      "expected_bits": "text:-8.88865439154657E-23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0037",
+      "args": [
+        "0x4b9f64d5719806d6"
+      ],
+      "expected_bits": "text:1.92443936044694E+56"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0038",
+      "args": [
+        "0x70b7e91037909b35"
+      ],
+      "expected_bits": "text:9.50306159165992E+234"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0039",
+      "args": [
+        "0x14b83f606148ed8b"
+      ],
+      "expected_bits": "text:7.37549442712851E-209"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0040",
+      "args": [
+        "0xfc56fe38765365dd"
+      ],
+      "expected_bits": "text:-8.96297932090358E+290"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0041",
+      "args": [
+        "0xe6528db5b7526899"
+      ],
+      "expected_bits": "text:-7.88359795244488E+184"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0042",
+      "args": [
+        "0xcd3e50c89e3971b1"
+      ],
+      "expected_bits": "text:-1.24710985234476E+64"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0043",
+      "args": [
+        "0x566571d8eacdd4da"
+      ],
+      "expected_bits": "text:1.57386965747891E+108"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0044",
+      "args": [
+        "0x200b49d4307b301a"
+      ],
+      "expected_bits": "text:2.54407675601889E-154"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0045",
+      "args": [
+        "0x935c5108b0523c85"
+      ],
+      "expected_bits": "text:-2.05354054092975E-215"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0046",
+      "args": [
+        "0x7578f13c0a13453c"
+      ],
+      "expected_bits": "text:7.49019620005533E+257"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0047",
+      "args": [
+        "0xe2565319e887ec87"
+      ],
+      "expected_bits": "text:-5.14234952912881E+165"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0048",
+      "args": [
+        "0x927c59c51b7f09f3"
+      ],
+      "expected_bits": "text:-1.25489216257794E-219"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0049",
+      "args": [
+        "0x4bda6d93c8c816d8"
+      ],
+      "expected_bits": "text:2.59205425417844E+57"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0050",
+      "args": [
+        "0xe8482f2a4c0dbe55"
+      ],
+      "expected_bits": "text:-2.20678310029426E+194"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0051",
+      "args": [
+        "0xcea7f01519bee4ff"
+      ],
+      "expected_bits": "text:-8.26063876627917E+70"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0052",
+      "args": [
+        "0x65bf0e94c0d59d6f"
+      ],
+      "expected_bits": "text:1.28871327816053E+182"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0053",
+      "args": [
+        "0x4ebb4712a2eb6f54"
+      ],
+      "expected_bits": "text:1.88263270219227E+71"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0054",
+      "args": [
+        "0x6d5acc8f004cd393"
+      ],
+      "expected_bits": "text:5.91257118109661E+218"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0055",
+      "args": [
+        "0xe5b7352f40c15df0"
+      ],
+      "expected_bits": "text:-9.63009293747374E+181"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0056",
+      "args": [
+        "0x948b2056ad04cff1"
+      ],
+      "expected_bits": "text:-1.03139246119472E-209"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0057",
+      "args": [
+        "0xfaa47cc43aebd8d8"
+      ],
+      "expected_bits": "text:-5.95020790276061E+282"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0058",
+      "args": [
+        "0x287e020c3ceab096"
+      ],
+      "expected_bits": "text:1.21853690745874E-113"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0059",
+      "args": [
+        "0x50bbab9958bea280"
+      ],
+      "expected_bits": "text:8.20224728731998E+80"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0060",
+      "args": [
+        "0x186330f597d52972"
+      ],
+      "expected_bits": "text:3.36508444697377E-191"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0061",
+      "args": [
+        "0xc2f4abdf948fbbbb"
+      ],
+      "expected_bits": "text:-363654768294844"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0062",
+      "args": [
+        "0xf2dce6a9a0ef1b20"
+      ],
+      "expected_bits": "text:-1.97337556320846E+245"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0063",
+      "args": [
+        "0x9d556829c45da42b"
+      ],
+      "expected_bits": "text:-2.2689030684429E-167"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0064",
+      "args": [
+        "0xc4c20eead0b50aab"
+      ],
+      "expected_bits": "text:-1.70555542663086E+23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0065",
+      "args": [
+        "0xaa76f2f5c3454058"
+      ],
+      "expected_bits": "text:-4.00245500605076E-104"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0066",
+      "args": [
+        "0xf3d538626c9be0fa"
+      ],
+      "expected_bits": "text:-9.49569927228446E+249"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0067",
+      "args": [
+        "0x1abaf899cff933f5"
+      ],
+      "expected_bits": "text:6.49981824220109E-180"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0068",
+      "args": [
+        "0xeab55c733126a1c5"
+      ],
+      "expected_bits": "text:-1.07157193147969E+206"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0069",
+      "args": [
+        "0x596ca6d31a7d7b34"
+      ],
+      "expected_bits": "text:5.91885937138175E+122"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0070",
+      "args": [
+        "0xda973a9d54c34d57"
+      ],
+      "expected_bits": "text:-2.51586883753838E+128"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0071",
+      "args": [
+        "0xdb351213b9b9b426"
+      ],
+      "expected_bits": "text:-2.3368740580874E+131"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0072",
+      "args": [
+        "0xd6b0c8423227893a"
+      ],
+      "expected_bits": "text:-3.94138524084423E+109"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0073",
+      "args": [
+        "0x6ed3432a6ff71b36"
+      ],
+      "expected_bits": "text:7.12994865657806E+225"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0074",
+      "args": [
+        "0x8dad481b3ae22ad1"
+      ],
+      "expected_bits": "text:-8.57687899442532E-243"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0075",
+      "args": [
+        "0x4f307daf1a76f6ca"
+      ],
+      "expected_bits": "text:2.91369921075283E+73"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0076",
+      "args": [
+        "0x481363aaa4446a54"
+      ],
+      "expected_bits": "text:1.64946114132052E+39"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0077",
+      "args": [
+        "0xdd030edbe56dabe9"
+      ],
+      "expected_bits": "text:-1.1347659614226E+140"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0078",
+      "args": [
+        "0xe6115db7a465d1d8"
+      ],
+      "expected_bits": "text:-4.61189334201216E+183"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0079",
+      "args": [
+        "0x8be6471e6f8d35a8"
+      ],
+      "expected_bits": "text:-2.4308943773305E-251"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0080",
+      "args": [
+        "0x76f108ee8dea7786"
+      ],
+      "expected_bits": "text:8.58253407693098E+264"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0081",
+      "args": [
+        "0x651deabe00deb6c3"
+      ],
+      "expected_bits": "text:1.21231346130985E+179"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0082",
+      "args": [
+        "0xfad1f45753dc417d"
+      ],
+      "expected_bits": "text:-4.17165342258591E+283"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0083",
+      "args": [
+        "0x7cf09ce631c9a02a"
+      ],
+      "expected_bits": "text:6.63133410168484E+293"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0084",
+      "args": [
+        "0x945f498486942277"
+      ],
+      "expected_bits": "text:-1.48699477624044E-210"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0085",
+      "args": [
+        "0x6ca1f8f0982733ba"
+      ],
+      "expected_bits": "text:1.93612549894747E+215"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0086",
+      "args": [
+        "0x12b9396a917fbebe"
+      ],
+      "expected_bits": "text:1.78641343299842E-218"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0087",
+      "args": [
+        "0xcd052719baa59ad8"
+      ],
+      "expected_bits": "text:-1.08771637672179E+63"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0088",
+      "args": [
+        "0x43cbe6f5ece6d3b3"
+      ],
+      "expected_bits": "text:4021129363002450000"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0089",
+      "args": [
+        "0xe2008b87db403d45"
+      ],
+      "expected_bits": "text:-1.19095546531843E+164"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0090",
+      "args": [
+        "0x603ac6dfc9b745d1"
+      ],
+      "expected_bits": "text:3.59018891710745E+155"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0091",
+      "args": [
+        "0xc109fba86aee0147"
+      ],
+      "expected_bits": "text:-212853.052211771"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0092",
+      "args": [
+        "0xfe66371ac66d6fa1"
+      ],
+      "expected_bits": "text:-7.43869814262143E+300"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0093",
+      "args": [
+        "0xc4f47af7010993c8"
+      ],
+      "expected_bits": "text:-1.54745009523389E+24"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0094",
+      "args": [
+        "0x43619b28c9c994b5"
+      ],
+      "expected_bits": "text:39645392724075900"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0095",
+      "args": [
+        "0x145b0e2c54f80b13"
+      ],
+      "expected_bits": "text:1.28586810576971E-210"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0096",
+      "args": [
+        "0x8daaef7dce30dd0d"
+      ],
+      "expected_bits": "text:-7.88966867372585E-243"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0097",
+      "args": [
+        "0x11c377fab1408258"
+      ],
+      "expected_bits": "text:4.20774568582256E-223"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0098",
+      "args": [
+        "0xc65861dffc451a4f"
+      ],
+      "expected_bits": "text:-7.72706691225545E+30"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0099",
+      "args": [
+        "0x9f4715882cdd5add"
+      ],
+      "expected_bits": "text:-5.25418552518011E-158"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0100",
+      "args": [
+        "0x4b863af9eaafd419"
+      ],
+      "expected_bits": "text:6.81359039594985E+55"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0101",
+      "args": [
+        "0xd58753978da691f3"
+      ],
+      "expected_bits": "text:-1.0449095153129E+104"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0102",
+      "args": [
+        "0xfb7fbdb25c0a5502"
+      ],
+      "expected_bits": "text:-7.55190525701815E+286"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0103",
+      "args": [
+        "0x37f761907660a809"
+      ],
+      "expected_bits": "text:4.29443178011301E-39"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0104",
+      "args": [
+        "0x683263f87a973b5a"
+      ],
+      "expected_bits": "text:8.39056108825598E+193"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0105",
+      "args": [
+        "0xc61fe75b65b345c5"
+      ],
+      "expected_bits": "text:-6.3191864193163E+29"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0106",
+      "args": [
+        "0xe096a3d29862d7b9"
+      ],
+      "expected_bits": "text:-1.94273191806656E+157"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0107",
+      "args": [
+        "0x2553ca4b148dfeb8"
+      ],
+      "expected_bits": "text:7.13760033382146E-129"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0108",
+      "args": [
+        "0xb1e8e4444400ece8"
+      ],
+      "expected_bits": "text:-2.8852600950845E-68"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0109",
+      "args": [
+        "0x2682dc9d36e934b7"
+      ],
+      "expected_bits": "text:3.56659927323338E-123"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0110",
+      "args": [
+        "0xed769d05616b90d0"
+      ],
+      "expected_bits": "text:-1.99563917986092E+219"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0111",
+      "args": [
+        "0x0da6b04736107453"
+      ],
+      "expected_bits": "text:6.64570332628402E-243"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0112",
+      "args": [
+        "0x6523af92c06e28d8"
+      ],
+      "expected_bits": "text:1.59544278383018E+179"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0113",
+      "args": [
+        "0xf1f60aab264a300c"
+      ],
+      "expected_bits": "text:-9.18588753696307E+240"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0114",
+      "args": [
+        "0x931d532fc24b6758"
+      ],
+      "expected_bits": "text:-1.32916952044449E-216"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0115",
+      "args": [
+        "0x68d1865e161b5baa"
+      ],
+      "expected_bits": "text:8.18751416833532E+196"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0116",
+      "args": [
+        "0x9eb8848deca87737"
+      ],
+      "expected_bits": "text:-1.08994267126949E-160"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0117",
+      "args": [
+        "0xc7d4af4867a12cf6"
+      ],
+      "expected_bits": "text:-1.09978721639262E+38"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0118",
+      "args": [
+        "0x7a15957e5b02d8d1"
+      ],
+      "expected_bits": "text:1.22435426347312E+280"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0119",
+      "args": [
+        "0x4f40128024ca23de"
+      ],
+      "expected_bits": "text:5.67944784365358E+73"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0120",
+      "args": [
+        "0xaa797397c8a65194"
+      ],
+      "expected_bits": "text:-4.43890126802006E-104"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0121",
+      "args": [
+        "0x62e575168568b9ea"
+      ],
+      "expected_bits": "text:2.53060395592641E+168"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0122",
+      "args": [
+        "0x4cdf5fbf7fcec6ca"
+      ],
+      "expected_bits": "text:2.01664398339244E+62"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0123",
+      "args": [
+        "0x660c224b805a8564"
+      ],
+      "expected_bits": "text:3.73575436654768E+183"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0124",
+      "args": [
+        "0x435cdbecb83c4490"
+      ],
+      "expected_bits": "text:32492436390482500"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0125",
+      "args": [
+        "0xf520b59f018ecd60"
+      ],
+      "expected_bits": "text:-1.56808166635914E+256"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0126",
+      "args": [
+        "0xbd0bd4f1e6f0fbb1"
+      ],
+      "expected_bits": "text:-1.23598092353475E-14"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0127",
+      "args": [
+        "0x4fb298df7bedaa15"
+      ],
+      "expected_bits": "text:8.41173445888286E+75"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0128",
+      "args": [
+        "0x75784c6f8ce1dae9"
+      ],
+      "expected_bits": "text:7.29687906662386E+257"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0129",
+      "args": [
+        "0x40c87e8cecb08a18"
+      ],
+      "expected_bits": "text:12541.1009731936"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0130",
+      "args": [
+        "0x3a021831b18a147d"
+      ],
+      "expected_bits": "text:2.85481003354989E-29"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0131",
+      "args": [
+        "0x812b265877e6b780"
+      ],
+      "expected_bits": "text:-4.94881032212565E-303"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0132",
+      "args": [
+        "0xe52b906d16c9d4e3"
+      ],
+      "expected_bits": "text:-2.23394394552872E+179"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0133",
+      "args": [
+        "0x566369d5e5a3ca59"
+      ],
+      "expected_bits": "text:1.42478886523154E+108"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0134",
+      "args": [
+        "0x27791ce0edb46fab"
+      ],
+      "expected_bits": "text:1.5560264620505E-118"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0135",
+      "args": [
+        "0xa466bb332eb58c35"
+      ],
+      "expected_bits": "text:-2.50193050782813E-133"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0136",
+      "args": [
+        "0x85ec84d8157f2da4"
+      ],
+      "expected_bits": "text:-3.92777999302706E-280"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0137",
+      "args": [
+        "0x9903cdfe9bc45947"
+      ],
+      "expected_bits": "text:-3.55598767535639E-188"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0138",
+      "args": [
+        "0x0f9dfa7bdfb47571"
+      ],
+      "expected_bits": "text:1.88569993649405E-233"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0139",
+      "args": [
+        "0x30510ba25769298f"
+      ],
+      "expected_bits": "text:5.88829375001E-76"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0140",
+      "args": [
+        "0xd92b770be1451bf5"
+      ],
+      "expected_bits": "text:-3.54607787597007E+121"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0141",
+      "args": [
+        "0x69f0469e6f8a8b96"
+      ],
+      "expected_bits": "text:1.99333786519145E+202"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0142",
+      "args": [
+        "0x0648fbce10f1a651"
+      ],
+      "expected_bits": "text:2.20216200212998E-278"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0143",
+      "args": [
+        "0xd100e36313ea0325"
+      ],
+      "expected_bits": "text:-1.60196485097637E+82"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0144",
+      "args": [
+        "0x81793c7a9d848745"
+      ],
+      "expected_bits": "text:-1.47200438894051E-301"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0145",
+      "args": [
+        "0x388eba5e0ba3e68d"
+      ],
+      "expected_bits": "text:2.8896469997458E-36"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0146",
+      "args": [
+        "0x1f1ca569c72d3c40"
+      ],
+      "expected_bits": "text:8.15020417188264E-159"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0147",
+      "args": [
+        "0x7c7549bdd828a54b"
+      ],
+      "expected_bits": "text:3.31934018586897E+291"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0148",
+      "args": [
+        "0x81c5e5c2af03c76a"
+      ],
+      "expected_bits": "text:-4.08722836940576E-300"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0149",
+      "args": [
+        "0x5eb86240ee8b2482"
+      ],
+      "expected_bits": "text:1.94867462510168E+148"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0150",
+      "args": [
+        "0xd80c31fb85b33385"
+      ],
+      "expected_bits": "text:-1.38868648212491E+116"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0151",
+      "args": [
+        "0xd1ba733ffd172125"
+      ],
+      "expected_bits": "text:-5.1383971289974E+85"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0152",
+      "args": [
+        "0x6a03c97e17c48f8b"
+      ],
+      "expected_bits": "text:4.84672986606983E+202"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0153",
+      "args": [
+        "0x5a3f89f5433b6507"
+      ],
+      "expected_bits": "text:5.33733816542729E+126"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0154",
+      "args": [
+        "0x0e1d7a63027c2319"
+      ],
+      "expected_bits": "text:1.10520431400364E-240"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0155",
+      "args": [
+        "0x21c839e17d821939"
+      ],
+      "expected_bits": "text:6.06283239783757E-146"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0156",
+      "args": [
+        "0xbb793a118f5ef55e"
+      ],
+      "expected_bits": "text:-3.33874320964098E-22"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0157",
+      "args": [
+        "0x1796771c04002475"
+      ],
+      "expected_bits": "text:4.8085538593639E-195"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0158",
+      "args": [
+        "0xbcfc06846a99610c"
+      ],
+      "expected_bits": "text:-6.22290175255279E-15"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0159",
+      "args": [
+        "0x6f763b05cf288aad"
+      ],
+      "expected_bits": "text:8.42610902155875E+228"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0160",
+      "args": [
+        "0x9f61a19d4f965766"
+      ],
+      "expected_bits": "text:-1.60522817792331E-157"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0161",
+      "args": [
+        "0x7a01b02fafb1686b"
+      ],
+      "expected_bits": "text:5.01684066287107E+279"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0162",
+      "args": [
+        "0xcc8eb7a77ff9582b"
+      ],
+      "expected_bits": "text:-6.1701197538631E+60"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0163",
+      "args": [
+        "0x4c6b2eea4cb28e11"
+      ],
+      "expected_bits": "text:1.3650568401339E+60"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0164",
+      "args": [
+        "0x3ea734aee72ffd75"
+      ],
+      "expected_bits": "text:6.91586548362475E-07"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0165",
+      "args": [
+        "0xa406fc255c165e52"
+      ],
+      "expected_bits": "text:-3.95289633995248E-135"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0166",
+      "args": [
+        "0xa68f45f281bd4958"
+      ],
+      "expected_bits": "text:-5.91349921309517E-123"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0167",
+      "args": [
+        "0x8599eaa70df33eb9"
+      ],
+      "expected_bits": "text:-1.11542991185697E-281"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0168",
+      "args": [
+        "0xbb641a7a2ffb4a9b"
+      ],
+      "expected_bits": "text:-1.33033320033487E-22"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0169",
+      "args": [
+        "0x2d410dcbdc934ade"
+      ],
+      "expected_bits": "text:1.04648936798499E-90"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0170",
+      "args": [
+        "0xca254f4bfb58ae82"
+      ],
+      "expected_bits": "text:-1.55721195530473E+49"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0171",
+      "args": [
+        "0xc7512808e1be6a6e"
+      ],
+      "expected_bits": "text:-3.56324186675456E+35"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0172",
+      "args": [
+        "0xd802be39d08a4f3e"
+      ],
+      "expected_bits": "text:-9.23143184635079E+115"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0173",
+      "args": [
+        "0x8b200aa0a02e2c61"
+      ],
+      "expected_bits": "text:-4.27345387817073E-255"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0174",
+      "args": [
+        "0x059e6ca6742fe037"
+      ],
+      "expected_bits": "text:1.30944210620076E-281"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0175",
+      "args": [
+        "0x9bd7b912ffde9509"
+      ],
+      "expected_bits": "text:-1.49868771299426E-174"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0176",
+      "args": [
+        "0x795322b57a93af6c"
+      ],
+      "expected_bits": "text:2.65007218929058E+276"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0177",
+      "args": [
+        "0xdead8b9e3d53941c"
+      ],
+      "expected_bits": "text:-1.18058569557275E+148"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0178",
+      "args": [
+        "0x6cb1c7468cfd07c6"
+      ],
+      "expected_bits": "text:3.83045249960833E+215"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0179",
+      "args": [
+        "0xdd5752632022da04"
+      ],
+      "expected_bits": "text:-4.44365682956214E+141"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0180",
+      "args": [
+        "0xb66d4be7231dcf6f"
+      ],
+      "expected_bits": "text:-1.60363805965377E-46"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0181",
+      "args": [
+        "0xf8fc097f7341bb0d"
+      ],
+      "expected_bits": "text:-6.06693258028161E+274"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0182",
+      "args": [
+        "0x887eed0cdf81286d"
+      ],
+      "expected_bits": "text:-9.36628364814466E-268"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0183",
+      "args": [
+        "0x3fa97321ed36120e"
+      ],
+      "expected_bits": "text:0.0497065164627522"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0184",
+      "args": [
+        "0x7d0ebf226566b902"
+      ],
+      "expected_bits": "text:2.45461363077713E+294"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0185",
+      "args": [
+        "0xe48746797d7649e9"
+      ],
+      "expected_bits": "text:-1.84213988465744E+176"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0186",
+      "args": [
+        "0xffb1daf6e044dd94"
+      ],
+      "expected_bits": "text:-1.2538438795327E+307"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0187",
+      "args": [
+        "0xe59599ef759b0441"
+      ],
+      "expected_bits": "text:-2.24087431528556E+181"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0188",
+      "args": [
+        "0x43a32961c42b9088"
+      ],
+      "expected_bits": "text:690371127969072000"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0189",
+      "args": [
+        "0x0a164611a1984d6e"
+      ],
+      "expected_bits": "text:4.52705997668826E-260"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0190",
+      "args": [
+        "0x3bdb91d249100eba"
+      ],
+      "expected_bits": "text:2.33523722062567E-20"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0191",
+      "args": [
+        "0xce0b67627c7f2630"
+      ],
+      "expected_bits": "text:-9.23507801218786E+67"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0192",
+      "args": [
+        "0xd2e133f2f908efc4"
+      ],
+      "expected_bits": "text:-1.75214898047852E+91"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0193",
+      "args": [
+        "0x15d8ac24e8262e89"
+      ],
+      "expected_bits": "text:1.96732000796454E-203"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0194",
+      "args": [
+        "0x41b0441aa072f14a"
+      ],
+      "expected_bits": "text:272898720.448994"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0195",
+      "args": [
+        "0x2ceefae82ae6941c"
+      ],
+      "expected_bits": "text:2.97039514612723E-92"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0196",
+      "args": [
+        "0x7f48365bab36aad8"
+      ],
+      "expected_bits": "text:1.32831880689882E+305"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0197",
+      "args": [
+        "0x5c7d3edf6730e4b4"
+      ],
+      "expected_bits": "text:3.40109311200314E+137"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0198",
+      "args": [
+        "0x7ab25d83dc73d4b9"
+      ],
+      "expected_bits": "text:1.06677740833605E+283"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0199",
+      "args": [
+        "0x159aaa17dec64d7f"
+      ],
+      "expected_bits": "text:1.32884769741327E-204"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0200",
+      "args": [
+        "0xc14b1cce4c609823"
+      ],
+      "expected_bits": "text:-3553692.59669782"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0201",
+      "args": [
+        "0xcc0bdac5a5080232"
+      ],
+      "expected_bits": "text:-2.18557527373577E+58"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0202",
+      "args": [
+        "0x38549725588e77bb"
+      ],
+      "expected_bits": "text:2.42039148720967E-37"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0203",
+      "args": [
+        "0xc6c37398288eb0be"
+      ],
+      "expected_bits": "text:-7.89048223821768E+32"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0204",
+      "args": [
+        "0x4c78024c834b8132"
+      ],
+      "expected_bits": "text:2.41130895973882E+60"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0205",
+      "args": [
+        "0x0efe4b8951b9dec0"
+      ],
+      "expected_bits": "text:1.86095251745065E-236"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0206",
+      "args": [
+        "0xdfbb57b05f3dbe52"
+      ],
+      "expected_bits": "text:-1.43204475486328E+153"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0207",
+      "args": [
+        "0xd1c8c1ca60f8355a"
+      ],
+      "expected_bits": "text:-9.61892854035482E+85"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0208",
+      "args": [
+        "0x555fb53c59fd8413"
+      ],
+      "expected_bits": "text:1.77544297733602E+103"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0209",
+      "args": [
+        "0x4a9a944d1e6ee617"
+      ],
+      "expected_bits": "text:2.48612435284295E+51"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0210",
+      "args": [
+        "0xa4488a2014cf044e"
+      ],
+      "expected_bits": "text:-6.75240633204415E-134"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0211",
+      "args": [
+        "0xcd99b13ed84a6f9c"
+      ],
+      "expected_bits": "text:-6.76430464053319E+65"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0212",
+      "args": [
+        "0xb85f39685a3cc129"
+      ],
+      "expected_bits": "text:-3.6703927770528E-37"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0213",
+      "args": [
+        "0x45a60538e69e6d77"
+      ],
+      "expected_bits": "text:3.40749177592888E+27"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0214",
+      "args": [
+        "0x4d47dd1a0d1c27a3"
+      ],
+      "expected_bits": "text:1.96338960769581E+64"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0215",
+      "args": [
+        "0x173f1373a85b2019"
+      ],
+      "expected_bits": "text:1.03931627296058E-196"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0216",
+      "args": [
+        "0x5c5b76afe61aa5a1"
+      ],
+      "expected_bits": "text:7.98464944721539E+136"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0217",
+      "args": [
+        "0x8403dba839da11ba"
+      ],
+      "expected_bits": "text:-2.54712619464733E-289"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0218",
+      "args": [
+        "0xe5bd2793bf21e65b"
+      ],
+      "expected_bits": "text:-1.20977459070522E+182"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0219",
+      "args": [
+        "0x36c57b2fdb7bef29"
+      ],
+      "expected_bits": "text:7.52539279101303E-45"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0220",
+      "args": [
+        "0x915ca72286542c49"
+      ],
+      "expected_bits": "text:-4.83806155698742E-225"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0221",
+      "args": [
+        "0x3af56271bd65edf2"
+      ],
+      "expected_bits": "text:1.10555522127647E-24"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0222",
+      "args": [
+        "0x1d82422309bb9239"
+      ],
+      "expected_bits": "text:1.5481529560672E-166"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0223",
+      "args": [
+        "0x7b75f073d304eb1e"
+      ],
+      "expected_bits": "text:5.21984983870646E+286"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0224",
+      "args": [
+        "0xe0217d214aae698d"
+      ],
+      "expected_bits": "text:-1.17243163537911E+155"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0225",
+      "args": [
+        "0x3e71cd70728dc740"
+      ],
+      "expected_bits": "text:6.63194695946382E-08"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0226",
+      "args": [
+        "0x28925e80e9b4f203"
+      ],
+      "expected_bits": "text:2.98367013512204E-113"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0227",
+      "args": [
+        "0x2545685c13d3bdae"
+      ],
+      "expected_bits": "text:3.86047696842049E-129"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0228",
+      "args": [
+        "0xb74afbc412f1b70c"
+      ],
+      "expected_bits": "text:-2.41996044182384E-42"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0229",
+      "args": [
+        "0x6516ba3a38339aa3"
+      ],
+      "expected_bits": "text:9.2097569514704E+178"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0230",
+      "args": [
+        "0xdb72b04f5fde4134"
+      ],
+      "expected_bits": "text:-3.31632787529085E+132"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0231",
+      "args": [
+        "0x7626ab52a97aab9c"
+      ],
+      "expected_bits": "text:1.39419341836255E+261"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0232",
+      "args": [
+        "0xd294b7fb4f6047ab"
+      ],
+      "expected_bits": "text:-6.59448333730633E+89"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0233",
+      "args": [
+        "0x01c42f9450a531c1"
+      ],
+      "expected_bits": "text:3.76774516270518E-300"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0234",
+      "args": [
+        "0xa5056cb84fa271d2"
+      ],
+      "expected_bits": "text:-2.41471777737418E-130"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0235",
+      "args": [
+        "0x27e32911134057d9"
+      ],
+      "expected_bits": "text:1.51962573153799E-116"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0236",
+      "args": [
+        "0xe2a118edcba688c9"
+      ],
+      "expected_bits": "text:-1.26025124832985E+167"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0237",
+      "args": [
+        "0x847411dc4301ab33"
+      ],
+      "expected_bits": "text:-3.29508391894049E-287"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0238",
+      "args": [
+        "0x90c065f384909dcf"
+      ],
+      "expected_bits": "text:-5.4079256948419E-228"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0239",
+      "args": [
+        "0xe40cfed3002200cb"
+      ],
+      "expected_bits": "text:-8.96430710248533E+173"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0240",
+      "args": [
+        "0xced27b3f27406721"
+      ],
+      "expected_bits": "text:-5.10216634015302E+71"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0241",
+      "args": [
+        "0xb8844d29396289ed"
+      ],
+      "expected_bits": "text:-1.90913544790063E-36"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0242",
+      "args": [
+        "0x6d521c559b96edcf"
+      ],
+      "expected_bits": "text:3.9956888055332E+218"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0243",
+      "args": [
+        "0x0b078edd2146d3e7"
+      ],
+      "expected_bits": "text:1.56896495958822E-255"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0244",
+      "args": [
+        "0xc929f9142df8e0b3"
+      ],
+      "expected_bits": "text:-2.8960822795756E+44"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0245",
+      "args": [
+        "0x7a545a750c563881"
+      ],
+      "expected_bits": "text:1.84727620751587E+281"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0246",
+      "args": [
+        "0x1254f62d9002903c"
+      ],
+      "expected_bits": "text:2.31957430935048E-220"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0247",
+      "args": [
+        "0x3d34216604478045"
+      ],
+      "expected_bits": "text:7.15177709109248E-14"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0248",
+      "args": [
+        "0x79793a3533e761b1"
+      ],
+      "expected_bits": "text:1.397487973972E+277"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0249",
+      "args": [
+        "0x1f301a01868a7522"
+      ],
+      "expected_bits": "text:1.83244496223959E-158"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0250",
+      "args": [
+        "0x28b8b2f5bd74d42f"
+      ],
+      "expected_bits": "text:1.60473045220303E-112"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0251",
+      "args": [
+        "0x44e3687a259bda65"
+      ],
+      "expected_bits": "text:7.33217809364785E+23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0252",
+      "args": [
+        "0xa864bbec68d034dc"
+      ],
+      "expected_bits": "text:-4.20975032961158E-114"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0253",
+      "args": [
+        "0x7fb1caad79596105"
+      ],
+      "expected_bits": "text:1.24937632936995E+307"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0254",
+      "args": [
+        "0xced174bc048058d1"
+      ],
+      "expected_bits": "text:-4.81907369085652E+71"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0255",
+      "args": [
+        "0x767d7b777effe04e"
+      ],
+      "expected_bits": "text:5.80226394908393E+262"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0256",
+      "args": [
+        "0x65137f83fb422250"
+      ],
+      "expected_bits": "text:7.90114269181224E+178"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0257",
+      "args": [
+        "0x36093f72c9f82852"
+      ],
+      "expected_bits": "text:2.15940959672604E-48"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0258",
+      "args": [
+        "0x67a64a7308830883"
+      ],
+      "expected_bits": "text:1.98633852314724E+191"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0259",
+      "args": [
+        "0xf1153960e34d063b"
+      ],
+      "expected_bits": "text:-5.39866775962173E+236"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0260",
+      "args": [
+        "0xe7a6de75b277382f"
+      ],
+      "expected_bits": "text:-2.03785896131916E+191"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0261",
+      "args": [
+        "0x5d2c5c815e84018e"
+      ],
+      "expected_bits": "text:6.75483704986204E+140"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0262",
+      "args": [
+        "0xc72db4b21903a3e0"
+      ],
+      "expected_bits": "text:-7.71207764903104E+34"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0263",
+      "args": [
+        "0x8b40d271f7b856c0"
+      ],
+      "expected_bits": "text:-1.79255558310716E-254"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0264",
+      "args": [
+        "0xec7135735ceb7f56"
+      ],
+      "expected_bits": "text:-2.31732690560542E+214"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0265",
+      "args": [
+        "0xdff53840080cea88"
+      ],
+      "expected_bits": "text:-1.77818765318477E+154"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0266",
+      "args": [
+        "0x7afc968f6d9696e6"
+      ],
+      "expected_bits": "text:2.65693917508723E+284"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0267",
+      "args": [
+        "0xe7cd734115017f26"
+      ],
+      "expected_bits": "text:-1.04972533297157E+192"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0268",
+      "args": [
+        "0xaaa7755d35a78c5b"
+      ],
+      "expected_bits": "text:-3.27303669276471E-103"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0269",
+      "args": [
+        "0x8a9f7cce23ae5740"
+      ],
+      "expected_bits": "text:-1.63833301360433E-257"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0270",
+      "args": [
+        "0xa06a941c61cb0b21"
+      ],
+      "expected_bits": "text:-1.58585553813988E-152"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0271",
+      "args": [
+        "0x841de97bc526c6dd"
+      ],
+      "expected_bits": "text:-7.67344305099026E-289"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0272",
+      "args": [
+        "0xbf682fdb106590ab"
+      ],
+      "expected_bits": "text:-0.0029525068850252"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0273",
+      "args": [
+        "0x37dc5045635a761d"
+      ],
+      "expected_bits": "text:1.30009485920491E-39"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0274",
+      "args": [
+        "0x5934d9177665f1ac"
+      ],
+      "expected_bits": "text:5.38347822792565E+121"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0275",
+      "args": [
+        "0x23fe23779fa8518f"
+      ],
+      "expected_bits": "text:2.59157766492788E-135"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0276",
+      "args": [
+        "0x3695b9c84d6e606f"
+      ],
+      "expected_bits": "text:9.51381491720912E-46"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0277",
+      "args": [
+        "0xea2dc6404ff7ce7f"
+      ],
+      "expected_bits": "text:-2.91722806971466E+203"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0278",
+      "args": [
+        "0xff1c28a75c17b4a5"
+      ],
+      "expected_bits": "text:-1.93103363456215E+304"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0279",
+      "args": [
+        "0x9028a82d785703c3"
+      ],
+      "expected_bits": "text:-7.94095216687144E-231"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0280",
+      "args": [
+        "0x030c5d3de3b2ed99"
+      ],
+      "expected_bits": "text:5.55143393748089E-294"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0281",
+      "args": [
+        "0x671c2399fbb5e23c"
+      ],
+      "expected_bits": "text:4.89741624344767E+188"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0282",
+      "args": [
+        "0x008eba181a51c190"
+      ],
+      "expected_bits": "text:5.46957514540157E-306"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0283",
+      "args": [
+        "0xe3a5c42f31a3ff60"
+      ],
+      "expected_bits": "text:-1.05146071828144E+172"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0284",
+      "args": [
+        "0x6bcd04d84df9a86f"
+      ],
+      "expected_bits": "text:1.90804365111902E+211"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0285",
+      "args": [
+        "0x476beb2e413d6789"
+      ],
+      "expected_bits": "text:1.15969636898827E+36"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0286",
+      "args": [
+        "0x9fc05afb6d02aabb"
+      ],
+      "expected_bits": "text:-9.53001079613509E-156"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0287",
+      "args": [
+        "0x6da6139cec339c27"
+      ],
+      "expected_bits": "text:1.55861659593138E+220"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0288",
+      "args": [
+        "0x37d025c598b1ea0a"
+      ],
+      "expected_bits": "text:7.41458964602281E-40"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0289",
+      "args": [
+        "0x6992fefba872b6ca"
+      ],
+      "expected_bits": "text:3.63512976838388E+200"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0290",
+      "args": [
+        "0xea4a685e20130f7d"
+      ],
+      "expected_bits": "text:-1.03494538707368E+204"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0291",
+      "args": [
+        "0xf6dcfc23712b02fd"
+      ],
+      "expected_bits": "text:-3.65080177882424E+264"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0292",
+      "args": [
+        "0xf477b90af9241520"
+      ],
+      "expected_bits": "text:-1.08703306923393E+253"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0293",
+      "args": [
+        "0x245d903e66b78812"
+      ],
+      "expected_bits": "text:1.62696076469937E-133"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0294",
+      "args": [
+        "0x251addcffa8090bd"
+      ],
+      "expected_bits": "text:6.05608892203218E-130"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0295",
+      "args": [
+        "0xf18bda4e1381501e"
+      ],
+      "expected_bits": "text:-9.0684846022885E+238"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0296",
+      "args": [
+        "0x03276719c6953720"
+      ],
+      "expected_bits": "text:1.83214941975085E-293"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0297",
+      "args": [
+        "0xd8b9412bc34cdff1"
+      ],
+      "expected_bits": "text:-2.54740705785208E+119"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0298",
+      "args": [
+        "0xd1b3e566d908228f"
+      ],
+      "expected_bits": "text:-3.86515356783847E+85"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0299",
+      "args": [
+        "0xf9092a7d53f276a6"
+      ],
+      "expected_bits": "text:-1.0891302408317E+275"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0300",
+      "args": [
+        "0xb8cf805c3cd702b2"
+      ],
+      "expected_bits": "text:-4.73980498978759E-35"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0301",
+      "args": [
+        "0x75f703fd2d183920"
+      ],
+      "expected_bits": "text:1.76936825369786E+260"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0302",
+      "args": [
+        "0x7f5247557636dd3f"
+      ],
+      "expected_bits": "text:2.00557859206472E+305"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0303",
+      "args": [
+        "0x2c20043cd8bdc71b"
+      ],
+      "expected_bits": "text:3.74921597762126E-96"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0304",
+      "args": [
+        "0x746441d407bcc730"
+      ],
+      "expected_bits": "text:4.64113864971286E+252"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0305",
+      "args": [
+        "0x9eef01ae7c0e0826"
+      ],
+      "expected_bits": "text:-1.10272194896993E-159"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0306",
+      "args": [
+        "0xc439ab74922f2bab"
+      ],
+      "expected_bits": "text:-473523262251817000000"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0307",
+      "args": [
+        "0x16fc4c1eb24c4f57"
+      ],
+      "expected_bits": "text:5.91491525617976E-198"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0308",
+      "args": [
+        "0xaa8454fa295b7a19"
+      ],
+      "expected_bits": "text:-7.0920268346716E-104"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0309",
+      "args": [
+        "0xa80ccd653c7f48b2"
+      ],
+      "expected_bits": "text:-9.13732851889823E-116"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0310",
+      "args": [
+        "0x4fc97b7a4c2d823e"
+      ],
+      "expected_bits": "text:2.30519749407046E+76"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0311",
+      "args": [
+        "0x8268694d9bd4dfab"
+      ],
+      "expected_bits": "text:-4.6657978234713E-297"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0312",
+      "args": [
+        "0x5686c8c1b3fa571e"
+      ],
+      "expected_bits": "text:6.68870965495172E+108"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0313",
+      "args": [
+        "0xe546221248ea58ef"
+      ],
+      "expected_bits": "text:-7.17512560816905E+179"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0314",
+      "args": [
+        "0x97a8d543c5dc130c"
+      ],
+      "expected_bits": "text:-1.06307314197835E-194"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0315",
+      "args": [
+        "0x5ddaf9d5491d25db"
+      ],
+      "expected_bits": "text:1.31581265960654E+144"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0316",
+      "args": [
+        "0xf9c218e00ca62d7b"
+      ],
+      "expected_bits": "text:-3.20801685884305E+278"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0317",
+      "args": [
+        "0x9c9331fa8e8dbd14"
+      ],
+      "expected_bits": "text:-4.96701851898167E-171"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0318",
+      "args": [
+        "0x685f938f147edc2a"
+      ],
+      "expected_bits": "text:5.76261835779672E+194"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0319",
+      "args": [
+        "0xcd88bf585d475f44"
+      ],
+      "expected_bits": "text:-3.25776229840732E+65"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0320",
+      "args": [
+        "0x2e67dcff3f925b93"
+      ],
+      "expected_bits": "text:3.83867360835996E-85"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0321",
+      "args": [
+        "0x70757abe71243019"
+      ],
+      "expected_bits": "text:5.33556213203648E+233"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0322",
+      "args": [
+        "0x0dad3ddcaf3c0123"
+      ],
+      "expected_bits": "text:8.5651576720768E-243"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0323",
+      "args": [
+        "0x3ae00eecdd9ac858"
+      ],
+      "expected_bits": "text:4.15097372041464E-25"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0324",
+      "args": [
+        "0x336d0ad09083e651"
+      ],
+      "expected_bits": "text:5.64782293677672E-61"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0325",
+      "args": [
+        "0xeec3411780e8ca89"
+      ],
+      "expected_bits": "text:-3.56347496379228E+225"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0326",
+      "args": [
+        "0x89cff995ce65b9b8"
+      ],
+      "expected_bits": "text:-2.03087663710683E-261"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0327",
+      "args": [
+        "0xb2d37eb0a63bb345"
+      ],
+      "expected_bits": "text:-7.40459927184991E-64"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0328",
+      "args": [
+        "0x8cc0e938bf6242cd"
+      ],
+      "expected_bits": "text:-3.02331519572768E-247"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0329",
+      "args": [
+        "0xfd625190c223025c"
+      ],
+      "expected_bits": "text:-9.35962378384378E+295"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0330",
+      "args": [
+        "0xe72bbeba4ebebad6"
+      ],
+      "expected_bits": "text:-9.65767313439623E+188"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0331",
+      "args": [
+        "0xa5dd2cb5d5f4d9d9"
+      ],
+      "expected_bits": "text:-2.69368915879271E-126"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0332",
+      "args": [
+        "0x9a2ec6b292da3912"
+      ],
+      "expected_bits": "text:-1.44859540899748E-182"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0333",
+      "args": [
+        "0x3ba79aaab0932773"
+      ],
+      "expected_bits": "text:2.49918839467924E-21"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0334",
+      "args": [
+        "0x710e116ad6ea6c6c"
+      ],
+      "expected_bits": "text:3.82412149990942E+236"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0335",
+      "args": [
+        "0x854c6b0939848f42"
+      ],
+      "expected_bits": "text:-3.82216360088616E-283"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0336",
+      "args": [
+        "0x531a49c8ee8bb678"
+      ],
+      "expected_bits": "text:2.14200217714967E+92"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0337",
+      "args": [
+        "0x27263f32da512661"
+      ],
+      "expected_bits": "text:4.30765238696453E-120"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0338",
+      "args": [
+        "0x42d745159daf4544"
+      ],
+      "expected_bits": "text:102341931351317"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0339",
+      "args": [
+        "0x4157f074c5492354"
+      ],
+      "expected_bits": "text:6275539.08258899"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0340",
+      "args": [
+        "0x501b8f3171a3f2c1"
+      ],
+      "expected_bits": "text:7.97788626644623E+77"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0341",
+      "args": [
+        "0x45d09ca9781036ef"
+      ],
+      "expected_bits": "text:2.05646115188587E+28"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0342",
+      "args": [
+        "0x479885971b29f093"
+      ],
+      "expected_bits": "text:8.14877804425334E+36"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0343",
+      "args": [
+        "0x91e51dbf87590ccd"
+      ],
+      "expected_bits": "text:-1.82553034636962E-222"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0344",
+      "args": [
+        "0x9519ff01ba43f7ee"
+      ],
+      "expected_bits": "text:-5.06071088123562E-207"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0345",
+      "args": [
+        "0x91f32babcedd2bee"
+      ],
+      "expected_bits": "text:-3.31465777007285E-222"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0346",
+      "args": [
+        "0x5e99898c2b0bbf3b"
+      ],
+      "expected_bits": "text:5.10214488252657E+147"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0347",
+      "args": [
+        "0xb0503619c6547a38"
+      ],
+      "expected_bits": "text:-5.60015140857852E-76"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0348",
+      "args": [
+        "0x7daadaa55112731e"
+      ],
+      "expected_bits": "text:2.19531122210697E+297"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0349",
+      "args": [
+        "0x41a263b0976e3e68"
+      ],
+      "expected_bits": "text:154261579.71532"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0350",
+      "args": [
+        "0x740731c5b626ab51"
+      ],
+      "expected_bits": "text:8.30328567844798E+250"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0351",
+      "args": [
+        "0x215df4f969dd7ae3"
+      ],
+      "expected_bits": "text:5.85705709328183E-148"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0352",
+      "args": [
+        "0x799bcc3d4b61b695"
+      ],
+      "expected_bits": "text:6.15951626060534E+277"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0353",
+      "args": [
+        "0x322a312966d5753a"
+      ],
+      "expected_bits": "text:4.85758342052631E-67"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0354",
+      "args": [
+        "0x0210cc01d8fd67cb"
+      ],
+      "expected_bits": "text:1.00326007379077E-298"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0355",
+      "args": [
+        "0x87c62e6ca2581a7b"
+      ],
+      "expected_bits": "text:-3.28021110538258E-271"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0356",
+      "args": [
+        "0x98fa7d27402a3d0f"
+      ],
+      "expected_bits": "text:-2.37807924000615E-188"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0357",
+      "args": [
+        "0xea3e4dcd5d6c7d78"
+      ],
+      "expected_bits": "text:-5.93821371221787E+203"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0358",
+      "args": [
+        "0x3d0dadf15f5ee099"
+      ],
+      "expected_bits": "text:1.31803298509573E-14"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0359",
+      "args": [
+        "0x94d7db99c159eb01"
+      ],
+      "expected_bits": "text:-2.90277700085562E-208"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0360",
+      "args": [
+        "0xb85d858e9f38073f"
+      ],
+      "expected_bits": "text:-3.4702600379043E-37"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0361",
+      "args": [
+        "0xcfbd7eba5974d04e"
+      ],
+      "expected_bits": "text:-1.33409814756345E+76"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0362",
+      "args": [
+        "0x87e91dca20cddb53"
+      ],
+      "expected_bits": "text:-1.48569855452346E-270"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0363",
+      "args": [
+        "0x8fb3d12e6d2469ec"
+      ],
+      "expected_bits": "text:-4.98613217606141E-233"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0364",
+      "args": [
+        "0x51598d7135b401a7"
+      ],
+      "expected_bits": "text:7.75625996224951E+83"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0365",
+      "args": [
+        "0xfeabda583bdfbdaf"
+      ],
+      "expected_bits": "text:-1.49223157797987E+302"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0366",
+      "args": [
+        "0x1c011661b87b9b25"
+      ],
+      "expected_bits": "text:8.63593218666201E-174"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0367",
+      "args": [
+        "0xac41306c14e04d3c"
+      ],
+      "expected_bits": "text:-1.60948066673307E-95"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0368",
+      "args": [
+        "0x26191444a2ebbf4d"
+      ],
+      "expected_bits": "text:3.704887386818E-125"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0369",
+      "args": [
+        "0xc449c17b330a78a4"
+      ],
+      "expected_bits": "text:-950220790068522000000"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0370",
+      "args": [
+        "0x9a37fe72aed0d286"
+      ],
+      "expected_bits": "text:-2.25872915760886E-182"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0371",
+      "args": [
+        "0x0a73336beb36ee4b"
+      ],
+      "expected_bits": "text:2.49760947643059E-258"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0372",
+      "args": [
+        "0xdc31d7996149113b"
+      ],
+      "expected_bits": "text:-1.29683903614285E+136"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0373",
+      "args": [
+        "0xc12b1c301e21d769"
+      ],
+      "expected_bits": "text:-888344.05885194"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0374",
+      "args": [
+        "0x9fc98f74ab09979f"
+      ],
+      "expected_bits": "text:-1.48935920501246E-155"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0375",
+      "args": [
+        "0x0010000000004258"
+      ],
+      "expected_bits": "text:2.22507385851559E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0376",
+      "args": [
+        "0x0010000000010dad"
+      ],
+      "expected_bits": "text:2.22507385854131E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0377",
+      "args": [
+        "0x8010000000004fc3"
+      ],
+      "expected_bits": "text:-2.22507385851729E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0378",
+      "args": [
+        "0x801000000001641d"
+      ],
+      "expected_bits": "text:-2.22507385855224E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0379",
+      "args": [
+        "0x001000000000b0f0"
+      ],
+      "expected_bits": "text:2.22507385852958E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0380",
+      "args": [
+        "0x801000000000294b"
+      ],
+      "expected_bits": "text:-2.22507385851242E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0381",
+      "args": [
+        "0x001000000000cb06"
+      ],
+      "expected_bits": "text:2.22507385853288E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0382",
+      "args": [
+        "0x001000000000b31e"
+      ],
+      "expected_bits": "text:2.22507385852986E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0383",
+      "args": [
+        "0x801000000000bd1a"
+      ],
+      "expected_bits": "text:-2.22507385853112E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0384",
+      "args": [
+        "0x801000000000faaa"
+      ],
+      "expected_bits": "text:-2.22507385853891E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0385",
+      "args": [
+        "0x8010000000011779"
+      ],
+      "expected_bits": "text:-2.22507385854255E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0386",
+      "args": [
+        "0x8010000000002db3"
+      ],
+      "expected_bits": "text:-2.22507385851298E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0387",
+      "args": [
+        "0x8010000000001d77"
+      ],
+      "expected_bits": "text:-2.22507385851093E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0388",
+      "args": [
+        "0x00100000000103e7"
+      ],
+      "expected_bits": "text:2.22507385854007E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0389",
+      "args": [
+        "0x0010000000004927"
+      ],
+      "expected_bits": "text:2.22507385851645E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0390",
+      "args": [
+        "0x00100000000075eb"
+      ],
+      "expected_bits": "text:2.22507385852212E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0391",
+      "args": [
+        "0x00100000000039ef"
+      ],
+      "expected_bits": "text:2.22507385851453E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0392",
+      "args": [
+        "0x00100000000014e8"
+      ],
+      "expected_bits": "text:2.22507385850985E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0393",
+      "args": [
+        "0x00100000000142c0"
+      ],
+      "expected_bits": "text:2.22507385854802E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0394",
+      "args": [
+        "0x80100000000011b2"
+      ],
+      "expected_bits": "text:-2.22507385850944E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0395",
+      "args": [
+        "0x8010000000008c76"
+      ],
+      "expected_bits": "text:-2.22507385852497E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0396",
+      "args": [
+        "0x0010000000010875"
+      ],
+      "expected_bits": "text:2.22507385854065E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0397",
+      "args": [
+        "0x80100000000138ed"
+      ],
+      "expected_bits": "text:-2.22507385854678E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0398",
+      "args": [
+        "0x001000000000e843"
+      ],
+      "expected_bits": "text:2.22507385853658E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0399",
+      "args": [
+        "0x0010000000004885"
+      ],
+      "expected_bits": "text:2.22507385851637E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0400",
+      "args": [
+        "0x0010000000000f7e"
+      ],
+      "expected_bits": "text:2.22507385850916E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0401",
+      "args": [
+        "0x0010000000016a8f"
+      ],
+      "expected_bits": "text:2.22507385855306E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0402",
+      "args": [
+        "0x001000000000520b"
+      ],
+      "expected_bits": "text:2.22507385851758E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0403",
+      "args": [
+        "0x8010000000011571"
+      ],
+      "expected_bits": "text:-2.22507385854229E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0404",
+      "args": [
+        "0x801000000000375b"
+      ],
+      "expected_bits": "text:-2.2250738585142E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0405",
+      "args": [
+        "0x00100000000055fb"
+      ],
+      "expected_bits": "text:2.22507385851808E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0406",
+      "args": [
+        "0x001000000000c247"
+      ],
+      "expected_bits": "text:2.22507385853177E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0407",
+      "args": [
+        "0x801000000001591e"
+      ],
+      "expected_bits": "text:-2.22507385855085E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0408",
+      "args": [
+        "0x8010000000004f31"
+      ],
+      "expected_bits": "text:-2.22507385851722E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0409",
+      "args": [
+        "0x0010000000016fe4"
+      ],
+      "expected_bits": "text:2.22507385855373E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0410",
+      "args": [
+        "0x001000000000cc14"
+      ],
+      "expected_bits": "text:2.22507385853301E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0411",
+      "args": [
+        "0x801000000000d5cd"
+      ],
+      "expected_bits": "text:-2.22507385853424E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0412",
+      "args": [
+        "0x001000000000ede7"
+      ],
+      "expected_bits": "text:2.22507385853729E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0413",
+      "args": [
+        "0x001000000000a681"
+      ],
+      "expected_bits": "text:2.22507385852826E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0414",
+      "args": [
+        "0x00100000000007af"
+      ],
+      "expected_bits": "text:2.22507385850817E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0415",
+      "args": [
+        "0x8010000000016242"
+      ],
+      "expected_bits": "text:-2.22507385855201E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0416",
+      "args": [
+        "0x001000000000abe1"
+      ],
+      "expected_bits": "text:2.22507385852894E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0417",
+      "args": [
+        "0x8010000000017eb1"
+      ],
+      "expected_bits": "text:-2.2250738585556E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0418",
+      "args": [
+        "0x801000000000a2bf"
+      ],
+      "expected_bits": "text:-2.22507385852779E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0419",
+      "args": [
+        "0x0010000000008d2c"
+      ],
+      "expected_bits": "text:2.22507385852506E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0420",
+      "args": [
+        "0x00100000000176b6"
+      ],
+      "expected_bits": "text:2.2250738585546E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0421",
+      "args": [
+        "0x801000000000b8a1"
+      ],
+      "expected_bits": "text:-2.22507385853055E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0422",
+      "args": [
+        "0x8010000000014b0a"
+      ],
+      "expected_bits": "text:-2.22507385854907E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0423",
+      "args": [
+        "0x8010000000006209"
+      ],
+      "expected_bits": "text:-2.2250738585196E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0424",
+      "args": [
+        "0x801000000000a4f1"
+      ],
+      "expected_bits": "text:-2.22507385852806E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0425",
+      "args": [
+        "0x00100000000063cb"
+      ],
+      "expected_bits": "text:2.22507385851982E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0426",
+      "args": [
+        "0x8010000000007422"
+      ],
+      "expected_bits": "text:-2.22507385852189E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0427",
+      "args": [
+        "0x801000000000979d"
+      ],
+      "expected_bits": "text:-2.22507385852638E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0428",
+      "args": [
+        "0x80100000000152a2"
+      ],
+      "expected_bits": "text:-2.22507385855003E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0429",
+      "args": [
+        "0x8010000000008995"
+      ],
+      "expected_bits": "text:-2.2250738585246E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0430",
+      "args": [
+        "0x001000000001296b"
+      ],
+      "expected_bits": "text:2.22507385854482E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0431",
+      "args": [
+        "0x001000000000d71a"
+      ],
+      "expected_bits": "text:2.22507385853441E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0432",
+      "args": [
+        "0x001000000000caed"
+      ],
+      "expected_bits": "text:2.22507385853287E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0433",
+      "args": [
+        "0x801000000000e6eb"
+      ],
+      "expected_bits": "text:-2.22507385853641E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0434",
+      "args": [
+        "0x0010000000004c05"
+      ],
+      "expected_bits": "text:2.22507385851682E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0435",
+      "args": [
+        "0x001000000000038d"
+      ],
+      "expected_bits": "text:2.22507385850765E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0436",
+      "args": [
+        "0x001000000000e721"
+      ],
+      "expected_bits": "text:2.22507385853643E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0437",
+      "args": [
+        "0x0010000000017160"
+      ],
+      "expected_bits": "text:2.22507385855392E-308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0438",
+      "args": [
+        "0x7fefffffffff2f2f"
+      ],
+      "expected_bits": "text:1.79769313485165E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0439",
+      "args": [
+        "0x7fefffffffff6822"
+      ],
+      "expected_bits": "text:1.79769313485456E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0440",
+      "args": [
+        "0x7fefffffffff1c17"
+      ],
+      "expected_bits": "text:1.79769313485067E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0441",
+      "args": [
+        "0xffefffffffff0571"
+      ],
+      "expected_bits": "text:-1.79769313484951E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0442",
+      "args": [
+        "0xffeffffffffe7b4e"
+      ],
+      "expected_bits": "text:-1.79769313484246E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0443",
+      "args": [
+        "0x7feffffffffe98c4"
+      ],
+      "expected_bits": "text:1.79769313484396E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0444",
+      "args": [
+        "0xffefffffffffabc2"
+      ],
+      "expected_bits": "text:-1.79769313485801E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0445",
+      "args": [
+        "0xffefffffffff7fb5"
+      ],
+      "expected_bits": "text:-1.79769313485576E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0446",
+      "args": [
+        "0xffeffffffffeb41e"
+      ],
+      "expected_bits": "text:-1.79769313484536E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0447",
+      "args": [
+        "0xffeffffffffef041"
+      ],
+      "expected_bits": "text:-1.79769313484843E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0448",
+      "args": [
+        "0x7feffffffffe9ac0"
+      ],
+      "expected_bits": "text:1.79769313484406E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0449",
+      "args": [
+        "0xffeffffffffeaadc"
+      ],
+      "expected_bits": "text:-1.79769313484489E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0450",
+      "args": [
+        "0xffeffffffffe9483"
+      ],
+      "expected_bits": "text:-1.79769313484374E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0451",
+      "args": [
+        "0xffeffffffffee9af"
+      ],
+      "expected_bits": "text:-1.7976931348481E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0452",
+      "args": [
+        "0x7feffffffffeef56"
+      ],
+      "expected_bits": "text:1.79769313484838E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0453",
+      "args": [
+        "0xffefffffffff5c81"
+      ],
+      "expected_bits": "text:-1.79769313485396E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0454",
+      "args": [
+        "0x7feffffffffebc9a"
+      ],
+      "expected_bits": "text:1.79769313484579E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0455",
+      "args": [
+        "0xffefffffffff96dd"
+      ],
+      "expected_bits": "text:-1.79769313485694E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0456",
+      "args": [
+        "0x7fefffffffffd390"
+      ],
+      "expected_bits": "text:1.79769313486005E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0457",
+      "args": [
+        "0x7feffffffffeed03"
+      ],
+      "expected_bits": "text:1.79769313484827E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0458",
+      "args": [
+        "0xffefffffffff5539"
+      ],
+      "expected_bits": "text:-1.79769313485359E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0459",
+      "args": [
+        "0xffeffffffffee7bc"
+      ],
+      "expected_bits": "text:-1.797693134848E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0460",
+      "args": [
+        "0xffefffffffffa500"
+      ],
+      "expected_bits": "text:-1.79769313485767E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0461",
+      "args": [
+        "0x7fefffffffff9699"
+      ],
+      "expected_bits": "text:1.79769313485693E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0462",
+      "args": [
+        "0x7feffffffffe96d5"
+      ],
+      "expected_bits": "text:1.79769313484386E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0463",
+      "args": [
+        "0xffefffffffffac03"
+      ],
+      "expected_bits": "text:-1.79769313485802E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0464",
+      "args": [
+        "0x7feffffffffeadb5"
+      ],
+      "expected_bits": "text:1.79769313484503E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0465",
+      "args": [
+        "0xffeffffffffe98f7"
+      ],
+      "expected_bits": "text:-1.79769313484397E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0466",
+      "args": [
+        "0xffefffffffff3577"
+      ],
+      "expected_bits": "text:-1.79769313485197E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0467",
+      "args": [
+        "0x7feffffffffeebdd"
+      ],
+      "expected_bits": "text:1.79769313484821E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0468",
+      "args": [
+        "0x7fefffffffff7f1b"
+      ],
+      "expected_bits": "text:1.79769313485573E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0469",
+      "args": [
+        "0xffefffffffff684c"
+      ],
+      "expected_bits": "text:-1.79769313485456E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0470",
+      "args": [
+        "0x7fefffffffff5535"
+      ],
+      "expected_bits": "text:1.79769313485359E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0471",
+      "args": [
+        "0xffefffffffff6165"
+      ],
+      "expected_bits": "text:-1.79769313485421E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0472",
+      "args": [
+        "0xffefffffffff3da6"
+      ],
+      "expected_bits": "text:-1.79769313485239E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0473",
+      "args": [
+        "0xffeffffffffef1a4"
+      ],
+      "expected_bits": "text:-1.7976931348485E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0474",
+      "args": [
+        "0xffefffffffffde1f"
+      ],
+      "expected_bits": "text:-1.79769313486058E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0475",
+      "args": [
+        "0xffefffffffffacd7"
+      ],
+      "expected_bits": "text:-1.79769313485807E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0476",
+      "args": [
+        "0xffefffffffff7c84"
+      ],
+      "expected_bits": "text:-1.7976931348556E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0477",
+      "args": [
+        "0xffeffffffffebf3f"
+      ],
+      "expected_bits": "text:-1.79769313484593E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0478",
+      "args": [
+        "0x7feffffffffed126"
+      ],
+      "expected_bits": "text:1.79769313484684E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0479",
+      "args": [
+        "0x7fefffffffffd2c9"
+      ],
+      "expected_bits": "text:1.79769313486001E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0480",
+      "args": [
+        "0x7fefffffffff7538"
+      ],
+      "expected_bits": "text:1.79769313485523E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0481",
+      "args": [
+        "0x7fefffffffffeb24"
+      ],
+      "expected_bits": "text:1.79769313486125E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0482",
+      "args": [
+        "0x7fefffffffffb81d"
+      ],
+      "expected_bits": "text:1.79769313485864E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0483",
+      "args": [
+        "0x7fefffffffff2fc1"
+      ],
+      "expected_bits": "text:1.79769313485168E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0484",
+      "args": [
+        "0xffeffffffffe9d02"
+      ],
+      "expected_bits": "text:-1.79769313484418E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0485",
+      "args": [
+        "0x7feffffffffe7cc7"
+      ],
+      "expected_bits": "text:1.79769313484253E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0486",
+      "args": [
+        "0xffefffffffffac8d"
+      ],
+      "expected_bits": "text:-1.79769313485805E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0487",
+      "args": [
+        "0x7fefffffffff5826"
+      ],
+      "expected_bits": "text:1.79769313485374E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0488",
+      "args": [
+        "0xffefffffffff7354"
+      ],
+      "expected_bits": "text:-1.79769313485513E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0489",
+      "args": [
+        "0x7feffffffffe9180"
+      ],
+      "expected_bits": "text:1.79769313484359E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0490",
+      "args": [
+        "0x7fefffffffff2d3d"
+      ],
+      "expected_bits": "text:1.79769313485155E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0491",
+      "args": [
+        "0x7fefffffffff36c8"
+      ],
+      "expected_bits": "text:1.79769313485203E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0492",
+      "args": [
+        "0x7fefffffffffa1ce"
+      ],
+      "expected_bits": "text:1.7976931348575E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0493",
+      "args": [
+        "0x7feffffffffeea7b"
+      ],
+      "expected_bits": "text:1.79769313484814E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0494",
+      "args": [
+        "0x7feffffffffe801e"
+      ],
+      "expected_bits": "text:1.7976931348427E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0495",
+      "args": [
+        "0xffefffffffff3b6b"
+      ],
+      "expected_bits": "text:-1.79769313485227E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0496",
+      "args": [
+        "0xffeffffffffe83ca"
+      ],
+      "expected_bits": "text:-1.79769313484289E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0497",
+      "args": [
+        "0x7feffffffffebc7b"
+      ],
+      "expected_bits": "text:1.79769313484579E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0498",
+      "args": [
+        "0xffefffffffff93e1"
+      ],
+      "expected_bits": "text:-1.79769313485679E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0499",
+      "args": [
+        "0x7fefffffffffcb97"
+      ],
+      "expected_bits": "text:1.79769313485964E+308"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0500",
+      "args": [
+        "0x4302cf0247e300fc"
+      ],
+      "expected_bits": "text:661769785466912"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0501",
+      "args": [
+        "0xc307174651a0edf4"
+      ],
+      "expected_bits": "text:-812439406124479"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0502",
+      "args": [
+        "0x4302bd866283973c"
+      ],
+      "expected_bits": "text:659366807106280"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0503",
+      "args": [
+        "0xc30551fb71bdb2cc"
+      ],
+      "expected_bits": "text:-750139362227802"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0504",
+      "args": [
+        "0xc30073504972af64"
+      ],
+      "expected_bits": "text:-578798536775149"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0505",
+      "args": [
+        "0x43007222a18cc87c"
+      ],
+      "expected_bits": "text:578636586522896"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0506",
+      "args": [
+        "0xc2fb1275e500eb18"
+      ],
+      "expected_bits": "text:-476257620856498"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0507",
+      "args": [
+        "0xc2f5f24fa7d49b68"
+      ],
+      "expected_bits": "text:-386087402686903"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0508",
+      "args": [
+        "0x42e84560dc32bad0"
+      ],
+      "expected_bits": "text:213490054829527"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0509",
+      "args": [
+        "0x42e01fdf27ba33f0"
+      ],
+      "expected_bits": "text:141832591626656"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0510",
+      "args": [
+        "0x42f6350c3a34d938"
+      ],
+      "expected_bits": "text:390673507503508"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0511",
+      "args": [
+        "0x42f9261e165a3098"
+      ],
+      "expected_bits": "text:442424067728138"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0512",
+      "args": [
+        "0xc2ef74e9a22c8ef0"
+      ],
+      "expected_bits": "text:-276695971095672"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0513",
+      "args": [
+        "0x4303318243936d74"
+      ],
+      "expected_bits": "text:675307513343407"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0514",
+      "args": [
+        "0x430404ffb9ba0acc"
+      ],
+      "expected_bits": "text:704374489170266"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0515",
+      "args": [
+        "0xc3090731c29187ec"
+      ],
+      "expected_bits": "text:-880598089609470"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0516",
+      "args": [
+        "0xc300c7c15157619c"
+      ],
+      "expected_bits": "text:-590404091833396"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0517",
+      "args": [
+        "0x42e7c40254773bf0"
+      ],
+      "expected_bits": "text:209044960950752"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0518",
+      "args": [
+        "0xc3042e0615c9e164"
+      ],
+      "expected_bits": "text:-710012900555821"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0519",
+      "args": [
+        "0xc2e2051fe6b39050"
+      ],
+      "expected_bits": "text:-158505754795139"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0520",
+      "args": [
+        "0xc2f7b582cf5fa968"
+      ],
+      "expected_bits": "text:-417093618367127"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0521",
+      "args": [
+        "0xc2f0f22a8e8cf6e8"
+      ],
+      "expected_bits": "text:-298116513845103"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0522",
+      "args": [
+        "0x4306ee21c2ea68a4"
+      ],
+      "expected_bits": "text:806784782388501"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0523",
+      "args": [
+        "0x430b16ab923cf4d4"
+      ],
+      "expected_bits": "text:953093814984347"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0524",
+      "args": [
+        "0xc2d764221bedef20"
+      ],
+      "expected_bits": "text:-102875345696701"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0525",
+      "args": [
+        "0x4306c4db9a32c7f4"
+      ],
+      "expected_bits": "text:801112118941951"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0526",
+      "args": [
+        "0x4300c1feca582344"
+      ],
+      "expected_bits": "text:589612460999785"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0527",
+      "args": [
+        "0xc2ef322ca7946bd0"
+      ],
+      "expected_bits": "text:-274402864046943"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0528",
+      "args": [
+        "0x430956313db911f4"
+      ],
+      "expected_bits": "text:891455488336447"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0529",
+      "args": [
+        "0xc2fe1a9a11363e18"
+      ],
+      "expected_bits": "text:-529593644835810"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0530",
+      "args": [
+        "0xc304df10c5639e3c"
+      ],
+      "expected_bits": "text:-734345332290504"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0531",
+      "args": [
+        "0xc2f7f6bf50bde458"
+      ],
+      "expected_bits": "text:-421576626134598"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0532",
+      "args": [
+        "0xc302d52284673cec"
+      ],
+      "expected_bits": "text:-662611725969310"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0533",
+      "args": [
+        "0xc3099fd44064bf4c"
+      ],
+      "expected_bits": "text:-901576047499242"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0534",
+      "args": [
+        "0x42f7389955b1dbe8"
+      ],
+      "expected_bits": "text:408509730201023"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0535",
+      "args": [
+        "0xc2e082e330a38950"
+      ],
+      "expected_bits": "text:-145234747268171"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0536",
+      "args": [
+        "0xc30475ad768f4044"
+      ],
+      "expected_bits": "text:-719860926638089"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0537",
+      "args": [
+        "0xc30579e50d5abefc"
+      ],
+      "expected_bits": "text:-755624898680800"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0538",
+      "args": [
+        "0xc30b7423e8158a9c"
+      ],
+      "expected_bits": "text:-965940242198868"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0539",
+      "args": [
+        "0x42e8eedfb3757710"
+      ],
+      "expected_bits": "text:219313874906041"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0540",
+      "args": [
+        "0xc302cc726df4d41c"
+      ],
+      "expected_bits": "text:-661417677986436"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0541",
+      "args": [
+        "0x42f3297896075408"
+      ],
+      "expected_bits": "text:337101402961217"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0542",
+      "args": [
+        "0xc2f574ff4068f9b8"
+      ],
+      "expected_bits": "text:-377475884814236"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0543",
+      "args": [
+        "0xc2d758925ad68760"
+      ],
+      "expected_bits": "text:-102676719950366"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0544",
+      "args": [
+        "0xc30999b128d86d0c"
+      ],
+      "expected_bits": "text:-900732573912482"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0545",
+      "args": [
+        "0x42f89185d58f4058"
+      ],
+      "expected_bits": "text:432212715041798"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0546",
+      "args": [
+        "0x43094ec9c9d8e15c"
+      ],
+      "expected_bits": "text:890437874949164"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0547",
+      "args": [
+        "0xc306774a5907c2bc"
+      ],
+      "expected_bits": "text:-790451336575064"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0548",
+      "args": [
+        "0xc2f7003fae0252a8"
+      ],
+      "expected_bits": "text:-404637372917035"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0549",
+      "args": [
+        "0xc2f5feaf84812548"
+      ],
+      "expected_bits": "text:-386937769169493"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0550",
+      "args": [
+        "0x42fb9ff0ed5c3178"
+      ],
+      "expected_bits": "text:485980093399832"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0551",
+      "args": [
+        "0xc3092c57f349639c"
+      ],
+      "expected_bits": "text:-885703834152052"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0552",
+      "args": [
+        "0x430b3e7a939070e4"
+      ],
+      "expected_bits": "text:958565069229597"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0553",
+      "args": [
+        "0xc2fa40484da65138"
+      ],
+      "expected_bits": "text:-461814292440340"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0554",
+      "args": [
+        "0x42e952ffaefce450"
+      ],
+      "expected_bits": "text:222754141366051"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0555",
+      "args": [
+        "0xc3039a9ac7f5daec"
+      ],
+      "expected_bits": "text:-689751765990238"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0556",
+      "args": [
+        "0xc308e30a484ff05c"
+      ],
+      "expected_bits": "text:-875629092929036"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0557",
+      "args": [
+        "0x430132f5a63d0cd4"
+      ],
+      "expected_bits": "text:605138155184539"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0558",
+      "args": [
+        "0x4303e9db6f361374"
+      ],
+      "expected_bits": "text:700644153803375"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0559",
+      "args": [
+        "0x42f46bcd546c68f8"
+      ],
+      "expected_bits": "text:359251822691984"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0560",
+      "args": [
+        "0xc2f9bcf2bdf92858"
+      ],
+      "expected_bits": "text:-452789073318534"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0561",
+      "args": [
+        "0x430b029953b568cc"
+      ],
+      "expected_bits": "text:950335241104666"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0562",
+      "args": [
+        "0x430563766d72605c"
+      ],
+      "expected_bits": "text:752541850553356"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0563",
+      "args": [
+        "0xbf74726cfd3e55e1"
+      ],
+      "expected_bits": "text:-0.00499193738860046"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0564",
+      "args": [
+        "0xbda3143d06f388d2"
+      ],
+      "expected_bits": "text:-8.6761502645745E-12"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0565",
+      "args": [
+        "0xbc9a1c84b6da98d0"
+      ],
+      "expected_bits": "text:-9.05921173462778E-17"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0566",
+      "args": [
+        "0xbbc3c24930edc356"
+      ],
+      "expected_bits": "text:-8.36823206316512E-21"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0567",
+      "args": [
+        "0x3cfce8d2121c311c"
+      ],
+      "expected_bits": "text:6.41918860847538E-15"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0568",
+      "args": [
+        "0xbc6675ca619c7b7a"
+      ],
+      "expected_bits": "text:-9.74052407459174E-18"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0569",
+      "args": [
+        "0x44ea1e6423893c90"
+      ],
+      "expected_bits": "text:9.86737173109946E+23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0570",
+      "args": [
+        "0xc0583a5310c7f0a0"
+      ],
+      "expected_bits": "text:-96.9113199188746"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0571",
+      "args": [
+        "0xc203f35f2bc56ae8"
+      ],
+      "expected_bits": "text:-10710934904.6772"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0572",
+      "args": [
+        "0xc0f2e664897c65c8"
+      ],
+      "expected_bits": "text:-77414.2835659004"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0573",
+      "args": [
+        "0x4253f01864d23b75"
+      ],
+      "expected_bits": "text:342530036552.929"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0574",
+      "args": [
+        "0x3e3c556212e628b9"
+      ],
+      "expected_bits": "text:6.5969135001767E-09"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0575",
+      "args": [
+        "0xbee34e5f8edc8678"
+      ],
+      "expected_bits": "text:-0.0000092058876038387"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0576",
+      "args": [
+        "0xc2636e4103839713"
+      ],
+      "expected_bits": "text:-667633064988.721"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0577",
+      "args": [
+        "0xc0f5379c23d661fc"
+      ],
+      "expected_bits": "text:-86905.7587493732"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0578",
+      "args": [
+        "0x44dab8bcc51cffc7"
+      ],
+      "expected_bits": "text:5.04757327097231E+23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0579",
+      "args": [
+        "0x3fddc1d9073180eb"
+      ],
+      "expected_bits": "text:0.464956528687266"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0580",
+      "args": [
+        "0xbb8d5a5a20fc6f80"
+      ],
+      "expected_bits": "text:-7.76965793093796E-22"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0581",
+      "args": [
+        "0x441f3b35437a0573"
+      ],
+      "expected_bits": "text:144028864174589000000"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0582",
+      "args": [
+        "0xc4f63cc963ecfce5"
+      ],
+      "expected_bits": "text:-1.6802140635288E+24"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0583",
+      "args": [
+        "0x3e10aaf4c912f209"
+      ],
+      "expected_bits": "text:9.70193512590831E-10"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0584",
+      "args": [
+        "0x44b010e5cd99a3e0"
+      ],
+      "expected_bits": "text:7.58695706914277E+22"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0585",
+      "args": [
+        "0xc363a5a9aebfa4d8"
+      ],
+      "expected_bits": "text:-44241382058829500"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0586",
+      "args": [
+        "0xbbf8eb5af7952f09"
+      ],
+      "expected_bits": "text:-8.44300649294958E-20"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0587",
+      "args": [
+        "0xc46bce222d7931b6"
+      ],
+      "expected_bits": "text:-4.10332459607782E+21"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0588",
+      "args": [
+        "0x3e04993a7f28cf92"
+      ],
+      "expected_bits": "text:5.99496673066679E-10"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0589",
+      "args": [
+        "0x3bf4a12f8499946d"
+      ],
+      "expected_bits": "text:6.98959096596708E-20"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0590",
+      "args": [
+        "0x3e34a1f98d8c49c1"
+      ],
+      "expected_bits": "text:4.80392811014197E-09"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0591",
+      "args": [
+        "0x405030c17e060caf"
+      ],
+      "expected_bits": "text:64.7618098315313"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0592",
+      "args": [
+        "0x3eda2be08a9f1562"
+      ],
+      "expected_bits": "text:6.23974680453074E-06"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0593",
+      "args": [
+        "0x40c0e63289cfaf9b"
+      ],
+      "expected_bits": "text:8652.3948306663"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0594",
+      "args": [
+        "0x41234044ee09ac49"
+      ],
+      "expected_bits": "text:630818.464917549"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0595",
+      "args": [
+        "0xbee1e1cf15c68b69"
+      ],
+      "expected_bits": "text:-0.000008526833590155"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0596",
+      "args": [
+        "0x3bc73379d5a21d5d"
+      ],
+      "expected_bits": "text:9.82603865293934E-21"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0597",
+      "args": [
+        "0xbbf56074ff077606"
+      ],
+      "expected_bits": "text:-7.24273655524093E-20"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0598",
+      "args": [
+        "0xbfe92fa3be0d5ed4"
+      ],
+      "expected_bits": "text:-0.787065383144148"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0599",
+      "args": [
+        "0xc47f46a5dc8a1f84"
+      ],
+      "expected_bits": "text:-9.23103653959361E+21"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0600",
+      "args": [
+        "0xbc8da9b81571770d"
+      ],
+      "expected_bits": "text:-5.14570420046392E-17"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0601",
+      "args": [
+        "0xbc7d102f265e9e2e"
+      ],
+      "expected_bits": "text:-2.52083245337705E-17"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0602",
+      "args": [
+        "0xc31db9796adc17d8"
+      ],
+      "expected_bits": "text:-2091676364899830"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0603",
+      "args": [
+        "0x3e735d05722af2c7"
+      ],
+      "expected_bits": "text:7.21341533544455E-08"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0604",
+      "args": [
+        "0xbeace92f1d54a82c"
+      ],
+      "expected_bits": "text:-8.6161122206841E-07"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0605",
+      "args": [
+        "0xbf144dc615296ba5"
+      ],
+      "expected_bits": "text:-0.0000774528646529231"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0606",
+      "args": [
+        "0x3fb6a26ce211cd8e"
+      ],
+      "expected_bits": "text:0.0884159137656779"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0607",
+      "args": [
+        "0xbf73b1be21121c6e"
+      ],
+      "expected_bits": "text:-0.00480818051540331"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0608",
+      "args": [
+        "0xc5004443f0c2ae5b"
+      ],
+      "expected_bits": "text:-2.45814841439282E+24"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0609",
+      "args": [
+        "0xc4e5e84d6a89194d"
+      ],
+      "expected_bits": "text:-8.27639353497547E+23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0610",
+      "args": [
+        "0x40293d1da091b2fb"
+      ],
+      "expected_bits": "text:12.6193666627746"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0611",
+      "args": [
+        "0x3da3d9b0a31d1725"
+      ],
+      "expected_bits": "text:9.02689476752368E-12"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0612",
+      "args": [
+        "0x3c617d17ed653d4e"
+      ],
+      "expected_bits": "text:7.5844913474767E-18"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0613",
+      "args": [
+        "0x3d46c89625d8ac48"
+      ],
+      "expected_bits": "text:1.618867960515E-13"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0614",
+      "args": [
+        "0x412e0930a7440104"
+      ],
+      "expected_bits": "text:984216.326690704"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0615",
+      "args": [
+        "0xc05797196e8cb34d"
+      ],
+      "expected_bits": "text:-94.3609272359874"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0616",
+      "args": [
+        "0xc3e03b87703154f9"
+      ],
+      "expected_bits": "text:-9357419553332120000"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0617",
+      "args": [
+        "0x430432356055d698"
+      ],
+      "expected_bits": "text:710588045638355"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0618",
+      "args": [
+        "0x3bb61c1dc7c68298"
+      ],
+      "expected_bits": "text:4.68193849262433E-21"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0619",
+      "args": [
+        "0xc4dd036da1724b31"
+      ],
+      "expected_bits": "text:-5.48047471825318E+23"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0620",
+      "args": [
+        "0xbd661f4efea176e6"
+      ],
+      "expected_bits": "text:-6.28753557314227E-13"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0621",
+      "args": [
+        "0xc367a147d65b101a"
+      ],
+      "expected_bits": "text:-53210035003097300"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0622",
+      "args": [
+        "0xbd75d290e5e77711"
+      ],
+      "expected_bits": "text:-1.24046684214709E-12"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0623",
+      "args": [
+        "0xbc9c3b82ed7332d2"
+      ],
+      "expected_bits": "text:-9.79510450031136E-17"
+    },
+    {
+      "id": "complex-heldout-2026092902-IMPRODUCT-0624",
+      "args": [
+        "0xc080af08f1820798"
+      ],
+      "expected_bits": "text:-533.879366889817"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T12:39:09.7996812Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-08-09T05:40:43.4959354Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"rows":29807,"excluded_prior_tuples":63436,"generator_sha256":"07e97fb573e7d544bbc74d66316c555db708d7962be7c8d78e4bda961929274e","batch_sha256":"759d3b6085f0f1d9ff73fd547d47951913548ccc53603c8196e60332e92a721a","input_policy":"normal binary64 plus positive zero; all prior tuples excluded; candidate frozen before generation"}

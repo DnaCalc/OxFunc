@@ -1,0 +1,79 @@
+{
+  "observations": 47964,
+  "exact_matches": 47964,
+  "distinct_pairs": 47554,
+  "cohorts": {
+    "broad": {
+      "rows": 16018,
+      "distinct": 16018,
+      "new_pairs": 16018,
+      "overlap_previous": 0
+    },
+    "half-boundary": {
+      "rows": 7734,
+      "distinct": 7734,
+      "new_pairs": 7725,
+      "overlap_previous": 9
+    },
+    "fraction-cutoff": {
+      "rows": 5460,
+      "distinct": 5460,
+      "new_pairs": 5082,
+      "overlap_previous": 378
+    },
+    "heldout": {
+      "rows": 15552,
+      "distinct": 15552,
+      "new_pairs": 15529,
+      "overlap_previous": 23
+    },
+    "staged-heldout": {
+      "rows": 3200,
+      "distinct": 3200,
+      "new_pairs": 3200,
+      "overlap_previous": 0
+    }
+  },
+  "input_qualification_withheld": {
+    "broad": 0,
+    "half-boundary": 0,
+    "fraction-cutoff": 0,
+    "heldout": 0,
+    "staged-heldout": 0
+  },
+  "comparison": "Rust public dispatch exact typed output bits; cargo test -p oxfunc_core --offline --test w111_mround_live_replay:4 passed",
+  "typed": {
+    "observations": 1514,
+    "exact_matches": 1514,
+    "cohorts": {
+      "discovery": 618,
+      "former_failed_heldout": 432,
+      "reference_discovery": 80,
+      "fresh_reference_heldout": 384
+    },
+    "provisional_duplicate_observations_excluded": 432,
+    "original_prepared_candidate_failures_preserved": {
+      "discovery": 111,
+      "heldout": 156,
+      "reference_discovery": 54
+    },
+    "rust_replay_tests": 4,
+    "replay_paths": [
+      "direct function surface",
+      "public catalog dispatch"
+    ]
+  },
+  "status": {
+    "scope_completeness": "scope_partial",
+    "target_completeness": "target_partial",
+    "integration_completeness": "partial",
+    "open_lanes": [
+      "multi-area/structured/external reference classes",
+      "shared numeric-text context constraints",
+      "unresolved reference/provider failures and evaluator integration",
+      "non-x86_64 arithmetic target evidence",
+      "cutoff mechanism not identified; observed uniform boundary only",
+      "receiving-repository acknowledgment"
+    ]
+  }
+}

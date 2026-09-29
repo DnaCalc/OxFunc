@@ -27,7 +27,8 @@ def evalDegreesSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode 
 
 theorem evalDegrees_numeric_text_admitted :
     evalDegreesSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalDegreesSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalDegreesSurfaceClass, coerceToNumber, parsed]
 
 theorem degreesMeta_profiles :
     degreesMeta.kernelSignatureClass = KernelSignatureClass.numToNum

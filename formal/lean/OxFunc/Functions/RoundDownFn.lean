@@ -1,6 +1,8 @@
 import OxFunc.FunctionCore
+import OxFunc.DecimalRounding
 namespace OxFunc.Functions
 open OxFunc
+abbrev roundDownExecutable := DecimalRounding.eval .down
 def roundDownMeta : FunctionMeta := {
   functionId := "FUNC.ROUNDDOWN", arity := { min := 2, max := 2 }, determinism := .deterministic, volatility := .nonvolatile,
   hostInteraction := .none, threadSafety := .safePure, argPreparationProfile := .valuesOnlyPreAdapter,

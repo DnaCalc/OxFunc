@@ -4,7 +4,7 @@
 1. `function_id`: `FUNC.IFERROR`
 2. `display_name`: `IFERROR`
 3. `owner_lane`: `OxFunc`
-4. `status`: `provisional`
+4. `status`: `in_progress` (W111 expanded typed scope)
 
 ## 2. Signature and Admission Contract
 1. arity:
@@ -28,12 +28,17 @@
 ## 4. Pre-call Coercion Policy
 1. references stay visible to the adapter so fallback preparation can remain lazy.
 2. the primary argument is prepared first under the shared values-only preparation helper.
-3. the fallback argument is prepared only when the primary prepares to an error value.
+3. scalar primaries prepare fallback only when needed. Array primaries include
+   fallback shape even when existing primary cells need no fallback. This is
+   prepared-value behavior, not proof of expression scheduling or effects.
 
 ## 5. Core Outcome Model
 1. if the prepared primary argument is not an error, the primary value is returned.
 2. if the prepared primary argument is an error, the prepared fallback value is returned.
-3. missing fallback coerces to `#VALUE!`; empty fallback coerces to numeric zero in the current seed.
+3. selected missing or blank fallback and blank primary publish numeric zero.
+4. array dimensions take the coordinatewise maxima of primary and fallback;
+   singleton axes broadcast. Absent non-singleton primary coordinates produce
+   catchable `#N/A`. Error selection is per cell, preserving unmatched values.
 
 ## 6. Post-call Adaptation Policy
 1. successful evaluation returns the selected scalar, text, or error value directly as `EvalValue`.
@@ -57,11 +62,25 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. lazy fallback preparation is implemented and empirically pinned.
-2. non-error primaries pass through unchanged; blank primaries become `0`; blank fallbacks become empty string; missing fallbacks become `#VALUE!`.
-3. no known current-phase semantic gap remains in the admitted binary lane, so this slice is `function-phase-complete` for the current reference baseline.
+1. historical W12 evidence covers selected scalar fallback preparation.
+2. W111 corrects the earlier text: selected blank/missing fallbacks publish zero;
+   non-error values pass through, and blank primaries publish zero.
+3. the earlier phase claim is withdrawn for expanded array and missing-value
+   scope. Current discovery and independent evidence are retained separately.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/iferror.rs`
 2. Lean: `formal/lean/OxFunc/Functions/IfError.lean`
 3. side-note linkage: `docs/function-lane/W12_PROFILE_SYSTEM_SIDE_NOTES.md` (note 3)
+
+
+## 11. W111 reference and evidence
+
+Excel 16.0 build 20430, 64-bit, Workbook Compatibility Version 2; channel unverified.
+The shared IF/IFERROR/IFNA packet and executable formal binding are retained in
+`evidence/w111-broad-20260929/conditional/`. Frozen independent testing exposed
+direct one-cell array identity loss; refinement and another holdout are active.
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`. Open lanes: refined shape replay, evaluator
+scheduling/effects, reference-valued selection, uncommon reference/host forms,
+HO-FN-023 receiving acknowledgment and integration.

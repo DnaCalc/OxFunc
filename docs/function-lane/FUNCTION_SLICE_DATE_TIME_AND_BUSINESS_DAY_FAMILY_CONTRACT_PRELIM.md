@@ -1,6 +1,6 @@
 # Function Slice Contract (Preliminary) - Date Time And Business Day Family
 
-Status: `provisional`
+Status: `in_progress`; W111 date/time review is `scope_partial`.
 Workset: `W063`
 Primary Functions: `DAY`, `DAYS`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MINUTE`, `MONTH`, `NETWORKDAYS`, `NETWORKDAYS.INTL`, `SECOND`, `TIME`, `WEEKDAY`, `WEEKNUM`, `WORKDAY`, `WORKDAY.INTL`, `YEAR`, `YEARFRAC`
 
@@ -11,12 +11,12 @@ Primary Functions: `DAY`, `DAYS`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MIN
 
 ## 2. Admitted Current-Baseline Slice
 1. `DAY`, `MONTH`, `YEAR`, and `DAYS`
-   - preserve truncated-serial extraction and subtraction on the `1900` serial timeline,
+   - DAY/MONTH/YEAR add half a second in day units before date extraction; DAYS truncates each admitted raw serial before subtraction,
    - preserve serial `0 -> 1900-01-00`,
    - preserve fake leap-day serial `60 -> 1900-02-29`,
    - reject negative serials with `#NUM!`.
 2. `HOUR`, `MINUTE`, `SECOND`, and `TIME`
-   - extract from the fractional-day portion of the serial after rejecting negative inputs with `#NUM!`,
+   - HOUR/MINUTE/SECOND add half a second in day units, then extract hours, fractional-hour minutes and fractional-minute seconds in that operation order,
    - truncate component inputs toward zero,
    - accept numeric text and logicals through the ordinary numeric coercion path,
    - treat omitted/blank `TIME` components as zero,
@@ -25,7 +25,9 @@ Primary Functions: `DAY`, `DAYS`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MIN
    - preserve month-clamp behavior and serial-timeline weekday numbering,
    - preserve the fake-leap serial-`60` normalization lanes,
    - preserve `WEEKNUM(...,21)` and `ISOWEEKNUM` ISO-week behavior on the same serial timeline,
-   - reject invalid return-type lanes with `#NUM!`.
+   - WEEKDAY rejects invalid return types with `#NUM!`; unsupported WEEKNUM selectors remain unresolved after contradictory repeated live observations,
+   - EDATE/EOMONTH reject logical arguments with `#VALUE!` and missing required slots with `#N/A`, while WEEKDAY accepts logicals and maps explicit missing slots to zero,
+   - WEEKNUM uses the strict argument policy but defaults an omitted optional selector to one.
 4. `WORKDAY`, `WORKDAY.INTL`, `NETWORKDAYS`, and `NETWORKDAYS.INTL`
    - preserve inclusive business-day counting and business-day stepping on the `1900` serial baseline,
    - honor weekend-number and seven-bit weekend-mask parsing,
@@ -61,3 +63,16 @@ Primary Functions: `DAY`, `DAYS`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MIN
    - `tools/w63-probe/run-w63-date-time-business-day-baseline.ps1`
 4. packet execution record:
    - `docs/HISTORY.md`
+
+## 5. W111 Current-Reference Qualification
+
+The [2026-09-29 date evidence](evidence/w111-broad-20260929/dates/README.md)
+supersedes the affected numerical, coercion and array clauses above on Excel
+16.0 build 20430, 64-bit, Compatibility Version 2, 1900 date system; channel is
+unverified. The fresh campaign has not requalified every business-day function.
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`. Open lanes: unsupported WEEKNUM selectors,
+independent candidate validation, shared decimal/locale preparation, combined
+validation and remaining business-day-family coverage. Workbook locale/date
+recreation in the XLL seam does not establish the core context contract; HO-FN-022
+awaits the receiving evaluator's acknowledgment and integration.

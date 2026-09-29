@@ -8,7 +8,7 @@ use crate::functions::adapters::{
 };
 use crate::functions::base_fn::base_kernel;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::{ExcelText, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -107,13 +107,24 @@ fn validate_arity(
 }
 
 fn prepared_number_arg(args: &[CalcValue], index: usize) -> Result<f64, EngineeringRadixEvalError> {
+    reject_engineering_argument_kind(&args[index])?;
     coerce_prepared_to_number(&args[index]).map_err(EngineeringRadixEvalError::Coercion)
+}
+
+fn reject_engineering_argument_kind(arg: &CalcValue) -> Result<(), EngineeringRadixEvalError> {
+    let code = match arg.core {
+        CoreValue::Logical(_) => WorksheetErrorCode::Value,
+        CoreValue::Missing => WorksheetErrorCode::NA,
+        _ => return Ok(()),
+    };
+    Err(EngineeringRadixEvalError::Coercion(CoercionError::WorksheetError(code)))
 }
 
 fn prepared_text_arg(
     args: &[CalcValue],
     index: usize,
 ) -> Result<String, EngineeringRadixEvalError> {
+    reject_engineering_argument_kind(&args[index])?;
     Ok(coerce_prepared_to_text(&args[index])
         .map_err(EngineeringRadixEvalError::Coercion)?
         .to_string_lossy())
@@ -122,8 +133,13 @@ fn prepared_text_arg(
 fn prepared_optional_places_arg(
     args: &[CalcValue],
 ) -> Result<Option<f64>, EngineeringRadixEvalError> {
-    if args.len() > 1 {
-        prepared_number_arg(args, 1).map(Some)
+    if args.len() > 1 && !matches!(args[1].core, CoreValue::Missing) {
+        let places = prepared_number_arg(args, 1)?;
+        // Excel checks the optional places argument before inspecting number,
+        // including its errors and domain. Explicit omission uses the default.
+        normalize_places(Some(places)).map_err(|code|
+            EngineeringRadixEvalError::Coercion(CoercionError::WorksheetError(code)))?;
+        Ok(Some(places))
     } else {
         Ok(None)
     }
@@ -138,12 +154,15 @@ fn upper_ascii_digit_value(ch: char) -> Option<u32> {
 }
 
 fn normalize_radix_text(text: &str) -> String {
-    text.trim_start().to_ascii_uppercase()
+    text.to_ascii_uppercase()
 }
 
 fn parse_radix_text(text: &str, source: RadixSpec) -> Result<i64, WorksheetErrorCode> {
     let normalized = normalize_radix_text(text);
-    if normalized.is_empty() || normalized.len() > source.max_chars {
+    if normalized.is_empty() {
+        return Ok(0);
+    }
+    if normalized.len() > source.max_chars {
         return Err(WorksheetErrorCode::Num);
     }
 
@@ -176,7 +195,7 @@ fn normalize_places(places: Option<f64>) -> Result<Option<usize>, WorksheetError
         None => Ok(None),
         Some(raw) => {
             let truncated = raw.trunc();
-            if truncated <= 0.0 {
+            if !raw.is_finite() || !(1.0..=10.0).contains(&truncated) {
                 Err(WorksheetErrorCode::Num)
             } else {
                 Ok(Some(truncated as usize))
@@ -202,6 +221,10 @@ fn encode_signed_value(
         return Err(WorksheetErrorCode::Num);
     }
 
+    // Excel validates an explicitly supplied width even when a negative value
+    // always publishes its full ten-character two's-complement encoding.
+    let places = normalize_places(places)?;
+
     if value < 0 {
         let raw = ((1_i128 << target.bits) + i128::from(value)) as f64;
         return base_kernel(raw, target.radix as f64, Some(target.max_chars as f64));
@@ -210,7 +233,7 @@ fn encode_signed_value(
     let digits = base_kernel(value as f64, target.radix as f64, None)?;
     let digits_string = digits.to_string_lossy();
 
-    match normalize_places(places)? {
+    match places {
         Some(min_length) => {
             if digits_string.len() > min_length {
                 Err(WorksheetErrorCode::Num)
@@ -308,8 +331,8 @@ fn eval_dec_to_target_prepared(
     kernel: fn(f64, Option<f64>) -> Result<ExcelText, WorksheetErrorCode>,
 ) -> Result<CalcValue, EngineeringRadixEvalError> {
     validate_arity(meta, args)?;
-    let number = prepared_number_arg(args, 0)?;
     let places = prepared_optional_places_arg(args)?;
+    let number = prepared_number_arg(args, 0)?;
     Ok(map_domain_result(
         kernel(number, places).map(CalcValue::text),
     ))
@@ -331,8 +354,8 @@ fn eval_source_to_target_prepared(
     kernel: fn(&str, Option<f64>) -> Result<ExcelText, WorksheetErrorCode>,
 ) -> Result<CalcValue, EngineeringRadixEvalError> {
     validate_arity(meta, args)?;
-    let number = prepared_text_arg(args, 0)?;
     let places = prepared_optional_places_arg(args)?;
+    let number = prepared_text_arg(args, 0)?;
     Ok(map_domain_result(
         kernel(&number, places).map(CalcValue::text),
     ))
@@ -568,7 +591,8 @@ mod tests {
             hex2bin_kernel("1000000000", None),
             Err(WorksheetErrorCode::Num)
         );
-        assert_eq!(hex2oct_kernel("", None), Err(WorksheetErrorCode::Num));
+        assert_text_eq(hex2oct_kernel("", None), "0");
+        assert_eq!(hex2oct_kernel(" 1", None), Err(WorksheetErrorCode::Num));
         assert_eq!(oct2bin_kernel("8", None), Err(WorksheetErrorCode::Num));
     }
 }

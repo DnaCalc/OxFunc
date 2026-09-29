@@ -1,9 +1,11 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.IntegerPreparation
 
 namespace OxFunc.Functions
 
 open OxFunc
+abbrev intExecutable := IntegerPreparation.intKernel
 
 def intMeta : FunctionMeta := {
   functionId := "FUNC.INT"
@@ -27,7 +29,8 @@ def evalIntSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalInt_numeric_text_admitted :
     evalIntSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalIntSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalIntSurfaceClass, coerceToNumber, parsed]
 
 theorem intMeta_profiles :
     intMeta.kernelSignatureClass = KernelSignatureClass.numToNum

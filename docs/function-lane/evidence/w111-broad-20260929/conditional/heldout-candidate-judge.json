@@ -1,0 +1,1332 @@
+{
+  "rows": 660,
+  "matches": 496,
+  "by_function": {
+    "FUNC.IF": {
+      "rows": 220,
+      "matches": 147
+    },
+    "FUNC.IFERROR": {
+      "rows": 220,
+      "matches": 174
+    },
+    "FUNC.IFNA": {
+      "rows": 220,
+      "matches": 175
+    }
+  },
+  "misses": [
+    {
+      "case_id": "w111typed-00000-if-fresh-mixed-shape",
+      "formula": "=IF(A1:D1,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"0\",\"1\",\"0\",\"x\",\"FALSE \",\"0\",\"FALSE \",,#DIV/0!,#NULL!,\"1\",\" TRUE\"))",
+      "expected": "array:3x4:[logical:false|error:Div0|text:0|error:Name|logical:false|error:Div0|text:FALSE |error:Name|logical:false|error:Div0|text:1|error:Name]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00003-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2;3,4;5,6},#REF!,,\"tRuE\",A100,\"x\",A101),CHOOSE({1,2;3,4;5,6},\"1\",TRUE,\"\",\" TRUE\",\"TRUE\",\"1\"),CHOOSE({1;2;3;4},#NAME?,\"\",\"x\",\"\"))",
+      "expected": "array:4x2:[error:Ref|error:Name|text:|text: TRUE|error:Value|text:1|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00009-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"FALSE \"),CHOOSE({1},\"\"),CHOOSE({1;2;3;4},TRUE,A100,#NULL!,\" TRUE\"))",
+      "expected": "array:4x1:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00014-if-fresh-mixed-shape",
+      "formula": "=IF(A1:A2,CHOOSE({1,2;3,4;5,6},\"0\",FALSE,\"x\",\"fAlSe\",,A100),CHOOSE({1,2;3,4;5,6},\"0\",\"TRUE\",,#DIV/0!,TRUE,A101))",
+      "expected": "array:3x2:[text:0|logical:false|error:Ref|error:Ref|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00016-if-fresh-mixed-shape",
+      "formula": "=IF(FALSE,CHOOSE({1,2,3;4,5,6},\" TRUE\",TRUE,FALSE,\"FALSE\",A100,\"\"),CHOOSE({1,2,3;4,5,6},\"0\",\"TRUE\",\" TRUE\",\"FALSE\",\" TRUE\",))",
+      "expected": "array:2x3:[text:0|text:TRUE|text: TRUE|text:FALSE|text: TRUE|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00017-if-fresh-mixed-shape",
+      "formula": "=IF(A1,F1:F1,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"TRUE\",A100,\"1\",#REF!,,\" TRUE\",#N/A,#VALUE!,\"TRUE\",A101,TRUE,A102))",
+      "expected": "error:Name",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00018-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2;3,4;5,6},TRUE,#N/A,\"FALSE\",#REF!,\" TRUE\",A100),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A101,A102,,#NUM!,A103,\" TRUE\",FALSE,#REF!,\"x\",\"tRuE\",A104,\"FALSE\"),K1)",
+      "expected": "array:3x4:[number:0x0000000000000000|error:NA|error:NA|error:NA|logical:false|error:Ref|error:NA|error:NA|error:Value|text:tRuE|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00020-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"1\"),CHOOSE({1,2},#REF!,A100),K1:K1)",
+      "expected": "array:1x2:[error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00024-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2;3;4},#NULL!,#NUM!,,#REF!),CHOOSE({1,2,3;4,5,6},,#VALUE!,\"tRuE\",,#REF!,A100),K1)",
+      "expected": "array:4x3:[error:Null|error:Null|error:Null|error:Num|error:Num|error:Num|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|error:Ref|error:Ref|error:Ref]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00026-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"FALSE \"),CHOOSE({1;2},\"1\",\"\"),CHOOSE({1,2},TRUE,\"x\"))",
+      "expected": "array:2x2:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00028-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2;3,4;5,6},A100,,FALSE,A101,#DIV/0!,#NULL!),CHOOSE({1;2},#REF!,#NUM!),K1:K1)",
+      "expected": "array:3x2:[error:Ref|logical:false|logical:false|error:Num|error:Div0|error:Null]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00035-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3;4,5,6},#NUM!,,#NULL!,A100,\"1\",\"x\"),CHOOSE({1,2;3,4;5,6},FALSE,\"\",#NULL!,A101,\"tRuE\",\"TRUE\"),CHOOSE({1;2;3;4},,A102,#VALUE!,))",
+      "expected": "array:4x3:[error:Num|number:0x0000000000000000|error:Null|error:Null|error:Value|error:Value|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00037-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#VALUE!,\"0\",\"1\",#NAME?,\"FALSE \",#VALUE!,#DIV/0!,A100,\"0\",#NULL!,\"0\",\"\"),F1:I3,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#REF!,\"0\",\"TRUE\",A101,\"tRuE\",#NULL!,\"fAlSe\",\"0\",\"1\",#NUM!,\"FALSE\",))",
+      "expected": "array:3x4:[error:Value|error:Value|error:Value|error:Name|error:Value|error:Value|error:Div0|text:0|error:Value|error:Null|error:Value|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00038-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4},#REF!,,\" TRUE\",\"FALSE\"),CHOOSE({1;2;3;4},#REF!,#REF!,TRUE,#DIV/0!),K1:N3)",
+      "expected": "array:4x4:[error:Ref|number:0x0000000000000000|error:Value|text: TRUE|error:Ref|error:Null|error:Value|text:fAlSe|error:Ref|text:FALSE |error:Value|error:Ref|error:Ref|error:NA|error:Value|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00039-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2},,A100),CHOOSE({1;2;3;4},A101,TRUE,\"x\",\"FALSE\"),K1:K2)",
+      "expected": "array:4x1:[error:NA|logical:true|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00041-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2},\"FALSE \",#N/A),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A100,\"x\",A101,#REF!,A102,A103,\"tRuE\",\"fAlSe\",\"TRUE\",\"TRUE\",\"0\",TRUE),CHOOSE({1,2;3,4;5,6},\"tRuE\",\"FALSE \",#NUM!,,#N/A,#VALUE!))",
+      "expected": "array:3x4:[error:Value|error:NA|error:NA|error:NA|error:Value|error:NA|error:NA|error:NA|error:Value|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00043-if-fresh-mixed-shape",
+      "formula": "=IF(A1:A4,CHOOSE({1},#DIV/0!),CHOOSE({1;2;3;4},\"FALSE \",FALSE,,))",
+      "expected": "array:4x1:[error:Value|error:Value|error:NA|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00044-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},FALSE,\"TRUE\",\" TRUE\",\"FALSE \",A100,\"tRuE\",#NUM!,\"FALSE\",A101,\" TRUE\",,\" TRUE\"),F1)",
+      "expected": "array:3x4:[logical:false|number:0x4020000000000000|error:Value|error:Value|number:0x4020000000000000|number:0x4020000000000000|error:Num|logical:false|number:0x4020000000000000|error:Value|logical:false|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00046-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4},#VALUE!,#REF!,\" TRUE\",\"tRuE\"),CHOOSE({1;2;3;4},#VALUE!,,TRUE,#NUM!),#NULL!)",
+      "expected": "array:4x4:[error:Value|error:Ref|error:Value|error:Value|error:Value|error:Ref|error:Value|number:0x0000000000000000|error:Value|error:Ref|error:Value|logical:true|error:Value|error:Ref|error:Value|error:Num]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00048-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"tRuE\",#REF!,FALSE,\"\",\"fAlSe\",,A100,\"1\",#DIV/0!,A101,A102,#NUM!),CHOOSE({1,2},\"fAlSe\",#DIV/0!),K1:M2)",
+      "expected": "array:3x4:[text:fAlSe|error:Ref|number:0x3fd0000000000000|error:Value|number:0x0000000000000000|error:Null|error:NA|error:Value|error:Div0|error:Div0|error:NA|error:Num]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00049-if-fresh-mixed-shape",
+      "formula": "=IF(FALSE,CHOOSE({1,2,3;4,5,6},\"0\",\"\",,\" TRUE\",A100,\"1\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#DIV/0!,\"x\",\" TRUE\",\"TRUE\",#N/A,A101,\"fAlSe\",#VALUE!,TRUE,\"tRuE\",\"x\",#REF!))",
+      "expected": "array:3x4:[error:Div0|text:x|text: TRUE|text:TRUE|error:NA|number:0x0000000000000000|text:fAlSe|error:Value|logical:true|text:tRuE|text:x|error:Ref]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00052-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4},A100,A101,\"FALSE\",\"fAlSe\"),F1:H2,CHOOSE({1;2;3;4},\"\",,#NUM!,#DIV/0!))",
+      "expected": "array:4x4:[number:0x0000000000000000|text:|text:|text:|text:TRUE|number:0xc000000000000000|number:0x0000000000000000|number:0x0000000000000000|error:NA|error:NA|error:Num|error:Num|error:NA|error:NA|error:Div0|error:Div0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00059-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"TRUE\"),F1:F2,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#N/A,#NAME?,#NAME?,#VALUE!,A100,\"FALSE \",\" TRUE\",FALSE,#NUM!,\"FALSE\",\"0\",#N/A))",
+      "expected": "array:3x4:[text:TRUE|text:TRUE|text:TRUE|text:TRUE|logical:true|logical:true|logical:true|logical:true|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "array:2x1:[text:TRUE|logical:true]",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00062-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"FALSE \"),F1:G1,K1:L1)",
+      "expected": "array:1x2:[error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00064-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},FALSE),F1:G1,#REF!)",
+      "expected": "array:1x2:[error:Ref|error:Ref]",
+      "actual": "error:Ref",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00065-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2},\"FALSE\",\"x\"),F1:G1,CHOOSE({1,2;3,4;5,6},\"x\",A100,#REF!,\"\",FALSE,))",
+      "expected": "array:3x2:[text:x|number:0xc000000000000000|error:Value|error:Value|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00079-if-fresh-mixed-shape",
+      "formula": "=IF(#REF!,CHOOSE({1,2,3,4},FALSE,\"\",,#NUM!),)",
+      "expected": "error:Ref",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00080-if-fresh-mixed-shape",
+      "formula": "=IF(A1:B3,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#DIV/0!,A100,A101,FALSE,TRUE,\"1\",\"tRuE\",\"1\",#VALUE!,,TRUE,A102),CHOOSE({1;2;3;4},A103,\" TRUE\",TRUE,#DIV/0!))",
+      "expected": "array:4x4:[error:NA|error:Value|error:NA|error:NA|logical:true|text:1|error:NA|error:NA|logical:true|error:Value|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00084-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3;4,5,6},#NAME?,#DIV/0!,\"0\",A100,#NUM!,A101),CHOOSE({1;2},A102,TRUE),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A103,,A104,#NULL!,A105,TRUE,#NUM!,#NAME?,#NUM!,\"tRuE\",\"fAlSe\",A106))",
+      "expected": "array:3x4:[error:Name|error:Div0|error:Value|error:NA|logical:true|error:Num|logical:true|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00087-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\" TRUE\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},,\"TRUE\",#NUM!,#REF!,\"fAlSe\",#NAME?,A100,\"\",FALSE,#DIV/0!,A101,A102),CHOOSE({1},#N/A))",
+      "expected": "array:3x4:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00091-if-fresh-mixed-shape",
+      "formula": "=IF(A1:B1,CHOOSE({1;2;3;4},A100,TRUE,#NULL!,#REF!),CHOOSE({1,2},TRUE,))",
+      "expected": "array:4x2:[error:Null|number:0xc000000000000000|error:Null|logical:true|error:Null|error:Null|error:Null|error:Ref]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00092-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2;3;4},\" TRUE\",\"x\",,\"tRuE\"),A100,K1)",
+      "expected": "array:4x1:[error:Value|error:Value|error:Div0|number:0x3fd0000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00096-if-fresh-mixed-shape",
+      "formula": "=IF(A1,F1:G3,CHOOSE({1;2;3;4},,FALSE,\"TRUE\",\"\"))",
+      "expected": "error:Name",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00099-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},A100),CHOOSE({1,2;3,4;5,6},A101,\"0\",\"FALSE \",#N/A,,FALSE))",
+      "expected": "array:3x2:[number:0x0000000000000000|text:0|text:FALSE |error:NA|number:0x0000000000000000|logical:false]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00100-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2},\"tRuE\",),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#DIV/0!,#REF!,\" TRUE\",A100,\"0\",#NUM!,#NULL!,\"tRuE\",\"fAlSe\",FALSE,\"FALSE\",A101),K1:K2)",
+      "expected": "array:3x4:[error:Div0|error:NA|error:NA|error:NA|text:0|error:Null|error:NA|error:NA|text:fAlSe|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00104-if-fresh-mixed-shape",
+      "formula": "=IF(A1:B3,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"x\",\" TRUE\",TRUE,FALSE,,A100,#NUM!,\"x\",A101,A102,\"fAlSe\",A103),CHOOSE({1,2},FALSE,A104))",
+      "expected": "array:3x4:[logical:false|error:Value|error:NA|error:NA|logical:false|error:Name|error:NA|error:NA|number:0x0000000000000000|error:Null|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00105-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2},A100,\"x\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#NUM!,#VALUE!,\" TRUE\",\" TRUE\",#DIV/0!,\"tRuE\",#NAME?,#N/A,\"TRUE\",A101,#VALUE!,#NULL!),CHOOSE({1,2,3;4,5,6},\"\",,\"TRUE\",#REF!,\"\",))",
+      "expected": "array:3x4:[text:|error:Value|error:NA|error:NA|error:Ref|error:Value|error:NA|error:NA|error:NA|error:Value|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00106-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A100,A101,A102,\"fAlSe\",#DIV/0!,\"fAlSe\",#NUM!,A103,#NUM!,\"FALSE \",#VALUE!,),CHOOSE({1},TRUE),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A104,\"tRuE\",,\"FALSE \",\"fAlSe\",A105,#NUM!,TRUE,A106,#NAME?,A107,#N/A))",
+      "expected": "array:3x4:[number:0x0000000000000000|logical:true|number:0x0000000000000000|text:FALSE |error:Div0|number:0xc000000000000000|error:Num|logical:true|error:Num|error:Value|error:Value|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00107-if-fresh-mixed-shape",
+      "formula": "=IF(A1:B3,F1:G3,CHOOSE({1,2,3,4},\"TRUE\",\"FALSE \",,\"TRUE\"))",
+      "expected": "array:3x4:[error:Div0|error:Ref|error:NA|error:NA|error:Div0|error:Value|error:NA|error:NA|error:Value|error:Null|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00110-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"1\"),CHOOSE({1,2,3;4,5,6},#NULL!,#NAME?,A100,\"1\",\"\",#REF!))",
+      "expected": "array:2x3:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00111-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},TRUE),CHOOSE({1,2,3;4,5,6},#NUM!,\"FALSE \",\"\",A100,,#VALUE!),K1:M2)",
+      "expected": "array:2x3:[error:Num|text:FALSE |text:|number:0x3fd0000000000000|number:0x0000000000000000|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00114-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},FALSE),CHOOSE({1},A100),CHOOSE({1,2,3;4,5,6},\"FALSE\",A101,#NUM!,,A102,))",
+      "expected": "array:2x3:[text:FALSE|number:0xc000000000000000|error:Num|number:0x0000000000000000|number:0xc000000000000000|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00115-if-fresh-mixed-shape",
+      "formula": "=IF(A1,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},,#N/A,#NAME?,\"fAlSe\",#VALUE!,\"1\",#REF!,A100,#NAME?,,A101,A102),K1:N1)",
+      "expected": "error:Null",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00119-if-fresh-mixed-shape",
+      "formula": "=IF(\"TRUE\",F1:F2,CHOOSE({1,2,3,4},,\"\",#VALUE!,\"0\"))",
+      "expected": "array:2x1:[number:0x3fd0000000000000|text:0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00124-if-fresh-mixed-shape",
+      "formula": "=IF(A1:A2,A100,CHOOSE({1;2;3;4},\"0\",#NAME?,#DIV/0!,))",
+      "expected": "array:4x1:[number:0xc000000000000000|error:Num|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00126-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},#DIV/0!),CHOOSE({1;2;3;4},A100,,,\"FALSE\"),CHOOSE({1},\"1\"))",
+      "expected": "array:4x1:[error:Div0|error:Div0|error:Div0|error:Div0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00131-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2;3,4;5,6},TRUE,FALSE,\"fAlSe\",TRUE,\" TRUE\",\"FALSE \"),CHOOSE({1,2;3,4;5,6},#VALUE!,#NULL!,TRUE,\"0\",,#NUM!),K1:K2)",
+      "expected": "array:3x2:[error:Value|text:1|text:TRUE|text:0|error:Value|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00136-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3;4,5,6},\"\",\"0\",\"FALSE \",\"0\",#NUM!,\" TRUE\"),CHOOSE({1;2;3;4},\"FALSE \",A100,\" TRUE\",#VALUE!),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"0\",,#DIV/0!,\"\",A101,#NULL!,\"FALSE\",\"x\",\"FALSE\",\"TRUE\",\"0\",\"fAlSe\"))",
+      "expected": "array:4x4:[error:Value|error:Value|error:Value|error:NA|error:Value|error:Num|error:Value|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00142-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2;3;4},\"TRUE\",#NAME?,FALSE,\"1\"),F1:F4,CHOOSE({1;2},\"tRuE\",))",
+      "expected": "array:4x1:[text: TRUE|error:Name|error:NA|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00143-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},),F1:F2)",
+      "expected": "array:2x1:[logical:false|logical:false]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00144-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},FALSE,\"x\",#REF!,\"tRuE\",A100,\"FALSE \",\"fAlSe\",FALSE,A101,A102,#NUM!,\"fAlSe\"),CHOOSE({1},\"\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#NUM!,\" TRUE\",A103,\"fAlSe\",A104,A105,\"FALSE \",,FALSE,\"x\",#NULL!,\"FALSE\"))",
+      "expected": "array:3x4:[error:Num|error:Value|error:Ref|text:|number:0xc000000000000000|error:Value|text:FALSE |number:0x0000000000000000|text:|text:|error:Num|text:FALSE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00146-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},#NULL!),F1:I3,K1)",
+      "expected": "array:3x4:[error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null]",
+      "actual": "error:Null",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00148-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},#DIV/0!),CHOOSE({1,2},\"x\",#N/A),CHOOSE({1;2;3;4},A100,,\"fAlSe\",\"0\"))",
+      "expected": "array:4x2:[error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0|error:Div0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00149-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3;4,5,6},#NULL!,\"FALSE\",#NAME?,\"1\",TRUE,\"1\"),CHOOSE({1,2;3,4;5,6},#REF!,,#NULL!,\"FALSE\",#VALUE!,\"fAlSe\"),K1:M2)",
+      "expected": "array:3x3:[error:Null|error:Value|error:Name|error:Value|text:FALSE|error:Value|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00151-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},\"FALSE \"),F1:G3,K1:L1)",
+      "expected": "array:3x2:[error:Value|error:Value|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00162-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4},TRUE,\"fAlSe\",\"\",#NAME?),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#DIV/0!,,\"1\",#NAME?,A100,A101,A102,A103,\"fAlSe\",#NAME?,\"TRUE\",#VALUE!),K1:N1)",
+      "expected": "array:3x4:[error:Div0|text:|error:Value|error:Name|number:0x3fd0000000000000|text:|error:Value|error:Name|text:fAlSe|text:|error:Value|error:Name]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00163-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2;3,4;5,6},A100,A101,#NAME?,\"TRUE\",TRUE,#N/A),CHOOSE({1,2,3;4,5,6},\"tRuE\",\"FALSE\",\"\",\"tRuE\",TRUE,),\"FALSE\")",
+      "expected": "array:3x3:[text:tRuE|text:FALSE|error:NA|error:Name|logical:true|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00164-if-fresh-mixed-shape",
+      "formula": "=IF(A1,CHOOSE({1;2;3;4},#VALUE!,\"tRuE\",\"0\",\"\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"FALSE\",,\"\",#REF!,#N/A,#REF!,#DIV/0!,,\"\",A100,A101,#NAME?))",
+      "expected": "error:Ref",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00168-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2;3;4},,A100,\"fAlSe\",FALSE),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"\",\"\",\"fAlSe\",#REF!,#VALUE!,#DIV/0!,\"TRUE\",A101,\"TRUE\",\"1\",#VALUE!,A102),K1)",
+      "expected": "array:4x4:[error:NA|error:NA|error:NA|error:NA|error:Value|error:Div0|text:TRUE|number:0x4020000000000000|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00169-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1;2;3;4},\"FALSE \",\"fAlSe\",#NULL!,\" TRUE\"),CHOOSE({1,2,3,4},#REF!,,#VALUE!,A100),CHOOSE({1,2;3,4;5,6},\"1\",A101,A102,A103,\"tRuE\",\"fAlSe\"))",
+      "expected": "array:4x4:[error:Value|error:Value|error:Value|error:Value|number:0x4020000000000000|number:0xc000000000000000|error:NA|error:NA|error:Null|error:Null|error:Null|error:Null|error:Value|error:Value|error:Value|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00178-if-fresh-mixed-shape",
+      "formula": "=IF(A1:A2,F1,CHOOSE({1,2;3,4;5,6},A100,\"x\",A101,\" TRUE\",,TRUE))",
+      "expected": "array:3x2:[number:0x3fd0000000000000|number:0x3fd0000000000000|error:Name|error:Name|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00181-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3;4,5,6},\" TRUE\",\"tRuE\",,\"fAlSe\",\"x\",A100),\"fAlSe\",K1:N3)",
+      "expected": "array:3x4:[error:Value|text:fAlSe|text:|error:NA|error:NA|error:Value|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00185-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4},#N/A,#VALUE!,\"1\",TRUE),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},,\"tRuE\",\"FALSE \",\"FALSE\",\"tRuE\",\"tRuE\",\" TRUE\",\"tRuE\",\"fAlSe\",\"1\",\" TRUE\",\"FALSE \"),K1:K1)",
+      "expected": "array:3x4:[error:NA|error:Value|error:Value|text:FALSE|error:NA|error:Value|error:Value|text:tRuE|error:NA|error:Value|error:Value|text:FALSE ]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00188-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},#NULL!),CHOOSE({1,2,3;4,5,6},\" TRUE\",\"tRuE\",#REF!,A100,A101,#REF!),CHOOSE({1,2,3,4},\"\",\" TRUE\",FALSE,\"FALSE\"))",
+      "expected": "array:2x4:[error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null|error:Null]",
+      "actual": "error:Null",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00195-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2;3,4;5,6},\"fAlSe\",\"\",A100,\"x\",A101,\"FALSE \"),CHOOSE({1,2;3,4;5,6},#NULL!,\" TRUE\",TRUE,#NULL!,\"x\",\"FALSE\"),CHOOSE({1,2,3;4,5,6},FALSE,#REF!,\"0\",,\"tRuE\",\"TRUE\"))",
+      "expected": "array:3x3:[logical:false|error:Value|error:NA|number:0x0000000000000000|error:Value|error:NA|text:x|error:Value|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00200-if-fresh-mixed-shape",
+      "formula": "=IF(A1:B3,F1,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"TRUE\",,A100,A101,#VALUE!,#DIV/0!,\"0\",\"x\",A102,A103,\"fAlSe\",\"fAlSe\"))",
+      "expected": "array:3x4:[error:Num|number:0x0000000000000000|error:NA|error:NA|error:Value|error:Value|error:NA|error:NA|text:0|text:0|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00205-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},#REF!),CHOOSE({1,2,3;4,5,6},A100,#VALUE!,#N/A,\"0\",\"FALSE\",A101),CHOOSE({1,2,3,4},,\"\",\"1\",A102))",
+      "expected": "array:2x4:[error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00211-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3;4,5,6},\" TRUE\",A100,\"fAlSe\",\"x\",\"FALSE \",),F1:F2,K1:K4)",
+      "expected": "array:4x3:[error:Value|error:Div0|text:fAlSe|error:Value|error:Value|error:Value|error:NA|error:NA|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00213-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2},,A100),F1:F1,CHOOSE({1;2;3;4},\"TRUE\",\"0\",#REF!,TRUE))",
+      "expected": "array:4x2:[text:TRUE|text:TRUE|text:0|text:0|error:Ref|error:Ref|logical:true|logical:true]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00214-if-fresh-mixed-shape",
+      "formula": "=IF(A1:A1,CHOOSE({1,2,3,4},A100,,A101,#N/A),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A102,\" TRUE\",#NUM!,\"\",#VALUE!,A103,\"tRuE\",\"1\",#NAME?,\"tRuE\",\"FALSE \",\"FALSE\"))",
+      "expected": "error:Value",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00215-if-fresh-mixed-shape",
+      "formula": "=IF(A1:B3,CHOOSE({1,2,3,4},\"fAlSe\",\"tRuE\",#NAME?,),CHOOSE({1},\"x\"))",
+      "expected": "array:3x4:[error:Name|text:x|error:NA|error:NA|error:Value|text:x|error:NA|error:NA|text:x|text:tRuE|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00216-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"1\",#DIV/0!,,TRUE,,#REF!,#N/A,A100,#NAME?,\"TRUE\",\"FALSE\",\"fAlSe\"),CHOOSE({1},#NUM!),CHOOSE({1;2;3;4},\"1\",#NUM!,\"0\",#NAME?))",
+      "expected": "array:4x4:[error:Value|error:Div0|text:1|error:Num|error:Num|error:Ref|error:NA|error:Num|error:Name|error:Num|text:0|text:0|error:NA|error:NA|error:NA|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00219-if-fresh-mixed-shape",
+      "formula": "=IF(CHOOSE({1},#REF!),CHOOSE({1;2;3;4},TRUE,,#NUM!,\"tRuE\"),CHOOSE({1,2,3;4,5,6},\"fAlSe\",,A100,\"0\",\"x\",\"FALSE \"))",
+      "expected": "array:4x3:[error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref|error:Ref]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00227-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},#REF!,,\" TRUE\",\"FALSE \",\"0\",#REF!),\"FALSE\")",
+      "expected": "array:2x3:[text:FALSE|number:0x0000000000000000|text: TRUE|text:FALSE |text:0|text:FALSE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00231-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A1:A2,CHOOSE({1,2,3,4},,\"0\",,FALSE))",
+      "expected": "array:2x4:[text:1|text:1|text:1|text:1|number:0x0000000000000000|text:0|number:0x0000000000000000|logical:false]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00241-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2;3,4;5,6},#REF!,\"1\",\"1\",#DIV/0!,\"tRuE\",\"x\"),CHOOSE({1,2,3;4,5,6},\"tRuE\",#REF!,\"tRuE\",TRUE,,A100))",
+      "expected": "array:3x3:[text:tRuE|text:1|text:tRuE|text:1|number:0x0000000000000000|number:0x0000000000000000|text:tRuE|text:x|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00244-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},\"fAlSe\",,A100,\"TRUE\",A101,\"fAlSe\"),CHOOSE({1},A102))",
+      "expected": "array:2x3:[text:fAlSe|number:0x0000000000000000|number:0x0000000000000000|text:TRUE|number:0x0000000000000000|text:fAlSe]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00249-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2;3;4},#NULL!,A100,#NUM!,A101),CHOOSE({1;2},#VALUE!,))",
+      "expected": "array:4x1:[error:Value|number:0x4020000000000000|error:NA|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00255-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},,TRUE,A100,A101,#VALUE!,\"fAlSe\"),#VALUE!)",
+      "expected": "array:2x3:[number:0x0000000000000000|logical:true|number:0xc000000000000000|number:0x3fd0000000000000|error:Value|text:fAlSe]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00261-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},\"fAlSe\",TRUE,\"FALSE \",\"TRUE\",\" TRUE\",\"1\"),CHOOSE({1,2},A100,))",
+      "expected": "array:2x3:[text:fAlSe|logical:true|text:FALSE |text:TRUE|text: TRUE|text:1]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00263-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},\"1\"),CHOOSE({1,2;3,4;5,6},A100,#VALUE!,#DIV/0!,A101,\"0\",#NUM!))",
+      "expected": "array:3x2:[text:1|text:1|text:1|text:1|text:1|text:1]",
+      "actual": "text:1",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00271-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2},#N/A,),F1)",
+      "expected": "array:2x1:[text:1|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00273-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2;3;4},A100,\"1\",#DIV/0!,\" TRUE\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"x\",\"TRUE\",#NUM!,,A101,#VALUE!,\"tRuE\",#NAME?,\"1\",\"tRuE\",#NUM!,\"TRUE\"))",
+      "expected": "array:4x4:[number:0x4020000000000000|number:0x4020000000000000|number:0x4020000000000000|number:0x4020000000000000|text:1|text:1|text:1|text:1|text:1|text:tRuE|error:Num|text:TRUE|text: TRUE|text: TRUE|text: TRUE|text: TRUE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00276-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2;3,4;5,6},\"FALSE\",A100,\"0\",\"TRUE\",\"1\",),F1:I1)",
+      "expected": "array:3x4:[text:FALSE|number:0x3fd0000000000000|text:FALSE |number:0x3fd0000000000000|text:0|text:TRUE|text:FALSE |number:0x3fd0000000000000|text:1|number:0x0000000000000000|text:FALSE |number:0x3fd0000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00287-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#VALUE!,\"FALSE \",\"fAlSe\",\"\",#VALUE!,\"0\",\"FALSE\",\"tRuE\",\" TRUE\",,\"0\",#N/A),CHOOSE({1},A100))",
+      "expected": "array:3x4:[number:0x3fd0000000000000|text:FALSE |text:fAlSe|text:|number:0x3fd0000000000000|text:0|text:FALSE|text:tRuE|text: TRUE|number:0x0000000000000000|text:0|number:0x3fd0000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00289-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},A100),F1:G3)",
+      "expected": "array:3x2:[number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000]",
+      "actual": "number:0x3fd0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00294-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},\"FALSE\"),CHOOSE({1,2;3,4;5,6},#NAME?,\"fAlSe\",#NUM!,\" TRUE\",#NUM!,\" TRUE\"))",
+      "expected": "array:3x2:[text:FALSE|text:FALSE|text:FALSE|text:FALSE|text:FALSE|text:FALSE]",
+      "actual": "text:FALSE",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00299-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2},#NAME?,),CHOOSE({1,2},\"FALSE\",A100))",
+      "expected": "array:1x2:[text:FALSE|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00311-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2;3,4;5,6},A100,\"TRUE\",A101,#REF!,#DIV/0!,\"\"),CHOOSE({1,2;3,4;5,6},\"\",\" TRUE\",#DIV/0!,\"FALSE\",#REF!,))",
+      "expected": "array:3x2:[number:0x0000000000000000|text:TRUE|number:0x0000000000000000|text:FALSE|error:Ref|text:]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00316-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A1:A1,CHOOSE({1,2,3,4},FALSE,\"\",,\"\"))",
+      "expected": "array:1x4:[logical:false|text:|number:0x0000000000000000|text:]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00320-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},#DIV/0!,\"x\",,\"TRUE\",\"fAlSe\",A100),F1:G3)",
+      "expected": "array:3x3:[text:0|text:x|number:0x0000000000000000|text:TRUE|text:fAlSe|number:0x0000000000000000|text:fAlSe|text:FALSE|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00323-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A1:A1,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A100,\"\",TRUE,#N/A,,\"FALSE\",#REF!,\"0\",A101,\"\",A102,\"FALSE \"))",
+      "expected": "text:TRUE",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00325-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2;3;4},,TRUE,\"\",\"1\"),\"FALSE \")",
+      "expected": "array:4x1:[number:0x0000000000000000|logical:true|text:|text:1]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00334-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2},\"0\",A100),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"fAlSe\",\"FALSE \",,\"0\",\"TRUE\",#NULL!,A101,\"tRuE\",A102,A103,#N/A,#DIV/0!))",
+      "expected": "array:3x4:[text:0|text:0|text:0|text:0|number:0x4020000000000000|number:0x4020000000000000|number:0x4020000000000000|number:0x4020000000000000|number:0x0000000000000000|number:0xc000000000000000|error:NA|error:Div0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00338-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},#NUM!,\"\",#N/A,A100,#NUM!,),CHOOSE({1},#REF!))",
+      "expected": "array:2x3:[error:Ref|text:|error:Ref|number:0x0000000000000000|error:Ref|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00339-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},\"FALSE \"),F1:G1)",
+      "expected": "array:1x2:[text:FALSE |text:FALSE ]",
+      "actual": "text:FALSE ",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00345-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(#N/A,CHOOSE({1;2;3;4},,,A100,\" TRUE\"))",
+      "expected": "array:4x1:[number:0x0000000000000000|number:0x0000000000000000|number:0x4020000000000000|text: TRUE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00346-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#VALUE!,\"FALSE \",\"x\",\"0\",A100,\" TRUE\",\" TRUE\",#VALUE!,\"\",,\"FALSE\",\"\"),CHOOSE({1},#VALUE!))",
+      "expected": "array:3x4:[error:Value|text:FALSE |text:x|text:0|number:0x4020000000000000|text: TRUE|text: TRUE|error:Value|text:|number:0x0000000000000000|text:FALSE|text:]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00352-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},,\" TRUE\",\" TRUE\",A100,\"TRUE\",#NAME?),CHOOSE({1;2;3;4},#VALUE!,#NULL!,\"fAlSe\",A101))",
+      "expected": "array:4x3:[number:0x0000000000000000|text: TRUE|text: TRUE|number:0x0000000000000000|text:TRUE|error:Null|text:fAlSe|text:fAlSe|text:fAlSe|number:0xc000000000000000|number:0xc000000000000000|number:0xc000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00355-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2;3,4;5,6},#VALUE!,A100,,A101,\"FALSE\",\"fAlSe\"),F1:F2)",
+      "expected": "array:3x2:[text:x|number:0x0000000000000000|number:0x0000000000000000|number:0x4020000000000000|text:FALSE|text:fAlSe]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00356-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4},A100,A101,\"x\",),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A102,TRUE,A103,TRUE,#N/A,#NULL!,\"0\",#REF!,TRUE,\"FALSE\",#NAME?,\"0\"))",
+      "expected": "array:3x4:[number:0x4020000000000000|number:0x3fd0000000000000|text:x|number:0x0000000000000000|number:0x4020000000000000|number:0x3fd0000000000000|text:x|number:0x0000000000000000|number:0x4020000000000000|number:0x3fd0000000000000|text:x|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00358-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"fAlSe\",#REF!,#DIV/0!,\"FALSE\",#DIV/0!,A100,\"1\",A101,#NULL!,TRUE,,\"TRUE\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#DIV/0!,A102,\"tRuE\",\" TRUE\",#VALUE!,\"1\",\"fAlSe\",A103,\" TRUE\",A104,\"0\",\"fAlSe\"))",
+      "expected": "array:3x4:[text:fAlSe|number:0x4020000000000000|text:tRuE|text:FALSE|error:Value|number:0x3fd0000000000000|text:1|number:0x4020000000000000|text: TRUE|logical:true|number:0x0000000000000000|text:TRUE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00360-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A100,CHOOSE({1;2;3;4},FALSE,#DIV/0!,\"fAlSe\",))",
+      "expected": "number:0x4020000000000000",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00367-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2;3,4;5,6},#DIV/0!,A100,\"fAlSe\",A101,,#NUM!),CHOOSE({1,2},A102,A103))",
+      "expected": "array:3x2:[number:0x3fd0000000000000|number:0xc000000000000000|text:fAlSe|number:0x4020000000000000|number:0x0000000000000000|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00370-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},A100),F1:G3)",
+      "expected": "array:3x2:[number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000]",
+      "actual": "number:0x3fd0000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00383-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2;3,4;5,6},#NULL!,,\" TRUE\",\" TRUE\",\"\",\"0\"),CHOOSE({1,2},A100,\" TRUE\"))",
+      "expected": "array:3x2:[number:0xc000000000000000|number:0x0000000000000000|text: TRUE|text: TRUE|text:|text:0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00388-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2},,#VALUE!),F1:G3)",
+      "expected": "array:3x2:[number:0x0000000000000000|number:0x0000000000000000|error:Name|text:|number:0x4020000000000000|text:1]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00391-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A1:A2,CHOOSE({1;2;3;4},\" TRUE\",\"TRUE\",,\"x\"))",
+      "expected": "array:4x1:[text:TRUE|text:TRUE|number:0x0000000000000000|text:x]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00396-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3;4,5,6},A100,\"TRUE\",\"FALSE\",TRUE,\"x\",),CHOOSE({1},\"fAlSe\"))",
+      "expected": "array:2x3:[number:0x0000000000000000|text:TRUE|text:FALSE|logical:true|text:x|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00398-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4},,\"tRuE\",#VALUE!,\"1\"),F1:F2)",
+      "expected": "array:2x4:[number:0x0000000000000000|text:tRuE|text:1|text:1|number:0x0000000000000000|text:tRuE|text:FALSE|text:1]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00401-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2},\"tRuE\",A100),CHOOSE({1;2;3;4},A101,\"0\",,\"1\"))",
+      "expected": "array:4x2:[text:tRuE|number:0xc000000000000000|text:tRuE|number:0xc000000000000000|text:tRuE|number:0xc000000000000000|text:tRuE|number:0xc000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00404-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1;2},\"TRUE\",),CHOOSE({1,2,3;4,5,6},#N/A,\"FALSE \",,\"x\",A100,A101))",
+      "expected": "array:2x3:[text:TRUE|text:TRUE|text:TRUE|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00405-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4},#N/A,\"tRuE\",\"x\",),CHOOSE({1,2,3;4,5,6},TRUE,#NAME?,A100,\"TRUE\",A101,A102))",
+      "expected": "array:2x4:[logical:true|text:tRuE|text:x|number:0x0000000000000000|text:TRUE|text:tRuE|text:x|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00409-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A1:B1,CHOOSE({1,2,3,4},,A100,,#VALUE!))",
+      "expected": "array:1x4:[number:0x0000000000000000|number:0x4020000000000000|number:0x0000000000000000|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00417-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},\"1\"),F1:I3)",
+      "expected": "array:3x4:[text:1|text:1|text:1|text:1|text:1|text:1|text:1|text:1|text:1|text:1|text:1|text:1]",
+      "actual": "text:1",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00419-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(\"FALSE\",CHOOSE({1,2,3,4},#DIV/0!,#DIV/0!,#N/A,))",
+      "expected": "text:FALSE",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00426-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},,#N/A,\"x\",A100,#DIV/0!,A101,\" TRUE\",\"TRUE\",#VALUE!,#REF!,#NUM!,\"x\"),F1:H2)",
+      "expected": "array:3x4:[number:0x0000000000000000|text:|text:x|number:0x4020000000000000|logical:false|number:0xc000000000000000|text: TRUE|text:TRUE|error:NA|error:NA|error:NA|text:x]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00434-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(A1:D1,CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"\",\"0\",A100,\"x\",,\"FALSE \",#VALUE!,A101,\"0\",A102,\"1\",#DIV/0!))",
+      "expected": "array:3x4:[text:|logical:false|logical:true|text:x|number:0x0000000000000000|logical:false|logical:true|number:0x4020000000000000|text:0|logical:false|logical:true|error:Div0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00435-iferror-fresh-mixed-shape",
+      "formula": "=IFERROR(CHOOSE({1},\"tRuE\"),F1:H2)",
+      "expected": "array:2x3:[text:tRuE|text:tRuE|text:tRuE|text:tRuE|text:tRuE|text:tRuE]",
+      "actual": "text:tRuE",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00455-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\" TRUE\",\"\",TRUE,A100,\"FALSE \",A101,#N/A,\"FALSE \",\" TRUE\",#DIV/0!,\"x\",#VALUE!),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A102,A103,#N/A,,#NULL!,#DIV/0!,#VALUE!,A104,\"tRuE\",\"1\",#REF!,\"x\"))",
+      "expected": "array:3x4:[text: TRUE|text:|logical:true|number:0xc000000000000000|text:FALSE |number:0x0000000000000000|error:Value|text:FALSE |text: TRUE|error:Div0|text:x|error:Value]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00459-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2;3,4;5,6},\"TRUE\",#N/A,#VALUE!,#REF!,,\"0\"),CHOOSE({1,2,3;4,5,6},\"\",\"\",,A100,\"tRuE\",TRUE))",
+      "expected": "array:3x3:[text:TRUE|text:|number:0x0000000000000000|error:Value|error:Ref|logical:true|number:0x0000000000000000|text:0|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00463-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3;4,5,6},A100,,A101,\"tRuE\",\"fAlSe\",A102),CHOOSE({1;2;3;4},\"\",A103,#REF!,\"TRUE\"))",
+      "expected": "array:4x3:[number:0x3fd0000000000000|number:0x0000000000000000|number:0xc000000000000000|text:tRuE|text:fAlSe|number:0x0000000000000000|error:Ref|error:Ref|error:Ref|text:TRUE|text:TRUE|text:TRUE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00471-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3;4,5,6},\"fAlSe\",\"FALSE \",A100,\" TRUE\",\"x\",\"TRUE\"),CHOOSE({1,2,3,4},,\"0\",#NULL!,FALSE))",
+      "expected": "array:2x4:[text:fAlSe|text:FALSE |number:0x0000000000000000|logical:false|text: TRUE|text:x|text:TRUE|logical:false]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00475-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},#VALUE!),F1:I1)",
+      "expected": "array:1x4:[error:Value|error:Value|error:Value|error:Value]",
+      "actual": "error:Value",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00477-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3;4,5,6},#NUM!,\"fAlSe\",#NUM!,\"x\",A100,\"fAlSe\"),CHOOSE({1},))",
+      "expected": "array:2x3:[error:Num|text:fAlSe|error:Num|text:x|number:0xc000000000000000|text:fAlSe]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00483-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1;2},#DIV/0!,\"tRuE\"),CHOOSE({1;2},\"\",))",
+      "expected": "array:2x1:[error:Div0|text:tRuE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00499-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4},#NULL!,#NAME?,,\"\"),CHOOSE({1;2;3;4},A100,#DIV/0!,\"x\",\"x\"))",
+      "expected": "array:4x4:[error:Null|error:Name|number:0x0000000000000000|text:|error:Null|error:Name|number:0x0000000000000000|text:|error:Null|error:Name|number:0x0000000000000000|text:|error:Null|error:Name|number:0x0000000000000000|text:]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00500-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1;2;3;4},,\"FALSE \",#NULL!,\" TRUE\"),CHOOSE({1,2;3,4;5,6},\"\",\"fAlSe\",TRUE,\"0\",A100,\"1\"))",
+      "expected": "array:4x2:[number:0x0000000000000000|number:0x0000000000000000|text:FALSE |text:FALSE |error:Null|error:Null|text: TRUE|text: TRUE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00508-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3;4,5,6},\" TRUE\",\"1\",A100,#DIV/0!,\"fAlSe\",\"tRuE\"),CHOOSE({1;2},A101,))",
+      "expected": "array:2x3:[text: TRUE|text:1|number:0x3fd0000000000000|error:Div0|text:fAlSe|text:tRuE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00510-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1;2;3;4},A100,#N/A,\"FALSE\",\"\"),CHOOSE({1,2,3,4},,\"\",\"FALSE\",\"0\"))",
+      "expected": "array:4x4:[number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|number:0x0000000000000000|text:|text:FALSE|text:0|text:FALSE|text:FALSE|text:FALSE|text:FALSE|text:|text:|text:|text:]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00513-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1;2},#NAME?,\"FALSE \"),CHOOSE({1,2,3,4},#REF!,,\"x\",\"TRUE\"))",
+      "expected": "array:2x4:[error:Name|error:Name|error:Name|error:Name|text:FALSE |text:FALSE |text:FALSE |text:FALSE ]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00527-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1:B3,CHOOSE({1,2;3,4;5,6},\"\",A100,\"\",A101,TRUE,))",
+      "expected": "array:3x2:[error:Value|text: TRUE|error:Null|text:x|text:0|number:0x3fd0000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00531-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},#NAME?),F1:G3)",
+      "expected": "array:3x2:[error:Name|error:Name|error:Name|error:Name|error:Name|error:Name]",
+      "actual": "error:Name",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00536-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1:D1,CHOOSE({1,2,3;4,5,6},#N/A,#NAME?,,#DIV/0!,A100,#NULL!))",
+      "expected": "array:2x4:[text:|text:1|text:|number:0x0000000000000000|text:|text:1|text:|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00537-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2},#NULL!,\" TRUE\"),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"tRuE\",\"FALSE\",#VALUE!,\"FALSE \",\"fAlSe\",#VALUE!,A100,\"\",#NULL!,\" TRUE\",\"x\",))",
+      "expected": "array:3x4:[error:Null|text: TRUE|error:Value|text:FALSE |error:Null|text: TRUE|number:0xc000000000000000|text:|error:Null|text: TRUE|text:x|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00541-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},#NULL!,\"fAlSe\",FALSE,#NUM!,A100,\"tRuE\",#NULL!,#REF!,FALSE,A101,\"FALSE \",),CHOOSE({1,2;3,4;5,6},#REF!,A102,#DIV/0!,A103,FALSE,\"tRuE\"))",
+      "expected": "array:3x4:[error:Null|text:fAlSe|logical:false|error:Num|number:0xc000000000000000|text:tRuE|error:Null|error:Ref|logical:false|number:0x0000000000000000|text:FALSE |number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00543-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},\"0\"),F1:H2)",
+      "expected": "array:2x3:[text:0|text:0|text:0|text:0|text:0|text:0]",
+      "actual": "text:0",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00544-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4},\" TRUE\",FALSE,#REF!,A100),CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A101,#VALUE!,FALSE,\"1\",,\"FALSE\",,FALSE,\"TRUE\",FALSE,FALSE,))",
+      "expected": "array:3x4:[text: TRUE|logical:false|error:Ref|number:0x3fd0000000000000|text: TRUE|logical:false|error:Ref|number:0x3fd0000000000000|text: TRUE|logical:false|error:Ref|number:0x3fd0000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00554-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A100,CHOOSE({1,2;3,4;5,6},#DIV/0!,\"FALSE\",#NAME?,\"x\",\"TRUE\",))",
+      "expected": "number:0xc000000000000000",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00556-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"0\",#N/A,\" TRUE\",#N/A,,\"FALSE \",A100,#NULL!,#NULL!,FALSE,#N/A,\"tRuE\"),CHOOSE({1;2},#VALUE!,#REF!))",
+      "expected": "array:3x4:[text:0|error:Value|text: TRUE|error:Value|number:0x0000000000000000|text:FALSE |number:0x0000000000000000|error:Null|error:Null|logical:false|error:NA|text:tRuE]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00562-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(\"fAlSe\",CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A100,\"x\",\"0\",\"\",#DIV/0!,\"FALSE\",\"fAlSe\",,\" TRUE\",#N/A,#DIV/0!,\"TRUE\"))",
+      "expected": "text:fAlSe",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00564-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1:B1,CHOOSE({1,2;3,4;5,6},\"1\",\"x\",FALSE,#NAME?,\"FALSE\",))",
+      "expected": "array:3x2:[error:Null|logical:true|error:Null|logical:true|error:Null|logical:true]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00566-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1:A4,CHOOSE({1,2,3,4},,#NAME?,#N/A,#REF!))",
+      "expected": "array:4x4:[text:tRuE|text:tRuE|text:tRuE|text:tRuE|error:Ref|error:Ref|error:Ref|error:Ref|error:Name|error:Name|error:Name|error:Name|text:FALSE |text:FALSE |text:FALSE |text:FALSE ]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00568-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1:A1,CHOOSE({1;2},,FALSE))",
+      "expected": "error:Name",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00573-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1:A2,CHOOSE({1,2,3;4,5,6},\"\",\" TRUE\",A100,,A101,A102))",
+      "expected": "array:2x3:[number:0x3fd0000000000000|number:0x3fd0000000000000|number:0x3fd0000000000000|error:Num|error:Num|error:Num]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00574-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4},TRUE,\"tRuE\",\"TRUE\",),#NULL!)",
+      "expected": "array:1x4:[logical:true|text:tRuE|text:TRUE|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00575-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},,\"tRuE\",\"1\",#NUM!,\"FALSE \",#DIV/0!,\"fAlSe\",\"FALSE\",\"0\",#REF!,,\"1\"),CHOOSE({1,2,3,4},\"x\",#NULL!,#DIV/0!,\"TRUE\"))",
+      "expected": "array:3x4:[number:0x0000000000000000|text:tRuE|text:1|error:Num|text:FALSE |error:Div0|text:fAlSe|text:FALSE|text:0|error:Ref|number:0x0000000000000000|text:1]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00576-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},A100),F1:F4)",
+      "expected": "array:4x1:[number:0xc000000000000000|number:0xc000000000000000|number:0xc000000000000000|number:0xc000000000000000]",
+      "actual": "number:0xc000000000000000",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00585-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},\"x\"),F1:G1)",
+      "expected": "array:1x2:[text:x|text:x]",
+      "actual": "text:x",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00587-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3;4,5,6},#NULL!,\"FALSE \",\"0\",\"x\",A100,),#VALUE!)",
+      "expected": "array:2x3:[error:Null|text:FALSE |text:0|text:x|number:0x0000000000000000|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00599-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(A1,CHOOSE({1,2;3,4;5,6},\"fAlSe\",#DIV/0!,,\"0\",\"1\",#NULL!))",
+      "expected": "error:Value",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00605-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},FALSE),CHOOSE({1,2;3,4;5,6},A100,\"\",#N/A,\"0\",\"TRUE\",A101))",
+      "expected": "array:3x2:[logical:false|logical:false|logical:false|logical:false|logical:false|logical:false]",
+      "actual": "logical:false",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00620-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2;3,4;5,6},\"1\",#NAME?,\"TRUE\",A100,\"0\",),F1:I1)",
+      "expected": "array:3x4:[text:1|error:Name|text:1|error:Div0|text:TRUE|number:0xc000000000000000|text:1|error:Div0|text:0|number:0x0000000000000000|text:1|error:Div0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00622-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4},#N/A,#NAME?,,A100),F1:G1)",
+      "expected": "array:1x4:[error:Div0|error:Name|number:0x0000000000000000|number:0xc000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00624-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1},\"tRuE\"),F1:H2)",
+      "expected": "array:2x3:[text:tRuE|text:tRuE|text:tRuE|text:tRuE|text:tRuE|text:tRuE]",
+      "actual": "text:tRuE",
+      "excel_execution": "ok",
+      "local_execution": "ok"
+    },
+    {
+      "case_id": "w111typed-00631-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2;3,4;5,6},FALSE,A100,\"FALSE \",\"fAlSe\",\"FALSE \",),CHOOSE({1,2,3;4,5,6},\"\",A101,#NAME?,#NUM!,,#VALUE!))",
+      "expected": "array:3x3:[logical:false|number:0x0000000000000000|error:Name|text:FALSE |text:fAlSe|error:Value|text:FALSE |number:0x0000000000000000|error:NA]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00635-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3;4,5,6},\"tRuE\",#VALUE!,TRUE,,#VALUE!,A100),F1:F4)",
+      "expected": "array:4x3:[text:tRuE|error:Value|logical:true|number:0x0000000000000000|error:Value|number:0x3fd0000000000000|text:1|text:1|text:1|error:Null|error:Null|error:Null]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00637-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},A100,A101,,\"FALSE\",#NULL!,\"x\",FALSE,TRUE,\"fAlSe\",A102,\"FALSE\",#NULL!),CHOOSE({1,2,3,4},A103,#N/A,A104,\"0\"))",
+      "expected": "array:3x4:[number:0x3fd0000000000000|number:0x4020000000000000|number:0x0000000000000000|text:FALSE|error:Null|text:x|logical:false|logical:true|text:fAlSe|number:0xc000000000000000|text:FALSE|error:Null]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00639-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1;2;3;4},#DIV/0!,,A100,#NUM!),F1:F2)",
+      "expected": "array:4x1:[error:Div0|number:0x0000000000000000|number:0x0000000000000000|error:Num]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00647-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"FALSE\",\" TRUE\",,TRUE,FALSE,\"\",\"fAlSe\",FALSE,A100,\" TRUE\",\" TRUE\",#NULL!),CHOOSE({1,2},\"tRuE\",A101))",
+      "expected": "array:3x4:[text:FALSE|text: TRUE|number:0x0000000000000000|logical:true|logical:false|text:|text:fAlSe|logical:false|number:0x0000000000000000|text: TRUE|text: TRUE|error:Null]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00648-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4},#N/A,FALSE,FALSE,),F1:G3)",
+      "expected": "array:3x4:[error:Num|logical:false|logical:false|number:0x0000000000000000|text:tRuE|logical:false|logical:false|number:0x0000000000000000|text: TRUE|logical:false|logical:false|number:0x0000000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00655-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4},\"TRUE\",#VALUE!,,A100),CHOOSE({1,2,3,4},TRUE,\"0\",\"FALSE\",TRUE))",
+      "expected": "array:1x4:[text:TRUE|error:Value|number:0x0000000000000000|number:0x4020000000000000]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00657-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2,3,4;5,6,7,8;9,10,11,12},\"FALSE\",#REF!,\"0\",A100,,A101,\"TRUE\",#NUM!,#NULL!,#REF!,A102,\"0\"),F1:F2)",
+      "expected": "array:3x4:[text:FALSE|error:Ref|text:0|number:0xc000000000000000|number:0x0000000000000000|number:0x4020000000000000|text:TRUE|error:Num|error:Null|error:Ref|number:0x3fd0000000000000|text:0]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    },
+    {
+      "case_id": "w111typed-00658-ifna-fresh-mixed-shape",
+      "formula": "=IFNA(CHOOSE({1,2;3,4;5,6},,\"tRuE\",TRUE,#REF!,#NUM!,\"\"),A100)",
+      "expected": "array:3x2:[number:0x0000000000000000|text:tRuE|logical:true|error:Ref|error:Num|text:]",
+      "actual": "harness_error:missing_arg is not valid inside array literals",
+      "excel_execution": "ok",
+      "local_execution": "local_case_materialization_error"
+    }
+  ]
+}

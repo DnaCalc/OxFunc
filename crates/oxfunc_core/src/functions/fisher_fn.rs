@@ -31,7 +31,11 @@ pub fn fisher_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     // 0.5*LN((1+x)/(1-x)) on 33/33 signed rows including tiny and near-1.
     // FISHER is not ATANH (21/33): ATANH keeps a cubic small-x body.
     // Split LN(1+x)-LN(1-x) is not the graph (10/33).
-    Ok(0.5 * crate::excel_numeric::excel_log((1.0 + x) / (1.0 - x)))
+    // W111's small-input neighbors distinguish all three arithmetic stores.
+    let numerator = crate::excel_numeric::excel_x87_add(1.0, x);
+    let denominator = crate::excel_numeric::excel_x87_sub(1.0, x);
+    let ratio = crate::excel_numeric::excel_x87_div(numerator, denominator);
+    Ok(0.5 * crate::excel_numeric::excel_log(ratio))
 }
 
 pub fn eval_fisher_surface(

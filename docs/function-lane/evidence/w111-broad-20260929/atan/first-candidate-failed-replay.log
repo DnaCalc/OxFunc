@@ -1,0 +1,26 @@
+   Compiling oxfunc_core v0.1.0 (C:\Work\DnaCalc\OxFunc\crates\oxfunc_core)
+   Compiling oxfml_core v0.1.0 (C:\Work\DnaCalc\OxFml\crates\oxfml_core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.55s
+     Running tests\w111_atan_live_replay.rs (target\debug\deps\w111_atan_live_replay-de79beed9441dd24.exe)
+
+running 2 tests
+test atan_live_discovery_matches_every_retained_bit ... ok
+test atan_independent_heldout_matches_every_retained_bit ... FAILED
+
+failures:
+
+---- atan_independent_heldout_matches_every_retained_bit stdout ----
+
+thread 'atan_independent_heldout_matches_every_retained_bit' (29028) panicked at crates\oxfunc_core\tests\w111_atan_live_replay.rs:27:5:
+2 / 29573 mismatches:
+"w111atan-heldout-20468" args=["0xc0000d685e592174"] actual=0xbff1bc3aef431d29 expected="0xbff1bc3aef431d2a"
+"w111atan-heldout-22881" args=["0xc0001dc1079c3c90"] actual=0xbff1c2b6c60d2616 expected="0xbff1c2b6c60d2617"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    atan_independent_heldout_matches_every_retained_bit
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
+
+error: test failed, to rerun pass `-p oxfunc_core --test w111_atan_live_replay`

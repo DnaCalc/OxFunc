@@ -5,9 +5,9 @@ pub const SQRT_2PI: f64 = 2.506_628_274_631_000_7;
 /// these bits).
 const INV_SQRT_2PI: f64 = f64::from_bits(0x3fd9884533d43651);
 
-/// Worksheet `PHI` — bit-exact to 64-bit Excel on `x86_64` (W109, unique
-/// surviving candidate; 723/725 discovery+held-out rows plus the
-/// subnormal-flush band, max ULP 0 after the flush rule):
+/// Worksheet `PHI` numerical graph observed on the reference Excel host.
+/// W111 retains a fresh 9,130-row exact numerical replay; surface overflow
+/// admission and contextual coercion remain separate obligations.
 ///
 /// ```text
 /// sq  = RN53(RN64(x·x))            (x87 double-rounded square)
@@ -29,9 +29,7 @@ pub fn erf_approx(x: f64) -> f64 {
     libm::erf(x)
 }
 
-/// Stored GAUSS/NORMSDIST argument `z = |x| * RN(1/√2)`.
-/// Live Excel 16.0 b20228: native multiply matches the published wrapper;
-/// divide-by-√2 is refuted (`GAUSS(1)` bits).
+/// Binary64 reciprocal-square-root constant used by the normal wrappers.
 pub const FRAC_1_SQRT_2_BITS: u64 = 0x3fe6a09e667f3bcd;
 
 /// Inclusive tiny-direct GAUSS predicate: `abs(x) <= 1e-15` is the odd
@@ -42,6 +40,9 @@ pub const GAUSS_TINY_MAX_BITS: u64 = 0x3cd203af9ee75616;
 /// reproductions. `g = 1+h` is formed in the tiny body.
 pub const GAM1_HALF_H_BITS: u64 = 0x3fc06eba8214db6b;
 
+/// Native-multiply stored-z route for the distinct tiny GAUSS branch.
+/// W111 independently distinguishes the ordinary normal-CDF wrapper's staged
+/// RN64 multiply followed by a binary64 store; that wrapper does not call this.
 pub fn stored_normal_z(x: f64) -> f64 {
     x.abs() * f64::from_bits(FRAC_1_SQRT_2_BITS)
 }

@@ -1,0 +1,31 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "contextual_numeric_text",
+    "numeric_primitive_platform_alignment",
+    "HO_FN_030_receiving_acknowledgment"
+  ],
+  "serialized_run": "smart-fuzzer\\runs\\w111-aggregate-origin-serial-typed-20260929",
+  "provisional_run": "smart-fuzzer\\runs\\w111-aggregate-origin-heldout-typed-20260929",
+  "rows": 2190,
+  "by_function": {
+    "MEDIAN": 730,
+    "HARMEAN": 730,
+    "DEVSQ": 730
+  },
+  "exact_by_function": {
+    "MEDIAN": 730,
+    "HARMEAN": 730,
+    "DEVSQ": 730
+  },
+  "serial_vs_provisional_observable_differences": [],
+  "nonexecuted": [],
+  "local_misses": [],
+  "frozen_source_count": 11,
+  "changed_frozen_sources": [],
+  "counted_independent_observations": 2190,
+  "repetition_policy": "Only serialized observations count. Provisional overlap capture remains retained and is compared, not added to evidence totals."
+}

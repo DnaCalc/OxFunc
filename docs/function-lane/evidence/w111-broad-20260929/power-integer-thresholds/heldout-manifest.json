@@ -1,0 +1,12 @@
+{
+  "generator": "gen_power_integer_thresholds_heldout.py",
+  "seed": 2026092948,
+  "selection": "fresh mathematical width and near-one controls plus stable branch controls",
+  "batches": [
+    {
+      "function": "POWER",
+      "path": "batch-power.json",
+      "rows": 2978
+    }
+  ]
+}

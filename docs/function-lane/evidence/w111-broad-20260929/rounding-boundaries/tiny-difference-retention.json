@@ -1,0 +1,11 @@
+{
+  "source_sha256": {
+    "smart-fuzzer/runs/w111-roundup-tiny-difference-20260929/answers-roundup.json": "10223550ac3951050b40bcd5f29ed69cad051bddea016d87101799fb26b6bde2",
+    "smart-fuzzer/runs/w111-roundup-tiny-difference-20260929/answers-rounddown.json": "fe7f93462e3b3cba3e94f52e246484947b2bdab7abc3f08650291624587795e1"
+  },
+  "phase": "discovery",
+  "baseline_UP_misses": 33,
+  "normal_subtraction_hypothesis_misses": 275,
+  "source_subtraction_hypothesis_misses": 251,
+  "production_arithmetic_unchanged": true
+}

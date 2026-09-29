@@ -1,0 +1,11 @@
+{
+  "seed": 202609291603,
+  "case_count": 3226,
+  "new_random_normal_decimal_strings": 1200,
+  "phase": "before_independent_oracle_capture",
+  "input_sha256": "025d32ec120fb062ddb7495340ee71e607b819d1886006b035c4cd495cc82086",
+  "source_sha256": {
+    "crates/oxfunc_core/src/coercion.rs": "31d7a6e353a877a1e3a19787b533b20370efdb900980fcad29a2fb3cdae8dcd2",
+    "C:\\Work\\DnaCalc\\OxFunc\\smart-fuzzer\\tools\\w111\\gen_numeric_text_precision_heldout_20260929.py": "5eb64b3170a8e5f840066527b8cfe34989046e5806df4ca1bd588d57ab63b8e4"
+  }
+}

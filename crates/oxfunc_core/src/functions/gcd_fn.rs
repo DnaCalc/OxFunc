@@ -1,11 +1,9 @@
-use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
+use crate::coercion::CoercionError;
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::expand_aggregate_arg;
-use crate::functions::factorial_common::trunc_nonnegative;
-use crate::functions::gcd_lcm_common::gcd_int;
+use crate::functions::gcd_lcm_common::{collect_integer_groups, gcd_int};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -34,11 +32,6 @@ pub enum GcdEvalError {
     Domain(WorksheetErrorCode),
 }
 
-fn coerce_calc_to_nonnegative_int(arg: &CalcValue) -> Result<i64, GcdEvalError> {
-    let n = coerce_calc_scalar_to_number(arg).map_err(GcdEvalError::Coercion)?;
-    trunc_nonnegative(n).map_err(GcdEvalError::Domain)
-}
-
 pub fn gcd_kernel(items: &[i64]) -> f64 {
     items.iter().copied().fold(0, gcd_int) as f64
 }
@@ -55,13 +48,11 @@ pub fn eval_gcd_surface(
             actual: argc,
         });
     }
-    let mut items = Vec::new();
-    for arg in args {
-        let expanded = expand_aggregate_arg(arg, resolver).map_err(GcdEvalError::Coercion)?;
-        for item in expanded {
-            items.push(coerce_calc_to_nonnegative_int(&item.0)?);
-        }
-    }
+    let items = collect_integer_groups(args, resolver)
+        .map_err(GcdEvalError::Coercion)?
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>();
     Ok(CalcValue::number(gcd_kernel(&items)))
 }
 

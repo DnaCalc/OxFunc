@@ -1,0 +1,22 @@
+{
+  "status": "scope_partial",
+  "multi_cell_reference_admission": "unverified",
+  "no_cross_function_semantic_inference": true,
+  "banks": [
+    {
+      "source": "smart-fuzzer\\runs\\w111-quotient-typed-heldout-20260929\\cases\\cases.jsonl",
+      "rows": 30,
+      "multi_cell_reference_case_ids": []
+    },
+    {
+      "source": "smart-fuzzer\\runs\\w111-quotient-typed-refinement-20260929\\cases\\cases.jsonl",
+      "rows": 186,
+      "multi_cell_reference_case_ids": []
+    },
+    {
+      "source": "smart-fuzzer\\runs\\w111-quotient-typed-validation-20260929\\cases\\cases.jsonl",
+      "rows": 288,
+      "multi_cell_reference_case_ids": []
+    }
+  ]
+}

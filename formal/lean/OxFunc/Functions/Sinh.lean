@@ -1,3 +1,4 @@
+import OxFunc.HyperbolicComposition
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 
@@ -27,11 +28,14 @@ def evalSinhSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Str
 
 theorem evalSinh_numeric_text_admitted :
     evalSinhSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalSinhSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalSinhSurfaceClass, coerceToNumber, parsed]
 
 theorem sinhMeta_profiles :
     sinhMeta.kernelSignatureClass = KernelSignatureClass.numToNum
     ∧ sinhMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter := by
   simp [sinhMeta]
+
+abbrev sinhCompositionBinding := OxFunc.HyperbolicComposition.sinh
 
 end OxFunc.Functions

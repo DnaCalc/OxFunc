@@ -1,0 +1,14 @@
+{
+  "generator": "gen_power_integer_thresholds.py",
+  "seed": 2026092947,
+  "bases": 49,
+  "magnitudes": 139,
+  "selection": "signed32/unsigned32 boundaries, exact neighboring floats, independent integer controls",
+  "batches": [
+    {
+      "function": "POWER",
+      "path": "batch-power.json",
+      "rows": 13622
+    }
+  ]
+}

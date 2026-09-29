@@ -47,7 +47,8 @@ def cosPublicationRoute (belowTinyGuard evenQuadrant : Bool) : CosPublicationRou
 
 theorem evalCos_numeric_text_admitted :
     evalCosSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalCosSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalCosSurfaceClass, coerceToNumber, parsed]
 
 theorem cosMeta_profiles :
     cosMeta.kernelSignatureClass = KernelSignatureClass.numToNum

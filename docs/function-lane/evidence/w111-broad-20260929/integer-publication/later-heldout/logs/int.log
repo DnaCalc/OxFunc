@@ -1,0 +1,2 @@
+answered 31210 probes for INT (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-hyperbolic-heldout-20260929\answers\answers-int.json
+BULK throughput: 31210 live probes | compute 3.34s (9352.9/s) | +excel startup 1.75s (6141/s incl startup) | total wall 6.54s

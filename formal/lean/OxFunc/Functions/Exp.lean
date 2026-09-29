@@ -27,7 +27,8 @@ def evalExpSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalExp_numeric_text_admitted :
     evalExpSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalExpSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalExpSurfaceClass, coerceToNumber, parsed]
 
 theorem expMeta_profiles :
     expMeta.kernelSignatureClass = KernelSignatureClass.numToNum

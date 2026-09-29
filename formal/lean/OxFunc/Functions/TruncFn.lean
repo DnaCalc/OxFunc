@@ -1,6 +1,8 @@
 import OxFunc.FunctionCore
+import OxFunc.DecimalRounding
 namespace OxFunc.Functions
 open OxFunc
+abbrev truncExecutable := DecimalRounding.eval .down
 def truncMeta : FunctionMeta := {
   functionId := "FUNC.TRUNC", arity := { min := 1, max := 2 }, determinism := .deterministic, volatility := .nonvolatile,
   hostInteraction := .none, threadSafety := .safePure, argPreparationProfile := .valuesOnlyPreAdapter,

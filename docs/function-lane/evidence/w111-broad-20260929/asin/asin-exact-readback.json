@@ -1,0 +1,347 @@
+{
+  "function": "ASIN",
+  "witnesses": [
+    {
+      "id": "asin-isolation-ASIN-000",
+      "args": [
+        "0x3fe52a3a8df2ead8"
+      ],
+      "expected_bits": "0x3fe720476e0c1abe"
+    },
+    {
+      "id": "asin-isolation-ASIN-001",
+      "args": [
+        "0xbfe52a3a8df2ead8"
+      ],
+      "expected_bits": "0xbfe720476e0c1abe"
+    },
+    {
+      "id": "asin-isolation-ASIN-002",
+      "args": [
+        "0x3fe52a3a8df2ead9"
+      ],
+      "expected_bits": "0x3fe720476e0c1ac0"
+    },
+    {
+      "id": "asin-isolation-ASIN-003",
+      "args": [
+        "0xbfe52a3a8df2ead9"
+      ],
+      "expected_bits": "0xbfe720476e0c1abf"
+    },
+    {
+      "id": "asin-isolation-ASIN-004",
+      "args": [
+        "0x3fe52a3a8df2eada"
+      ],
+      "expected_bits": "0x3fe720476e0c1ac1"
+    },
+    {
+      "id": "asin-isolation-ASIN-005",
+      "args": [
+        "0xbfe52a3a8df2eada"
+      ],
+      "expected_bits": "0xbfe720476e0c1ac1"
+    },
+    {
+      "id": "asin-isolation-ASIN-006",
+      "args": [
+        "0x3fe52a3a8df2eadb"
+      ],
+      "expected_bits": "0x3fe720476e0c1ac2"
+    },
+    {
+      "id": "asin-isolation-ASIN-007",
+      "args": [
+        "0xbfe52a3a8df2eadb"
+      ],
+      "expected_bits": "0xbfe720476e0c1ac3"
+    },
+    {
+      "id": "asin-isolation-ASIN-008",
+      "args": [
+        "0x3fe52a3a8df2eadc"
+      ],
+      "expected_bits": "0x3fe720476e0c1ac4"
+    },
+    {
+      "id": "asin-isolation-ASIN-009",
+      "args": [
+        "0xbfe52a3a8df2eadc"
+      ],
+      "expected_bits": "0xbfe720476e0c1ac4"
+    },
+    {
+      "id": "asin-isolation-ASIN-010",
+      "args": [
+        "0x3fe52a3a8df2eadd"
+      ],
+      "expected_bits": "0x3fe720476e0c1ac5"
+    },
+    {
+      "id": "asin-isolation-ASIN-011",
+      "args": [
+        "0xbfe52a3a8df2eadd"
+      ],
+      "expected_bits": "0xbfe720476e0c1ac4"
+    },
+    {
+      "id": "asin-isolation-ASIN-012",
+      "args": [
+        "0x3fe52a3a8df2eade"
+      ],
+      "expected_bits": "0x3fe720476e0c1ac7"
+    },
+    {
+      "id": "asin-isolation-ASIN-013",
+      "args": [
+        "0xbfe52a3a8df2eade"
+      ],
+      "expected_bits": "0xbfe720476e0c1ac7"
+    }
+  ],
+  "controls": [
+    {
+      "id": "asin-isolation-ASIN-000",
+      "args": [
+        "0x3fe52a3a8df2ead8"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2ead8"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.7226903104172704,
+        "bits_hex": "0x3fe720476e0c1abe",
+        "digest_payload": "number:0x3fe720476e0c1abe"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-001",
+      "args": [
+        "0xbfe52a3a8df2ead8"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2ead8"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.7226903104172704,
+        "bits_hex": "0xbfe720476e0c1abe",
+        "digest_payload": "number:0xbfe720476e0c1abe"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-002",
+      "args": [
+        "0x3fe52a3a8df2ead9"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2ead9"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.7226903104172706,
+        "bits_hex": "0x3fe720476e0c1ac0",
+        "digest_payload": "number:0x3fe720476e0c1ac0"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-003",
+      "args": [
+        "0xbfe52a3a8df2ead9"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2ead9"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.7226903104172705,
+        "bits_hex": "0xbfe720476e0c1abf",
+        "digest_payload": "number:0xbfe720476e0c1abf"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-004",
+      "args": [
+        "0x3fe52a3a8df2eada"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2eada"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.7226903104172707,
+        "bits_hex": "0x3fe720476e0c1ac1",
+        "digest_payload": "number:0x3fe720476e0c1ac1"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-005",
+      "args": [
+        "0xbfe52a3a8df2eada"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2eada"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.7226903104172707,
+        "bits_hex": "0xbfe720476e0c1ac1",
+        "digest_payload": "number:0xbfe720476e0c1ac1"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-006",
+      "args": [
+        "0x3fe52a3a8df2eadb"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2eadb"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.7226903104172708,
+        "bits_hex": "0x3fe720476e0c1ac2",
+        "digest_payload": "number:0x3fe720476e0c1ac2"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-007",
+      "args": [
+        "0xbfe52a3a8df2eadb"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2eadb"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.7226903104172709,
+        "bits_hex": "0xbfe720476e0c1ac3",
+        "digest_payload": "number:0xbfe720476e0c1ac3"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-008",
+      "args": [
+        "0x3fe52a3a8df2eadc"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2eadc"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.722690310417271,
+        "bits_hex": "0x3fe720476e0c1ac4",
+        "digest_payload": "number:0x3fe720476e0c1ac4"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-009",
+      "args": [
+        "0xbfe52a3a8df2eadc"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2eadc"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.722690310417271,
+        "bits_hex": "0xbfe720476e0c1ac4",
+        "digest_payload": "number:0xbfe720476e0c1ac4"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-010",
+      "args": [
+        "0x3fe52a3a8df2eadd"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2eadd"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.7226903104172712,
+        "bits_hex": "0x3fe720476e0c1ac5",
+        "digest_payload": "number:0x3fe720476e0c1ac5"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-011",
+      "args": [
+        "0xbfe52a3a8df2eadd"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2eadd"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.722690310417271,
+        "bits_hex": "0xbfe720476e0c1ac4",
+        "digest_payload": "number:0xbfe720476e0c1ac4"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-012",
+      "args": [
+        "0x3fe52a3a8df2eade"
+      ],
+      "readback": [
+        "0x3fe52a3a8df2eade"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": 0.7226903104172714,
+        "bits_hex": "0x3fe720476e0c1ac7",
+        "digest_payload": "number:0x3fe720476e0c1ac7"
+      }
+    },
+    {
+      "id": "asin-isolation-ASIN-013",
+      "args": [
+        "0xbfe52a3a8df2eade"
+      ],
+      "readback": [
+        "0xbfe52a3a8df2eade"
+      ],
+      "formula_readback": "=ASIN(A1)",
+      "outcome": {
+        "kind": "number",
+        "value": -0.7226903104172714,
+        "bits_hex": "0xbfe720476e0c1ac7",
+        "digest_payload": "number:0xbfe720476e0c1ac7"
+      }
+    }
+  ],
+  "capture_failure": null,
+  "capture_provenance": {
+    "captured_utc": "2026-09-29T15:25:45.6880049Z",
+    "environment": {
+      "version": "16.0",
+      "build": "20430",
+      "operating_system": "Windows (64-bit) NT 10.00",
+      "compatibility_version": "2",
+      "date1904": false,
+      "channel": "unverified",
+      "owned_process_id": 5808,
+      "precision_as_displayed": false,
+      "input_transport": "Value2 with per-cell exact bit and HasFormula readback",
+      "calculation_timeout_seconds": 30
+    },
+    "script_sha256": "A2F4AA6EA89EAA1FEDBBA405F27DA7895B150D3C09173DD75E676B3ABB58D5ED",
+    "input_sha256": "8B94CD28CFD3941704E1425EF54DA982F8941A99EB2946B32B1B2531B5B35667"
+  }
+}

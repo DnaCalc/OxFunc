@@ -1,0 +1,96 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "contextual_numeric_text",
+    "numeric_primitive_platform_alignment",
+    "evaluator_provenance_and_resolver_failure_order",
+    "HO_FN_030_receiving_acknowledgment"
+  ],
+  "discovery": {
+    "typed_rows": 433,
+    "typed_exact_direct_and_generated": 433,
+    "paired_log_rows": 1755,
+    "paired_log_exact": 1755
+  },
+  "checks": {
+    "metadata_golden": "passed",
+    "binary_generator_drift_and_equivalence_tests": 3,
+    "prior_numeric_family_tests": 8,
+    "prior_power_threshold_tests": 2,
+    "targeted_lean_jobs": 12
+  },
+  "source_hashes_unchanged_after_freeze": false,
+  "first_independent": {
+    "typed_rows": 832,
+    "typed_exact": 824,
+    "mismatches": 8,
+    "mismatch_function": "MEDIAN",
+    "by_function": {
+      "LOG": {
+        "rows": 304,
+        "exact": 304
+      },
+      "POWER": {
+        "rows": 240,
+        "exact": 240
+      },
+      "MEDIAN": {
+        "rows": 192,
+        "exact": 184
+      },
+      "FISHER": {
+        "rows": 96,
+        "exact": 96
+      }
+    },
+    "source_hashes_unchanged_before_replay": true,
+    "raw_capture_and_failed_candidate_retained": "prepared-first-heldout",
+    "numeric_rows": 3072,
+    "numeric_exact": 3072
+  },
+  "combined_numeric_omission_rows": 4827,
+  "review": "Read-only helper and routing review found no new blocker. The retained eight MEDIAN first-heldout failures and 16-per-family focused origin failures led to the direct-only coercion prepass. A new frozen 2190-row serialized packet now matches exactly with both direct and generated Rust paths.",
+  "direct_scalar_prepass_refinement": {
+    "typed_replay_rows": 1490,
+    "typed_exact_direct_and_generated": 1490,
+    "origin_discovery_rows": 675,
+    "origin_discovery_baseline_exact": 627,
+    "origin_discovery_baseline_mismatches": 48,
+    "median_origin_current_exact": 225,
+    "focused_rust_tests": 4,
+    "focused_lean_jobs": 12,
+    "new_freeze": "aggregate-origin-heldout/candidate-freeze.json",
+    "rule": "Check direct scalar coercion errors before collection-origin errors; retain original value enumeration and numeric reduction order."
+  },
+  "source_lineage_note": "All 14 first-candidate hashes matched at its first replay. MEDIAN and its formal binding were subsequently refined from the retained eight failures and the 675-row discovery; the earlier freeze remains immutable. Eleven refined source/model/helper files were frozen again before the 2190-row independent packet.",
+  "refined_source_hashes_currently_unchanged": true,
+  "refined_independent": {
+    "rows": 2190,
+    "exact": 2190,
+    "per_function": {
+      "MEDIAN": 730,
+      "HARMEAN": 730,
+      "DEVSQ": 730
+    },
+    "serialized_run": "w111-aggregate-origin-serial-typed-20260929",
+    "provisional_run": "w111-aggregate-origin-heldout-typed-20260929",
+    "serial_vs_provisional_observable_differences": 0,
+    "nonexecuted": 0,
+    "unchanged_frozen_sources": 11,
+    "raw_capture_and_source_freeze": "aggregate-origin-heldout",
+    "direct_and_generated_rust_replay": "passed"
+  },
+  "current_prepared_by_function": {
+    "LOG": 453,
+    "POWER": 375,
+    "FISHER": 142,
+    "MEDIAN": 1250,
+    "HARMEAN": 1362,
+    "DEVSQ": 1362
+  },
+  "current_prepared_total": 4944,
+  "counting_note": "Rows are function observations, not unique input tuples. Count only the serialized 2190 repetition. Earlier first-candidate failures remain immutable; replays of those rows are refinement evidence, not fresh validation."
+}

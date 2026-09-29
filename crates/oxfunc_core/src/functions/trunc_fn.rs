@@ -3,13 +3,12 @@ use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    BroadcastPreparedGroup, coerce_prepared_to_number, expand_prepared_broadcast_grid,
-    prepare_args_values_only,
-};
+use crate::functions::adapters::prepare_args_values_only;
+use crate::functions::binary_numeric::BinaryNumericSurfaceError;
+use crate::functions::round_fn::eval_rounding_prepared;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
-use crate::value::{CalcArray, WorksheetErrorCode};
+use crate::value::WorksheetErrorCode;
 
 pub const TRUNC_META: FunctionMeta = function_spec! {
     function_id: "FUNC.TRUNC",
@@ -35,13 +34,7 @@ pub enum TruncEvalError {
 }
 
 pub fn trunc_kernel(number: f64, digits: i32) -> f64 {
-    if digits >= 0 {
-        let factor = 10f64.powi(digits);
-        (number * factor).trunc() / factor
-    } else {
-        let factor = 10f64.powi(-digits);
-        (number / factor).trunc() * factor
-    }
+    crate::functions::rounddown_fn::rounddown_kernel(number, digits)
 }
 
 pub fn eval_trunc_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, TruncEvalError> {
@@ -53,48 +46,34 @@ pub fn eval_trunc_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, Trun
         });
     }
 
-    if let Some((shape, cells)) = expand_prepared_broadcast_grid(args) {
-        let mapped = cells
-            .into_iter()
-            .map(|cell| match cell {
-                BroadcastPreparedGroup::Values(values) => map_trunc_item(&values),
-                BroadcastPreparedGroup::MissingCoordinate => {
-                    CalcValue::error(WorksheetErrorCode::NA)
-                }
-            })
-            .collect();
-        return Ok(CalcValue::array(
-            CalcArray::new(shape, mapped).expect("shape preserved"),
-        ));
-    }
-
-    let number = coerce_prepared_to_number(&args[0]).map_err(TruncEvalError::Coercion)?;
-    let digits = if args.len() == 1 {
-        0
-    } else {
-        coerce_prepared_to_number(&args[1])
-            .map_err(TruncEvalError::Coercion)?
-            .trunc() as i32
-    };
-    Ok(CalcValue::number(trunc_kernel(number, digits)))
-}
-
-fn map_trunc_item(args: &[CalcValue]) -> CalcValue {
-    let number = match coerce_prepared_to_number(&args[0]) {
-        Ok(value) => value,
-        Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),
-        Err(_) => return CalcValue::error(WorksheetErrorCode::Value),
-    };
-    let digits = if args.len() == 1 {
-        0
-    } else {
-        match coerce_prepared_to_number(&args[1]) {
-            Ok(value) => value.trunc() as i32,
-            Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),
-            Err(_) => return CalcValue::error(WorksheetErrorCode::Value),
+    let values = [
+        args[0].clone(),
+        args.get(1)
+            .cloned()
+            .unwrap_or_else(|| CalcValue::number(0.0)),
+    ];
+    eval_rounding_prepared(&values, |number, count| {
+        let result = trunc_kernel(
+            number,
+            crate::functions::round_fn::directed_digit_count(count),
+        );
+        if result.is_finite() {
+            Ok(result)
+        } else {
+            Err(WorksheetErrorCode::Num)
         }
-    };
-    CalcValue::number(trunc_kernel(number, digits))
+    })
+    .map_err(|error| match error {
+        BinaryNumericSurfaceError::Coercion(error) => TruncEvalError::Coercion(error),
+        BinaryNumericSurfaceError::Domain(code) => {
+            TruncEvalError::Coercion(CoercionError::WorksheetError(code))
+        }
+        BinaryNumericSurfaceError::ArityMismatch { actual, .. } => TruncEvalError::ArityMismatch {
+            expected_min: 1,
+            expected_max: 2,
+            actual,
+        },
+    })
 }
 
 pub fn eval_trunc_surface(

@@ -1,11 +1,9 @@
-use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
+use crate::coercion::CoercionError;
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::expand_aggregate_arg;
-use crate::functions::factorial_common::trunc_nonnegative;
-use crate::functions::gcd_lcm_common::lcm_int;
+use crate::functions::gcd_lcm_common::{collect_integer_groups, lcm_int};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -34,13 +32,18 @@ pub enum LcmEvalError {
     Domain(WorksheetErrorCode),
 }
 
-fn coerce_calc_to_nonnegative_int(arg: &CalcValue) -> Result<i64, LcmEvalError> {
-    let n = coerce_calc_scalar_to_number(arg).map_err(LcmEvalError::Coercion)?;
-    trunc_nonnegative(n).map_err(LcmEvalError::Domain)
-}
-
-pub fn lcm_kernel(items: &[i64]) -> f64 {
-    items.iter().copied().fold(1, lcm_int) as f64
+pub fn lcm_kernel(items: &[i64]) -> Result<f64, WorksheetErrorCode> {
+    if items.contains(&0) {
+        return Ok(0.0);
+    }
+    // Excel reduces the flattened values in reverse worksheet/argument order.
+    // Rounded intermediates at 2^53 make this order observable.
+    items
+        .iter()
+        .rev()
+        .copied()
+        .try_fold(1, lcm_int)
+        .map(|n| n as f64)
 }
 
 pub fn eval_lcm_surface(
@@ -55,16 +58,11 @@ pub fn eval_lcm_surface(
             actual: argc,
         });
     }
-    // Accept array arguments by flattening each into its constituent values
-    // (Excel reduces LCM/GCD over arrays to a scalar, like GCD's surface).
-    let mut items = Vec::new();
-    for arg in args {
-        let expanded = expand_aggregate_arg(arg, resolver).map_err(LcmEvalError::Coercion)?;
-        for item in expanded {
-            items.push(coerce_calc_to_nonnegative_int(&item.0)?);
-        }
-    }
-    Ok(CalcValue::number(lcm_kernel(&items)))
+    let groups = collect_integer_groups(args, resolver).map_err(LcmEvalError::Coercion)?;
+    let items = groups.into_iter().flatten().collect::<Vec<_>>();
+    lcm_kernel(&items)
+        .map(CalcValue::number)
+        .map_err(LcmEvalError::Domain)
 }
 
 pub fn map_lcm_error_to_ws(e: &LcmEvalError) -> WorksheetErrorCode {
@@ -87,8 +85,20 @@ mod tests {
 
     #[test]
     fn lcm_kernel_matches_excel_seed_rows() {
-        assert_eq!(lcm_kernel(&[6, 8]), 24.0);
-        assert_eq!(lcm_kernel(&[0, 5]), 0.0);
-        assert_eq!(lcm_kernel(&[0, 0]), 0.0);
+        assert_eq!(lcm_kernel(&[6, 8]), Ok(24.0));
+        assert_eq!(lcm_kernel(&[0, 5]), Ok(0.0));
+        assert_eq!(lcm_kernel(&[0, 0]), Ok(0.0));
+        assert_eq!(
+            lcm_kernel(&[3, 3, 3_002_399_751_580_331]),
+            Err(WorksheetErrorCode::Num)
+        );
+        assert_eq!(
+            lcm_kernel(&[3_002_399_751_580_331, 3, 3]),
+            Ok(9_007_199_254_740_992.0)
+        );
+        assert_eq!(
+            lcm_kernel(&[0, 9_007_199_254_740_991, 9_007_199_254_740_990]),
+            Ok(0.0)
+        );
     }
 }

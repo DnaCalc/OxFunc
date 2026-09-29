@@ -476,3 +476,140 @@ current-state triage note; it is not a request for immediate action unless noted
   (`=OR(1/0,NA())` -> `#DIV/0!`, `=OR(NA(),1/0)` -> `#N/A`), so an evaluator that hands
   OxFunc every evaluated argument in call order gets Excel's error; still nothing for
   OxFml to change.
+
+## 17. Implicit numeric text needs preparation context (2026-09-29)
+
+Fresh Excel 20430/CV2 probes expose shared numeric-text coercion differences and
+a missing locale/evaluation-date dependency. Percent/parenthesis and ASCII-space
+grammar are being repaired locally; regional grouping, currency, Unicode digits,
+date/time text and missing-year interpretation still require an explicit context
+contract. Direct numeric scalar arguments and references share this grammar,
+while aggregates ignore referenced text and NOT uses a distinct logical grammar.
+The exact-ingress 2,544-case campaign and ADDRESS720 syntax packet support these
+distinctions; none requires binary inspection or a current-year constant.
+
+See [HO-FN-022](../handoffs/HO-FN-022_W111_IMPLICIT_TEXT_COERCION_CONTEXT.md) for the
+requested receiving-side acknowledgment and the proposed preparation invariants.
+The packet is filed, not acknowledged. `oxf-mwue.28.8.1`
+(`BLK-W111-COERCION-CONTEXT`) records the open integration dependency; independent
+numeric and context-independent grammar work continues within W111.
+
+
+## 18. Conditional prepared values and reference selection (2026-09-29)
+
+IF/IFERROR/IFNA typed discovery exposed strict logical-text coercion, per-cell
+errors, shape contributions from unused branches, and missing/blank values
+publishing numeric zero. The revised value adapters match 1,992 admitted observations including 660 fresh independent cases;
+failed first-candidate observations and 140 malformed inputs remain retained.
+See [HO-FN-023](../handoffs/HO-FN-023_W111_CONDITIONAL_PREPARED_VALUES.md).
+The local already-evaluated-value replay does not establish branch scheduling,
+side effects or reference-valued selection. In particular,
+`COUNTBLANK(IF(FALSE,A100,A100))` preserves a reference to the selected cell.
+The packet is filed; acknowledgment and evaluator integration remain open.
+
+
+## 19. Text defaults, shapes and generic numerical rendering (2026-09-29)
+
+[HO-FN-024](../handoffs/HO-FN-024_W111_TEXT_SHAPES_AND_COMPATIBILITY.md) records
+the CV2 text-slice and raw UTF16 observations, missing-slot defaults, per-cell
+array behavior and outstanding metadata/context assessment. Its receiving-side
+dependency is `oxf-mwue.28.13.1` (`BLK-W111-TEXT-SEAM`).
+
+[HO-FN-025](../handoffs/HO-FN-025_W111_GENERIC_NUMBER_TEXT_RENDERING.md) records
+shared finite number-to-text preparation affecting 28 modules, with specialized
+COMPLEX and explicit format policies kept separate. Exceptional decimal-midpoint
+arithmetic remains under local probing; the receiving dependency is
+`oxf-mwue.28.15.1` (`BLK-W111-NUMERIC-TEXT-SEAM`). Both packets are filed;
+acknowledgment and evaluator integration remain open. All three completion axes
+remain partial.
+
+
+## 20. Distribution and aggregate argument preparation (2026-09-29)
+
+[HO-FN-026](../handoffs/HO-FN-026_W111_DISTRIBUTION_PREPARED_ARGUMENTS.md)
+records observed missing/default, cumulative coercion and positional padding
+rules across 26 distribution surfaces. Ten legacy aliases now declare SurfaceNative after unit-array controls; the
+independent 768-case bank retains 216 numeric discrepancies but no structural
+discrepancies. The receiving dependency is
+`oxf-mwue.28.14.1` (`BLK-W111-DISTRIBUTION-SEAM`).
+
+[HO-FN-027](../handoffs/HO-FN-027_W111_GCD_LCM_QUOTIENT_ARGUMENTS.md)
+records forward coercion followed by reverse LCM reduction, shape-sensitive
+blank contribution and sparse ordering. QUOTIENT now declares Custom and
+RefsVisibleInAdapter: multi-cell references reject at their argument position,
+while materialized arrays lift and padded NA preserves left-to-right coercion
+order. Its later bank matches 1,720 typed and 3,141 numeric observations,
+including 624 fresh asymmetric-shape/reference controls. Prior failures remain
+retained. Its
+receiving dependency is `oxf-mwue.28.14.2` (`BLK-W111-AGGREGATE-SEAM`).
+Both packets are filed, with acknowledgment and integration still open.
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`; open lanes are listed in the packets.
+
+
+## 21. Financial, PERMUTATIONA and rounding positional arguments (2026-09-29)
+
+[HO-FN-028](../handoffs/HO-FN-028_W111_POSITIONAL_ARGUMENT_PADDING.md)
+records positional NA padding, ordered coercion and explicit missing versus
+optional-default distinctions across SLN, SYD, DB, DDB, VDB, PERMUTATIONA,
+ROUND, ROUNDUP, ROUNDDOWN and TRUNC.
+The financial wrappers retain SurfaceNative; PERMUTATIONA now declares Custom
+coercion. Independent prepared banks match 584/584 financial and 252/252
+PERMUTATIONA observations. Rounding adds 690 admitted discovery and 928 fresh
+prepared observations, all exact; ROUND now declares Custom coercion while
+the other three retain Custom. The rejected TRUNC() request is withheld.
+Initial-precision residuals and HO-FN-029 raw payload publication remain open.
+Receiving acknowledgment and exercised integration
+remain open under `oxf-mwue.28.14.3` (`BLK-W111-POSITIONAL-SEAM`).
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`; numerical and contextual parsing residuals
+are retained separately, as described in the packet.
+
+
+## 22. Rounding numeric result payloads (2026-09-29)
+
+[HO-FN-029](../handoffs/HO-FN-029_W111_ROUNDING_NUMERIC_PAYLOADS.md)
+records finite normal input producing numeric-kind Value2 payloads in the IEEE
+nonfinite encoding range. Worksheet classification, display, self-equality and
+arithmetic behavior are separately observed, including 960 stable controls in
+two Excel processes. An older TRUNC capture conflicts and remains unresolved.
+The receiving dependency is `oxf-mwue.28.14.4`
+(`BLK-W111-ROUNDING-PUBLICATION`). No shared carrier policy has been changed.
+Finite subnormal outputs are a distinct lane and must not be silently excluded.
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`; the packet lists the open publication and
+receiving integration questions.
+
+
+## 23. Elementary and aggregate prepared arguments (2026-09-29)
+
+[HO-FN-030](../handoffs/HO-FN-030_W111_ELEMENTARY_AND_AGGREGATE_PREPARATION.md)
+records LOG/POWER positional padding and Missing policy, omitted LOG's dedicated
+LOG10 branch, MEDIAN/HARMEAN/DEVSQ Empty/Missing distinctions and HARMEAN's
+coercion-before-domain ordering. Their direct scalar coercion-error precheck
+precedes collection enumeration without reordering numeric contributions.
+POWER declares Custom and its generated route uses the function-specific
+surface; the OP_POWER route remains separate.
+
+The refined six-family prepared bank matches 4,944 observations, including a
+fresh 2,190-case origin-order packet, while retaining all earlier failed
+candidates. LOG omission controls match 4,827 numeric observations, and the
+HARMEAN/DEVSQ numeric bank retains 39,890 matches. Consumers must preserve
+omission, Missing/Empty, origin and argument position until function preparation;
+an omitted LOG base must not be replaced with numeric ten before dispatch.
+
+MROUND now declares RefsVisibleInAdapter and Custom. It rejects multi-cell
+references at their argument position, even for aligned callers; explicit array
+materialization lifts. Its retained bank has 47,964 numeric and 1,514 typed
+matches, including 384 fresh reference cases. MOD's local Missing-to-zero rule
+and Custom/native generated route are also filed in this packet. The packet
+separates discovery from fresh prepared validation and records their different
+reference policies. Generic adapters are unchanged.
+
+Receiving acknowledgment and exercised integration remain open under
+`oxf-mwue.28.19.1` (`BLK-W111-ELEMENTARY-AGGREGATE-SEAM`).
+`scope_completeness=scope_partial`, `target_completeness=target_partial`,
+`integration_completeness=partial`; shared contextual coercion, wider reference
+and prepared domains, resolver failure order and primitive/platform alignment
+remain open. A briefly overlapping pair of typed captures was repeated serially
+with identical results; only the serial repetitions count as independent evidence.

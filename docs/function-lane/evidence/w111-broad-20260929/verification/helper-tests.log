@@ -1,0 +1,61 @@
+   Compiling pmt_ppmt_local_eval v0.1.0 (C:\Work\DnaCalc\OxFunc\smart-fuzzer\tools\pmt_ppmt_local_eval)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.05s
+     Running unittests src\bin\array_tranche_local_eval.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\array_tranche_local_eval-cd025baeaddafca2.exe)
+
+running 5 tests
+test tests::fixture_enumeration_preserves_rectangular_shape_and_typed_cells ... ok
+test tests::fixture_projection_keeps_sheet_identity_and_original_cell_types ... ok
+test tests::fixture_assembles_explicit_cells_and_areas_without_inventing_blanks ... ok
+test tests::typed_json_decimal_ingress_preserves_original_binary64_bits ... ok
+test tests::fixture_surface_replays_criteria_lookup_and_index ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\bin\broad_scalar_explorer.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\broad_scalar_explorer-0b02c4104d2a2f10.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\expanded_finance_explorer.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\expanded_finance_explorer-a328c6d126a11037.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\matrix_local_eval.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\matrix_local_eval-5c5253c14cd77716.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\mod_publication_explorer.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\mod_publication_explorer-7d32209b4e8e3aba.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\phase_e_replay.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\phase_e_replay-b6502663c27eada8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\pmt_ppmt_local_eval-12587188dd775d0b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\rand_characterize.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\rand_characterize-0c56ef49755d2313.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\stat_distribution_explorer.rs (smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\deps\stat_distribution_explorer-4b860cb670fe5d4e.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,26 @@
+{
+  "crates/oxfunc_core/src/functions/power_fn.rs": {
+    "old": "ba610be65f9d7f5588220a2c9dd7b7d79860181f0057f4583519fa82dda46cc2",
+    "current": "32be0ede37d51a1235bedca4bf59f31623cd31cd12edf9c74cc71689faaefa4b"
+  },
+  "crates/oxfunc_core/src/functions/financial_time_value_family.rs": {
+    "old": "5162063736040cb041cfff7fc37216a14c38c916f647b606143ce569bd2aafc2",
+    "current": "5162063736040cb041cfff7fc37216a14c38c916f647b606143ce569bd2aafc2"
+  },
+  "crates/oxfunc_core/src/functions/cashflow_rate_family.rs": {
+    "old": "877098652a9e0a7f120227259fc247f5a146a5764dc3edf359dcf96627a52be6",
+    "current": "877098652a9e0a7f120227259fc247f5a146a5764dc3edf359dcf96627a52be6"
+  },
+  "crates/oxfunc_core/src/functions/depreciation_family.rs": {
+    "old": "24c04e15c6e8c2c2ce1d4fbe9733b1870b7aba92ab3b0a73ec3441983562ffcb",
+    "current": "24c04e15c6e8c2c2ce1d4fbe9733b1870b7aba92ab3b0a73ec3441983562ffcb"
+  },
+  "crates/oxfunc_core/src/excel_numeric/mod.rs": {
+    "old": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "current": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989"
+  },
+  "crates/oxfunc_core/src/excel_numeric/x87.rs": {
+    "old": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd",
+    "current": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+  }
+}

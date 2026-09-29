@@ -1,0 +1,6814 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case_set.v0",
+  "authority": "non_semantic_exploration_input",
+  "generator": "gen_not_holdout.py",
+  "seed": 2026092910,
+  "tranche_id": "w111-not-heldout-20260929",
+  "comparison_policy": "exact_typed_bit_match_no_tolerance",
+  "candidate_sha256": "76241853772a9056e24ec1f2f3d196cb0354b916e076b500d62c13ab87f19868",
+  "cases": [
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00000-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"0.0\",\"-2\",A100,#N/A))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "text",
+                "value": "-2"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00001-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "text",
+                  "value": "-2"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                },
+                {
+                  "kind": "error",
+                  "code": "NA"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00002-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},A100,A101,\"(1)\",\"TRUE\n\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "number",
+                "value": 1e+100
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00003-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00004-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"false \",\"(1)\",\"TRUE\u200b\",\"true\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "false "
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00005-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "false "
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00006-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"TRUE\n\",\"0.0\",\"true\",\"0\",A100,A101))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "0"
+              },
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "number",
+                "value": 0
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00007-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "0"
+                },
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "number",
+                  "value": 0
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00008-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},\"TRUE\n\",\"%1\",\"FALSE\",\"\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "FALSE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": ""
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00009-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "FALSE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": ""
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00010-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},A100,\"%1\",#VALUE!,#VALUE!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 0
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00011-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 0
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00012-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"1e0\",TRUE,#VALUE!,FALSE,\"%1\",#N/A))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "1e0"
+              },
+              {
+                "kind": "logical",
+                "value": true
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "logical",
+                "value": false
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00013-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                },
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "logical",
+                  "value": false
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                },
+                {
+                  "kind": "error",
+                  "code": "NA"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00014-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},#NAME?,\"%1\",\"1e0\",\"\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Name"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "1e0"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": ""
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00015-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Name"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": ""
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00016-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},FALSE,\"fAl\u017fe\",\"tRuE\",\"\u00a0FALSE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": false
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00017-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "logical",
+                  "value": false
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00018-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"tRuE\",#N/A,#DIV/0!,#N/A,\"FALSE\",#NUM!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "tRuE"
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              },
+              {
+                "kind": "error",
+                "code": "Div0"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "NA"
+              },
+              {
+                "kind": "text",
+                "value": "FALSE"
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00019-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                },
+                {
+                  "kind": "error",
+                  "code": "NA"
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "NA"
+                },
+                {
+                  "kind": "text",
+                  "value": "FALSE"
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00020-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"1e0\",\"fAl\u017fe\",A100,TRUE,\"tRuE\",\"1e0\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "1e0"
+              },
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              }
+            ],
+            [
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              },
+              {
+                "kind": "text",
+                "value": "1e0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00021-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                },
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                },
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00022-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},#NULL!,#DIV/0!,A100,\"-2\",#NUM!,FALSE))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Null"
+              },
+              {
+                "kind": "error",
+                "code": "Div0"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "-2"
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "logical",
+                "value": false
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00023-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Null"
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "-2"
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "logical",
+                  "value": false
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00024-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"0.0\",A100,\"%1\",A101,FALSE,\"%1\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": -1
+              },
+              {
+                "kind": "logical",
+                "value": false
+              },
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00025-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": -1
+                },
+                {
+                  "kind": "logical",
+                  "value": false
+                },
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00026-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"\u00a0FALSE\",\"tRuE\",#NULL!,A100,\"FAlsE\",A101))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Null"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              },
+              {
+                "kind": "number",
+                "value": 1e-100
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00027-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Null"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00028-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"FAlsE\",\"TR\u00dcE\",#NUM!,#NAME?))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              },
+              {
+                "kind": "text",
+                "value": "TR\u00dcE"
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "error",
+                "code": "Name"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00029-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                },
+                {
+                  "kind": "text",
+                  "value": "TR\u00dcE"
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "error",
+                  "code": "Name"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00030-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},#REF!,A100,\"FAlsE\",A101,\"fAl\u017fe\",\"\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Ref"
+              },
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": ""
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00031-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": ""
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00032-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"fAl\u017fe\",\"\u00a0FALSE\",\"0\",\"FALSE\",\"(1)\",A100))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "0"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00033-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "0"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00034-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"\u00a0FALSE\",\"0\",A100,#VALUE!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "0"
+              },
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00035-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "0"
+                },
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00036-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"(1)\",A100,\"0\",A101,\"%1\",#VALUE!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "text",
+                "value": "0"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "text",
+                "value": "%1"
+              },
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00037-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "text",
+                  "value": "0"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "text",
+                  "value": "%1"
+                },
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00038-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"true\",\"\u00a0FALSE\",\"%1\",A100))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "true"
+              },
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "%1"
+              },
+              {
+                "kind": "number",
+                "value": 0
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00039-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "true"
+                },
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "%1"
+                },
+                {
+                  "kind": "number",
+                  "value": 0
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00040-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"FAlsE\",#NAME?,\"%1\",\"tRuE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              },
+              {
+                "kind": "error",
+                "code": "Name"
+              },
+              {
+                "kind": "text",
+                "value": "%1"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00041-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                },
+                {
+                  "kind": "error",
+                  "code": "Name"
+                },
+                {
+                  "kind": "text",
+                  "value": "%1"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00042-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"TRUE\u200b\",#NAME?,A100,\"FAlsE\",#VALUE!,\"(1)\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              },
+              {
+                "kind": "error",
+                "code": "Name"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": -1
+              },
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00043-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                },
+                {
+                  "kind": "error",
+                  "code": "Name"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": -1
+                },
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00044-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"TRUE\u200b\",TRUE,A100,A101))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              },
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "number",
+                "value": 1
+              },
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00045-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                },
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00046-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},\"false \",\"true\",\"%1\",\"\u00a0FALSE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "false "
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00047-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "false "
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00048-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"(1)\",#NULL!,A100,#N/A,#REF!,#NULL!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref"
+              },
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00049-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "error",
+                  "code": "NA"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00050-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"fAl\u017fe\",\"tRuE\",\"tRuE\",\"\",\"false \",\"(1)\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": ""
+              },
+              {
+                "kind": "text",
+                "value": "false "
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00051-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": ""
+                },
+                {
+                  "kind": "text",
+                  "value": "false "
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00052-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"\",\"FAlsE\",\"TR\u00dcE\",\"-2\",A100,\"false \"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": ""
+              },
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              },
+              {
+                "kind": "text",
+                "value": "TR\u00dcE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "-2"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              },
+              {
+                "kind": "text",
+                "value": "false "
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00053-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": ""
+                },
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                },
+                {
+                  "kind": "text",
+                  "value": "TR\u00dcE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "-2"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                },
+                {
+                  "kind": "text",
+                  "value": "false "
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00054-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},#NAME?,A100,\"TR\u00dcE\",\"TRUE\n\",#NUM!,#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Name"
+              },
+              {
+                "kind": "number",
+                "value": 1e-100
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "TR\u00dcE"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00055-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Name"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "TR\u00dcE"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00056-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},#VALUE!,\"\u00a0FALSE\",\"true\",A100,#N/A,\"-2\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "true"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "NA"
+              },
+              {
+                "kind": "text",
+                "value": "-2"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00057-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "true"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "NA"
+                },
+                {
+                  "kind": "text",
+                  "value": "-2"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00058-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},TRUE,\"(1)\",\"0.0\",\"%1\",\"(1)\",#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00059-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00060-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"fAl\u017fe\",\"tRuE\",\"FALSE\",\"1e0\",TRUE,\"tRuE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "1e0"
+              }
+            ],
+            [
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00061-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00062-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},A100,\"1e0\",\"TR\u00dcE\",A101,#VALUE!,#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 1
+              },
+              {
+                "kind": "text",
+                "value": "1e0"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "TR\u00dcE"
+              },
+              {
+                "kind": "number",
+                "value": 1e-100
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00063-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                },
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "TR\u00dcE"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00064-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},FALSE,#REF!,\"TRUE\u200b\",\"\u00a0FALSE\",\"-2\",#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": false
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "-2"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00065-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "logical",
+                  "value": false
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "-2"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00066-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},A100,\"TRUE\u200b\",#VALUE!,\"0.0\",#NUM!,\"tRuE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00067-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00068-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"fAl\u017fe\",\"(1)\",\"fAl\u017fe\",\"0.0\",A100,#N/A))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00069-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "error",
+                  "code": "NA"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00070-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"\u00a0FALSE\",\"1e0\",#N/A,TRUE,#NUM!,A100))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "1e0"
+              },
+              {
+                "kind": "error",
+                "code": "NA"
+              }
+            ],
+            [
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00071-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                },
+                {
+                  "kind": "error",
+                  "code": "NA"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00072-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"(1)\",#NULL!,A100,\"0.0\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "(1)"
+              },
+              {
+                "kind": "error",
+                "code": "Null"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00073-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                },
+                {
+                  "kind": "error",
+                  "code": "Null"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00074-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},A100,A101,\"true\",A102,\"0.0\",#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 1
+              },
+              {
+                "kind": "number",
+                "value": 1e-100
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        },
+        {
+          "target": "A102",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00075-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1
+                },
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00076-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},#REF!,\"\",FALSE,#NULL!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Ref"
+              },
+              {
+                "kind": "text",
+                "value": ""
+              },
+              {
+                "kind": "logical",
+                "value": false
+              },
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00077-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "text",
+                  "value": ""
+                },
+                {
+                  "kind": "logical",
+                  "value": false
+                },
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00078-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"TRUE\n\",\"true\",\"true\",\"true\",\"-2\",#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "true"
+              },
+              {
+                "kind": "text",
+                "value": "-2"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00079-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "true"
+                },
+                {
+                  "kind": "text",
+                  "value": "-2"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00080-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},#NUM!,\"%1\",#NULL!,#NULL!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Num"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00081-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00082-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},A100,\"true\",#N/A,A101,\"1e0\",A102))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "NA"
+              },
+              {
+                "kind": "number",
+                "value": 1e+100
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "1e0"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        },
+        {
+          "target": "A102",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00083-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "NA"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00084-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},A100,#VALUE!,\"FAlsE\",\"true\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": -1
+              },
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00085-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": -1
+                },
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00086-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},FALSE,\"true\",#REF!,TRUE,#NUM!,\"(1)\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": false
+              },
+              {
+                "kind": "text",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Ref"
+              },
+              {
+                "kind": "logical",
+                "value": true
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "text",
+                "value": "(1)"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00087-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "logical",
+                  "value": false
+                },
+                {
+                  "kind": "text",
+                  "value": "true"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                },
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "text",
+                  "value": "(1)"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00088-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"FALSE\",#NAME?,\"tRuE\",\"FAlsE\",\"fAl\u017fe\",\"0\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "FALSE"
+              },
+              {
+                "kind": "error",
+                "code": "Name"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "FAlsE"
+              },
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "text",
+                "value": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00089-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "FALSE"
+                },
+                {
+                  "kind": "error",
+                  "code": "Name"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "FAlsE"
+                },
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "text",
+                  "value": "0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00090-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},A100,#NUM!,\"0\",\"0\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 1e+100
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "text",
+                "value": "0"
+              },
+              {
+                "kind": "text",
+                "value": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00091-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "text",
+                  "value": "0"
+                },
+                {
+                  "kind": "text",
+                  "value": "0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00092-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},\"FALSE\",\"\u00a0FALSE\",A100,\"true\",\"fAl\u017fe\",A101))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "FALSE"
+              },
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "true"
+              },
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00093-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "FALSE"
+                },
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "true"
+                },
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00094-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"0.0\",\"-2\",A100,\"\u00a0FALSE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "text",
+                "value": "-2"
+              },
+              {
+                "kind": "number",
+                "value": 1e+100
+              },
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00095-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "text",
+                  "value": "-2"
+                },
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                },
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00096-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},TRUE,FALSE,\"1e0\",A100,\"false \",\"tRuE\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "logical",
+                "value": false
+              },
+              {
+                "kind": "text",
+                "value": "1e0"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1e+100
+              },
+              {
+                "kind": "text",
+                "value": "false "
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00097-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "logical",
+                  "value": false
+                },
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                },
+                {
+                  "kind": "text",
+                  "value": "false "
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00098-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},TRUE,\"\u00a0FALSE\",#DIV/0!,\"0.0\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "logical",
+                "value": true
+              },
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "error",
+                "code": "Div0"
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00099-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                },
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00100-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},A100,\"false \",\"TRUE\u200b\",#NULL!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": -1
+              },
+              {
+                "kind": "text",
+                "value": "false "
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              },
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00101-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": -1
+                },
+                {
+                  "kind": "text",
+                  "value": "false "
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                },
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00102-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3;4,5,6},A100,\"TRUE\n\",\"TRUE\u200b\",\"false \",\"0.0\",#DIV/0!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 1e+100
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "false "
+              },
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "error",
+                "code": "Div0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00103-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:C2)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:C2"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:C2",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "false "
+                },
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00104-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},\"0\",\"TRUE\u200b\",A100,\"TRUE\n\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "0"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              },
+              {
+                "kind": "number",
+                "value": -1
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\n"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": -1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00105-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "0"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                },
+                {
+                  "kind": "number",
+                  "value": -1
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\n"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00106-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},#NULL!,#VALUE!,TRUE,#VALUE!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Null"
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ],
+            [
+              {
+                "kind": "logical",
+                "value": true
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00107-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Null"
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00108-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},A100,#NUM!,#VALUE!,#DIV/0!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "number",
+                "value": 0
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "error",
+                "code": "Value"
+              },
+              {
+                "kind": "error",
+                "code": "Div0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 0
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00109-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "number",
+                  "value": 0
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "error",
+                  "code": "Value"
+                },
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00110-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},\"TRUE\u200b\",A100,A101,\"0\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1e-100
+              }
+            ],
+            [
+              {
+                "kind": "number",
+                "value": 1e+100
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1e-100
+          }
+        },
+        {
+          "target": "A101",
+          "value": {
+            "kind": "number",
+            "value": 1e+100
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00111-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 1e-100
+                }
+              ],
+              [
+                {
+                  "kind": "number",
+                  "value": 1e+100
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "0"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00112-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},#NUM!,\"TRUE\u200b\",\"0.0\",#NUM!,\"\u00a0FALSE\",TRUE))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Num"
+              },
+              {
+                "kind": "text",
+                "value": "TRUE\u200b"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "0.0"
+              },
+              {
+                "kind": "error",
+                "code": "Num"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "\u00a0FALSE"
+              },
+              {
+                "kind": "logical",
+                "value": true
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00113-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Num"
+                },
+                {
+                  "kind": "text",
+                  "value": "TRUE\u200b"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "0.0"
+                },
+                {
+                  "kind": "error",
+                  "code": "Num"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "\u00a0FALSE"
+                },
+                {
+                  "kind": "logical",
+                  "value": true
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00114-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2;3,4;5,6},\"fAl\u017fe\",A100,\"1e0\",\"1e0\",FALSE,\"\"))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "fAl\u017fe"
+              },
+              {
+                "kind": "number",
+                "value": 1
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "1e0"
+              },
+              {
+                "kind": "text",
+                "value": "1e0"
+              }
+            ],
+            [
+              {
+                "kind": "logical",
+                "value": false
+              },
+              {
+                "kind": "text",
+                "value": ""
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A100",
+          "value": {
+            "kind": "number",
+            "value": 1
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00115-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:B3)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:B3"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:B3",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "fAl\u017fe"
+                },
+                {
+                  "kind": "number",
+                  "value": 1
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                },
+                {
+                  "kind": "text",
+                  "value": "1e0"
+                }
+              ],
+              [
+                {
+                  "kind": "logical",
+                  "value": false
+                },
+                {
+                  "kind": "text",
+                  "value": ""
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00116-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1;2;3;4},\"%1\",\"%1\",\"\",#VALUE!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": "%1"
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "value": ""
+              }
+            ],
+            [
+              {
+                "kind": "error",
+                "code": "Value"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00117-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:A4)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:A4"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:A4",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": "%1"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "value": ""
+                }
+              ],
+              [
+                {
+                  "kind": "error",
+                  "code": "Value"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00118-not-mixed-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(CHOOSE({1,2,3,4},#DIV/0!,\"TR\u00dcE\",\"tRuE\",#REF!))",
+      "args": [
+        {
+          "kind": "array",
+          "rows": [
+            [
+              {
+                "kind": "error",
+                "code": "Div0"
+              },
+              {
+                "kind": "text",
+                "value": "TR\u00dcE"
+              },
+              {
+                "kind": "text",
+                "value": "tRuE"
+              },
+              {
+                "kind": "error",
+                "code": "Ref"
+              }
+            ]
+          ]
+        }
+      ],
+      "cell_fixture": [],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    },
+    {
+      "schema_version": "oxfunc.smart_fuzzer.scenario_seed_case.v0",
+      "run_id": "assigned_by_runner",
+      "tranche_id": "w111-not-heldout-20260929",
+      "case_id": "w111typed-00119-not-mixed-reference-shape",
+      "function_id": "FUNC.NOT",
+      "canonical_surface_name": "NOT",
+      "case_tag": "mixed-reference-shape",
+      "axis": "typed_argument",
+      "expected_probe_class": "structural_exploration",
+      "formula_text": "=NOT(A1:D1)",
+      "args": [
+        {
+          "kind": "reference",
+          "reference_kind": "Area",
+          "target": "A1:D1"
+        }
+      ],
+      "cell_fixture": [
+        {
+          "target": "A1:D1",
+          "value": {
+            "kind": "array",
+            "rows": [
+              [
+                {
+                  "kind": "error",
+                  "code": "Div0"
+                },
+                {
+                  "kind": "text",
+                  "value": "TR\u00dcE"
+                },
+                {
+                  "kind": "text",
+                  "value": "tRuE"
+                },
+                {
+                  "kind": "error",
+                  "code": "Ref"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "formula_cell": "J20",
+      "category": "typed_structural",
+      "blocked_or_deferred_lanes": [],
+      "known_deviation_tags": []
+    }
+  ],
+  "tranches": [],
+  "summary": {
+    "case_count": 120,
+    "surfaces_covered": 1
+  }
+}

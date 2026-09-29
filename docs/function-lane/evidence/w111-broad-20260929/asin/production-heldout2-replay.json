@@ -1,0 +1,14 @@
+{
+  "rows": 16104,
+  "matches": 16104,
+  "functions": {
+    "ASIN": 8052,
+    "ACOS": 8052
+  },
+  "misses": [],
+  "candidate_sources_unchanged_from": "production-candidate-freeze.json",
+  "validation": "five public-dispatch Rust replay tests",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial"
+}

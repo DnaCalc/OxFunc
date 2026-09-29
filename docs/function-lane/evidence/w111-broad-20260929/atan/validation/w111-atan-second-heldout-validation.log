@@ -1,0 +1,13 @@
+   Compiling oxfunc_core v0.1.0 (C:\Work\DnaCalc\OxFunc\crates\oxfunc_core)
+   Compiling oxfml_core v0.1.0 (C:\Work\DnaCalc\OxFml\crates\oxfml_core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.39s
+     Running tests\w111_atan_live_replay.rs (target\debug\deps\w111_atan_live_replay-de79beed9441dd24.exe)
+
+running 4 tests
+test atan_live_discovery_matches_every_retained_bit ... ok
+test atan_independent_heldout_matches_every_retained_bit ... ok
+test atan_refinement_matches_every_retained_bit ... ok
+test atan_second_independent_heldout_matches_every_retained_bit ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.17s
+

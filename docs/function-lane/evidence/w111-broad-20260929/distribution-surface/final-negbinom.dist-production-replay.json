@@ -1,0 +1,733 @@
+{
+  "function": "NEGBINOM.DIST",
+  "matches": 115,
+  "misses": [
+    {
+      "actual": "0x3693fffffffffff8",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3693fffffffffff9",
+      "id": "fresh-negbinom.dist-00006-fresh-endpoints"
+    },
+    {
+      "actual": "0x36a400000000000c",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x36a3fffffffffff8",
+      "id": "fresh-negbinom.dist-00007-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f8acc0000000000",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f8acbfffffffffe",
+      "id": "fresh-negbinom.dist-00008-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f9dd60000000005",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f9dd6000000000d",
+      "id": "fresh-negbinom.dist-00009-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fc07ac000000000",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc07abfffffffff",
+      "id": "fresh-negbinom.dist-00010-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fd9da6000000002",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd9da6000000001",
+      "id": "fresh-negbinom.dist-00011-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fb0e00000000000",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb0e00000000002",
+      "id": "fresh-negbinom.dist-00012-fresh-endpoints"
+    },
+    {
+      "actual": "0x3633fffffffffffe",
+      "args": [
+        "0x4008000000000000",
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3633ffffffffffd2",
+      "id": "fresh-negbinom.dist-00014-fresh-endpoints"
+    },
+    {
+      "actual": "0x2a04fffffffffff8",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x2a04ffffffffffc2",
+      "id": "fresh-negbinom.dist-00026-fresh-endpoints"
+    },
+    {
+      "actual": "0x2a0dffffffffff9a",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2a0dffffffffffa8",
+      "id": "fresh-negbinom.dist-00027-fresh-endpoints"
+    },
+    {
+      "actual": "0x3efc230000000000",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3efc230000000002",
+      "id": "fresh-negbinom.dist-00028-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f0535800000000a",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f05358000000019",
+      "id": "fresh-negbinom.dist-00029-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f95e652c0000000",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f95e652c0000005",
+      "id": "fresh-negbinom.dist-00030-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fa3a8e060000003",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa3a8e060000001",
+      "id": "fresh-negbinom.dist-00031-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fc66ce000000000",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc66ce000000001",
+      "id": "fresh-negbinom.dist-00032-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fe8d3f7ffffffff",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fe8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe8d3f800000000",
+      "id": "fresh-negbinom.dist-00033-fresh-endpoints"
+    },
+    {
+      "actual": "0x3664fffffffffffb",
+      "args": [
+        "0x4008000000000000",
+        "0x401c000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3664ffffffffffd9",
+      "id": "fresh-negbinom.dist-00034-fresh-endpoints"
+    },
+    {
+      "actual": "0x1d61dffffffffff9",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x1d61dfffffffff5e",
+      "id": "fresh-negbinom.dist-00046-fresh-endpoints"
+    },
+    {
+      "actual": "0x1d66bffffffffeb1",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1d66bfffffffff68",
+      "id": "fresh-negbinom.dist-00047-fresh-endpoints"
+    },
+    {
+      "actual": "0x3e57f32000000000",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3e57f32000000004",
+      "id": "fresh-negbinom.dist-00048-fresh-endpoints"
+    },
+    {
+      "actual": "0x3e5f982000000015",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e5f982000000016",
+      "id": "fresh-negbinom.dist-00049-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f57979fdc200000",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f57979fdc200007",
+      "id": "fresh-negbinom.dist-00050-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f617b676990000a",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f617b6769900003",
+      "id": "fresh-negbinom.dist-00051-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fc8289350000000",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fc828934ffffffd",
+      "id": "fresh-negbinom.dist-00052-fresh-endpoints"
+    },
+    {
+      "actual": "0x3681dffffffffffa",
+      "args": [
+        "0x4008000000000000",
+        "0x4026000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3681dffffffffff0",
+      "id": "fresh-negbinom.dist-00054-fresh-endpoints"
+    },
+    {
+      "actual": "0x369dfffffffffff1",
+      "args": [
+        "0x4010000000000000",
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x369dffffffffffbc",
+      "id": "fresh-negbinom.dist-00066-fresh-endpoints"
+    },
+    {
+      "actual": "0x36b17fffffffffdd",
+      "args": [
+        "0x4010000000000000",
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x36b17fffffffffee",
+      "id": "fresh-negbinom.dist-00067-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fa7b5f000000005",
+      "args": [
+        "0x4010000000000000",
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fa7b5effffffffe",
+      "id": "fresh-negbinom.dist-00069-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fe0c9f500000002",
+      "args": [
+        "0x4010000000000000",
+        "0x4008000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe0c9f500000001",
+      "id": "fresh-negbinom.dist-00071-fresh-endpoints"
+    },
+    {
+      "actual": "0x32edfffffffffffd",
+      "args": [
+        "0x4010000000000000",
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x32ee0000000000f1",
+      "id": "fresh-negbinom.dist-00074-fresh-endpoints"
+    },
+    {
+      "actual": "0x2a1a3ffffffffff3",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x2a1a40000000004c",
+      "id": "fresh-negbinom.dist-00086-fresh-endpoints"
+    },
+    {
+      "actual": "0x2a249fffffffff84",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2a249fffffffffcb",
+      "id": "fresh-negbinom.dist-00087-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f0ec64800000000",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f0ec6480000000c",
+      "id": "fresh-negbinom.dist-00088-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f19fde40000000c",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f19fde40000002c",
+      "id": "fresh-negbinom.dist-00089-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fa11bf0a6000000",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa11bf0a5ffffff",
+      "id": "fresh-negbinom.dist-00090-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fb2626883000002",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fb2626883000001",
+      "id": "fresh-negbinom.dist-00091-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fbc081800000000",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fbc0817ffffffff",
+      "id": "fresh-negbinom.dist-00092-fresh-endpoints"
+    },
+    {
+      "actual": "0x332a3ffffffffffa",
+      "args": [
+        "0x4010000000000000",
+        "0x401c000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x332a40000000006e",
+      "id": "fresh-negbinom.dist-00094-fresh-endpoints"
+    },
+    {
+      "actual": "0x1d7f47fffffffff0",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x1d7f47ffffffffe9",
+      "id": "fresh-negbinom.dist-00106-fresh-endpoints"
+    },
+    {
+      "actual": "0x1d8553ffffffffaf",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1d8553ffffffff70",
+      "id": "fresh-negbinom.dist-00107-fresh-endpoints"
+    },
+    {
+      "actual": "0x3e72562480000000",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3e72562480000001",
+      "id": "fresh-negbinom.dist-00108-fresh-endpoints"
+    },
+    {
+      "actual": "0x3e7a3c2c80000014",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3e7a3c2c80000015",
+      "id": "fresh-negbinom.dist-00109-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f69cdd6d8c30000",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f69cdd6d8c30004",
+      "id": "fresh-negbinom.dist-00110-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f75a49f2129800d",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f75a49f21298003",
+      "id": "fresh-negbinom.dist-00111-fresh-endpoints"
+    },
+    {
+      "actual": "0x334f47fffffffff5",
+      "args": [
+        "0x4010000000000000",
+        "0x4026000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x334f480000000072",
+      "id": "fresh-negbinom.dist-00114-fresh-endpoints"
+    },
+    {
+      "actual": "0x36c37fffffffffe5",
+      "args": [
+        "0x4026000000000000",
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x36c380000000003c",
+      "id": "fresh-negbinom.dist-00126-fresh-endpoints"
+    },
+    {
+      "actual": "0x36e6bffffffffff5",
+      "args": [
+        "0x4026000000000000",
+        "0x4008000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x36e6bfffffffffdd",
+      "id": "fresh-negbinom.dist-00127-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fa1f474db010000",
+      "args": [
+        "0x4026000000000000",
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa1f474db00ffff",
+      "id": "fresh-negbinom.dist-00128-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fd0100cef152007",
+      "args": [
+        "0x4026000000000000",
+        "0x4008000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd0100cef152004",
+      "id": "fresh-negbinom.dist-00129-fresh-endpoints"
+    },
+    {
+      "actual": "0x3ee0740000000000",
+      "args": [
+        "0x4026000000000000",
+        "0x4008000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3ee073fffffffffa",
+      "id": "fresh-negbinom.dist-00132-fresh-endpoints"
+    },
+    {
+      "actual": "0x1be37ffffffffffe",
+      "args": [
+        "0x4026000000000000",
+        "0x4008000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x1be37fffffffff4a",
+      "id": "fresh-negbinom.dist-00134-fresh-endpoints"
+    },
+    {
+      "actual": "0x2a782bffffffffdf",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x2a782c00000000b0",
+      "id": "fresh-negbinom.dist-00146-fresh-endpoints"
+    },
+    {
+      "actual": "0x2a8f13ffffffffb1",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x2a8f13ffffffff62",
+      "id": "fresh-negbinom.dist-00147-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f5641b0da23e800",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3fc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f5641b0da23e7fb",
+      "id": "fresh-negbinom.dist-00148-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f71a0d3e92dba0b",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3f71a0d3e92dba09",
+      "id": "fresh-negbinom.dist-00149-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fb2c7f15e36fea0",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fb2c7f15e36fe9f",
+      "id": "fresh-negbinom.dist-00150-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fe14809f858c392",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fe14809f858c395",
+      "id": "fresh-negbinom.dist-00151-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f39cffc80000000",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f39cffc7ffffffa",
+      "id": "fresh-negbinom.dist-00152-fresh-endpoints"
+    },
+    {
+      "actual": "0x1c582bfffffffffb",
+      "args": [
+        "0x4026000000000000",
+        "0x401c000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x1c582bffffffffcf",
+      "id": "fresh-negbinom.dist-00154-fresh-endpoints"
+    },
+    {
+      "actual": "0x1e05872fffffffe2",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3cc0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x1e05873000000153",
+      "id": "fresh-negbinom.dist-00166-fresh-endpoints"
+    },
+    {
+      "actual": "0x1e15872fffffff9e",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3cc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x1e15872fffffff54",
+      "id": "fresh-negbinom.dist-00167-fresh-endpoints"
+    },
+    {
+      "actual": "0x3ef6bb4ca5a231d3",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3fc0000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3ef6bb4ca5a231d7",
+      "id": "fresh-negbinom.dist-00169-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fa52b8001c2dd63",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3fa52b8001c2dd61",
+      "id": "fresh-negbinom.dist-00170-fresh-endpoints"
+    },
+    {
+      "actual": "0x3fc49217b0dceaea",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3fd8000000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fc49217b0dceae2",
+      "id": "fresh-negbinom.dist-00171-fresh-endpoints"
+    },
+    {
+      "actual": "0x3f6d18810e080000",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3fe8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f6d18810e07fff9",
+      "id": "fresh-negbinom.dist-00172-fresh-endpoints"
+    },
+    {
+      "actual": "0x1ca5872ffffffff9",
+      "args": [
+        "0x4026000000000000",
+        "0x4026000000000000",
+        "0x3fefffffffffffff",
+        "0x0000000000000000"
+      ],
+      "expected": "0x1ca5872fffffff72",
+      "id": "fresh-negbinom.dist-00174-fresh-endpoints"
+    }
+  ],
+  "rows": 181
+}

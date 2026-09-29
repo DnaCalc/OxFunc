@@ -1,0 +1,7 @@
+✔ [519/526] Built OxFunc.Functions.QuotientFn:c.o (1.4s)
+✔ [520/526] Built OxFunc.Functions.ModFn:c.o (1.7s)
+✔ [521/526] Built OxFunc.Functions.Mround:c.o (1.7s)
+✔ [522/526] Built OxFunc (6.2s)
+✔ [524/526] Built Main (4.8s)
+✔ [526/526] Built oxfunc_formal_check:exe (3.1s)
+Build completed successfully (526 jobs).

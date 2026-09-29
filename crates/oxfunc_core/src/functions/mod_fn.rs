@@ -3,7 +3,8 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::binary_numeric::{
-    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
+    BinaryNumericExecSpec, BinaryNumericSurfaceError, executor_kernel,
+    map_binary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -16,7 +17,7 @@ pub const MOD_META: FunctionMeta = function_spec! {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOnly,
+    coercion_lift_profile: CoercionLiftProfile::Custom,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -37,16 +38,39 @@ pub fn mod_kernel(number: f64, divisor: f64) -> Result<f64, WorksheetErrorCode> 
     if (number / divisor).abs() >= MOD_QUOTIENT_NUM_LIMIT {
         return Err(WorksheetErrorCode::Num);
     }
-    // Excel's MOD is the floored modulo (sign of the divisor). Compute it from the
-    // exact IEEE remainder (`%` is fmod — no rounding) and adjust the sign, rather than
-    // `number - divisor*floor(number/divisor)`, which catastrophically cancels for large
-    // quotients (the two terms are ~equal and ~1e10, so the remainder loses up to
-    // ~9.5e10 ULP). BUG-FUNC-027 C2.
+    // Use the truncating remainder primitive rather than a rounded product
+    // subtraction, which loses observed low bits at large quotients.
     let remainder = number % divisor;
-    if remainder != 0.0 && (remainder < 0.0) != (divisor < 0.0) {
-        Ok(remainder + divisor)
+    // W111 black-box observations distinguish the power-of-two/small-quotient
+    // path before sign adjustment. A nonzero subnormal remainder otherwise
+    // publishes #NUM!, even if adjustment would yield a normal number.
+    let remainder_is_tiny = remainder != 0.0 && remainder.abs() < f64::MIN_POSITIVE;
+    let divisor_is_power_of_two = divisor.to_bits() & 0x000f_ffff_ffff_ffff == 0;
+    if remainder_is_tiny && (!divisor_is_power_of_two || (number / divisor).abs() >= 67_108_864.0) {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let mut result = if remainder != 0.0 && (remainder < 0.0) != (divisor < 0.0) {
+        remainder + divisor
     } else {
-        Ok(remainder)
+        remainder
+    };
+    // The ordinary adjusted endpoint and signed zero publish positive zero.
+    if result == 0.0 || result == divisor {
+        result = 0.0;
+    }
+    // Below the strict 2^-1026 boundary the admitted opposite-sign path
+    // subtracts the native remainder from the divisor. Keep this separately
+    // observed branch: replacing it with ordinary floored modulo changes bits.
+    if remainder != 0.0
+        && remainder.abs() < f64::MIN_POSITIVE / 16.0
+        && number.is_sign_negative() != divisor.is_sign_negative()
+    {
+        result = divisor - remainder;
+    }
+    if result != 0.0 && result.abs() < f64::MIN_POSITIVE {
+        Err(WorksheetErrorCode::Num)
+    } else {
+        Ok(result)
     }
 }
 
@@ -54,7 +78,17 @@ pub fn eval_mod_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, BinaryNumericSurfaceError> {
-    eval_binary_numeric_surface(args, resolver, mod_kernel)
+    // Keep padding as an NA at its argument position; an earlier present
+    // error must not be overwritten. The shared prepared policy admits Missing0.
+    let prepared = crate::functions::adapters::prepare_args_values_only(args, resolver)
+        .map_err(BinaryNumericSurfaceError::Coercion)?;
+    crate::functions::elementary_prepared::ordered_binary(
+        &prepared,
+        executor_kernel(BinaryNumericExecSpec::fallible(
+            mod_kernel,
+            MOD_META.real_result_policy,
+        )),
+    )
 }
 
 pub fn map_mod_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetErrorCode {

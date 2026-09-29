@@ -1,0 +1,11 @@
+{
+  "generator": "gen_power_decimal_wrap.py",
+  "selection": "full signed decimal tail -400..-1 and direct-scale controls",
+  "batches": [
+    {
+      "function": "POWER",
+      "path": "batch-power.json",
+      "rows": 1672
+    }
+  ]
+}

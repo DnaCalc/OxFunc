@@ -1,0 +1,15 @@
+{
+  "seed": 202609291517,
+  "phase": "before_independent_oracle_validation",
+  "case_count": 3576,
+  "distinct_forms": 298,
+  "input_sha256": "4ba1a9251e6c4007db4acfb92ec9e8292b74bc4e091ae3b91f7cec5e36286111",
+  "source_sha256": {
+    "crates/oxfunc_core/src/coercion.rs": "56384d9380207e8816c761a310c058c1fa52ae8977daeaa768b8a6d84307718c",
+    "C:\\Work\\DnaCalc\\OxFunc\\smart-fuzzer\\tools\\w111\\gen_numeric_text_core_heldout_20260929.py": "15af1671f9404d05c0f05d1e9a0df7762cd4e01eeb727cfd4a81dc2370d3a442"
+  },
+  "open_lanes": [
+    "locale/grouping/currency/digits/date/time/context",
+    "percentage rounding and decoration placements being validated"
+  ]
+}

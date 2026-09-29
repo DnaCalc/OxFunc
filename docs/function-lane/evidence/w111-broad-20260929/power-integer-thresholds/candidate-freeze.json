@@ -1,0 +1,13 @@
+{
+  "rule": "integer magnitude < u32::MAX; positive-ten effective signed32 decimal scale; original exponent sign controls reciprocal",
+  "sources": {
+    "crates/oxfunc_core/src/functions/power_fn.rs": "e014fb2933044a036e17ef56625de491e2157759488bf36827c823014148e703",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818",
+    "crates/oxfunc_core/src/coercion_decimal_powers.rs": "fd1e7a40afdb899af32a95bba538a2f91193dcfe5e6c4e6ec41a4b89414dc4c7",
+    "crates/oxfunc_core/src/excel_numeric/mod.rs": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "crates/oxfunc_core/src/excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+  },
+  "executable": ".tmp\\sf-power-width-candidate-20260929.exe",
+  "executable_sha256": "670cdc9b2d642870533bac8be634bc25eb6bf097afbd74ffb5b1bb73bc5d5064"
+}

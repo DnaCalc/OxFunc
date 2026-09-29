@@ -1,0 +1,32 @@
+"""Fresh MOD positional-padding validation after the failed426 freeze."""
+import json,random,hashlib,itertools,copy
+from pathlib import Path
+from datetime import datetime,timezone
+import gen_broad_typed_20260929 as g
+root=g.ROOT;out=root/'smart-fuzzer/runs/w111-mod-padding-heldout-request-20260929';out.mkdir(exist_ok=True);assert not(out/'candidate-freeze.json').exists();rng=random.Random(202609293310);g.cases.clear();g.TRANCHE='w111-mod-padding-heldout-20260929'
+shapes=[((3,1),(2,1)),((1,3),(1,2)),((4,2),(2,3)),((2,4),(3,2)),((3,3),(2,2)),((1,1),(4,3))]
+errors=[g.e(c)for c in ['Ref','Div0','Value','Num','NA','Name','Null']]+[g.t('x'),g.t('')]
+for i,(sa,sb) in enumerate(shapes):
+ for j,err in enumerate(errors):
+  for reverse in [False,True]:
+   shapes2=(sb,sa)if reverse else(sa,sb);sa2,sb2=shapes2
+   a=[[g.n(rng.uniform(-17,17))for _ in range(sa2[1])]for _ in range(sa2[0])];b=[[g.n(rng.uniform(.001,17))for _ in range(sb2[1])]for _ in range(sb2[0])]
+   a[-1][-1]=copy.deepcopy(err);b[0][0]=copy.deepcopy(errors[(j+3)%9])
+   g.emit('MOD',f'padding-{i}-{j}-{reverse}',[g.a(a),g.a(b)],axis='independent_positional_padding')
+   fixtures=[]
+   for col0,values in [(2,a),(6,b)]:
+    for ri,row in enumerate(values):
+     for ci,v in enumerate(row):fixtures.append(g.fix(f'{chr(64+col0+ci)}{230+ri}',v))
+   ta='B230'if sa2==(1,1)else f'B230:{chr(65+sa2[1])}{229+sa2[0]}';tb='F230'if sb2==(1,1)else f'F230:{chr(69+sb2[1])}{229+sb2[0]}'
+   g.emit('MOD',f'reference-{i}-{j}-{reverse}',[g.r(ta),g.r(tb)],fixtures,axis='independent_reference_padding')
+for i in range(50):
+ a=g.n(rng.uniform(-33,33));b=rng.choice([g.missing(),g.n(rng.uniform(.1,9)),g.b(True),g.blank()]);args=[a,b]if i%2 else[b,a]
+ g.emit('MOD',f'scalar-control-{i}',args,axis='independent_omission_control')
+ if all(v['kind']not in['missing_arg','empty_cell']for v in args):g.emit('MOD',f'unit-control-{i}',[g.a([[args[0]]]),g.a([[args[1]]])],axis='independent_unit_control')
+for c in g.cases:c['case_id']=c['case_id'].replace('w111typed-','w111modpadding-')
+p=out/'typed.json';p.write_text(json.dumps(dict(schema_version='oxfunc.smart_fuzzer.scenario_seed_case_set.v0',tranche_id=g.TRANCHE,cases=g.cases,tranches=[dict(tranche_id=g.TRANCHE,case_ids=[c['case_id']for c in g.cases])]),separators=(',',':')),encoding='utf-8')
+paths=['crates/oxfunc_core/src/functions/mod_fn.rs','formal/lean/OxFunc/RemainderPublication.lean','formal/lean/OxFunc/Functions/ModFn.lean','crates/oxfunc_core/tests/w111_mod_publication.rs','crates/oxfunc_core/src/functions/surface_dispatch_unary_numeric_spec_generator.rs','crates/oxfunc_core/src/functions/surface_dispatch_by_index_generated.rs','crates/oxfunc_core/src/functions/elementary_prepared.rs','formal/lean/OxFunc/ElementaryPrepared.lean','crates/oxfunc_core/src/functions/binary_numeric.rs','crates/oxfunc_core/src/functions/adapters.rs']
+f=dict(frozen_utc=datetime.now(timezone.utc).isoformat(),source_sha256={p:hashlib.sha256((root/p).read_bytes()).hexdigest()for p in paths},seed=202609293310,rows=len(g.cases),case_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),stage='independent_prepared_v4_ordered_padding')
+(out/'candidate-freeze.json').write_text(json.dumps(f,indent=2),encoding='utf-8')
+for src in paths:(out/(Path(src).name+'.snapshot')).write_bytes((root/src).read_bytes())
+print(len(g.cases))

@@ -27,7 +27,8 @@ def evalSignSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Str
 
 theorem evalSign_numeric_text_admitted :
     evalSignSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalSignSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalSignSurfaceClass, coerceToNumber, parsed]
 
 theorem signMeta_profiles :
     signMeta.kernelSignatureClass = KernelSignatureClass.numToNum

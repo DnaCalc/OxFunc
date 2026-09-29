@@ -1,6 +1,7 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 import OxFunc.ValueUniverse
+import OxFunc.Functions.ConditionalSelection
 
 namespace OxFunc.Functions
 
@@ -38,7 +39,7 @@ def materializeIfErrorInput : CoercionInput → IfErrorValue
   | .logical b => .logical b
   | .error code => .error code
   | .emptyCell => .number 0
-  | .missingArg => .error .value
+  | .missingArg => .number 0
 
 def forceDeferredFallback : DeferredFallback → Except String CoercionInput
   | .ready value => .ok value
@@ -65,9 +66,11 @@ theorem evalIfErrorPrepared_blank_fallback_becomes_zero :
     evalIfErrorPrepared (.error .na) (.ready .emptyCell) = .ok (.number 0) := by
   rfl
 
-theorem evalIfErrorPrepared_missing_fallback_becomes_value_error :
-    evalIfErrorPrepared (.error .na) (.ready .missingArg) = .ok (.error .value) := by
+theorem evalIfErrorPrepared_missing_fallback_becomes_zero :
+    evalIfErrorPrepared (.error .na) (.ready .missingArg) = .ok (.number 0) := by
   rfl
+
+def evalIfErrorPreparedValues := conditionalFallback false
 
 theorem ifErrorMeta_profiles :
     ifErrorMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter

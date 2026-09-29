@@ -27,7 +27,8 @@ def evalTanSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalTan_numeric_text_admitted :
     evalTanSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalTanSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalTanSurfaceClass, coerceToNumber, parsed]
 
 theorem tanMeta_profiles :
     tanMeta.kernelSignatureClass = KernelSignatureClass.numToNum

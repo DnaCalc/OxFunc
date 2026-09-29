@@ -31,10 +31,10 @@ pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if t == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    // Live Excel 16.0 b20326: COTH(x)=1/TANH(x) 28/28 including
-    // COTH(800)=1. COSH/SINH is 5/9 max 1 ULP. Non-finite 1/TANH
+    // W111 retains the reciprocal of the published TANH composition, including
+    // its cancellation-safe small-argument denominator. Non-finite 1/TANH
     // (large |n|) saturates to sign(n) under COTH's real policy.
-    COTH_META.real_result_policy.publish(n, 1.0 / t)
+    COTH_META.real_result_policy.publish(n, crate::excel_numeric::excel_x87_recip(t))
 }
 
 pub fn eval_coth_surface(

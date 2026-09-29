@@ -44,7 +44,7 @@ Define the current-phase contract for the `W060` complex-number family.
 6. invalid complex text such as `"foo"` returns `#NUM!`,
 7. `IMARGUMENT(0)` returns `#DIV/0!`,
 8. division and logarithm poles such as `IMDIV(...,0)`, `IMLN(0)`, `IMLOG10(0)`, and `IMLOG2(0)` return `#NUM!`,
-9. formatting preserves Excel-style omission of the `1` coefficient before `i` or `j`, drops the suffix for purely real results, and snaps near-integer floating outputs to stable integer text,
+9. Formatting omits an exact unit coefficient before `i` or `j` and drops the suffix for purely real results. The former near-integer snapping description is withdrawn. Current build-20430/CV2 evidence supports a 15-significant-digit binary-scaling candidate, with 40 retained adversarial midpoint discrepancies still open; see `evidence/w111-broad-20260929/complex/`. This is a partial formatting model, not a function-completion claim.
 10. `IMPOWER` admits fractional exponents on the current baseline and publishes the principal branch value.
 
 ## 4. Runtime / Formal Anchors

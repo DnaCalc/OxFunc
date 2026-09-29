@@ -1,0 +1,9 @@
+{
+  "executed_runner_sha256": "a2f4aa6ea89eaa1fedbba405f27da7895b150d3c09173dd75e676b3abb58d5ed",
+  "execution_source_verified_against": "ASIN exact-readback14 capture immediately preceding VDB",
+  "executed_runner": "Probe-ExactNumericControls-v1.ps1",
+  "vdb_output_provenance_correction": "Runner source changed on disk while VDB was blocked; its late file hash is the newer source, not the parsed source. Original parsed source is retained and hash-verified above.",
+  "cancellation": "Manual stop of newly created owned Excel PID22604, verified start2026-09-29T15:25:47Z, after more than120 CPU seconds inside Formula2 entry. The original30-second timer only covered explicit Calculate and was not armed at the blocked call.",
+  "semantic_qualification": "16 returned observations;26 unanswered probes. RPC interruption is not a worksheet error or function outcome.",
+  "corrected_runner_policy": "Formula2 assignment/readback and Calculate are covered by the same owned-process watchdog."
+}

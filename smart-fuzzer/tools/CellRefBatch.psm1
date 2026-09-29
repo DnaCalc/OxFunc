@@ -588,9 +588,14 @@ function Test-FormulaTextIsBitExactSafe {
     # is rejected. Short literals (integers, common short decimals,
     # short exponent forms) pass.
     $maxSigDigits = 15
+    # Quoted text and quoted sheet/name tokens contain characters, not numeric
+    # literals. Numeric-looking text must reach the function unchanged so its
+    # own text coercion can be compared with Excel. Doubled quotes are escapes.
+    $syntaxOnly = [regex]::Replace($FormulaText, '"(?:[^"]|"")*"', ' ')
+    $syntaxOnly = [regex]::Replace($syntaxOnly, "'(?:[^']|'')*'", ' ')
     $pattern = '(?<![A-Za-z_$])([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)'
     $regex = [regex] $pattern
-    foreach ($m in $regex.Matches($FormulaText)) {
+    foreach ($m in $regex.Matches($syntaxOnly)) {
         $lit = $m.Groups[1].Value
         # Strip leading sign and exponent (post-e) for digit counting.
         $core = $lit.TrimStart('+','-')
@@ -654,7 +659,7 @@ function Get-StandardSeverityClass {
     # treat as match. This handles compound kinds (arrays, etc.) uniformly.
     $localDigest = [string] (_Get-OutcomeProperty $LocalOutcome "digest_payload")
     $excelDigest = [string] (_Get-OutcomeProperty $ExcelOutcome "digest_payload")
-    if (-not [string]::IsNullOrEmpty($localDigest) -and -not [string]::IsNullOrEmpty($excelDigest) -and $localDigest -eq $excelDigest) {
+    if (-not [string]::IsNullOrEmpty($localDigest) -and -not [string]::IsNullOrEmpty($excelDigest) -and [string]::Equals($localDigest, $excelDigest, [StringComparison]::Ordinal)) {
         return [ordered]@{ severity_class = "match"; sub_tags = @() }
     }
 
@@ -712,9 +717,9 @@ function Get-StandardSeverityClass {
         $lv = [double] $LocalOutcome.value
         $ev = [double] $ExcelOutcome.value
         if ($lv -eq 0.0 -and $ev -eq 0.0) {
-            # Signed-zero match: distinct bits but same numeric value. Treated as match
-            # because Excel's value model collapses ±0.
-            return [ordered]@{ severity_class = "match"; sub_tags = @("signed_zero_collapsed") }
+            # The comparison contract is exact bits. A normal input producing -0
+            # locally while Excel publishes +0 remains a semantic discrepancy.
+            return [ordered]@{ severity_class = "numeric_drift_1ulp"; sub_tags = @("signed_zero_drift"); ulp_distance = 1.0 }
         }
         if ([double]::IsNaN($lv) -or [double]::IsNaN($ev) -or [double]::IsInfinity($lv) -or [double]::IsInfinity($ev)) {
             $subTags.Add("non_finite_drift")
@@ -734,7 +739,7 @@ function Get-StandardSeverityClass {
     }
 
     if ($localKind -eq "logical" -or $localKind -eq "text") {
-        if ([string]$LocalOutcome.value -eq [string]$ExcelOutcome.value) {
+        if ([string]::Equals([string]$LocalOutcome.value, [string]$ExcelOutcome.value, [StringComparison]::Ordinal)) {
             return [ordered]@{ severity_class = "match"; sub_tags = @() }
         }
         $subTags.Add("$localKind`_value_drift")

@@ -1,0 +1,11 @@
+{
+  "source_sha256": {
+    "functions/radians.rs": "326520984606dc9be8c641b55d1c515e639ea974372b4fdea35ba053789cd6ff",
+    "functions/sech.rs": "48c448545d2eeb5a6188ccde8a12e24b5a481bc7b69451490e985e10c70760a1",
+    "functions/cosh.rs": "078c996aceb40af17f39dc45a95c0fbb3aef9326ca8487343b7dab85e0810cdd",
+    "excel_numeric/mod.rs": "eaa288a6e24a045073fe75cc207a02cbe3fbec3f91899c8746d44fd1ad5f4989",
+    "excel_numeric/x87.rs": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+  },
+  "frozen_utc": "2026-09-29T16:03:32.760476+00:00",
+  "phase": "independent_after_staged_arithmetic_refinement"
+}

@@ -1,6 +1,7 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
 import OxFunc.ValueUniverse
+import OxFunc.Functions.LogicalFold
 
 namespace OxFunc.Functions
 
@@ -41,13 +42,7 @@ structure OrPreparedArg where
 
 /-- The same per-item truth rule AND uses (Rust `and_argument_truth` serves AND, OR and XOR). -/
 def orArgumentTruth : OrPreparedArg → Except WorksheetErrorCode (Option Bool)
-  | ⟨_, .logical b⟩ => .ok (some b)
-  | ⟨_, .number n⟩ => .ok (some (n ≠ 0))
-  | ⟨_, .error code⟩ => .error code
-  | ⟨.directScalar, .text _⟩ => .error .value
-  | ⟨.arrayLike, .text _⟩
-  | ⟨_, .missingArg⟩
-  | ⟨_, .emptyCell⟩ => .ok none
+  | ⟨origin, value⟩ => logicalFoldArgumentTruth (origin == .directScalar) value
 
 /-- Mirrors Rust `eval_or_surface` (`crates/oxfunc_core/src/functions/or_fn.rs`). Excel
 evaluates every argument of OR: once an item has decided the result (`decided`, a TRUE was
@@ -78,6 +73,23 @@ def evalOrPrepared : List OrPreparedArg → Except WorksheetErrorCode Bool
               | .ok (some false) => loop xs true decided
               | .ok none => loop xs sawValue decided
       loop args false false
+
+/-- G1-02: direct TRUE/FALSE spellings contribute logical values; other direct text and
+all array/reference text are ignored. An entirely ignored argument list is `#VALUE!`. -/
+theorem evalOrPrepared_direct_text_rule :
+    evalOrPrepared [⟨.directScalar, .text "fAlSe"⟩] = .ok false
+    ∧ evalOrPrepared [⟨.directScalar, .logical false⟩, ⟨.directScalar, .text "TrUe"⟩] = .ok true
+    ∧ evalOrPrepared [⟨.directScalar, .text "x"⟩, ⟨.directScalar, .logical false⟩,
+        ⟨.directScalar, .text "1"⟩, ⟨.directScalar, .text " TRUE "⟩] = .ok false
+    ∧ evalOrPrepared [⟨.directScalar, .logical false⟩, ⟨.arrayLike, .text "TRUE"⟩] = .ok false
+    ∧ evalOrPrepared [⟨.directScalar, .text "x"⟩, ⟨.directScalar, .text "1"⟩] = .error .value := by
+  native_decide
+
+theorem evalOrPrepared_direct_text_does_not_mask_errors :
+    evalOrPrepared [⟨.directScalar, .text "x"⟩, ⟨.directScalar, .error .div0⟩] = .error .div0
+    ∧ evalOrPrepared [⟨.directScalar, .text "TRUE"⟩, ⟨.directScalar, .text "x"⟩,
+        ⟨.directScalar, .error .na⟩, ⟨.directScalar, .error .div0⟩] = .error .na := by
+  native_decide
 
 /-- `=OR(TRUE,1/0)` -> `#DIV/0!`: an error after the deciding TRUE surfaces (`oxf-xvt5.14`). -/
 theorem evalOrPrepared_error_after_deciding_true_surfaces :

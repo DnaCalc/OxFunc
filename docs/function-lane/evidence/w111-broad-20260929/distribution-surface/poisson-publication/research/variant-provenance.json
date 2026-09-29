@@ -1,0 +1,6 @@
+{
+  "source": "crates\\oxfunc_core\\src\\functions\\special_math_common.rs",
+  "source_sha256": "de441194b10cc0f417fa1bc806c6011234dd84c962033601e37aae5bd53d3665",
+  "mutation": "disable only the inherited conservative z>=700/a early exit",
+  "authority": "research-only public GRATIO port variant; no oracle-fitted constants"
+}

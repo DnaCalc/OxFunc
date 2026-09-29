@@ -1,0 +1,16 @@
+{
+  "binary_sha256": "94753fdbe0cd688756fe7c02b30a370930e77b6f90a1fff1e375a61f74dbc4ae",
+  "comparison": "same qualified input banks as current snapshot",
+  "groups": {
+    "numeric": {
+      "rows": 138345,
+      "exact": 126462,
+      "functions": 113
+    },
+    "extended": {
+      "rows": 83245,
+      "exact": 74939,
+      "functions": 72
+    }
+  }
+}

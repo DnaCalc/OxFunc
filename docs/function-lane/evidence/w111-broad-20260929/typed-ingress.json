@@ -1,0 +1,340 @@
+{
+  "schema_version": "w111.typed_fixture_ingress.v1",
+  "captured_utc": "2026-09-29T12:23:37.3878098Z",
+  "runner_sha256": "b833d6a6861dc27e1674a9943682beeeff1d534d69905a64d2548867b6f52f60",
+  "environment": {
+    "excel_version": "16.0",
+    "excel_build": "20430",
+    "workbook_compatibility_version": "2",
+    "operating_system": "Windows (64-bit) NT 10.00",
+    "workbook_date_system": "1900",
+    "precision_as_displayed": false
+  },
+  "excel_process_count_before": 0,
+  "excel_process_count_after": 1,
+  "cases": 19,
+  "mismatches": 0,
+  "records": [
+    {
+      "index": 0,
+      "input": {
+        "value": "2",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "2",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 1,
+      "input": {
+        "value": "00123",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "00123",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 2,
+      "input": {
+        "value": "1E10",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "1E10",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 3,
+      "input": {
+        "value": "01/02/2020",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "01/02/2020",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 4,
+      "input": {
+        "value": "=1+1",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "=1+1",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 5,
+      "input": {
+        "value": "'apostrophe",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "'apostrophe",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 6,
+      "input": {
+        "value": "",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 7,
+      "input": {
+        "value": 0.30000000000000004,
+        "kind": "number"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Double",
+      "observed_value": 0.30000000000000004,
+      "observed_bits": "0x3fd3333333333334",
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": false,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 8,
+      "input": {
+        "value": "FALSE",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "FALSE",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 9,
+      "input": {
+        "value": false,
+        "kind": "logical"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Boolean",
+      "observed_value": false,
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": false,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 10,
+      "input": {
+        "value": true,
+        "kind": "logical"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Boolean",
+      "observed_value": true,
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": false,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 11,
+      "input": {
+        "kind": "empty_cell"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "null",
+      "observed_value": null,
+      "observed_bits": null,
+      "is_blank": true,
+      "is_text": false,
+      "has_formula": false,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 12,
+      "input": {
+        "code": "NA",
+        "kind": "error"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Int32",
+      "observed_value": -2146826246,
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": true,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 13,
+      "input": {
+        "code": "Div0",
+        "kind": "error"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Int32",
+      "observed_value": -2146826281,
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": true,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 14,
+      "input": {
+        "code": "Value",
+        "kind": "error"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Int32",
+      "observed_value": -2146826273,
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": true,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 15,
+      "input": {
+        "code": "Num",
+        "kind": "error"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Int32",
+      "observed_value": -2146826252,
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": true,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 16,
+      "input": {
+        "value": "",
+        "kind": "text"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "String",
+      "observed_value": "",
+      "observed_bits": null,
+      "is_blank": false,
+      "is_text": true,
+      "has_formula": false,
+      "number_format": "@",
+      "prefix_character": "'"
+    },
+    {
+      "index": 17,
+      "input": {
+        "value": 42.0,
+        "kind": "number"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "Double",
+      "observed_value": 42.0,
+      "observed_bits": "0x4045000000000000",
+      "is_blank": false,
+      "is_text": false,
+      "has_formula": false,
+      "number_format": "General",
+      "prefix_character": ""
+    },
+    {
+      "index": 18,
+      "input": {
+        "kind": "empty_cell"
+      },
+      "status": "match",
+      "message": null,
+      "observed_type": "null",
+      "observed_value": null,
+      "observed_bits": null,
+      "is_blank": true,
+      "is_text": false,
+      "has_formula": false,
+      "number_format": "General",
+      "prefix_character": ""
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "generator": "gen_mround_fraction_cutoff.py",
+  "selection": "deep ULP sweep around half fractions, seven quotients and six scales, both signs",
+  "batches": [
+    {
+      "function": "MROUND",
+      "path": "batch-mround.json",
+      "rows": 5460
+    }
+  ]
+}

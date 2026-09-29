@@ -1,0 +1,10 @@
+   Compiling oxfunc_core v0.1.0 (C:\Work\DnaCalc\OxFunc\crates\oxfunc_core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.35s
+     Running tests\w111_atan_typed_replay.rs (target\debug\deps\w111_atan_typed_replay-56e1942f3c27c6aa.exe)
+
+running 2 tests
+test atan_typed_independent_heldout ... ok
+test atan_typed_repeat_controls ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

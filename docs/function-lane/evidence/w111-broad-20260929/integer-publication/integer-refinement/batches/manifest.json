@@ -1,0 +1,36 @@
+{
+  "phase": "discovery_discriminators_not_holdout",
+  "seed": 202609292511,
+  "batches": [
+    {
+      "function": "INT",
+      "path": "batch-int.json",
+      "rows": 26532,
+      "sha256": "bc58ceb6dd5aebc98d5c1831262dfb8f4bdc8fea4392d340399f7fa8444f500c"
+    },
+    {
+      "function": "ISEVEN",
+      "path": "batch-iseven.json",
+      "rows": 15612,
+      "sha256": "25840239ccc73da4724e3935bfdbf60f1b4064eef13808504a1130c3f7927a1f"
+    },
+    {
+      "function": "ISODD",
+      "path": "batch-isodd.json",
+      "rows": 15612,
+      "sha256": "cd315b6b9088adb9f08fcf0810349ec515237c5fdaed5e382ee1a8738b5941cd"
+    },
+    {
+      "function": "TRUNC",
+      "path": "batch-trunc.json",
+      "rows": 3312,
+      "sha256": "e4babf7912adb161113628b3eaca195050654845f007bf0f700eb001621f01a5"
+    },
+    {
+      "function": "ROUNDDOWN",
+      "path": "batch-rounddown.json",
+      "rows": 3312,
+      "sha256": "52a3a002b5481661cba313564716413ef43874005ffb5971e490b2c274c1098b"
+    }
+  ]
+}

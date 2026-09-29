@@ -1,0 +1,18 @@
+{
+  "authority": "candidate_freeze_before_fresh_independent_capture",
+  "utc": "2026-09-29T15:17:08.408009+00:00",
+  "sources": [
+    {
+      "path": "reduced-frozen-acot.rs",
+      "sha256": "1df37209662103fea3a70751e1c040f93517ce170a8ec280beb223f9d3a1399a"
+    },
+    {
+      "path": "reduced-frozen-numeric-mod.rs",
+      "sha256": "5590d962371a15b8eac10bf0ea09496ae5b7465997da695d19c7d6511ae48262"
+    },
+    {
+      "path": "reduced-frozen-x87.rs",
+      "sha256": "d840f964a082393d1dd6d01023847e987a98c5d745935e7b19db85dbb97083cd"
+    }
+  ]
+}

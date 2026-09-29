@@ -1,0 +1,64 @@
+{
+  "artifacts": [
+    {
+      "path": "extended-qualified.json",
+      "sha256": "935af1025eda0c146c37f0a54c42dcb880a562a225dfc2e054f0be27b56e7632"
+    },
+    {
+      "path": "ledger-changes.json",
+      "sha256": "cac48225313b3d730c95b7bb8d792cd16ff6669b44acee502d86af72e42aeccd"
+    },
+    {
+      "path": "numeric-qualified.json",
+      "sha256": "5abf335f864f3d4d6b5e01f3bac2dce1a375402afbcf3958226625ebcd4e6cfc"
+    },
+    {
+      "path": "numeric-summary.json",
+      "sha256": "8a55d13219a8b3e17b33f19e01507be6b3334c22266db4fa2bf293ef69c69d61"
+    },
+    {
+      "path": "report.json",
+      "sha256": "47277575757f6d1a0ce1b7300d67dcdbd0fd22ca7afa8852aebf9975cdb4adb3"
+    },
+    {
+      "path": "source-freeze.json",
+      "sha256": "4704a4dcc7dab8e2714d917f5bf5936fec9d30d87a7abfd990fb3a2ede5cf4e9"
+    },
+    {
+      "path": "typed-summary.json",
+      "sha256": "555dfe7ce4298fcdeb64b381af734f3e886f0aab80d75170a09e7a8dac653d19"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/cases/cases.jsonl",
+      "sha256": "6b29bdc003f19c7d086431079e17846c2638b8a037eadadb349ed51982511d13"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/manifest.json",
+      "sha256": "39a77229d630bac23c93c53ead2d66860a568bc53c4927ba20aaaed13a5c3ecb"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/outcomes/excel.jsonl",
+      "sha256": "bd0276ca12ea325000d5ef4ec3536071a53b4efa8a0c9f0518b866634db6d671"
+    },
+    {
+      "path": "w111-broad-typed-20260929-002/outcomes/local-snapshot-1735.jsonl",
+      "sha256": "b63736e31c1eed57defcb5edee65eac2467f68d765df88b0efc905f4199bff5f"
+    },
+    {
+      "path": "w111-numeric-text-20260929/cases/cases.jsonl",
+      "sha256": "59095b31d5b2f34296dc62fa37214f3fd80162c97f4d0ee8e26f6de90e7dc87e"
+    },
+    {
+      "path": "w111-numeric-text-20260929/manifest.json",
+      "sha256": "c3fe2cfd693f3ab7dbe43c0e5e3d840c3ab71e39c1e796c181f058c2315bd1aa"
+    },
+    {
+      "path": "w111-numeric-text-20260929/outcomes/excel.jsonl",
+      "sha256": "3785eab28b2e50af27c42723249e2da933b09715fd969c70ad32cc6df5d8de95"
+    },
+    {
+      "path": "w111-numeric-text-20260929/outcomes/local-snapshot-1735.jsonl",
+      "sha256": "74b1ba5a2b48694eef1c99e6d1c601448d375ee980da0bec629a892a41413491"
+    }
+  ]
+}

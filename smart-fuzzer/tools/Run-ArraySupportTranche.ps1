@@ -385,13 +385,61 @@ function Set-ExcelCellFromTypedValue {
         [Parameter(Mandatory = $true)]$Cell,
         [Parameter(Mandatory = $true)]$Value
     )
-    switch (Get-ValueKind $Value) {
+    $kind = Get-ValueKind $Value
+    # Reset inherited text formatting before every write, including a later
+    # number/formula overwrite of a cell used by a text fixture.
+    $Cell.NumberFormat = "General"
+    switch ($kind) {
         "number" { $Cell.Value2 = [double]$Value.value }
-        "text" { $Cell.Value2 = [string]$Value.value }
+        "text" {
+            # The leading apostrophe is Excel's text-entry prefix, not part of
+            # Value2. It also represents a constant zero-length string without
+            # clearing the cell or adding a formula-state dependency (= "").
+            $Cell.NumberFormat = "@"
+            $Cell.Value2 = "'" + [string]$Value.value
+        }
         "logical" { $Cell.Value2 = [bool]$Value.value }
         "empty_cell" { $Cell.ClearContents() | Out-Null }
-        "error" { $Cell.Formula2 = Get-ExcelErrorFormula ([string]$Value.code) }
+        "error" {
+            $Cell.Formula2 = Get-ExcelErrorFormula ([string]$Value.code)
+            $Cell.Calculate() | Out-Null
+        }
         default { throw "unsupported scalar fixture value kind: $($Value.kind)" }
+    }
+
+    # A fixture-ingress change must never masquerade as a function mismatch.
+    # Compare numeric bits and typed values before evaluating the tested call.
+    $observed = $Cell.Value2
+    $valid = switch ($kind) {
+        "number" {
+            ($observed -is [double]) -and
+                ((Get-DoubleBitsHex ([double]$observed)) -eq (Get-DoubleBitsHex ([double]$Value.value)))
+        }
+        "text" {
+            ($observed -is [string]) -and
+                [string]::Equals([string]$observed, [string]$Value.value, [StringComparison]::Ordinal) -and
+                (-not [bool]$Cell.HasFormula)
+        }
+        "logical" { ($observed -is [bool]) -and ($observed -eq [bool]$Value.value) }
+        "empty_cell" { ($null -eq $observed) -and (-not [bool]$Cell.HasFormula) }
+        "error" {
+            $fixtureSheet = $Cell.Worksheet
+            try {
+                $outcome = Convert-ExcelCellToOutcome $fixtureSheet $Cell
+                ($outcome.kind -eq "error") -and ($outcome.code -eq [string]$Value.code)
+            } finally {
+                if ([Runtime.InteropServices.Marshal]::IsComObject($fixtureSheet)) {
+                    [void][Runtime.InteropServices.Marshal]::ReleaseComObject($fixtureSheet)
+                }
+            }
+        }
+    }
+    if (-not $valid) {
+        $address = [string]$Cell.Address($false, $false)
+        $observedType = if ($null -eq $observed) { "null" } else { $observed.GetType().Name }
+        $expectedDetail = if ($kind -eq "number") { Get-DoubleBitsHex ([double]$Value.value) } else { $kind }
+        $observedDetail = if ($observed -is [double]) { Get-DoubleBitsHex ([double]$observed) } else { $observedType }
+        throw "fixture ingress mismatch at ${address}: expected $expectedDetail; observed $observedDetail"
     }
 }
 
@@ -541,13 +589,23 @@ function Invoke-ExcelArrayEvaluation {
         $excel.ScreenUpdating = $false
         $excel.EnableEvents = $false
         $workbook = $excel.Workbooks.Add()
+        $workbook.PrecisionAsDisplayed = $false
+        if ([bool]$workbook.PrecisionAsDisplayed) { throw "PrecisionAsDisplayed could not be disabled" }
         $worksheet = $workbook.Worksheets.Item(1)
+        $excelOs = try { [string]$excel.OperatingSystem } catch { "unavailable" }
         $environment = [ordered]@{
             available = $true
             version = [string]$excel.Version
             build = [string]$excel.Build
             calculation = [string]$excel.Calculation
-            workbook_compatibility_version = try { [string]$workbook.CompatibilityVersion } catch { "unavailable" }
+            workbook_compatibility_version = $(try { [string]$workbook.CompatibilityVersion } catch { "unavailable" })
+            channel = "unavailable_not_queried"
+            bitness = if ($excelOs -match '(?i)64[ -]?bit') { "64-bit" } elseif ($excelOs -match '(?i)32[ -]?bit') { "32-bit" } else { "unavailable" }
+            operating_system = $excelOs
+            workbook_date_system = if ([bool]$workbook.Date1904) { "1904" } else { "1900" }
+            precision_as_displayed = [bool]$workbook.PrecisionAsDisplayed
+            excel_input_plumbing = "typed_value2_with_fixture_readback"
+            fixture_readback_policy = "numeric_exact_bits_text_ordinal_logical_blank_error_code"
         }
 
         foreach ($case in $Cases) {
@@ -585,6 +643,7 @@ function Invoke-ExcelArrayEvaluation {
                 }
 
                 $anchor = $worksheet.Range($formulaCell)
+                $anchor.NumberFormat = "General"
                 $anchor.Formula2 = [string]$case.formula_text
                 $anchor.Calculate() | Out-Null
                 try {
@@ -634,7 +693,7 @@ function Invoke-ExcelArrayEvaluation {
                     function_id = [string]$case.function_id
                     formula_text = [string]$case.formula_text
                     evaluator_id = "excel.com.dynamic_array_spill_capture/0.1.0"
-                    execution_status = "excel_case_harness_error"
+                    execution_status = if ($_.Exception.Message -like "fixture ingress mismatch*") { "excel_fixture_ingress_mismatch" } else { "excel_case_harness_error" }
                     formula_cell = if ($null -eq $formulaCell) { $null } else { $formulaCell }
                     spill_address = $null
                     outcome = (New-HarnessErrorOutcome $_.Exception.Message)
@@ -703,7 +762,8 @@ function Test-OneByOneArrayPublicationSeam {
         return $false
     }
 
-    return ($LocalDigest -eq "array:1x1:[$ExcelDigest]" -or $ExcelDigest -eq "array:1x1:[$LocalDigest]")
+    return ([string]::Equals($LocalDigest, "array:1x1:[$ExcelDigest]", [StringComparison]::Ordinal) -or
+        [string]::Equals($ExcelDigest, "array:1x1:[$LocalDigest]", [StringComparison]::Ordinal))
 }
 
 function Test-KnownResidualComparison {
@@ -718,15 +778,15 @@ function Test-KnownResidualComparison {
 
     if ($functionId -eq "FUNC.BESSELY" -and
         $formulaText -eq "=BESSELY(2.5,1)" -and
-        $LocalDigest -eq "number:0x3fc2ad722ba3570c" -and
-        $ExcelDigest -eq "number:0x3fc2ad720e3ee754") {
+        [string]::Equals($LocalDigest, "number:0x3fc2ad722ba3570c", [StringComparison]::Ordinal) -and
+        [string]::Equals($ExcelDigest, "number:0x3fc2ad720e3ee754", [StringComparison]::Ordinal)) {
         return $true
     }
 
     if ($functionId -eq "FUNC.MINVERSE" -and
         $formulaText -eq "=MINVERSE({1,2;3,4})" -and
-        $LocalDigest -eq "array:2x2:[number:0xbffffffffffffffe|number:0x3feffffffffffffe|number:0x3ff7ffffffffffff|number:0xbfdfffffffffffff]" -and
-        $ExcelDigest -eq "array:2x2:[number:0xbfffffffffffffff|number:0x3fefffffffffffff|number:0x3ff7ffffffffffff|number:0xbfdffffffffffffe]") {
+        [string]::Equals($LocalDigest, "array:2x2:[number:0xbffffffffffffffe|number:0x3feffffffffffffe|number:0x3ff7ffffffffffff|number:0xbfdfffffffffffff]", [StringComparison]::Ordinal) -and
+        [string]::Equals($ExcelDigest, "array:2x2:[number:0xbfffffffffffffff|number:0x3fefffffffffffff|number:0x3ff7ffffffffffff|number:0xbfdffffffffffffe]", [StringComparison]::Ordinal)) {
         return $true
     }
 
@@ -819,7 +879,7 @@ function Compare-ArrayOutcomes {
             $classification = "generator_invalid"
         } elseif ([string]$excel.execution_status -ne "ok") {
             $classification = "excel_harness_blocked"
-        } elseif ($localDigest -eq $excelDigest) {
+        } elseif ([string]::Equals($localDigest, $excelDigest, [StringComparison]::Ordinal)) {
             $classification = "exact_typed_bit_match"
         } elseif (Test-OneByOneArrayPublicationSeam -LocalDigest $localDigest -ExcelDigest $excelDigest) {
             $classification = "adapter_or_seam_mismatch"
@@ -936,7 +996,7 @@ function Compare-ArrayOutcomes {
                 [string]$variantRecord.execution_status -eq "ok") {
                 $controlDigest = Get-RecordDigest $controlRecord
                 $variantDigest = Get-RecordDigest $variantRecord
-                $pairClass = if ($controlDigest -ne $variantDigest) {
+                $pairClass = if (-not [string]::Equals($controlDigest, $variantDigest, [StringComparison]::Ordinal)) {
                     "differentiated"
                 } else {
                     "not_differentiated"
@@ -1105,11 +1165,15 @@ $Manifest = [ordered]@{
     schema_version = "oxfunc.smart_fuzzer.array_run_manifest.v0"
     run_id = $RunId
     runner = "smart-fuzzer/tools/Run-ArraySupportTranche.ps1"
-    runner_version = "0.1.0"
+    runner_version = "0.2.0"
+    runner_sha256 = (Get-FileHash -LiteralPath (Join-Path $ScriptPath "Run-ArraySupportTranche.ps1") -Algorithm SHA256).Hash.ToLowerInvariant()
     generated_utc = (Get-Date).ToUniversalTime().ToString("o")
     git_revision = Get-GitRevision
     git_status_short = Get-GitStatusShort
     tranche_path = if ([string]::IsNullOrWhiteSpace($CaseSetPath)) { $TranchePath } else { $CaseSetPath }
+    source_manifest_sha256 = (Get-FileHash -LiteralPath (Join-Path $RepoRoot $(if ([string]::IsNullOrWhiteSpace($CaseSetPath)) { $TranchePath } else { $CaseSetPath })) -Algorithm SHA256).Hash.ToLowerInvariant()
+    materialized_cases_sha256 = (Get-FileHash -LiteralPath $CasesPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    excel_environment = $ExcelEnvironment
     case_set_tranche_id = $CaseSetTrancheId
     tranche_id = [string]$Tranche.tranche_id
     artifacts = [ordered]@{

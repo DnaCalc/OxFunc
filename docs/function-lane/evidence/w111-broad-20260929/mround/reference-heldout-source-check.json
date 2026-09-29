@@ -1,0 +1,13 @@
+{
+  "rows": 384,
+  "exact_matches": 384,
+  "sources_unchanged": {
+    "crates/oxfunc_core/src/functions/mround.rs": true,
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": true,
+    "formal/lean/OxFunc/Functions/Mround.lean": true,
+    "crates/oxfunc_core/src/coercion.rs": true,
+    "crates/oxfunc_core/src/coercion_decimal.rs": true,
+    "crates/oxfunc_core/src/excel_numeric/mod.rs": true,
+    "crates/oxfunc_core/src/excel_numeric/x87.rs": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "reason": "The initial capture had briefly overlapping Excel runners; old generated aliases were identical duplicates and misleadingly named independent. Content is retained under provisional names. Only serial repeat counts as independent.",
+  "aliases": [
+    {
+      "old_alias": "cross-origin-independent-cases.json",
+      "canonical_provisional_file": "cross-origin-provisional-cases.json",
+      "identical_sha256": "0f83b8917909a72ab0133c140228728acba437d009cf6417c925f1d58262e752"
+    },
+    {
+      "old_alias": "cross-origin-independent-excel.json",
+      "canonical_provisional_file": "cross-origin-provisional-excel.json",
+      "identical_sha256": "8342940e0ec0661d1cc3b313496f7ab441aacb01acf5b4a6fa0e591a27fc55fe"
+    },
+    {
+      "old_alias": "cross-origin-independent-local.json",
+      "canonical_provisional_file": "cross-origin-provisional-local.json",
+      "identical_sha256": "dd98bb19a0fe59aa4ca88a1d3ba5ee3cbb90d3d316ddf737fcb8c2dc4218f6f2"
+    },
+    {
+      "old_alias": "cross-origin-independent-manifest.json",
+      "canonical_provisional_file": "cross-origin-provisional-manifest.json",
+      "identical_sha256": "7d24cdb9d9c8d0702c4c0c7501c66d2ee4dd1afd1f92acbe3c93353c0520bde3"
+    },
+    {
+      "old_alias": "cross-origin-independent-rollup.json",
+      "canonical_provisional_file": "cross-origin-provisional-rollup.json",
+      "identical_sha256": "e7b7d94d34576210a21b127197d9a806d7d952480e208344fb7a0bc3093e01f4"
+    }
+  ]
+}

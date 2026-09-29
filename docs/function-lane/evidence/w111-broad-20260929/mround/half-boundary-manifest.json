@@ -1,0 +1,11 @@
+{
+  "generator": "gen_mround_half_boundaries.py",
+  "selection": "mathematical quotient half-boundaries plus labelled retained counterexample neighbors",
+  "batches": [
+    {
+      "function": "MROUND",
+      "path": "batch-mround.json",
+      "rows": 7734
+    }
+  ]
+}

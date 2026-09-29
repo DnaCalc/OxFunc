@@ -49,23 +49,28 @@ def daysFromCivil (year month day : Int) : Int :=
   era * 146097 + doe - 719468
 
 def excelSerialFromYmd (year month day : Int) : Except WorksheetErrorCode Int :=
-  if year = 1900 ∧ month = 2 ∧ day = 29 then
-    .ok 60
-  else
-    let base := daysFromCivil 1899 12 31
-    let days := daysFromCivil year month 1 - base + (day - 1)
-    if days < 0 then
-      .error .num
-    else if days ≥ 60 then
-      .ok (days + 1)
-    else
-      .ok days
+  let base := daysFromCivil 1899 12 31
+  let start := daysFromCivil year month 1 - base
+  let start := if start ≥ 60 then start + 1 else start
+  let serial := start + day - 1
+  if serial < 0 ∨ serial > 2958465 then .error .num else .ok serial
+
+/-- Finite date-argument binding. Exact rational gaps encode the observed
+inclusive RN64-to-RN53 boundary; the downstream date arithmetic is integral. -/
+def dateIntegerFloor (q : Rat) : Int :=
+  let upper := -Int.ediv (-q.num) q.den
+  let threshold : Rat := if upper > 0 then 2049 / 8589934592 else 2049 / 17179869184
+  if (upper : Rat) - q ≤ threshold then upper else upper - 1
 
 def normalizeDateYear (year : Int) : Int :=
-  if 0 ≤ year ∧ year ≤ 1899 then
-    year + 1900
-  else
-    year
+  let year := min year 10000
+  let bits := if -2147483648 ≤ year ∧ year < 2147483648 then year else 0
+  let bits := Int.emod bits 65536
+  let signed := if bits ≥ 32768 then bits - 65536 else bits
+  signed + if signed < 1900 then 1900 else 0
+
+def normalizeDateDay (day : Int) : Int :=
+  if -32768 ≤ day ∧ day ≤ 32767 then day else 32767
 
 def normalizeDateYearMonth (year month : Int) : Int × Int :=
   let monthIndex := year * 12 + (month - 1)
@@ -73,22 +78,32 @@ def normalizeDateYearMonth (year month : Int) : Int × Int :=
   let normalizedMonth := Int.emod monthIndex 12 + 1
   (normalizedYear, normalizedMonth)
 
+def dateCoerceNumber : CoercionInput → Except WorksheetErrorCode Rat
+  | .missingArg | .emptyCell => .ok 0
+  | arg => match coerceToNumber arg with
+    | .ok n => .ok n
+    | .error (.worksheetError code) => .error code
+    | .error _ => .error .value
+
 def evalDatePrepared
-    (year month day : CoercionInput) : Except WorksheetErrorCode Int :=
-  match coerceToNumber year, coerceToNumber month, coerceToNumber day with
-  | .ok y, .ok m, .ok d =>
-      let yearValue := normalizeDateYear (truncateRatToInt y)
-      let monthValue := truncateRatToInt m
-      let dayValue := truncateRatToInt d
+    (year month day : CoercionInput) : Except WorksheetErrorCode Int := do
+      let y ← dateCoerceNumber year
+      let m ← dateCoerceNumber month
+      let d ← dateCoerceNumber day
+      let yearValue := normalizeDateYear (dateIntegerFloor y)
+      let monthValue := dateIntegerFloor m
+      let dayValue := normalizeDateDay (dateIntegerFloor d)
       let (normalizedYear, normalizedMonth) := normalizeDateYearMonth yearValue monthValue
-      if normalizedYear < 0 ∨ normalizedYear > 9999 then
+      if monthValue < -32767 ∨ monthValue ≥ 32767 ∨ normalizedYear < 1900 ∨ normalizedYear > 9999 then
         .error .num
       else
         excelSerialFromYmd normalizedYear normalizedMonth dayValue
-  | .error (.worksheetError code), _, _ => .error code
-  | _, .error (.worksheetError code), _ => .error code
-  | _, _, .error (.worksheetError code) => .error code
-  | _, _, _ => .error .value
+
+theorem dateCoerceNumber_observed_preparation :
+    dateCoerceNumber .missingArg = .ok 0 ∧
+    dateCoerceNumber .emptyCell = .ok 0 ∧
+    dateCoerceNumber (.logical true) = .ok 1 ∧
+    evalDatePrepared (.text "x") (.error .div0) (.number 1) = .error .value := by native_decide
 
 theorem evalDatePrepared_serial_zero_boundary :
     evalDatePrepared (.number 1900) (.number 1) (.number 0) = .ok 0 := by
@@ -111,5 +126,28 @@ theorem dateMeta_profiles :
     dateMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter
     ∧ dateMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
   simp [dateMeta]
+
+theorem evalDatePrepared_rollover_and_width_witnesses :
+    evalDatePrepared (.number 1900) (.number 2) (.number 30) = .ok 61 ∧
+    evalDatePrepared (.number (-1)) (.number 13) (.number 1) = .ok 1 ∧
+    evalDatePrepared (.number (-65536)) (.number 1) (.number 1) = .ok 1 ∧
+    evalDatePrepared (.number 65536) (.number 1) (.number 1) = .error .num ∧
+    evalDatePrepared (.number 1900) (.number 1) (.number (-32769)) = .ok 32767 ∧
+    evalDatePrepared (.number 9999) (.number 12) (.number 32) = .error .num := by
+  native_decide
+
+theorem dateIntegerFloor_boundary_witnesses :
+    dateIntegerFloor (1 - 2049 / 8589934592) = 1 ∧
+    dateIntegerFloor (1 - 2050 / 8589934592) = 0 ∧
+    dateIntegerFloor (-2049 / 17179869184) = 0 ∧
+    dateIntegerFloor (-2050 / 17179869184) = -1 := by
+  native_decide
+
+theorem normalizeDateYear_signed_width_and_cap :
+    normalizeDateYear 10001 = 10000 ∧
+    normalizeDateYear 65536 = 10000 ∧
+    normalizeDateYear (-65537) = 1899 ∧
+    normalizeDateYear (-67438) = -2 ∧
+    normalizeDateYear (-848223069) = 9379 := by native_decide
 
 end OxFunc.Functions

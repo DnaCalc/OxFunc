@@ -1,6 +1,10 @@
 import OxFunc.FunctionCore
+import OxFunc.AggregatePublication
 namespace OxFunc.Functions
 open OxFunc
+
+abbrev devSqNumericBinding := AggregatePublication.devsq
+abbrev devSqPreparedBinding := AggregatePublication.devsqPrepared
 def devSqMeta : FunctionMeta := {
   functionId := "FUNC.DEVSQ", arity := { min := 1, max := 255 }, determinism := .deterministic, volatility := .nonvolatile,
   hostInteraction := .none, threadSafety := .safePure, argPreparationProfile := .valuesOnlyPreAdapter,

@@ -1,0 +1,13 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "validation": "public-dispatch Rust replay; exact binary64 bits/text/error tags",
+  "rows": 7976,
+  "matches": 7976,
+  "functions": {
+    "ACOT": 7976
+  },
+  "misses": [],
+  "candidate_sources_unchanged_from": "reduced-candidate-freeze.json"
+}

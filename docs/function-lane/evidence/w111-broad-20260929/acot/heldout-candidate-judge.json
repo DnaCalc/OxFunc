@@ -1,0 +1,40 @@
+{
+  "candidate": "fpatan-extended-recip-angle",
+  "input_subnormals_excluded": 0,
+  "matches": 7942,
+  "misses": [
+    {
+      "actual": "0x400043dddca29e84",
+      "args": [
+        "0xbfdfe545a90d332b"
+      ],
+      "expected": "0x400043dddca29e83",
+      "id": "acot-heldout-2026092918-07932-prior-atan-residual-control"
+    },
+    {
+      "actual": "0x3ff1bc3aef431d29",
+      "args": [
+        "0x3fdfe545a90d332b"
+      ],
+      "expected": "0x3ff1bc3aef431d2a",
+      "id": "acot-heldout-2026092918-07933-prior-atan-residual-control"
+    },
+    {
+      "actual": "0x400043dddca29e84",
+      "args": [
+        "0xbfdfe545a90d332c"
+      ],
+      "expected": "0x400043dddca29e83",
+      "id": "acot-heldout-2026092918-07934-prior-atan-residual-control"
+    },
+    {
+      "actual": "0x3ff1bc3aef431d29",
+      "args": [
+        "0x3fdfe545a90d332c"
+      ],
+      "expected": "0x3ff1bc3aef431d2a",
+      "id": "acot-heldout-2026092918-07935-prior-atan-residual-control"
+    }
+  ],
+  "rows": 7946
+}

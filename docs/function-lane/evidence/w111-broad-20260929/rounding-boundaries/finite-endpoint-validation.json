@@ -1,0 +1,38 @@
+{
+  "status": "in_progress",
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "independent 27120-row capture pending",
+    "raw_overflow_numeric_publication",
+    "historical_TRUNC_MAX_capture_conflict",
+    "initial15_precision",
+    "contextual_numeric_text",
+    "evaluator_declaration_review"
+  ],
+  "discovery_replay": {
+    "ordinary_count_scale_rows": 102472,
+    "endpoint_rows": 14224,
+    "finite_and_error_endpoint_rows_exact": 13652,
+    "unresolved_raw_payload_rows": 572,
+    "newly_repaired_initial_subnormal_rows": 672,
+    "newly_identified_and_repaired_positive_zero_rows": 24
+  },
+  "checks": [
+    {
+      "command": "cargo test -p oxfunc_core --test w111_rounding_boundary_live_replay",
+      "result": "8 passed"
+    },
+    {
+      "command": "cargo test -p oxfunc_core --test w111_numeric_text_live_replay",
+      "result": "13 passed"
+    },
+    {
+      "command": "lake build OxFunc.DecimalRounding OxFunc.Functions.Round OxFunc.Functions.RoundDownFn OxFunc.Functions.RoundUpFn OxFunc.Functions.TruncFn",
+      "result": "13 jobs passed; subsequent positive-zero assertion rebuilt DecimalRounding with 6 jobs passed"
+    }
+  ],
+  "independent_freeze": "smart-fuzzer/runs/w111-rounding-refined-heldout-20260929/final-candidate-freeze.json",
+  "review": "Read-only second-agent review found no defect in arithmetic extraction or isolation of the initial subnormal policy; parser bounds and publication preserved."
+}

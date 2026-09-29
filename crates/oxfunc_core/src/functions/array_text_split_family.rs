@@ -145,7 +145,9 @@ fn parse_arraytotext_format(prepared: Option<&CalcValue>) -> Result<bool, ArrayT
 
 fn array_cell_to_concise_fragment(cell: &CalcValue) -> String {
     match cell.core() {
-        CoreValue::Number(n) => format!("{n}"),
+        CoreValue::Number(_) => coerce_prepared_to_text(cell)
+            .expect("number text coercion")
+            .to_string_lossy(),
         CoreValue::Text(t) => t.to_string_lossy(),
         CoreValue::Logical(b) => {
             if *b {
@@ -166,7 +168,9 @@ fn escape_strict_text(text: &ExcelText) -> String {
 
 fn array_cell_to_strict_fragment(cell: &CalcValue) -> String {
     match cell.core() {
-        CoreValue::Number(n) => format!("{n}"),
+        CoreValue::Number(_) => coerce_prepared_to_text(cell)
+            .expect("number text coercion")
+            .to_string_lossy(),
         CoreValue::Text(t) => format!("\"{}\"", escape_strict_text(t)),
         CoreValue::Logical(b) => {
             if *b {

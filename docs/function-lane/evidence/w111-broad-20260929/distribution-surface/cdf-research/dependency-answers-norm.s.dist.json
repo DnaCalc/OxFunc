@@ -1,0 +1,3733 @@
+{
+  "function": "NORM.S.DIST",
+  "witnesses": [
+    {
+      "id": "norm.s.dist-cdf-dependency-00000-failed-normal-wrapper",
+      "args": [
+        "0xc0103de48707a4a0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ef9adf8232a1170"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00001-failed-normal-wrapper",
+      "args": [
+        "0x3fbdc140f4a054ee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe17b00850d362c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00002-failed-normal-wrapper",
+      "args": [
+        "0x3feab482481041fd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe9894c95bcdc2e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00003-failed-normal-wrapper",
+      "args": [
+        "0x3ff218a5a2b35f88",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3febdf0946ab722e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00004-failed-normal-wrapper",
+      "args": [
+        "0xc031d9e6a71a4ec5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x31390090995e35e2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00005-failed-normal-wrapper",
+      "args": [
+        "0xc00317e0bcb2bd97",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f8169098a595322"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00006-failed-normal-wrapper",
+      "args": [
+        "0xc01f662380824496",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ce2c65a653dd403"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00007-failed-normal-wrapper",
+      "args": [
+        "0xc008d0e0b97dae20",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f4f7e7277fb2269"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00008-failed-normal-wrapper",
+      "args": [
+        "0xc03decac92ca2a85",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x172c3e62edbd6191"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00009-failed-normal-wrapper",
+      "args": [
+        "0xc017fce1d42a4900",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e11452b2da24eb7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00010-failed-normal-wrapper",
+      "args": [
+        "0xc03e7a6b761b4127",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x15a96d3d4c1869a3"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00011-failed-normal-wrapper",
+      "args": [
+        "0xc041d4a8e0e48ca7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0631cb9622947bfa"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00012-failed-normal-wrapper",
+      "args": [
+        "0xc032743dbf8837a7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x303c00440bbc48f9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00013-failed-normal-wrapper",
+      "args": [
+        "0xc0288d78944fbfac",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x38d42c331e222227"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00014-failed-normal-wrapper",
+      "args": [
+        "0xc03dd54ee58bbd38",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x176b12360ad5e934"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00015-failed-normal-wrapper",
+      "args": [
+        "0xbfe0b4ac6279ef00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd340920a476e76"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00016-failed-normal-wrapper",
+      "args": [
+        "0xc036efc4f5fffba5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x27d947e428feb3d4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00017-failed-normal-wrapper",
+      "args": [
+        "0xc042b66bc8bc007e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00611cd34c4efd60"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00018-failed-normal-wrapper",
+      "args": [
+        "0xc01728553666a660",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e2e5756891e8569"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00019-failed-normal-wrapper",
+      "args": [
+        "0xc037a64d4678402a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2659322afbf13792"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00020-failed-normal-wrapper",
+      "args": [
+        "0xc026d01ba7844398",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x39c3af2e5a131484"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00021-failed-normal-wrapper",
+      "args": [
+        "0xc03f26ce75622d41",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x13ca0009e11e9658"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00022-failed-normal-wrapper",
+      "args": [
+        "0xc031c70ad93bea78",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x315750a65efb1c49"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00023-failed-normal-wrapper",
+      "args": [
+        "0xc0415fec1a2921ce",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0916d2811637a047"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00024-failed-normal-wrapper",
+      "args": [
+        "0xc0408ec27f81a92b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0e17dcba3dda491d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00025-failed-normal-wrapper",
+      "args": [
+        "0xc042b91c63ce5e28",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x004f26b753ab5733"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00026-failed-normal-wrapper",
+      "args": [
+        "0xc0331e9de03f5b92",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f1a52e3b2113267"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00027-failed-normal-wrapper",
+      "args": [
+        "0xc02ccc80ce812576",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x364310a86476ab97"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00028-failed-normal-wrapper",
+      "args": [
+        "0xc0310c984b8cb3f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x327ddac1e175d361"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00029-failed-normal-wrapper",
+      "args": [
+        "0xc03ce10c26c708ba",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x19f29361d41aaa23"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00030-failed-normal-wrapper",
+      "args": [
+        "0xc042beda0473678f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x00272f5ca8d886cd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00031-failed-normal-wrapper",
+      "args": [
+        "0xc0410ef10e5e17e8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0b0f47b98d671fb9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00032-failed-normal-wrapper",
+      "args": [
+        "0xc03502ad9a98ed72",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2bacc61701418fbb"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00033-failed-normal-wrapper",
+      "args": [
+        "0xc01c21e62cfba030",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3d71c45c69b29e00"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00034-failed-normal-wrapper",
+      "args": [
+        "0xc0253f753fd18e88",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3a8c8c70475e1b3c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00035-failed-normal-wrapper",
+      "args": [
+        "0xc040049695c7ac92",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x114478e2d4c364b8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00036-failed-normal-wrapper",
+      "args": [
+        "0xc03f6d0c227b153f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1303bae8b65391b4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00037-failed-normal-wrapper",
+      "args": [
+        "0xc032210295d49b34",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x30c54bf087e537d9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00038-failed-normal-wrapper",
+      "args": [
+        "0xc02afbc6fd88c3be",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37686065bd672996"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00039-failed-normal-wrapper",
+      "args": [
+        "0xc02cbb0c85c7b12c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x364f33e56a609147"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00040-failed-normal-wrapper",
+      "args": [
+        "0xc02008934d0254c4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3cc38f68673d153e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00041-failed-normal-wrapper",
+      "args": [
+        "0xc03b7ff4aa55d3ee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1d74cddc9307e775"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00042-failed-normal-wrapper",
+      "args": [
+        "0xc00c2ff085c0bc60",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f2bebae6e162ae2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00043-failed-normal-wrapper",
+      "args": [
+        "0xc0319931e2e2bb66",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x31a17b7dad45d89e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00044-failed-normal-wrapper",
+      "args": [
+        "0xc02a15ade8611b34",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37f320ba8f31df9d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00045-failed-normal-wrapper",
+      "args": [
+        "0xc015f4d86f377ff8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e55b02311d82ad4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00046-failed-normal-wrapper",
+      "args": [
+        "0xc020513a1db04ef0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ca869bfbdcd6a66"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00047-failed-normal-wrapper",
+      "args": [
+        "0xc03d0180d79f04cb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x199e2ce0c23ca933"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00048-failed-normal-wrapper",
+      "args": [
+        "0xc023509ed329dce0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b71444b413cf441"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00049-failed-normal-wrapper",
+      "args": [
+        "0xc02d9ac88338b288",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x35ba7a2c41336d1c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00050-failed-normal-wrapper",
+      "args": [
+        "0xc005c970ef410e80",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f6a781124ff39db"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00051-failed-normal-wrapper",
+      "args": [
+        "0xc0373a1a09dc0fd4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x273f677e122cbe48"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00052-failed-normal-wrapper",
+      "args": [
+        "0xc013dd6a5a883bb0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e96e835aff073a0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00053-failed-normal-wrapper",
+      "args": [
+        "0xc027f063e529c4cc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x392aa6ddf8cf9b7a"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00054-failed-normal-wrapper",
+      "args": [
+        "0x3fe4255fba09e1c0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe7894b2ff16515"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00055-failed-normal-wrapper",
+      "args": [
+        "0xc03c5f96133aa1fd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1b4175b85b53a189"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00056-failed-normal-wrapper",
+      "args": [
+        "0xc041b8a7b41be4f8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x06e4e0f960a97a8c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00057-failed-normal-wrapper",
+      "args": [
+        "0xc03655fe18d6d028",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2913e771c472d7ed"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00058-failed-normal-wrapper",
+      "args": [
+        "0x3fc2f5dd7dde5e00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe1e256a57d1a40"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00059-failed-normal-wrapper",
+      "args": [
+        "0xc0402c2fe9d4e707",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x105f7009783c505f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00060-failed-normal-wrapper",
+      "args": [
+        "0xbfe1f1e3de64bf00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd265fbc6a92067"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00061-failed-normal-wrapper",
+      "args": [
+        "0xc0401b1992b73333",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x10c257156ede5861"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00062-failed-normal-wrapper",
+      "args": [
+        "0xc0306b381379b8ce",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x337207e663667e65"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00063-failed-normal-wrapper",
+      "args": [
+        "0xc041bc22f7f13e10",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x06cfd02c42627933"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00064-failed-normal-wrapper",
+      "args": [
+        "0xc01582f1d0b66428",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e643b60ccdc27d2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00065-failed-normal-wrapper",
+      "args": [
+        "0xc0241f09817f2054",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b13f1209ef6cf07"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00066-failed-normal-wrapper",
+      "args": [
+        "0xc03e20a493da6773",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x16a02eb9e5805de0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00067-failed-normal-wrapper",
+      "args": [
+        "0xc0422b0da3e198d7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0400d36e03143946"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00068-failed-normal-wrapper",
+      "args": [
+        "0xc038d9c508c67967",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x23b7aa0223af617c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00069-failed-normal-wrapper",
+      "args": [
+        "0xc02de2b975dcb746",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3589f6276c662da1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00070-failed-normal-wrapper",
+      "args": [
+        "0xc034393091350291",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2d23dc88ce1b0cd0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00071-failed-normal-wrapper",
+      "args": [
+        "0xc037024b9223839d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x27b31ec236b7dfb8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00072-failed-normal-wrapper",
+      "args": [
+        "0xc03f68d660cd0779",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x13108bfcb8342b59"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00073-failed-normal-wrapper",
+      "args": [
+        "0xc0281c65284cbde4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3912d99280b19df9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00074-failed-normal-wrapper",
+      "args": [
+        "0xc03ba5de0b58ae5b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1d16504cc63b2e64"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00075-failed-normal-wrapper",
+      "args": [
+        "0xc042328d66c82d50",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x03cfec98d68b21b2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00076-failed-normal-wrapper",
+      "args": [
+        "0xc02bdd5c7a311c98",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x36dcc07bc343965c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00077-failed-normal-wrapper",
+      "args": [
+        "0xc036c9ef05d24aa4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x28275497c50992b8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00078-failed-normal-wrapper",
+      "args": [
+        "0xc02badae8a1a54ac",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x36fa5e2cde3e4211"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00079-failed-normal-wrapper",
+      "args": [
+        "0xc01f654da0c30948",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ce2e5b82bac8d18"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00080-failed-normal-wrapper",
+      "args": [
+        "0xc041984a79428cf5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x07b3628d51b6e4a1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00081-failed-normal-wrapper",
+      "args": [
+        "0xc02a634d89807c36",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37c4b447b4b078f1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00082-failed-normal-wrapper",
+      "args": [
+        "0xc034538c702d0af1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2cf399d967eaa7e6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00083-failed-normal-wrapper",
+      "args": [
+        "0xc0261c9513b0368c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3a2046cf5086358d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00084-failed-normal-wrapper",
+      "args": [
+        "0xc0188dab2af623f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3dfca68693382253"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00085-failed-normal-wrapper",
+      "args": [
+        "0xc0425db5f8df03de",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x02b2582f96e6f3c5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00086-failed-normal-wrapper",
+      "args": [
+        "0xc03bb80a30baab77",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1ce8f3a8a3f90337"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00087-failed-normal-wrapper",
+      "args": [
+        "0xc02c86b0aa7ff5c0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3670fa894f89d6df"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00088-failed-normal-wrapper",
+      "args": [
+        "0xc04028837ca42f22",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1073e52be67ac503"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00089-failed-normal-wrapper",
+      "args": [
+        "0xc02f7945c9e5e4f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3470951337984418"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00090-failed-normal-wrapper",
+      "args": [
+        "0xc040ecc43728c69c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0be0c729d780c57a"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00091-failed-normal-wrapper",
+      "args": [
+        "0xc035650f2e96d201",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2af0bd9f9918151d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00092-failed-normal-wrapper",
+      "args": [
+        "0xc03815d21777db9c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2568be5ae15c899b"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00093-failed-normal-wrapper",
+      "args": [
+        "0xc035a4c2aa3e440a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2a7405a949ec99b4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00094-failed-normal-wrapper",
+      "args": [
+        "0xc0368d175ec5c23e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x28a424d0b9a3b064"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00095-failed-normal-wrapper",
+      "args": [
+        "0xc03d3583e5e9739d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1914ba101fe25846"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00096-failed-normal-wrapper",
+      "args": [
+        "0xc036ebb4ad8cdd2b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x27e233c77a1388fe"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00097-failed-normal-wrapper",
+      "args": [
+        "0xc03a603aaf729d06",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x20315e188e182505"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00098-failed-normal-wrapper",
+      "args": [
+        "0xc02aa2c3c3cbd56a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x379fbc9ad9c21a06"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00099-failed-normal-wrapper",
+      "args": [
+        "0xc028b24ad43d9db0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x38c08c3be20a5756"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00100-failed-normal-wrapper",
+      "args": [
+        "0xc039ec767494c307",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x21426c61820b417a"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00101-failed-normal-wrapper",
+      "args": [
+        "0xc032e1b4d5fe172b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f83239d01acf539"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00102-failed-normal-wrapper",
+      "args": [
+        "0xc0144270d29ab048",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e8b6c8e6d5818f0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00103-failed-normal-wrapper",
+      "args": [
+        "0xc03de0cfb364778c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x174c4488fd1ef1d5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00104-failed-normal-wrapper",
+      "args": [
+        "0xc0377dafa2c07d7f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26b0ad71a48c971c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00105-failed-normal-wrapper",
+      "args": [
+        "0xc035afa012594fb7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2a5fdf0f59dca358"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00106-failed-normal-wrapper",
+      "args": [
+        "0xc03f930a0a170fca",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x129772072d420941"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00107-failed-normal-wrapper",
+      "args": [
+        "0xc03b4bdd7abfdf24",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1df5977d816803de"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00108-failed-normal-wrapper",
+      "args": [
+        "0xc0378478df8c5610",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26a1de4d2465fad7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00109-failed-normal-wrapper",
+      "args": [
+        "0xc02b4c2c01b73396",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3736e470943411eb"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00110-failed-normal-wrapper",
+      "args": [
+        "0xc020fda19335e9bc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3c66bf3336d7d700"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00111-failed-normal-wrapper",
+      "args": [
+        "0xc03a685e309afc44",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x201dfbd7ed912cac"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00112-failed-normal-wrapper",
+      "args": [
+        "0xc03aa9ceeb070544",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1f8138e47c9e1cb5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00113-failed-normal-wrapper",
+      "args": [
+        "0xc0421a6a7aa5439a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x046d6f068910104f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00114-failed-normal-wrapper",
+      "args": [
+        "0xc031cd6e7c974275",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x314ddeb261e75708"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00115-failed-normal-wrapper",
+      "args": [
+        "0xc042adb62652f6d4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x009b49622d506bc3"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00116-failed-normal-wrapper",
+      "args": [
+        "0xc02e3b4c67080e70",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x354e806bd9524af3"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00117-failed-normal-wrapper",
+      "args": [
+        "0xc03c0b27614da528",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1c17ab81095af2f8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00118-failed-normal-wrapper",
+      "args": [
+        "0xc03fdcd3d634ea34",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x11c45f0cf11aa581"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00119-failed-normal-wrapper",
+      "args": [
+        "0xc023b2f73ed2fe60",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b44cf860daacc05"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00120-failed-normal-wrapper",
+      "args": [
+        "0xc030945bac716b32",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3334286bbda805b6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00121-failed-normal-wrapper",
+      "args": [
+        "0xc02c58e6f1dfda24",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x368e770f379c3f1b"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00122-failed-normal-wrapper",
+      "args": [
+        "0xc00bc47474329240",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f30fee7da5ac774"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00123-failed-normal-wrapper",
+      "args": [
+        "0xc037f06cf70ad246",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x25b9f51a8ca29d37"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00124-failed-normal-wrapper",
+      "args": [
+        "0xc03eb4be76bb5032",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x15084a4401f5ad32"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00125-failed-normal-wrapper",
+      "args": [
+        "0xc031a722c1a55f86",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x318ab2a962f0acb4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00126-failed-normal-wrapper",
+      "args": [
+        "0xc03282d7a1029de1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x302374bdc37e6e6f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00127-failed-normal-wrapper",
+      "args": [
+        "0xc0402b096e1308f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x106506c3679b22b5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00128-failed-normal-wrapper",
+      "args": [
+        "0xc02e084172019e7a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x35713bd807d734fc"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00129-failed-normal-wrapper",
+      "args": [
+        "0xc03c0acac67dd93f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1c18a0c0c5707e70"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00130-failed-normal-wrapper",
+      "args": [
+        "0xc01ca5181b21f2b8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3d5c221aabd80dc9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00131-failed-normal-wrapper",
+      "args": [
+        "0xc03bdf6c4e7225a4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1c8611a9f0bb52ed"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00132-failed-normal-wrapper",
+      "args": [
+        "0xbff0af0526233d80",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fc30340e9ab1acf"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00133-failed-normal-wrapper",
+      "args": [
+        "0xc0355b01c568ecc2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2b036958452be9f7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00134-failed-normal-wrapper",
+      "args": [
+        "0xc01905f44c2ccc88",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3deb2cc250c99972"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00135-failed-normal-wrapper",
+      "args": [
+        "0xc032987d4a4814a8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x300022dbec3b5a54"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00136-failed-normal-wrapper",
+      "args": [
+        "0xc017aeca9800ad60",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e1b89ba3c9d3669"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00137-failed-normal-wrapper",
+      "args": [
+        "0xc041cb7b6dcf3cce",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x066cab66155d7c6b"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00138-failed-normal-wrapper",
+      "args": [
+        "0xc03f0aa948ab2fab",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1418e57fa03f6b14"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00139-failed-normal-wrapper",
+      "args": [
+        "0xc009791f76f40c10",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f47c972a4c3d2f0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00140-failed-normal-wrapper",
+      "args": [
+        "0xc018a494d3655058",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3df8e1866999dc2e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00141-failed-normal-wrapper",
+      "args": [
+        "0xc03f0e0f9b031a5e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x14107a28b37d5bdd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00142-failed-normal-wrapper",
+      "args": [
+        "0xc0426a035e597622",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x026112701ae58ea9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00143-failed-normal-wrapper",
+      "args": [
+        "0x3fb62b841535cc00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe11aac0a6731f1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00144-failed-normal-wrapper",
+      "args": [
+        "0xc02937d05679e2c0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3874071f63ed823d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00145-failed-normal-wrapper",
+      "args": [
+        "0xc037963691423be4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x267bdd5f06261fb4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00146-failed-normal-wrapper",
+      "args": [
+        "0xc0330714342b4d47",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f4318dfcf5e33a8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00147-failed-normal-wrapper",
+      "args": [
+        "0xc033ac3514381f74",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2e22628bc29d55d7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00148-failed-normal-wrapper",
+      "args": [
+        "0xc0416a42575420b0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x08d5f1aff0b98463"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00149-failed-normal-wrapper",
+      "args": [
+        "0xc04038f72d90bf48",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1013c1a4dbd4b698"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00150-failed-normal-wrapper",
+      "args": [
+        "0xc042720b5e4db977",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x022afe6812517ab6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00151-failed-normal-wrapper",
+      "args": [
+        "0xc02bc164a8382182",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x36eed89706f78061"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00152-failed-normal-wrapper",
+      "args": [
+        "0xc03c6cac04147e00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1b205377012a5bd4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00153-failed-normal-wrapper",
+      "args": [
+        "0xc035c10b3ba0087c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2a3cfdf115519391"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00154-failed-normal-wrapper",
+      "args": [
+        "0xc032f0c90706e185",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f690dcf4ab8a1c4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00155-failed-normal-wrapper",
+      "args": [
+        "0xc040ffa0c1f18070",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0b6cd9992209cc36"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00156-failed-normal-wrapper",
+      "args": [
+        "0x3fde3c6590c71580",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe5d06c63abfd85"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00157-failed-normal-wrapper",
+      "args": [
+        "0xc038210e5da592c9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x255125d825427e14"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00158-failed-normal-wrapper",
+      "args": [
+        "0xc0328ea5d5117598",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3010833a20e03205"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00159-failed-normal-wrapper",
+      "args": [
+        "0xc03fa6a2bd00e0f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1260a3c395d77c36"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00160-failed-normal-wrapper",
+      "args": [
+        "0xc02cefc3c599341a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x362c16aae4d726dc"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00161-failed-normal-wrapper",
+      "args": [
+        "0xc03b0b337055dedf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1e9459ce23c83cd8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00162-failed-normal-wrapper",
+      "args": [
+        "0xc03ac5bb61440577",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1f3dc59de51ff605"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00163-failed-normal-wrapper",
+      "args": [
+        "0xc0357d310ab9134c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2ac1aa8aa8fc0c01"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00164-failed-normal-wrapper",
+      "args": [
+        "0xc00a90405d732af0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f3d73722aec92c5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00165-failed-normal-wrapper",
+      "args": [
+        "0xc04047ea0cfa0ab7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0fbc4c5a8caec9e6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00166-failed-normal-wrapper",
+      "args": [
+        "0xc03f5b03ed23de0e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x13368e8bd62c44ab"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00167-failed-normal-wrapper",
+      "args": [
+        "0xc04254b306103176",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x02ee6d83ca79da62"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00168-failed-normal-wrapper",
+      "args": [
+        "0xc02abb1c91ce426a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3790c4cf45501d49"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00169-failed-normal-wrapper",
+      "args": [
+        "0xc0185e0cc82b0f78",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e032cefaec916fd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00170-failed-normal-wrapper",
+      "args": [
+        "0xc02ee8ae74473556",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x34d5941f44e72f53"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00171-failed-normal-wrapper",
+      "args": [
+        "0xc031bc6d3dde91b7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3168668033bf0062"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00172-failed-normal-wrapper",
+      "args": [
+        "0xc030996e33217f16",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x332cfcbb196076e7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00173-failed-normal-wrapper",
+      "args": [
+        "0xc02a670e8927e332",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37c2c8ccc34c44d6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00174-failed-normal-wrapper",
+      "args": [
+        "0xc0416928cb0425f2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x08dd9b1c5f47d06d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00175-failed-normal-wrapper",
+      "args": [
+        "0xc03bb073644e0763",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1cfc64a2bbab8935"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00176-failed-normal-wrapper",
+      "args": [
+        "0xc033491dff47df08",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2ed13a2f2e017b7b"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00177-failed-normal-wrapper",
+      "args": [
+        "0xc0316eecd38ad9a9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x31e3e35ebe978e25"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00178-failed-normal-wrapper",
+      "args": [
+        "0xc037cc6b6eaa381b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26076c39990aafd7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00179-failed-normal-wrapper",
+      "args": [
+        "0xc03c1c1e928243af",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1bed63696df571b1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00180-failed-normal-wrapper",
+      "args": [
+        "0xc00e1c985a5ee500",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f15ebb5d1cf1dbf"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00181-failed-normal-wrapper",
+      "args": [
+        "0xc0235718a70ff050",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b6e8568f43a80ba"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00182-failed-normal-wrapper",
+      "args": [
+        "0xc03f1bdfd44e44d5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x13e89861b5da3ec1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00183-failed-normal-wrapper",
+      "args": [
+        "0x3ff2699b5f061dc0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fec00bb1f910587"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00184-failed-normal-wrapper",
+      "args": [
+        "0xc034f79c3be66c91",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2bc1dc8c54c0d2b5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00185-failed-normal-wrapper",
+      "args": [
+        "0xc034561dec211fca",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2ceff3f07455bde8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00186-failed-normal-wrapper",
+      "args": [
+        "0xc03d8296248396c3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x18485d513179823c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00187-failed-normal-wrapper",
+      "args": [
+        "0xc02248760950e5bc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3be22ca927e093f2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00188-failed-normal-wrapper",
+      "args": [
+        "0xc03a6a70799614c6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x201834faab30e779"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00189-failed-normal-wrapper",
+      "args": [
+        "0xc01b8ac8c0ca7e00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3d89520da235f028"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00190-failed-normal-wrapper",
+      "args": [
+        "0xc037258b478b29f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x27695a961e9bf99c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00191-failed-normal-wrapper",
+      "args": [
+        "0xc04151bdcb2dd4f1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0970b49189eb23c8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00192-failed-normal-wrapper",
+      "args": [
+        "0xc000068da1f202a0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f971eaab1785373"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00193-failed-normal-wrapper",
+      "args": [
+        "0xc034c50bfddaefcc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2c215fd10902a457"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00194-failed-normal-wrapper",
+      "args": [
+        "0xc00547c174b3ba00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f70005eff7d0799"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00195-failed-normal-wrapper",
+      "args": [
+        "0xbfda61dc7d2e6380",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd5c400735167c1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00196-failed-normal-wrapper",
+      "args": [
+        "0xc02dadf075223d02",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x35ae56a338005c27"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00197-failed-normal-wrapper",
+      "args": [
+        "0xc02abd19c74a289c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x378fd4ca31d32f1c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00198-failed-normal-wrapper",
+      "args": [
+        "0xc022e869a085f1b0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b9ed26953d8d6b2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00199-failed-normal-wrapper",
+      "args": [
+        "0x40018cbe19135870",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fef8c440fac503c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00200-failed-normal-wrapper",
+      "args": [
+        "0xc01adf5ab86a39a0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3da43d860275151c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00201-failed-normal-wrapper",
+      "args": [
+        "0xc039f46692482cce",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2130772587d79668"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00202-failed-normal-wrapper",
+      "args": [
+        "0xc012590ea65c7f10",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ec2dce3bc12fc74"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00203-failed-normal-wrapper",
+      "args": [
+        "0xc0377ef421a3523d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26adaf98a0d05135"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00204-failed-normal-wrapper",
+      "args": [
+        "0xc037f25bbcd3453f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x25b5a87eff45e5e4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00205-failed-normal-wrapper",
+      "args": [
+        "0xc030e73a04a257c8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x32b66d857357b617"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00206-failed-normal-wrapper",
+      "args": [
+        "0xc02dffda143a50fc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x357612507400e5cf"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00207-failed-normal-wrapper",
+      "args": [
+        "0xc040ba3eb82d5fd8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0d130080e92e214e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00208-failed-normal-wrapper",
+      "args": [
+        "0xc03d84a7b68ba6e6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1843308267b381d5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00209-failed-normal-wrapper",
+      "args": [
+        "0xc020052a0d58b88c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3cc4a6469170190f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00210-failed-normal-wrapper",
+      "args": [
+        "0xc0375cb484f456eb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x26f56f6997b172c3"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00211-failed-normal-wrapper",
+      "args": [
+        "0xc03474071c67debf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2cb7747b8443a5cf"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00212-failed-normal-wrapper",
+      "args": [
+        "0xc02a49340cae0b68",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37d4557abdcf6578"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00213-failed-normal-wrapper",
+      "args": [
+        "0xc0427a43ca511e3d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x01f4206862a70072"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00214-failed-normal-wrapper",
+      "args": [
+        "0xc03e874c00dce695",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1585e43155b6a657"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00215-failed-normal-wrapper",
+      "args": [
+        "0xc000485388e98d00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f956951231dcaec"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00216-failed-normal-wrapper",
+      "args": [
+        "0xc015e5620431e3a8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e579eef31965bc9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00217-failed-normal-wrapper",
+      "args": [
+        "0xc02e52b4dd095fe0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x353e710dfbd450e2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00218-failed-normal-wrapper",
+      "args": [
+        "0xc03366ba8ed4d356",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2e9d3e770eed8155"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00219-failed-normal-wrapper",
+      "args": [
+        "0xc03dee7479665438",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1726ee121cec5de7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00220-failed-normal-wrapper",
+      "args": [
+        "0xc04156649bbd7d7d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0952f1d528cca0fb"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00221-failed-normal-wrapper",
+      "args": [
+        "0xc03a0ca479221654",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x20f66023ce9a4db7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00222-failed-normal-wrapper",
+      "args": [
+        "0xc03b6652e0353500",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1db46190130e31ce"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00223-failed-normal-wrapper",
+      "args": [
+        "0xc025bc5a08f15ab8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3a503d4cd71ecc64"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00224-failed-normal-wrapper",
+      "args": [
+        "0xc02f1cf8fd2bf40c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x34b199745e5661f2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00225-failed-normal-wrapper",
+      "args": [
+        "0xc007efc6a7efe790",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f56b2e69cfaf0a3"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00226-failed-normal-wrapper",
+      "args": [
+        "0xc0407fc4718e87c2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0e71f8e09eefe91f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00227-failed-normal-wrapper",
+      "args": [
+        "0xc030574f2d5ae618",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x339030b7a8cb420e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00228-failed-normal-wrapper",
+      "args": [
+        "0xc0165e2f251c5160",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e481afac3bae73f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00229-failed-normal-wrapper",
+      "args": [
+        "0xc02e660b071918cc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x35311dc32029b46c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00230-failed-normal-wrapper",
+      "args": [
+        "0xc03fb19b0927e034",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x12411b9ba3466c4c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00231-failed-normal-wrapper",
+      "args": [
+        "0xc02fa4bf93b48fc6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x345147156e1a6b7f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00232-failed-normal-wrapper",
+      "args": [
+        "0xc024b788fe1c5fec",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3acda31f0c30f856"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00233-failed-normal-wrapper",
+      "args": [
+        "0xc00e29bc15ea82b0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f155d61d6eb2237"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00234-failed-normal-wrapper",
+      "args": [
+        "0xc0236fd6c3483fc4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b6302ffbcc8c9bf"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00235-failed-normal-wrapper",
+      "args": [
+        "0xc01c882ad94125c8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3d614783586bfb68"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00236-failed-normal-wrapper",
+      "args": [
+        "0xc0058cab012d2160",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f6cf1f38158fa9f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00237-failed-normal-wrapper",
+      "args": [
+        "0xc02f42feebba714c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x349601edc8835974"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00238-failed-normal-wrapper",
+      "args": [
+        "0xc04082f9056168c7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0e5f6da0fdfcad6c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00239-failed-normal-wrapper",
+      "args": [
+        "0xc02b11076746a93a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x375bbd5ea8a154d6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00240-failed-normal-wrapper",
+      "args": [
+        "0xc01e6090827bb060",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3d116bc15e84c81d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00241-failed-normal-wrapper",
+      "args": [
+        "0xc038f53e76b17219",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x237a0936b1ed24a2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00242-failed-normal-wrapper",
+      "args": [
+        "0xc009f0654db70a20",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f436bbdd55f6c7e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00243-failed-normal-wrapper",
+      "args": [
+        "0xc0257e2218e5df98",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3a6e8727572ceda3"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00244-failed-normal-wrapper",
+      "args": [
+        "0xc0219eaafdf7815c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3c271b359725837a"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00245-failed-normal-wrapper",
+      "args": [
+        "0xc03e290890241944",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x16881315a1592c49"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00246-failed-normal-wrapper",
+      "args": [
+        "0xc0385741ea970f45",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x24d9b7f0d1de5d70"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00247-failed-normal-wrapper",
+      "args": [
+        "0xc0225db1e3378258",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3bd8bf9601f916bc"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00248-failed-normal-wrapper",
+      "args": [
+        "0xc03d0d174c72885e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x198031b7b76e8509"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00249-failed-normal-wrapper",
+      "args": [
+        "0xc01f7711d744c968",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ce07424e9c78802"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00250-failed-normal-wrapper",
+      "args": [
+        "0xc0404d4b3cac44ee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0f9cbe44e63204d6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00251-failed-normal-wrapper",
+      "args": [
+        "0xc0309237840a8575",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x33372accace2b579"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00252-failed-normal-wrapper",
+      "args": [
+        "0xc0366f2375ba96c2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x28e1966f813ddc9c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00253-failed-normal-wrapper",
+      "args": [
+        "0xc0429b2c55426c6a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0117b0c491160f66"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00254-failed-normal-wrapper",
+      "args": [
+        "0xc03bb1fddccfda71",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1cf80753fc6329e0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00255-failed-normal-wrapper",
+      "args": [
+        "0xc0420a6e9df7698e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x04d50d448566d9fe"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00256-failed-normal-wrapper",
+      "args": [
+        "0xbfef86be808da4c0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fc4c50b9d6410a5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00257-failed-normal-wrapper",
+      "args": [
+        "0xc03b47c5e0490096",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1e00b58bece4406f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00258-failed-normal-wrapper",
+      "args": [
+        "0xc03f1456d0d06754",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x13febda17d6fb435"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00259-failed-normal-wrapper",
+      "args": [
+        "0xc040f3a18a236362",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0bb5c894a6670b1c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00260-failed-normal-wrapper",
+      "args": [
+        "0x3fe4abaf63d1df80",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe7b503f3801e53"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00261-failed-normal-wrapper",
+      "args": [
+        "0xc03800b91f23cd3d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x25968327ede5d06c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00262-failed-normal-wrapper",
+      "args": [
+        "0xc0418a508f35d6ba",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x080c2b762348e65e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00263-failed-normal-wrapper",
+      "args": [
+        "0xc034f8a6083a864b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2bc066f05f8abac7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00264-failed-normal-wrapper",
+      "args": [
+        "0xc028fed0e9e7cf8c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x38946e6ffe8fea21"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00265-failed-normal-wrapper",
+      "args": [
+        "0xc024216fb01a9464",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3b1303c42085f7e8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00266-failed-normal-wrapper",
+      "args": [
+        "0xc02ad7f437cd6260",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x377f692e33ad16d5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00267-failed-normal-wrapper",
+      "args": [
+        "0xc0146676c7118620",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e86c946d0a63f65"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00268-failed-normal-wrapper",
+      "args": [
+        "0xc02e9948f354dde4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x350d9212ee52771e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00269-failed-normal-wrapper",
+      "args": [
+        "0xc00376d79258fe30",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f7eaa3b3e3fe00f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00270-failed-normal-wrapper",
+      "args": [
+        "0xc02a8429c35b908c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37b1a256587ad7e6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00271-failed-normal-wrapper",
+      "args": [
+        "0xc00e6c6e588a38a0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f12bdd21a2843ca"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00272-failed-normal-wrapper",
+      "args": [
+        "0xc02fecaddabfd078",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x341d632be90cd357"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00273-failed-normal-wrapper",
+      "args": [
+        "0xc0369fcdf585edd6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x287ed0864dba9543"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00274-failed-normal-wrapper",
+      "args": [
+        "0xc02a3265617b78e8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37e24d1c856a405f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00275-failed-normal-wrapper",
+      "args": [
+        "0xc04067a21015c398",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0f01772962986b99"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00276-failed-normal-wrapper",
+      "args": [
+        "0xc02f692c7376dd78",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x347b3d28b88a3401"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00277-failed-normal-wrapper",
+      "args": [
+        "0xc02b87b1cc00e3ee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x371273de6a6471fd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00278-failed-normal-wrapper",
+      "args": [
+        "0xc02620622c1accb0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3a1df7a2823a96f8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00279-failed-normal-wrapper",
+      "args": [
+        "0xc02aca2c7eb80354",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x37869359a3a2aae2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00280-failed-normal-wrapper",
+      "args": [
+        "0xc02f77a559362308",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x34716f976cd6633e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00281-failed-normal-wrapper",
+      "args": [
+        "0xc035dadaded39224",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2a099f134f3870c0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00282-failed-normal-wrapper",
+      "args": [
+        "0xc0373451c9b196f3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x274a8d82bf701ca2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00283-failed-normal-wrapper",
+      "args": [
+        "0xc03c174271f3a1d5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1bf91150d7ca4334"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00284-failed-normal-wrapper",
+      "args": [
+        "0xc020da96b4630bdc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3c7474a50b8f436f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00285-failed-normal-wrapper",
+      "args": [
+        "0xc034cd918075f88f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2c115e2fab6f8cb1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00286-failed-normal-wrapper",
+      "args": [
+        "0xc02fe51bfcb58eaa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x34229eaccb4b6d56"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00287-failed-normal-wrapper",
+      "args": [
+        "0xc040c38c5a5fc65d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0cda98890db8bdc0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00288-failed-normal-wrapper",
+      "args": [
+        "0xc0401cee8451ad58",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x10b71ece1f12beec"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00289-failed-normal-wrapper",
+      "args": [
+        "0xc005edc25fbe28b0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f6914f72b4d06f8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00290-failed-normal-wrapper",
+      "args": [
+        "0xc0341ad2b7d618e7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2d5b4dee0bea605d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00291-failed-normal-wrapper",
+      "args": [
+        "0xc014894da018e748",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e8306d4ba03c919"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00292-failed-normal-wrapper",
+      "args": [
+        "0xc0404f382c9402de",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0f91972d6df58c2c"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00293-failed-normal-wrapper",
+      "args": [
+        "0xc039ff1f397ee9f9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x211627d14b51fba1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00294-failed-normal-wrapper",
+      "args": [
+        "0xc040e1b20fd959ae",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0c2391f75a033327"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00295-failed-normal-wrapper",
+      "args": [
+        "0xc038fd1fa3e418a0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x23681cc62e90b510"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00296-failed-normal-wrapper",
+      "args": [
+        "0xc03a427bd21230fc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2077348a7d240637"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00297-failed-normal-wrapper",
+      "args": [
+        "0xc0356aea2fe6cb97",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2ae47f5c5baac738"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00298-failed-normal-wrapper",
+      "args": [
+        "0xc0092b7be1c75dd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f4b18e5f35768d2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00299-failed-normal-wrapper",
+      "args": [
+        "0xc024c290c857d18c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ac7a7d0252a6cc1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00300-failed-normal-wrapper",
+      "args": [
+        "0xc009d0718232d4c0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3f4482f0157ad476"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00301-failed-normal-wrapper",
+      "args": [
+        "0xc03012fce12aa527",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x33f370d6c290fb53"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00302-failed-normal-wrapper",
+      "args": [
+        "0xc041c73579af1d62",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x068786791e524851"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00303-failed-normal-wrapper",
+      "args": [
+        "0xc0133dd6fa46b530",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ea945c212e7f5c4"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00304-failed-normal-wrapper",
+      "args": [
+        "0xc03dbb0eb8d954fa",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x17b1fe9230884986"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00305-failed-normal-wrapper",
+      "args": [
+        "0xc03b7ae3a839874d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1d81ef6f21dc5f56"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00306-failed-normal-wrapper",
+      "args": [
+        "0xc04020b49c98b48d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x10a1db6533d58f61"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00307-failed-normal-wrapper",
+      "args": [
+        "0xc032db89e59f0bc3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f8e3183a41dda7e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00308-failed-normal-wrapper",
+      "args": [
+        "0x3ff789211855cf80",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fedbd3f859209b5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00309-failed-normal-wrapper",
+      "args": [
+        "0xc0332e6a3cefdb34",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f0018b34ce0d187"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00310-failed-normal-wrapper",
+      "args": [
+        "0xc02987c43345dd7c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3845d41eea334c72"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00311-failed-normal-wrapper",
+      "args": [
+        "0xc028cd19b323cb54",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x38b13dc133c1b3aa"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00312-failed-normal-wrapper",
+      "args": [
+        "0xc0400af95856049d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1120841acfa9dc31"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00313-failed-normal-wrapper",
+      "args": [
+        "0xc030a1562d3e9e1a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x332152097d2278dd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00314-failed-normal-wrapper",
+      "args": [
+        "0xc0332a39d575b421",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2f060c1d262d00c9"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00315-failed-normal-wrapper",
+      "args": [
+        "0xc02551bfe1f18f3c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3a8374916316d3c7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00316-failed-normal-wrapper",
+      "args": [
+        "0xc031b2c90b6dd9bd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3177d3be969e8019"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00317-failed-normal-wrapper",
+      "args": [
+        "0xc02695cd2439f99c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x39e2198843ec695d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00318-failed-normal-wrapper",
+      "args": [
+        "0xc03fc9acd559f73c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x11fb9ae3f50aa740"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00319-failed-normal-wrapper",
+      "args": [
+        "0xc038c028a551115e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x23f1c0915bbca958"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00320-failed-normal-wrapper",
+      "args": [
+        "0xc042587999f3a174",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x02d49c74c96c242a"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00321-failed-normal-wrapper",
+      "args": [
+        "0xc03ccc35eacbf0bc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x1a285966db83f3d8"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00322-failed-normal-wrapper",
+      "args": [
+        "0xc017210df040cd38",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3e2fa6daa7f69fce"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00323-failed-normal-wrapper",
+      "args": [
+        "0xc032034ca466f365",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x30f5d186a5d61bc2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00324-failed-normal-wrapper",
+      "args": [
+        "0xc036b0c42cdd2dbe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x285b63b70dad85ef"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00325-failed-normal-wrapper",
+      "args": [
+        "0xc021d91d98d60ab0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3c1095a442f6d57d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00326-failed-normal-wrapper",
+      "args": [
+        "0xc04254bbd1f7882a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x02ee212bf00c9f0d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00327-failed-normal-wrapper",
+      "args": [
+        "0xc0341aa2a8a4431a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x2d5bb6010f0d760f"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00328-failed-normal-wrapper",
+      "args": [
+        "0xc0403cf6ea27b88b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0ffca2e8cf06df5d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00329-failed-normal-wrapper",
+      "args": [
+        "0xbfd29ac703bda500",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fd8ae5a0b7e68bd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00330-failed-normal-wrapper",
+      "args": [
+        "0xc0421ac87b7efe36",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x046a8717ac8400ad"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00331-failed-normal-wrapper",
+      "args": [
+        "0xc02f53f879832e82",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x348a251bc264d8bf"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00332-failed-normal-wrapper",
+      "args": [
+        "0xc0299affade62f24",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x383aee347cd90dd5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00333-failed-normal-wrapper",
+      "args": [
+        "0xbff57f6df3afc140",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fb6ebe81f1cde40"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00334-failed-normal-wrapper",
+      "args": [
+        "0xc02810c09be948cc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3918d5bc17c7ecd6"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00335-matched-normal-control",
+      "args": [
+        "0x4007462641fbf370",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feff129129e224a"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00336-matched-normal-control",
+      "args": [
+        "0x04481e05da6c7685",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00337-matched-normal-control",
+      "args": [
+        "0x403d93b469836dbc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00338-matched-normal-control",
+      "args": [
+        "0x3292900ef98696c9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00339-matched-normal-control",
+      "args": [
+        "0x40232c0b49ecbfb0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00340-matched-normal-control",
+      "args": [
+        "0x3e47e6292961735f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe00000026232c1"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00341-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8ac9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00342-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b20",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00343-matched-normal-control",
+      "args": [
+        "0x8e437541334c0ef8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00344-matched-normal-control",
+      "args": [
+        "0xb6e519cd97a44ce5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00345-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a16",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00346-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a33",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00347-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8af6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00348-matched-normal-control",
+      "args": [
+        "0xbb5c005b6a586042",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00349-matched-normal-control",
+      "args": [
+        "0x403991a4ca5c49f0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00350-matched-normal-control",
+      "args": [
+        "0x40422e716969c61a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00351-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a71",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00352-matched-normal-control",
+      "args": [
+        "0x4014b4c1a91fff78",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffffc35114cd"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00353-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8ab5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00354-matched-normal-control",
+      "args": [
+        "0xb6cd56f411564285",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00355-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89da",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00356-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89bf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00357-matched-normal-control",
+      "args": [
+        "0x277efa3e5f023268",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00358-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b8b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00359-matched-normal-control",
+      "args": [
+        "0xc042cecf41f212d8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00360-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89f2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00361-matched-normal-control",
+      "args": [
+        "0xc042cecf41f212ff",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00362-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8afc",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00363-matched-normal-control",
+      "args": [
+        "0x1b0a34c5a5f2be5c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00364-matched-normal-control",
+      "args": [
+        "0x403bd7a15e2c9054",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00365-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b36",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00366-matched-normal-control",
+      "args": [
+        "0x970bdfee7c3e80eb",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00367-matched-normal-control",
+      "args": [
+        "0xbf4058d50ff79538",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fdffcbd3f2c443b"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00368-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a52",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00369-matched-normal-control",
+      "args": [
+        "0x4042e06dd9153fa4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00370-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a10",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00371-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2127a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00372-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd897f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00373-matched-normal-control",
+      "args": [
+        "0x0e1bbf81e5302215",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00374-matched-normal-control",
+      "args": [
+        "0x8d827a1f5d8f7aee",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00375-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89b6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00376-matched-normal-control",
+      "args": [
+        "0xc042cecf41f211b1",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00377-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21378",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00378-matched-normal-control",
+      "args": [
+        "0xb4a7df645fb34d9c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00379-matched-normal-control",
+      "args": [
+        "0x386cea65449d6f43",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00380-matched-normal-control",
+      "args": [
+        "0x92392ab5ef85cc70",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00381-matched-normal-control",
+      "args": [
+        "0x4034bb7709570004",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00382-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8ba3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00383-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2131f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00384-matched-normal-control",
+      "args": [
+        "0x806f44f4ee2b16a2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00385-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b1b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00386-matched-normal-control",
+      "args": [
+        "0xb87bb8fd26ceb8f8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00387-matched-normal-control",
+      "args": [
+        "0x3b463d52b47451bf",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00388-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b86",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00389-matched-normal-control",
+      "args": [
+        "0x1e41dc730279ec8f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00390-matched-normal-control",
+      "args": [
+        "0x1da76d38755f5fd0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00391-matched-normal-control",
+      "args": [
+        "0x2408b251ff3a86e5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00392-matched-normal-control",
+      "args": [
+        "0x39d881e36c9ac02e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00393-matched-normal-control",
+      "args": [
+        "0x3b5f307bc9ba7b8d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00394-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b37",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00395-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21318",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00396-matched-normal-control",
+      "args": [
+        "0x4010ff2ed2f23398",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffe9812a173b"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00397-matched-normal-control",
+      "args": [
+        "0x095d72ef4c7fa620",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00398-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a68",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00399-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8aa2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00400-matched-normal-control",
+      "args": [
+        "0x2936f918bd2b2926",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00401-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21308",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00402-matched-normal-control",
+      "args": [
+        "0x402ef8d06dbc9454",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00403-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8ac7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00404-matched-normal-control",
+      "args": [
+        "0xa8e9aaf1157f85f4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00405-matched-normal-control",
+      "args": [
+        "0x272fdfe7376ebea0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00406-matched-normal-control",
+      "args": [
+        "0xc042cecf41f213b6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00407-matched-normal-control",
+      "args": [
+        "0x8f68b173bbf1607f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00408-matched-normal-control",
+      "args": [
+        "0x3fbc39e4089e2e00",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe1679c42db41a0"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00409-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2123b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00410-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8a22",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00411-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89b7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00412-matched-normal-control",
+      "args": [
+        "0x80d2308405314490",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00413-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2136d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00414-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89b9",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00415-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89b8",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00416-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21325",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00417-matched-normal-control",
+      "args": [
+        "0xa03ca7de9c1fa73b",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00418-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8afd",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00419-matched-normal-control",
+      "args": [
+        "0x4002fbc496eb5190",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefb7b751e8ebe7"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00420-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8bb4",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00421-matched-normal-control",
+      "args": [
+        "0x3dfcc2a8c24281c2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe000000016f28e"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00422-matched-normal-control",
+      "args": [
+        "0x9df9c6da37ec9363",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00423-matched-normal-control",
+      "args": [
+        "0xa57dafc52a6f9f75",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00424-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21350",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00425-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8998",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00426-matched-normal-control",
+      "args": [
+        "0xc042cecf41f212fe",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00427-matched-normal-control",
+      "args": [
+        "0x404355fb4561fd2a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00428-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21392",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00429-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8ad5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00430-matched-normal-control",
+      "args": [
+        "0x40422844a14c3692",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00431-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21368",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00432-matched-normal-control",
+      "args": [
+        "0x817daca371a4d295",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00433-matched-normal-control",
+      "args": [
+        "0x4012bccebc923c20",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3feffffd0e380883"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00434-matched-normal-control",
+      "args": [
+        "0xb9c55ae7e410ddd7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00435-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21269",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00436-matched-normal-control",
+      "args": [
+        "0x33e0e17a0bea0df3",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00437-matched-normal-control",
+      "args": [
+        "0xbe872198290fb830",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fdfffffb62d014d"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00438-matched-normal-control",
+      "args": [
+        "0xad0c30afe07d2724",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00439-matched-normal-control",
+      "args": [
+        "0x37c83753856ce2c7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00440-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b52",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00441-matched-normal-control",
+      "args": [
+        "0x4035e7821482d468",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00442-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd89a6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00443-matched-normal-control",
+      "args": [
+        "0xc042cecf41f21238",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00444-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2131a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00445-matched-normal-control",
+      "args": [
+        "0x40149137fa6ece18",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fefffffb6f5a5f2"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00446-matched-normal-control",
+      "args": [
+        "0xbf6095d3869ca65f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fdff2c452b597c5"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00447-matched-normal-control",
+      "args": [
+        "0x9474a8bf0cba9600",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00448-matched-normal-control",
+      "args": [
+        "0xa016cb154a89b10c",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00449-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2123a",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00450-matched-normal-control",
+      "args": [
+        "0xc042cecf41f211de",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00451-matched-normal-control",
+      "args": [
+        "0x1a5ec210383db815",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00452-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8aa5",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00453-matched-normal-control",
+      "args": [
+        "0xbda867632cd0fb2d",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fdffffffffec875"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00454-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b0f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00455-matched-normal-control",
+      "args": [
+        "0x8eda9e90783975f2",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00456-matched-normal-control",
+      "args": [
+        "0xc042cecf41f2134e",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00457-matched-normal-control",
+      "args": [
+        "0x88385e57c9068a01",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00458-matched-normal-control",
+      "args": [
+        "0xc042ecf1e3dd8b78",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00459-matched-normal-control",
+      "args": [
+        "0x29beb18acc80305f",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00460-matched-normal-control",
+      "args": [
+        "0xc042cecf41f211f6",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00461-matched-normal-control",
+      "args": [
+        "0xb78ed281720384d0",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x3fe0000000000000"
+    },
+    {
+      "id": "norm.s.dist-cdf-dependency-00462-matched-normal-control",
+      "args": [
+        "0xc042cecf41f213a7",
+        "0x3ff0000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T17:40:46.5689581Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

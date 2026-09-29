@@ -1,0 +1,2 @@
+answered 6160 probes for TRUNC (NoCache: all live) -> C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-integer-thresholds-20260929\answers\answers-trunc.json
+BULK throughput: 6160 live probes | compute 1.48s (4171.5/s) | +excel startup 2.29s (1633.4/s incl startup) | total wall 4.31s

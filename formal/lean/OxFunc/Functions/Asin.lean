@@ -57,4 +57,37 @@ theorem asinMeta_profiles :
     ∧ asinMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
   simp [asinMeta]
 
+/-- W111 arithmetic graph selected by signed numeric observations. Each supplied
+binary operation and square root publishes binary64 after an intermediate
+64-bit-significand rounding. The second factor reuses the published `1 - x`;
+replacing it with a separately computed `1 + x` changes observed negative inputs.
+The arctangent backend remains explicit rather than claiming a universal proof. -/
+def asinWithKernels (sub mul div : Float → Float → Float)
+    (sqrt atan : Float → Float) (x : Float) : Except WorksheetErrorCode Float :=
+  if !(x ≥ -1 && x ≤ 1) then .error .num
+  else
+    let t := sub 1 x
+    let u := sub 2 t
+    let product := mul t u
+    let angle := atan (div x (sqrt product))
+    .ok (if angle.abs < Float.ofBits 0x0010000000000000 then 0 else angle)
+
+theorem asin_graph_domain_binding :
+    (asinWithKernels Float.sub Float.mul Float.div Float.sqrt Float.atan 2).isOk = false := by
+  native_decide
+
+theorem asin_graph_zero_binding :
+    ((asinWithKernels Float.sub Float.mul Float.div Float.sqrt Float.atan 0).toOption.map Float.toBits) = some 0 := by
+  native_decide
+
+theorem asin_half_graph_binding :
+    ((asinWithKernels Float.sub Float.mul Float.div Float.sqrt Float.atan 0.5).toOption.map Float.toBits)
+      = some 0x3fe0c152382d7366 := by
+  native_decide
+
+theorem asin_graph_subnormal_publication :
+    ((asinWithKernels Float.sub Float.mul Float.div Float.sqrt
+      (fun _ => Float.ofBits 1) 0.5).toOption.map Float.toBits) = some 0 := by
+  native_decide
+
 end OxFunc.Functions

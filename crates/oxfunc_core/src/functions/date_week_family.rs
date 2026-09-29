@@ -4,9 +4,10 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
+use crate::functions::date_fn::date_integer_floor;
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::WorksheetErrorCode;
 
 const DATE_WEEK_BASE_META: FunctionMeta = function_spec! {
@@ -66,6 +67,15 @@ fn domain_num_error() -> DateWeekEvalError {
     DateWeekEvalError::Domain(WorksheetErrorCode::Num)
 }
 
+fn coerce_date_week_arg(arg: &CalcValue, strict: bool) -> Result<f64, DateWeekEvalError> {
+    match arg.core() {
+        CoreValue::Logical(_) if strict => Err(DateWeekEvalError::Domain(WorksheetErrorCode::Value)),
+        CoreValue::Missing if strict => Err(DateWeekEvalError::Domain(WorksheetErrorCode::NA)),
+        CoreValue::Missing | CoreValue::Empty => Ok(0.0),
+        _ => coerce_prepared_to_number(arg).map_err(DateWeekEvalError::Coercion),
+    }
+}
+
 fn truncate_number_to_i64(n: f64) -> Result<i64, DateWeekEvalError> {
     if !n.is_finite() {
         return Err(domain_num_error());
@@ -74,6 +84,9 @@ fn truncate_number_to_i64(n: f64) -> Result<i64, DateWeekEvalError> {
 }
 
 fn coerce_serial(n: f64) -> Result<i64, DateWeekEvalError> {
+    if !(0.0..2_958_466.0).contains(&n) {
+        return Err(domain_num_error());
+    }
     let serial = truncate_number_to_i64(n)?;
     if serial < 0 {
         return Err(domain_num_error());
@@ -148,6 +161,9 @@ pub fn edate_kernel(serial: f64, months: f64) -> Result<f64, WorksheetErrorCode>
     let (year, month, day) = excel_like_ymd_from_serial(serial).ok_or(WorksheetErrorCode::Num)?;
     let (target_year, target_month) =
         normalize_year_month(year, month, months).map_err(|e| map_date_week_error_to_ws(&e))?;
+    if !(1900..=9999).contains(&target_year) {
+        return Err(WorksheetErrorCode::Num);
+    }
     let target_day = day.min(days_in_month(target_year, target_month));
     excel_serial_from_ymd(
         WorkbookDateSystem::System1900,
@@ -164,6 +180,9 @@ pub fn eomonth_kernel(serial: f64, months: f64) -> Result<f64, WorksheetErrorCod
     let (year, month, _) = excel_like_ymd_from_serial(serial).ok_or(WorksheetErrorCode::Num)?;
     let (target_year, target_month) =
         normalize_year_month(year, month, months).map_err(|e| map_date_week_error_to_ws(&e))?;
+    if !(1900..=9999).contains(&target_year) {
+        return Err(WorksheetErrorCode::Num);
+    }
     excel_serial_from_ymd(
         WorkbookDateSystem::System1900,
         target_year,
@@ -196,8 +215,12 @@ fn weekday_unbounded(serial: i64, return_type: i64) -> Result<f64, WorksheetErro
 }
 
 pub fn weekday_kernel(serial: f64, return_type: Option<f64>) -> Result<f64, WorksheetErrorCode> {
+    if serial < 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let serial = serial + 0.5 / 86_400.0;
     let serial = coerce_serial(serial).map_err(|e| map_date_week_error_to_ws(&e))?;
-    let return_type = return_type.unwrap_or(1.0);
+    let return_type = date_integer_floor(return_type.unwrap_or(1.0));
     let return_type =
         truncate_number_to_i64(return_type).map_err(|e| map_date_week_error_to_ws(&e))?;
     weekday_unbounded(serial, return_type)
@@ -217,7 +240,7 @@ fn iso_weeknum_serial(serial: i64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn weeknum_kernel(serial: f64, return_type: Option<f64>) -> Result<f64, WorksheetErrorCode> {
     let serial = coerce_serial(serial).map_err(|e| map_date_week_error_to_ws(&e))?;
-    let return_type = return_type.unwrap_or(1.0);
+    let return_type = date_integer_floor(return_type.unwrap_or(1.0));
     let return_type =
         truncate_number_to_i64(return_type).map_err(|e| map_date_week_error_to_ws(&e))?;
     if return_type == 21 {
@@ -257,9 +280,9 @@ pub fn eval_edate_surface(
                 });
             }
             let serial =
-                coerce_prepared_to_number(&prepared[0]).map_err(DateWeekEvalError::Coercion)?;
+                coerce_date_week_arg(&prepared[0], true)?;
             let months =
-                coerce_prepared_to_number(&prepared[1]).map_err(DateWeekEvalError::Coercion)?;
+                coerce_date_week_arg(&prepared[1], true)?;
             edate_kernel(serial, months)
                 .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
@@ -285,9 +308,9 @@ pub fn eval_eomonth_surface(
                 });
             }
             let serial =
-                coerce_prepared_to_number(&prepared[0]).map_err(DateWeekEvalError::Coercion)?;
+                coerce_date_week_arg(&prepared[0], true)?;
             let months =
-                coerce_prepared_to_number(&prepared[1]).map_err(DateWeekEvalError::Coercion)?;
+                coerce_date_week_arg(&prepared[1], true)?;
             eomonth_kernel(serial, months)
                 .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
@@ -313,9 +336,9 @@ pub fn eval_weekday_surface(
                 });
             }
             let serial =
-                coerce_prepared_to_number(&prepared[0]).map_err(DateWeekEvalError::Coercion)?;
+                coerce_date_week_arg(&prepared[0], false)?;
             let return_type = if prepared.len() > 1 {
-                Some(coerce_prepared_to_number(&prepared[1]).map_err(DateWeekEvalError::Coercion)?)
+                Some(coerce_date_week_arg(&prepared[1], false)?)
             } else {
                 None
             };
@@ -344,9 +367,9 @@ pub fn eval_weeknum_surface(
                 });
             }
             let serial =
-                coerce_prepared_to_number(&prepared[0]).map_err(DateWeekEvalError::Coercion)?;
-            let return_type = if prepared.len() > 1 {
-                Some(coerce_prepared_to_number(&prepared[1]).map_err(DateWeekEvalError::Coercion)?)
+                coerce_date_week_arg(&prepared[0], true)?;
+            let return_type = if prepared.len() > 1 && !matches!(prepared[1].core(), CoreValue::Missing) {
+                Some(coerce_date_week_arg(&prepared[1], true)?)
             } else {
                 None
             };

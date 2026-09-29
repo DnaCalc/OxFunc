@@ -1878,16 +1878,9 @@ match dispatch_key.catalog_index {
     .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
     // <<< END spec-driven unary-numeric arms (oxf-y2uw.9)
     // >>> BEGIN spec-driven binary-arithmetic arms (oxf-y2uw.12.1) -- generator-owned; do not hand-edit
-    // FUNC.MOD  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
-    293 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
-        args,
-        resolver,
-        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
-            crate::functions::mod_fn::mod_kernel,
-            crate::functions::mod_fn::MOD_META.real_result_policy,
-        ),
-    )
-    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.MOD  [spec-driven: binary kernel with function-specific prepared surface]
+    293 => crate::functions::mod_fn::eval_mod_surface(args, resolver)
+        .map_err(|e| crate::functions::mod_fn::map_mod_error_to_ws(&e)),
     // FUNC.OP_ADD  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
     347 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
         args,
@@ -1938,16 +1931,9 @@ match dispatch_key.catalog_index {
         ),
     )
     .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
-    // FUNC.POWER  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
-    381 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
-        args,
-        resolver,
-        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
-            crate::functions::power_fn::power_kernel,
-            crate::functions::power_fn::POWER_META.real_result_policy,
-        ),
-    )
-    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.POWER  [spec-driven: binary kernel with function-specific prepared surface]
+    381 => crate::functions::power_fn::eval_power_surface(args, resolver)
+        .map_err(|e| crate::functions::power_fn::map_power_error_to_ws(&e)),
     // <<< END spec-driven binary-arithmetic arms (oxf-y2uw.12.1)
     _ => Err(WorksheetErrorCode::Value),
 }

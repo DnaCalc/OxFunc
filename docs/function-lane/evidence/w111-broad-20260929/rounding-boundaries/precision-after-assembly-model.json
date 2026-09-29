@@ -1,0 +1,313 @@
+{
+  "phase": "offline_model_after_decimal_assembly_refinement",
+  "rows": 1068,
+  "mismatches": 34,
+  "misses": [
+    {
+      "id": "w111renderprecision-00074-round-8-center-1",
+      "args": [
+        "0x0202cf5e7bb9a312",
+        "0x4073900000000000"
+      ],
+      "expected_bits": "0x0202cf5e7bb9a317",
+      "actual": "0x0202cf5e7bb9a30d"
+    },
+    {
+      "id": "w111renderprecision-00077-round-8-center--1",
+      "args": [
+        "0x8202cf5e7bb9a312",
+        "0x4073900000000000"
+      ],
+      "expected_bits": "0x8202cf5e7bb9a317",
+      "actual": "0x8202cf5e7bb9a30d"
+    },
+    {
+      "id": "w111renderprecision-00128-round-15-center-1",
+      "args": [
+        "0x0376c46f3972904d",
+        "0x4073200000000000"
+      ],
+      "expected_bits": "0x0376c46f39729053",
+      "actual": "0x0376c46f39729047"
+    },
+    {
+      "id": "w111renderprecision-00131-round-15-center--1",
+      "args": [
+        "0x8376c46f3972904d",
+        "0x4073200000000000"
+      ],
+      "expected_bits": "0x8376c46f39729053",
+      "actual": "0x8376c46f39729047"
+    },
+    {
+      "id": "w111renderprecision-00212-round-27-center-1",
+      "args": [
+        "0x069a649c29b0046e",
+        "0x4072300000000000"
+      ],
+      "expected_bits": "0x069a649c29b00473",
+      "actual": "0x069a649c29b00469"
+    },
+    {
+      "id": "w111renderprecision-00215-round-27-center--1",
+      "args": [
+        "0x869a649c29b0046e",
+        "0x4072300000000000"
+      ],
+      "expected_bits": "0x869a649c29b00473",
+      "actual": "0x869a649c29b00469"
+    },
+    {
+      "id": "w111renderprecision-00248-round-31-center-1",
+      "args": [
+        "0x073e0aa1958b6f7d",
+        "0x4072000000000000"
+      ],
+      "expected_bits": "0x073e0aa1958b6f82",
+      "actual": "0x073e0aa1958b6f78"
+    },
+    {
+      "id": "w111renderprecision-00251-round-31-center--1",
+      "args": [
+        "0x873e0aa1958b6f7d",
+        "0x4072000000000000"
+      ],
+      "expected_bits": "0x873e0aa1958b6f82",
+      "actual": "0x873e0aa1958b6f78"
+    },
+    {
+      "id": "w111renderprecision-00314-round-40-center-1",
+      "args": [
+        "0x0ae19b189344f360",
+        "0x4070e00000000000"
+      ],
+      "expected_bits": "0x0ae19b189344f368",
+      "actual": "0x0ae19b189344f358"
+    },
+    {
+      "id": "w111renderprecision-00317-round-40-center--1",
+      "args": [
+        "0x8ae19b189344f360",
+        "0x4070e00000000000"
+      ],
+      "expected_bits": "0x8ae19b189344f368",
+      "actual": "0x8ae19b189344f358"
+    },
+    {
+      "id": "w111renderprecision-00320-round-41-center-1",
+      "args": [
+        "0x0b1601deb8163038",
+        "0x4070d00000000000"
+      ],
+      "expected_bits": "0x0b1601deb8163043",
+      "actual": "0x0b1601deb816302d"
+    },
+    {
+      "id": "w111renderprecision-00323-round-41-center--1",
+      "args": [
+        "0x8b1601deb8163038",
+        "0x4070d00000000000"
+      ],
+      "expected_bits": "0x8b1601deb8163043",
+      "actual": "0x8b1601deb816302d"
+    },
+    {
+      "id": "w111renderprecision-00326-round-42-center-1",
+      "args": [
+        "0x0b4b8256661bbc46",
+        "0x4070c00000000000"
+      ],
+      "expected_bits": "0x0b4b8256661bbc53",
+      "actual": "0x0b4b8256661bbc39"
+    },
+    {
+      "id": "w111renderprecision-00329-round-42-center--1",
+      "args": [
+        "0x8b4b8256661bbc46",
+        "0x4070c00000000000"
+      ],
+      "expected_bits": "0x8b4b8256661bbc53",
+      "actual": "0x8b4b8256661bbc39"
+    },
+    {
+      "id": "w111renderprecision-00404-round-51-center-1",
+      "args": [
+        "0x0dd98565585f43ed",
+        "0x4070000000000000"
+      ],
+      "expected_bits": "0x0dd98565585f43f3",
+      "actual": "0x0dd98565585f43e7"
+    },
+    {
+      "id": "w111renderprecision-00407-round-51-center--1",
+      "args": [
+        "0x8dd98565585f43ed",
+        "0x4070000000000000"
+      ],
+      "expected_bits": "0x8dd98565585f43f3",
+      "actual": "0x8dd98565585f43e7"
+    },
+    {
+      "id": "w111renderprecision-00470-round-60-center-1",
+      "args": [
+        "0x108a253472020840",
+        "0x406e600000000000"
+      ],
+      "expected_bits": "0x108a253472020847",
+      "actual": "0x108a253472020839"
+    },
+    {
+      "id": "w111renderprecision-00473-round-60-center--1",
+      "args": [
+        "0x908a253472020840",
+        "0x406e600000000000"
+      ],
+      "expected_bits": "0x908a253472020847",
+      "actual": "0x908a253472020839"
+    },
+    {
+      "id": "w111renderprecision-00488-round-63-center-1",
+      "args": [
+        "0x10f46d10f9119672",
+        "0x406e200000000000"
+      ],
+      "expected_bits": "0x10f46d10f9119677",
+      "actual": "0x10f46d10f911966d"
+    },
+    {
+      "id": "w111renderprecision-00491-round-63-center--1",
+      "args": [
+        "0x90f46d10f9119672",
+        "0x406e200000000000"
+      ],
+      "expected_bits": "0x90f46d10f9119677",
+      "actual": "0x90f46d10f911966d"
+    },
+    {
+      "id": "w111renderprecision-00518-round-66-center-1",
+      "args": [
+        "0x11cbdd5bb982721a",
+        "0x406da00000000000"
+      ],
+      "expected_bits": "0x11cbdd5bb9827221",
+      "actual": "0x11cbdd5bb9827213"
+    },
+    {
+      "id": "w111renderprecision-00521-round-66-center--1",
+      "args": [
+        "0x91cbdd5bb982721a",
+        "0x406da00000000000"
+      ],
+      "expected_bits": "0x91cbdd5bb9827221",
+      "actual": "0x91cbdd5bb9827213"
+    },
+    {
+      "id": "w111renderprecision-00530-round-68-center-1",
+      "args": [
+        "0x126c0d553da3ba29",
+        "0x406d400000000000"
+      ],
+      "expected_bits": "0x126c0d553da3ba2f",
+      "actual": "0x126c0d553da3ba23"
+    },
+    {
+      "id": "w111renderprecision-00533-round-68-center--1",
+      "args": [
+        "0x926c0d553da3ba29",
+        "0x406d400000000000"
+      ],
+      "expected_bits": "0x926c0d553da3ba2f",
+      "actual": "0x926c0d553da3ba23"
+    },
+    {
+      "id": "w111renderprecision-01298-round-168-center-1",
+      "args": [
+        "0x2c9faffa307ac342",
+        "0x405b000000000000"
+      ],
+      "expected_bits": "0x2c9faffa307ac347",
+      "actual": "0x2c9faffa307ac33d"
+    },
+    {
+      "id": "w111renderprecision-01301-round-168-center--1",
+      "args": [
+        "0xac9faffa307ac342",
+        "0x405b000000000000"
+      ],
+      "expected_bits": "0xac9faffa307ac347",
+      "actual": "0xac9faffa307ac33d"
+    },
+    {
+      "id": "w111renderprecision-01754-round-226-center-1",
+      "args": [
+        "0x3bbf045596054946",
+        "0x4041800000000000"
+      ],
+      "expected_bits": "0x3bbf04559605494d",
+      "actual": "0x3bbf04559605493f"
+    },
+    {
+      "id": "w111renderprecision-01757-round-226-center--1",
+      "args": [
+        "0xbbbf045596054946",
+        "0x4041800000000000"
+      ],
+      "expected_bits": "0xbbbf04559605494d",
+      "actual": "0xbbbf04559605493f"
+    },
+    {
+      "id": "w111renderprecision-02852-round-369-center-1",
+      "args": [
+        "0x6f3b627d11b9d606",
+        "0xc06aa00000000000"
+      ],
+      "expected_bits": "0x6f3b627d11b9d60c",
+      "actual": "0x6f3b627d11b9d600"
+    },
+    {
+      "id": "w111renderprecision-02855-round-369-center--1",
+      "args": [
+        "0xef3b627d11b9d606",
+        "0xc06aa00000000000"
+      ],
+      "expected_bits": "0xef3b627d11b9d60c",
+      "actual": "0xef3b627d11b9d600"
+    },
+    {
+      "id": "w111renderprecision-02888-round-373-center-1",
+      "args": [
+        "0x71ecd98c719a1f5d",
+        "0xc06c400000000000"
+      ],
+      "expected_bits": "0x71ecd98c719a1f64",
+      "actual": "0x71ecd98c719a1f56"
+    },
+    {
+      "id": "w111renderprecision-02891-round-373-center--1",
+      "args": [
+        "0xf1ecd98c719a1f5d",
+        "0xc06c400000000000"
+      ],
+      "expected_bits": "0xf1ecd98c719a1f64",
+      "actual": "0xf1ecd98c719a1f56"
+    },
+    {
+      "id": "w111renderprecision-03062-round-396-center-1",
+      "args": [
+        "0x7a5ef950aa1fe91c",
+        "0xc070b00000000000"
+      ],
+      "expected_bits": "0x7a5ef950aa1fe92c",
+      "actual": "0x7a5ef950aa1fe90c"
+    },
+    {
+      "id": "w111renderprecision-03065-round-396-center--1",
+      "args": [
+        "0xfa5ef950aa1fe91c",
+        "0xc070b00000000000"
+      ],
+      "expected_bits": "0xfa5ef950aa1fe92c",
+      "actual": "0xfa5ef950aa1fe90c"
+    }
+  ]
+}

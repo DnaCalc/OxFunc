@@ -4,11 +4,10 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, prepare_calc_values_only, prepared_from_calc_value,
-    run_values_only_prepared,
+    coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
+use crate::value::{CalcValue, CoreValue};
 use crate::value::WorksheetErrorCode;
 
 pub const DATE_META: FunctionMeta = function_spec! {
@@ -31,10 +30,17 @@ pub enum DateEvalError {
     NumericDomain,
 }
 
-fn truncate_to_i64(arg: &CalcValue) -> Result<i64, DateEvalError> {
-    Ok(coerce_prepared_to_number(arg)
-        .map_err(DateEvalError::Coercion)?
-        .trunc() as i64)
+/// Observed date-argument conversion on the current reference. The inclusive
+/// boundary is the same two-step binary rounding rule characterized for ADDRESS.
+/// Keep the result floating until the caller applies its own integer-width rule.
+pub(crate) fn date_integer_floor(number: f64) -> f64 {
+    let upper = number.ceil();
+    let threshold = if upper > 0.0 {
+        2.0_f64.powi(-22) + 2.0_f64.powi(-33)
+    } else {
+        2.0_f64.powi(-23) + 2.0_f64.powi(-34)
+    };
+    if upper - number <= threshold { upper } else { number.floor() }
 }
 
 fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
@@ -47,33 +53,11 @@ fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     era * 146097 + doe - 719468
 }
 
-fn excel_1900_ordinal(month: i64, day: i64) -> i64 {
-    let prefix = match month {
-        1 => 0,
-        2 => 31,
-        3 => 60,
-        4 => 91,
-        5 => 121,
-        6 => 152,
-        7 => 182,
-        8 => 213,
-        9 => 244,
-        10 => 274,
-        11 => 305,
-        12 => 335,
-        _ => unreachable!("month normalized to 1..=12"),
-    };
-    prefix + day
-}
-
 fn excel_serial_from_ymd_unbounded_1900(year: i64, month: i64, day: i64) -> i64 {
-    if year == 1900 && excel_1900_ordinal(month, day) == 60 {
-        return 60;
-    }
-
     let base = days_from_civil(1899, 12, 31);
-    let days = days_from_civil(year, month, 1) - base + (day - 1);
-    if days >= 60 { days + 1 } else { days }
+    let month_start = days_from_civil(year, month, 1) - base;
+    let month_start = if month_start >= 60 { month_start + 1 } else { month_start };
+    month_start + day - 1
 }
 
 pub fn eval_date_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, DateEvalError> {
@@ -84,12 +68,32 @@ pub fn eval_date_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, DateE
         });
     }
 
-    let mut year = truncate_to_i64(&args[0])?;
-    if (0..=1899).contains(&year) {
-        year += 1900;
+    let number = |arg: &CalcValue| match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(0.0),
+        _ => coerce_prepared_to_number(arg).map_err(DateEvalError::Coercion),
+    };
+    let raw_year = number(&args[0])?;
+    let raw_month = number(&args[1])?;
+    let raw_day = number(&args[2])?;
+    if !raw_year.is_finite() || !raw_month.is_finite() || !raw_day.is_finite() {
+        return Err(DateEvalError::NumericDomain);
     }
-    let month = truncate_to_i64(&args[1])?;
-    let day = truncate_to_i64(&args[2])?;
+    let original_year = date_integer_floor(raw_year).min(10_000.0);
+    // Black-box probes expose a positive cap and signed 16-bit year conversion.
+    // Apply the short-year offset after conversion; a negative resulting year
+    // may still become an admitted year when a large month is normalized.
+    let year_bits = if (-2_147_483_648.0..2_147_483_648.0).contains(&original_year) {
+        original_year as i64
+    } else { 0 };
+    let year = year_bits as i16 as i64;
+    let year = year + if year < 1900 { 1900 } else { 0 };
+    let month = date_integer_floor(raw_month);
+    if !(-32_767.0..32_767.0).contains(&month) {
+        return Err(DateEvalError::NumericDomain);
+    }
+    let month = month as i64;
+    let day = date_integer_floor(raw_day);
+    let day = if (-32_768.0..=32_767.0).contains(&day) { day as i64 } else { 32_767 };
 
     let month_index = year
         .checked_mul(12)
@@ -98,12 +102,12 @@ pub fn eval_date_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, DateE
     let normalized_year = month_index.div_euclid(12);
     let normalized_month = month_index.rem_euclid(12) + 1;
 
-    if normalized_year < 0 || normalized_year > 9999 {
+    if !(1900..=9999).contains(&normalized_year) {
         return Err(DateEvalError::NumericDomain);
     }
 
     let serial = excel_serial_from_ymd_unbounded_1900(normalized_year, normalized_month, day);
-    if serial < 0 {
+    if !(0..=2_958_465).contains(&serial) {
         return Err(DateEvalError::NumericDomain);
     }
 
@@ -114,10 +118,11 @@ pub fn eval_date_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DateEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         eval_date_adapter_prepared,
+        map_date_error_to_ws,
         DateEvalError::Coercion,
     )
 }
@@ -126,13 +131,7 @@ pub fn eval_date_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, DateEvalError> {
-    let prepared_calc =
-        prepare_calc_values_only(args, resolver).map_err(DateEvalError::Coercion)?;
-    let prepared = prepared_calc
-        .iter()
-        .map(prepared_from_calc_value)
-        .collect::<Vec<_>>();
-    eval_date_adapter_prepared(&prepared).map(CalcValue::from)
+    eval_date_surface(args, resolver)
 }
 
 pub fn map_date_error_to_ws(e: &DateEvalError) -> WorksheetErrorCode {

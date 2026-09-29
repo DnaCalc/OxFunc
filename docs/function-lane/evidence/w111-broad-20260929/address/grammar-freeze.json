@@ -1,0 +1,19 @@
+{
+  "seed": 202609291337,
+  "state": "character_class_and_composition_candidate_before_validation",
+  "rows": 4096,
+  "files": [
+    {
+      "path": "crates/oxfunc_core/src/functions/reference_metadata_family.rs",
+      "sha256": "217c465f34582f05b2bd919808c4223697f420348990d385599bec40b6302beb"
+    },
+    {
+      "path": "crates/oxfunc_core/src/functions/address_name_classes.rs",
+      "sha256": "7922c81f5ecfd1e45603b9db53090fe8d516c0cc8568098aedafe4f45122fa36"
+    },
+    {
+      "path": "smart-fuzzer\\runs\\w111-broad-20260929\\address-grammar-validation.json",
+      "sha256": "be043a15f0adc7595709f5af006924e361038779cd25e933b7287623baa5f1e5"
+    }
+  ]
+}

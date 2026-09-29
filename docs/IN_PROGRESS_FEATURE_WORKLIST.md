@@ -1,12 +1,23 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-07-10
+Last updated: 2026-09-29
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
 2. point readers at the current owning workset or contract surface,
 3. avoid duplicating execution-state, blocker, or archive-wave detail now owned by `.beads/`.
+
+Current campaign: W111 bead `oxf-mwue.28` owns the 2026-09-29 broad Excel
+characterization and repair work. Its [retained evidence](function-lane/evidence/w111-broad-20260929/README.md)
+records the build/CV axes, transport limitations, discovery failures and repair
+replays. The campaign remains `scope_partial`, `target_partial`, integration
+`partial`; unresolved discrepancies and unverified host surfaces remain open.
+Later candidates cover large-exponent POWER, stored LOG/FISHER/MEDIAN arithmetic,
+HARMEAN/DEVSQ publication, switched VDB, MROUND reference/kind rules and MOD
+remainder publication/preparation. QUOTIENT multi-cell reference admission is
+being independently validated. Their independent evidence and
+remaining preparation/primitive/integration lanes are recorded per family.
 
 Use rule:
 1. use this file as a high-level feature map only,

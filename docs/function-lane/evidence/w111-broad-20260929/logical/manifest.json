@@ -1,0 +1,21 @@
+{
+  "schema_version": "oxfunc.smart_fuzzer.array_run_manifest.v0",
+  "run_id": "w111-logical-text-20260929",
+  "runner": "smart-fuzzer/tools/Run-ArraySupportTranche.ps1",
+  "runner_version": "0.1.0",
+  "generated_utc": "2026-09-29T12:10:31.6700370Z",
+  "git_revision": "11b23504fe8180d08397be5435bd215e1bbb9722",
+  "git_status_short": " M .beads/issues.jsonl\n?? smart-fuzzer/tools/w111/gen_logical_text_20260929.py",
+  "tranche_path": "smart-fuzzer/cache/w111-logical-text-20260929.json",
+  "case_set_tranche_id": "",
+  "tranche_id": "w111-logical-text-20260929",
+  "artifacts": {
+    "cases": "smart-fuzzer/runs/w111-logical-text-20260929/cases/cases.jsonl",
+    "local_outcomes": "smart-fuzzer/runs/w111-logical-text-20260929/outcomes/local.jsonl",
+    "excel_outcomes": "smart-fuzzer/runs/w111-logical-text-20260929/outcomes/excel.jsonl",
+    "comparisons": "smart-fuzzer/runs/w111-logical-text-20260929/comparisons/comparisons.jsonl",
+    "rollup": "smart-fuzzer/runs/w111-logical-text-20260929/rollup.json",
+    "roadmap_trace": "smart-fuzzer/runs/w111-logical-text-20260929/roadmap_trace.md",
+    "failure_packets": "smart-fuzzer/runs/w111-logical-text-20260929/failure_packets"
+  }
+}

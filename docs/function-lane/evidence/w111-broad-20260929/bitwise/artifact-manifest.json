@@ -1,0 +1,224 @@
+{
+  "schema_version": "w111.bitwise_evidence.v1",
+  "artifacts": [
+    {
+      "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-bitand.json",
+      "source_sha256": "866ca2a554f97fa5a881eaf09fad84764be7a35b0e49513bfcb1795f2ed1a00a",
+      "path": "discovery/answers-bitand.json",
+      "retained_sha256": "20c3643948ccd68339e7929754017c0eba6820c503bee09235241c6e4d9fc621"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-bitor.json",
+      "source_sha256": "888df5d85e46b0270a04586d525cc1e3b11bbfe8b01bf7ee042c68c1f35652af",
+      "path": "discovery/answers-bitor.json",
+      "retained_sha256": "e0e6660ad66400c7977f014c1f93ccf581dc650f8465b506a2666f15bb239514"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-bitxor.json",
+      "source_sha256": "96fb11babbabe6d2c42eb7857cd259a04e848768945eca08fd6b0901ad544055",
+      "path": "discovery/answers-bitxor.json",
+      "retained_sha256": "2cc7d02f74dd58b2218d94acdace6abf3787e01275cb1342d48ac702d6a4b864"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-bitlshift.json",
+      "source_sha256": "bfd3f9fee60b48e7837f040dae475a70d3bd00cf2b685c6c5ea7e5b76169bbba",
+      "path": "discovery/answers-bitlshift.json",
+      "retained_sha256": "251f0ff64e27cc1e76399e7dfa6c8f4caf936511c0e5610021653b2bd15a58d6"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-broad-20260929/answers/answers-bitrshift.json",
+      "source_sha256": "69e28542a0439b3920a0cffe13232733a0e6d180f3155671a02fb0b841482bdf",
+      "path": "discovery/answers-bitrshift.json",
+      "retained_sha256": "02408279b78d8b1b54b3e6082625ef6581e799a9306aa204e368692cdb600527"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/discriminator-answers/answers-batch-bitand.json",
+      "source_sha256": "1b32546e537c48d491b784e58cb353afbdaea2f03e29c30b21245f5afc4e9bee",
+      "path": "discriminator/answers-bitand.json",
+      "retained_sha256": "7c9617aa28a4c303b61173d611271bd11bb71f9fca6462a2aacbacd0e0fda750"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/discriminator-answers/answers-batch-bitor.json",
+      "source_sha256": "748e62d72d1a5deb15de222a7644a10fb91673894f2f7e6fde7aa09f7a953c9f",
+      "path": "discriminator/answers-bitor.json",
+      "retained_sha256": "a7d27aaa67ac462722892266306729469a739d83be5c33817c6079ba7f9df147"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/discriminator-answers/answers-batch-bitxor.json",
+      "source_sha256": "a5bac57a33ded06ca663b1ba7a878b7ddc9f1e083b82d44d5d0a26116721d827",
+      "path": "discriminator/answers-bitxor.json",
+      "retained_sha256": "5f30081cfed83790bd4ebaea7379373fc30448e71683b1afa71ee4c7792ccc5e"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/discriminator-answers/answers-batch-bitlshift.json",
+      "source_sha256": "e19b9fb436fdc66f297d7f7e99a11b5a88d95ebb139b85efa048f037312c6b84",
+      "path": "discriminator/answers-bitlshift.json",
+      "retained_sha256": "fcdcaed5cb277d36554466d57ffa41f647c674ddd7b0a361c40eb74f4573bb9c"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/discriminator-answers/answers-batch-bitrshift.json",
+      "source_sha256": "b59fea60e4b95fab4efc647d06e8e20700c5a1c0e922b409343f2c60f9c290c5",
+      "path": "discriminator/answers-bitrshift.json",
+      "retained_sha256": "66baa6d57723646393760e0324b6c871e334b2bf2ab779cc7e731745e9730545"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/discriminator/manifest.json",
+      "source_sha256": "0efec47d14d5e21c24febd7481a3a84206d625114139864a7db4940b20215765",
+      "path": "discriminator/input-manifest.json",
+      "retained_sha256": "0ac2d24a62a05aeef3af39bdf9f1727a2da92433feb6078eaf90f6e47dba820b"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/heldout-answers/answers-batch-bitand.json",
+      "source_sha256": "65766bdbc73ae6b6bdbebdab994c9e436bf32467b11948d256e04bf850e6e508",
+      "path": "heldout/answers-bitand.json",
+      "retained_sha256": "435bcbb6ae96a61ac82994ffa8756136f9072becf2128584fcc21213d7002615"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/heldout-answers/answers-batch-bitor.json",
+      "source_sha256": "f77c9f178591c31a4197b4ba91bee75419a5164365a8d6f3ab813f703a8eae32",
+      "path": "heldout/answers-bitor.json",
+      "retained_sha256": "4b569cea44d9845185e076a7e6352177928a065a8e760e17dfd1d48a1158dffc"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/heldout-answers/answers-batch-bitxor.json",
+      "source_sha256": "8d1bedb926d28db61e235e1055fddeec9c96647e854e37186d2062b3507111e0",
+      "path": "heldout/answers-bitxor.json",
+      "retained_sha256": "8e1f224140f138bac9de224cfe091c187215071e011ea697e8857c60d1be31f6"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/heldout-answers/answers-batch-bitlshift.json",
+      "source_sha256": "e87c9acf4dc03002fa0e62e1b35a423544a09ab413d2246bd61126195aa094c1",
+      "path": "heldout/answers-bitlshift.json",
+      "retained_sha256": "269b04f7948893e0a97c2c2eaf25a6a4c89089637f49b2e4ce1827e27fa59b3d"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/heldout-answers/answers-batch-bitrshift.json",
+      "source_sha256": "9c9931ba59ff4d1940ffdf5b38a838f5be4310a0217d03bb45b4c608d3cefb33",
+      "path": "heldout/answers-bitrshift.json",
+      "retained_sha256": "6cf880655b94d470abf8dbedb0ffe6b30bc9956b46b3a70b75b78fc8a1f70802"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/heldout/manifest.json",
+      "source_sha256": "1fe971b4aa2c149fa0e7ba4331b1d3059b2c893a3de4b03cb657cf0712bd9570",
+      "path": "heldout/input-manifest.json",
+      "retained_sha256": "b6c7cf7f054fc66a4358464b8bd4766bbabce08e97a2acf92a8c6e0e36cfdbd4"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/freeze-v1.json",
+      "source_sha256": "57be2c21d8f5ee751f10003929e15b09ff7fe507ed283a9e7a99ceb8993b07ae",
+      "path": "freeze-v1.json",
+      "retained_sha256": "48b10cb753a514ac5de8b6436df0d887faa6a1b04db94a714a34b653167ee778"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/freeze-v2.json",
+      "source_sha256": "7093fa4666bf03a1bb4e4135ebda5abe83a859621eec52cb943e3694a804a995",
+      "path": "freeze-v2.json",
+      "retained_sha256": "2b7581dc69bf6ac0af6d18010100326bca7d233fe2230e25fdad83ed12e6a0fd"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-20260929/manifest.json",
+      "source_sha256": "090e657a8fd15a25796514cb1c9c88125a507d722af40684b7f0e425329e075b",
+      "path": "typed-discovery/manifest.json",
+      "retained_sha256": "8d47156b2dcf5edaf7107f67c0d69498bb8df76dc7abafd25d8ef9e55f568dce"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-20260929/rollup.json",
+      "source_sha256": "91a4395277aa662de8b5e9918194082e298ccf2a1ae241dcf928488cf4c5918c",
+      "path": "typed-discovery/rollup.json",
+      "retained_sha256": "f7ce64548ddee14be1efbd64010fb3487641ef40a12d2ead8a660ad53030b81f"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-20260929/cases/cases.jsonl",
+      "source_sha256": "c44a14bc6fe4928f53113e356329af8dacb31e35af65877a506b081ba918e1b1",
+      "path": "typed-discovery/cases/cases.jsonl",
+      "retained_sha256": "c44a14bc6fe4928f53113e356329af8dacb31e35af65877a506b081ba918e1b1"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-20260929/outcomes/excel.jsonl",
+      "source_sha256": "b744db71bcd88bf1ae413113c87cf6faf0c38a91c330f55f4e3afb63f359494f",
+      "path": "typed-discovery/outcomes/excel.jsonl",
+      "retained_sha256": "b744db71bcd88bf1ae413113c87cf6faf0c38a91c330f55f4e3afb63f359494f"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-20260929/outcomes/local.jsonl",
+      "source_sha256": "824aee0b70516182f0b29e0ce57ea3e479cdb794a3172466fdc114fbc539493b",
+      "path": "typed-discovery/outcomes/local.jsonl",
+      "retained_sha256": "a61d5aed837a29a787ff0b7753c0a09b13690d038aa8fd9e8fb00a1e94afaf2b"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-20260929/comparisons/comparisons.jsonl",
+      "source_sha256": "de1fe134a27a57d9e3931f02fd235d89d5744cbe6593f4ce77f5f38317f21b53",
+      "path": "typed-discovery/comparisons/comparisons.jsonl",
+      "retained_sha256": "de1fe134a27a57d9e3931f02fd235d89d5744cbe6593f4ce77f5f38317f21b53"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-heldout-20260929/manifest.json",
+      "source_sha256": "c69ecf4be4685c214c97c3967c5a0eb316fa8eaddfc989990c497aa84ec187e4",
+      "path": "typed-heldout/manifest.json",
+      "retained_sha256": "fabebb3eb8260861b6cfb6f425f18b884652efd81f18f39de2359d7d51db94b6"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-heldout-20260929/rollup.json",
+      "source_sha256": "14358a062bf95c9efaa17047420b9a70b0f32dbb05978cffb057d3a603f3317a",
+      "path": "typed-heldout/rollup.json",
+      "retained_sha256": "6a4e195d5b066b995abd68a6ec878db8f90c0656c212200d2d627f71b4fb0a79"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-heldout-20260929/cases/cases.jsonl",
+      "source_sha256": "0eb820de62314b98497ce88c71bfde2c42d533526426bf8df86b9c0ff844fbcf",
+      "path": "typed-heldout/cases/cases.jsonl",
+      "retained_sha256": "0eb820de62314b98497ce88c71bfde2c42d533526426bf8df86b9c0ff844fbcf"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-heldout-20260929/outcomes/excel.jsonl",
+      "source_sha256": "089bc43f2e917e82eb7763de0431a5b9fa2994f7a3f9e183f72419e02bd9da83",
+      "path": "typed-heldout/outcomes/excel.jsonl",
+      "retained_sha256": "089bc43f2e917e82eb7763de0431a5b9fa2994f7a3f9e183f72419e02bd9da83"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-heldout-20260929/outcomes/local.jsonl",
+      "source_sha256": "0ed79c1255f51ab418299b41acfe3dda90aafbe15888db1d5d83a2e9b8b7a360",
+      "path": "typed-heldout/outcomes/local.jsonl",
+      "retained_sha256": "3a62af4eb0679ec842c78c0518837fb3ba46d69e7ca059182e57d00bf67b3067"
+    },
+    {
+      "source": "smart-fuzzer/runs/w111-bitwise-typed-heldout-20260929/comparisons/comparisons.jsonl",
+      "source_sha256": "1984ed2054f8959caa7e1ac4bfa0f5365ec8c3342fbedcbd1aabcce411824d89",
+      "path": "typed-heldout/comparisons/comparisons.jsonl",
+      "retained_sha256": "1984ed2054f8959caa7e1ac4bfa0f5365ec8c3342fbedcbd1aabcce411824d89"
+    },
+    {
+      "source": "smart-fuzzer/cache/w111-bitwise-20260929/typed-v2-local.jsonl",
+      "source_sha256": "7d83e6442f0aac09a0e1c4d42d69e38706af911a5e13f1af1826b207e8fe3ce2",
+      "path": "typed-discovery/outcomes/local-final.jsonl",
+      "retained_sha256": "59c36407a13a97584062d77e401de81491ff24329476011fd7268a373050418e"
+    }
+  ],
+  "numeric_phases": {
+    "discovery": {
+      "raw_rows": 6245,
+      "source_ingress_changed_rows": 0,
+      "qualified_rows": 6245,
+      "qualification": "Negative zero/subnormal source tuples remain banked but are excluded from same-input semantic evidence; see ../numeric-ingress.json"
+    },
+    "discriminator": {
+      "raw_rows": 1751,
+      "source_ingress_changed_rows": 183,
+      "qualified_rows": 1568,
+      "qualification": "Negative zero/subnormal source tuples remain banked but are excluded from same-input semantic evidence; see ../numeric-ingress.json"
+    },
+    "heldout": {
+      "raw_rows": 26433,
+      "source_ingress_changed_rows": 0,
+      "qualified_rows": 26433,
+      "qualification": "Negative zero/subnormal source tuples remain banked but are excluded from same-input semantic evidence; see ../numeric-ingress.json"
+    }
+  },
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "current-phase review and promotion",
+    "alternate version and locale phases"
+  ]
+}

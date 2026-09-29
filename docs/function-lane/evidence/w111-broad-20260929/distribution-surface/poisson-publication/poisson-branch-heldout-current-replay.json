@@ -1,0 +1,177 @@
+{
+  "function": "POISSON.DIST",
+  "matches": 727,
+  "misses": [
+    {
+      "actual": "0x00a3f6488a11042d",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00a3f6488a1103e2",
+      "id": "poisson-branch-heldout-00136-count-domain"
+    },
+    {
+      "actual": "0x00a3fd7f057948c3",
+      "args": [
+        "0x3ff0000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00a3fd7f057947af",
+      "id": "poisson-branch-heldout-00137-count-domain"
+    },
+    {
+      "actual": "0x00647f51f6b81d99",
+      "args": [
+        "0x3ff0000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00647f51f6b81de1",
+      "id": "poisson-branch-heldout-00138-count-domain"
+    },
+    {
+      "actual": "0x006486b2a1501570",
+      "args": [
+        "0x3ff0000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x006486b2a1501453",
+      "id": "poisson-branch-heldout-00139-count-domain"
+    },
+    {
+      "actual": "0x00a3f6488a11042d",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00a3f6488a1103e2",
+      "id": "poisson-branch-heldout-00160-count-domain"
+    },
+    {
+      "actual": "0x00a3fd7f057948c3",
+      "args": [
+        "0x3ff0000000000001",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00a3fd7f057947af",
+      "id": "poisson-branch-heldout-00161-count-domain"
+    },
+    {
+      "actual": "0x00647f51f6b81d99",
+      "args": [
+        "0x3ff0000000000001",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00647f51f6b81de1",
+      "id": "poisson-branch-heldout-00162-count-domain"
+    },
+    {
+      "actual": "0x006486b2a1501570",
+      "args": [
+        "0x3ff0000000000001",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x006486b2a1501453",
+      "id": "poisson-branch-heldout-00163-count-domain"
+    },
+    {
+      "actual": "0x00a3f6488a11042d",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4086240000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00a3f6488a1103e2",
+      "id": "poisson-branch-heldout-00184-count-domain"
+    },
+    {
+      "actual": "0x00a3fd7f057948c3",
+      "args": [
+        "0x3ffc000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x00a3fd7f057947af",
+      "id": "poisson-branch-heldout-00185-count-domain"
+    },
+    {
+      "actual": "0x00647f51f6b81d99",
+      "args": [
+        "0x3ffc000000000000",
+        "0x40863a0000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x00647f51f6b81de1",
+      "id": "poisson-branch-heldout-00186-count-domain"
+    },
+    {
+      "actual": "0x006486b2a1501570",
+      "args": [
+        "0x3ffc000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x006486b2a1501453",
+      "id": "poisson-branch-heldout-00187-count-domain"
+    },
+    {
+      "actual": "0x35a5555555553fd6",
+      "args": [
+        "0x4011000000000000",
+        "0x3d70000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x35a5555555554000",
+      "id": "poisson-branch-heldout-00202-count-domain"
+    },
+    {
+      "actual": "0x3f428e8b227d1044",
+      "args": [
+        "0x4011000000000000",
+        "0x3fd8000000000000",
+        "0x0000000000000000"
+      ],
+      "expected": "0x3f428e8b227d1049",
+      "id": "poisson-branch-heldout-00204-count-domain"
+    },
+    {
+      "actual": "0x3fd131f1b4591a26",
+      "args": [
+        "0x4011000000000000",
+        "0x4018800000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x3fd131f1b4591a27",
+      "id": "poisson-branch-heldout-00207-count-domain"
+    },
+    {
+      "actual": "0x0221bb4c80a2f05e",
+      "args": [
+        "0x4011000000000000",
+        "0x4086240000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x0221bb4c80a2ef79",
+      "id": "poisson-branch-heldout-00209-count-domain"
+    },
+    {
+      "actual": "0x01e26b68070b031a",
+      "args": [
+        "0x4011000000000000",
+        "0x40863a0000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": "0x01e26b68070b0229",
+      "id": "poisson-branch-heldout-00211-count-domain"
+    }
+  ],
+  "rows": 744
+}

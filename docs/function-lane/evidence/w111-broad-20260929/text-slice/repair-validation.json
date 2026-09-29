@@ -1,0 +1,45 @@
+{
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "general numeric textification",
+    "context/version declarations",
+    "DBCS behavior",
+    "empty-call syntax admission",
+    "evaluator metadata and handoff acknowledgement"
+  ],
+  "admitted_rows": 34267,
+  "banks": {
+    "discovery": 1945,
+    "numeric-boundaries": 1888,
+    "utf16": 2508,
+    "utf16-tail": 12672,
+    "heldout": 2100,
+    "utf16-heldout": 6342,
+    "utf16-fallback-heldout": 6812
+  },
+  "withheld": {
+    "Formula2_empty_call": 7,
+    "NUL_Value2_ingress_changes": 264
+  },
+  "validation": {
+    "production_dispatch_tests": 7,
+    "unit_tests": 23,
+    "lean_jobs": 12
+  },
+  "source_sha256": {
+    "crates/oxfunc_core/src/functions/text_slice_family.rs": "07c9e41c1f9cc3e059540222624ee8eb1324d2f0a78a24aea6ae80bc16908c16",
+    "crates/oxfunc_core/src/functions/text_b_compat_family.rs": "fd848cc6796561809996bc1636dac63e15ad9404788ac86118715b24728a70a1",
+    "crates/oxfunc_core/src/functions/exact_fn.rs": "bbf5c9ec8163429aec0d36d700902222f32ab319c8412331ed1089e1b754423f",
+    "crates/oxfunc_core/src/functions/web_text_xml_family.rs": "bece3daec654f59a398cc400151dec6afa1e4081841523dbb2495361ae684033",
+    "crates/oxfunc_core/src/functions/date_fn.rs": "d9b40673fd06871da1a24c5fe994b07ffa10eecf4441a049c225e754b111e2c0",
+    "crates/oxfunc_core/tests/w111_text_slice_live_replay.rs": "fcfb21f3bc05fe75b5eeb65133125f0458f604423a6ff398841333e3ab54f89d",
+    "formal/lean/OxFunc/TextScalarBroadcast.lean": "8d3f71046f26a69559aec707310475a25c2267711f6abaab551c2652bfe2cef7",
+    "formal/lean/OxFunc/Functions/TextSliceFamily.lean": "2bf26ede217f99c64dfcfb08d6f221d481adf24327fecab965f3d2fd1f95e479",
+    "formal/lean/OxFunc/Functions/TextBCompatFamily.lean": "0f65a6376643cf073167b986c9676f0e9ba721d8ee40404a1581cb8ac6912ce3",
+    "formal/lean/OxFunc/Functions/Exact.lean": "fa7dc0e615a78a984e6b86cfd6a10fac3a257d933f20066d55e5bf98ff75afc4",
+    "formal/lean/OxFunc/Functions/WebTextXmlFamily.lean": "653876c2f57c311351070ed3d0725bcdd88a4c50a4f4abc96b51138a9608611c"
+  },
+  "first_raw_heldout_candidate_misses": 5
+}

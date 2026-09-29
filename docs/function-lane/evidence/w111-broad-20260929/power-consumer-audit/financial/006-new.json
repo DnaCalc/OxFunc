@@ -1,0 +1,290 @@
+{
+  "function_id": "FUNC.PV",
+  "rows_judged": 48,
+  "rows_agree": 36,
+  "severity": "numeric",
+  "worst_ulp": 30,
+  "misses_by_severity": {
+    "last_bit": 9,
+    "numeric": 3
+  },
+  "misses": [
+    {
+      "id": "pv-042",
+      "args": [
+        "0x3f86872b020c49ba",
+        "0x401c000000000000",
+        "0x4040a66666666666",
+        "0xc06f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4618376028790771740
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4618376028790771710
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 30
+      }
+    },
+    {
+      "id": "pv-002",
+      "args": [
+        "0x3fa999999999999a",
+        "0x401c000000000000",
+        "0x4040a66666666666",
+        "0xc06f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13851003672753539131
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13851003672753539119
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 12
+      }
+    },
+    {
+      "id": "pv-026",
+      "args": [
+        "0x3eb92a737110e454",
+        "0x401c000000000000",
+        "0x4040a66666666666",
+        "0xc06f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4625449701174548010
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4625449701174548002
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "numeric",
+        "ulp": 8
+      }
+    },
+    {
+      "id": "pv-006",
+      "args": [
+        "0x3fb999999999999a",
+        "0x401c000000000000",
+        "0x4040a66666666666",
+        "0xc06f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13855611449805040538
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13855611449805040542
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 4
+      }
+    },
+    {
+      "id": "pv-023",
+      "args": [
+        "0x3f726e978d4fdf3b",
+        "0x404e000000000000",
+        "0x406f400000000000",
+        "0xc0a7700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13890583063917145210
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13890583063917145212
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "pv-035",
+      "args": [
+        "0x3fb3e93e93e93c63",
+        "0x404e000000000000",
+        "0x406f400000000000",
+        "0xc0a7700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13883049643245861892
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13883049643245861890
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 2
+      }
+    },
+    {
+      "id": "pv-011",
+      "args": [
+        "0x3fd5555555555555",
+        "0x404e000000000000",
+        "0x406f400000000000",
+        "0xc0a7700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13875379344573880567
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13875379344573880566
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "pv-014",
+      "args": [
+        "0x3feccccccccccccd",
+        "0x401c000000000000",
+        "0x4040a66666666666",
+        "0xc06f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13857767225020978819
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13857767225020978820
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "pv-018",
+      "args": [
+        "0xbfc3d70a3d70a3d7",
+        "0x401c000000000000",
+        "0x4040a66666666666",
+        "0xc06f400000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 4645816604932446298
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 4645816604932446299
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "pv-027",
+      "args": [
+        "0x3eb92a737110e454",
+        "0x404e000000000000",
+        "0x406f400000000000",
+        "0xc0a7700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13891194504487576802
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13891194504487576801
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "pv-039",
+      "args": [
+        "0x4004000000000000",
+        "0x404e000000000000",
+        "0x406f400000000000",
+        "0xc0a7700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13868236918161932287
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13868236918161932288
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    },
+    {
+      "id": "pv-047",
+      "args": [
+        "0x3fc4ea798778a200",
+        "0x404e000000000000",
+        "0x406f400000000000",
+        "0xc0a7700000000000",
+        "0x3ff0000000000000"
+      ],
+      "expected": {
+        "kind": "number",
+        "bits": 13878912698341282287
+      },
+      "actual": {
+        "kind": "number",
+        "bits": 13878912698341282288
+      },
+      "verdict": {
+        "agree": false,
+        "severity": "last_bit",
+        "ulp": 1
+      }
+    }
+  ],
+  "capture_provenance": null
+}

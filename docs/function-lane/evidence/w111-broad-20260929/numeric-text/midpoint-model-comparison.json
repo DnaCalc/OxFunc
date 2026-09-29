@@ -1,0 +1,884 @@
+{
+  "counts": {
+    "exact_rn53": 58,
+    "exact_rn63_rn53": 61,
+    "exact_rn64_rn53": 38,
+    "multiply_rn64_power": 45,
+    "divide_rn64_power": 80,
+    "multiply_rn63_power": 70,
+    "divide_rn63_power": 93
+  },
+  "paired_function_differences": 0,
+  "rn53_mismatches": [
+    [
+      "center-0-neighbor-0",
+      "ABS",
+      "935037643088324e-142",
+      "0x25903414b3117a7e",
+      {
+        "exact_rn53": "0x25903414b3117a7f",
+        "exact_rn63_rn53": "0x25903414b3117a7e",
+        "exact_rn64_rn53": "0x25903414b3117a7f",
+        "multiply_rn64_power": "0x25903414b3117a7f",
+        "divide_rn64_power": "0x25903414b3117a7f",
+        "multiply_rn63_power": "0x25903414b3117a7f",
+        "divide_rn63_power": "0x25903414b3117a7e"
+      }
+    ],
+    [
+      "center-0-neighbor-0",
+      "IMREAL",
+      "935037643088324e-142",
+      "0x25903414b3117a7e",
+      {
+        "exact_rn53": "0x25903414b3117a7f",
+        "exact_rn63_rn53": "0x25903414b3117a7e",
+        "exact_rn64_rn53": "0x25903414b3117a7f",
+        "multiply_rn64_power": "0x25903414b3117a7f",
+        "divide_rn64_power": "0x25903414b3117a7f",
+        "multiply_rn63_power": "0x25903414b3117a7f",
+        "divide_rn63_power": "0x25903414b3117a7e"
+      }
+    ],
+    [
+      "center-4-neighbor-0",
+      "ABS",
+      "259122951183402e-37",
+      "0x3b3f5377875c629a",
+      {
+        "exact_rn53": "0x3b3f5377875c629b",
+        "exact_rn63_rn53": "0x3b3f5377875c629a",
+        "exact_rn64_rn53": "0x3b3f5377875c629a",
+        "multiply_rn64_power": "0x3b3f5377875c629a",
+        "divide_rn64_power": "0x3b3f5377875c629a",
+        "multiply_rn63_power": "0x3b3f5377875c629a",
+        "divide_rn63_power": "0x3b3f5377875c629a"
+      }
+    ],
+    [
+      "center-4-neighbor-0",
+      "IMREAL",
+      "259122951183402e-37",
+      "0x3b3f5377875c629a",
+      {
+        "exact_rn53": "0x3b3f5377875c629b",
+        "exact_rn63_rn53": "0x3b3f5377875c629a",
+        "exact_rn64_rn53": "0x3b3f5377875c629a",
+        "multiply_rn64_power": "0x3b3f5377875c629a",
+        "divide_rn64_power": "0x3b3f5377875c629a",
+        "multiply_rn63_power": "0x3b3f5377875c629a",
+        "divide_rn63_power": "0x3b3f5377875c629a"
+      }
+    ],
+    [
+      "center-7-neighbor-0",
+      "ABS",
+      "217808192469354e116",
+      "0x5aff6c12d337298e",
+      {
+        "exact_rn53": "0x5aff6c12d337298d",
+        "exact_rn63_rn53": "0x5aff6c12d337298e",
+        "exact_rn64_rn53": "0x5aff6c12d337298e",
+        "multiply_rn64_power": "0x5aff6c12d337298e",
+        "divide_rn64_power": "0x5aff6c12d337298e",
+        "multiply_rn63_power": "0x5aff6c12d337298e",
+        "divide_rn63_power": "0x5aff6c12d337298e"
+      }
+    ],
+    [
+      "center-7-neighbor-0",
+      "IMREAL",
+      "217808192469354e116",
+      "0x5aff6c12d337298e",
+      {
+        "exact_rn53": "0x5aff6c12d337298d",
+        "exact_rn63_rn53": "0x5aff6c12d337298e",
+        "exact_rn64_rn53": "0x5aff6c12d337298e",
+        "multiply_rn64_power": "0x5aff6c12d337298e",
+        "divide_rn64_power": "0x5aff6c12d337298e",
+        "multiply_rn63_power": "0x5aff6c12d337298e",
+        "divide_rn63_power": "0x5aff6c12d337298e"
+      }
+    ],
+    [
+      "center-10-neighbor-0",
+      "ABS",
+      "495737697126714e91",
+      "0x55e14abbdfd890fe",
+      {
+        "exact_rn53": "0x55e14abbdfd890ff",
+        "exact_rn63_rn53": "0x55e14abbdfd890fe",
+        "exact_rn64_rn53": "0x55e14abbdfd890ff",
+        "multiply_rn64_power": "0x55e14abbdfd890fe",
+        "divide_rn64_power": "0x55e14abbdfd890ff",
+        "multiply_rn63_power": "0x55e14abbdfd890ff",
+        "divide_rn63_power": "0x55e14abbdfd890fe"
+      }
+    ],
+    [
+      "center-10-neighbor-0",
+      "IMREAL",
+      "495737697126714e91",
+      "0x55e14abbdfd890fe",
+      {
+        "exact_rn53": "0x55e14abbdfd890ff",
+        "exact_rn63_rn53": "0x55e14abbdfd890fe",
+        "exact_rn64_rn53": "0x55e14abbdfd890ff",
+        "multiply_rn64_power": "0x55e14abbdfd890fe",
+        "divide_rn64_power": "0x55e14abbdfd890ff",
+        "multiply_rn63_power": "0x55e14abbdfd890ff",
+        "divide_rn63_power": "0x55e14abbdfd890fe"
+      }
+    ],
+    [
+      "center-15-neighbor-0",
+      "ABS",
+      "692561637319617e93",
+      "0x5652df7a27a82774",
+      {
+        "exact_rn53": "0x5652df7a27a82775",
+        "exact_rn63_rn53": "0x5652df7a27a82774",
+        "exact_rn64_rn53": "0x5652df7a27a82774",
+        "multiply_rn64_power": "0x5652df7a27a82774",
+        "divide_rn64_power": "0x5652df7a27a82775",
+        "multiply_rn63_power": "0x5652df7a27a82774",
+        "divide_rn63_power": "0x5652df7a27a82774"
+      }
+    ],
+    [
+      "center-15-neighbor-0",
+      "IMREAL",
+      "692561637319617e93",
+      "0x5652df7a27a82774",
+      {
+        "exact_rn53": "0x5652df7a27a82775",
+        "exact_rn63_rn53": "0x5652df7a27a82774",
+        "exact_rn64_rn53": "0x5652df7a27a82774",
+        "multiply_rn64_power": "0x5652df7a27a82774",
+        "divide_rn64_power": "0x5652df7a27a82775",
+        "multiply_rn63_power": "0x5652df7a27a82774",
+        "divide_rn63_power": "0x5652df7a27a82774"
+      }
+    ],
+    [
+      "center-16-neighbor-0",
+      "ABS",
+      "777709504016204e233",
+      "0x73663ef694e6267e",
+      {
+        "exact_rn53": "0x73663ef694e6267d",
+        "exact_rn63_rn53": "0x73663ef694e6267e",
+        "exact_rn64_rn53": "0x73663ef694e6267d",
+        "multiply_rn64_power": "0x73663ef694e6267d",
+        "divide_rn64_power": "0x73663ef694e6267d",
+        "multiply_rn63_power": "0x73663ef694e6267e",
+        "divide_rn63_power": "0x73663ef694e6267e"
+      }
+    ],
+    [
+      "center-16-neighbor-0",
+      "IMREAL",
+      "777709504016204e233",
+      "0x73663ef694e6267e",
+      {
+        "exact_rn53": "0x73663ef694e6267d",
+        "exact_rn63_rn53": "0x73663ef694e6267e",
+        "exact_rn64_rn53": "0x73663ef694e6267d",
+        "multiply_rn64_power": "0x73663ef694e6267d",
+        "divide_rn64_power": "0x73663ef694e6267d",
+        "multiply_rn63_power": "0x73663ef694e6267e",
+        "divide_rn63_power": "0x73663ef694e6267e"
+      }
+    ],
+    [
+      "center-17-neighbor-0",
+      "ABS",
+      "428931203794129e278",
+      "0x7cb13168e735f178",
+      {
+        "exact_rn53": "0x7cb13168e735f177",
+        "exact_rn63_rn53": "0x7cb13168e735f178",
+        "exact_rn64_rn53": "0x7cb13168e735f178",
+        "multiply_rn64_power": "0x7cb13168e735f178",
+        "divide_rn64_power": "0x7cb13168e735f177",
+        "multiply_rn63_power": "0x7cb13168e735f178",
+        "divide_rn63_power": "0x7cb13168e735f178"
+      }
+    ],
+    [
+      "center-17-neighbor-0",
+      "IMREAL",
+      "428931203794129e278",
+      "0x7cb13168e735f178",
+      {
+        "exact_rn53": "0x7cb13168e735f177",
+        "exact_rn63_rn53": "0x7cb13168e735f178",
+        "exact_rn64_rn53": "0x7cb13168e735f178",
+        "multiply_rn64_power": "0x7cb13168e735f178",
+        "divide_rn64_power": "0x7cb13168e735f177",
+        "multiply_rn63_power": "0x7cb13168e735f178",
+        "divide_rn63_power": "0x7cb13168e735f178"
+      }
+    ],
+    [
+      "center-19-neighbor-0",
+      "ABS",
+      "672760215586316e-220",
+      "0x1555996410b49754",
+      {
+        "exact_rn53": "0x1555996410b49753",
+        "exact_rn63_rn53": "0x1555996410b49754",
+        "exact_rn64_rn53": "0x1555996410b49754",
+        "multiply_rn64_power": "0x1555996410b49754",
+        "divide_rn64_power": "0x1555996410b49754",
+        "multiply_rn63_power": "0x1555996410b49754",
+        "divide_rn63_power": "0x1555996410b49754"
+      }
+    ],
+    [
+      "center-19-neighbor-0",
+      "IMREAL",
+      "672760215586316e-220",
+      "0x1555996410b49754",
+      {
+        "exact_rn53": "0x1555996410b49753",
+        "exact_rn63_rn53": "0x1555996410b49754",
+        "exact_rn64_rn53": "0x1555996410b49754",
+        "multiply_rn64_power": "0x1555996410b49754",
+        "divide_rn64_power": "0x1555996410b49754",
+        "multiply_rn63_power": "0x1555996410b49754",
+        "divide_rn63_power": "0x1555996410b49754"
+      }
+    ],
+    [
+      "center-26-neighbor-0",
+      "ABS",
+      "354031502477938e11",
+      "0x453d48e89eddf764",
+      {
+        "exact_rn53": "0x453d48e89eddf765",
+        "exact_rn63_rn53": "0x453d48e89eddf764",
+        "exact_rn64_rn53": "0x453d48e89eddf764",
+        "multiply_rn64_power": "0x453d48e89eddf764",
+        "divide_rn64_power": "0x453d48e89eddf764",
+        "multiply_rn63_power": "0x453d48e89eddf764",
+        "divide_rn63_power": "0x453d48e89eddf765"
+      }
+    ],
+    [
+      "center-26-neighbor-0",
+      "IMREAL",
+      "354031502477938e11",
+      "0x453d48e89eddf764",
+      {
+        "exact_rn53": "0x453d48e89eddf765",
+        "exact_rn63_rn53": "0x453d48e89eddf764",
+        "exact_rn64_rn53": "0x453d48e89eddf764",
+        "multiply_rn64_power": "0x453d48e89eddf764",
+        "divide_rn64_power": "0x453d48e89eddf764",
+        "multiply_rn63_power": "0x453d48e89eddf764",
+        "divide_rn63_power": "0x453d48e89eddf765"
+      }
+    ],
+    [
+      "center-28-neighbor-0",
+      "ABS",
+      "228009841050944e-94",
+      "0x2f65a0d866abd0ee",
+      {
+        "exact_rn53": "0x2f65a0d866abd0ef",
+        "exact_rn63_rn53": "0x2f65a0d866abd0ee",
+        "exact_rn64_rn53": "0x2f65a0d866abd0ef",
+        "multiply_rn64_power": "0x2f65a0d866abd0ee",
+        "divide_rn64_power": "0x2f65a0d866abd0ef",
+        "multiply_rn63_power": "0x2f65a0d866abd0ee",
+        "divide_rn63_power": "0x2f65a0d866abd0ef"
+      }
+    ],
+    [
+      "center-28-neighbor-0",
+      "IMREAL",
+      "228009841050944e-94",
+      "0x2f65a0d866abd0ee",
+      {
+        "exact_rn53": "0x2f65a0d866abd0ef",
+        "exact_rn63_rn53": "0x2f65a0d866abd0ee",
+        "exact_rn64_rn53": "0x2f65a0d866abd0ef",
+        "multiply_rn64_power": "0x2f65a0d866abd0ee",
+        "divide_rn64_power": "0x2f65a0d866abd0ef",
+        "multiply_rn63_power": "0x2f65a0d866abd0ee",
+        "divide_rn63_power": "0x2f65a0d866abd0ef"
+      }
+    ],
+    [
+      "center-31-neighbor-0",
+      "ABS",
+      "921497335119886e267",
+      "0x7a7961f9ce860b38",
+      {
+        "exact_rn53": "0x7a7961f9ce860b37",
+        "exact_rn63_rn53": "0x7a7961f9ce860b38",
+        "exact_rn64_rn53": "0x7a7961f9ce860b38",
+        "multiply_rn64_power": "0x7a7961f9ce860b38",
+        "divide_rn64_power": "0x7a7961f9ce860b37",
+        "multiply_rn63_power": "0x7a7961f9ce860b37",
+        "divide_rn63_power": "0x7a7961f9ce860b38"
+      }
+    ],
+    [
+      "center-31-neighbor-0",
+      "IMREAL",
+      "921497335119886e267",
+      "0x7a7961f9ce860b38",
+      {
+        "exact_rn53": "0x7a7961f9ce860b37",
+        "exact_rn63_rn53": "0x7a7961f9ce860b38",
+        "exact_rn64_rn53": "0x7a7961f9ce860b38",
+        "multiply_rn64_power": "0x7a7961f9ce860b38",
+        "divide_rn64_power": "0x7a7961f9ce860b37",
+        "multiply_rn63_power": "0x7a7961f9ce860b37",
+        "divide_rn63_power": "0x7a7961f9ce860b38"
+      }
+    ],
+    [
+      "center-33-neighbor-0",
+      "ABS",
+      "291368128120414e-7",
+      "0x417bc97accfe1f20",
+      {
+        "exact_rn53": "0x417bc97accfe1f1f",
+        "exact_rn63_rn53": "0x417bc97accfe1f20",
+        "exact_rn64_rn53": "0x417bc97accfe1f20",
+        "multiply_rn64_power": "0x417bc97accfe1f20",
+        "divide_rn64_power": "0x417bc97accfe1f20",
+        "multiply_rn63_power": "0x417bc97accfe1f20",
+        "divide_rn63_power": "0x417bc97accfe1f20"
+      }
+    ],
+    [
+      "center-33-neighbor-0",
+      "IMREAL",
+      "291368128120414e-7",
+      "0x417bc97accfe1f20",
+      {
+        "exact_rn53": "0x417bc97accfe1f1f",
+        "exact_rn63_rn53": "0x417bc97accfe1f20",
+        "exact_rn64_rn53": "0x417bc97accfe1f20",
+        "multiply_rn64_power": "0x417bc97accfe1f20",
+        "divide_rn64_power": "0x417bc97accfe1f20",
+        "multiply_rn63_power": "0x417bc97accfe1f20",
+        "divide_rn63_power": "0x417bc97accfe1f20"
+      }
+    ],
+    [
+      "center-34-neighbor-0",
+      "ABS",
+      "234630705443435e284",
+      "0x7de1f02e97209302",
+      {
+        "exact_rn53": "0x7de1f02e97209303",
+        "exact_rn63_rn53": "0x7de1f02e97209302",
+        "exact_rn64_rn53": "0x7de1f02e97209302",
+        "multiply_rn64_power": "0x7de1f02e97209302",
+        "divide_rn64_power": "0x7de1f02e97209302",
+        "multiply_rn63_power": "0x7de1f02e97209302",
+        "divide_rn63_power": "0x7de1f02e97209302"
+      }
+    ],
+    [
+      "center-34-neighbor-0",
+      "IMREAL",
+      "234630705443435e284",
+      "0x7de1f02e97209302",
+      {
+        "exact_rn53": "0x7de1f02e97209303",
+        "exact_rn63_rn53": "0x7de1f02e97209302",
+        "exact_rn64_rn53": "0x7de1f02e97209302",
+        "multiply_rn64_power": "0x7de1f02e97209302",
+        "divide_rn64_power": "0x7de1f02e97209302",
+        "multiply_rn63_power": "0x7de1f02e97209302",
+        "divide_rn63_power": "0x7de1f02e97209302"
+      }
+    ],
+    [
+      "center-47-neighbor-0",
+      "ABS",
+      "191702880996800e60",
+      "0x4f5b1fffc363ff12",
+      {
+        "exact_rn53": "0x4f5b1fffc363ff11",
+        "exact_rn63_rn53": "0x4f5b1fffc363ff12",
+        "exact_rn64_rn53": "0x4f5b1fffc363ff11",
+        "multiply_rn64_power": "0x4f5b1fffc363ff11",
+        "divide_rn64_power": "0x4f5b1fffc363ff12",
+        "multiply_rn63_power": "0x4f5b1fffc363ff12",
+        "divide_rn63_power": "0x4f5b1fffc363ff12"
+      }
+    ],
+    [
+      "center-47-neighbor-0",
+      "IMREAL",
+      "191702880996800e60",
+      "0x4f5b1fffc363ff12",
+      {
+        "exact_rn53": "0x4f5b1fffc363ff11",
+        "exact_rn63_rn53": "0x4f5b1fffc363ff12",
+        "exact_rn64_rn53": "0x4f5b1fffc363ff11",
+        "multiply_rn64_power": "0x4f5b1fffc363ff11",
+        "divide_rn64_power": "0x4f5b1fffc363ff12",
+        "multiply_rn63_power": "0x4f5b1fffc363ff12",
+        "divide_rn63_power": "0x4f5b1fffc363ff12"
+      }
+    ],
+    [
+      "center-48-neighbor-0",
+      "ABS",
+      "220830907361144e-133",
+      "0x274c8314582916ca",
+      {
+        "exact_rn53": "0x274c8314582916cb",
+        "exact_rn63_rn53": "0x274c8314582916ca",
+        "exact_rn64_rn53": "0x274c8314582916ca",
+        "multiply_rn64_power": "0x274c8314582916ca",
+        "divide_rn64_power": "0x274c8314582916ca",
+        "multiply_rn63_power": "0x274c8314582916ca",
+        "divide_rn63_power": "0x274c8314582916cb"
+      }
+    ],
+    [
+      "center-48-neighbor-0",
+      "IMREAL",
+      "220830907361144e-133",
+      "0x274c8314582916ca",
+      {
+        "exact_rn53": "0x274c8314582916cb",
+        "exact_rn63_rn53": "0x274c8314582916ca",
+        "exact_rn64_rn53": "0x274c8314582916ca",
+        "multiply_rn64_power": "0x274c8314582916ca",
+        "divide_rn64_power": "0x274c8314582916ca",
+        "multiply_rn63_power": "0x274c8314582916ca",
+        "divide_rn63_power": "0x274c8314582916cb"
+      }
+    ],
+    [
+      "center-49-neighbor-0",
+      "ABS",
+      "826955595969310e136",
+      "0x5f4435db0e29d486",
+      {
+        "exact_rn53": "0x5f4435db0e29d485",
+        "exact_rn63_rn53": "0x5f4435db0e29d486",
+        "exact_rn64_rn53": "0x5f4435db0e29d486",
+        "multiply_rn64_power": "0x5f4435db0e29d485",
+        "divide_rn64_power": "0x5f4435db0e29d485",
+        "multiply_rn63_power": "0x5f4435db0e29d486",
+        "divide_rn63_power": "0x5f4435db0e29d486"
+      }
+    ],
+    [
+      "center-49-neighbor-0",
+      "IMREAL",
+      "826955595969310e136",
+      "0x5f4435db0e29d486",
+      {
+        "exact_rn53": "0x5f4435db0e29d485",
+        "exact_rn63_rn53": "0x5f4435db0e29d486",
+        "exact_rn64_rn53": "0x5f4435db0e29d486",
+        "multiply_rn64_power": "0x5f4435db0e29d485",
+        "divide_rn64_power": "0x5f4435db0e29d485",
+        "multiply_rn63_power": "0x5f4435db0e29d486",
+        "divide_rn63_power": "0x5f4435db0e29d486"
+      }
+    ],
+    [
+      "center-50-neighbor-0",
+      "ABS",
+      "810177002345920e79",
+      "0x536f127821279f50",
+      {
+        "exact_rn53": "0x536f127821279f51",
+        "exact_rn63_rn53": "0x536f127821279f50",
+        "exact_rn64_rn53": "0x536f127821279f50",
+        "multiply_rn64_power": "0x536f127821279f50",
+        "divide_rn64_power": "0x536f127821279f51",
+        "multiply_rn63_power": "0x536f127821279f50",
+        "divide_rn63_power": "0x536f127821279f50"
+      }
+    ],
+    [
+      "center-50-neighbor-0",
+      "IMREAL",
+      "810177002345920e79",
+      "0x536f127821279f50",
+      {
+        "exact_rn53": "0x536f127821279f51",
+        "exact_rn63_rn53": "0x536f127821279f50",
+        "exact_rn64_rn53": "0x536f127821279f50",
+        "multiply_rn64_power": "0x536f127821279f50",
+        "divide_rn64_power": "0x536f127821279f51",
+        "multiply_rn63_power": "0x536f127821279f50",
+        "divide_rn63_power": "0x536f127821279f50"
+      }
+    ],
+    [
+      "center-53-neighbor-0",
+      "ABS",
+      "801246458356972e75",
+      "0x52992c78ea43fd16",
+      {
+        "exact_rn53": "0x52992c78ea43fd17",
+        "exact_rn63_rn53": "0x52992c78ea43fd16",
+        "exact_rn64_rn53": "0x52992c78ea43fd17",
+        "multiply_rn64_power": "0x52992c78ea43fd17",
+        "divide_rn64_power": "0x52992c78ea43fd17",
+        "multiply_rn63_power": "0x52992c78ea43fd16",
+        "divide_rn63_power": "0x52992c78ea43fd17"
+      }
+    ],
+    [
+      "center-53-neighbor-0",
+      "IMREAL",
+      "801246458356972e75",
+      "0x52992c78ea43fd16",
+      {
+        "exact_rn53": "0x52992c78ea43fd17",
+        "exact_rn63_rn53": "0x52992c78ea43fd16",
+        "exact_rn64_rn53": "0x52992c78ea43fd17",
+        "multiply_rn64_power": "0x52992c78ea43fd17",
+        "divide_rn64_power": "0x52992c78ea43fd17",
+        "multiply_rn63_power": "0x52992c78ea43fd16",
+        "divide_rn63_power": "0x52992c78ea43fd17"
+      }
+    ],
+    [
+      "center-56-neighbor-0",
+      "ABS",
+      "721444405446906e154",
+      "0x62fe961014a1b958",
+      {
+        "exact_rn53": "0x62fe961014a1b959",
+        "exact_rn63_rn53": "0x62fe961014a1b958",
+        "exact_rn64_rn53": "0x62fe961014a1b958",
+        "multiply_rn64_power": "0x62fe961014a1b959",
+        "divide_rn64_power": "0x62fe961014a1b958",
+        "multiply_rn63_power": "0x62fe961014a1b958",
+        "divide_rn63_power": "0x62fe961014a1b958"
+      }
+    ],
+    [
+      "center-56-neighbor-0",
+      "IMREAL",
+      "721444405446906e154",
+      "0x62fe961014a1b958",
+      {
+        "exact_rn53": "0x62fe961014a1b959",
+        "exact_rn63_rn53": "0x62fe961014a1b958",
+        "exact_rn64_rn53": "0x62fe961014a1b958",
+        "multiply_rn64_power": "0x62fe961014a1b959",
+        "divide_rn64_power": "0x62fe961014a1b958",
+        "multiply_rn63_power": "0x62fe961014a1b958",
+        "divide_rn63_power": "0x62fe961014a1b958"
+      }
+    ],
+    [
+      "center-61-neighbor-0",
+      "ABS",
+      "456970705648003e-165",
+      "0x20b7eef9b72718d2",
+      {
+        "exact_rn53": "0x20b7eef9b72718d3",
+        "exact_rn63_rn53": "0x20b7eef9b72718d2",
+        "exact_rn64_rn53": "0x20b7eef9b72718d3",
+        "multiply_rn64_power": "0x20b7eef9b72718d3",
+        "divide_rn64_power": "0x20b7eef9b72718d3",
+        "multiply_rn63_power": "0x20b7eef9b72718d2",
+        "divide_rn63_power": "0x20b7eef9b72718d2"
+      }
+    ],
+    [
+      "center-61-neighbor-0",
+      "IMREAL",
+      "456970705648003e-165",
+      "0x20b7eef9b72718d2",
+      {
+        "exact_rn53": "0x20b7eef9b72718d3",
+        "exact_rn63_rn53": "0x20b7eef9b72718d2",
+        "exact_rn64_rn53": "0x20b7eef9b72718d3",
+        "multiply_rn64_power": "0x20b7eef9b72718d3",
+        "divide_rn64_power": "0x20b7eef9b72718d3",
+        "multiply_rn63_power": "0x20b7eef9b72718d2",
+        "divide_rn63_power": "0x20b7eef9b72718d2"
+      }
+    ],
+    [
+      "center-68-neighbor-0",
+      "ABS",
+      "836222225451595e18",
+      "0x46c49d4dde56fa10",
+      {
+        "exact_rn53": "0x46c49d4dde56fa11",
+        "exact_rn63_rn53": "0x46c49d4dde56fa10",
+        "exact_rn64_rn53": "0x46c49d4dde56fa10",
+        "multiply_rn64_power": "0x46c49d4dde56fa10",
+        "divide_rn64_power": "0x46c49d4dde56fa10",
+        "multiply_rn63_power": "0x46c49d4dde56fa10",
+        "divide_rn63_power": "0x46c49d4dde56fa10"
+      }
+    ],
+    [
+      "center-68-neighbor-0",
+      "IMREAL",
+      "836222225451595e18",
+      "0x46c49d4dde56fa10",
+      {
+        "exact_rn53": "0x46c49d4dde56fa11",
+        "exact_rn63_rn53": "0x46c49d4dde56fa10",
+        "exact_rn64_rn53": "0x46c49d4dde56fa10",
+        "multiply_rn64_power": "0x46c49d4dde56fa10",
+        "divide_rn64_power": "0x46c49d4dde56fa10",
+        "multiply_rn63_power": "0x46c49d4dde56fa10",
+        "divide_rn63_power": "0x46c49d4dde56fa10"
+      }
+    ],
+    [
+      "center-69-neighbor-0",
+      "ABS",
+      "807952318198895e-11",
+      "0x40bf8f85ef413c66",
+      {
+        "exact_rn53": "0x40bf8f85ef413c65",
+        "exact_rn63_rn53": "0x40bf8f85ef413c66",
+        "exact_rn64_rn53": "0x40bf8f85ef413c65",
+        "multiply_rn64_power": "0x40bf8f85ef413c66",
+        "divide_rn64_power": "0x40bf8f85ef413c65",
+        "multiply_rn63_power": "0x40bf8f85ef413c65",
+        "divide_rn63_power": "0x40bf8f85ef413c66"
+      }
+    ],
+    [
+      "center-69-neighbor-0",
+      "IMREAL",
+      "807952318198895e-11",
+      "0x40bf8f85ef413c66",
+      {
+        "exact_rn53": "0x40bf8f85ef413c65",
+        "exact_rn63_rn53": "0x40bf8f85ef413c66",
+        "exact_rn64_rn53": "0x40bf8f85ef413c65",
+        "multiply_rn64_power": "0x40bf8f85ef413c66",
+        "divide_rn64_power": "0x40bf8f85ef413c65",
+        "multiply_rn63_power": "0x40bf8f85ef413c65",
+        "divide_rn63_power": "0x40bf8f85ef413c66"
+      }
+    ],
+    [
+      "center-71-neighbor-0",
+      "ABS",
+      "438179556467250e-81",
+      "0x3227a06886c0d8ce",
+      {
+        "exact_rn53": "0x3227a06886c0d8cd",
+        "exact_rn63_rn53": "0x3227a06886c0d8ce",
+        "exact_rn64_rn53": "0x3227a06886c0d8cd",
+        "multiply_rn64_power": "0x3227a06886c0d8cd",
+        "divide_rn64_power": "0x3227a06886c0d8ce",
+        "multiply_rn63_power": "0x3227a06886c0d8cd",
+        "divide_rn63_power": "0x3227a06886c0d8cd"
+      }
+    ],
+    [
+      "center-71-neighbor-0",
+      "IMREAL",
+      "438179556467250e-81",
+      "0x3227a06886c0d8ce",
+      {
+        "exact_rn53": "0x3227a06886c0d8cd",
+        "exact_rn63_rn53": "0x3227a06886c0d8ce",
+        "exact_rn64_rn53": "0x3227a06886c0d8cd",
+        "multiply_rn64_power": "0x3227a06886c0d8cd",
+        "divide_rn64_power": "0x3227a06886c0d8ce",
+        "multiply_rn63_power": "0x3227a06886c0d8cd",
+        "divide_rn63_power": "0x3227a06886c0d8cd"
+      }
+    ],
+    [
+      "center-72-neighbor-0",
+      "ABS",
+      "419366933335649e-117",
+      "0x2aae0e8a3394fc62",
+      {
+        "exact_rn53": "0x2aae0e8a3394fc63",
+        "exact_rn63_rn53": "0x2aae0e8a3394fc62",
+        "exact_rn64_rn53": "0x2aae0e8a3394fc62",
+        "multiply_rn64_power": "0x2aae0e8a3394fc63",
+        "divide_rn64_power": "0x2aae0e8a3394fc63",
+        "multiply_rn63_power": "0x2aae0e8a3394fc62",
+        "divide_rn63_power": "0x2aae0e8a3394fc62"
+      }
+    ],
+    [
+      "center-72-neighbor-0",
+      "IMREAL",
+      "419366933335649e-117",
+      "0x2aae0e8a3394fc62",
+      {
+        "exact_rn53": "0x2aae0e8a3394fc63",
+        "exact_rn63_rn53": "0x2aae0e8a3394fc62",
+        "exact_rn64_rn53": "0x2aae0e8a3394fc62",
+        "multiply_rn64_power": "0x2aae0e8a3394fc63",
+        "divide_rn64_power": "0x2aae0e8a3394fc63",
+        "multiply_rn63_power": "0x2aae0e8a3394fc62",
+        "divide_rn63_power": "0x2aae0e8a3394fc62"
+      }
+    ],
+    [
+      "center-73-neighbor-0",
+      "ABS",
+      "886106834025269e-45",
+      "0x39b1f8ee02d3b230",
+      {
+        "exact_rn53": "0x39b1f8ee02d3b231",
+        "exact_rn63_rn53": "0x39b1f8ee02d3b230",
+        "exact_rn64_rn53": "0x39b1f8ee02d3b231",
+        "multiply_rn64_power": "0x39b1f8ee02d3b230",
+        "divide_rn64_power": "0x39b1f8ee02d3b231",
+        "multiply_rn63_power": "0x39b1f8ee02d3b231",
+        "divide_rn63_power": "0x39b1f8ee02d3b230"
+      }
+    ],
+    [
+      "center-73-neighbor-0",
+      "IMREAL",
+      "886106834025269e-45",
+      "0x39b1f8ee02d3b230",
+      {
+        "exact_rn53": "0x39b1f8ee02d3b231",
+        "exact_rn63_rn53": "0x39b1f8ee02d3b230",
+        "exact_rn64_rn53": "0x39b1f8ee02d3b231",
+        "multiply_rn64_power": "0x39b1f8ee02d3b230",
+        "divide_rn64_power": "0x39b1f8ee02d3b231",
+        "multiply_rn63_power": "0x39b1f8ee02d3b231",
+        "divide_rn63_power": "0x39b1f8ee02d3b230"
+      }
+    ],
+    [
+      "center-82-neighbor-0",
+      "ABS",
+      "889562057759806e-35",
+      "0x3bc501129c64c216",
+      {
+        "exact_rn53": "0x3bc501129c64c217",
+        "exact_rn63_rn53": "0x3bc501129c64c216",
+        "exact_rn64_rn53": "0x3bc501129c64c216",
+        "multiply_rn64_power": "0x3bc501129c64c217",
+        "divide_rn64_power": "0x3bc501129c64c217",
+        "multiply_rn63_power": "0x3bc501129c64c216",
+        "divide_rn63_power": "0x3bc501129c64c216"
+      }
+    ],
+    [
+      "center-82-neighbor-0",
+      "IMREAL",
+      "889562057759806e-35",
+      "0x3bc501129c64c216",
+      {
+        "exact_rn53": "0x3bc501129c64c217",
+        "exact_rn63_rn53": "0x3bc501129c64c216",
+        "exact_rn64_rn53": "0x3bc501129c64c216",
+        "multiply_rn64_power": "0x3bc501129c64c217",
+        "divide_rn64_power": "0x3bc501129c64c217",
+        "multiply_rn63_power": "0x3bc501129c64c216",
+        "divide_rn63_power": "0x3bc501129c64c216"
+      }
+    ],
+    [
+      "center-86-neighbor-0",
+      "ABS",
+      "801811431206175e-77",
+      "0x330a633f794a9742",
+      {
+        "exact_rn53": "0x330a633f794a9743",
+        "exact_rn63_rn53": "0x330a633f794a9742",
+        "exact_rn64_rn53": "0x330a633f794a9742",
+        "multiply_rn64_power": "0x330a633f794a9742",
+        "divide_rn64_power": "0x330a633f794a9742",
+        "multiply_rn63_power": "0x330a633f794a9742",
+        "divide_rn63_power": "0x330a633f794a9742"
+      }
+    ],
+    [
+      "center-86-neighbor-0",
+      "IMREAL",
+      "801811431206175e-77",
+      "0x330a633f794a9742",
+      {
+        "exact_rn53": "0x330a633f794a9743",
+        "exact_rn63_rn53": "0x330a633f794a9742",
+        "exact_rn64_rn53": "0x330a633f794a9742",
+        "multiply_rn64_power": "0x330a633f794a9742",
+        "divide_rn64_power": "0x330a633f794a9742",
+        "multiply_rn63_power": "0x330a633f794a9742",
+        "divide_rn63_power": "0x330a633f794a9742"
+      }
+    ],
+    [
+      "center-88-neighbor-0",
+      "ABS",
+      "212901259048242e93",
+      "0x56373500977d090a",
+      {
+        "exact_rn53": "0x56373500977d0909",
+        "exact_rn63_rn53": "0x56373500977d090a",
+        "exact_rn64_rn53": "0x56373500977d0909",
+        "multiply_rn64_power": "0x56373500977d0909",
+        "divide_rn64_power": "0x56373500977d090a",
+        "multiply_rn63_power": "0x56373500977d0909",
+        "divide_rn63_power": "0x56373500977d0909"
+      }
+    ],
+    [
+      "center-88-neighbor-0",
+      "IMREAL",
+      "212901259048242e93",
+      "0x56373500977d090a",
+      {
+        "exact_rn53": "0x56373500977d0909",
+        "exact_rn63_rn53": "0x56373500977d090a",
+        "exact_rn64_rn53": "0x56373500977d0909",
+        "multiply_rn64_power": "0x56373500977d0909",
+        "divide_rn64_power": "0x56373500977d090a",
+        "multiply_rn63_power": "0x56373500977d0909",
+        "divide_rn63_power": "0x56373500977d0909"
+      }
+    ],
+    [
+      "center-94-neighbor-0",
+      "ABS",
+      "822885752832313e13",
+      "0x45ba96c05c76ce10",
+      {
+        "exact_rn53": "0x45ba96c05c76ce11",
+        "exact_rn63_rn53": "0x45ba96c05c76ce10",
+        "exact_rn64_rn53": "0x45ba96c05c76ce10",
+        "multiply_rn64_power": "0x45ba96c05c76ce10",
+        "divide_rn64_power": "0x45ba96c05c76ce10",
+        "multiply_rn63_power": "0x45ba96c05c76ce10",
+        "divide_rn63_power": "0x45ba96c05c76ce10"
+      }
+    ],
+    [
+      "center-94-neighbor-0",
+      "IMREAL",
+      "822885752832313e13",
+      "0x45ba96c05c76ce10",
+      {
+        "exact_rn53": "0x45ba96c05c76ce11",
+        "exact_rn63_rn53": "0x45ba96c05c76ce10",
+        "exact_rn64_rn53": "0x45ba96c05c76ce10",
+        "multiply_rn64_power": "0x45ba96c05c76ce10",
+        "divide_rn64_power": "0x45ba96c05c76ce10",
+        "multiply_rn63_power": "0x45ba96c05c76ce10",
+        "divide_rn63_power": "0x45ba96c05c76ce10"
+      }
+    ]
+  ]
+}

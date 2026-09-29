@@ -1,0 +1,16 @@
+{
+  "recorded_utc": "2026-09-29T13:19:01.523492+00:00",
+  "candidate": "scaled complex division; normalize subnormal final coefficients tozero; existing formatter unchanged",
+  "sources": {
+    "crates/oxfunc_core/src/functions/complex_family.rs": "e38480e5a24d57a6a7342ac872198c5138d9175b540b7ba0ae108f752da9ac23"
+  },
+  "seed": 2026092907,
+  "scope_completeness": "scope_partial",
+  "target_completeness": "target_partial",
+  "integration_completeness": "partial",
+  "open_lanes": [
+    "independent holdout",
+    "shared formatter midpoint discrepancies",
+    "full neighboring complex-kernel validation"
+  ]
+}

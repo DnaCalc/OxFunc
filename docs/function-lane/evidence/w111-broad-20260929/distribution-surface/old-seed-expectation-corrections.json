@@ -1,0 +1,38 @@
+{
+  "authority": "exact inputs recaptured independently before updating stale unit expectations",
+  "witnesses": [
+    {
+      "source": "final-binom.inv.json",
+      "id": "fresh-binom.inv-00500-old-seed-exact-input",
+      "args": [
+        "0x4018000000000000",
+        "0x3fe0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "source": "final-negbinom.dist.json",
+      "id": "fresh-negbinom.dist-00180-old-seed-exact-input",
+      "args": [
+        "0x0000000000000000",
+        "0x4000000000000000",
+        "0x3ff0000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "error:Num"
+    },
+    {
+      "source": "final-hypgeom.dist.json",
+      "id": "fresh-hypgeom.dist-01000-old-seed-exact-input",
+      "args": [
+        "0x4010000000000000",
+        "0x4014000000000000",
+        "0x4000000000000000",
+        "0x4024000000000000",
+        "0x0000000000000000"
+      ],
+      "expected_bits": "0x0000000000000000"
+    }
+  ]
+}

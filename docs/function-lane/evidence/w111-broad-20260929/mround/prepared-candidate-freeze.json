@@ -1,0 +1,16 @@
+{
+  "frozen_utc": "2026-09-29T19:09:59.713673+00:00",
+  "discovery_typed_rows": 618,
+  "exact_typed_matches": 618,
+  "numerical_observations": 47964,
+  "exact_numerical_matches": 47964,
+  "numeric_body_unchanged": true,
+  "numeric_body_sha256": "03b3b9f7f76713e991a997c86ab4131fc440bdaa57e83ae32a4c251505e6e262",
+  "sources": {
+    "crates/oxfunc_core/src/functions/mround.rs": "f6caf0d9be55424c789abafca6f5244a67cb2194099067f5f438403228432fa7",
+    "crates/oxfunc_core/src/functions/elementary_prepared.rs": "f3f88e498d0671c554634e8f67fc28f871c602315c10d105be490ec7797a1d3d",
+    "formal/lean/OxFunc/Functions/Mround.lean": "7655502d8f8623f32942441be96ce6f63eb37b2e22e9cbf3210a0cdd689b6926",
+    "crates/oxfunc_core/src/coercion.rs": "6334f9c80774699d2c74801685d2343a64925f48bd9a42ac47db867b3eecf77d",
+    "crates/oxfunc_core/src/coercion_decimal.rs": "cceb2882a10869b6f78a1348387c34edfba120ffe6e27c0deb5838966431c818"
+  }
+}

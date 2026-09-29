@@ -1,0 +1,14 @@
+{
+  "generator": "gen_mround_heldout.py",
+  "seed": 2026092967,
+  "generated_utc": "2026-09-29T18:55:05.922805+00:00",
+  "candidate_freeze_sha256": "c942b440ec0a8698c040bc9b8bf0886d24ec65f537fc644dbc25260859f01316",
+  "selection": "192 fresh scales with seven source-ULP neighbors at five quotient ranges, both signs; 1600 full-bit normal pairs; domain/publication controls",
+  "batches": [
+    {
+      "function": "MROUND",
+      "path": "batch-mround.json",
+      "rows": 15552
+    }
+  ]
+}

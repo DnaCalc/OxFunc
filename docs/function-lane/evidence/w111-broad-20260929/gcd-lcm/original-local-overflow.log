@@ -1,0 +1,143 @@
+1/6 INT: 24608 live answers
+2/6 PERMUTATIONA: 16017 live answers
+3/6 TRUNC: 6160 live answers
+4/6 ROUNDDOWN: 6160 live answers
+5/6 ROUND: 6160 live answers
+6/6 ROUNDUP: 6160 live answers
+   Compiling oxfunc_core v0.1.0 (C:\Work\DnaCalc\OxFunc\crates\oxfunc_core)
+   Compiling pmt_ppmt_local_eval v0.1.0 (C:\Work\DnaCalc\OxFunc\smart-fuzzer\tools\pmt_ppmt_local_eval)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 13.94s
+     Running `smart-fuzzer\tools\pmt_ppmt_local_eval\target\debug\array_tranche_local_eval.exe --cases C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-lcm-array-order-typed-20260929\cases\cases.jsonl --out C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-lcm-array-order-typed-20260929\outcomes\local.jsonl`
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+
+thread 'main' (21912) panicked at C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\gcd_lcm_common.rs:100:9:
+attempt to multiply with overflow
+array tranche run finished
+run_id=w111-lcm-array-order-typed-20260929
+rollup=C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-lcm-array-order-typed-20260929\rollup.json
+comparisons=C:\Work\DnaCalc\OxFunc\smart-fuzzer\runs\w111-lcm-array-order-typed-20260929\comparisons\comparisons.jsonl
+answered 660 probes for VDB (NoCache: all live) -> smart-fuzzer/cache/w111-depreciation-20260929/refinement4-vdb-noswitch-answers.json
+BULK throughput: 660 live probes | compute 0.51s (1284.8/s) | +excel startup 1.91s (272.4/s incl startup) | total wall 2.63s

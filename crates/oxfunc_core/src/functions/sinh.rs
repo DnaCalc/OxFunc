@@ -26,6 +26,14 @@ pub const SINH_META: FunctionMeta = function_spec! {
 };
 
 pub fn sinh_kernel(n: f64) -> f64 {
+    // W111 neighboring-bit observations distinguish the EXP difference at
+    // |x| >= 1 from the cancellation-safe expm1 difference below that boundary.
+    if n.abs() >= 1.0 {
+        return crate::excel_numeric::excel_x87_sub(
+            crate::excel_numeric::excel_exp(n),
+            crate::excel_numeric::excel_exp(-n),
+        ) / 2.0;
+    }
     // Live Excel 16.0 b20326 Range.Value2: SINH(x)=(expm1(x)-expm1(-x))/2
     // using Excel's internal Kahan expm1, 37/37 including the worksheet
     // EXP-pair misses at |x|<~0.25. libm sinh is 1 ULP off at 0.01 and 2.

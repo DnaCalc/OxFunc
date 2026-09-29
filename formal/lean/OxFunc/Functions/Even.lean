@@ -27,7 +27,8 @@ def evalEvenSurfaceClass (input : CoercionInput) : Except WorksheetErrorCode Str
 
 theorem evalEven_numeric_text_admitted :
     evalEvenSurfaceClass (.text "1") = .ok "number" := by
-  simp [evalEvenSurfaceClass, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "1" = some 1 := by native_decide
+  simp [evalEvenSurfaceClass, coerceToNumber, parsed]
 
 theorem evenMeta_profiles :
     evenMeta.kernelSignatureClass = KernelSignatureClass.numToNum

@@ -1,0 +1,17 @@
+{
+  "formula": "=ACOS(0.5)",
+  "old_expected_summary": "Number(1.0471975511965979)",
+  "expected_summary": "Number(1.0471975511965976)",
+  "expected_bits": "0x3ff0c152382d7365",
+  "authority": "two independent public Excel COM captures retained with version manifests",
+  "sources": [
+    {
+      "path": "acos-caller.json",
+      "id": "acos-caller-2026092922-05002-mathematical-boundary-neighbor"
+    },
+    {
+      "path": "heldout2-acos.json",
+      "id": "acos-heldout-2026092924-06588-boundary-neighbor"
+    }
+  ]
+}

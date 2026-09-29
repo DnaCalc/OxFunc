@@ -41,7 +41,8 @@ structure CountPreparedArg where
 
 def countArgumentIncluded : CountPreparedArg → Except WorksheetErrorCode Bool
   | ⟨_, .number _⟩ => .ok true
-  | ⟨_, .error code⟩ => .error code
+  | ⟨_, .error _⟩ => .ok false
+  | ⟨_, .missingArg⟩ => .ok true
   | ⟨.directScalar, .text s⟩ =>
       match coerceToNumber (.text s) with
       | .ok _ => .ok true
@@ -51,7 +52,6 @@ def countArgumentIncluded : CountPreparedArg → Except WorksheetErrorCode Bool
   | ⟨.directScalar, .logical _⟩ => .ok true
   | ⟨.arrayLike, .text _⟩
   | ⟨.arrayLike, .logical _⟩
-  | ⟨_, .missingArg⟩
   | ⟨_, .emptyCell⟩ => .ok false
 
 def evalCountPrepared : List CountPreparedArg → Except WorksheetErrorCode Nat
@@ -81,6 +81,11 @@ theorem evalCountPrepared_array_like_text_and_logical_ignored :
 
 theorem evalCountPrepared_direct_nonnumeric_text_is_ignored :
     evalCountPrepared [⟨.directScalar, .text "bad"⟩] = .ok 0 := by
+  native_decide
+
+theorem evalCountPrepared_error_ignored_omission_counted :
+    evalCountPrepared [⟨.directScalar, .error .na⟩, ⟨.arrayLike, .error .div0⟩,
+      ⟨.directScalar, .missingArg⟩, ⟨.directScalar, .emptyCell⟩] = .ok 1 := by
   native_decide
 
 theorem countMeta_profiles :

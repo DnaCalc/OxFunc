@@ -1,0 +1,1737 @@
+{
+  "function": "COSH",
+  "witnesses": [
+    {
+      "id": "cosh-tanh-dependency-00000-failed-tanh-input",
+      "args": [
+        "0x3ca59e05f1e2674d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00001-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2674c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00002-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2674b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00003-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2674a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00004-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26749"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00005-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2674e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00006-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2674f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00007-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26750"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00008-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26751"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00009-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26748"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00010-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26747"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00011-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26746"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00012-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26745"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00013-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26744"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00014-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26743"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00015-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26742"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00016-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26741"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00017-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26740"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00018-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2673f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00019-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2673e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00020-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2673d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00021-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2673c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00022-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2673b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00023-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2673a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00024-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26739"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00025-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26752"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00026-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26753"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00027-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26754"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00028-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26755"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00029-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26756"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00030-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26757"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00031-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26758"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00032-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26759"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00033-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2675a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00034-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2675b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00035-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2675c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00036-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2675d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00037-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2675e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00038-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e2675f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00039-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26760"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00040-adjacent-control",
+      "args": [
+        "0x3ca59e05f1e26761"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00041-failed-tanh-input",
+      "args": [
+        "0xbca59e05f1e2674d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00042-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2674e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00043-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2674f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00044-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26750"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00045-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26751"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00046-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2674c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00047-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2674b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00048-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2674a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00049-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26749"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00050-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26752"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00051-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26753"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00052-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26754"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00053-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26755"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00054-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26756"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00055-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26757"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00056-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26758"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00057-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26759"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00058-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2675a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00059-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2675b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00060-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2675c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00061-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2675d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00062-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2675e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00063-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2675f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00064-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26760"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00065-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26761"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00066-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26748"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00067-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26747"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00068-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26746"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00069-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26745"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00070-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26744"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00071-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26743"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00072-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26742"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00073-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26741"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00074-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26740"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00075-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2673f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00076-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2673e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00077-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2673d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00078-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2673c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00079-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2673b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00080-adjacent-control",
+      "args": [
+        "0xbca59e05f1e2673a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00081-adjacent-control",
+      "args": [
+        "0xbca59e05f1e26739"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00082-failed-tanh-input",
+      "args": [
+        "0x3e45798ee2308c41"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00083-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c40"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00084-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c3f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00085-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c3e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00086-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c3d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00087-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c42"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00088-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c43"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00089-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c44"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00090-adjacent-control",
+      "args": [
+        "0x3e45798ee2308c45"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00091-failed-tanh-input",
+      "args": [
+        "0xbe45798ee2308c41"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00092-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c42"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00093-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c43"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00094-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c44"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00095-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c45"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00096-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c40"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00097-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c3f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00098-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c3e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00099-adjacent-control",
+      "args": [
+        "0xbe45798ee2308c3d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00100-failed-tanh-input",
+      "args": [
+        "0xbcae971d6d59594b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00101-adjacent-control",
+      "args": [
+        "0xbcae971d6d59594c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00102-adjacent-control",
+      "args": [
+        "0xbcae971d6d59594d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00103-adjacent-control",
+      "args": [
+        "0xbcae971d6d59594e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00104-adjacent-control",
+      "args": [
+        "0xbcae971d6d59594f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00105-adjacent-control",
+      "args": [
+        "0xbcae971d6d59594a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00106-adjacent-control",
+      "args": [
+        "0xbcae971d6d595949"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00107-adjacent-control",
+      "args": [
+        "0xbcae971d6d595948"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00108-adjacent-control",
+      "args": [
+        "0xbcae971d6d595947"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00109-failed-tanh-input",
+      "args": [
+        "0xbca8270030179bab"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00110-adjacent-control",
+      "args": [
+        "0xbca8270030179bac"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00111-adjacent-control",
+      "args": [
+        "0xbca8270030179bad"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00112-adjacent-control",
+      "args": [
+        "0xbca8270030179bae"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00113-adjacent-control",
+      "args": [
+        "0xbca8270030179baf"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00114-adjacent-control",
+      "args": [
+        "0xbca8270030179baa"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00115-adjacent-control",
+      "args": [
+        "0xbca8270030179ba9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00116-adjacent-control",
+      "args": [
+        "0xbca8270030179ba8"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00117-adjacent-control",
+      "args": [
+        "0xbca8270030179ba7"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00118-failed-tanh-input",
+      "args": [
+        "0x3ca82d06ab79fb53"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00119-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb52"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00120-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb51"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00121-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb50"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00122-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb4f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00123-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb54"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00124-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb55"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00125-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb56"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00126-adjacent-control",
+      "args": [
+        "0x3ca82d06ab79fb57"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00127-failed-tanh-input",
+      "args": [
+        "0x3caef6f1b52d3435"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00128-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3434"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00129-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3433"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00130-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3432"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00131-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3431"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00132-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3436"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00133-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3437"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00134-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3438"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00135-adjacent-control",
+      "args": [
+        "0x3caef6f1b52d3439"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00136-failed-tanh-input",
+      "args": [
+        "0xbcaf0d0a89df0cd5"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00137-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd6"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00138-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd7"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00139-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd8"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00140-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00141-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd4"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00142-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd3"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00143-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd2"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00144-adjacent-control",
+      "args": [
+        "0xbcaf0d0a89df0cd1"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00145-failed-tanh-input",
+      "args": [
+        "0x3ca0a5b07f62d607"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00146-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d606"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00147-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d605"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00148-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d604"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00149-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d603"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00150-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d608"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00151-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d609"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00152-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d60a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00153-adjacent-control",
+      "args": [
+        "0x3ca0a5b07f62d60b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00154-failed-tanh-input",
+      "args": [
+        "0x3ca503446e536ef9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00155-adjacent-control",
+      "args": [
+        "0x3ca503446e536ef8"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00156-adjacent-control",
+      "args": [
+        "0x3ca503446e536ef7"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00157-adjacent-control",
+      "args": [
+        "0x3ca503446e536ef6"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00158-adjacent-control",
+      "args": [
+        "0x3ca503446e536ef5"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00159-adjacent-control",
+      "args": [
+        "0x3ca503446e536efa"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00160-adjacent-control",
+      "args": [
+        "0x3ca503446e536efb"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00161-adjacent-control",
+      "args": [
+        "0x3ca503446e536efc"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00162-adjacent-control",
+      "args": [
+        "0x3ca503446e536efd"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00163-failed-tanh-input",
+      "args": [
+        "0xbca2411aa8d627db"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00164-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627dc"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00165-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627dd"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00166-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627de"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00167-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627df"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00168-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627da"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00169-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627d9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00170-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627d8"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00171-adjacent-control",
+      "args": [
+        "0xbca2411aa8d627d7"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00172-failed-tanh-input",
+      "args": [
+        "0xbca32b42c0387a27"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00173-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a28"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00174-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a29"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00175-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a2a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00176-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a2b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00177-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a26"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00178-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a25"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00179-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a24"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00180-adjacent-control",
+      "args": [
+        "0xbca32b42c0387a23"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00181-failed-tanh-input",
+      "args": [
+        "0x3ca3ca16871a4a17"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00182-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a16"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00183-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a15"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00184-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a14"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00185-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a13"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00186-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a18"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00187-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a19"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00188-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a1a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00189-adjacent-control",
+      "args": [
+        "0x3ca3ca16871a4a1b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00190-failed-tanh-input",
+      "args": [
+        "0x3ca06c91e834ff0f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00191-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff0e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00192-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff0d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00193-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff0c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00194-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff0b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00195-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff10"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00196-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff11"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00197-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff12"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00198-adjacent-control",
+      "args": [
+        "0x3ca06c91e834ff13"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00199-failed-tanh-input",
+      "args": [
+        "0x3ca51b6e814b147d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00200-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b147c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00201-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b147b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00202-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b147a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00203-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b1479"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00204-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b147e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00205-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b147f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00206-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b1480"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00207-adjacent-control",
+      "args": [
+        "0x3ca51b6e814b1481"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00208-failed-tanh-input",
+      "args": [
+        "0x3ca7d5eba2ecf54d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00209-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf54c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00210-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf54b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00211-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf54a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00212-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf549"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00213-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf54e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00214-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf54f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00215-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf550"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00216-adjacent-control",
+      "args": [
+        "0x3ca7d5eba2ecf551"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00217-failed-tanh-input",
+      "args": [
+        "0xbca314c57f4d39ed"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00218-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39ee"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00219-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39ef"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00220-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39f0"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00221-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39f1"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00222-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39ec"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00223-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39eb"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00224-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39ea"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00225-adjacent-control",
+      "args": [
+        "0xbca314c57f4d39e9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00226-failed-tanh-input",
+      "args": [
+        "0x3ca19c68de716fcd"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00227-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fcc"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00228-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fcb"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00229-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fca"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00230-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fc9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00231-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fce"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00232-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fcf"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00233-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fd0"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00234-adjacent-control",
+      "args": [
+        "0x3ca19c68de716fd1"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00235-failed-tanh-input",
+      "args": [
+        "0x3caca55cdcc0643d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00236-adjacent-control",
+      "args": [
+        "0x3caca55cdcc0643c"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00237-adjacent-control",
+      "args": [
+        "0x3caca55cdcc0643b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00238-adjacent-control",
+      "args": [
+        "0x3caca55cdcc0643a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00239-adjacent-control",
+      "args": [
+        "0x3caca55cdcc06439"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00240-adjacent-control",
+      "args": [
+        "0x3caca55cdcc0643e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00241-adjacent-control",
+      "args": [
+        "0x3caca55cdcc0643f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00242-adjacent-control",
+      "args": [
+        "0x3caca55cdcc06440"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "cosh-tanh-dependency-00243-adjacent-control",
+      "args": [
+        "0x3caca55cdcc06441"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T17:30:28.3802994Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

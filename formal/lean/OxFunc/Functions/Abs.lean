@@ -122,7 +122,8 @@ theorem evalAbsScalar_logical_true :
 theorem evalAbsScalar_text_bad :
     evalAbsAdapterScalar [CoercionInput.text "asd"] =
       Except.error (Sum.inr (CoercionError.nonNumericText "asd")) := by
-  simp [evalAbsAdapterScalar, evalAbsAdapterArg, coerceToNumber, parseSimpleNumber]
+  have parsed : parseSimpleNumber "asd" = none := by native_decide
+  simp [evalAbsAdapterScalar, evalAbsAdapterArg, coerceToNumber, parsed]
 
 theorem evalAbsLift_length (args : List CoercionInput) :
     (evalAbsAdapterLift args).length = args.length := by

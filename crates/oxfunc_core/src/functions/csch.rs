@@ -29,7 +29,8 @@ pub fn csch_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
         return Err(WorksheetErrorCode::Div0);
     }
     // Live Excel 16.0 b20326: CSCH(x)=1/SINH(x) 5/5; follows the SINH kernel.
-    Ok(1.0 / sinh)
+    let value = crate::excel_numeric::excel_x87_recip(sinh);
+    Ok(if value.abs() < f64::MIN_POSITIVE { 0.0 } else { value })
 }
 
 pub fn eval_csch_surface(

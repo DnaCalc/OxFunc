@@ -1,16 +1,17 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{parse_excel_logical_text, CoercionError};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::coerce_prepared_to_number;
+use crate::functions::distribution_common::run_distribution_lifted;
 use crate::functions::normal_dist_common::{
-    GAM1_HALF_H_BITS, GAUSS_TINY_MAX_BITS, erf_approx, phi_kernel, stored_normal_z,
+    erf_approx, phi_kernel, stored_normal_z, FRAC_1_SQRT_2_BITS, GAM1_HALF_H_BITS, GAUSS_TINY_MAX_BITS,
 };
 use crate::functions::special_dist_family::erfc_precise_kernel;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
+use crate::value::{CalcValue, CoreValue};
 
 const NORMAL_LOG_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.NORMAL_LOG_BASE",
@@ -25,15 +26,13 @@ const NORMAL_LOG_BASE_META: FunctionMeta = function_spec! {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
-// The legacy compatibility surfaces here are scalar-shaped by-index and broadcast their leading
-// arguments over an array: CONFIDENCE/LOGNORMDIST/NORMINV lift their first three (`[0,1,2]`),
-// NORMDIST its four (`[0,1,2,3]`), and the single-argument NORMSDIST/NORMSINV lift `[0]`. The
-// modern `.`-named surfaces lift natively and carry the default. Verified live Excel 16.0
-// build 20026.
+// W111: multiargument legacy aliases use the same native prepared lifting as
+// modern names. Obsolete by-index lifting overwrote early errors when an
+// unrelated argument was a unit array. NORMSDIST/NORMSINV retain their unary
+// profiles, which are outside this positional-padding correction.
 pub const CONFIDENCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CONFIDENCE",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..NORMAL_LOG_BASE_META
 };
 
@@ -58,7 +57,6 @@ pub const LOGNORM_INV_META: FunctionMeta = FunctionMeta {
 pub const LOGNORMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LOGNORMDIST",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..NORMAL_LOG_BASE_META
 };
 
@@ -91,14 +89,12 @@ pub const NORMSINV_META: FunctionMeta = FunctionMeta {
 pub const NORMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMDIST",
     arity: Arity::exact(4),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2, 3]),
     ..NORMAL_LOG_BASE_META
 };
 
 pub const NORMINV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMINV",
     arity: Arity::exact(3),
-    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..NORMAL_LOG_BASE_META
 };
 
@@ -178,8 +174,9 @@ fn gauss_tiny_direct(x: f64) -> f64 {
     flush_subnormal(y)
 }
 
-/// G-F3: `NORMSDIST` / `NORM.S.DIST` CDF wrapper, live Excel 16.0 b20228
-/// (64/64 on the provenance-rich ladder). `z = |x|*RN(1/√2)`;
+/// G-F3: `NORMSDIST` / `NORM.S.DIST` CDF wrapper. W111 mathematical
+/// discriminators require `z = RN53(RN64(|x|*RN(1/√2)))`; native binary64
+/// multiplication fails 133/512 fresh public-ERFC composition controls.
 /// `Q` is the published ERFC body at `z` (still an open kernel);
 /// `x < 0 → RN53(0.5*Q)`, `x ≥ 0 → RN53(1-0.5*Q)`; PHI-class flush after
 /// the 0.5 multiply (`NORMSDIST(-37.52) = +0` with ERFC still finite).
@@ -187,7 +184,7 @@ pub fn identified_std_normal_cdf(x: f64) -> f64 {
     if x == 0.0 {
         return 0.5;
     }
-    let z = stored_normal_z(x);
+    let z = crate::excel_numeric::excel_x87_mul(x.abs(), f64::from_bits(FRAC_1_SQRT_2_BITS));
     let q = match erfc_precise_kernel(z) {
         Ok(value) => value,
         Err(_) => return f64::NAN,
@@ -231,8 +228,28 @@ fn validate_probability_open_unit(p: f64) -> Result<(), WorksheetErrorCode> {
     Ok(())
 }
 
-fn cumulative_flag(value: f64) -> bool {
-    value != 0.0
+// W111 per-surface controls bind these rules for the multiargument normal,
+// confidence and lognormal surfaces. Unary missing-argument admission remains
+// separate because FUNC() fails before Excel's function evaluator is called.
+fn distribution_number(arg: &CalcValue) -> Result<f64, NormalLogEvalError> {
+    if arg.is_missing() {
+        return Ok(0.0);
+    }
+    coerce_prepared_to_number(arg).map_err(NormalLogEvalError::Coercion)
+}
+
+fn distribution_cumulative(arg: &CalcValue) -> Result<bool, NormalLogEvalError> {
+    match arg.core() {
+        CoreValue::Missing => Ok(false),
+        CoreValue::Text(text) => {
+            let text = text.to_string_lossy();
+            parse_excel_logical_text(&text)
+                .ok_or_else(|| NormalLogEvalError::Coercion(CoercionError::NonNumericText(text)))
+        }
+        _ => coerce_prepared_to_number(arg)
+            .map(|n| n != 0.0)
+            .map_err(NormalLogEvalError::Coercion),
+    }
 }
 
 fn inverse_standard_normal_as241_tail(p: f64) -> f64 {
@@ -300,7 +317,11 @@ fn inverse_standard_normal_as241_tail(p: f64) -> f64 {
         numerator / denominator
     };
 
-    if q < 0.0 { -x } else { x }
+    if q < 0.0 {
+        -x
+    } else {
+        x
+    }
 }
 
 fn inverse_standard_normal_acklam_refined(p: f64) -> f64 {
@@ -373,7 +394,7 @@ pub fn norm_s_dist_kernel(z: f64, cumulative: bool) -> Result<f64, WorksheetErro
     if cumulative {
         Ok(norm_cdf(z))
     } else {
-        Ok(phi_kernel(z))
+        crate::functions::phi_fn::phi_kernel(z)
     }
 }
 
@@ -384,11 +405,26 @@ pub fn norm_dist_kernel(
     cumulative: bool,
 ) -> Result<f64, WorksheetErrorCode> {
     validate_positive_sigma(sigma)?;
-    let z = (x - mean) / sigma;
     if cumulative {
+        let z = (x - mean) / sigma;
         Ok(norm_cdf(z))
     } else {
-        Ok(phi_kernel(z) / sigma)
+        // W111 density observations distinguish all these publication points:
+        // subtract and divide at RN64 then store binary64; divide the unflushed
+        // exponential by sigma before multiplying the normal constant. Calling
+        // worksheet PHI first loses both scale ordering and tiny intermediates.
+        use crate::excel_numeric::{excel_exp, excel_x87_div, excel_x87_mul, excel_x87_sub};
+        let z = excel_x87_div(excel_x87_sub(x, mean), sigma);
+        let square = excel_x87_mul(z, z);
+        if !square.is_finite() {
+            return Err(WorksheetErrorCode::Num);
+        }
+        let exponential = excel_exp(-(square / 2.0));
+        let value = excel_x87_mul(
+            excel_x87_div(exponential, sigma),
+            f64::from_bits(0x3fd9884533d43651),
+        );
+        Ok(flush_subnormal(value))
     }
 }
 
@@ -459,9 +495,9 @@ fn eval_confidence_prepared(args: &[CalcValue]) -> Result<CalcValue, NormalLogEv
     if !CONFIDENCE_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&CONFIDENCE_META, args.len()));
     }
-    let alpha = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
-    let stdev = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
-    let size = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
+    let alpha = distribution_number(&args[0])?;
+    let stdev = distribution_number(&args[1])?;
+    let size = distribution_number(&args[2])?;
     Ok(match confidence_norm_kernel(alpha, stdev, size) {
         Ok(value) => CalcValue::number(value),
         Err(code) => CalcValue::error(code),
@@ -472,25 +508,23 @@ fn eval_norm_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, NormalLogEva
     if !NORM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_DIST_META, args.len()));
     }
-    let x = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
-    let mean = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
-    let sigma = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
-    let cumulative = coerce_prepared_to_number(&args[3]).map_err(NormalLogEvalError::Coercion)?;
-    Ok(
-        match norm_dist_kernel(x, mean, sigma, cumulative_flag(cumulative)) {
-            Ok(value) => CalcValue::number(value),
-            Err(code) => CalcValue::error(code),
-        },
-    )
+    let x = distribution_number(&args[0])?;
+    let mean = distribution_number(&args[1])?;
+    let sigma = distribution_number(&args[2])?;
+    let cumulative = distribution_cumulative(&args[3])?;
+    Ok(match norm_dist_kernel(x, mean, sigma, cumulative) {
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
+    })
 }
 
 fn eval_norm_inv_prepared(args: &[CalcValue]) -> Result<CalcValue, NormalLogEvalError> {
     if !NORM_INV_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_INV_META, args.len()));
     }
-    let p = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
-    let mean = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
-    let sigma = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
+    let p = distribution_number(&args[0])?;
+    let mean = distribution_number(&args[1])?;
+    let sigma = distribution_number(&args[2])?;
     Ok(match norm_inv_kernel(p, mean, sigma) {
         Ok(value) => CalcValue::number(value),
         Err(code) => CalcValue::error(code),
@@ -501,9 +535,9 @@ fn eval_norm_s_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, NormalLogE
     if !NORM_S_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_S_DIST_META, args.len()));
     }
-    let z = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
-    let cumulative = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
-    Ok(match norm_s_dist_kernel(z, cumulative_flag(cumulative)) {
+    let z = distribution_number(&args[0])?;
+    let cumulative = distribution_cumulative(&args[1])?;
+    Ok(match norm_s_dist_kernel(z, cumulative) {
         Ok(value) => CalcValue::number(value),
         Err(code) => CalcValue::error(code),
     })
@@ -524,25 +558,23 @@ fn eval_lognorm_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, NormalLog
     if !LOGNORM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&LOGNORM_DIST_META, args.len()));
     }
-    let x = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
-    let mean = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
-    let sigma = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
-    let cumulative = coerce_prepared_to_number(&args[3]).map_err(NormalLogEvalError::Coercion)?;
-    Ok(
-        match lognorm_dist_kernel(x, mean, sigma, cumulative_flag(cumulative)) {
-            Ok(value) => CalcValue::number(value),
-            Err(code) => CalcValue::error(code),
-        },
-    )
+    let x = distribution_number(&args[0])?;
+    let mean = distribution_number(&args[1])?;
+    let sigma = distribution_number(&args[2])?;
+    let cumulative = distribution_cumulative(&args[3])?;
+    Ok(match lognorm_dist_kernel(x, mean, sigma, cumulative) {
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
+    })
 }
 
 fn eval_lognorm_inv_prepared(args: &[CalcValue]) -> Result<CalcValue, NormalLogEvalError> {
     if !LOGNORM_INV_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&LOGNORM_INV_META, args.len()));
     }
-    let p = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
-    let mean = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
-    let sigma = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
+    let p = distribution_number(&args[0])?;
+    let mean = distribution_number(&args[1])?;
+    let sigma = distribution_number(&args[2])?;
     Ok(match lognorm_inv_kernel(p, mean, sigma) {
         Ok(value) => CalcValue::number(value),
         Err(code) => CalcValue::error(code),
@@ -553,10 +585,11 @@ pub fn eval_confidence_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_confidence_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -572,10 +605,11 @@ pub fn eval_norm_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_norm_dist_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -584,10 +618,11 @@ pub fn eval_norm_inv_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_norm_inv_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -596,10 +631,11 @@ pub fn eval_norm_s_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_norm_s_dist_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -608,10 +644,11 @@ pub fn eval_norm_s_inv_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_norm_s_inv_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -634,7 +671,7 @@ pub fn eval_normsdist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         |prepared| {
@@ -645,6 +682,7 @@ pub fn eval_normsdist_surface(
                 coerce_prepared_to_number(&prepared[0]).map_err(NormalLogEvalError::Coercion)?;
             Ok(CalcValue::number(norm_cdf(z)))
         },
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -660,10 +698,11 @@ pub fn eval_lognorm_dist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_lognorm_dist_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -672,10 +711,11 @@ pub fn eval_lognorm_inv_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         eval_lognorm_inv_prepared,
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }
@@ -684,24 +724,22 @@ pub fn eval_lognormdist_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, NormalLogEvalError> {
-    run_values_only_prepared(
+    run_distribution_lifted(
         args,
         resolver,
         |prepared| {
             if !LOGNORMDIST_META.arity.accepts(prepared.len()) {
                 return Err(prepared_len_error(&LOGNORMDIST_META, prepared.len()));
             }
-            let x =
-                coerce_prepared_to_number(&prepared[0]).map_err(NormalLogEvalError::Coercion)?;
-            let mean =
-                coerce_prepared_to_number(&prepared[1]).map_err(NormalLogEvalError::Coercion)?;
-            let sigma =
-                coerce_prepared_to_number(&prepared[2]).map_err(NormalLogEvalError::Coercion)?;
+            let x = distribution_number(&prepared[0])?;
+            let mean = distribution_number(&prepared[1])?;
+            let sigma = distribution_number(&prepared[2])?;
             Ok(match lognorm_dist_kernel(x, mean, sigma, true) {
                 Ok(value) => CalcValue::number(value),
                 Err(code) => CalcValue::error(code),
             })
         },
+        map_normal_log_error_to_ws,
         NormalLogEvalError::Coercion,
     )
 }

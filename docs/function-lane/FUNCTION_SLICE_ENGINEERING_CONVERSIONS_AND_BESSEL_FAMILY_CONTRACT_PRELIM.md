@@ -29,13 +29,21 @@ Define the current-phase contract for the `W059` engineering radix conversion fa
 1. all twelve radix functions use the ordinary values-only pre-adapter seam,
 2. decimal-to-radix functions truncate `number` and optional `places` toward zero,
 3. positive outputs use minimal digits unless `places` is supplied,
-4. negative decimal inputs ignore `places` and return the fixed-width ten-character signed form for the target radix,
-5. source-text conversions trim leading whitespace only; trailing whitespace remains invalid,
+4. supplied `places` must truncate to 1–10, even for negative inputs; a valid width is then ignored for the fixed-width ten-character signed form,
+5. source-text conversions reject leading and trailing whitespace; empty text is zero,
 6. ten-character source strings use Excel's fixed-width signed interpretation:
    - binary: `10` bits
    - octal: `30` bits
    - hexadecimal: `40` bits
-7. target overflow and invalid source syntax return `#NUM!`.
+7. target overflow and invalid source syntax return `#NUM!`,
+8. optional width validation precedes first-argument errors and syntax; explicit missing width defaults, logical arguments reject with `#VALUE!`, and a missing required first argument yields `#N/A`.
+
+The [W111 radix evidence](evidence/w111-broad-20260929/radix/README.md) supersedes
+the earlier width/whitespace clauses on Excel 16.0 build 20430, 64-bit, CV2,
+channel unverified. Status remains `scope_partial`, `target_partial`, integration
+`partial`; shared numeric-text/locale preparation and combined validation remain
+open. The associated Bessel family has independent numerical residuals and is
+not promoted by the radix repair.
 
 ## 4. Bessel Contract
 1. the quartet uses the ordinary values-only pre-adapter seam and custom numeric kernels,

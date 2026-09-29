@@ -1,4 +1,5 @@
 import OxFunc.FunctionCore
+import OxFunc.Functions.TextSliceFamily
 
 namespace OxFunc.Functions
 
@@ -70,5 +71,18 @@ theorem textBCompat_arities :
     ∧ midbMeta.arity = { min := 3, max := 3 }
     ∧ searchbMeta.arity = { min := 2, max := 3 } := by
   simp [leftbMeta, midbMeta, searchbMeta]
+
+-- Current non-DBCS Compatibility Version 2 binding: LEFTB/RIGHTB follow the
+-- character paths, while LENB/MIDB preserve raw-unit indexing.
+def leftbCharactersV2 := leftCharactersV2
+def rightbCharactersV2 := rightCharactersV2
+def midbUtf16 := midUtf16
+def lenbUtf16 := lenUtf16Units
+
+theorem textBCompat_distinct_pair_indexing :
+    leftbCharactersV2 [0xD83D,0xDE00] 1 = [0xD83D,0xDE00]
+    ∧ midbUtf16 [0xD83D,0xDE00] 1 1 = [0xD83D]
+    ∧ lenbUtf16 [0xD83D,0xDE00] = 2 := by
+  native_decide
 
 end OxFunc.Functions

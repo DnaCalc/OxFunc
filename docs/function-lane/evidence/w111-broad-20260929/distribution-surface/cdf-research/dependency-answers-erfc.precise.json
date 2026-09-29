@@ -1,0 +1,3837 @@
+{
+  "function": "ERFC.PRECISE",
+  "witnesses": [
+    {
+      "id": "erfc.precise-cdf-dependency-00000-failed-normal-dependency",
+      "args": [
+        "0x4006f825f22d3d0d"
+      ],
+      "expected_bits": "0x3f09adf8232a1170"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00001-failed-normal-dependency",
+      "args": [
+        "0x3fb50a3636746184"
+      ],
+      "expected_bits": "0x3fed09fef5e593a9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00002-failed-normal-dependency",
+      "args": [
+        "0x3fe2e2244dc0500b"
+      ],
+      "expected_bits": "0x3fd9dacda90c8f4a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00003-failed-normal-dependency",
+      "args": [
+        "0x3fe9978d5f6252f4"
+      ],
+      "expected_bits": "0x3fd083dae552374a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00004-failed-normal-dependency",
+      "args": [
+        "0x40293ed0e26bf83f"
+      ],
+      "expected_bits": "0x31490090995e35e2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00005-failed-normal-dependency",
+      "args": [
+        "0x3ffb0080d0f01514"
+      ],
+      "expected_bits": "0x3f9169098a595322"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00006-failed-normal-dependency",
+      "args": [
+        "0x401633d286bdce35"
+      ],
+      "expected_bits": "0x3cf2c65a653dd403"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00007-failed-normal-dependency",
+      "args": [
+        "0x40018c29b9f7e7a4"
+      ],
+      "expected_bits": "0x3f5f7e7277fb2269"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00008-failed-normal-dependency",
+      "args": [
+        "0x403528ea24366623"
+      ],
+      "expected_bits": "0x173c3e62edbd6191"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00009-failed-normal-dependency",
+      "args": [
+        "0x4010f64268725d76"
+      ],
+      "expected_bits": "0x3e21452b2da24eb7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00010-failed-normal-dependency",
+      "args": [
+        "0x40358d24d893418f"
+      ],
+      "expected_bits": "0x15b96d3d4c1869a3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00011-failed-normal-dependency",
+      "args": [
+        "0x4039376754405af0"
+      ],
+      "expected_bits": "0x0641cb9622947bfa"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00012-failed-normal-dependency",
+      "args": [
+        "0x402a191602f02b5c"
+      ],
+      "expected_bits": "0x304c00440bbc48f9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00013-failed-normal-dependency",
+      "args": [
+        "0x40215c7fca044e80"
+      ],
+      "expected_bits": "0x38e42c331e222227"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00014-failed-normal-dependency",
+      "args": [
+        "0x40351864750fe3f8"
+      ],
+      "expected_bits": "0x177b12360ad5e934"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00015-failed-normal-dependency",
+      "args": [
+        "0x3fd7a021266b5be6"
+      ],
+      "expected_bits": "0x3fe340920a476e76"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00016-failed-normal-dependency",
+      "args": [
+        "0x403037f7cb41f1ce"
+      ],
+      "expected_bits": "0x27e947e428feb3d4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00017-failed-normal-dependency",
+      "args": [
+        "0x403a76adab21f3fa"
+      ],
+      "expected_bits": "0x00711cd34c4efd60"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00018-failed-normal-dependency",
+      "args": [
+        "0x40105ff6e0c7f333"
+      ],
+      "expected_bits": "0x3e3e5756891e8569"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00019-failed-normal-dependency",
+      "args": [
+        "0x4030b909b3b0afd5"
+      ],
+      "expected_bits": "0x2669322afbf13792"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00020-failed-normal-dependency",
+      "args": [
+        "0x402021947a0b1b9d"
+      ],
+      "expected_bits": "0x39d3af2e5a131484"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00021-failed-normal-dependency",
+      "args": [
+        "0x4036070a2c615be4"
+      ],
+      "expected_bits": "0x13da0009e11e9658"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00022-failed-normal-dependency",
+      "args": [
+        "0x40292425569c1e3e"
+      ],
+      "expected_bits": "0x316750a65efb1c49"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00023-failed-normal-dependency",
+      "args": [
+        "0x4038924fdf87579d"
+      ],
+      "expected_bits": "0x0926d2811637a047"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00024-failed-normal-dependency",
+      "args": [
+        "0x40376a82f41fc74e"
+      ],
+      "expected_bits": "0x0e27dcba3dda491d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00025-failed-normal-dependency",
+      "args": [
+        "0x403a7a7b810b2303"
+      ],
+      "expected_bits": "0x005f26b753ab5733"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00026-failed-normal-dependency",
+      "args": [
+        "0x402b0a0887ebd6df"
+      ],
+      "expected_bits": "0x2f2a52e3b2113267"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00027-failed-normal-dependency",
+      "args": [
+        "0x40245d259ffba71d"
+      ],
+      "expected_bits": "0x365310a86476ab97"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00028-failed-normal-dependency",
+      "args": [
+        "0x40281c78246cbf12"
+      ],
+      "expected_bits": "0x328ddac1e175d361"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00029-failed-normal-dependency",
+      "args": [
+        "0x40346bac8b16e27e"
+      ],
+      "expected_bits": "0x1a029361d41aaa23"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00030-failed-normal-dependency",
+      "args": [
+        "0x403a8299df09db33"
+      ],
+      "expected_bits": "0x00372f5ca8d886cd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00031-failed-normal-dependency",
+      "args": [
+        "0x40381fc9bf2462c6"
+      ],
+      "expected_bits": "0x0b1f47b98d671fb9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00032-failed-normal-dependency",
+      "args": [
+        "0x402db6997da6bcec"
+      ],
+      "expected_bits": "0x2bbcc61701418fbb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00033-failed-normal-dependency",
+      "args": [
+        "0x4013e482ff4a4f28"
+      ],
+      "expected_bits": "0x3d81c45c69b29e00"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00034-failed-normal-dependency",
+      "args": [
+        "0x401e0c8e2701ac55"
+      ],
+      "expected_bits": "0x3a9c8c70475e1b3c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00035-failed-normal-dependency",
+      "args": [
+        "0x4036a71b83b8015f"
+      ],
+      "expected_bits": "0x115478e2d4c35f9a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00036-failed-normal-dependency",
+      "args": [
+        "0x4036a71b83b8015e"
+      ],
+      "expected_bits": "0x115478e2d4c364b8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00037-failed-normal-dependency",
+      "args": [
+        "0x403638b523757a76"
+      ],
+      "expected_bits": "0x1313bae8b65391b4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00038-failed-normal-dependency",
+      "args": [
+        "0x4029a36121fac54d"
+      ],
+      "expected_bits": "0x30d54bf087e537d9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00039-failed-normal-dependency",
+      "args": [
+        "0x4023148942d60a2c"
+      ],
+      "expected_bits": "0x37786065bd672996"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00040-failed-normal-dependency",
+      "args": [
+        "0x402450ce122a78c3"
+      ],
+      "expected_bits": "0x365f33e56a609147"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00041-failed-normal-dependency",
+      "args": [
+        "0x4016acbf064a0f5d"
+      ],
+      "expected_bits": "0x3cd38f68673d153e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00042-failed-normal-dependency",
+      "args": [
+        "0x403372001c4beaf5"
+      ],
+      "expected_bits": "0x1d84cddc9307e775"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00043-failed-normal-dependency",
+      "args": [
+        "0x4003ee70958dbb31"
+      ],
+      "expected_bits": "0x3f3bebae6e162ae2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00044-failed-normal-dependency",
+      "args": [
+        "0x4028e34ec45dcd46"
+      ],
+      "expected_bits": "0x31b17b7dad45d89e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00045-failed-normal-dependency",
+      "args": [
+        "0x402271d513e424b9"
+      ],
+      "expected_bits": "0x380320ba8f31df9d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00046-failed-normal-dependency",
+      "args": [
+        "0x400f0d136bc54284"
+      ],
+      "expected_bits": "0x3e65b02311d82ad4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00047-failed-normal-dependency",
+      "args": [
+        "0x4017137db8a0c904"
+      ],
+      "expected_bits": "0x3cb869bfbdcd6a66"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00048-failed-normal-dependency",
+      "args": [
+        "0x4034829facc7b5e0"
+      ],
+      "expected_bits": "0x19ae2ce0c23ca933"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00049-failed-normal-dependency",
+      "args": [
+        "0x401b50bfce752432"
+      ],
+      "expected_bits": "0x3b81444b413cf441"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00050-failed-normal-dependency",
+      "args": [
+        "0x4024ef024fd832e3"
+      ],
+      "expected_bits": "0x35ca7a2c41336d1c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00051-failed-normal-dependency",
+      "args": [
+        "0x3ffecfb1631ea977"
+      ],
+      "expected_bits": "0x3f7a781124ff39db"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00052-failed-normal-dependency",
+      "args": [
+        "0x40306c87623eb4de"
+      ],
+      "expected_bits": "0x274f677e122cbe48"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00053-failed-normal-dependency",
+      "args": [
+        "0x400c17dd0dc06024"
+      ],
+      "expected_bits": "0x3ea6e835aff073a0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00054-failed-normal-dependency",
+      "args": [
+        "0x4020ed6d20a130d6"
+      ],
+      "expected_bits": "0x393aa6ddf8cf9b7a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00055-failed-normal-dependency",
+      "args": [
+        "0x3fdc7da0cf31bc91"
+      ],
+      "expected_bits": "0x3fe0ed69a01d35d6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00056-failed-normal-dependency",
+      "args": [
+        "0x403410218e6ef238"
+      ],
+      "expected_bits": "0x1b5175b85b53a189"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00057-failed-normal-dependency",
+      "args": [
+        "0x40390fcc95ad9d65"
+      ],
+      "expected_bits": "0x06f4e0f960a97a8c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00058-failed-normal-dependency",
+      "args": [
+        "0x402f96766f62c98c"
+      ],
+      "expected_bits": "0x2923e771c472d7ed"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00059-failed-normal-dependency",
+      "args": [
+        "0x3fbad066e95dd64e"
+      ],
+      "expected_bits": "0x3fec3b52b505cb81"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00060-failed-normal-dependency",
+      "args": [
+        "0x4036df1bdc9a8067"
+      ],
+      "expected_bits": "0x106f7009783c505f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00061-failed-normal-dependency",
+      "args": [
+        "0x3fd960bde01969f5"
+      ],
+      "expected_bits": "0x3fe265fbc6a92067"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00062-failed-normal-dependency",
+      "args": [
+        "0x4036c6f19c406d8c"
+      ],
+      "expected_bits": "0x10d257156ede5861"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00063-failed-normal-dependency",
+      "args": [
+        "0x4027383fd781f58c"
+      ],
+      "expected_bits": "0x338207e663667e65"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00064-failed-normal-dependency",
+      "args": [
+        "0x403914b90610d8bc"
+      ],
+      "expected_bits": "0x06dfd02c42627933"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00065-failed-normal-dependency",
+      "args": [
+        "0x400e6bfee803ac02"
+      ],
+      "expected_bits": "0x3e743b60ccdc27d2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00066-failed-normal-dependency",
+      "args": [
+        "0x401c74aaa48180a7"
+      ],
+      "expected_bits": "0x3b23f1209ef6cf07"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00067-failed-normal-dependency",
+      "args": [
+        "0x40354da97e35db9c"
+      ],
+      "expected_bits": "0x16b02eb9e5805de0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00068-failed-normal-dependency",
+      "args": [
+        "0x4039b1952746a50c"
+      ],
+      "expected_bits": "0x0410d36e03143946"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00069-failed-normal-dependency",
+      "args": [
+        "0x40319273520a21ec"
+      ],
+      "expected_bits": "0x23c7aa0223af617c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00070-failed-normal-dependency",
+      "args": [
+        "0x402521e10f824657"
+      ],
+      "expected_bits": "0x3599f6276c662da1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00071-failed-normal-dependency",
+      "args": [
+        "0x402c99a6e3a1f6b2"
+      ],
+      "expected_bits": "0x2d33dc88ce1b0cd0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00072-failed-normal-dependency",
+      "args": [
+        "0x40304511535b0a9b"
+      ],
+      "expected_bits": "0x27c31ec236b7dfb8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00073-failed-normal-dependency",
+      "args": [
+        "0x403635bb0cae8257"
+      ],
+      "expected_bits": "0x13208bfcb8342b59"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00074-failed-normal-dependency",
+      "args": [
+        "0x40210c8adeec196e"
+      ],
+      "expected_bits": "0x3922d99280b19df9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00075-failed-normal-dependency",
+      "args": [
+        "0x40338cced98cad05"
+      ],
+      "expected_bits": "0x1d26504cc63b2e64"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00076-failed-normal-dependency",
+      "args": [
+        "0x4039bc301b1e61c1"
+      ],
+      "expected_bits": "0x03dfec98d68b21b2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00077-failed-normal-dependency",
+      "args": [
+        "0x4023b40c509db5e9"
+      ],
+      "expected_bits": "0x36ecc07bc343965c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00078-failed-normal-dependency",
+      "args": [
+        "0x40301d36cd28216a"
+      ],
+      "expected_bits": "0x28375497c50992b8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00079-failed-normal-dependency",
+      "args": [
+        "0x4023925569da111e"
+      ],
+      "expected_bits": "0x370a5e2cde3e4211"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00080-failed-normal-dependency",
+      "args": [
+        "0x4016333b4b68eb7b"
+      ],
+      "expected_bits": "0x3cf2e5b82bac8d18"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00081-failed-normal-dependency",
+      "args": [
+        "0x4038e207800e4e1b"
+      ],
+      "expected_bits": "0x07c3628d51b6e4a1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00082-failed-normal-dependency",
+      "args": [
+        "0x4022a8b8710c214f"
+      ],
+      "expected_bits": "0x37d4b447b4b078f1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00083-failed-normal-dependency",
+      "args": [
+        "0x402cbeedd1e0c7a4"
+      ],
+      "expected_bits": "0x2d0399d967eaa7e6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00084-failed-normal-dependency",
+      "args": [
+        "0x401f4545b5bd5b70"
+      ],
+      "expected_bits": "0x3a3046cf5086358d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00085-failed-normal-dependency",
+      "args": [
+        "0x40115ca38f825d43"
+      ],
+      "expected_bits": "0x3e0ca68693382253"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00086-failed-normal-dependency",
+      "args": [
+        "0x4039f93924f7c99e"
+      ],
+      "expected_bits": "0x02c2582f96e6f3c5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00087-failed-normal-dependency",
+      "args": [
+        "0x403399a869ef2285"
+      ],
+      "expected_bits": "0x1cf8f3a8a3f90337"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00088-failed-normal-dependency",
+      "args": [
+        "0x40242bc81cf38194"
+      ],
+      "expected_bits": "0x3680fa894f89d6df"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00089-failed-normal-dependency",
+      "args": [
+        "0x4036d9e9e5d55dae"
+      ],
+      "expected_bits": "0x1083e52be67ac503"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00090-failed-normal-dependency",
+      "args": [
+        "0x4026415a2357d251"
+      ],
+      "expected_bits": "0x3480951337984418"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00091-failed-normal-dependency",
+      "args": [
+        "0x4037ef75047d4302"
+      ],
+      "expected_bits": "0x0bf0c729d780c57a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00092-failed-normal-dependency",
+      "args": [
+        "0x402e41bb46e593ef"
+      ],
+      "expected_bits": "0x2b00bd9f9918151d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00093-failed-normal-dependency",
+      "args": [
+        "0x403107e4c37a636c"
+      ],
+      "expected_bits": "0x2578be5ae15c899b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00094-failed-normal-dependency",
+      "args": [
+        "0x402e9bd18a64d308"
+      ],
+      "expected_bits": "0x2a8405a949ec99b4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00095-failed-normal-dependency",
+      "args": [
+        "0x402fe4624dc135bb"
+      ],
+      "expected_bits": "0x28b424d0b9a3b064"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00096-failed-normal-dependency",
+      "args": [
+        "0x4034a766d7580555"
+      ],
+      "expected_bits": "0x1924ba101fe25846"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00097-failed-normal-dependency",
+      "args": [
+        "0x4030351833eb237b"
+      ],
+      "expected_bits": "0x27f233c77a1388fe"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00098-failed-normal-dependency",
+      "args": [
+        "0x4032a68c0da9658e"
+      ],
+      "expected_bits": "0x20415e188e182505"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00099-failed-normal-dependency",
+      "args": [
+        "0x4022d59842666c62"
+      ],
+      "expected_bits": "0x37afbc9ad9c21a06"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00100-failed-normal-dependency",
+      "args": [
+        "0x40217689277b88b2"
+      ],
+      "expected_bits": "0x38d08c3be20a5756"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00101-failed-normal-dependency",
+      "args": [
+        "0x403254b012fed9fe"
+      ],
+      "expected_bits": "0x21526c61820b417a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00102-failed-normal-dependency",
+      "args": [
+        "0x402ab3e4a46814e2"
+      ],
+      "expected_bits": "0x2f93239d01acf539"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00103-failed-normal-dependency",
+      "args": [
+        "0x400ca6bc1bb18754"
+      ],
+      "expected_bits": "0x3e9b6c8e6d5818f0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00104-failed-normal-dependency",
+      "args": [
+        "0x40352086bf8af060"
+      ],
+      "expected_bits": "0x175c4488fd1ef1d5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00105-failed-normal-dependency",
+      "args": [
+        "0x40309c5175e352df"
+      ],
+      "expected_bits": "0x26c0ad71a48c971c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00106-failed-normal-dependency",
+      "args": [
+        "0x402eab2f0b2b0f74"
+      ],
+      "expected_bits": "0x2a6fdf0f59dca358"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00107-failed-normal-dependency",
+      "args": [
+        "0x4036539264461a8d"
+      ],
+      "expected_bits": "0x12a772072d420941"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00108-failed-normal-dependency",
+      "args": [
+        "0x40334d2ab5cd90e9"
+      ],
+      "expected_bits": "0x1e05977d816803de"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00109-failed-normal-dependency",
+      "args": [
+        "0x4030a11ddf76cb99"
+      ],
+      "expected_bits": "0x26b1de4d2465fad7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00110-failed-normal-dependency",
+      "args": [
+        "0x40234d623cbf2589"
+      ],
+      "expected_bits": "0x3746e470943411eb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00111-failed-normal-dependency",
+      "args": [
+        "0x4018074eaf9dccf6"
+      ],
+      "expected_bits": "0x3c76bf3336d7d700"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00112-failed-normal-dependency",
+      "args": [
+        "0x4032ac4d50445024"
+      ],
+      "expected_bits": "0x202dfbd7ed912cac"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00113-failed-normal-dependency",
+      "args": [
+        "0x4032da934800e67a"
+      ],
+      "expected_bits": "0x1f9138e47c9e1cb5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00114-failed-normal-dependency",
+      "args": [
+        "0x40399a0dca4188dc"
+      ],
+      "expected_bits": "0x047d6f068910104f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00115-failed-normal-dependency",
+      "args": [
+        "0x40292d2e7adc23d0"
+      ],
+      "expected_bits": "0x315ddeb261e75708"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00116-failed-normal-dependency",
+      "args": [
+        "0x403a6a5c7d3ffd55"
+      ],
+      "expected_bits": "0x00ab49622d506bc3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00117-failed-normal-dependency",
+      "args": [
+        "0x40256082aa77264c"
+      ],
+      "expected_bits": "0x355e806bd9524af3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00118-failed-normal-dependency",
+      "args": [
+        "0x4033d46da8b16467"
+      ],
+      "expected_bits": "0x1c27ab81095af2f8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00119-failed-normal-dependency",
+      "args": [
+        "0x403687bf7ed7ee6b"
+      ],
+      "expected_bits": "0x11d45f0cf11aa581"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00120-failed-normal-dependency",
+      "args": [
+        "0x401bdbd4a4517673"
+      ],
+      "expected_bits": "0x3b54cf860daacc05"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00121-failed-normal-dependency",
+      "args": [
+        "0x4027726dc517486f"
+      ],
+      "expected_bits": "0x3344286bbda805b6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00122-failed-normal-dependency",
+      "args": [
+        "0x40240b679ac3a56e"
+      ],
+      "expected_bits": "0x369e770f379c3f1b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00123-failed-normal-dependency",
+      "args": [
+        "0x4003a26fc91759e6"
+      ],
+      "expected_bits": "0x3f40fee7da5ac774"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00124-failed-normal-dependency",
+      "args": [
+        "0x4030ed738a7234b1"
+      ],
+      "expected_bits": "0x25c9f51a8ca29d37"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00125-failed-normal-dependency",
+      "args": [
+        "0x4035b662a8b90fc1"
+      ],
+      "expected_bits": "0x15184a4401f5ad32"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00126-failed-normal-dependency",
+      "args": [
+        "0x4028f705e960ef85"
+      ],
+      "expected_bits": "0x319ab2a962f0acb4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00127-failed-normal-dependency",
+      "args": [
+        "0x402a2dbc2c545b9c"
+      ],
+      "expected_bits": "0x303374bdc37e6e6f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00128-failed-normal-dependency",
+      "args": [
+        "0x4036dd7b6636f7cb"
+      ],
+      "expected_bits": "0x107506c3679b22b5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00129-failed-normal-dependency",
+      "args": [
+        "0x40253c6aee900173"
+      ],
+      "expected_bits": "0x35813bd807d734fc"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00130-failed-normal-dependency",
+      "args": [
+        "0x4033d42c2d72143c"
+      ],
+      "expected_bits": "0x1c28a0c0c5707e70"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00131-failed-normal-dependency",
+      "args": [
+        "0x40144147d616282a"
+      ],
+      "expected_bits": "0x3d6c221aabd80dc9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00132-failed-normal-dependency",
+      "args": [
+        "0x4033b5818be473f7"
+      ],
+      "expected_bits": "0x1c9611a9f0bb52ed"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00133-failed-normal-dependency",
+      "args": [
+        "0x3fe79822732119fa"
+      ],
+      "expected_bits": "0x3fd30340e9ab1acf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00134-failed-normal-dependency",
+      "args": [
+        "0x402e3383eca5d9b0"
+      ],
+      "expected_bits": "0x2b136958452be9f7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00135-failed-normal-dependency",
+      "args": [
+        "0x4011b1b197685dd1"
+      ],
+      "expected_bits": "0x3dfb2cc250c99972"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00136-failed-normal-dependency",
+      "args": [
+        "0x402a4c5943ff295a"
+      ],
+      "expected_bits": "0x301022dbec3b5a54"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00137-failed-normal-dependency",
+      "args": [
+        "0x4010bf0a785c18d3"
+      ],
+      "expected_bits": "0x3e2b89ba3c9d3669"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00138-failed-normal-dependency",
+      "args": [
+        "0x40392a6cb4a89cdc"
+      ],
+      "expected_bits": "0x067cab66155d7c6b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00139-failed-normal-dependency",
+      "args": [
+        "0x4035f3235872476b"
+      ],
+      "expected_bits": "0x1428e57fa03f6b14"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00140-failed-normal-dependency",
+      "args": [
+        "0x4002032156bd4477"
+      ],
+      "expected_bits": "0x3f57c972a4c3d2f0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00141-failed-normal-dependency",
+      "args": [
+        "0x40116cd735040b30"
+      ],
+      "expected_bits": "0x3e08e1866999dc2e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00142-failed-normal-dependency",
+      "args": [
+        "0x4035f58ac17e8a99"
+      ],
+      "expected_bits": "0x14207a28b37d5bdd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00143-failed-normal-dependency",
+      "args": [
+        "0x403a0a9f10420887"
+      ],
+      "expected_bits": "0x027112701ae58ea9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00144-failed-normal-dependency",
+      "args": [
+        "0x3faf5a6441bc1a37"
+      ],
+      "expected_bits": "0x3fedcaa7eb319c1e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00145-failed-normal-dependency",
+      "args": [
+        "0x4021d4f3217f0503"
+      ],
+      "expected_bits": "0x3884071f63ed823d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00146-failed-normal-dependency",
+      "args": [
+        "0x4030ada955edd7bb"
+      ],
+      "expected_bits": "0x268bdd5f06261fb4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00147-failed-normal-dependency",
+      "args": [
+        "0x402ae8bef1912e8d"
+      ],
+      "expected_bits": "0x2f5318dfcf5e33a8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00148-failed-normal-dependency",
+      "args": [
+        "0x402bd245d129c6f2"
+      ],
+      "expected_bits": "0x2e32628bc29d55d7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00149-failed-normal-dependency",
+      "args": [
+        "0x4038a0ee385bf80a"
+      ],
+      "expected_bits": "0x08e5f1aff0b98463"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00150-failed-normal-dependency",
+      "args": [
+        "0x4036f12e20e3b900"
+      ],
+      "expected_bits": "0x1023c1a4dbd4b698"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00151-failed-normal-dependency",
+      "args": [
+        "0x403a15faafb3e226"
+      ],
+      "expected_bits": "0x023afe6812517ab6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00152-failed-normal-dependency",
+      "args": [
+        "0x4023a0458eb77a84"
+      ],
+      "expected_bits": "0x36fed89706f78061"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00153-failed-normal-dependency",
+      "args": [
+        "0x40341962527f39f1"
+      ],
+      "expected_bits": "0x1b305377012a5bd4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00154-failed-normal-dependency",
+      "args": [
+        "0x402ec3d13ffade00"
+      ],
+      "expected_bits": "0x2a4cfdf115519391"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00155-failed-normal-dependency",
+      "args": [
+        "0x402ac937c7067fdd"
+      ],
+      "expected_bits": "0x2f790dcf4ab8a1c4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00156-failed-normal-dependency",
+      "args": [
+        "0x40380a219b77c838"
+      ],
+      "expected_bits": "0x0b7cd9992209cc36"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00157-failed-normal-dependency",
+      "args": [
+        "0x3fd561497a6af8fc"
+      ],
+      "expected_bits": "0x3fe45f2738a804f6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00158-failed-normal-dependency",
+      "args": [
+        "0x40310fd698b64d3d"
+      ],
+      "expected_bits": "0x256125d825427e14"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00159-failed-normal-dependency",
+      "args": [
+        "0x402a3e6e36d13b24"
+      ],
+      "expected_bits": "0x3020833a20e03205"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00160-failed-normal-dependency",
+      "args": [
+        "0x4036616dbbc62377"
+      ],
+      "expected_bits": "0x1270a3c395d77c36"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00161-failed-normal-dependency",
+      "args": [
+        "0x40247614a73b3f25"
+      ],
+      "expected_bits": "0x363c16aae4d726dc"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00162-failed-normal-dependency",
+      "args": [
+        "0x40331f713c59ec30"
+      ],
+      "expected_bits": "0x1ea459ce23c83cd8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00163-failed-normal-dependency",
+      "args": [
+        "0x4032ee5201d3002b"
+      ],
+      "expected_bits": "0x1f4dc59de51ff605"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00164-failed-normal-dependency",
+      "args": [
+        "0x402e63dc1716f9d8"
+      ],
+      "expected_bits": "0x2ad1aa8aa8fc0c01"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00165-failed-normal-dependency",
+      "args": [
+        "0x4002c880ff65a612"
+      ],
+      "expected_bits": "0x3f4d73722aec92c5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00166-failed-normal-dependency",
+      "args": [
+        "0x4037065224ccbf0a"
+      ],
+      "expected_bits": "0x0fcc4c5a8caec9e6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00167-failed-normal-dependency",
+      "args": [
+        "0x40362bf4fc7c8735"
+      ],
+      "expected_bits": "0x13468e8bd62c44ab"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00168-failed-normal-dependency",
+      "args": [
+        "0x4039ec7aa0687be8"
+      ],
+      "expected_bits": "0x02fe6d83ca79da62"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00169-failed-normal-dependency",
+      "args": [
+        "0x4022e6cf8492987e"
+      ],
+      "expected_bits": "0x37a0c4cf45501d49"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00170-failed-normal-dependency",
+      "args": [
+        "0x40113af7a7f239cf"
+      ],
+      "expected_bits": "0x3e132cefaec916fd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00171-failed-normal-dependency",
+      "args": [
+        "0x4025db1c5814481f"
+      ],
+      "expected_bits": "0x34e5941f44e72f53"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00172-failed-normal-dependency",
+      "args": [
+        "0x402915220fd1bf5a"
+      ],
+      "expected_bits": "0x3178668033bf0062"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00173-failed-normal-dependency",
+      "args": [
+        "0x4027799a29c3b50b"
+      ],
+      "expected_bits": "0x333cfcbb196076e7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00174-failed-normal-dependency",
+      "args": [
+        "0x4022ab5ff8627185"
+      ],
+      "expected_bits": "0x37d2c8ccc34c44d6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00175-failed-normal-dependency",
+      "args": [
+        "0x40389f600d0f8a46"
+      ],
+      "expected_bits": "0x08ed9b1c5f47d06d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00176-failed-normal-dependency",
+      "args": [
+        "0x4033944aa5d57253"
+      ],
+      "expected_bits": "0x1d0c64a2bbab8935"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00177-failed-normal-dependency",
+      "args": [
+        "0x402b4623588f55f5"
+      ],
+      "expected_bits": "0x2ee13a2f2e017b7b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00178-failed-normal-dependency",
+      "args": [
+        "0x4028a7877a32c829"
+      ],
+      "expected_bits": "0x31f3e35ebe978e25"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00179-failed-normal-dependency",
+      "args": [
+        "0x4030d3fdc2cb0248"
+      ],
+      "expected_bits": "0x26176c39990aafd7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00180-failed-normal-dependency",
+      "args": [
+        "0x4033e06cc27672d2"
+      ],
+      "expected_bits": "0x1bfd63696df571b1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00181-failed-normal-dependency",
+      "args": [
+        "0x40054accc5883580"
+      ],
+      "expected_bits": "0x3f25ebb5d1cf1dbf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00182-failed-normal-dependency",
+      "args": [
+        "0x401b59e854350454"
+      ],
+      "expected_bits": "0x3b7e8568f43a80ba"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00183-failed-normal-dependency",
+      "args": [
+        "0x4035ff4f3e610925"
+      ],
+      "expected_bits": "0x13f89861b5da3ec1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00184-failed-normal-dependency",
+      "args": [
+        "0x3fea0a0bfd3099fe"
+      ],
+      "expected_bits": "0x3fcffa270377d3ca"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00185-failed-normal-dependency",
+      "args": [
+        "0x402da6f2802be4cc"
+      ],
+      "expected_bits": "0x2bd1dc8c54c0d2b5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00186-failed-normal-dependency",
+      "args": [
+        "0x402cc28fa495090c"
+      ],
+      "expected_bits": "0x2cfff3f07455bde8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00187-failed-normal-dependency",
+      "args": [
+        "0x4034dde63b1bf1e0"
+      ],
+      "expected_bits": "0x18585d513179823c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00188-failed-normal-dependency",
+      "args": [
+        "0x4019db2be9d954d4"
+      ],
+      "expected_bits": "0x3bf22ca927e093f2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00189-failed-normal-dependency",
+      "args": [
+        "0x4032adc4481ec354"
+      ],
+      "expected_bits": "0x202834faab30e779"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00190-failed-normal-dependency",
+      "args": [
+        "0x401379a845c64529"
+      ],
+      "expected_bits": "0x3d99520da235f028"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00191-failed-normal-dependency",
+      "args": [
+        "0x40305dfe0d18ca1c"
+      ],
+      "expected_bits": "0x27795a961e9bf99c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00192-failed-normal-dependency",
+      "args": [
+        "0x40387e41d773d8fe"
+      ],
+      "expected_bits": "0x0980b49189eb23c8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00193-failed-normal-dependency",
+      "args": [
+        "0x3ff6a9e2ee600dbe"
+      ],
+      "expected_bits": "0x3fa71eaab1785373"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00194-failed-normal-dependency",
+      "args": [
+        "0x402d5f7093db580b"
+      ],
+      "expected_bits": "0x2c315fd10902a457"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00195-failed-normal-dependency",
+      "args": [
+        "0x3ffe184a3bef2fd4"
+      ],
+      "expected_bits": "0x3f80005eff7d0799"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00196-failed-normal-dependency",
+      "args": [
+        "0x3fd2a7b37c334aee"
+      ],
+      "expected_bits": "0x3fe5c400735167c1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00197-failed-normal-dependency",
+      "args": [
+        "0x4024fc8decb4e7ba"
+      ],
+      "expected_bits": "0x35be56a338005c27"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00198-failed-normal-dependency",
+      "args": [
+        "0x4022e837953bc956"
+      ],
+      "expected_bits": "0x379fd4ca31d32f1c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00199-failed-normal-dependency",
+      "args": [
+        "0x401abd608d3075bf"
+      ],
+      "expected_bits": "0x3baed26953d8d6b2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00200-failed-normal-dependency",
+      "args": [
+        "0x3ff8d1b28db75d4a"
+      ],
+      "expected_bits": "0x3f9ceefc14ebf0e0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00201-failed-normal-dependency",
+      "args": [
+        "0x401300702945d31e"
+      ],
+      "expected_bits": "0x3db43d860275151c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00202-failed-normal-dependency",
+      "args": [
+        "0x40325a4cff49b35c"
+      ],
+      "expected_bits": "0x2140772587d79668"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00203-failed-normal-dependency",
+      "args": [
+        "0x4009f2a45c391b5a"
+      ],
+      "expected_bits": "0x3ed2dce3bc12fc74"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00204-failed-normal-dependency",
+      "args": [
+        "0x40309d36e9dff528"
+      ],
+      "expected_bits": "0x26bdaf98a0d05135"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00205-failed-normal-dependency",
+      "args": [
+        "0x4030eed165da0f4f"
+      ],
+      "expected_bits": "0x25c5a87eff45e5e4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00206-failed-normal-dependency",
+      "args": [
+        "0x4027e79f6232fa4b"
+      ],
+      "expected_bits": "0x32c66d857357b617"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00207-failed-normal-dependency",
+      "args": [
+        "0x40253679afa8cdbc"
+      ],
+      "expected_bits": "0x358612507400e5cf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00208-failed-normal-dependency",
+      "args": [
+        "0x4037a8024ac3d8f5"
+      ],
+      "expected_bits": "0x0d230080e92e214e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00209-failed-normal-dependency",
+      "args": [
+        "0x4034df5cb199068b"
+      ],
+      "expected_bits": "0x1853308267b381d5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00210-failed-normal-dependency",
+      "args": [
+        "0x4016a7ec107f09b5"
+      ],
+      "expected_bits": "0x3cd4a6469170190f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00211-failed-normal-dependency",
+      "args": [
+        "0x403084ff469074e7"
+      ],
+      "expected_bits": "0x27056f6997b172c3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00212-failed-normal-dependency",
+      "args": [
+        "0x402cecdc8af76c3b"
+      ],
+      "expected_bits": "0x2cc7747b8443a5cf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00213-failed-normal-dependency",
+      "args": [
+        "0x40229643ea99e63a"
+      ],
+      "expected_bits": "0x37e4557abdcf6578"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00214-failed-normal-dependency",
+      "args": [
+        "0x403a219ac9d28257"
+      ],
+      "expected_bits": "0x0204206862a70072"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00215-failed-normal-dependency",
+      "args": [
+        "0x4035963fda6c178f"
+      ],
+      "expected_bits": "0x1595e43155b6a657"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00216-failed-normal-dependency",
+      "args": [
+        "0x3ff706e75221b8e0"
+      ],
+      "expected_bits": "0x3fa56951231dcaec"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00217-failed-normal-dependency",
+      "args": [
+        "0x400ef7355f5ae4c3"
+      ],
+      "expected_bits": "0x3e679eef31965bc9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00218-failed-normal-dependency",
+      "args": [
+        "0x4025710ff9c4d591"
+      ],
+      "expected_bits": "0x354e710dfbd450e2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00219-failed-normal-dependency",
+      "args": [
+        "0x402b7003e0b46288"
+      ],
+      "expected_bits": "0x2ead3e770eed8155"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00220-failed-normal-dependency",
+      "args": [
+        "0x40352a2c83138685"
+      ],
+      "expected_bits": "0x1736ee121cec5de7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00221-failed-normal-dependency",
+      "args": [
+        "0x403884d5e86c154e"
+      ],
+      "expected_bits": "0x0962f1d528cca0fb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00222-failed-normal-dependency",
+      "args": [
+        "0x40326b713b810eff"
+      ],
+      "expected_bits": "0x21066023ce9a4db7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00223-failed-normal-dependency",
+      "args": [
+        "0x40335fe03981eaf7"
+      ],
+      "expected_bits": "0x1dc46190130e31ce"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00224-failed-normal-dependency",
+      "args": [
+        "0x401ebd2e7fdbf8d8"
+      ],
+      "expected_bits": "0x3a603d4cd71ecc64"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00225-failed-normal-dependency",
+      "args": [
+        "0x402600160db5845d"
+      ],
+      "expected_bits": "0x34c199745e5661f2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00226-failed-normal-dependency",
+      "args": [
+        "0x4000ecfdf14cf178"
+      ],
+      "expected_bits": "0x3f66b2e69cfaf0a3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00227-failed-normal-dependency",
+      "args": [
+        "0x4037554f1ff9257e"
+      ],
+      "expected_bits": "0x0e81f8e09eefe91f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00228-failed-normal-dependency",
+      "args": [
+        "0x40271c17bcfef418"
+      ],
+      "expected_bits": "0x33a030b7a8cb420e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00229-failed-normal-dependency",
+      "args": [
+        "0x400fa20c1bd5e546"
+      ],
+      "expected_bits": "0x3e581afac3bae73f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00230-failed-normal-dependency",
+      "args": [
+        "0x40257ebc45395285"
+      ],
+      "expected_bits": "0x35411dc32029b46c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00231-failed-normal-dependency",
+      "args": [
+        "0x4036692f7fead101"
+      ],
+      "expected_bits": "0x12511b9ba3466c4c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00232-failed-normal-dependency",
+      "args": [
+        "0x40266018163b8694"
+      ],
+      "expected_bits": "0x346147156e1a6b7f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00233-failed-normal-dependency",
+      "args": [
+        "0x401d4c54d073b48d"
+      ],
+      "expected_bits": "0x3adda31f0c30f856"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00234-failed-normal-dependency",
+      "args": [
+        "0x400554174a2c7023"
+      ],
+      "expected_bits": "0x3f255d61d6eb2237"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00235-failed-normal-dependency",
+      "args": [
+        "0x401b7ce61d107c10"
+      ],
+      "expected_bits": "0x3b7302ffbcc8c9bf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00236-failed-normal-dependency",
+      "args": [
+        "0x40142cd387521ab8"
+      ],
+      "expected_bits": "0x3d714783586bfb68"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00237-failed-normal-dependency",
+      "args": [
+        "0x3ffe79bf26ce9c0f"
+      ],
+      "expected_bits": "0x3f7cf1f38158fa9f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00238-failed-normal-dependency",
+      "args": [
+        "0x40261af8fb9756e2"
+      ],
+      "expected_bits": "0x34a601edc8835974"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00239-failed-normal-dependency",
+      "args": [
+        "0x403759d798bd141d"
+      ],
+      "expected_bits": "0x0e6f6da0fdfcad6c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00240-failed-normal-dependency",
+      "args": [
+        "0x4023239036cb6956"
+      ],
+      "expected_bits": "0x376bbd5ea8a154d6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00241-failed-normal-dependency",
+      "args": [
+        "0x40157adc8a578c99"
+      ],
+      "expected_bits": "0x3d216bc15e84c81d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00242-failed-normal-dependency",
+      "args": [
+        "0x4031a5e0b4c0d2c6"
+      ],
+      "expected_bits": "0x238a0936b1ed24a2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00243-failed-normal-dependency",
+      "args": [
+        "0x4002577805fbff54"
+      ],
+      "expected_bits": "0x3f536bbdd55f6c7e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00244-failed-normal-dependency",
+      "args": [
+        "0x401e6530fe74c6ed"
+      ],
+      "expected_bits": "0x3a7e8727572ceda3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00245-failed-normal-dependency",
+      "args": [
+        "0x4018eb0c3ad82833"
+      ],
+      "expected_bits": "0x3c371b359725837a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00246-failed-normal-dependency",
+      "args": [
+        "0x40355398591e8412"
+      ],
+      "expected_bits": "0x16981315a1592c49"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00247-failed-normal-dependency",
+      "args": [
+        "0x4031362a17a92dfc"
+      ],
+      "expected_bits": "0x24e9b7f0d1de5d70"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00248-failed-normal-dependency",
+      "args": [
+        "0x4019f9335e307c76"
+      ],
+      "expected_bits": "0x3be8bf9601f916bc"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00249-failed-normal-dependency",
+      "args": [
+        "0x40348ad146bd4062"
+      ],
+      "expected_bits": "0x199031b7b76e8509"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00250-failed-normal-dependency",
+      "args": [
+        "0x40163fcb5de45d84"
+      ],
+      "expected_bits": "0x3cf07424e9c78802"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00251-failed-normal-dependency",
+      "args": [
+        "0x40370dedc780f2b4"
+      ],
+      "expected_bits": "0x0facbe44e63204d6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00252-failed-normal-dependency",
+      "args": [
+        "0x40276f668ec30111"
+      ],
+      "expected_bits": "0x33472accace2b579"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00253-failed-normal-dependency",
+      "args": [
+        "0x402fba063daeebd2"
+      ],
+      "expected_bits": "0x28f1966f813ddc9c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00254-failed-normal-dependency",
+      "args": [
+        "0x403a5024e416e718"
+      ],
+      "expected_bits": "0x0127b0c491160f66"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00255-failed-normal-dependency",
+      "args": [
+        "0x4033956194a9df0d"
+      ],
+      "expected_bits": "0x1d080753fc6329e0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00256-failed-normal-dependency",
+      "args": [
+        "0x4039837305f62a99"
+      ],
+      "expected_bits": "0x04e50d448566d9fe"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00257-failed-normal-dependency",
+      "args": [
+        "0x3fe64ae0bf2b991f"
+      ],
+      "expected_bits": "0x3fd4c50b9d6410a5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00258-failed-normal-dependency",
+      "args": [
+        "0x40334a45f155df62"
+      ],
+      "expected_bits": "0x1e10b58bece4406f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00259-failed-normal-dependency",
+      "args": [
+        "0x4035f9fb399c679a"
+      ],
+      "expected_bits": "0x140ebda17d6fb435"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00260-failed-normal-dependency",
+      "args": [
+        "0x4037f92a3fc931a4"
+      ],
+      "expected_bits": "0x0bc5c894a6670b1c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00261-failed-normal-dependency",
+      "args": [
+        "0x3fdd3b92a6f59de2"
+      ],
+      "expected_bits": "0x3fe095f818ffc35a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00262-failed-normal-dependency",
+      "args": [
+        "0x4030f8f9b37817aa"
+      ],
+      "expected_bits": "0x25a68327ede5d06c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00263-failed-normal-dependency",
+      "args": [
+        "0x4038ce4390bae4d6"
+      ],
+      "expected_bits": "0x081c2b762348e65e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00264-failed-normal-dependency",
+      "args": [
+        "0x402da86a656239a4"
+      ],
+      "expected_bits": "0x2bd066f05f8abac7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00265-failed-normal-dependency",
+      "args": [
+        "0x4021aca56f980493"
+      ],
+      "expected_bits": "0x38a46e6ffe8fea21"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00266-failed-normal-dependency",
+      "args": [
+        "0x401c780f3a29bd82"
+      ],
+      "expected_bits": "0x3b2303c42085f7e8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00267-failed-normal-dependency",
+      "args": [
+        "0x4022fb348bb51fc1"
+      ],
+      "expected_bits": "0x378f692e33ad16d5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00268-failed-normal-dependency",
+      "args": [
+        "0x400cd9adec032439"
+      ],
+      "expected_bits": "0x3e96c946d0a63f65"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00269-failed-normal-dependency",
+      "args": [
+        "0x4025a2f80ae57465"
+      ],
+      "expected_bits": "0x351d9212ee52771e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00270-failed-normal-dependency",
+      "args": [
+        "0x3ffb86cd873302f2"
+      ],
+      "expected_bits": "0x3f8eaa3b3e3fe00f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00271-failed-normal-dependency",
+      "args": [
+        "0x4022bff4c89ca4f9"
+      ],
+      "expected_bits": "0x37c1a256587ad7e6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00272-failed-normal-dependency",
+      "args": [
+        "0x400583409d6d261f"
+      ],
+      "expected_bits": "0x3f22bdd21a2843ca"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00273-failed-normal-dependency",
+      "args": [
+        "0x402692f4f2855f9c"
+      ],
+      "expected_bits": "0x342d632be90cd357"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00274-failed-normal-dependency",
+      "args": [
+        "0x402ffed9382fe4da"
+      ],
+      "expected_bits": "0x288ed0864dba9543"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00275-failed-normal-dependency",
+      "args": [
+        "0x402286235aa9a9eb"
+      ],
+      "expected_bits": "0x37f24d1c856a405f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00276-failed-normal-dependency",
+      "args": [
+        "0x4037332d93364279"
+      ],
+      "expected_bits": "0x0f11772962986b99"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00277-failed-normal-dependency",
+      "args": [
+        "0x402635f7e98aa67c"
+      ],
+      "expected_bits": "0x348b3d28b88a3401"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00278-failed-normal-dependency",
+      "args": [
+        "0x40237778fb687d22"
+      ],
+      "expected_bits": "0x372273de6a6471fd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00279-failed-normal-dependency",
+      "args": [
+        "0x401f4aa5dfe5be91"
+      ],
+      "expected_bits": "0x3a2df7a2823a96f8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00280-failed-normal-dependency",
+      "args": [
+        "0x4022f17611a2be4c"
+      ],
+      "expected_bits": "0x37969359a3a2aae2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00281-failed-normal-dependency",
+      "args": [
+        "0x40264033ab9e2bf3"
+      ],
+      "expected_bits": "0x34816f976cd6633e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00282-failed-normal-dependency",
+      "args": [
+        "0x402ee851dc498335"
+      ],
+      "expected_bits": "0x2a199f134f3870c0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00283-failed-normal-dependency",
+      "args": [
+        "0x40306870b0416b4b"
+      ],
+      "expected_bits": "0x275a8d82bf701ca2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00284-failed-normal-dependency",
+      "args": [
+        "0x4033dcfd076328a8"
+      ],
+      "expected_bits": "0x1c091150d7ca4334"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00285-failed-normal-dependency",
+      "args": [
+        "0x4017d5bff59bcadf"
+      ],
+      "expected_bits": "0x3c8474a50b8f436f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00286-failed-normal-dependency",
+      "args": [
+        "0x402d6b7db2e7930e"
+      ],
+      "expected_bits": "0x2c215e2fab6f8cb1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00287-failed-normal-dependency",
+      "args": [
+        "0x40268d9aab0fa7b6"
+      ],
+      "expected_bits": "0x34329eaccb4b6d56"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00288-failed-normal-dependency",
+      "args": [
+        "0x4037b52a6e395883"
+      ],
+      "expected_bits": "0x0cea98890db8bdc0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00289-failed-normal-dependency",
+      "args": [
+        "0x4036c988cc076c2f"
+      ],
+      "expected_bits": "0x10c71ece1f12beec"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00290-failed-normal-dependency",
+      "args": [
+        "0x3fff030df3bc6f4e"
+      ],
+      "expected_bits": "0x3f7914f72b4d06f8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00291-failed-normal-dependency",
+      "args": [
+        "0x402c6eb501a075fa"
+      ],
+      "expected_bits": "0x2d6b4dee0bea605d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00292-failed-normal-dependency",
+      "args": [
+        "0x400d0af313d06178"
+      ],
+      "expected_bits": "0x3e9306d4ba03c919"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00293-failed-normal-dependency",
+      "args": [
+        "0x403710a6e5cebc23"
+      ],
+      "expected_bits": "0x0fa1972d6df58c2c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00294-failed-normal-dependency",
+      "args": [
+        "0x403261e1c29577f0"
+      ],
+      "expected_bits": "0x212627d14b51fba1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00295-failed-normal-dependency",
+      "args": [
+        "0x4037dfcceb4cc305"
+      ],
+      "expected_bits": "0x0c3391f75a033327"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00296-failed-normal-dependency",
+      "args": [
+        "0x4031ab7310b6aec2"
+      ],
+      "expected_bits": "0x23781cc62e90b510"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00297-failed-normal-dependency",
+      "args": [
+        "0x4032918387e68d78"
+      ],
+      "expected_bits": "0x2087348a7d240637"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00298-failed-normal-dependency",
+      "args": [
+        "0x402e4a0330b8da8c"
+      ],
+      "expected_bits": "0x2af47f5c5baac738"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00299-failed-normal-dependency",
+      "args": [
+        "0x4001cc3b2df44e99"
+      ],
+      "expected_bits": "0x3f5b18e5f35768d2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00300-failed-normal-dependency",
+      "args": [
+        "0x401d5bee419f59a5"
+      ],
+      "expected_bits": "0x3ad7a7d0252a6cc1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00301-failed-normal-dependency",
+      "args": [
+        "0x400240e008ed7096"
+      ],
+      "expected_bits": "0x3f5482f0157ad476"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00302-failed-normal-dependency",
+      "args": [
+        "0x4026bb78b8e05bf5"
+      ],
+      "expected_bits": "0x340370d6c290fb53"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00303-failed-normal-dependency",
+      "args": [
+        "0x403924619f2505c0"
+      ],
+      "expected_bits": "0x069786791e524851"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00304-failed-normal-dependency",
+      "args": [
+        "0x400b36307bd620f1"
+      ],
+      "expected_bits": "0x3eb945c212e7f5c4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00305-failed-normal-dependency",
+      "args": [
+        "0x403505d49384cea5"
+      ],
+      "expected_bits": "0x17c1fe9230884986"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00306-failed-normal-dependency",
+      "args": [
+        "0x40336e6afcb9b400"
+      ],
+      "expected_bits": "0x1d91ef6f21dc5f56"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00307-failed-normal-dependency",
+      "args": [
+        "0x4036cedf0fb838fa"
+      ],
+      "expected_bits": "0x10b1db6533d58f61"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00308-failed-normal-dependency",
+      "args": [
+        "0x402aab2baf72264e"
+      ],
+      "expected_bits": "0x2f9e3183a41dda7e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00309-failed-normal-dependency",
+      "args": [
+        "0x3ff0a468e6aac192"
+      ],
+      "expected_bits": "0x3fc21603d36fb256"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00310-failed-normal-dependency",
+      "args": [
+        "0x402b20601f64b319"
+      ],
+      "expected_bits": "0x2f1018b34ce0d187"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00311-failed-normal-dependency",
+      "args": [
+        "0x40220d7c185f66ae"
+      ],
+      "expected_bits": "0x3855d41eea334c72"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00312-failed-normal-dependency",
+      "args": [
+        "0x4021897defc79185"
+      ],
+      "expected_bits": "0x38c13dc133c1b3aa"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00313-failed-normal-dependency",
+      "args": [
+        "0x4036b0236a0d737c"
+      ],
+      "expected_bits": "0x1130841acfa9dc31"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00314-failed-normal-dependency",
+      "args": [
+        "0x402784c87fb64e80"
+      ],
+      "expected_bits": "0x333152097d2278dd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00315-failed-normal-dependency",
+      "args": [
+        "0x402b1a738399241e"
+      ],
+      "expected_bits": "0x2f160c1d262d00c9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00316-failed-normal-dependency",
+      "args": [
+        "0x401e266c65591b8e"
+      ],
+      "expected_bits": "0x3a9374916316d3c7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00317-failed-normal-dependency",
+      "args": [
+        "0x4029077f810b25ad"
+      ],
+      "expected_bits": "0x3187d3be969e8019"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00318-failed-normal-dependency",
+      "args": [
+        "0x401ff0b3ad3255f0"
+      ],
+      "expected_bits": "0x39f2198843ec695d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00319-failed-normal-dependency",
+      "args": [
+        "0x40367a348c6f33ef"
+      ],
+      "expected_bits": "0x120b9ae3f50aa740"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00320-failed-normal-dependency",
+      "args": [
+        "0x4031805740f1ebf9"
+      ],
+      "expected_bits": "0x2401c0915bbca958"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00321-failed-normal-dependency",
+      "args": [
+        "0x4039f1d192e93ca0"
+      ],
+      "expected_bits": "0x02e49c74c96c242a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00322-failed-normal-dependency",
+      "args": [
+        "0x40345cf0ab89d4a7"
+      ],
+      "expected_bits": "0x1a385966db83f3d8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00323-failed-normal-dependency",
+      "args": [
+        "0x40105ad15827f62f"
+      ],
+      "expected_bits": "0x3e3fa6daa7f69fce"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00324-failed-normal-dependency",
+      "args": [
+        "0x4029795cb472b1c1"
+      ],
+      "expected_bits": "0x3105d186a5d61bc2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00325-failed-normal-dependency",
+      "args": [
+        "0x40300b6b052ea81c"
+      ],
+      "expected_bits": "0x286b63b70dad85ef"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00326-failed-normal-dependency",
+      "args": [
+        "0x40193db48c78fb1d"
+      ],
+      "expected_bits": "0x3c2095a442f6d57d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00327-failed-normal-dependency",
+      "args": [
+        "0x4039ec871114b268"
+      ],
+      "expected_bits": "0x02fe212bf00c9f0d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00328-failed-normal-dependency",
+      "args": [
+        "0x402c6e710a4833bb"
+      ],
+      "expected_bits": "0x2d6bb6010f0d760f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00329-failed-normal-dependency",
+      "args": [
+        "0x4036f6d5e92839ea"
+      ],
+      "expected_bits": "0x100ca2e8cf06df5d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00330-failed-normal-dependency",
+      "args": [
+        "0x3fca4f959ae6170f"
+      ],
+      "expected_bits": "0x3fe8ae5a0b7e68bd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00331-failed-normal-dependency",
+      "args": [
+        "0x40399a92bb180d54"
+      ],
+      "expected_bits": "0x047a8717ac8400ad"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00332-failed-normal-dependency",
+      "args": [
+        "0x402626f9c0dccfab"
+      ],
+      "expected_bits": "0x349a251bc264d8bf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00333-failed-normal-dependency",
+      "args": [
+        "0x40221b15854607f0"
+      ],
+      "expected_bits": "0x384aee347cd90dd5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00334-failed-normal-dependency",
+      "args": [
+        "0x3fee67064eab9e70"
+      ],
+      "expected_bits": "0x3fc6ebe81f1cde40"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00335-failed-normal-dependency",
+      "args": [
+        "0x4021044f4e0807af"
+      ],
+      "expected_bits": "0x3928d5bc17c7ecd6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00336-matched-normal-control",
+      "args": [
+        "0x4000750c41902cc3"
+      ],
+      "expected_bits": "0x3f6daddac3bb6bf9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00337-matched-normal-control",
+      "args": [
+        "0x04410db184eb2d25"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00338-matched-normal-control",
+      "args": [
+        "0x4034ea00f6a11e19"
+      ],
+      "expected_bits": "0x182af8c51a455bab"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00339-matched-normal-control",
+      "args": [
+        "0x328a406cf2562d98"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00340-matched-normal-control",
+      "args": [
+        "0x401b1d05c4497e4a"
+      ],
+      "expected_bits": "0x3b914adc15e49833"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00341-matched-normal-control",
+      "args": [
+        "0x3e40e6316739cc34"
+      ],
+      "expected_bits": "0x3feffffffb3b9a7e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00342-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f5f5"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00343-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f670"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00344-matched-normal-control",
+      "args": [
+        "0x0e3b848ed513a2d0"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00345-matched-normal-control",
+      "args": [
+        "0x36ddd74d9e68d886"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00346-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f4f8"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00347-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f521"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00348-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f634"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00349-matched-normal-control",
+      "args": [
+        "0x3b53cccb3da45245"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00350-matched-normal-control",
+      "args": [
+        "0x403214781416ce82"
+      ],
+      "expected_bits": "0x22251edce8ae2903"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00351-matched-normal-control",
+      "args": [
+        "0x4039b6605e282aae"
+      ],
+      "expected_bits": "0x03f9af16596a38f7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00352-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f578"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00353-matched-normal-control",
+      "args": [
+        "0x400d4866d6c4a017"
+      ],
+      "expected_bits": "0x3e8e577599b7bc18"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00354-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f5d9"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00355-matched-normal-control",
+      "args": [
+        "0x36c4bf0bcb90e486"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00356-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f4a3"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00357-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f47d"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00358-matched-normal-control",
+      "args": [
+        "0x2775e7876ff95499"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00359-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f707"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00360-matched-normal-control",
+      "args": [
+        "0x403a992b45faf2f9"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00361-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f4c5"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00362-matched-normal-control",
+      "args": [
+        "0x403a992b45faf330"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00363-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f63d"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00364-matched-normal-control",
+      "args": [
+        "0x1b0287d176d4ec60"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00365-matched-normal-control",
+      "args": [
+        "0x4033affee9704934"
+      ],
+      "expected_bits": "0x1ca9cb0c96046f1d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00366-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f68f"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00367-matched-normal-control",
+      "args": [
+        "0x1703b5dd98ca5399"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00368-matched-normal-control",
+      "args": [
+        "0x3f371e3f1e846328"
+      ],
+      "expected_bits": "0x3feffcbd3f2c443b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00369-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f54d"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00370-matched-normal-control",
+      "args": [
+        "0x403ab2163621a3ed"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00371-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f4ef"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00372-matched-normal-control",
+      "args": [
+        "0x403a992b45faf274"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00373-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f422"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00374-matched-normal-control",
+      "args": [
+        "0x0e139ef0317d25a7"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00375-matched-normal-control",
+      "args": [
+        "0x0d7a216746a0161a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00376-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f470"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00377-matched-normal-control",
+      "args": [
+        "0x403a992b45faf158"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00378-matched-normal-control",
+      "args": [
+        "0x403a992b45faf3db"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00379-matched-normal-control",
+      "args": [
+        "0x34a0e16823205989"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00380-matched-normal-control",
+      "args": [
+        "0x38647248bb756d8a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00381-matched-normal-control",
+      "args": [
+        "0x1231cbaf35d81ca5"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00382-matched-normal-control",
+      "args": [
+        "0x402d51e3933c769a"
+      ],
+      "expected_bits": "0x2c42ec0f83bbaf57"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00383-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f729"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00384-matched-normal-control",
+      "args": [
+        "0x403a992b45faf35d"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00385-matched-normal-control",
+      "args": [
+        "0x00661c5bf505efc8"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00386-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f669"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00387-matched-normal-control",
+      "args": [
+        "0x38739a54369df94b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00388-matched-normal-control",
+      "args": [
+        "0x3b3f73931f34fab3"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00389-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f700"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00390-matched-normal-control",
+      "args": [
+        "0x1e39426b74db86b9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00391-matched-normal-control",
+      "args": [
+        "0x1da090ace14c7b7b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00392-matched-normal-control",
+      "args": [
+        "0x2401768e3903d4cb"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00393-matched-normal-control",
+      "args": [
+        "0x39d1544f1b9bc852"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00394-matched-normal-control",
+      "args": [
+        "0x3b560de1e8ea9aab"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00395-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f690"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00396-matched-normal-control",
+      "args": [
+        "0x403a992b45faf354"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00397-matched-normal-control",
+      "args": [
+        "0x400809807b1ad398"
+      ],
+      "expected_bits": "0x3ef67ed5e8c5515a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00398-matched-normal-control",
+      "args": [
+        "0x0954d2d4f6e73c1d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00399-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f56c"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00400-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f5be"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00401-matched-normal-control",
+      "args": [
+        "0x29303e90353f0081"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00402-matched-normal-control",
+      "args": [
+        "0x403a992b45faf33d"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00403-matched-normal-control",
+      "args": [
+        "0x4025e684ad4fb06d"
+      ],
+      "expected_bits": "0x34da7401a2d47fd9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00404-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f5f2"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00405-matched-normal-control",
+      "args": [
+        "0x28e2265b827072b4"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00406-matched-normal-control",
+      "args": [
+        "0x272689ec41cf5ba9"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00407-matched-normal-control",
+      "args": [
+        "0x403a992b45faf433"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00408-matched-normal-control",
+      "args": [
+        "0x0f6175f10f24e881"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00409-matched-normal-control",
+      "args": [
+        "0x3fb3f579f256826f"
+      ],
+      "expected_bits": "0x3fed30c77a497cc1"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00410-matched-normal-control",
+      "args": [
+        "0x403a992b45faf21b"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00411-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f509"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00412-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f471"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00413-matched-normal-control",
+      "args": [
+        "0x00c9b94ec2f54cef"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00414-matched-normal-control",
+      "args": [
+        "0x403a992b45faf3cc"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00415-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f474"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00416-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f473"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00417-matched-normal-control",
+      "args": [
+        "0x403a992b45faf366"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00418-matched-normal-control",
+      "args": [
+        "0x2034433e3d068973"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00419-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f63e"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00420-matched-normal-control",
+      "args": [
+        "0x3ffad8bfed3a0e48"
+      ],
+      "expected_bits": "0x3f92122b85c50641"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00421-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f741"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00422-matched-normal-control",
+      "args": [
+        "0x3df4562fae99191f"
+      ],
+      "expected_bits": "0x3fefffffffd21ae5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00423-matched-normal-control",
+      "args": [
+        "0x1df23a17e1f00d45"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00424-matched-normal-control",
+      "args": [
+        "0x2574fdd959f4bacd"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00425-matched-normal-control",
+      "args": [
+        "0x403a992b45faf3a3"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00426-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f445"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00427-matched-normal-control",
+      "args": [
+        "0x403a992b45faf32f"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00428-matched-normal-control",
+      "args": [
+        "0x403b5854bd0bc1bf"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00429-matched-normal-control",
+      "args": [
+        "0x403a992b45faf400"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00430-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f606"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00431-matched-normal-control",
+      "args": [
+        "0x4039ada4ce0c96fd"
+      ],
+      "expected_bits": "0x04228e5057a5e915"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00432-matched-normal-control",
+      "args": [
+        "0x403a992b45faf3c5"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00433-matched-normal-control",
+      "args": [
+        "0x0174fba272cccf98"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00434-matched-normal-control",
+      "args": [
+        "0x400a7fb5d728f5cd"
+      ],
+      "expected_bits": "0x3ec78e3fbbe4ad90"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00435-matched-normal-control",
+      "args": [
+        "0x39be335f52ff1d88"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00436-matched-normal-control",
+      "args": [
+        "0x403a992b45faf25c"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00437-matched-normal-control",
+      "args": [
+        "0x33d7df7db391d43d"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00438-matched-normal-control",
+      "args": [
+        "0x3e805b3314fe7588"
+      ],
+      "expected_bits": "0x3fefffffb62d014d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00439-matched-normal-control",
+      "args": [
+        "0x2d03eef7e468279a"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00440-matched-normal-control",
+      "args": [
+        "0x37c11f95ec13022e"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00441-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f6b7"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00442-matched-normal-control",
+      "args": [
+        "0x402efa36cb7797a1"
+      ],
+      "expected_bits": "0x2a01567f9ebaff7f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00443-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f459"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00444-matched-normal-control",
+      "args": [
+        "0x403a992b45faf217"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00445-matched-normal-control",
+      "args": [
+        "0x403a992b45faf356"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00446-matched-normal-control",
+      "args": [
+        "0x400d1624c5eacadc"
+      ],
+      "expected_bits": "0x3e924296838536a0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00447-matched-normal-control",
+      "args": [
+        "0x3f5774814e215c43"
+      ],
+      "expected_bits": "0x3feff2c452b597c5"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00448-matched-normal-control",
+      "args": [
+        "0x146d376aaeb68063"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00449-matched-normal-control",
+      "args": [
+        "0x20101e06e16e6ea8"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00450-matched-normal-control",
+      "args": [
+        "0x403a992b45faf21a"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00451-matched-normal-control",
+      "args": [
+        "0x403a992b45faf197"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00452-matched-normal-control",
+      "args": [
+        "0x1a55bfcdb8789836"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00453-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f5c2"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00454-matched-normal-control",
+      "args": [
+        "0x3da14191eb5402ea"
+      ],
+      "expected_bits": "0x3feffffffffec875"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00455-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f658"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00456-matched-normal-control",
+      "args": [
+        "0x0ed2d29fe92d358b"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00457-matched-normal-control",
+      "args": [
+        "0x403a992b45faf3a0"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00458-matched-normal-control",
+      "args": [
+        "0x08313b2cb100abea"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00459-matched-normal-control",
+      "args": [
+        "0x403ac3c96948f6ec"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00460-matched-normal-control",
+      "args": [
+        "0x29b5b41f1183e853"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00461-matched-normal-control",
+      "args": [
+        "0x403a992b45faf1b9"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00462-matched-normal-control",
+      "args": [
+        "0x3785cb6e17b5297f"
+      ],
+      "expected_bits": "0x3ff0000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00463-matched-normal-control",
+      "args": [
+        "0x403a992b45faf41e"
+      ],
+      "expected_bits": "0x0000000000000000"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00464-fresh-erfc-control",
+      "args": [
+        "0x40211b03f99b9065"
+      ],
+      "expected_bits": "0x3917303be746d44c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00465-fresh-erfc-control",
+      "args": [
+        "0x4039f5d11a5c1e5d"
+      ],
+      "expected_bits": "0x02d250ba02f4dc19"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00466-fresh-erfc-control",
+      "args": [
+        "0x401de81ab2ff2b4f"
+      ],
+      "expected_bits": "0x3aa8738ab543e52e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00467-fresh-erfc-control",
+      "args": [
+        "0x3ff2c9692f0e0815"
+      ],
+      "expected_bits": "0x3fb8c86409e95e6e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00468-fresh-erfc-control",
+      "args": [
+        "0x4013d795b79b5a30"
+      ],
+      "expected_bits": "0x3d8430ad1208540a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00469-fresh-erfc-control",
+      "args": [
+        "0x40397ac2c6588ddb"
+      ],
+      "expected_bits": "0x050dbef2d0d4c372"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00470-fresh-erfc-control",
+      "args": [
+        "0x4031c82c51f05ba9"
+      ],
+      "expected_bits": "0x231cb8158322c6d4"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00471-fresh-erfc-control",
+      "args": [
+        "0x401609266a0e4d80"
+      ],
+      "expected_bits": "0x3cfdfc2cfeb34a98"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00472-fresh-erfc-control",
+      "args": [
+        "0x40204200c228d530"
+      ],
+      "expected_bits": "0x39bc04cf321b4a1b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00473-fresh-erfc-control",
+      "args": [
+        "0x402edd0b29ef3ea6"
+      ],
+      "expected_bits": "0x2a2953fe63677036"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00474-fresh-erfc-control",
+      "args": [
+        "0x3fd30c544bce6306"
+      ],
+      "expected_bits": "0x3fe58ff25e06a3b9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00475-fresh-erfc-control",
+      "args": [
+        "0x3ffc64887708c4a8"
+      ],
+      "expected_bits": "0x3f88c13df2b6a5ab"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00476-fresh-erfc-control",
+      "args": [
+        "0x40354cd24df398c0"
+      ],
+      "expected_bits": "0x16b29d7951de856a"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00477-fresh-erfc-control",
+      "args": [
+        "0x402123b48d046976"
+      ],
+      "expected_bits": "0x39114e804b628733"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00478-fresh-erfc-control",
+      "args": [
+        "0x4023d15d59998b47"
+      ],
+      "expected_bits": "0x36d271386e81b151"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00479-fresh-erfc-control",
+      "args": [
+        "0x4024b2e43367f3b5"
+      ],
+      "expected_bits": "0x360347a15e39cd12"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00480-fresh-erfc-control",
+      "args": [
+        "0x403982932a485875"
+      ],
+      "expected_bits": "0x04e91038fe20dfe6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00481-fresh-erfc-control",
+      "args": [
+        "0x4027d428f945084e"
+      ],
+      "expected_bits": "0x32dbdec932e26a4d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00482-fresh-erfc-control",
+      "args": [
+        "0x40178ee36aea46a1"
+      ],
+      "expected_bits": "0x3c977c54e9254be8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00483-fresh-erfc-control",
+      "args": [
+        "0x40326a04c5f72743"
+      ],
+      "expected_bits": "0x210b786e47c73073"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00484-fresh-erfc-control",
+      "args": [
+        "0x40328a5cb0e99fb5"
+      ],
+      "expected_bits": "0x20a0622bf61c5d25"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00485-fresh-erfc-control",
+      "args": [
+        "0x402b462552b7f175"
+      ],
+      "expected_bits": "0x2ee1385d898e8237"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00486-fresh-erfc-control",
+      "args": [
+        "0x4026a8468a5c7e7c"
+      ],
+      "expected_bits": "0x3416d64853c919eb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00487-fresh-erfc-control",
+      "args": [
+        "0x40341ffe3a14e789"
+      ],
+      "expected_bits": "0x1b1716a40a2f6c0b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00488-fresh-erfc-control",
+      "args": [
+        "0x4037cedc0d71c627"
+      ],
+      "expected_bits": "0x0c7cc6ee1e19374b"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00489-fresh-erfc-control",
+      "args": [
+        "0x3fd50ca8eac8642a"
+      ],
+      "expected_bits": "0x3fe489ee3bdd4364"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00490-fresh-erfc-control",
+      "args": [
+        "0x4017bb2f89e34a3c"
+      ],
+      "expected_bits": "0x3c8bf74eff244966"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00491-fresh-erfc-control",
+      "args": [
+        "0x4037d5439ebde399"
+      ],
+      "expected_bits": "0x0c6175432c1d4290"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00492-fresh-erfc-control",
+      "args": [
+        "0x4011a175a30ac058"
+      ],
+      "expected_bits": "0x3dff5db36c237ecf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00493-fresh-erfc-control",
+      "args": [
+        "0x4037d83defdc804a"
+      ],
+      "expected_bits": "0x0c540af7b1652d4c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00494-fresh-erfc-control",
+      "args": [
+        "0x402020c9033c18da"
+      ],
+      "expected_bits": "0x39d42feceb4131a9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00495-fresh-erfc-control",
+      "args": [
+        "0x400265a0b5e66330"
+      ],
+      "expected_bits": "0x3f52c3d5d30c3fa3"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00496-fresh-erfc-control",
+      "args": [
+        "0x4034ab22dba32675"
+      ],
+      "expected_bits": "0x1916abb339a8b3bb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00497-fresh-erfc-control",
+      "args": [
+        "0x40263b5ad18e5772"
+      ],
+      "expected_bits": "0x34858a5c4a10bb2e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00498-fresh-erfc-control",
+      "args": [
+        "0x4027746773b03aa2"
+      ],
+      "expected_bits": "0x3342687e197ded51"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00499-fresh-erfc-control",
+      "args": [
+        "0x403a6a4f229b5fc1"
+      ],
+      "expected_bits": "0x00ab950afb9f0d28"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00500-fresh-erfc-control",
+      "args": [
+        "0x4010b5e1eec5b2c3"
+      ],
+      "expected_bits": "0x3e2dbcc40e19f2bb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00501-fresh-erfc-control",
+      "args": [
+        "0x401d02747a8955d8"
+      ],
+      "expected_bits": "0x3af56a531f3bd5d8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00502-fresh-erfc-control",
+      "args": [
+        "0x40087c8b092aa212"
+      ],
+      "expected_bits": "0x3eef76c304619dbc"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00503-fresh-erfc-control",
+      "args": [
+        "0x4004b1f03a173494"
+      ],
+      "expected_bits": "0x3f30a1dcd3575883"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00504-fresh-erfc-control",
+      "args": [
+        "0x40253bc537a98e96"
+      ],
+      "expected_bits": "0x3581b46daa8be1cb"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00505-fresh-erfc-control",
+      "args": [
+        "0x400bbce50d62693c"
+      ],
+      "expected_bits": "0x3eaf9aa6e420f3e0"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00506-fresh-erfc-control",
+      "args": [
+        "0x4015f438b5ba4e02"
+      ],
+      "expected_bits": "0x3d02d6be7fd4572d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00507-fresh-erfc-control",
+      "args": [
+        "0x40231fb6f8e5a9b4"
+      ],
+      "expected_bits": "0x37700706c227f758"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00508-fresh-erfc-control",
+      "args": [
+        "0x4038c16386204c27"
+      ],
+      "expected_bits": "0x08555577b0b65ca6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00509-fresh-erfc-control",
+      "args": [
+        "0x4027b633e88aab11"
+      ],
+      "expected_bits": "0x32fc22292ea31f2c"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00510-fresh-erfc-control",
+      "args": [
+        "0x3fefd2f4de888190"
+      ],
+      "expected_bits": "0x3fc46d957dd88fbd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00511-fresh-erfc-control",
+      "args": [
+        "0x40196f9a064c4a79"
+      ],
+      "expected_bits": "0x3c11c1c2c0dfaf77"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00512-fresh-erfc-control",
+      "args": [
+        "0x4036416da4abcbdf"
+      ],
+      "expected_bits": "0x12f151949cad710e"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00513-fresh-erfc-control",
+      "args": [
+        "0x400bdc2122b33636"
+      ],
+      "expected_bits": "0x3eac4f5416910d5f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00514-fresh-erfc-control",
+      "args": [
+        "0x4032c6060eba0ec7"
+      ],
+      "expected_bits": "0x1fd62aa6c540f831"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00515-fresh-erfc-control",
+      "args": [
+        "0x4035bb26152fad52"
+      ],
+      "expected_bits": "0x1505a0e4816fb9d7"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00516-fresh-erfc-control",
+      "args": [
+        "0x40320188ec0b31ae"
+      ],
+      "expected_bits": "0x22631eab758f24ba"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00517-fresh-erfc-control",
+      "args": [
+        "0x4016b935f2c0f208"
+      ],
+      "expected_bits": "0x3cd10035c643fa44"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00518-fresh-erfc-control",
+      "args": [
+        "0x4031cfe9a2537c9c"
+      ],
+      "expected_bits": "0x23038c8498863c65"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00519-fresh-erfc-control",
+      "args": [
+        "0x4004af07da32bebf"
+      ],
+      "expected_bits": "0x3f30c3562995695f"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00520-fresh-erfc-control",
+      "args": [
+        "0x4026b771ef238914"
+      ],
+      "expected_bits": "0x340742c667520af8"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00521-fresh-erfc-control",
+      "args": [
+        "0x3ff80270ab83dcae"
+      ],
+      "expected_bits": "0x3fa1516354d31f27"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00522-fresh-erfc-control",
+      "args": [
+        "0x4000a11a9c97df2b"
+      ],
+      "expected_bits": "0x3f6aea55eb2ad39d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00523-fresh-erfc-control",
+      "args": [
+        "0x4010836aaf1bbe42"
+      ],
+      "expected_bits": "0x3e36a4abc77fb3ec"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00524-fresh-erfc-control",
+      "args": [
+        "0x401cc21861f7e239"
+      ],
+      "expected_bits": "0x3b0ac48e8af87271"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00525-fresh-erfc-control",
+      "args": [
+        "0x4011e2cf48a944cd"
+      ],
+      "expected_bits": "0x3df18e1bfd1a89cd"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00526-fresh-erfc-control",
+      "args": [
+        "0x4030f3aefa4bc2b8"
+      ],
+      "expected_bits": "0x25b6b9341c75ff21"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00527-fresh-erfc-control",
+      "args": [
+        "0x403913000763e924"
+      ],
+      "expected_bits": "0x06e64c4acebc0ff9"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00528-fresh-erfc-control",
+      "args": [
+        "0x4014534ac558ac32"
+      ],
+      "expected_bits": "0x3d6774f28ad93e39"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00529-fresh-erfc-control",
+      "args": [
+        "0x4035d35a9ce02398"
+      ],
+      "expected_bits": "0x14a66d02f45c10a6"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00530-fresh-erfc-control",
+      "args": [
+        "0x402acfde8d793217"
+      ],
+      "expected_bits": "0x2f71abbe0886cc37"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00531-fresh-erfc-control",
+      "args": [
+        "0x4020610269cd71bf"
+      ],
+      "expected_bits": "0x39a4b5019c43e487"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00532-fresh-erfc-control",
+      "args": [
+        "0x40249dd8707c0614"
+      ],
+      "expected_bits": "0x36169fa7bc7d1eaf"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00533-fresh-erfc-control",
+      "args": [
+        "0x4030e5e29068859b"
+      ],
+      "expected_bits": "0x25e1aa88553a571d"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00534-fresh-erfc-control",
+      "args": [
+        "0x400b02dcb71955db"
+      ],
+      "expected_bits": "0x3ebe2864a9a3dbbc"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00535-fresh-erfc-control",
+      "args": [
+        "0x4032b70ec241a1f1"
+      ],
+      "expected_bits": "0x2008e014350cdc65"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00536-fresh-erfc-control",
+      "args": [
+        "0x4039104a4e4a8ee3"
+      ],
+      "expected_bits": "0x06f2f693fe7ef3ae"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00537-fresh-erfc-control",
+      "args": [
+        "0x402c17913dd647c7"
+      ],
+      "expected_bits": "0x2dda7fa0642e0d48"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00538-fresh-erfc-control",
+      "args": [
+        "0x40258af9ad13a5ec"
+      ],
+      "expected_bits": "0x35346ba7dd21aae2"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00539-fresh-erfc-control",
+      "args": [
+        "0x40157915bbb309aa"
+      ],
+      "expected_bits": "0x3d21c10acce10abe"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00540-fresh-erfc-control",
+      "args": [
+        "0x403159d5c3d991a0"
+      ],
+      "expected_bits": "0x247a73ada4542562"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00541-fresh-erfc-control",
+      "args": [
+        "0x40280ade46520855"
+      ],
+      "expected_bits": "0x32a120208d5be157"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00542-fresh-erfc-control",
+      "args": [
+        "0x4007f8e6653b6ed9"
+      ],
+      "expected_bits": "0x3ef7acd1f06b1451"
+    },
+    {
+      "id": "erfc.precise-cdf-dependency-00543-fresh-erfc-control",
+      "args": [
+        "0x402d4d9a7cafbfef"
+      ],
+      "expected_bits": "0x2c48328145e12171"
+    }
+  ],
+  "capture_provenance": {
+    "schema_version": "w109-capture-provenance-v1",
+    "captured_utc": "2026-09-29T17:40:42.6902203Z",
+    "environment": {
+      "excel_version": "16.0",
+      "excel_build": "20430",
+      "excel_bitness": "64-bit",
+      "workbook_compatibility": "2",
+      "excel_operating_system": "Windows (64-bit) NT 10.00",
+      "excel_input_plumbing": "cell_value2_bulk"
+    },
+    "oracle_cache": {
+      "mode": "no_cache",
+      "root": null,
+      "hits": 0,
+      "misses": 0
+    },
+    "runner": {
+      "name": "Run-W109BulkBatch.ps1",
+      "version": "w109-bulk-batch-v2",
+      "script_last_write_utc": "2026-09-29T12:59:04.6988004Z",
+      "powershell_version": "7.6.5"
+    }
+  }
+}

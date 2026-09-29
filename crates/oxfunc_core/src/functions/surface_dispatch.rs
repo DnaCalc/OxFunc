@@ -2905,7 +2905,7 @@ pub fn eval_surface_q_unary_number(
         FUNC_ID_TAN => TAN_META
             .real_result_policy
             .publish(value, tan_kernel(value)),
-        FUNC_ID_TANH => Ok(tanh_kernel(value)),
+        FUNC_ID_TANH => crate::functions::tanh::TANH_META.real_result_policy.publish(value, tanh_kernel(value)),
         _ => Err(WorksheetErrorCode::Value),
     }
 }
@@ -2935,8 +2935,14 @@ pub fn eval_surface_q_binary_number(
         FUNC_ID_POWER => power_kernel(lhs, rhs),
         FUNC_ID_OP_SUBTRACT => op_subtract_kernel(lhs, rhs),
         FUNC_ID_QUOTIENT => quotient_kernel(lhs, rhs),
-        FUNC_ID_ROUND => Ok(round_kernel(lhs, rhs.trunc() as i32)),
-        FUNC_ID_TRUNC => Ok(trunc_kernel(lhs, rhs.trunc() as i32)),
+        FUNC_ID_ROUND => {
+            let result = round_kernel(lhs, crate::functions::round_fn::round_digit_count(rhs));
+            if result.is_finite() { Ok(result) } else { Err(WorksheetErrorCode::Num) }
+        },
+        FUNC_ID_TRUNC => {
+            let result = trunc_kernel(lhs, crate::functions::round_fn::directed_digit_count(rhs));
+            if result.is_finite() { Ok(result) } else { Err(WorksheetErrorCode::Num) }
+        },
         _ => Err(WorksheetErrorCode::Value),
     }
 }
