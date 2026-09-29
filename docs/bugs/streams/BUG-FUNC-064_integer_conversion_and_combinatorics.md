@@ -15,3 +15,10 @@ fixtures. Discovery and failed independent candidates remain distinct.
 refinement validation, primitive/platform alignment, preparation/host context,
 evaluator integration and combined campaign verification. No whole-function
 completion claim is made.
+
+QUOTIENT follow-up (`oxf-mwue.28.14.5`): the local reference-origin and
+ordered-padding refinements now match 3,141 numeric and 1,720 typed observations,
+including 624 fresh independent cases. Failed earlier candidates remain retained
+in `docs/function-lane/evidence/w111-broad-20260929/quotient/`; HO-FN-027 now
+records RefsVisibleInAdapter/Custom and the position-sensitive rejection rule.
+Receiving integration and broader context/reference classes remain open.

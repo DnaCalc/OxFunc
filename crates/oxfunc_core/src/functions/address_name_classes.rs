@@ -860,4 +860,3 @@ pub(super) const NAME_CONTINUE: &[(u16, u16)] = &[
     (0xFFE8, 0xFFEE),
     (0xFFF9, 0xFFFD),
 ];
-

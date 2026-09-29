@@ -1544,7 +1544,7 @@ Rules:
 4. `Characterized` needs a held-out sweep under ODR-FN-005 §4 and a kernel story,
    and stays provisional.
 
-The 2026-09-29 broad campaign is active under `oxf-mwue.28`. Its retained
+The 2026-09-29 broad campaign round is recorded under `oxf-mwue.28`. Its retained
 observations, qualification rules, candidate repairs and open lanes are in
 `docs/function-lane/evidence/w111-broad-20260929/README.md`. Both broad discovery
 and independent candidate holdouts use live Excel20430/CV2; no whole-function
@@ -1554,7 +1554,9 @@ aggregate, positional argument, omission/origin and numeric-payload dependencies
 with OxFml; acknowledgment and
 receiving integration remain open. Campaign state: `scope_partial`,
 `target_partial`, integration `partial`; ongoing numeric, typed, formal and
-cross-repo work remains in the bead graph.
+cross-repo work remains in the bead graph. The user requested wrap-up and commits;
+`docs/function-lane/evidence/w111-broad-20260929/CAMPAIGN_REPORT.md` records the
+final snapshot, strict test failures, audits and next work.
 
 ## W112 Parity Driver: Smart-Fuzzer As The One Engine
 

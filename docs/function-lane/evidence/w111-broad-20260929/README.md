@@ -13,6 +13,9 @@ fresh held-out replay after each changed candidate; formal alignment; canonical
 ledger/catalog reconciliation; repository-wide validation. No whole-function
 completion claim follows from a passing subset.
 
+The round is recorded in [CAMPAIGN_REPORT.md](CAMPAIGN_REPORT.md), including
+the frozen wrap snapshot, combined checks, remaining work and required audits.
+
 ## Oracle and reproducibility
 
 - Live Excel 16.0 build 20430, 64-bit, workbook Compatibility Version 2, 1900
@@ -118,14 +121,14 @@ Passing old rows after a repair does not replace a fresh independent holdout.
   Their numeric bank has 39,890 exact observations; a separate shared MEDIAN,
   HARMEAN and DEVSQ bank adds 2,190 fresh prepared observations, all exact.
 - `mround/`: staged quotient/product and an empirically bounded halfway cutoff
-  match 47,964 numerical observations. Prepared repairs retain their failed
-  independent reference bank; multi-cell reference admission is being refined
-  separately from array-value lifting.
+  match 47,964 numerical observations. The refined reference/kind layer matches
+  1,514 typed observations, including 384 fresh reference controls; earlier
+  failed independent candidates remain retained.
 - `mod-publication/`: endpoint normalization and tiny-remainder publication
   match 151,438 numeric observations, including 10,784 fresh production cases.
   The first tiny-result research candidate failed 62 independent observations;
-  its failed freeze remains retained. Prepared Missing behavior is a separate
-  refinement and receiving-side obligation.
+  its failed freeze remains retained. Missing and ordered-padding refinements
+  match 1,067 typed observations, including 288 final independent cases.
 - `logical/`: 540 AND/OR/XOR typed rows agree; separate spelling and precedence
   observations and exercised Lean bindings document the existing runtime rule.
 - `fact/`: negative fractions reject before truncation; 1,209 discovery and
@@ -211,3 +214,9 @@ passes 526 jobs after correcting a Windows generated-cache module-name casing
 collision. Subsequent source refinements require renewed validation; the final
 verification record identifies its exact source snapshot. No campaign or
 whole-function completion claim is made.
+
+Final frozen snapshot `wrap-1952` retains 214,765/221,590 admitted numerical
+matches versus 201,401 for the initial executable, with 13,364 newly exact
+observations and zero new numerical misses. Typed results are unchanged from
+snapshot-1735. Final Rust has 2,003 passing tests, three known failures and eight
+ignored tests; Lean passes 526 jobs. See the report for full qualification.

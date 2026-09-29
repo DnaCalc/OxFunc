@@ -2,7 +2,7 @@
 
 ## Current campaign observation (2026-09-29)
 
-MOD endpoint and tiny-remainder publication match 151,438 retained numerical observations, including 10,784 fresh production cases. Earlier independent failures (one tiny endpoint case and 62 research failures) remain retained. A separate typed discovery found 18 explicit-Missing differences among 353; a local Missing-to-zero preparation repair, generated route and Custom declaration now match that bank. Fresh prepared validation and HO-FN-030 receiving integration are recorded separately; no whole-function promotion.
+MOD endpoint and tiny-remainder publication match 151,438 retained numerical observations, including 10,784 fresh production cases. Earlier independent failures (one tiny endpoint case and 62 research failures) remain retained. A separate typed discovery found 18 explicit-Missing differences among 353; a local Missing-to-zero preparation repair, generated route and Custom declaration now match that bank. The final prepared bank matches 1,067 observations including 288 fresh cases; HO-FN-030 receiving integration remains open; no whole-function promotion.
 
 Status remains `investigating`: `scope_partial`, `target_partial`, integration `partial`.
 The historical discovery text below is retained; its pending counts are superseded

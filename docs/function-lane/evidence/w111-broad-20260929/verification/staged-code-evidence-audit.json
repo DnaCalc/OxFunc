@@ -1,0 +1,9 @@
+{
+  "source_files": 1851,
+  "source_canonical_hash_mismatches": [],
+  "retained_artifacts": 2436,
+  "retained_artifact_bytes": 1063644144,
+  "artifact_index_byte_mismatches": [],
+  "scope": "staged index compared with frozen source hashes and current retained evidence bytes",
+  "code_evidence_commit": "ffcb9a7728195f359bdb54a1e97af0a07c8f816e"
+}

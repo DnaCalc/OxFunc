@@ -8,7 +8,7 @@ Purpose:
 2. point readers at the current owning workset or contract surface,
 3. avoid duplicating execution-state, blocker, or archive-wave detail now owned by `.beads/`.
 
-Current campaign: W111 bead `oxf-mwue.28` owns the 2026-09-29 broad Excel
+Current campaign round, wrapped at user request: W111 bead `oxf-mwue.28` owns the 2026-09-29 broad Excel
 characterization and repair work. Its [retained evidence](function-lane/evidence/w111-broad-20260929/README.md)
 records the build/CV axes, transport limitations, discovery failures and repair
 replays. The campaign remains `scope_partial`, `target_partial`, integration
@@ -16,7 +16,7 @@ replays. The campaign remains `scope_partial`, `target_partial`, integration
 Later candidates cover large-exponent POWER, stored LOG/FISHER/MEDIAN arithmetic,
 HARMEAN/DEVSQ publication, switched VDB, MROUND reference/kind rules and MOD
 remainder publication/preparation. QUOTIENT multi-cell reference admission is
-being independently validated. Their independent evidence and
+retained with 624 fresh independent matches and an extended HO-FN-027. Their independent evidence and
 remaining preparation/primitive/integration lanes are recorded per family.
 
 Use rule:

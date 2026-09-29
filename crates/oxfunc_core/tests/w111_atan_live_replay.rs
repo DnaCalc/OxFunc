@@ -46,4 +46,3 @@ fn atan_refinement_matches_every_retained_bit() {
 fn atan_second_independent_heldout_matches_every_retained_bit() {
     replay(include_str!("../../../docs/function-lane/evidence/w111-broad-20260929/atan/heldout2.json"));
 }
-

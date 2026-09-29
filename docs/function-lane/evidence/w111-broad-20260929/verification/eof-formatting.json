@@ -1,0 +1,24 @@
+{
+  "stage": "after tested code/evidence commit; before final report commit",
+  "semantic_source_change": false,
+  "files": [
+    {
+      "path": "crates/oxfunc_core/src/functions/address_name_classes.rs",
+      "before_sha256": "7922c81f5ecfd1e45603b9db53090fe8d516c0cc8568098aedafe4f45122fa36",
+      "after_sha256": "d1e1e5f11d555fb04cd65492ec8b31e4518755ecd2f03df725a40ddefb83a3ee",
+      "change": "remove redundant newline sequences at EOF only"
+    },
+    {
+      "path": "crates/oxfunc_core/tests/w111_atan_live_replay.rs",
+      "before_sha256": "660f6e31faf06c15d88fde094484e93f55dbca0536f415ba52de396f4d6e989b",
+      "after_sha256": "f4f0158dbd3b6249ae2e5d6761c104b9a19f2da24b380ae3713278d976c3698a",
+      "change": "remove redundant newline sequences at EOF only"
+    },
+    {
+      "path": "smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/depreciation_graph_explorer.rs",
+      "before_sha256": "4200bedf572430dd434a65732899b554d24425843028236f2a80a18e24ad375c",
+      "after_sha256": "7dcf3ff56b587846954ecc466bfce554507e0303efbed459bbab7224de72b637",
+      "change": "remove redundant newline sequences at EOF only"
+    }
+  ]
+}

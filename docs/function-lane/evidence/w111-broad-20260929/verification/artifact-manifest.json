@@ -9,6 +9,10 @@
       "sha256": "ea877096a14676bb2a1d80fe09c9e078f48e45c6673c325d24a46a2ccc67f528"
     },
     {
+      "path": "eof-formatting.json",
+      "sha256": "fb4a78707559568b1948fa76f40bc566c693015905a4561f19ee5ceb7b0afd95"
+    },
+    {
       "path": "full-lean.log",
       "sha256": "190a94b2fbf4eb271feb27b522f3371a77236be81556fc769e460863d236c87c"
     },
@@ -27,6 +31,10 @@
     {
       "path": "historical-lean-case-recovery.log",
       "sha256": "c413015871633d8533f0f6ba8187273376388df260c2addc7f399b07df94549b"
+    },
+    {
+      "path": "staged-code-evidence-audit.json",
+      "sha256": "44b043a97b417a6faeb3b8e729bcbc2df4a9cfa4aa81994909d184bc7fa8d3ec"
     }
   ]
 }
