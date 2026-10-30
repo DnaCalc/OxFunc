@@ -19,7 +19,7 @@ pub(crate) struct RegistryHelpSeed {
 pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
     RegistryHelpSeed {
         function_id: "FUNC.ABS",
-        short_description: Some("A number without its sign: its distance from zero"),
+        short_description: Some("Absolute value: the number without its sign, its distance from zero"),
         long_description: None,
         parameters: &[],
     },
