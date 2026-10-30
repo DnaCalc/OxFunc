@@ -85,7 +85,7 @@ function Get-FunctionRowsFromPage {
             localized_function_url = $articleUrl
             version_marker = $versionMarker
             localized_category = $categoryText.TrimEnd(':')
-            localized_description = ""  # Microsoft's text is not kept (DnaCalc dc-96l.5, 2026-10-30)
+            localized_description = $description
         })
     }
     $rows
