@@ -15,7 +15,6 @@
 
 pub mod dsl;
 pub mod enumerate;
-pub mod erfc_f_packets;
 pub mod eval;
 pub mod scheduler;
 pub mod score;
