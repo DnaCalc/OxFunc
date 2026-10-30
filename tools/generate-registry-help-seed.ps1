@@ -116,6 +116,11 @@ foreach ($WitnessPath in $RichWitnessPaths) {
 $Lines = New-Object System.Collections.Generic.List[string]
 $Lines.Add("// Auto-generated from current OxFunc function catalog and rich V2 witness seeds.")
 $Lines.Add("// Do not hand-edit help data here; update the source artifacts and rerun tools/generate-registry-help-seed.ps1.")
+$Lines.Add('// The short_description texts are Microsoft''s official one-line Excel function descriptions,')
+$Lines.Add('// copyright Microsoft Corporation, as published on support.microsoft.com (the lists "Excel functions')
+$Lines.Add('// (by category)" and "(alphabetical)"); each function''s source article is the function_url column of')
+$Lines.Add('// docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv. The long and parameter descriptions')
+$Lines.Add('// are OxFunc''s own.')
 $Lines.Add("")
 $Lines.Add("#[derive(Debug, Clone, Copy, PartialEq, Eq)]")
 $Lines.Add("pub(crate) struct ParameterHelpSeed {")

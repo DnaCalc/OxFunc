@@ -1,5 +1,10 @@
 // Auto-generated from current OxFunc function catalog and rich V2 witness seeds.
 // Do not hand-edit help data here; update the source artifacts and rerun tools/generate-registry-help-seed.ps1.
+// The short_description texts are Microsoft's official one-line Excel function descriptions,
+// copyright Microsoft Corporation, as published on support.microsoft.com (the lists "Excel functions
+// (by category)" and "(alphabetical)"); each function's source article is the function_url column of
+// docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv. The long and parameter descriptions
+// are OxFunc's own.
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct ParameterHelpSeed {
